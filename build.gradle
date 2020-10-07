@@ -1,0 +1,52 @@
+buildscript {
+  dependencies {
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10'
+    classpath 'com.android.tools.build:gradle:4.0.2'
+  }
+  repositories {
+    mavenCentral()
+    google()
+    jcenter {
+      // Required for a dependency of Android lint.
+      content {
+        includeGroup 'org.jetbrains.trove4j'
+      }
+    }
+  }
+}
+
+subprojects {
+  repositories {
+    mavenCentral()
+    google()
+    jcenter {
+      // Required for a dependency of Android lint.
+      content {
+        includeGroup 'org.jetbrains.trove4j'
+      }
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
+    task.kotlinOptions {
+      freeCompilerArgs += [
+        '-progressive',
+      ]
+    }
+  }
+
+  plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
+    def android = plugin.extension
+    android.compileSdkVersion 30
+    android.defaultConfig {
+      minSdkVersion 21
+      targetSdkVersion 30
+    }
+    android.buildFeatures {
+      aidl = false
+      renderScript = false
+      resValues = false
+      shaders = false
+    }
+  }
+}

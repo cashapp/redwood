@@ -1,0 +1,6 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+dependencies {
+  implementation project(':treehouse:library')
+}
