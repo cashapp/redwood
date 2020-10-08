@@ -3,4 +3,5 @@ apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
   implementation project(':treehouse:library')
+  implementation deps.kotlin.coroutines.android
 }

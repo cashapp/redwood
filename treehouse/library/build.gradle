@@ -2,4 +2,12 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 kotlin {
   jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api deps.kotlin.coroutines.core
+      }
+    }
+  }
 }

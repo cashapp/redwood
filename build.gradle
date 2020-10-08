@@ -1,4 +1,19 @@
 buildscript {
+  ext.versions = [
+    'kotlin': [
+      'coroutines': '1.3.9',
+    ],
+  ]
+
+  ext.deps = [
+    'kotlin': [
+      'coroutines': [
+        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin.coroutines}",
+        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlin.coroutines}",
+      ],
+    ],
+  ]
+
   dependencies {
     classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10'
     classpath 'com.android.tools.build:gradle:4.0.2'

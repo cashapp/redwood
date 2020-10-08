@@ -2,13 +2,18 @@ package app.cash.treehouse
 
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.TreeDiff
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.consumeAsFlow
 
 class Treehouse<N : TreeNode>(
   private val bridge: TreeBridge<N>,
 ) {
   private val nodes = mutableMapOf(0L to bridge.root)
 
-  private val eventSink = EventSink { nodeId, eventId -> TODO("Not yet implemented") }
+  private val eventChannel = Channel<Event>(UNLIMITED)
+  private val eventSink = EventSink(eventChannel::offer)
+  val events get() = eventChannel.consumeAsFlow()
 
   fun apply(diff: TreeDiff) {
     for (nodeDiff in diff.nodeDiffs) {

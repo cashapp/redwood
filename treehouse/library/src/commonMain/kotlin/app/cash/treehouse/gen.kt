@@ -21,6 +21,11 @@ interface TreeMutator<N : Any> {
   fun remove(parent: N, index: Int, count: Int)
 }
 
+data class Event(
+  val nodeId: Long,
+  val eventId: Long,
+)
+
 fun interface EventSink {
-  fun send(nodeId: Long, eventId: Long)
+  fun send(event: Event)
 }

@@ -1,7 +1,8 @@
 package example
 
-import app.cash.treehouse.TreeBridge
+import app.cash.treehouse.Event
 import app.cash.treehouse.EventSink
+import app.cash.treehouse.TreeBridge
 import app.cash.treehouse.TreeMutator
 import app.cash.treehouse.TreeNode
 import app.cash.treehouse.protocol.NodeDiff
@@ -16,6 +17,7 @@ interface SunspotNode<out T : Any> : TreeNode {
   val value: T
 }
 
+@Suppress("MoveLambdaOutsideParentheses") // Generated code ergo not important.
 class SunspotBridge<N : Any>(
   override val root: SunspotNode<N>,
   private val factory: SunspotNodeFactory<N>,
@@ -26,10 +28,10 @@ class SunspotBridge<N : Any>(
     insert: NodeDiff.Insert,
     events: EventSink,
   ): SunspotNode<N> {
-    val id = insert.id
+    val id = insert.childId
     val node = when (val type = insert.type) {
       1 -> factory.text(parent)
-      2 -> factory.button(parent, { events.send(id, 1L) })
+      2 -> factory.button(parent, { events.send(Event(id, 1L /* click */)) })
       else -> throw IllegalArgumentException("Unknown type $type")
     }
     mutator.insert(parent.value, insert.index, node.value)
