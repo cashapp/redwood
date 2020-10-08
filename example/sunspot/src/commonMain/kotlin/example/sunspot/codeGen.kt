@@ -1,4 +1,4 @@
-package example
+package example.sunspot
 
 import app.cash.treehouse.Event
 import app.cash.treehouse.EventSink

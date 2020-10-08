@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api deps.kotlin.coroutines.core
+        api project(':example:sunspot')
       }
     }
   }

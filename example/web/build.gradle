@@ -1,0 +1,17 @@
+apply plugin: 'org.jetbrains.kotlin.js'
+
+archivesBaseName = 'example'
+
+kotlin {
+  target {
+    browser()
+  }
+
+  sourceSets {
+    main {
+      dependencies {
+        implementation project(':example:shared')
+      }
+    }
+  }
+}

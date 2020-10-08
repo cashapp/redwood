@@ -3,7 +3,7 @@
   package="example.android"
   >
   <application android:label="Example">
-    <activity android:name="example.MainActivity">
+    <activity android:name="example.android.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>

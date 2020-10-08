@@ -1,4 +1,4 @@
-package example
+package example.android.sunspot
 
 import android.graphics.Color
 import android.view.View
@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import app.cash.treehouse.protocol.PropertyDiff
+import example.sunspot.SunspotButton
+import example.sunspot.SunspotNode
+import example.sunspot.SunspotText
 
 class AndroidSunspotViewGroup(
   override val value: ViewGroup,

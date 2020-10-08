@@ -2,6 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
-  implementation project(':treehouse:library')
+  implementation project(':example:shared')
   implementation deps.kotlin.coroutines.android
 }

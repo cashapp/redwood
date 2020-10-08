@@ -1,4 +1,4 @@
-package example
+package example.android.sunspot
 
 import android.view.View
 import android.view.ViewGroup

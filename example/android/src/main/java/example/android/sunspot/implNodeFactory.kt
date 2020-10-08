@@ -1,8 +1,12 @@
-package example
+package example.android.sunspot
 
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import example.sunspot.SunspotButton
+import example.sunspot.SunspotNode
+import example.sunspot.SunspotNodeFactory
+import example.sunspot.SunspotText
 
 object AndroidSunspotNodeFactory : SunspotNodeFactory<View> {
   override fun text(
