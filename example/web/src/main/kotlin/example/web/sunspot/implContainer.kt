@@ -2,18 +2,37 @@ package example.web.sunspot
 
 import app.cash.treehouse.TreeMutator
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 
 object HtmlContainerMutator : TreeMutator<HTMLElement> {
   override fun insert(parent: HTMLElement, index: Int, node: HTMLElement) {
-    require(index == parent.childElementCount) // TODO support more than appending
-    parent.appendChild(node)
+    if (index == parent.childElementCount) {
+      parent.appendChild(node)
+    } else {
+      val current = parent.children[index]!!
+      parent.insertBefore(current, node)
+    }
   }
 
   override fun move(parent: HTMLElement, fromIndex: Int, toIndex: Int, count: Int) {
-    TODO("Not implemented")
+    val nodes = Array(count) { offset ->
+      parent.children[fromIndex + offset] as HTMLElement
+    }
+    remove(parent, fromIndex, count)
+
+    val newIndex = if (toIndex > fromIndex) {
+      toIndex - count
+    } else {
+      toIndex
+    }
+    nodes.forEachIndexed { offset, node ->
+      insert(parent, newIndex + offset, node)
+    }
   }
 
   override fun remove(parent: HTMLElement, index: Int, count: Int) {
-    TODO("Not implemented")
+    repeat(count) {
+      parent.removeChild(parent.children[index]!!)
+    }
   }
 }
