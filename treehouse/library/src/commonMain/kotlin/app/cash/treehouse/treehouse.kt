@@ -1,8 +1,9 @@
 package app.cash.treehouse
 
-import app.cash.treehouse.protocol.TreeDiff
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
+import app.cash.treehouse.protocol.TreeDiff
+import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 class Treehouse<N : TreeNode>(
   private val bridge: TreeBridge<N>,
 ) {
-  private val nodes = mutableMapOf(0L to bridge.root)
+  private val nodes = mutableMapOf(RootId to bridge.root)
 
   private val eventChannel = Channel<Event>(UNLIMITED)
   private val eventSink = EventSink(eventChannel::offer)
@@ -37,6 +38,9 @@ class Treehouse<N : TreeNode>(
             }
             is NodeDiff.Remove -> {
               bridge.remove(node, diff)
+            }
+            NodeDiff.Clear -> {
+              bridge.clear()
             }
           }
         }

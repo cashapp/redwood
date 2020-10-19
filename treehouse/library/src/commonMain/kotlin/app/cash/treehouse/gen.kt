@@ -9,6 +9,7 @@ interface TreeBridge<N : TreeNode> {
   fun insert(parent: N, insert: NodeDiff.Insert, events: EventSink): N
   fun move(parent: N, move: NodeDiff.Move)
   fun remove(parent: N, remove: NodeDiff.Remove)
+  fun clear()
 }
 
 interface TreeNode {
@@ -19,6 +20,7 @@ interface TreeMutator<N : Any> {
   fun insert(parent: N, index: Int, node: N)
   fun move(parent: N, fromIndex: Int, toIndex: Int, count: Int)
   fun remove(parent: N, index: Int, count: Int)
+  fun clear(parent: N)
 }
 
 data class Event(

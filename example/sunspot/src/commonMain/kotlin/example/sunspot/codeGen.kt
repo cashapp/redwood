@@ -45,6 +45,10 @@ class SunspotBridge<N : Any>(
   override fun remove(parent: SunspotNode<N>, remove: NodeDiff.Remove) {
     mutator.remove(parent.value, remove.index, remove.count)
   }
+
+  override fun clear() {
+    mutator.clear(root.value)
+  }
 }
 
 interface SunspotText<out T : Any> : SunspotNode<T> {

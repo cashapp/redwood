@@ -35,4 +35,8 @@ object HtmlContainerMutator : TreeMutator<HTMLElement> {
       parent.removeChild(parent.children[index]!!)
     }
   }
+
+  override fun clear(parent: HTMLElement) {
+    remove(parent, 0, parent.childElementCount)
+  }
 }

@@ -29,4 +29,8 @@ object AndroidContainerMutator : TreeMutator<View> {
   override fun remove(parent: View, index: Int, count: Int) {
     (parent as ViewGroup).removeViews(index, count)
   }
+
+  override fun clear(parent: View) {
+    (parent as ViewGroup).removeAllViews()
+  }
 }

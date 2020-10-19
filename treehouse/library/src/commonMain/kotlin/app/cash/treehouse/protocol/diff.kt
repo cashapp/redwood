@@ -2,6 +2,10 @@ package app.cash.treehouse.protocol
 
 sealed class TreeDiff {
   abstract val id: Long
+
+  companion object {
+    const val RootId = 0L
+  }
 }
 
 data class PropertyDiff(
@@ -11,6 +15,10 @@ data class PropertyDiff(
 ) : TreeDiff()
 
 sealed class NodeDiff : TreeDiff() {
+  object Clear : NodeDiff() {
+    override val id get() = RootId
+  }
+
   data class Insert(
     override val id: Long,
     val childId: Long,
