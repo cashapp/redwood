@@ -1,19 +1,16 @@
 package app.cash.treehouse.protocol
 
-data class TreeDiff(
-  val nodeDiffs: List<NodeDiff> = emptyList(),
-  val propertyDiffs: List<PropertyDiff> = emptyList()
-)
+sealed class TreeDiff {
+  abstract val id: Long
+}
 
 data class PropertyDiff(
-  val id: Long,
+  override val id: Long,
   val tag: Int,
   val value: Any?, // TODO
-)
+) : TreeDiff()
 
-sealed class NodeDiff {
-  abstract val id: Long
-
+sealed class NodeDiff : TreeDiff() {
   data class Insert(
     override val id: Long,
     val childId: Long,
