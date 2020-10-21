@@ -26,6 +26,7 @@ interface TreeMutator<N : Any> {
 data class Event(
   val nodeId: Long,
   val eventId: Long,
+  val value: Any?, // TODO
 )
 
 fun interface EventSink {

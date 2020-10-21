@@ -27,14 +27,14 @@ fun Treehouse<*>.launchCounterIn(scope: CoroutineScope) {
   scope.launch {
     events.collect { event ->
       when (event) {
-        Event(1L /* -1 */, 1L /* clicked */) -> {
+        Event(1L /* -1 */, 1L /* clicked */, null) -> {
           count -= 1
           apply(listOf(
             PropertyDiff(id = 2L, tag = 1 /* value */, value = count.toString()),
             PropertyDiff(id = 2L, tag = 2 /* color */, value = "#ffaaaa"),
           ))
         }
-        Event(3L /* +1 */, 1L /* clicked */) -> {
+        Event(3L /* +1 */, 1L /* clicked */, null) -> {
           count += 1
           apply(listOf(
             PropertyDiff(id = 2L, tag = 1 /* value */, value = count.toString()),

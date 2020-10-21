@@ -31,7 +31,7 @@ class SunspotBridge<N : Any>(
     val id = insert.childId
     val node = when (val type = insert.type) {
       1 -> factory.text(parent)
-      2 -> factory.button(parent, { events.send(Event(id, 1L /* click */)) })
+      2 -> factory.button(parent, { events.send(Event(id, 1L /* click */, null)) })
       else -> throw IllegalArgumentException("Unknown type $type")
     }
     mutator.insert(parent.value, insert.index, node.value)
