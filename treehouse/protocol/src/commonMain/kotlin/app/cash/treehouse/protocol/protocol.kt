@@ -1,5 +1,11 @@
 package app.cash.treehouse.protocol
 
+data class Event(
+  val nodeId: Long,
+  val eventId: Long,
+  val value: Any?, // TODO
+)
+
 sealed class TreeDiff {
   abstract val id: Long
 

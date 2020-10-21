@@ -1,5 +1,6 @@
 package app.cash.treehouse
 
+import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 import app.cash.treehouse.protocol.TreeDiff

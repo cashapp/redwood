@@ -10,6 +10,7 @@ kotlin {
     commonMain {
       dependencies {
         api deps.kotlin.coroutines.core
+        api project(':treehouse:protocol')
       }
     }
   }

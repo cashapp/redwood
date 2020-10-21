@@ -1,5 +1,6 @@
 package app.cash.treehouse
 
+import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 
@@ -22,12 +23,6 @@ interface TreeMutator<N : Any> {
   fun remove(parent: N, index: Int, count: Int)
   fun clear(parent: N)
 }
-
-data class Event(
-  val nodeId: Long,
-  val eventId: Long,
-  val value: Any?, // TODO
-)
 
 fun interface EventSink {
   fun send(event: Event)

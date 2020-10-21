@@ -1,0 +1,8 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+  js {
+    browser()
+  }
+  jvm()
+}

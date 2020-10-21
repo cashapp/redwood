@@ -1,10 +1,10 @@
 package example.sunspot
 
-import app.cash.treehouse.Event
 import app.cash.treehouse.EventSink
 import app.cash.treehouse.TreeBridge
 import app.cash.treehouse.TreeMutator
 import app.cash.treehouse.TreeNode
+import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 

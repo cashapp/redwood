@@ -1,7 +1,7 @@
 package example.shared
 
-import app.cash.treehouse.Event
 import app.cash.treehouse.Treehouse
+import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 import kotlinx.coroutines.CoroutineScope
