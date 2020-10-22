@@ -2,7 +2,6 @@ package app.cash.treehouse
 
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
-import app.cash.treehouse.protocol.PropertyDiff
 import app.cash.treehouse.protocol.TreeDiff
 import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
 import kotlinx.coroutines.channels.Channel
@@ -18,34 +17,31 @@ class Treehouse<N : TreeNode>(
   private val eventSink = EventSink(eventChannel::offer)
   val events get() = eventChannel.consumeAsFlow()
 
-  fun apply(diffs: List<TreeDiff>) {
-    for (diff in diffs) {
-      val node = nodes[diff.id]
-      checkNotNull(node) { "Unknown node ${diff.id}" }
+  fun apply(diff: TreeDiff) {
+    for (nodeDiff in diff.nodeDiffs) {
+      val container = nodes.getValue(nodeDiff.id)
 
       @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
-      val exhaustive: Unit = when (diff) {
-        is PropertyDiff -> {
-          node.apply(diff)
+      val exhaustive = when (nodeDiff) {
+        is NodeDiff.Insert -> {
+          nodes[nodeDiff.childId] = bridge.insert(container, nodeDiff, eventSink)
         }
-        is NodeDiff -> {
-          @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
-          val exhaustive: Unit = when (diff) {
-            is NodeDiff.Insert -> {
-              nodes[diff.childId] = bridge.insert(node, diff, eventSink)
-            }
-            is NodeDiff.Move -> {
-              bridge.move(node, diff)
-            }
-            is NodeDiff.Remove -> {
-              bridge.remove(node, diff)
-            }
-            NodeDiff.Clear -> {
-              bridge.clear()
-            }
-          }
+        is NodeDiff.Move -> {
+          bridge.move(container, nodeDiff)
+        }
+        is NodeDiff.Remove -> {
+          bridge.remove(container, nodeDiff)
+        }
+        NodeDiff.Clear -> {
+          bridge.clear()
         }
       }
+    }
+
+    for (propertyDiff in diff.propertyDiffs) {
+      val mutator = nodes[propertyDiff.id]
+      checkNotNull(mutator) { "Unknown node ${propertyDiff.id}" }
+      mutator.apply(propertyDiff)
     }
   }
 }

@@ -6,23 +6,26 @@ data class Event(
   val value: Any?, // TODO
 )
 
-sealed class TreeDiff {
-  abstract val id: Long
-
+data class TreeDiff(
+  val nodeDiffs: List<NodeDiff> = emptyList(),
+  val propertyDiffs: List<PropertyDiff> = emptyList()
+) {
   companion object {
     const val RootId = 0L
   }
 }
 
 data class PropertyDiff(
-  override val id: Long,
+  val id: Long,
   val tag: Int,
   val value: Any?, // TODO
-) : TreeDiff()
+)
 
-sealed class NodeDiff : TreeDiff() {
+sealed class NodeDiff {
+  abstract val id: Long
+
   object Clear : NodeDiff() {
-    override val id get() = RootId
+    override val id get() = TreeDiff.RootId
   }
 
   data class Insert(
