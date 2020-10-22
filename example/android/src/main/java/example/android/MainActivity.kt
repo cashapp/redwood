@@ -2,16 +2,20 @@ package example.android
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
-import app.cash.treehouse.Treehouse
+import app.cash.treehouse.client.EventSink
+import app.cash.treehouse.client.TreehouseClient
+import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.server.TreehouseServer
 import example.android.sunspot.AndroidContainerMutator
 import example.android.sunspot.AndroidSunspotNodeFactory
 import example.android.sunspot.AndroidSunspotViewGroup
-import example.shared.launchCounterIn
-import example.sunspot.SunspotBridge
+import example.shared.Counter
+import example.sunspot.client.SunspotBridge
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
@@ -27,15 +31,36 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
-    val treehouse = Treehouse(
+    // Indirection to create a cyclic dependency between the client and the server for the demo.
+    val eventSink = object : EventSink {
+      lateinit var server: TreehouseServer
+      override fun send(event: Event) {
+        Log.d("TreehouseEvent", event.toString())
+        server.sendEvent(event)
+      }
+    }
+
+    val client = TreehouseClient(
       bridge = SunspotBridge(
         root = AndroidSunspotViewGroup(root),
         factory = AndroidSunspotNodeFactory,
         mutator = AndroidContainerMutator,
       ),
+      events = eventSink,
     )
 
-    treehouse.launchCounterIn(scope)
+    val server = TreehouseServer(
+      scope = scope,
+      diff = { diff ->
+        Log.d("TreehouseDiff", diff.toString())
+        client.apply(diff)
+      }
+    )
+    eventSink.server = server
+
+    server.setContent {
+      Counter()
+    }
   }
 
   override fun onDestroy() {

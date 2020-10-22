@@ -1,12 +1,11 @@
-package example.sunspot
+package example.sunspot.client
 
-import app.cash.treehouse.EventSink
-import app.cash.treehouse.TreeBridge
-import app.cash.treehouse.TreeMutator
-import app.cash.treehouse.TreeNode
+import app.cash.treehouse.client.EventSink
+import app.cash.treehouse.client.TreeBridge
+import app.cash.treehouse.client.TreeMutator
+import app.cash.treehouse.client.TreeNode
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
-import app.cash.treehouse.protocol.PropertyDiff
 
 interface SunspotNodeFactory<T : Any> {
   fun text(parent: SunspotNode<T>): SunspotText<T>
@@ -48,33 +47,5 @@ class SunspotBridge<N : Any>(
 
   override fun clear() {
     mutator.clear(root.value)
-  }
-}
-
-interface SunspotText<out T : Any> : SunspotNode<T> {
-  fun text(text: String?)
-  fun color(color: String)
-
-  override fun apply(diff: PropertyDiff) {
-    when (val tag = diff.tag) {
-      1 -> text(diff.value.toString() /* TODO serialization call */)
-      2 -> color(diff.value.toString() /* TODO serialization call */)
-      else -> throw IllegalArgumentException("Unknown tag $tag")
-    }
-  }
-}
-
-interface SunspotButton<out T: Any> : SunspotNode<T> {
-  fun text(text: String?)
-  fun clickable(clickable: Boolean)
-  fun enabled(enabled: Boolean)
-
-  override fun apply(diff: PropertyDiff) {
-    when (val tag = diff.tag) {
-      1 -> text(diff.value.toString() /* TODO serialization call */)
-      2 -> clickable(diff.value as Boolean /* TODO serialization call */)
-      3 -> enabled(diff.value as Boolean /* TODO serialization call */)
-      else -> throw IllegalArgumentException("Unknown tag $tag")
-    }
   }
 }

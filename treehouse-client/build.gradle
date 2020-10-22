@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':treehouse:client')
+        api project(':treehouse-protocol')
       }
     }
   }

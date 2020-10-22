@@ -10,7 +10,8 @@ kotlin {
   sourceSets {
     main {
       dependencies {
-        implementation project(':example:shared')
+        implementation project(':example:sunspot:client')
+        implementation deps.kotlin.coroutines.core
       }
     }
   }

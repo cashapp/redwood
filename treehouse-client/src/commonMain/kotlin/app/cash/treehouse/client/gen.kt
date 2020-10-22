@@ -1,4 +1,4 @@
-package app.cash.treehouse
+package app.cash.treehouse.client
 
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff

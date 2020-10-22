@@ -1,5 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
+archivesBaseName = 'sunspot-client'
+
 kotlin {
   js {
     browser()
@@ -9,8 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api deps.kotlin.coroutines.core
-        api project(':treehouse:protocol')
+        api project(':treehouse-client')
       }
     }
   }

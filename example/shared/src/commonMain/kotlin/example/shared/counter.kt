@@ -1,55 +1,19 @@
 package example.shared
 
-import app.cash.treehouse.Treehouse
-import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.NodeDiff
-import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.TreeDiff
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import app.cash.treehouse.server.TreehouseScope
+import example.sunspot.server.Button
+import example.sunspot.server.Text
 
-fun Treehouse<*>.launchCounterIn(scope: CoroutineScope) {
-  var count = 0
+@Composable
+fun TreehouseScope.Counter(value: Int = 0) {
+  var count by remember { mutableStateOf(value) }
 
-  apply(TreeDiff(
-    nodeDiffs = listOf(
-      NodeDiff.Insert(id = 0L, childId = 1L, type = 2 /* button */, index = 0),
-      NodeDiff.Insert(id = 0L, childId = 2L, type = 1 /* text */, index = 1),
-      NodeDiff.Insert(id = 0L, childId = 3L, type = 2 /* button */, index = 2),
-    ),
-    propertyDiffs = listOf(
-      PropertyDiff(id = 1L, tag = 1 /* value */, value = "-1"),
-      PropertyDiff(id = 1L, tag = 2 /* clickable */, value = true),
-      PropertyDiff(id = 2L, tag = 1 /* value */, value = count.toString()),
-      PropertyDiff(id = 3L, tag = 1 /* value */, value = "+1"),
-      PropertyDiff(id = 3L, tag = 2 /* clickable */, value = true),
-    ),
-  ))
-
-  scope.launch {
-    events.collect { event ->
-      when (event) {
-        Event(1L /* -1 */, 1L /* clicked */, null) -> {
-          count -= 1
-          apply(TreeDiff(
-            propertyDiffs = listOf(
-              PropertyDiff(id = 2L, tag = 1 /* value */, value = count.toString()),
-              PropertyDiff(id = 2L, tag = 2 /* color */, value = "#ffaaaa"),
-            )
-          ))
-        }
-        Event(3L /* +1 */, 1L /* clicked */, null) -> {
-          count += 1
-          apply(TreeDiff(
-            propertyDiffs = listOf(
-              PropertyDiff(id = 2L, tag = 1 /* value */, value = count.toString()),
-              PropertyDiff(id = 2L, tag = 2 /* color */, value = "#aaffaa"),
-            )
-          ))
-        }
-        else -> throw IllegalStateException("Unknown event $event")
-      }
-    }
-  }
+  Button("-1", onClick = { count-- })
+  Text(count.toString())
+  Button("+1", onClick = { count++ })
 }

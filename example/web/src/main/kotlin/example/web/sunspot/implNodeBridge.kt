@@ -1,9 +1,9 @@
 package example.web.sunspot
 
 import app.cash.treehouse.protocol.PropertyDiff
-import example.sunspot.SunspotButton
-import example.sunspot.SunspotNode
-import example.sunspot.SunspotText
+import example.sunspot.client.SunspotButton
+import example.sunspot.client.SunspotNode
+import example.sunspot.client.SunspotText
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -36,15 +36,15 @@ class HtmlSunspotButton(
     value.textContent = text
   }
 
-  override fun clickable(clickable: Boolean) {
-    value.onclick = if (clickable) {
-      { onClick.invoke() }
+  override fun enabled(enabled: Boolean) {
+    value.disabled = !enabled
+  }
+
+  override fun onClick(onClick: Boolean) {
+    value.onclick = if (onClick) {
+      { this.onClick.invoke() }
     } else {
       null
     }
-  }
-
-  override fun enabled(enabled: Boolean) {
-    value.disabled = !enabled
   }
 }

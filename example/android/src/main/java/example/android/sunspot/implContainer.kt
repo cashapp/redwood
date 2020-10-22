@@ -2,7 +2,7 @@ package example.android.sunspot
 
 import android.view.View
 import android.view.ViewGroup
-import app.cash.treehouse.TreeMutator
+import app.cash.treehouse.client.TreeMutator
 
 object AndroidContainerMutator : TreeMutator<View> {
   override fun insert(parent: View, index: Int, node: View) {

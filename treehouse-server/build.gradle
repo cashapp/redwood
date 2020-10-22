@@ -7,7 +7,9 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':example:sunspot:server')
+        api deps.kotlin.coroutines.core
+        api project(':treehouse-protocol')
+        api project(':compose')
       }
     }
   }

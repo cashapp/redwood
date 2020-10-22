@@ -6,6 +6,7 @@ buildscript {
   ]
 
   ext.deps = [
+    'composeCompiler': 'androidx.compose.compiler:compiler:1.0.0-alpha05',
     'kotlin': [
       'coroutines': [
         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin.coroutines}",
@@ -34,6 +35,9 @@ subprojects {
   repositories {
     mavenCentral()
     google()
+    maven {
+      url 'https://kotlin.bintray.com/kotlinx'
+    }
     jcenter {
       // Required for a dependency of Android lint.
       content {
@@ -46,7 +50,15 @@ subprojects {
     task.kotlinOptions {
       freeCompilerArgs += [
         '-progressive',
+        '-Xopt-in=kotlin.RequiresOptIn',
+        '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
       ]
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+    task.kotlinOptions {
+      useIR = true
     }
   }
 
@@ -64,4 +76,27 @@ subprojects {
       shaders = false
     }
   }
+
+  def configureKotlinPlugin = {
+    configurations {
+      kotlinPlugin
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+      def pluginConfiguration = configurations.kotlinPlugin
+      dependsOn(pluginConfiguration)
+      doFirst {
+        if (!pluginConfiguration.isEmpty()) {
+          kotlinOptions{
+            useIR = true
+            freeCompilerArgs +=
+              "-Xplugin=${pluginConfiguration.files.first()}"
+          }
+        }
+      }
+    }
+  }
+  plugins.withId('org.jetbrains.kotlin.android', configureKotlinPlugin)
+  plugins.withId('org.jetbrains.kotlin.jvm', configureKotlinPlugin)
+  plugins.withId('org.jetbrains.kotlin.multiplatform', configureKotlinPlugin)
 }

@@ -1,0 +1,4 @@
+[submodule "compose/upstream"]
+	path = compose/upstream
+	url = https://android.googlesource.com/platform/frameworks/support
+	branch = androidx-master-dev

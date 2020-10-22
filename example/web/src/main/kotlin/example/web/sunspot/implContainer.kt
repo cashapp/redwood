@@ -1,6 +1,6 @@
 package example.web.sunspot
 
-import app.cash.treehouse.TreeMutator
+import app.cash.treehouse.client.TreeMutator
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 

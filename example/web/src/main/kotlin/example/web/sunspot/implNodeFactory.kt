@@ -1,9 +1,9 @@
 package example.web.sunspot
 
-import example.sunspot.SunspotButton
-import example.sunspot.SunspotNode
-import example.sunspot.SunspotNodeFactory
-import example.sunspot.SunspotText
+import example.sunspot.client.SunspotButton
+import example.sunspot.client.SunspotNode
+import example.sunspot.client.SunspotNodeFactory
+import example.sunspot.client.SunspotText
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement

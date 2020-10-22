@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import app.cash.treehouse.protocol.PropertyDiff
-import example.sunspot.SunspotButton
-import example.sunspot.SunspotNode
-import example.sunspot.SunspotText
+import example.sunspot.client.SunspotButton
+import example.sunspot.client.SunspotNode
+import example.sunspot.client.SunspotText
 
 class AndroidSunspotViewGroup(
   override val value: ViewGroup,
@@ -39,15 +39,15 @@ class AndroidSunspotButton(
     value.text = text
   }
 
-  override fun clickable(clickable: Boolean) {
-    value.setOnClickListener(if (clickable) this else null)
+  override fun enabled(enabled: Boolean) {
+    value.isEnabled = enabled
+  }
+
+  override fun onClick(onClick: Boolean) {
+    value.setOnClickListener(if (onClick) this else null)
   }
 
   override fun onClick(v: View?) {
     onClick.invoke()
-  }
-
-  override fun enabled(enabled: Boolean) {
-    value.isEnabled = enabled
   }
 }

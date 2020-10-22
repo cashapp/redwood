@@ -7,7 +7,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':example:sunspot:server')
+        api project(':treehouse-server')
       }
     }
   }
