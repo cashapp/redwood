@@ -1,11 +1,16 @@
 package app.cash.treehouse.protocol
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Event(
   val nodeId: Long,
   val eventId: Long,
-  val value: Any?, // TODO
+  @Polymorphic val value: Any?,
 )
 
+@Serializable
 data class TreeDiff(
   val nodeDiffs: List<NodeDiff> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
@@ -15,26 +20,31 @@ data class TreeDiff(
   }
 }
 
+@Serializable
 data class PropertyDiff(
   val id: Long,
   val tag: Int,
-  val value: Any?, // TODO
+  @Polymorphic val value: Any?,
 )
 
+@Serializable
 sealed class NodeDiff {
   abstract val id: Long
 
+  @Serializable
   object Clear : NodeDiff() {
     override val id get() = TreeDiff.RootId
   }
 
+  @Serializable
   data class Insert(
     override val id: Long,
     val childId: Long,
-    val type: Int,
+    val kind: Int,
     val index: Int,
   ) : NodeDiff()
 
+  @Serializable
   data class Move(
     override val id: Long,
     val fromIndex: Int,
@@ -42,6 +52,7 @@ sealed class NodeDiff {
     val count: Int,
   ) : NodeDiff()
 
+  @Serializable
   data class Remove(
     override val id: Long,
     val index: Int,

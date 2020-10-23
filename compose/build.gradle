@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 
 kotlin {
   android()
+  jvm()
 
   sourceSets {
     commonMain {
@@ -11,8 +12,9 @@ kotlin {
         srcDir 'upstream/compose/runtime/runtime-dispatch/src/commonMain/kotlin'
       }
       dependencies {
+        // Keep these in sync with upstream/compose/runtime/runtime/build.gradle
         api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
-        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3'
+        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3'
       }
     }
     // TODO get tests working
@@ -31,8 +33,14 @@ kotlin {
         srcDir 'upstream/compose/runtime/runtime-dispatch/src/androidMain/kotlin'
       }
       dependencies {
+        // Keep these in sync with upstream/compose/runtime/runtime/build.gradle
         api 'androidx.annotation:annotation:1.1.0'
         implementation 'androidx.core:core-ktx:1.1.0'
+      }
+    }
+    jvmMain {
+      kotlin {
+        srcDir 'upstream/compose/runtime/runtime/src/jvmMain/kotlin'
       }
     }
   }

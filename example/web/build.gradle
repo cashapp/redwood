@@ -11,7 +11,9 @@ kotlin {
     main {
       dependencies {
         implementation project(':example:sunspot:client')
-        implementation deps.kotlin.coroutines.core
+        implementation deps.kotlinx.coroutines.core
+        implementation deps.kotlinx.serialization.json
+        implementation deps.ktor.client.core
       }
     }
   }

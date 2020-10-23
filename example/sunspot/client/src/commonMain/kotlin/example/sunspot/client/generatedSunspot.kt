@@ -28,7 +28,7 @@ class SunspotBridge<N : Any>(
     events: EventSink,
   ): SunspotNode<N> {
     val id = insert.childId
-    val node = when (val type = insert.type) {
+    val node = when (val type = insert.kind) {
       1 -> factory.text(parent)
       2 -> factory.button(parent, { events.send(Event(id, 1L /* click */, null)) })
       else -> throw IllegalArgumentException("Unknown type $type")

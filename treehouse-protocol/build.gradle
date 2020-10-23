@@ -1,8 +1,17 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 kotlin {
   js {
     browser()
   }
   jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api deps.kotlinx.serialization.core
+      }
+    }
+  }
 }

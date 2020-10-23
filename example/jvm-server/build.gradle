@@ -1,0 +1,15 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'application'
+
+mainClassName = 'example.jvm_server.Main'
+
+dependencies {
+  implementation project(':example:shared')
+  implementation deps.ktor.server.core
+  implementation deps.ktor.server.netty
+  implementation deps.ktor.server.webSockets
+  implementation deps.logbackClassic
+  implementation deps.kotlinx.serialization.json
+
+  kotlinPlugin deps.composeCompiler
+}

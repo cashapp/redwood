@@ -2,6 +2,7 @@ rootProject.name = 'treehouse'
 
 include ':compose'
 include ':example:android'
+include ':example:jvm-server'
 include ':example:shared'
 include ':example:sunspot:client'
 include ':example:sunspot:server'

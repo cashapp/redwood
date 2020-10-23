@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 
 kotlin {
   android()
+  jvm()
 
   sourceSets {
     commonMain {

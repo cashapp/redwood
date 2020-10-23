@@ -1,22 +1,41 @@
 buildscript {
   ext.versions = [
-    'kotlin': [
+    'kotlin': '1.4.10',
+    'kotlinx': [
       'coroutines': '1.3.9',
+      'serialization': '1.0.0',
     ],
+    'ktor': '1.4.1',
   ]
 
   ext.deps = [
     'composeCompiler': 'androidx.compose.compiler:compiler:1.0.0-alpha05',
-    'kotlin': [
+    'kotlinx': [
       'coroutines': [
-        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin.coroutines}",
-        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlin.coroutines}",
+        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinx.coroutines}",
+        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinx.coroutines}",
+      ],
+      'serialization': [
+        'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
+        'json': "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.kotlinx.serialization}",
       ],
     ],
+    'ktor': [
+      'client': [
+        'core': "io.ktor:ktor-client-core:${versions.ktor}",
+      ],
+      'server': [
+        'core': "io.ktor:ktor-server-core:${versions.ktor}",
+        'netty': "io.ktor:ktor-server-netty:${versions.ktor}",
+        'webSockets': "io.ktor:ktor-websockets:${versions.ktor}",
+      ],
+    ],
+    'logbackClassic': 'ch.qos.logback:logback-classic:1.2.3',
   ]
 
   dependencies {
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+    classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
     classpath 'com.android.tools.build:gradle:4.0.2'
   }
   repositories {

@@ -4,7 +4,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 dependencies {
   implementation project(':example:sunspot:client')
   implementation project(':example:shared')
-  implementation deps.kotlin.coroutines.android
+  implementation deps.kotlinx.coroutines.android
 
   kotlinPlugin deps.composeCompiler
 }
