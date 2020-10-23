@@ -94,6 +94,10 @@ subprojects {
       resValues = false
       shaders = false
     }
+    android.lintOptions {
+      checkDependencies true
+      checkReleaseBuilds false // Full lint runs as part of 'build' task.
+    }
   }
 
   def configureKotlinPlugin = {
