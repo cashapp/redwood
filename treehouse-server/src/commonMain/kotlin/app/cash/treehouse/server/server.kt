@@ -3,6 +3,8 @@ package app.cash.treehouse.server
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.compositionFor
+import androidx.compose.runtime.dispatch.DefaultMonotonicFrameClock
+import androidx.compose.runtime.dispatch.MonotonicFrameClock
 import androidx.compose.runtime.dispatch.withFrameMillis
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
@@ -66,8 +68,9 @@ private class RealTreehouseServer(
           recomposer.runRecomposeAndApplyChanges()
         }
         launch {
+          val clock = coroutineContext[MonotonicFrameClock] ?: DefaultMonotonicFrameClock
           while (true) {
-            recomposer.frameClock.withFrameMillis {
+            clock.withFrameMillis {
               val existingNodeDiffs = nodeDiffs
               val existingPropertyDiffs = propertyDiffs
               if (existingPropertyDiffs.isNotEmpty() || existingNodeDiffs.isNotEmpty()) {
