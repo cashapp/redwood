@@ -9,14 +9,14 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 
 object HtmlSunspotNodeFactory : SunspotNodeFactory<HTMLElement> {
-  override fun text(
+  override fun SunspotText(
     parent: SunspotNode<HTMLElement>,
   ): SunspotText<HTMLElement> {
     val span = parent.value.ownerDocument!!.createElement("span") as HTMLSpanElement
     return HtmlSunspotText(span)
   }
 
-  override fun button(
+  override fun SunspotButton(
     parent: SunspotNode<HTMLElement>,
     onClick: () -> Unit,
   ): SunspotButton<HTMLElement> {

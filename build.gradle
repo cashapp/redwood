@@ -10,6 +10,9 @@ buildscript {
 
   ext.deps = [
     'composeCompiler': 'androidx.compose.compiler:compiler:1.0.0-alpha06',
+    'kotlin': [
+      'reflect': 'org.jetbrains.kotlin:kotlin-reflect',
+    ],
     'kotlinx': [
       'coroutines': [
         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinx.coroutines}",
@@ -31,6 +34,8 @@ buildscript {
       ],
     ],
     'logbackClassic': 'ch.qos.logback:logback-classic:1.2.3',
+    'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
+    'clikt': 'com.github.ajalt.clikt:clikt:3.0.1',
   ]
 
   dependencies {

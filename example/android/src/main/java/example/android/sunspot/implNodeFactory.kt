@@ -9,14 +9,14 @@ import example.sunspot.client.SunspotNodeFactory
 import example.sunspot.client.SunspotText
 
 object AndroidSunspotNodeFactory : SunspotNodeFactory<View> {
-  override fun text(
+  override fun SunspotText(
     parent: SunspotNode<View>,
   ): SunspotText<View> {
     val view = TextView(parent.value.context)
     return AndroidSunspotText(view)
   }
 
-  override fun button(
+  override fun SunspotButton(
     parent: SunspotNode<View>,
     onClick: () -> Unit,
   ): SunspotButton<View> {
