@@ -1,5 +1,6 @@
 package app.cash.treehouse.schema.generator
 
+import app.cash.treehouse.schema.Default
 import app.cash.treehouse.schema.Tag
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.full.findAnnotation
@@ -35,10 +36,11 @@ fun parseSchema(schemaFqcn: String): Schema {
       // TODO ensure tag values are unique inside a node
       val traits = entity.primaryConstructor!!.parameters.map {
         val tag = it.findAnnotation<Tag>() ?: throw IllegalStateException() // TODO message
+        val defaultExpression = it.findAnnotation<Default>()?.expression
         if (it.type.isSubtypeOf(Function::class.starProjectedType)) {
-          Event(it.name!!, tag.value)
+          Event(it.name!!, tag.value, defaultExpression)
         } else {
-          Property(it.name!!, tag.value, it.type.asTypeName())
+          Property(it.name!!, tag.value, it.type.asTypeName(), defaultExpression)
         }
       }
       nodes += Node(nodeAnnotation.value, entityClassName, traits)

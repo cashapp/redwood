@@ -20,18 +20,6 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
-private val eventSink = ClassName("app.cash.treehouse.client", "EventSink")
-private val treeBridge = ClassName("app.cash.treehouse.client", "TreeBridge")
-private val treeMutator = ClassName("app.cash.treehouse.client", "TreeMutator")
-private val treeNode = ClassName("app.cash.treehouse.client", "TreeNode")
-private val eventType = ClassName("app.cash.treehouse.protocol", "Event")
-private val nodeDiff = ClassName("app.cash.treehouse.protocol", "NodeDiff")
-private val nodeDiffInsert = nodeDiff.nestedClass("Insert")
-private val nodeDiffMove = nodeDiff.nestedClass("Move")
-private val nodeDiffRemove = nodeDiff.nestedClass("Remove")
-private val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
-private val iae = ClassName("kotlin", "IllegalArgumentException")
-
 /*
 interface SunspotNode<out T : Any> : TreeNode {
   val value: T

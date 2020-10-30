@@ -93,7 +93,7 @@ private class RealTreehouseServer(
     val node = applier.nodes[event.nodeId]
     if (node == null) {
       // TODO how to handle race where an incoming event targets this removed node?
-      throw IllegalArgumentException("Unknown node ${event.nodeId} for event ${event.eventId}")
+      throw IllegalArgumentException("Unknown node ${event.nodeId} for event with tag ${event.tag}")
     }
     node.sendEvent(event)
   }

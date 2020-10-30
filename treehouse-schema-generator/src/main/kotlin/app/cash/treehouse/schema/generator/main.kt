@@ -42,7 +42,11 @@ private class TreehouseGenerator : CliktCommand() {
           generateClientNode(schema, node).writeTo(out)
         }
       }
-      Server -> TODO()
+      Server -> {
+        for (node in schema.nodes) {
+          generateServerNode(schema, node).writeTo(out)
+        }
+      }
       null -> error("--client or --server is required")
     }
   }

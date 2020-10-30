@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Event(
   val nodeId: Long,
-  val eventId: Long,
+  val tag: Int,
   @Polymorphic val value: Any?,
 )
 

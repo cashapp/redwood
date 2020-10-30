@@ -14,6 +14,35 @@ kotlin {
   }
 }
 
+configurations {
+  generator
+}
+
 dependencies {
   kotlinPlugin deps.composeCompiler
+
+  generator project(':treehouse-schema-generator')
+  generator project(':example:sunspot')
+}
+
+def generate = tasks.register('treehouseGenerate', JavaExec) {
+  def outDir = 'src/commonMain/kotlin/'
+
+  it.classpath(configurations.generator)
+  it.main('app.cash.treehouse.schema.generator.Main')
+  it.args(
+    '--server',
+    '--out', outDir,
+    'example.sunspot.Sunspot',
+  )
+
+  it.doFirst {
+    file(outDir).deleteDir()
+  }
+}
+
+kotlin.targets.all { target ->
+  target.compilations.all { compilation ->
+    compilation.compileKotlinTask.dependsOn(generate.get())
+  }
 }

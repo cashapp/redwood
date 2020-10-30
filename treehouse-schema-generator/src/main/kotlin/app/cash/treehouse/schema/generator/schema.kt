@@ -29,7 +29,7 @@ data class Schema(
   }
 
   fun serverNodeType(node: Node): ClassName {
-    return ClassName(serverPackage, node.name)
+    return ClassName(serverPackage, node.name + "Node")
   }
 }
 
@@ -46,16 +46,19 @@ data class Node(
 sealed class Trait {
   abstract val name: String
   abstract val tag: Int
+  abstract val defaultExpression: String?
 }
 
 data class Property(
   override val name: String,
   override val tag: Int,
   val type: TypeName,
+  override val defaultExpression: String?,
 ) : Trait()
 
 data class Event(
   override val name: String,
   override val tag: Int,
   // TODO parameter type list?
+  override val defaultExpression: String?,
 ) : Trait()
