@@ -1,6 +1,13 @@
 rootProject.name = 'treehouse'
 
 include ':compose'
+
+include ':treehouse-client'
+include ':treehouse-protocol'
+include ':treehouse-schema-generator'
+include ':treehouse-schema-runtime'
+include ':treehouse-server'
+
 include ':example:android'
 include ':example:jvm-server'
 include ':example:shared'
@@ -8,8 +15,3 @@ include ':example:sunspot'
 include ':example:sunspot:client'
 include ':example:sunspot:server'
 include ':example:web'
-include ':treehouse-client'
-include ':treehouse-protocol'
-include ':treehouse-schema-generator'
-include ':treehouse-schema-runtime'
-include ':treehouse-server'
