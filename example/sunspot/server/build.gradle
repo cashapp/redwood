@@ -1,12 +1,17 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
 
+def generatedDir = 'build/generated/treehouse'
+
 kotlin {
   android()
   jvm()
 
   sourceSets {
     commonMain {
+      kotlin {
+        srcDir generatedDir
+      }
       dependencies {
         api project(':treehouse-server')
       }
@@ -26,18 +31,16 @@ dependencies {
 }
 
 def generate = tasks.register('treehouseGenerate', JavaExec) {
-  def outDir = 'src/commonMain/kotlin/'
-
   it.classpath(configurations.generator)
   it.main('app.cash.treehouse.schema.generator.Main')
   it.args(
     '--server',
-    '--out', outDir,
+    '--out', generatedDir,
     'example.sunspot.Sunspot',
   )
 
   it.doFirst {
-    file(outDir).deleteDir()
+    file(generatedDir).deleteDir()
   }
 }
 

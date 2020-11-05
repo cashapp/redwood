@@ -2,6 +2,8 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 archivesBaseName = 'sunspot-client'
 
+def generatedDir = 'build/generated/treehouse'
+
 kotlin {
   js {
     browser()
@@ -10,6 +12,9 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin {
+        srcDir generatedDir
+      }
       dependencies {
         api project(':treehouse-client')
       }
@@ -27,18 +32,16 @@ dependencies {
 }
 
 def generate = tasks.register('treehouseGenerate', JavaExec) {
-  def outDir = 'src/commonMain/kotlin/'
-
   it.classpath(configurations.generator)
   it.main('app.cash.treehouse.schema.generator.Main')
   it.args(
     '--client',
-    '--out', outDir,
+    '--out', generatedDir,
     'example.sunspot.Sunspot',
   )
 
   it.doFirst {
-    file(outDir).deleteDir()
+    file(generatedDir).deleteDir()
   }
 }
 
