@@ -29,12 +29,13 @@ fun TreehouseServer(
   scope: CoroutineScope,
   diff: DiffSink,
 ): TreehouseServer {
-  val server = RealTreehouseServer(diff)
-  server.runIn(scope)
+  val server = RealTreehouseServer(scope, diff)
+  server.launch()
   return server
 }
 
 private class RealTreehouseServer(
+  private val scope: CoroutineScope,
   private val diffSink: DiffSink,
 ) : TreehouseServer {
   private var nodeDiffs = mutableListOf<NodeDiff>()
@@ -56,12 +57,12 @@ private class RealTreehouseServer(
   }
 
   private val applier = ProtocolApplier(Node(0L, -1), treehouseScope)
-  private val recomposer = Recomposer()
+  private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = compositionFor(Any(), applier, recomposer)
 
   private lateinit var job: Job
 
-  fun runIn(scope: CoroutineScope) {
+  fun launch() {
     job = scope.launch {
       coroutineScope {
         launch {

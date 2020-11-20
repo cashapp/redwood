@@ -7,10 +7,11 @@ buildscript {
     ],
     'ktor': '1.4.1',
     'exhaustive': '0.1.1',
+    'compose': '1.0.0-alpha07',
   ]
 
   ext.deps = [
-    'composeCompiler': 'androidx.compose.compiler:compiler:1.0.0-alpha06',
+    'composeCompiler': "androidx.compose.compiler:compiler:${versions.compose}",
     'kotlin': [
       'reflect': 'org.jetbrains.kotlin:kotlin-reflect',
     ],
