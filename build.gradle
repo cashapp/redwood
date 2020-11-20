@@ -6,6 +6,7 @@ buildscript {
       'serialization': '1.0.0',
     ],
     'ktor': '1.4.1',
+    'exhaustive': '0.1.1',
   ]
 
   ext.deps = [
@@ -36,12 +37,14 @@ buildscript {
     'logbackClassic': 'ch.qos.logback:logback-classic:1.2.3',
     'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
     'clikt': 'com.github.ajalt.clikt:clikt:3.0.1',
+    'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
   ]
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
     classpath 'com.android.tools.build:gradle:4.0.2'
+    classpath "app.cash.exhaustive:exhaustive-gradle:${versions.exhaustive}"
   }
   repositories {
     mavenCentral()

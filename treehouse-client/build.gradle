@@ -1,4 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.exhaustive'
 
 kotlin {
   js {
@@ -10,6 +11,9 @@ kotlin {
     commonMain {
       dependencies {
         api project(':treehouse-protocol')
+
+        // TODO remove once https://github.com/cashapp/exhaustive/issues/6 is fixed.
+        compileOnly deps.exhaustiveAnnotation
       }
     }
   }

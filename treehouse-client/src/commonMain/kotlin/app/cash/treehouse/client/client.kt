@@ -1,5 +1,6 @@
 package app.cash.treehouse.client
 
+import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.TreeDiff
 import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
@@ -15,8 +16,7 @@ class TreehouseClient<N : TreeNode>(
       val container = nodes[nodeDiff.id]
       checkNotNull(container) { "Unknown node ${nodeDiff.id}" }
 
-      @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
-      val exhaustive = when (nodeDiff) {
+      @Exhaustive when (nodeDiff) {
         is NodeDiff.Insert -> {
           nodes[nodeDiff.childId] = bridge.insert(container, nodeDiff, events)
         }
