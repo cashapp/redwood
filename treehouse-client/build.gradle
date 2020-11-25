@@ -13,7 +13,8 @@ kotlin {
         api project(':treehouse-protocol')
 
         // TODO remove once https://github.com/cashapp/exhaustive/issues/6 is fixed.
-        compileOnly deps.exhaustiveAnnotation
+        // TODO compileOnly once https://github.com/cashapp/exhaustive/issues/9 is fixed.
+        implementation deps.exhaustiveAnnotation
       }
     }
   }

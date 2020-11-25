@@ -50,3 +50,7 @@ kotlin.targets.all { target ->
     compilation.compileKotlinTask.dependsOn(generate.get())
   }
 }
+// Work around the fact that IR compilation tasks do not trigger the above block.
+tasks.named('compileKotlinJsIr').configure {
+  it.dependsOn(generate.get())
+}
