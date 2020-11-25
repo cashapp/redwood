@@ -1,0 +1,15 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.treehouse'
+
+kotlin {
+  android()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':schema:server')
+      }
+    }
+  }
+}

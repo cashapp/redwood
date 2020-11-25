@@ -1,0 +1,79 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'app.cash.exhaustive'
+apply plugin: 'com.vanniktech.maven.publish'
+
+dependencies {
+  compileOnly gradleApi()
+  compileOnly deps.kotlin.gradlePlugin
+
+  testImplementation deps.junit
+  testImplementation deps.truth
+  testImplementation gradleTestKit()
+}
+
+gradlePlugin {
+  plugins {
+    treehouse {
+      id = "app.cash.treehouse"
+      displayName = "Treehouse"
+      description = "Treehouse client Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehousePlugin"
+    }
+    treehouseSchema {
+      id = "app.cash.treehouse.schema"
+      displayName = "Treehouse schema"
+      description = "Treehouse schema Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaPlugin"
+    }
+    treehouseSchemaClient {
+      id = "app.cash.treehouse.schema.client"
+      displayName = "Treehouse schema (client generator)"
+      description = "Treehouse schema client-side code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaClientPlugin"
+    }
+    treehouseSchemaServer {
+      id = "app.cash.treehouse.schema.server"
+      displayName = "Treehouse schema (server generator)"
+      description = "Treehouse schema server-side code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaServerPlugin"
+    }
+  }
+}
+
+test {
+  dependsOn(':compose:installArchives')
+  dependsOn(':treehouse-client:installArchives')
+  dependsOn(':treehouse-gradle:installArchives')
+  dependsOn(':treehouse-protocol:installArchives')
+  dependsOn(':treehouse-schema-generator:installArchives')
+  dependsOn(':treehouse-schema-runtime:installArchives')
+  dependsOn(':treehouse-server:installArchives')
+}
+
+def versionDirectory = "$buildDir/generated/version/"
+
+sourceSets {
+  main.java.srcDir versionDirectory
+}
+
+task pluginVersion {
+  def outputDir = file(versionDirectory)
+
+  inputs.property 'treehouseVersion', project.version
+  inputs.property 'composeVersion', versions.compose
+  outputs.dir outputDir
+
+  doLast {
+    def versionFile = file("$outputDir/app/cash/treehouse/gradle/version.kt")
+    versionFile.parentFile.mkdirs()
+    versionFile.text = """// Generated file. Do not edit!
+package app.cash.treehouse.gradle
+
+internal const val treehouseVersion = "${project.version}"
+internal const val composeVersion = "${versions.compose}"
+"""
+  }
+}
+
+tasks.getByName('compileKotlin').dependsOn('pluginVersion')

@@ -3,6 +3,7 @@ rootProject.name = 'treehouse'
 include ':compose'
 
 include ':treehouse-client'
+include ':treehouse-gradle'
 include ':treehouse-protocol'
 include ':treehouse-schema-generator'
 include ':treehouse-schema-runtime'

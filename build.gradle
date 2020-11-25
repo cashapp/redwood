@@ -13,6 +13,7 @@ buildscript {
   ext.deps = [
     'composeCompiler': "androidx.compose.compiler:compiler:${versions.compose}",
     'kotlin': [
+      'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
       'reflect': 'org.jetbrains.kotlin:kotlin-reflect',
     ],
     'kotlinx': [
@@ -39,10 +40,12 @@ buildscript {
     'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
     'clikt': 'com.github.ajalt.clikt:clikt:3.0.1',
     'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
+    'junit': 'junit:junit:4.13.1',
+    'truth': 'com.google.truth:truth:1.1',
   ]
 
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+    classpath deps.kotlin.gradlePlugin
     classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
     classpath 'com.android.tools.build:gradle:4.0.2'
     classpath "app.cash.exhaustive:exhaustive-gradle:${versions.exhaustive}"
@@ -76,24 +79,12 @@ subprojects {
     }
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
-    task.kotlinOptions {
-      useIR = true
-    }
-  }
-
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
     android.compileSdkVersion 30
     android.defaultConfig {
       minSdkVersion 21
       targetSdkVersion 30
-    }
-    android.buildFeatures {
-      aidl = false
-      renderScript = false
-      resValues = false
-      shaders = false
     }
     android.lintOptions {
       checkDependencies true

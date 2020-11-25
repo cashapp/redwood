@@ -1,0 +1,14 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse.schema.client'
+
+kotlin {
+  jvm()
+}
+
+treehouse {
+  schema = 'example.counter.Counter'
+}
+
+dependencies {
+  treehouseSchema project(':schema')
+}

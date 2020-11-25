@@ -1,0 +1,9 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.treehouse'
+
+dependencies {
+  implementation project(':schema:client')
+  implementation project(':shared')
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.0'
+}

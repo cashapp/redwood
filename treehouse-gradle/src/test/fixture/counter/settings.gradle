@@ -1,0 +1,5 @@
+include ':android'
+include ':schema'
+include ':schema:client'
+include ':schema:server'
+include ':shared'

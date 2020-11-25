@@ -1,0 +1,15 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.treehouse.schema.server'
+
+kotlin {
+  android()
+}
+
+treehouse {
+  schema = 'example.counter.Counter'
+}
+
+dependencies {
+  treehouseSchema project(':schema')
+}
