@@ -1,6 +1,12 @@
 name: build
 
-on: [push, pull_request]
+on:
+  pull_request: {}
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
@@ -19,3 +25,9 @@ jobs:
           java-version: 11
 
       - run: ./gradlew build
+
+      - run: ./gradlew publish
+        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'square/treehouse' }}
+        env:
+          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
