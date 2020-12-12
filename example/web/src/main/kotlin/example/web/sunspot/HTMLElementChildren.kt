@@ -1,11 +1,13 @@
 package example.web.sunspot
 
-import app.cash.treehouse.client.TreeMutator
+import app.cash.treehouse.client.TreeNode
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
-object HtmlContainerMutator : TreeMutator<HTMLElement> {
-  override fun insert(parent: HTMLElement, index: Int, node: HTMLElement) {
+class HTMLElementChildren(
+  private val parent: HTMLElement,
+) : TreeNode.Children<HTMLElement> {
+  override fun insert(index: Int, node: HTMLElement) {
     if (index == parent.childElementCount) {
       parent.appendChild(node)
     } else {
@@ -14,11 +16,11 @@ object HtmlContainerMutator : TreeMutator<HTMLElement> {
     }
   }
 
-  override fun move(parent: HTMLElement, fromIndex: Int, toIndex: Int, count: Int) {
+  override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     val nodes = Array(count) { offset ->
       parent.children[fromIndex + offset] as HTMLElement
     }
-    remove(parent, fromIndex, count)
+    remove(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
       toIndex - count
@@ -26,17 +28,17 @@ object HtmlContainerMutator : TreeMutator<HTMLElement> {
       toIndex
     }
     nodes.forEachIndexed { offset, node ->
-      insert(parent, newIndex + offset, node)
+      insert(newIndex + offset, node)
     }
   }
 
-  override fun remove(parent: HTMLElement, index: Int, count: Int) {
+  override fun remove(index: Int, count: Int) {
     repeat(count) {
       parent.removeChild(parent.children[index]!!)
     }
   }
 
-  override fun clear(parent: HTMLElement) {
-    remove(parent, 0, parent.childElementCount)
+  override fun clear() {
+    remove(0, parent.childElementCount)
   }
 }

@@ -1,5 +1,7 @@
 package app.cash.treehouse.schema.generator
 
+import app.cash.exhaustive.Exhaustive
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -81,6 +83,14 @@ fun generateServerNode(schema: Schema, node: Node): FileSpec {
                 .defaultValue("null")
                 .build()
             }
+            is Children -> {
+              val type = LambdaTypeName.get(returnType = UNIT)
+                .copy(annotations = listOf(
+                  AnnotationSpec.builder(composable).build(),
+                ))
+              ParameterSpec.builder(trait.name, type)
+                .build()
+            }
           })
         }
       }
@@ -88,13 +98,16 @@ fun generateServerNode(schema: Schema, node: Node): FileSpec {
       .apply {
         for (trait in node.traits) {
           beginControlFlow("set(%N)", trait.name)
-          when (trait) {
+          @Exhaustive when (trait) {
             is Property -> {
               addStatement("appendDiff(%T(id, %L, %N))", propertyDiff, trait.tag, trait.name)
             }
             is Event -> {
               addStatement("this.%1N = %1N", trait.name)
               addStatement("appendDiff(%T(id, %L, %N != null))", propertyDiff, trait.tag, trait.name)
+            }
+            is Children -> {
+              addStatement("%N()", trait.name)
             }
           }
           endControlFlow()

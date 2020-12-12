@@ -1,40 +1,47 @@
 package app.cash.treehouse.client
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.TreeDiff
-import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
 
-class TreehouseClient<N : TreeNode>(
-  private val bridge: TreeBridge<N>,
+class TreehouseClient<T : Any>(
+  private val root: TreeNode<T>,
+  private val factory: TreeNodeFactory<T>,
   private val events: EventSink,
 ) {
-  private val nodes = mutableMapOf(RootId to bridge.root)
+  private val nodes = mutableMapOf(TreeDiff.RootId to root)
 
   fun apply(diff: TreeDiff) {
     for (nodeDiff in diff.nodeDiffs) {
-      val container = nodes[nodeDiff.id]
-      checkNotNull(container) { "Unknown node ${nodeDiff.id}" }
+      val node = checkNotNull(nodes[nodeDiff.id]) {
+        "Unknown node ${nodeDiff.id}"
+      }
 
-      @Exhaustive when (nodeDiff) {
+      when (nodeDiff) {
         is NodeDiff.Insert -> {
-          nodes[nodeDiff.childId] = bridge.insert(container, nodeDiff, events)
+          val childNode = factory.create(node.value, nodeDiff.kind, nodeDiff.childId, events)
+          nodes[nodeDiff.childId] = childNode
+          node.children.insert(nodeDiff.index, childNode.value)
         }
         is NodeDiff.Move -> {
-          bridge.move(container, nodeDiff)
+          node.children.move(nodeDiff.fromIndex, nodeDiff.toIndex, nodeDiff.count)
         }
         is NodeDiff.Remove -> {
-          bridge.remove(container, nodeDiff)
+          node.children.remove(nodeDiff.index, nodeDiff.count)
+          // TODO we need to remove nodes from our map!
         }
         NodeDiff.Clear -> {
-          bridge.clear()
+          node.children.clear()
+          nodes.clear()
+          nodes[TreeDiff.RootId] = root
         }
       }
     }
 
     for (propertyDiff in diff.propertyDiffs) {
-      val node = nodes[propertyDiff.id]
-      checkNotNull(node) { "Unknown node ${propertyDiff.id}" }
+      val node = checkNotNull(nodes[propertyDiff.id]) {
+        "Unknown node ${propertyDiff.id}"
+      }
+
       node.apply(propertyDiff)
     }
   }

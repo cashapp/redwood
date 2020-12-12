@@ -6,23 +6,12 @@ import com.squareup.kotlinpoet.TypeName
 data class Schema(
   val name: String,
   private val `package`: String,
-  val containers: List<Container>,
   val nodes: List<Node>,
 ) {
   val clientPackage = "$`package`.client"
   val serverPackage = "$`package`.server"
 
-  internal val bridgeType = ClassName(clientPackage, "${name}Bridge")
-  internal val baseNodeType = ClassName(clientPackage, "${name}Node")
   internal val nodeFactoryType = ClassName(clientPackage, "${name}NodeFactory")
-
-  fun clientContainerType(container: Container): ClassName {
-    return ClassName(clientPackage, container.name)
-  }
-
-  fun serverContainerType(container: Container): ClassName {
-    return ClassName(serverPackage, container.name)
-  }
 
   fun clientNodeType(node: Node): ClassName {
     return ClassName(clientPackage, node.name)
@@ -32,10 +21,6 @@ data class Schema(
     return ClassName(serverPackage, node.name + "Node")
   }
 }
-
-data class Container(
-  val name: String
-)
 
 data class Node(
   val tag: Int,
@@ -62,3 +47,10 @@ data class Event(
   // TODO parameter type list?
   override val defaultExpression: String?,
 ) : Trait()
+
+data class Children(
+  override val name: String
+) : Trait() {
+  override val tag: Int get() = 0
+  override val defaultExpression: String? get() = null
+}

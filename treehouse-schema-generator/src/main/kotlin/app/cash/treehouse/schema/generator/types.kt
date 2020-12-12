@@ -4,9 +4,9 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 
 internal val eventSink = ClassName("app.cash.treehouse.client", "EventSink")
-internal val treeBridge = ClassName("app.cash.treehouse.client", "TreeBridge")
-internal val treeMutator = ClassName("app.cash.treehouse.client", "TreeMutator")
 internal val treeNode = ClassName("app.cash.treehouse.client", "TreeNode")
+internal val treeNodeChildren = treeNode.nestedClass("Children")
+internal val treeNodeFactory = ClassName("app.cash.treehouse.client", "TreeNodeFactory")
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val nodeDiff = ClassName("app.cash.treehouse.protocol", "NodeDiff")

@@ -11,11 +11,9 @@ import app.cash.treehouse.client.EventSink
 import app.cash.treehouse.client.TreehouseClient
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.server.TreehouseServer
-import example.android.sunspot.AndroidContainerMutator
+import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotNodeFactory
-import example.android.sunspot.AndroidSunspotViewGroup
 import example.shared.Counter
-import example.sunspot.client.SunspotBridge
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
@@ -41,11 +39,8 @@ class MainActivity : Activity() {
     }
 
     val client = TreehouseClient(
-      bridge = SunspotBridge(
-        root = AndroidSunspotViewGroup(root),
-        factory = AndroidSunspotNodeFactory,
-        mutator = AndroidContainerMutator,
-      ),
+      root = AndroidSunspotBox(root),
+      factory = AndroidSunspotNodeFactory,
       events = eventSink,
     )
 

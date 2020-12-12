@@ -11,10 +11,8 @@ import app.cash.treehouse.client.EventSink
 import app.cash.treehouse.client.TreehouseClient
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.server.TreehouseServer
-import example.android.counter.AndroidContainerMutator
+import example.android.counter.AndroidCounterBox
 import example.android.counter.AndroidCounterNodeFactory
-import example.android.counter.AndroidCounterViewGroup
-import example.counter.client.CounterBridge
 import example.shared.Counter
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -41,11 +39,8 @@ class MainActivity : Activity() {
     }
 
     val client = TreehouseClient(
-      bridge = CounterBridge(
-        root = AndroidCounterViewGroup(root),
-        factory = AndroidCounterNodeFactory,
-        mutator = AndroidContainerMutator,
-      ),
+      root = AndroidCounterBox(root),
+      factory = AndroidCounterNodeFactory,
       events = eventSink,
     )
 

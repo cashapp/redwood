@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'app.cash.exhaustive'
 
 dependencies {
   implementation project(':treehouse-schema-runtime')

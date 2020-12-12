@@ -10,6 +10,7 @@ import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 import app.cash.treehouse.protocol.TreeDiff
+import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -44,7 +45,7 @@ private class RealTreehouseServer(
   private val treehouseScope = RealTreehouseScope()
   inner class RealTreehouseScope : TreehouseScope {
     // TODO atomics if compose becomes multithreaded?
-    private var nextId = 1L
+    private var nextId = RootId + 1
     override fun nextId() = nextId++
 
     override fun appendDiff(diff: NodeDiff) {
@@ -56,7 +57,7 @@ private class RealTreehouseServer(
     }
   }
 
-  private val applier = ProtocolApplier(Node(0L, -1), treehouseScope)
+  private val applier = ProtocolApplier(Node(RootId, -1), treehouseScope)
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = compositionFor(Any(), applier, recomposer)
 

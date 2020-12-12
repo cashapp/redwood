@@ -1,27 +1,27 @@
 package app.cash.treehouse.client
 
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
 
-interface TreeBridge<N : TreeNode> {
-  val root: N
+interface TreeNode<T : Any> {
+  val value: T
 
-  fun insert(parent: N, insert: NodeDiff.Insert, events: EventSink): N
-  fun move(parent: N, move: NodeDiff.Move)
-  fun remove(parent: N, remove: NodeDiff.Remove)
-  fun clear()
-}
-
-interface TreeNode {
   fun apply(diff: PropertyDiff)
+
+  val children: Children<T> get() {
+    throw IllegalStateException("${this::class} does not support children")
+  }
+
+  interface Children<T : Any> {
+    fun insert(index: Int, node: T)
+    fun move(fromIndex: Int, toIndex: Int, count: Int)
+    fun remove(index: Int, count: Int)
+    fun clear()
+  }
 }
 
-interface TreeMutator<N : Any> {
-  fun insert(parent: N, index: Int, node: N)
-  fun move(parent: N, fromIndex: Int, toIndex: Int, count: Int)
-  fun remove(parent: N, index: Int, count: Int)
-  fun clear(parent: N)
+interface TreeNodeFactory<T : Any> {
+  fun create(parent: T, kind: Int, id: Long, events: EventSink): TreeNode<T>
 }
 
 fun interface EventSink {

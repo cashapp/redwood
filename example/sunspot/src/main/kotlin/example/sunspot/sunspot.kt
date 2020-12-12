@@ -1,34 +1,33 @@
 package example.sunspot
 
-import app.cash.treehouse.schema.Container
+import app.cash.treehouse.schema.Children
 import app.cash.treehouse.schema.Default
 import app.cash.treehouse.schema.Node
+import app.cash.treehouse.schema.Property
 import app.cash.treehouse.schema.Schema
-import app.cash.treehouse.schema.Tag
 
 @Schema([
-  Row::class,
-  Column::class,
+  SunspotBox::class,
   SunspotText::class,
   SunspotButton::class,
 ])
 interface Sunspot
 
-@Container
-interface Row
-
-@Container
-interface Column
-
 @Node(1)
-data class SunspotText(
-  @Tag(1) val text: String?,
-  @Tag(2) @Default("\"black\"") val color: String,
+data class SunspotBox(
+  @Property(1) val orientation: Boolean, // TODO enum or whatever
+  @Children val children: List<Any>,
 )
 
 @Node(2)
+data class SunspotText(
+  @Property(1) val text: String?,
+  @Property(2) @Default("\"black\"") val color: String,
+)
+
+@Node(3)
 data class SunspotButton(
-  @Tag(1) val text: String?,
-  @Tag(2) @Default("true") val enabled: Boolean,
-  @Tag(3) val onClick: () -> Unit,
+  @Property(1) val text: String?,
+  @Property(2) @Default("true") val enabled: Boolean,
+  @Property(3) val onClick: () -> Unit,
 )

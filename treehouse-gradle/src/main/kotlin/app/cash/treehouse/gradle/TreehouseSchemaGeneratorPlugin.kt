@@ -8,7 +8,10 @@ import org.gradle.api.tasks.JavaExec
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
+@Suppress("unused") // Invoked reflectively by Gradle.
 class TreehouseSchemaClientPlugin : TreehouseSchemaGeneratorPlugin(Client)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
 class TreehouseSchemaServerPlugin : TreehouseSchemaGeneratorPlugin(Server)
 
 abstract class TreehouseSchemaGeneratorPlugin(

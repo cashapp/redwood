@@ -3,9 +3,7 @@ package example.web
 import app.cash.treehouse.client.TreehouseClient
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.TreeDiff
-import example.sunspot.client.SunspotBridge
-import example.web.sunspot.HtmlContainerMutator
-import example.web.sunspot.HtmlSunspotElement
+import example.web.sunspot.HtmlSunspotBox
 import example.web.sunspot.HtmlSunspotNodeFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.js.Js
@@ -42,17 +40,13 @@ fun main() {
 
     client.ws(host = "localhost", port = 8765, path = "/counter") {
       val treehouse = TreehouseClient(
-        bridge = SunspotBridge(
-          root = HtmlSunspotElement(content),
-          factory = HtmlSunspotNodeFactory,
-          mutator = HtmlContainerMutator,
-        ),
-        { event ->
+        root = HtmlSunspotBox(content),
+        factory = HtmlSunspotNodeFactory,
+      ) { event ->
           console.log("TreehouseEvent: $event")
           val json = serializer.encodeToString(Event.serializer(), event)
           outgoing.offer(Frame.Text(json))
-        },
-      )
+      }
 
       for (frame in incoming) {
         val json = (frame as Frame.Text).readText()

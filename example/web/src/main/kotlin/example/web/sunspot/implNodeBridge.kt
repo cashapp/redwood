@@ -1,24 +1,25 @@
 package example.web.sunspot
 
-import app.cash.treehouse.protocol.PropertyDiff
+import example.sunspot.client.SunspotBox
 import example.sunspot.client.SunspotButton
-import example.sunspot.client.SunspotNode
 import example.sunspot.client.SunspotText
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 
-class HtmlSunspotElement(
+class HtmlSunspotBox(
   override val value: HTMLElement,
-) : SunspotNode<HTMLElement> {
-  override fun apply(diff: PropertyDiff) {
-    throw UnsupportedOperationException()
+) : SunspotBox<HTMLElement> {
+  override val children = HTMLElementChildren(value)
+
+  override fun orientation(orientation: Boolean) {
+    // TODO something?
   }
 }
 
 class HtmlSunspotText(
   override val value: HTMLSpanElement,
-) : SunspotText<HTMLSpanElement> {
+) : SunspotText<HTMLElement> {
   override fun text(text: String?) {
     value.textContent = text
   }
@@ -31,7 +32,7 @@ class HtmlSunspotText(
 class HtmlSunspotButton(
   override val value: HTMLButtonElement,
   private val onClick: () -> Unit,
-) : SunspotButton<HTMLButtonElement> {
+) : SunspotButton<HTMLElement> {
   override fun text(text: String?) {
     value.textContent = text
   }
