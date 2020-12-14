@@ -1,15 +1,6 @@
 buildscript {
-  ext.versions = [
-    'treehouse': treehouseVersion
-  ]
-  ext.deps = [
-    'treehouse': [
-      'schemaRuntime': "app.cash.treehouse:treehouse-schema-runtime:${versions.treehouse}"
-    ],
-  ]
-
   dependencies {
-    classpath "app.cash.treehouse:treehouse-gradle:${versions.treehouse}"
+    classpath "app.cash.treehouse:treehouse-gradle:$treehouseVersion"
     classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.20'
     classpath 'com.android.tools.build:gradle:4.1.1'
   }
