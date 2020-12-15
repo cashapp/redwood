@@ -2,6 +2,7 @@
 
 package app.cash.treehouse.schema.generator
 
+import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Client
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Server
 import com.github.ajalt.clikt.core.CliktCommand
@@ -22,10 +23,10 @@ private class TreehouseGenerator : CliktCommand() {
     Client, Server
   }
 
-  // TODO make required: https://github.com/ajalt/clikt/issues/240
   private val type by option()
     .switch("--client" to Client, "--server" to Server)
     .help("Type of code to generate")
+    .required()
 
   private val out by option().path().required()
     .help("Directory into which generated files are written")
@@ -35,7 +36,7 @@ private class TreehouseGenerator : CliktCommand() {
 
   override fun run() {
     val schema = parseSchema(schemaFqcn)
-    return when (type) {
+    @Exhaustive when (type) {
       Client -> {
         generateClientNodeFactory(schema).writeTo(out)
         for (node in schema.nodes) {
@@ -47,7 +48,6 @@ private class TreehouseGenerator : CliktCommand() {
           generateServerNode(schema, node).writeTo(out)
         }
       }
-      null -> error("--client or --server is required")
     }
   }
 }

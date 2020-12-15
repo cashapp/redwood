@@ -38,7 +38,7 @@ buildscript {
     ],
     'logbackClassic': 'ch.qos.logback:logback-classic:1.2.3',
     'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
-    'clikt': 'com.github.ajalt.clikt:clikt:3.0.1',
+    'clikt': 'com.github.ajalt.clikt:clikt:3.1.0',
     'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
     'junit': 'junit:junit:4.13.1',
     'truth': 'com.google.truth:truth:1.1',
