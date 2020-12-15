@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.joinToCode
 import com.squareup.kotlinpoet.jvm.jvmField
 
 /*
@@ -56,11 +57,6 @@ fun generateServerNode(schema: Schema, node: Node): FileSpec {
   } else {
     schema.serverNodeType(node)
   }
-  val nodeInitializer = if (events.isEmpty()) {
-    CodeBlock.of("{ %T(nextId(), %L) }", nodeType, node.tag)
-  } else {
-    CodeBlock.of("{ %T(nextId()) }", nodeType)
-  }
   val applierOfServerNode = applier.parameterizedBy(serverNode)
   return FileSpec.builder(schema.serverPackage, node.name)
     .addFunction(FunSpec.builder(node.name)
@@ -93,27 +89,72 @@ fun generateServerNode(schema: Schema, node: Node): FileSpec {
             }
           })
         }
-      }
-      .beginControlFlow("%M<%T, %T>(%L)", emitReference, nodeType, applierOfServerNode, nodeInitializer)
-      .apply {
-        for (trait in node.traits) {
-          beginControlFlow("set(%N)", trait.name)
-          @Exhaustive when (trait) {
-            is Property -> {
-              addStatement("appendDiff(%T(id, %L, %N))", propertyDiff, trait.tag, trait.name)
-            }
-            is Event -> {
-              addStatement("this.%1N = %1N", trait.name)
-              addStatement("appendDiff(%T(id, %L, %N != null))", propertyDiff, trait.tag, trait.name)
-            }
-            is Children -> {
-              addStatement("%N()", trait.name)
+
+        val arguments = mutableListOf<CodeBlock>()
+
+        // ctor
+        arguments += CodeBlock.builder()
+          .add("ctor = {\n")
+          .indent()
+          .apply {
+            if (events.isEmpty()) {
+              add("%T(nextId(), %L)\n", nodeType, node.tag)
+            } else {
+              add("%T(nextId())\n", nodeType)
             }
           }
-          endControlFlow()
+          .unindent()
+          .add("}")
+          .build()
+
+        // update
+        arguments += CodeBlock.builder()
+          .add("update = {\n")
+          .indent()
+          .apply {
+            for (trait in node.traits) {
+              @Exhaustive when (trait) {
+                is Property -> {
+                  add("set(%N) {\n", trait.name)
+                  indent()
+                  add("appendDiff(%T(id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
+                  unindent()
+                  add("}\n")
+                }
+                is Event -> {
+                  add("set(%N) {\n", trait.name)
+                  indent()
+                  add("this.%1N = %1N\n", trait.name)
+                  add("appendDiff(%T(id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
+                  unindent()
+                  add("}\n")
+                }
+                is Children -> {
+                  // No-op
+                }
+              }
+            }
+
+          }
+          .unindent()
+          .add("}")
+          .build()
+
+        // children
+        if (node.traits.any { it is Children }) {
+          val children = node.traits.single { it is Children }
+          arguments += CodeBlock.builder()
+            .add("content = {\n")
+            .indent()
+            .add("%N()\n", children.name)
+            .unindent()
+            .add("}")
+            .build()
         }
+
+        addStatement("%M<%T, %T>(%L)", emitReference, nodeType, applierOfServerNode,
+          arguments.joinToCode(",\n", "\n", ",\n"))
       }
-      .endControlFlow()
       .build())
     .apply {
       if (events.isNotEmpty()) {
