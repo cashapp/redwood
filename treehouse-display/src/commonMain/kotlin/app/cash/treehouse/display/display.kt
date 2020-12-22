@@ -1,9 +1,9 @@
-package app.cash.treehouse.client
+package app.cash.treehouse.display
 
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.TreeDiff
 
-class TreehouseClient<T : Any>(
+class TreehouseDisplay<T : Any>(
   private val root: TreeNode<T>,
   private val factory: TreeNodeFactory<T>,
   private val events: EventSink,

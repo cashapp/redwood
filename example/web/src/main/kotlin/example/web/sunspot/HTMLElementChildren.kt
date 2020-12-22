@@ -1,6 +1,6 @@
 package example.web.sunspot
 
-import app.cash.treehouse.client.TreeNode
+import app.cash.treehouse.display.TreeNode
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 

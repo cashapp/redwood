@@ -4,10 +4,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import example.counter.client.CounterBox
-import example.counter.client.CounterButton
-import example.counter.client.CounterNodeFactory
-import example.counter.client.CounterText
+import example.counter.display.CounterBox
+import example.counter.display.CounterButton
+import example.counter.display.CounterNodeFactory
+import example.counter.display.CounterText
 
 object AndroidCounterNodeFactory : CounterNodeFactory<View> {
   override fun CounterBox(parent: View): CounterBox<View> {

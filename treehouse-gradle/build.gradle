@@ -26,11 +26,11 @@ gradlePlugin {
       description = "Treehouse schema Gradle plugin"
       implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaPlugin"
     }
-    treehouseSchemaClient {
-      id = "app.cash.treehouse.schema.client"
-      displayName = "Treehouse schema (client generator)"
-      description = "Treehouse schema client-side code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaClientPlugin"
+    treehouseSchemaDisplay {
+      id = "app.cash.treehouse.schema.display"
+      displayName = "Treehouse schema (display generator)"
+      description = "Treehouse schema display-side code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaDisplayPlugin"
     }
     treehouseSchemaServer {
       id = "app.cash.treehouse.schema.server"
@@ -43,7 +43,7 @@ gradlePlugin {
 
 test {
   dependsOn(':compose:installArchives')
-  dependsOn(':treehouse-client:installArchives')
+  dependsOn(':treehouse-display:installArchives')
   dependsOn(':treehouse-gradle:installArchives')
   dependsOn(':treehouse-protocol:installArchives')
   dependsOn(':treehouse-schema-generator:installArchives')

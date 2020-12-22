@@ -1,6 +1,6 @@
 package app.cash.treehouse.gradle
 
-import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Client
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Display
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Server
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaClientPlugin : TreehouseSchemaGeneratorPlugin(Client)
+class TreehouseSchemaDisplayPlugin : TreehouseSchemaGeneratorPlugin(Display)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class TreehouseSchemaServerPlugin : TreehouseSchemaGeneratorPlugin(Server)
@@ -21,7 +21,7 @@ abstract class TreehouseSchemaGeneratorPlugin(
     internal val generatorFlag: String,
     internal val dependencyCoordinate: String,
   ) {
-    Client("--client", "app.cash.treehouse:treehouse-client:$treehouseVersion"),
+    Display("--display", "app.cash.treehouse:treehouse-display:$treehouseVersion"),
     Server("--server", "app.cash.treehouse:treehouse-server:$treehouseVersion"),
   }
 

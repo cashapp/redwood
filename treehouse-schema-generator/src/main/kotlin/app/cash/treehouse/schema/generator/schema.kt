@@ -8,13 +8,13 @@ data class Schema(
   private val `package`: String,
   val nodes: List<Node>,
 ) {
-  val clientPackage = "$`package`.client"
+  val displayPackage = "$`package`.display"
   val serverPackage = "$`package`.server"
 
-  internal val nodeFactoryType = ClassName(clientPackage, "${name}NodeFactory")
+  internal val nodeFactoryType = ClassName(displayPackage, "${name}NodeFactory")
 
-  fun clientNodeType(node: Node): ClassName {
-    return ClassName(clientPackage, node.name)
+  fun displayNodeType(node: Node): ClassName {
+    return ClassName(displayPackage, node.name)
   }
 
   fun serverNodeType(node: Node): ClassName {

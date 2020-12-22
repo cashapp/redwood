@@ -3,10 +3,10 @@ package app.cash.treehouse.schema.generator
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 
-internal val eventSink = ClassName("app.cash.treehouse.client", "EventSink")
-internal val treeNode = ClassName("app.cash.treehouse.client", "TreeNode")
+internal val eventSink = ClassName("app.cash.treehouse.display", "EventSink")
+internal val treeNode = ClassName("app.cash.treehouse.display", "TreeNode")
 internal val treeNodeChildren = treeNode.nestedClass("Children")
-internal val treeNodeFactory = ClassName("app.cash.treehouse.client", "TreeNodeFactory")
+internal val treeNodeFactory = ClassName("app.cash.treehouse.display", "TreeNodeFactory")
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val nodeDiff = ClassName("app.cash.treehouse.protocol", "NodeDiff")

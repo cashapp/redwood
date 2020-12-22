@@ -2,7 +2,7 @@ package example.android.sunspot
 
 import android.view.View
 import android.widget.Button
-import example.sunspot.client.SunspotButton
+import example.sunspot.display.SunspotButton
 
 class AndroidSunspotButton(
   override val value: Button,

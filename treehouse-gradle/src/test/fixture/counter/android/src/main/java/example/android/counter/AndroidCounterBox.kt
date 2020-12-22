@@ -2,7 +2,7 @@ package example.android.counter
 
 import android.view.View
 import android.widget.LinearLayout
-import example.counter.client.CounterBox
+import example.counter.display.CounterBox
 
 class AndroidCounterBox(
   override val value: LinearLayout,

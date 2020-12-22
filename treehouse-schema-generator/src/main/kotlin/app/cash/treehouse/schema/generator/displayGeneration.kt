@@ -33,9 +33,9 @@ interface SunspotNodeFactory<T : Any> : TreeNodeFactory<T> {
   }
 }
 */
-fun generateClientNodeFactory(schema: Schema): FileSpec {
+fun generateDisplayNodeFactory(schema: Schema): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
-  return FileSpec.builder(schema.clientPackage, schema.nodeFactoryType.simpleName)
+  return FileSpec.builder(schema.displayPackage, schema.nodeFactoryType.simpleName)
     .addType(TypeSpec.interfaceBuilder(schema.nodeFactoryType)
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)
@@ -50,7 +50,7 @@ fun generateClientNodeFactory(schema: Schema): FileSpec {
                 addParameter(event.name, LambdaTypeName.get(returnType = UNIT))
               }
             }
-            .returns(schema.clientNodeType(node).parameterizedBy(typeVariableT))
+            .returns(schema.displayNodeType(node).parameterizedBy(typeVariableT))
             .build())
         }
       }
@@ -94,10 +94,10 @@ interface SunspotButton<out T: Any> : SunspotNode<T> {
   }
 }
 */
-fun generateClientNode(schema: Schema, node: Node): FileSpec {
+fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
   val childrenOfT = treeNodeChildren.parameterizedBy(typeVariableT)
-  return FileSpec.builder(schema.clientPackage, node.name)
+  return FileSpec.builder(schema.displayPackage, node.name)
     .addType(TypeSpec.interfaceBuilder(node.name)
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)

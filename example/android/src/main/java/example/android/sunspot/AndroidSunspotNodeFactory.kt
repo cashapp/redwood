@@ -4,10 +4,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import example.sunspot.client.SunspotBox
-import example.sunspot.client.SunspotButton
-import example.sunspot.client.SunspotNodeFactory
-import example.sunspot.client.SunspotText
+import example.sunspot.display.SunspotBox
+import example.sunspot.display.SunspotButton
+import example.sunspot.display.SunspotNodeFactory
+import example.sunspot.display.SunspotText
 
 object AndroidSunspotNodeFactory : SunspotNodeFactory<View> {
   override fun SunspotBox(parent: View): SunspotBox<View> {

@@ -7,8 +7,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
-import app.cash.treehouse.client.EventSink
-import app.cash.treehouse.client.TreehouseClient
+import app.cash.treehouse.display.EventSink
+import app.cash.treehouse.display.TreehouseDisplay
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.server.TreehouseServer
 import example.android.sunspot.AndroidSunspotBox
@@ -38,7 +38,7 @@ class MainActivity : Activity() {
       }
     }
 
-    val client = TreehouseClient(
+    val display = TreehouseDisplay(
       root = AndroidSunspotBox(root),
       factory = AndroidSunspotNodeFactory,
       events = eventSink,
@@ -48,7 +48,7 @@ class MainActivity : Activity() {
       scope = scope,
       diff = { diff ->
         Log.d("TreehouseDiff", diff.toString())
-        client.apply(diff)
+        display.apply(diff)
       }
     )
     eventSink.server = server

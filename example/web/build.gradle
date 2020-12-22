@@ -10,7 +10,7 @@ kotlin {
   sourceSets {
     main {
       dependencies {
-        implementation project(':example:sunspot:client')
+        implementation project(':example:sunspot:display')
         implementation deps.kotlinx.coroutines.core
         implementation deps.kotlinx.serialization.json
         implementation deps.ktor.client.core

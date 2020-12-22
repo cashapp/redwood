@@ -1,6 +1,6 @@
 package example.web
 
-import app.cash.treehouse.client.TreehouseClient
+import app.cash.treehouse.display.TreehouseDisplay
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.TreeDiff
 import example.web.sunspot.HtmlSunspotBox
@@ -39,7 +39,7 @@ fun main() {
     }
 
     client.ws(host = "localhost", port = 8765, path = "/counter") {
-      val treehouse = TreehouseClient(
+      val treehouse = TreehouseDisplay(
         root = HtmlSunspotBox(content),
         factory = HtmlSunspotNodeFactory,
       ) { event ->
