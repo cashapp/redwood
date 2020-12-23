@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionFor
 import androidx.compose.runtime.dispatch.DefaultMonotonicFrameClock
 import androidx.compose.runtime.dispatch.MonotonicFrameClock
 import androidx.compose.runtime.dispatch.withFrameMillis
+import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
@@ -64,6 +65,19 @@ private class RealTreehouseComposition(
   private lateinit var job: Job
 
   fun launch() {
+    // Set up a trigger to apply changes on the next frame if a global write was observed.
+    // TODO where should this live?
+    var applyScheduled = false
+    Snapshot.registerGlobalWriteObserver {
+      if (!applyScheduled) {
+        applyScheduled = true
+        scope.launch {
+          applyScheduled = false
+          Snapshot.sendApplyNotifications()
+        }
+      }
+    }
+
     job = scope.launch {
       coroutineScope {
         launch {
