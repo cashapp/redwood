@@ -1,7 +1,7 @@
 package app.cash.treehouse.gradle
 
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Compose
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Display
-import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Server
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
@@ -9,10 +9,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaDisplayPlugin : TreehouseSchemaGeneratorPlugin(Display)
+class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaServerPlugin : TreehouseSchemaGeneratorPlugin(Server)
+class TreehouseSchemaDisplayPlugin : TreehouseSchemaGeneratorPlugin(Display)
 
 abstract class TreehouseSchemaGeneratorPlugin(
   private val strategy: Strategy,
@@ -21,14 +21,14 @@ abstract class TreehouseSchemaGeneratorPlugin(
     internal val generatorFlag: String,
     internal val dependencyCoordinate: String,
   ) {
+    Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
     Display("--display", "app.cash.treehouse:treehouse-display:$treehouseVersion"),
-    Server("--server", "app.cash.treehouse:treehouse-server:$treehouseVersion"),
   }
 
   override fun apply(project: Project) {
     var applied = false
 
-    if (strategy == Server) {
+    if (strategy == Compose) {
       project.plugins.apply(TreehousePlugin::class.java)
     }
 

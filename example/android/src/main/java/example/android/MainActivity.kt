@@ -7,10 +7,10 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
+import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.display.EventSink
 import app.cash.treehouse.display.TreehouseDisplay
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.server.TreehouseServer
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotNodeFactory
 import example.shared.Counter
@@ -31,10 +31,10 @@ class MainActivity : Activity() {
 
     // Indirection to create a cyclic dependency between the client and the server for the demo.
     val eventSink = object : EventSink {
-      lateinit var server: TreehouseServer
+      lateinit var composition: TreehouseComposition
       override fun send(event: Event) {
         Log.d("TreehouseEvent", event.toString())
-        server.sendEvent(event)
+        composition.sendEvent(event)
       }
     }
 
@@ -44,14 +44,14 @@ class MainActivity : Activity() {
       events = eventSink,
     )
 
-    val server = TreehouseServer(
+    val server = TreehouseComposition(
       scope = scope,
       diff = { diff ->
         Log.d("TreehouseDiff", diff.toString())
         display.apply(diff)
       }
     )
-    eventSink.server = server
+    eventSink.composition = server
 
     server.setContent {
       Counter()

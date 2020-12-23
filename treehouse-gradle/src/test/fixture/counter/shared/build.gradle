@@ -8,7 +8,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':schema:server')
+        api project(':schema:compose')
       }
     }
   }

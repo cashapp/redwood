@@ -50,15 +50,15 @@ private class ButtonNode(id: Long) : Node(id, 2) {
   }
 }
 */
-fun generateServerNode(schema: Schema, node: Node): FileSpec {
+fun generateComposeNode(schema: Schema, node: Node): FileSpec {
   val events = node.traits.filterIsInstance<Event>()
   val nodeType = if (events.isEmpty()) {
-    serverNode
+    composeNode
   } else {
-    schema.serverNodeType(node)
+    schema.composeNodeType(node)
   }
-  val applierOfServerNode = applier.parameterizedBy(serverNode)
-  return FileSpec.builder(schema.serverPackage, node.name)
+  val applierOfServerNode = applier.parameterizedBy(composeNode)
+  return FileSpec.builder(schema.composePackage, node.name)
     .addFunction(FunSpec.builder(node.name)
       .addModifiers(PUBLIC)
       .addAnnotation(composable)
@@ -163,7 +163,7 @@ fun generateServerNode(schema: Schema, node: Node): FileSpec {
           .primaryConstructor(FunSpec.constructorBuilder()
             .addParameter("id", LONG)
             .build())
-          .superclass(serverNode)
+          .superclass(composeNode)
           .addSuperclassConstructorParameter("id")
           .addSuperclassConstructorParameter("%L", node.tag)
           .apply {

@@ -3,8 +3,8 @@
 package app.cash.treehouse.schema.generator
 
 import app.cash.exhaustive.Exhaustive
+import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Display
-import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Server
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -20,11 +20,11 @@ fun main(vararg args: String) {
 
 private class TreehouseGenerator : CliktCommand() {
   enum class Type {
-    Display, Server
+    Display, Compose
   }
 
   private val type by option()
-    .switch("--display" to Display, "--server" to Server)
+    .switch("--display" to Display, "--compose" to Compose)
     .help("Type of code to generate")
     .required()
 
@@ -43,9 +43,9 @@ private class TreehouseGenerator : CliktCommand() {
           generateDisplayNode(schema, node).writeTo(out)
         }
       }
-      Server -> {
+      Compose -> {
         for (node in schema.nodes) {
-          generateServerNode(schema, node).writeTo(out)
+          generateComposeNode(schema, node).writeTo(out)
         }
       }
     }

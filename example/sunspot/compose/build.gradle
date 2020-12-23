@@ -13,7 +13,7 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api project(':treehouse-server')
+        api project(':treehouse-compose')
       }
     }
   }
@@ -34,7 +34,7 @@ def generate = tasks.register('treehouseGenerate', JavaExec) {
   it.classpath(configurations.generator)
   it.main('app.cash.treehouse.schema.generator.Main')
   it.args(
-    '--server',
+    '--compose',
     '--out', generatedDir,
     'example.sunspot.Sunspot',
   )

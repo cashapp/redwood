@@ -8,8 +8,8 @@ data class Schema(
   private val `package`: String,
   val nodes: List<Node>,
 ) {
+  val composePackage = "$`package`.compose"
   val displayPackage = "$`package`.display"
-  val serverPackage = "$`package`.server"
 
   internal val nodeFactoryType = ClassName(displayPackage, "${name}NodeFactory")
 
@@ -17,8 +17,8 @@ data class Schema(
     return ClassName(displayPackage, node.name)
   }
 
-  fun serverNodeType(node: Node): ClassName {
-    return ClassName(serverPackage, node.name + "Node")
+  fun composeNodeType(node: Node): ClassName {
+    return ClassName(composePackage, node.name + "Node")
   }
 }
 

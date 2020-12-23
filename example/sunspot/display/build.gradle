@@ -1,7 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
-archivesBaseName = 'sunspot-display'
-
 def generatedDir = 'build/generated/treehouse'
 
 kotlin {

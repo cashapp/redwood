@@ -5,9 +5,9 @@ package example.jvm_server
 import androidx.compose.runtime.EmbeddingContext
 import androidx.compose.runtime.yoloGlobalEmbeddingContext
 import androidx.compose.runtime.dispatch.BroadcastFrameClock
+import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.TreeDiff
-import app.cash.treehouse.server.TreehouseServer
 import example.shared.Counter
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -64,7 +64,7 @@ fun main() {
     routing {
       webSocket("/counter") {
         withContext(context) {
-          val server = TreehouseServer(
+          val composition = TreehouseComposition(
             scope = this,
             diff = { diff ->
               println("TreehouseDiff: $diff")
@@ -74,7 +74,7 @@ fun main() {
             }
           )
 
-          server.setContent {
+          composition.setContent {
             Counter()
           }
 
@@ -83,7 +83,7 @@ fun main() {
             val event = serializer.decodeFromString(Event.serializer(), json)
             println("TreehouseEvent: $event")
 
-            server.sendEvent(event)
+            composition.sendEvent(event)
           }
         }
       }

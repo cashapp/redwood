@@ -8,7 +8,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':example:sunspot:server')
+        api project(':example:sunspot:compose')
       }
     }
   }

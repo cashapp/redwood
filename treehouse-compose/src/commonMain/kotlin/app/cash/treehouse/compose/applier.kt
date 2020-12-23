@@ -1,10 +1,9 @@
-package app.cash.treehouse.server
+package app.cash.treehouse.compose
 
 import androidx.compose.runtime.AbstractApplier
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.TreeDiff
 
 interface TreehouseScope {
   fun nextId(): Long

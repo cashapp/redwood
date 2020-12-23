@@ -15,8 +15,8 @@ internal val nodeDiffMove = nodeDiff.nestedClass("Move")
 internal val nodeDiffRemove = nodeDiff.nestedClass("Remove")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
 
-internal val serverNode = ClassName("app.cash.treehouse.server", "Node")
-internal val treehouseScope = ClassName("app.cash.treehouse.server", "TreehouseScope")
+internal val composeNode = ClassName("app.cash.treehouse.compose", "Node")
+internal val treehouseScope = ClassName("app.cash.treehouse.compose", "TreehouseScope")
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")
 internal val composable = ClassName("androidx.compose.runtime", "Composable")

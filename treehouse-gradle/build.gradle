@@ -26,29 +26,29 @@ gradlePlugin {
       description = "Treehouse schema Gradle plugin"
       implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaPlugin"
     }
+    treehouseSchemaCompose {
+      id = "app.cash.treehouse.schema.compose"
+      displayName = "Treehouse schema (Compose generator)"
+      description = "Treehouse schema Compose code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaComposePlugin"
+    }
     treehouseSchemaDisplay {
       id = "app.cash.treehouse.schema.display"
       displayName = "Treehouse schema (display generator)"
       description = "Treehouse schema display-side code generation Gradle plugin"
       implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaDisplayPlugin"
     }
-    treehouseSchemaServer {
-      id = "app.cash.treehouse.schema.server"
-      displayName = "Treehouse schema (server generator)"
-      description = "Treehouse schema server-side code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaServerPlugin"
-    }
   }
 }
 
 test {
   dependsOn(':compose:installArchives')
+  dependsOn(':treehouse-compose:installArchives')
   dependsOn(':treehouse-display:installArchives')
   dependsOn(':treehouse-gradle:installArchives')
   dependsOn(':treehouse-protocol:installArchives')
   dependsOn(':treehouse-schema-generator:installArchives')
   dependsOn(':treehouse-schema-runtime:installArchives')
-  dependsOn(':treehouse-server:installArchives')
 }
 
 def versionDirectory = "$buildDir/generated/version/"

@@ -1,4 +1,4 @@
-package app.cash.treehouse.server
+package app.cash.treehouse.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Recomposer
@@ -16,7 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-interface TreehouseServer {
+interface TreehouseComposition {
   fun sendEvent(event: Event)
   fun setContent(content: @Composable TreehouseScope.() -> Unit)
   fun cancel()
@@ -26,19 +26,19 @@ fun interface DiffSink {
   fun apply(diff: TreeDiff)
 }
 
-fun TreehouseServer(
+fun TreehouseComposition(
   scope: CoroutineScope,
   diff: DiffSink,
-): TreehouseServer {
-  val server = RealTreehouseServer(scope, diff)
+): TreehouseComposition {
+  val server = RealTreehouseComposition(scope, diff)
   server.launch()
   return server
 }
 
-private class RealTreehouseServer(
+private class RealTreehouseComposition(
   private val scope: CoroutineScope,
   private val diffSink: DiffSink,
-) : TreehouseServer {
+) : TreehouseComposition {
   private var nodeDiffs = mutableListOf<NodeDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 

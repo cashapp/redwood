@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.treehouse.server.TreehouseScope
-import example.counter.server.CounterButton
-import example.counter.server.CounterText
+import app.cash.treehouse.compose.TreehouseScope
+import example.counter.compose.CounterButton
+import example.counter.compose.CounterText
 
 @Composable
 fun TreehouseScope.Counter(value: Int = 0) {

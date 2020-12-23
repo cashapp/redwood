@@ -26,7 +26,7 @@ class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      implementation("app.cash.treehouse:treehouse-server:$treehouseVersion")
+      implementation("app.cash.treehouse:treehouse-compose:$treehouseVersion")
     }
     kotlinCompilation.enableIr()
 
