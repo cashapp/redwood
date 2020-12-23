@@ -28,10 +28,14 @@ internal class ProtocolApplier(
 ) : AbstractApplier<Node>(root) {
   val nodes = mutableMapOf(root.id to root)
 
-  override fun insert(index: Int, instance: Node) {
+  override fun insertTopDown(index: Int, instance: Node) {
     current.children.add(index, instance)
     nodes[instance.id] = instance
     scope.appendDiff(NodeDiff.Insert(current.id, instance.id, instance.type, index))
+  }
+
+  override fun insertBottomUp(index: Int, instance: Node) {
+    // Ignored, we insert top-down for now.
   }
 
   override fun remove(index: Int, count: Int) {
