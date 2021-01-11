@@ -3,7 +3,6 @@ package app.cash.treehouse.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.compositionFor
-import androidx.compose.runtime.dispatch.DefaultMonotonicFrameClock
 import androidx.compose.runtime.dispatch.MonotonicFrameClock
 import androidx.compose.runtime.dispatch.withFrameMillis
 import androidx.compose.runtime.snapshots.Snapshot
@@ -27,17 +26,25 @@ fun interface DiffSink {
   fun apply(diff: TreeDiff)
 }
 
+/**
+ * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
+ * must have a [MonotonicFrameClock] key which is being ticked.
+ */
 fun TreehouseComposition(
   scope: CoroutineScope,
   diff: DiffSink,
 ): TreehouseComposition {
-  val server = RealTreehouseComposition(scope, diff)
+  val clock = requireNotNull(scope.coroutineContext[MonotonicFrameClock]) {
+    "Composition scope's CoroutineContext must have a MonotonicFrameClock key"
+  }
+  val server = RealTreehouseComposition(scope, clock, diff)
   server.launch()
   return server
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
+  private val clock: MonotonicFrameClock,
   private val diffSink: DiffSink,
 ) : TreehouseComposition {
   private var nodeDiffs = mutableListOf<NodeDiff>()
@@ -84,7 +91,6 @@ private class RealTreehouseComposition(
           recomposer.runRecomposeAndApplyChanges()
         }
         launch {
-          val clock = coroutineContext[MonotonicFrameClock] ?: DefaultMonotonicFrameClock
           while (true) {
             clock.withFrameMillis {
               val existingNodeDiffs = nodeDiffs

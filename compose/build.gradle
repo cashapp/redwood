@@ -16,6 +16,8 @@ kotlin {
       kotlin {
         srcDir 'upstream/compose/runtime/runtime/src/commonMain/kotlin'
         srcDir 'upstream/compose/runtime/runtime-dispatch/src/commonMain/kotlin'
+
+        exclude 'androidx/compose/runtime/dispatch/Expect.kt'
       }
       dependencies {
         api deps.kotlinx.coroutines.core
@@ -36,6 +38,8 @@ kotlin {
         srcDir 'upstream/compose/runtime/runtime/src/androidMain/kotlin'
         srcDir 'upstream/compose/runtime/runtime/src/jvmMain/kotlin'
         srcDir 'upstream/compose/runtime/runtime-dispatch/src/androidMain/kotlin'
+
+        exclude 'androidx/compose/runtime/dispatch/ActualAndroid.kt'
       }
       dependencies {
         // Keep these in sync with upstream/compose/runtime/runtime/build.gradle

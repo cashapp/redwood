@@ -7,6 +7,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
+import androidx.compose.runtime.dispatch.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.display.EventSink
 import app.cash.treehouse.display.TreehouseDisplay
@@ -14,11 +15,11 @@ import app.cash.treehouse.protocol.Event
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotNodeFactory
 import example.shared.Counter
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
 class MainActivity : Activity() {
-  private val scope = MainScope()
+  private val scope = CoroutineScope(AndroidUiDispatcher.Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
