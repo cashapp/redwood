@@ -79,6 +79,13 @@ subprojects {
     }
   }
 
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach {
+    kotlinOptions {
+      jvmTarget = '1.8'
+      useIR = true
+    }
+  }
+
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
     android.compileSdkVersion 30
@@ -91,29 +98,6 @@ subprojects {
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
     }
   }
-
-  def configureKotlinPlugin = {
-    configurations {
-      kotlinPlugin
-    }
-
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-      def pluginConfiguration = configurations.kotlinPlugin
-      dependsOn(pluginConfiguration)
-      doFirst {
-        if (!pluginConfiguration.isEmpty()) {
-          kotlinOptions{
-            useIR = true
-            freeCompilerArgs +=
-              "-Xplugin=${pluginConfiguration.files.first()}"
-          }
-        }
-      }
-    }
-  }
-  plugins.withId('org.jetbrains.kotlin.android', configureKotlinPlugin)
-  plugins.withId('org.jetbrains.kotlin.jvm', configureKotlinPlugin)
-  plugins.withId('org.jetbrains.kotlin.multiplatform', configureKotlinPlugin)
 
   plugins.withId('com.vanniktech.maven.publish') {
     mavenPublish {

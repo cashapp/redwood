@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'application'
 
@@ -11,5 +13,5 @@ dependencies {
   implementation deps.logbackClassic
   implementation deps.kotlinx.serialization.json
 
-  kotlinPlugin deps.composeCompiler
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.composeCompiler)
 }

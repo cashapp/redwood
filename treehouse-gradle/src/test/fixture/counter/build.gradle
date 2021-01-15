@@ -34,6 +34,13 @@ allprojects {
     }
   }
 
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach {
+    kotlinOptions {
+      jvmTarget = '1.8'
+      useIR = true
+    }
+  }
+
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
     android.compileSdkVersion 30
