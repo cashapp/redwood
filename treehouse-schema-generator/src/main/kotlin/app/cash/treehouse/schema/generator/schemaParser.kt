@@ -54,5 +54,5 @@ fun parseSchema(schemaFqcn: String): Schema {
 
   // TODO ensure node values are unique inside a node
 
-  return Schema(schemaType.simpleName, schemaType.packageName, nodes)
+  return Schema(schemaType.simpleName, packageName(schemaType), nodes)
 }

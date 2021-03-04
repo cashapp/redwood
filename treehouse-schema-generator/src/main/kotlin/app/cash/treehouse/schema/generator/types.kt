@@ -23,3 +23,9 @@ internal val composable = ClassName("androidx.compose.runtime", "Composable")
 internal val emitReference = MemberName("androidx.compose.runtime", "emit")
 
 internal val iae = ClassName("kotlin", "IllegalArgumentException")
+
+/** [Class.packageName] isn't available until Java 9. */
+internal fun packageName(schemaType: Class<*>): String {
+  require(!schemaType.isPrimitive && !schemaType.isArray)
+  return schemaType.name.substringBeforeLast(".", missingDelimiterValue = "")
+}
