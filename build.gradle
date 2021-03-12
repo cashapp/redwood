@@ -69,10 +69,9 @@ subprojects { subproject ->
     jcenter()
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { task ->
     // TODO: figure out why we can't add these options on iOS builds.
-    if (subproject.name != "treehouse-schema-runtime"
-        && subproject.name != "treehouse-display"
+    if (subproject.name != "treehouse-display"
         && subproject.name != "treehouse-protocol") {
       task.kotlinOptions {
         freeCompilerArgs += [
