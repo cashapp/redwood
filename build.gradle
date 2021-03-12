@@ -59,7 +59,7 @@ buildscript {
   }
 }
 
-subprojects {
+subprojects { subproject ->
   repositories {
     mavenCentral()
     google()
@@ -70,12 +70,17 @@ subprojects {
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
-    task.kotlinOptions {
-      freeCompilerArgs += [
-        '-progressive',
-        '-Xopt-in=kotlin.RequiresOptIn',
-        '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
-      ]
+    // TODO: figure out why we can't add these options on iOS builds.
+    if (subproject.name != "treehouse-schema-runtime"
+        && subproject.name != "treehouse-display"
+        && subproject.name != "treehouse-protocol") {
+      task.kotlinOptions {
+        freeCompilerArgs += [
+          '-progressive',
+          '-Xopt-in=kotlin.RequiresOptIn',
+          '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
+        ]
+      }
     }
   }
 
