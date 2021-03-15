@@ -1,6 +1,6 @@
-package androidx.compose.runtime.dispatch
+package androidx.compose.runtime
 
-val DefaultMonotonicFrameClock: MonotonicFrameClock get() {
+actual val DefaultMonotonicFrameClock: MonotonicFrameClock get() {
   throw UnsupportedOperationException(
     "No default MonotonicFrameClock! You must include one in your CoroutineContext.")
 }

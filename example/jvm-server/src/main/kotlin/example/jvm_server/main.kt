@@ -2,9 +2,7 @@
 
 package example.jvm_server
 
-import androidx.compose.runtime.EmbeddingContext
-import androidx.compose.runtime.yoloGlobalEmbeddingContext
-import androidx.compose.runtime.dispatch.BroadcastFrameClock
+import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.TreeDiff
@@ -28,24 +26,13 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.coroutines.CoroutineContext
 
 fun main() {
-  val clock = BroadcastFrameClock()
+  val context = run {
+    val executor = Executors.newSingleThreadScheduledExecutor()
 
-  val executor = Executors.newSingleThreadScheduledExecutor()
-  executor.scheduleAtFixedRate({ clock.sendFrame(0) }, 0, 100, MILLISECONDS)
+    val clock = BroadcastFrameClock()
+    executor.scheduleAtFixedRate({ clock.sendFrame(0) }, 0, 100, MILLISECONDS)
 
-  lateinit var mainThread: Thread
-  executor.submit {
-    mainThread = Thread.currentThread()
-  }.get()
-
-  val context = (executor.asCoroutineDispatcher() as CoroutineContext) + clock
-  yoloGlobalEmbeddingContext = object : EmbeddingContext {
-    override fun isMainThread(): Boolean {
-      return Thread.currentThread() == mainThread
-    }
-    override fun mainThreadCompositionContext(): CoroutineContext {
-      return context
-    }
+    (executor.asCoroutineDispatcher() as CoroutineContext) + clock
   }
 
   val serializer = Json {
