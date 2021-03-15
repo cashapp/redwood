@@ -1,13 +1,13 @@
 buildscript {
   ext.versions = [
-    'kotlin': '1.4.21',
+    'kotlin': '1.4.31',
     'kotlinx': [
       'coroutines': '1.4.1',
       'serialization': '1.0.0',
     ],
     'ktor': '1.4.1',
     'exhaustive': '0.1.1',
-    'compose': '1.0.0-alpha09',
+    'compose': '1.0.0-beta02',
   ]
 
   ext.deps = [
@@ -25,6 +25,9 @@ buildscript {
         'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
         'json': "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.kotlinx.serialization}",
       ],
+    ],
+    'androidx': [
+      'core': 'androidx.core:core-ktx:1.2.0',
     ],
     'ktor': [
       'client': [
@@ -49,7 +52,7 @@ buildscript {
     classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
     classpath 'com.android.tools.build:gradle:4.0.2'
     classpath "app.cash.exhaustive:exhaustive-gradle:${versions.exhaustive}"
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
     classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.10.2'
   }
   repositories {
@@ -80,17 +83,12 @@ subprojects {
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
     task.kotlinOptions {
+      jvmTarget = '1.8'
+      useIR = true
       freeCompilerArgs += [
         '-Xopt-in=kotlin.RequiresOptIn',
         '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
       ]
-    }
-  }
-
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach {
-    kotlinOptions {
-      jvmTarget = '1.8'
-      useIR = true
     }
   }
 

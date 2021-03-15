@@ -25,7 +25,7 @@ fun TreehouseScope.Button(
   enabled: Boolean = true,
   onClick: (() -> Unit)? = null,
 ) {
-  emit<ButtonNode, Applier<Node>>({ ButtonNode(nextId()) }) {
+  ComposeNode<ButtonNode, Applier<Node>>({ ButtonNode(nextId()) }) {
     set(text) {
       appendDiff(PropertyDiff(id, 1 /* text */, text))
     }
@@ -94,7 +94,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
 
         // ctor
         arguments += CodeBlock.builder()
-          .add("ctor = {\n")
+          .add("factory = {\n")
           .indent()
           .apply {
             if (events.isEmpty()) {
@@ -152,7 +152,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
             .build()
         }
 
-        addStatement("%M<%T, %T>(%L)", emitReference, nodeType, applierOfServerNode,
+        addStatement("%M<%T, %T>(%L)", composeNodeReference, nodeType, applierOfServerNode,
           arguments.joinToCode(",\n", "\n", ",\n"))
       }
       .build())

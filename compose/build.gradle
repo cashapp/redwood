@@ -17,13 +17,11 @@ kotlin {
     commonMain {
       kotlin {
         srcDir 'upstream/compose/runtime/runtime/src/commonMain/kotlin'
-        srcDir 'upstream/compose/runtime/runtime-dispatch/src/commonMain/kotlin'
-
-        exclude 'androidx/compose/runtime/dispatch/Expect.kt'
       }
       dependencies {
         api deps.kotlinx.coroutines.core
-        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3'
+        // Keep in sync with upstream/compose/runtime/runtime/build.gradle
+        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3'
       }
     }
     // TODO get tests working
@@ -37,16 +35,11 @@ kotlin {
     // }
     androidMain {
       kotlin {
-        srcDir 'upstream/compose/runtime/runtime/src/androidMain/kotlin'
         srcDir 'upstream/compose/runtime/runtime/src/jvmMain/kotlin'
-        srcDir 'upstream/compose/runtime/runtime-dispatch/src/androidMain/kotlin'
-
-        exclude 'androidx/compose/runtime/dispatch/ActualAndroid.kt'
       }
       dependencies {
-        // Keep these in sync with upstream/compose/runtime/runtime/build.gradle
+        // Keep in sync with upstream/compose/runtime/runtime/build.gradle
         api 'androidx.annotation:annotation:1.1.0'
-        implementation 'androidx.core:core-ktx:1.1.0'
       }
     }
     jvmMain {

@@ -1,11 +1,11 @@
 package app.cash.treehouse.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Composition
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.compositionFor
-import androidx.compose.runtime.dispatch.MonotonicFrameClock
-import androidx.compose.runtime.dispatch.withFrameMillis
 import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.runtime.withFrameMillis
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
@@ -67,7 +67,7 @@ private class RealTreehouseComposition(
 
   private val applier = ProtocolApplier(Node(RootId, -1), treehouseScope)
   private val recomposer = Recomposer(scope.coroutineContext)
-  private val composition = compositionFor(Any(), applier, recomposer)
+  private val composition = Composition(applier, recomposer)
 
   private lateinit var job: Job
 

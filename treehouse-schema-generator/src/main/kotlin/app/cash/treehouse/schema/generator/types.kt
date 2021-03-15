@@ -20,7 +20,7 @@ internal val treehouseScope = ClassName("app.cash.treehouse.compose", "Treehouse
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
-internal val emitReference = MemberName("androidx.compose.runtime", "emit")
+internal val composeNodeReference = MemberName("androidx.compose.runtime", "ComposeNode")
 
 internal val iae = ClassName("kotlin", "IllegalArgumentException")
 
