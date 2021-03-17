@@ -58,8 +58,8 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
     schema.composeNodeType(node)
   }
   val applierOfServerNode = applier.parameterizedBy(composeNode)
-  return FileSpec.builder(schema.composePackage, node.name)
-    .addFunction(FunSpec.builder(node.name)
+  return FileSpec.builder(schema.composePackage, node.flatName)
+    .addFunction(FunSpec.builder(node.flatName)
       .addModifiers(PUBLIC)
       .addAnnotation(composable)
       .receiver(treehouseScope)
@@ -117,7 +117,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
                 is Property -> {
                   add("set(%N) {\n", trait.name)
                   indent()
-                  add("appendDiff(%T(id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
+                  add("appendDiff(%T(this.id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
                   unindent()
                   add("}\n")
                 }
@@ -125,7 +125,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
                   add("set(%N) {\n", trait.name)
                   indent()
                   add("this.%1N = %1N\n", trait.name)
-                  add("appendDiff(%T(id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
+                  add("appendDiff(%T(this.id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
                   unindent()
                   add("}\n")
                 }

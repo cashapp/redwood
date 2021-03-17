@@ -42,7 +42,7 @@ fun generateDisplayNodeFactory(schema: Schema): FileSpec {
       .addSuperinterface(treeNodeFactory.parameterizedBy(typeVariableT))
       .apply {
         for (node in schema.nodes) {
-          addFunction(FunSpec.builder(node.name)
+          addFunction(FunSpec.builder(node.flatName)
             .addModifiers(PUBLIC, ABSTRACT)
             .addParameter("parent", typeVariableT)
             .apply {
@@ -68,7 +68,7 @@ fun generateDisplayNodeFactory(schema: Schema): FileSpec {
             for (event in node.traits.filterIsInstance<Event>()) {
               factoryArguments += CodeBlock.of("{ events.send(%T(id, %L, null)) }", eventType, event.tag)
             }
-            addStatement("%L -> %N(%L)", node.tag, node.name, factoryArguments.joinToCode())
+            addStatement("%L -> %N(%L)", node.tag, node.flatName, factoryArguments.joinToCode())
           }
         }
         .addStatement("else -> throw %T(\"Unknown kind \$kind\")", iae)
@@ -97,8 +97,8 @@ interface SunspotButton<out T: Any> : SunspotNode<T> {
 fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
   val childrenOfT = treeNodeChildren.parameterizedBy(typeVariableT)
-  return FileSpec.builder(schema.displayPackage, node.name)
-    .addType(TypeSpec.interfaceBuilder(node.name)
+  return FileSpec.builder(schema.displayPackage, node.flatName)
+    .addType(TypeSpec.interfaceBuilder(node.flatName)
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)
       .addSuperinterface(treeNode.parameterizedBy(typeVariableT))

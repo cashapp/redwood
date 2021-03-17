@@ -1,5 +1,6 @@
 package app.cash.treehouse.schema.generator
 
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
@@ -48,8 +49,7 @@ fun parseSchema(schemaFqcn: String): Schema {
       "Only a single @Children property is supported at this time"
     }
 
-    val entityClassName = entity.simpleName!!
-    nodes += Node(nodeAnnotation.value, entityClassName, traits)
+    nodes += Node(nodeAnnotation.value, entity.asClassName(), traits)
   }
 
   // TODO ensure node values are unique inside a node

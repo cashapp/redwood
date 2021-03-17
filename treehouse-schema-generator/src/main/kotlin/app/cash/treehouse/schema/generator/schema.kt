@@ -14,19 +14,26 @@ data class Schema(
   internal val nodeFactoryType = ClassName(displayPackage, "${name}NodeFactory")
 
   fun displayNodeType(node: Node): ClassName {
-    return ClassName(displayPackage, node.name)
+    return ClassName(displayPackage, node.flatName)
   }
 
   fun composeNodeType(node: Node): ClassName {
-    return ClassName(composePackage, node.name + "Node")
+    return ClassName(composePackage, node.flatName + "Node")
   }
 }
 
 data class Node(
   val tag: Int,
-  val name: String,
+  private val className: ClassName,
   val traits: List<Trait>,
-)
+) {
+  /**
+   * Returns a single string that is likely to be unique within a schema, like `MapEntry` or
+   * `NavigationBarButton`.
+   */
+  val flatName: String
+    get() = className.simpleNames.joinToString(separator = "")
+}
 
 sealed class Trait {
   abstract val name: String
