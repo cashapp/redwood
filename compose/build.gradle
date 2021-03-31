@@ -35,6 +35,7 @@ kotlin {
     // }
     androidMain {
       kotlin {
+        srcDir 'upstream/compose/runtime/runtime/src/androidMain/kotlin'
         srcDir 'upstream/compose/runtime/runtime/src/jvmMain/kotlin'
       }
       dependencies {
@@ -45,6 +46,7 @@ kotlin {
     jvmMain {
       kotlin {
         srcDir 'upstream/compose/runtime/runtime/src/jvmMain/kotlin'
+        srcDir 'upstream/compose/runtime/runtime/src/desktopMain/kotlin'
       }
     }
   }
