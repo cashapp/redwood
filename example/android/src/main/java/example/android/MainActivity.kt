@@ -7,6 +7,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
+import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.display.EventSink
 import app.cash.treehouse.display.TreehouseDisplay
