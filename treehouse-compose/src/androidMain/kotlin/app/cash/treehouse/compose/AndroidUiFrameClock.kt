@@ -15,16 +15,17 @@
  */
 
 // This file copied from Compose since it lives inside Compose UI but is general-purpose.
-package example.android
+package app.cash.treehouse.compose
 
 import android.view.Choreographer
+import androidx.compose.runtime.MonotonicFrameClock
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.coroutineContext
 
 class AndroidUiFrameClock(
-  val choreographer: Choreographer
-) : androidx.compose.runtime.MonotonicFrameClock {
+  private val choreographer: Choreographer
+) : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(
     onFrame: (Long) -> R
   ): R {

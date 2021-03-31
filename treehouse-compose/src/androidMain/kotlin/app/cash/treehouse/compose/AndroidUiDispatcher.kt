@@ -15,14 +15,12 @@
  */
 
 // This file copied from Compose since it lives inside Compose UI but is general-purpose.
-package example.android
+package app.cash.treehouse.compose
 
 import android.os.Looper
 import android.view.Choreographer
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.core.os.HandlerCompat
-import example.android.AndroidUiDispatcher.Companion.CurrentThread
-import example.android.AndroidUiDispatcher.Companion.Main
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -31,8 +29,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [CoroutineDispatcher] that will perform dispatch during a [handler] callback or
  * [choreographer]'s animation frame stage, whichever comes first. Use [Main] to obtain
- * a dispatcher for the process's main thread (i.e. the activity thread) or [CurrentThread]
- * to obtain a dispatcher for the current thread.
+ * a dispatcher for the process's main thread (i.e. the activity thread).
  */
 // Implementation note: the constructor is private to direct users toward the companion object
 // accessors for the main/current threads. A choreographer must be obtained from its current
@@ -41,7 +38,6 @@ import kotlin.coroutines.CoroutineContext
 // not marked as async will adversely affect dispatch behavior but not to the point of
 // incorrectness; more operations would be deferred to the choreographer frame as racing handler
 // messages would wait behind a frame barrier.
-@OptIn(ExperimentalStdlibApi::class)
 class AndroidUiDispatcher private constructor(
   val choreographer: Choreographer,
   private val handler: android.os.Handler
@@ -164,29 +160,6 @@ class AndroidUiDispatcher private constructor(
       )
 
       dispatcher + dispatcher.frameClock
-    }
-
-    private val currentThread: ThreadLocal<CoroutineContext> =
-      object : ThreadLocal<CoroutineContext>() {
-        override fun initialValue(): CoroutineContext = AndroidUiDispatcher(
-          Choreographer.getInstance(),
-          HandlerCompat.createAsync(
-            Looper.myLooper()
-              ?: error("no Looper on this thread")
-          )
-        ).let { it + it.frameClock }
-      }
-
-    /**
-     * The canonical [CoroutineContext] containing the [AndroidUiDispatcher] and its
-     * [frameClock] for the calling thread. Returns [Main] if accessed from the process's
-     * main thread.
-     *
-     * Throws [IllegalStateException] if the calling thread does not have
-     * both a [Choreographer] and an active [Looper].
-     */
-    val CurrentThread: CoroutineContext get() = if (isMainThread()) Main else {
-      currentThread.get() ?: error("no AndroidUiDispatcher for this thread")
     }
   }
 }
