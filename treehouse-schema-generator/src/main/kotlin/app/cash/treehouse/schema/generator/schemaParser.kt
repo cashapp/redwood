@@ -39,14 +39,10 @@ fun parseSchema(schemaFqcn: String): Schema {
           Property(it.name!!, property.value, it.type.asTypeName(), defaultExpression)
         }
       } else if (children != null) {
-        Children(it.name!!)
+        Children(it.name!!, children.value)
       } else {
         throw IllegalStateException() // TODO message
       }
-    }
-    check(traits.count { it is Children } < 2) {
-      // TODO remove this limitation!
-      "Only a single @Children property is supported at this time"
     }
 
     nodes += Node(nodeAnnotation.value, entity.asClassName(), traits)

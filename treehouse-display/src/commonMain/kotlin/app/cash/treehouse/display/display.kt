@@ -20,17 +20,17 @@ class TreehouseDisplay<T : Any>(
         is NodeDiff.Insert -> {
           val childNode = factory.create(node.value, nodeDiff.kind, nodeDiff.childId, events)
           nodes[nodeDiff.childId] = childNode
-          node.children.insert(nodeDiff.index, childNode.value)
+          node.children(nodeDiff.childrenIndex).insert(nodeDiff.index, childNode.value)
         }
         is NodeDiff.Move -> {
-          node.children.move(nodeDiff.fromIndex, nodeDiff.toIndex, nodeDiff.count)
+          node.children(nodeDiff.childrenIndex).move(nodeDiff.fromIndex, nodeDiff.toIndex, nodeDiff.count)
         }
         is NodeDiff.Remove -> {
-          node.children.remove(nodeDiff.index, nodeDiff.count)
+          node.children(nodeDiff.childrenIndex).remove(nodeDiff.index, nodeDiff.count)
           // TODO we need to remove nodes from our map!
         }
         NodeDiff.Clear -> {
-          node.children.clear()
+          node.children(TreeDiff.RootChildrenIndex).clear()
           nodes.clear()
           nodes[TreeDiff.RootId] = root
         }

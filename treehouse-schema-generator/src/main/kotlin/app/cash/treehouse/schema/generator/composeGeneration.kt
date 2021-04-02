@@ -92,7 +92,6 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
 
         val arguments = mutableListOf<CodeBlock>()
 
-        // ctor
         arguments += CodeBlock.builder()
           .add("factory = {\n")
           .indent()
@@ -107,46 +106,54 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
           .add("}")
           .build()
 
-        // update
+        val updateLambda = CodeBlock.builder()
+        val childrenLambda = CodeBlock.builder()
+        for (trait in node.traits) {
+          @Exhaustive when (trait) {
+            is Property -> {
+              updateLambda.apply {
+                add("set(%N) {\n", trait.name)
+                indent()
+                add("appendDiff(%T(this.id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
+                unindent()
+                add("}\n")
+              }
+            }
+            is Event -> {
+              updateLambda.apply {
+                add("set(%N) {\n", trait.name)
+                indent()
+                add("this.%1N = %1N\n", trait.name)
+                add("appendDiff(%T(this.id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
+                unindent()
+                add("}\n")
+              }
+            }
+            is Children -> {
+              childrenLambda.apply {
+                add("%M(%L) {\n", syntheticChildren, trait.tag)
+                indent()
+                add("%N()\n", trait.name)
+                unindent()
+                add("}\n")
+              }
+            }
+          }
+        }
+
         arguments += CodeBlock.builder()
           .add("update = {\n")
           .indent()
-          .apply {
-            for (trait in node.traits) {
-              @Exhaustive when (trait) {
-                is Property -> {
-                  add("set(%N) {\n", trait.name)
-                  indent()
-                  add("appendDiff(%T(this.id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
-                  unindent()
-                  add("}\n")
-                }
-                is Event -> {
-                  add("set(%N) {\n", trait.name)
-                  indent()
-                  add("this.%1N = %1N\n", trait.name)
-                  add("appendDiff(%T(this.id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
-                  unindent()
-                  add("}\n")
-                }
-                is Children -> {
-                  // No-op
-                }
-              }
-            }
-
-          }
+          .add(updateLambda.build())
           .unindent()
           .add("}")
           .build()
 
-        // children
-        if (node.traits.any { it is Children }) {
-          val children = node.traits.single { it is Children }
+        if (childrenLambda.isNotEmpty()) {
           arguments += CodeBlock.builder()
             .add("content = {\n")
             .indent()
-            .add("%N()\n", children.name)
+            .add(childrenLambda.build())
             .unindent()
             .add("}")
             .build()
@@ -193,20 +200,3 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
     }
     .build()
 }
-
-/*
-@Composable
-fun TreehouseScope.Text(
-  text: String,
-  color: String? = "black",
-) {
-  emit<Node, Applier<Node>>({ Node(nextId(), 1) }) {
-    set(text) {
-      appendDiff(PropertyDiff(id, 1 /* text */, text))
-    }
-    set(color) {
-      appendDiff(PropertyDiff(id, 2 /* color */, color))
-    }
-  }
-}
-*/

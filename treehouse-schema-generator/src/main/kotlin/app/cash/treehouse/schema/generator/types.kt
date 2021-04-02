@@ -9,13 +9,10 @@ internal val treeNodeChildren = treeNode.nestedClass("Children")
 internal val treeNodeFactory = ClassName("app.cash.treehouse.display", "TreeNodeFactory")
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
-internal val nodeDiff = ClassName("app.cash.treehouse.protocol", "NodeDiff")
-internal val nodeDiffInsert = nodeDiff.nestedClass("Insert")
-internal val nodeDiffMove = nodeDiff.nestedClass("Move")
-internal val nodeDiffRemove = nodeDiff.nestedClass("Remove")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
 
 internal val composeNode = ClassName("app.cash.treehouse.compose", "Node")
+internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "-SyntheticChildren")
 internal val treehouseScope = ClassName("app.cash.treehouse.compose", "TreehouseScope")
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")

@@ -118,11 +118,27 @@ fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
                 .build())
             }
             is Children -> {
-              addProperty(PropertySpec.builder("children", childrenOfT)
-                .addModifiers(PUBLIC, ABSTRACT, OVERRIDE)
+              addProperty(PropertySpec.builder(trait.name, childrenOfT)
+                .addModifiers(PUBLIC, ABSTRACT)
                 .build())
             }
           }
+        }
+        val childrens = node.traits.filterIsInstance<Children>()
+        if (childrens.isNotEmpty()) {
+          addFunction(FunSpec.builder("children")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .addParameter("index", INT)
+            .returns(childrenOfT)
+            .beginControlFlow("return when (index)")
+            .apply {
+              for (children in childrens) {
+                addStatement("%L -> %N", children.tag, children.name)
+              }
+            }
+            .addStatement("else -> throw %T(\"Unknown index \$index\")", iae)
+            .endControlFlow()
+            .build())
         }
       }
       .addFunction(FunSpec.builder("apply")
