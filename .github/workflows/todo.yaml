@@ -1,0 +1,20 @@
+name: todo
+
+on:
+  push:
+    branches:
+      - trunk
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # Note: Intentionally omitting the git submodule checkout
+
+      - uses: alstr/todo-to-issue-action@v3.0.1-beta
+        id: todo
+        with:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_P: false
