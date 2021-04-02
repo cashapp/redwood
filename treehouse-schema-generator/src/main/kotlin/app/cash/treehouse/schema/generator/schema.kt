@@ -24,7 +24,7 @@ data class Schema(
 
 data class Node(
   val tag: Int,
-  private val className: ClassName,
+  val className: ClassName,
   val traits: List<Trait>,
 ) {
   /**

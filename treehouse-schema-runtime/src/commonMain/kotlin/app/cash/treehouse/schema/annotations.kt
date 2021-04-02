@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * of this schema.
  *
  * ```
- * @Schema(entities = [
+ * @Schema([
  *   Box::class,
  *   Button::class,
  *   Text::class,
@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * interface Name
  * ```
  */
-annotation class Schema(val entities: Array<KClass<*>>)
+annotation class Schema(val nodes: Array<KClass<*>>)
 
 /**
  * Annotates a data class which represents a node in a UI tree. Each node in a [Schema] must have

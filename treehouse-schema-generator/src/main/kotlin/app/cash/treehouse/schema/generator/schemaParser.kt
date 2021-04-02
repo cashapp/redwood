@@ -12,22 +12,33 @@ import app.cash.treehouse.schema.Node as NodeAnnotation
 import app.cash.treehouse.schema.Property as PropertyAnnotation
 import app.cash.treehouse.schema.Schema as SchemaAnnotation
 
-fun parseSchema(schemaFqcn: String): Schema {
-  val schemaType = Class.forName(schemaFqcn)
-
+fun parseSchema(schemaType: Class<*>): Schema {
   val nodes = mutableListOf<Node>()
-  val entities = schemaType.getAnnotation(SchemaAnnotation::class.java).entities
-  for (entity in entities) {
-    val nodeAnnotation = checkNotNull(entity.findAnnotation<NodeAnnotation>()) {
-      "Schema entity $entity is not annotated with @Container or @Node"
+
+  val nodeTypes = requireNotNull(schemaType.getAnnotation(SchemaAnnotation::class.java)) {
+    "Schema ${schemaType.name} missing @Schema annotation"
+  }.nodes
+
+  val duplicatedNodes = nodeTypes.groupBy { it }.filterValues { it.size > 1 }.keys
+  if (duplicatedNodes.isNotEmpty()) {
+    throw IllegalArgumentException(buildString {
+      append("Schema contains repeated node")
+      if (duplicatedNodes.size > 1) {
+        append('s')
+      }
+      duplicatedNodes.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.java.name.toString() }
+    })
+  }
+
+  for (nodeType in nodeTypes) {
+    val nodeAnnotation = requireNotNull(nodeType.findAnnotation<NodeAnnotation>()) {
+      "${nodeType.java.name} missing @Node annotation"
+    }
+    require(nodeType.isData) {
+      "@Node ${nodeType.java.name} must be 'data' class"
     }
 
-    // TODO must be data class
-    // TODO no inheritance
-    // TODO no computed properties
-    // TODO no functions
-    // TODO ensure tag values are unique inside a node
-    val traits = entity.primaryConstructor!!.parameters.map {
+    val traits = nodeType.primaryConstructor!!.parameters.map {
       val property = it.findAnnotation<PropertyAnnotation>()
       val children = it.findAnnotation<ChildrenAnnotation>()
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
@@ -41,14 +52,47 @@ fun parseSchema(schemaFqcn: String): Schema {
       } else if (children != null) {
         Children(it.name!!, children.value)
       } else {
-        throw IllegalStateException() // TODO message
+        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${nodeType.java.name}")
       }
     }
 
-    nodes += Node(nodeAnnotation.value, entity.asClassName(), traits)
+    val badChildren =
+      traits.filterIsInstance<Children>().groupBy(Children::tag).filterValues { it.size > 1 }
+    if (badChildren.isNotEmpty()) {
+      throw IllegalArgumentException(buildString {
+        appendLine("Node ${nodeType.java.name}'s @Children tags must be unique")
+        for ((tag, children) in badChildren) {
+          append("\n- @Children($tag): ")
+          children.joinTo(this) { it.name }
+        }
+      })
+    }
+
+    val badProperties =
+      traits.filterIsInstance<Property>().groupBy(Property::tag).filterValues { it.size > 1 }
+    if (badProperties.isNotEmpty()) {
+      throw IllegalArgumentException(buildString {
+        appendLine("Node ${nodeType.java.name}'s @Property tags must be unique")
+        for ((tag, property) in badProperties) {
+          append("\n- @Property($tag): ")
+          property.joinTo(this) { it.name }
+        }
+      })
+    }
+
+    nodes += Node(nodeAnnotation.value, nodeType.asClassName(), traits)
   }
 
-  // TODO ensure node values are unique inside a node
+  val badNodes = nodes.groupBy(Node::tag).filterValues { it.size > 1 }
+  if (badNodes.isNotEmpty()) {
+    throw IllegalArgumentException(buildString {
+      appendLine("Schema @Node tags must be unique")
+      for ((tag, node) in badNodes) {
+        append("\n- @Node($tag): ")
+        node.joinTo(this) { it.className.reflectionName() }
+      }
+    })
+  }
 
   return Schema(schemaType.simpleName, packageName(schemaType), nodes)
 }
