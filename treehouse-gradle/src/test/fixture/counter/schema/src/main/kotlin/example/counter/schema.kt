@@ -16,7 +16,7 @@ interface Counter
 @Node(1)
 data class CounterBox(
   @Property(1) val orientation: Boolean, // TODO enum or whatever
-  @Children val children: List<Any>,
+  @Children(1) val children: List<Any>,
 )
 
 @Node(2)

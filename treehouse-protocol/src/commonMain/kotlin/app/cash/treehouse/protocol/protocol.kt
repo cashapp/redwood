@@ -17,6 +17,7 @@ data class TreeDiff(
 ) {
   companion object {
     const val RootId = 0L
+    const val RootChildrenIndex = 1
   }
 }
 
@@ -30,15 +31,18 @@ data class PropertyDiff(
 @Serializable
 sealed class NodeDiff {
   abstract val id: Long
+  abstract val childrenIndex: Int
 
   @Serializable
   object Clear : NodeDiff() {
     override val id get() = TreeDiff.RootId
+    override val childrenIndex get() = throw UnsupportedOperationException()
   }
 
   @Serializable
   data class Insert(
     override val id: Long,
+    override val childrenIndex: Int,
     val childId: Long,
     val kind: Int,
     val index: Int,
@@ -47,6 +51,7 @@ sealed class NodeDiff {
   @Serializable
   data class Move(
     override val id: Long,
+    override val childrenIndex: Int,
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
@@ -55,6 +60,7 @@ sealed class NodeDiff {
   @Serializable
   data class Remove(
     override val id: Long,
+    override val childrenIndex: Int,
     val index: Int,
     val count: Int,
   ) : NodeDiff()
