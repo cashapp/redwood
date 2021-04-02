@@ -56,8 +56,8 @@ data class Event(
 ) : Trait()
 
 data class Children(
-  override val name: String
+  override val name: String,
+  override val tag: Int,
 ) : Trait() {
-  override val tag: Int get() = 0
   override val defaultExpression: String? get() = null
 }

@@ -8,8 +8,8 @@ interface TreeNode<T : Any> {
 
   fun apply(diff: PropertyDiff)
 
-  val children: Children<T> get() {
-    throw IllegalStateException("${this::class} does not support children")
+  fun children(index: Int): Children<T> {
+    throw IllegalArgumentException("Node does not support children")
   }
 
   interface Children<T : Any> {

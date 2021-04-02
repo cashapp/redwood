@@ -65,7 +65,7 @@ private class RealTreehouseComposition(
     }
   }
 
-  private val applier = ProtocolApplier(Node(RootId, -1), treehouseScope)
+  private val applier = ProtocolApplier(treehouseScope)
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
 
