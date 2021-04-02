@@ -7,6 +7,7 @@ import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Display
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -31,11 +32,12 @@ private class TreehouseGenerator : CliktCommand() {
   private val out by option().path().required()
     .help("Directory into which generated files are written")
 
-  private val schemaFqcn by argument("schema")
+  private val schemaType by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
+    .convert { Class.forName(it) as Class<*> }
 
   override fun run() {
-    val schema = parseSchema(schemaFqcn)
+    val schema = parseSchema(schemaType)
     @Exhaustive when (type) {
       Display -> {
         generateDisplayNodeFactory(schema).writeTo(out)
