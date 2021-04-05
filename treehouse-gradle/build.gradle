@@ -42,7 +42,8 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':compose:installArchives')
+  dependsOn(':compose:compiler:installArchives')
+  dependsOn(':compose:runtime:installArchives')
   dependsOn(':treehouse-compose:installArchives')
   dependsOn(':treehouse-display:installArchives')
   dependsOn(':treehouse-gradle:installArchives')
@@ -61,7 +62,6 @@ task pluginVersion {
   def outputDir = file(versionDirectory)
 
   inputs.property 'treehouseVersion', project.version
-  inputs.property 'composeVersion', versions.compose
   outputs.dir outputDir
 
   doLast {
@@ -71,7 +71,6 @@ task pluginVersion {
 package app.cash.treehouse.gradle
 
 internal const val treehouseVersion = "${project.version}"
-internal const val composeVersion = "${versions.compose}"
 """
   }
 }

@@ -1,0 +1,65 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+archivesBaseName = 'treehouse-jetpack-compose'
+
+kotlin {
+  android {
+    publishAllLibraryVariants()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/commonMain/kotlin'
+      }
+      dependencies {
+        api deps.kotlinx.coroutines.core
+        // Keep in sync with upstream/compose/runtime/runtime/build.gradle
+        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3'
+      }
+    }
+    // TODO get tests working
+    // commonTest {
+    //   kotlin {
+    //     srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
+    //   }
+    //   dependencies {
+    //     implementation 'org.jetbrains.kotlin:kotlin-test-multiplatform'
+    //   }
+    // }
+    androidMain {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/androidMain/kotlin'
+        srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
+      }
+      dependencies {
+        // Keep in sync with ../upstream/compose/runtime/runtime/build.gradle
+        api 'androidx.annotation:annotation:1.1.0'
+      }
+    }
+    jvmMain {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
+        srcDir '../upstream/compose/runtime/runtime/src/desktopMain/kotlin'
+      }
+    }
+  }
+}
+
+android {
+  sourceSets {
+    main {
+      manifest.srcFile '../upstream/compose/runtime/runtime/src/androidMain/AndroidManifest.xml'
+    }
+  }
+}
+
+dependencies {
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
+}

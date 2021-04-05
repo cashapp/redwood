@@ -19,9 +19,9 @@ class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
   override fun getCompilerPluginId() = "app.cash.treehouse"
 
   override fun getPluginArtifact() = SubpluginArtifact(
-    "androidx.compose.compiler",
-    "compiler",
-    composeVersion,
+    "app.cash.treehouse",
+    "compose-compiler",
+    treehouseVersion,
   )
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {

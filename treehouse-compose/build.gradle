@@ -16,7 +16,7 @@ kotlin {
       dependencies {
         api deps.kotlinx.coroutines.core
         api project(':treehouse-protocol')
-        api project(':compose')
+        api project(':compose:runtime')
       }
     }
     androidMain {
@@ -28,5 +28,5 @@ kotlin {
 }
 
 dependencies {
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.composeCompiler)
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
 }

@@ -13,5 +13,5 @@ dependencies {
   implementation deps.logbackClassic
   implementation deps.kotlinx.serialization.json
 
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.composeCompiler)
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
 }

@@ -1,6 +1,8 @@
 rootProject.name = 'treehouse'
 
-include ':compose'
+include ':compose:compiler'
+include ':compose:compiler-hosted'
+include ':compose:runtime'
 
 include ':treehouse-compose'
 include ':treehouse-display'
