@@ -17,5 +17,5 @@ kotlin {
 }
 
 dependencies {
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.composeCompiler)
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
 }
