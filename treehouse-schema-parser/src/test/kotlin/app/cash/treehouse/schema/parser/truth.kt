@@ -1,4 +1,4 @@
-package app.cash.treehouse.schema.generator
+package app.cash.treehouse.schema.parser
 
 import com.google.common.truth.ThrowableSubject
 import com.google.common.truth.Truth.assertThat

@@ -1,4 +1,4 @@
-package app.cash.treehouse.schema.generator
+package app.cash.treehouse.schema.parser
 
 import app.cash.treehouse.schema.Children
 import app.cash.treehouse.schema.Node
@@ -13,7 +13,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotationSchema::class.java)
     }.hasMessageThat().isEqualTo(
-      "Schema app.cash.treehouse.schema.generator.SchemaParserTest\$NonAnnotationSchema missing @Schema annotation")
+      "Schema app.cash.treehouse.schema.parser.SchemaParserTest\$NonAnnotationSchema missing @Schema annotation")
   }
 
   @Schema([
@@ -28,7 +28,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedNodeSchema::class.java)
     }.hasMessageThat().isEqualTo(
-      "app.cash.treehouse.schema.generator.SchemaParserTest\$NonAnnotatedNode missing @Node annotation")
+      "app.cash.treehouse.schema.parser.SchemaParserTest\$NonAnnotatedNode missing @Node annotation")
   }
 
   @Schema([
@@ -57,7 +57,7 @@ class SchemaParserTest {
       """
       |Schema @Node tags must be unique
       |
-      |- @Node(1): app.cash.treehouse.schema.generator.SchemaParserTest${'$'}DuplicateNodeTagA, app.cash.treehouse.schema.generator.SchemaParserTest${'$'}DuplicateNodeTagB
+      |- @Node(1): app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateNodeTagA, app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateNodeTagB
       """.trimMargin())
   }
 
@@ -78,7 +78,7 @@ class SchemaParserTest {
       """
       |Schema contains repeated node
       |
-      |- app.cash.treehouse.schema.generator.SchemaParserTest${'$'}RepeatedNode
+      |- app.cash.treehouse.schema.parser.SchemaParserTest${'$'}RepeatedNode
       """.trimMargin())
   }
 
@@ -99,7 +99,7 @@ class SchemaParserTest {
       parseSchema(DuplicatePropertyTagSchema::class.java)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.generator.SchemaParserTest${'$'}DuplicatePropertyTagNode's @Property tags must be unique
+      |Node app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicatePropertyTagNode's @Property tags must be unique
       |
       |- @Property(1): name, nickname
       """.trimMargin())
@@ -121,7 +121,7 @@ class SchemaParserTest {
       parseSchema(DuplicateChildrenTagSchema::class.java)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.generator.SchemaParserTest${'$'}DuplicateChildrenTagNode's @Children tags must be unique
+      |Node app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateChildrenTagNode's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
       """.trimMargin())
@@ -142,7 +142,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnannotatedPrimaryParameterSchema::class.java)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.generator.SchemaParserTest\$UnannotatedPrimaryParameterNode")
+      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest\$UnannotatedPrimaryParameterNode")
   }
 
   @Schema([
@@ -158,7 +158,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassSchema::class.java)
     }.hasMessageThat().isEqualTo(
-      "@Node app.cash.treehouse.schema.generator.SchemaParserTest\$NonDataClassNode must be 'data' class")
+      "@Node app.cash.treehouse.schema.parser.SchemaParserTest\$NonDataClassNode must be 'data' class")
   }
 
   @Schema([
@@ -174,6 +174,6 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class.java)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.treehouse.schema.generator.SchemaParserTest\$InvalidChildrenTypeNode#children must be of type 'List<Any>'")
+      "@Children app.cash.treehouse.schema.parser.SchemaParserTest\$InvalidChildrenTypeNode#children must be of type 'List<Any>'")
   }
 }

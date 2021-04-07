@@ -5,6 +5,7 @@ package app.cash.treehouse.schema.generator
 import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Display
+import app.cash.treehouse.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.convert

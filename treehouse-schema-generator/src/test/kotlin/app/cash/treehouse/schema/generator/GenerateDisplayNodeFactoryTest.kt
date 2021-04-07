@@ -1,65 +1,60 @@
 package app.cash.treehouse.schema.generator
 
+import app.cash.treehouse.schema.Node
+import app.cash.treehouse.schema.Property
+import app.cash.treehouse.schema.Schema
+import app.cash.treehouse.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.asTypeName
 import org.junit.Test
 
 class GenerateDisplayNodeFactoryTest {
-  @Test
-  internal fun `simple names do not collide`() {
-    val navigationBarButton = Node(
-      tag = 1,
-      className = ClassName("com.example.sunspot", "NavigationBar", "Button"),
-      traits = listOf(
-        Property("label", tag = 2, type = String::class.asTypeName(), defaultExpression = null)
-      )
-    )
-    val mooncakeButton = Node(
-      tag = 3,
-      className = ClassName("com.example.sunspot", "Button"),
-      traits = listOf(
-        Property("label", tag = 4, type = String::class.asTypeName(), defaultExpression = null)
-      )
-    )
+  @Schema([
+    NavigationBar.Button::class,
+    Button::class,
+  ])
+  interface SimpleNameCollisionSchema
+  interface NavigationBar {
+    @Node(1)
+    data class Button(@Property(1) val text: String)
+  }
+  @Node(3)
+  data class Button(@Property(1) val text: String)
 
-    val schema = Schema(
-      name = "TestSchema",
-      `package` = "com.example",
-      nodes = listOf(
-        navigationBarButton, mooncakeButton
-      )
-    )
+  @Test fun `simple names do not collide`() {
+    val schema = parseSchema(SimpleNameCollisionSchema::class.java)
 
     val fileSpec = generateDisplayNodeFactory(schema)
     assertThat(fileSpec.toString()).contains("""
-        |    1 -> NavigationBarButton(parent)
-        |    3 -> Button(parent)
+        |    1 -> GenerateDisplayNodeFactoryTestNavigationBarButton(parent)
+        |    3 -> GenerateDisplayNodeFactoryTestButton(parent)
         |""".trimMargin())
   }
 
-  @Test
-  internal fun `names are sorted by their node tags`() {
-    fun node(tag: Int) = Node(
-      tag = tag,
-      className = ClassName("com.example.sunspot", "Node$tag"),
-      traits = emptyList()
-    )
+  @Schema([
+    Node12::class,
+    Node1::class,
+    Node3::class,
+    Node2::class,
+  ])
+  interface SortedByTagSchema
+  @Node(1)
+  data class Node1(@Property(1) val text: String)
+  @Node(2)
+  data class Node2(@Property(1) val text: String)
+  @Node(3)
+  data class Node3(@Property(1) val text: String)
+  @Node(12)
+  data class Node12(@Property(1) val text: String)
 
-    val schema = Schema(
-      name = "TestSchema",
-      `package` = "com.example",
-      nodes = listOf(
-        node(3), node(1), node(2), node(12)
-      )
-    )
+  @Test fun `names are sorted by their node tags`() {
+    val schema = parseSchema(SortedByTagSchema::class.java)
 
     val fileSpec = generateDisplayNodeFactory(schema)
     assertThat(fileSpec.toString()).contains("""
-        |    1 -> Node1(parent)
-        |    2 -> Node2(parent)
-        |    3 -> Node3(parent)
-        |    12 -> Node12(parent)
+        |    1 -> GenerateDisplayNodeFactoryTestNode1(parent)
+        |    2 -> GenerateDisplayNodeFactoryTestNode2(parent)
+        |    3 -> GenerateDisplayNodeFactoryTestNode3(parent)
+        |    12 -> GenerateDisplayNodeFactoryTestNode12(parent)
         |""".trimMargin())
   }
 }

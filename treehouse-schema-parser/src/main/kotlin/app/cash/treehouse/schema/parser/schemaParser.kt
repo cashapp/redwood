@@ -1,13 +1,12 @@
-package app.cash.treehouse.schema.generator
+package app.cash.treehouse.schema.parser
 
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KTypeProjection.Companion.invariant
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.jvm.jvmName
 import app.cash.treehouse.schema.Children as ChildrenAnnotation
 import app.cash.treehouse.schema.Default as DefaultAnnotation
 import app.cash.treehouse.schema.Node as NodeAnnotation
@@ -53,7 +52,7 @@ fun parseSchema(schemaType: Class<*>): Schema {
         if (it.type.isSubtypeOf(Function::class.starProjectedType)) {
           Event(it.name!!, property.value, defaultExpression)
         } else {
-          Property(it.name!!, property.value, it.type.asTypeName(), defaultExpression)
+          Property(it.name!!, property.value, it.type, defaultExpression)
         }
       } else if (children != null) {
         require(it.type == LIST_OF_ANY_TYPE) {
@@ -89,7 +88,7 @@ fun parseSchema(schemaType: Class<*>): Schema {
       })
     }
 
-    nodes += Node(nodeAnnotation.value, nodeType.asClassName(), traits)
+    nodes += Node(nodeAnnotation.value, nodeType, traits)
   }
 
   val badNodes = nodes.groupBy(Node::tag).filterValues { it.size > 1 }
@@ -98,7 +97,7 @@ fun parseSchema(schemaType: Class<*>): Schema {
       appendLine("Schema @Node tags must be unique")
       for ((tag, node) in badNodes) {
         append("\n- @Node($tag): ")
-        node.joinTo(this) { it.className.reflectionName() }
+        node.joinTo(this) { it.className.jvmName }
       }
     })
   }
