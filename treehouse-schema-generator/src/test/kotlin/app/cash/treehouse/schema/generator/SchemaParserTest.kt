@@ -160,4 +160,20 @@ class SchemaParserTest {
     }.hasMessageThat().isEqualTo(
       "@Node app.cash.treehouse.schema.generator.SchemaParserTest\$NonDataClassNode must be 'data' class")
   }
+
+  @Schema([
+    InvalidChildrenTypeNode::class,
+  ])
+  interface InvalidChildrenTypeSchema
+  @Node(1)
+  data class InvalidChildrenTypeNode(
+    @Children(1) val children: List<String>,
+  )
+
+  @Test fun invalidChildrenTypeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(InvalidChildrenTypeSchema::class.java)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.treehouse.schema.generator.SchemaParserTest\$InvalidChildrenTypeNode#children must be of type 'List<Any>'")
+  }
 }
