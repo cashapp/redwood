@@ -2,6 +2,8 @@ package app.cash.treehouse.schema.generator
 
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
+import kotlin.reflect.KTypeProjection.Companion.invariant
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
@@ -11,6 +13,10 @@ import app.cash.treehouse.schema.Default as DefaultAnnotation
 import app.cash.treehouse.schema.Node as NodeAnnotation
 import app.cash.treehouse.schema.Property as PropertyAnnotation
 import app.cash.treehouse.schema.Schema as SchemaAnnotation
+
+private val LIST_OF_ANY_TYPE = List::class.createType(
+  arguments = listOf(invariant(Any::class.createType()))
+)
 
 fun parseSchema(schemaType: Class<*>): Schema {
   val nodes = mutableListOf<Node>()
@@ -50,6 +56,9 @@ fun parseSchema(schemaType: Class<*>): Schema {
           Property(it.name!!, property.value, it.type.asTypeName(), defaultExpression)
         }
       } else if (children != null) {
+        require(it.type == LIST_OF_ANY_TYPE) {
+          "@Children ${nodeType.java.name}#${it.name} must be of type 'List<Any>'"
+        }
         Children(it.name!!, children.value)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${nodeType.java.name}")
