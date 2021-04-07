@@ -2,10 +2,9 @@ buildscript {
   ext.versions = [
     'kotlin': '1.4.31',
     'kotlinx': [
-      'coroutines': '1.4.1',
+      'coroutines': '1.4.3',
       'serialization': '1.0.0',
     ],
-    'ktor': '1.4.1',
     'exhaustive': '0.1.1',
   ]
 
@@ -22,23 +21,11 @@ buildscript {
       ],
       'serialization': [
         'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
-        'json': "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.kotlinx.serialization}",
       ],
     ],
     'androidx': [
       'core': 'androidx.core:core-ktx:1.2.0',
     ],
-    'ktor': [
-      'client': [
-        'core': "io.ktor:ktor-client-core:${versions.ktor}",
-      ],
-      'server': [
-        'core': "io.ktor:ktor-server-core:${versions.ktor}",
-        'netty': "io.ktor:ktor-server-netty:${versions.ktor}",
-        'webSockets': "io.ktor:ktor-websockets:${versions.ktor}",
-      ],
-    ],
-    'logbackClassic': 'ch.qos.logback:logback-classic:1.2.3',
     'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
     'clikt': 'com.github.ajalt.clikt:clikt:3.1.0',
     'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
@@ -88,6 +75,15 @@ subprojects {
       freeCompilerArgs += [
         '-Xopt-in=kotlin.RequiresOptIn',
         '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
+      ]
+    }
+  }
+
+  // This is required for JetBrains' Compose fork to build JS correctly.
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile).configureEach { task ->
+    task.kotlinOptions {
+      freeCompilerArgs += [
+        "-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true",
       ]
     }
   }

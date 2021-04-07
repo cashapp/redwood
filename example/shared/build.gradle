@@ -5,7 +5,9 @@ apply plugin: 'com.android.library'
 
 kotlin {
   android()
-  jvm()
+  js {
+    browser()
+  }
 
   sourceSets {
     commonMain {

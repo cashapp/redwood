@@ -1,20 +1,26 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
 apply plugin: 'org.jetbrains.kotlin.js'
 
 archivesBaseName = 'example'
 
 kotlin {
-  target {
+  js {
     browser()
+    binaries.executable()
   }
 
   sourceSets {
     main {
       dependencies {
         implementation project(':example:sunspot:display')
+        implementation project(':example:shared')
         implementation deps.kotlinx.coroutines.core
-        implementation deps.kotlinx.serialization.json
-        implementation deps.ktor.client.core
       }
     }
   }
+}
+
+dependencies {
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
 }

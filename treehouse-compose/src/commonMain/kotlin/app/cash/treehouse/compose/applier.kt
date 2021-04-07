@@ -30,7 +30,7 @@ interface TreehouseScope {
  * @see ProtocolApplier
  */
 @Composable
-fun `-SyntheticChildren`(index: Int, content: @Composable () -> Unit) {
+fun `$SyntheticChildren`(index: Int, content: @Composable () -> Unit) {
   ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
     factory = ChildrenNode::Intermediate,
     update = {

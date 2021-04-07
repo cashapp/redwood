@@ -9,6 +9,9 @@ kotlin {
   android {
     publishAllLibraryVariants()
   }
+  js {
+    browser()
+  }
   jvm()
 
   sourceSets {
