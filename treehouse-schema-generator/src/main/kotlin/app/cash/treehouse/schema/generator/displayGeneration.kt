@@ -63,7 +63,7 @@ fun generateDisplayNodeFactory(schema: Schema): FileSpec {
         .returns(treeNode.parameterizedBy(typeVariableT))
         .beginControlFlow("return when (kind)")
         .apply {
-          for (node in schema.nodes) {
+          for (node in schema.nodes.sortedBy { it.tag }) {
             val factoryArguments = mutableListOf(CodeBlock.of("parent"))
             for (event in node.traits.filterIsInstance<Event>()) {
               factoryArguments += CodeBlock.of("{ events.send(%T(id, %L, null)) }", eventType, event.tag)
