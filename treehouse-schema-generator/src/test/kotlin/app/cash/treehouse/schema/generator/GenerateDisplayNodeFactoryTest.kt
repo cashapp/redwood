@@ -37,4 +37,29 @@ class GenerateDisplayNodeFactoryTest {
         |    3 -> Button(parent)
         |""".trimMargin())
   }
+
+  @Test
+  internal fun `names are sorted by their node tags`() {
+    fun node(tag: Int) = Node(
+      tag = tag,
+      className = ClassName("com.example.sunspot", "Node$tag"),
+      traits = emptyList()
+    )
+
+    val schema = Schema(
+      name = "TestSchema",
+      `package` = "com.example",
+      nodes = listOf(
+        node(3), node(1), node(2), node(12)
+      )
+    )
+
+    val fileSpec = generateDisplayNodeFactory(schema)
+    assertThat(fileSpec.toString()).contains("""
+        |    1 -> Node1(parent)
+        |    2 -> Node2(parent)
+        |    3 -> Node3(parent)
+        |    12 -> Node12(parent)
+        |""".trimMargin())
+  }
 }
