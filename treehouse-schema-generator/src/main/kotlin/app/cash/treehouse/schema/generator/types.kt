@@ -12,7 +12,7 @@ internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
 
 internal val composeNode = ClassName("app.cash.treehouse.compose", "Node")
-internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "-SyntheticChildren")
+internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "\$SyntheticChildren")
 internal val treehouseScope = ClassName("app.cash.treehouse.compose", "TreehouseScope")
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")

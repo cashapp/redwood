@@ -1,59 +1,45 @@
 package example.web
 
+import app.cash.treehouse.compose.TreehouseComposition
+import app.cash.treehouse.compose.WindowAnimationFrameClock
+import app.cash.treehouse.display.EventSink
 import app.cash.treehouse.display.TreehouseDisplay
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.TreeDiff
+import example.shared.Counter
 import example.web.sunspot.HtmlSunspotBox
 import example.web.sunspot.HtmlSunspotNodeFactory
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.js.Js
-import io.ktor.client.features.websocket.WebSockets
-import io.ktor.client.features.websocket.ws
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
+import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
+  // Indirection to create a cyclic dependency between the client and the server for the demo.
+  val eventSink = object : EventSink {
+    lateinit var composition: TreehouseComposition
+    override fun send(event: Event) {
+      console.log("TreehouseEvent", event.toString())
+      composition.sendEvent(event)
+    }
+  }
+
   val content = document.getElementById("content")!! as HTMLElement
+  val display = TreehouseDisplay(
+    root = HtmlSunspotBox(content),
+    factory = HtmlSunspotNodeFactory,
+    events = eventSink,
+  )
 
-  GlobalScope.launch {
-    val client = HttpClient(Js) {
-      install(WebSockets)
+  val server = TreehouseComposition(
+    scope = GlobalScope + WindowAnimationFrameClock,
+    diff = { diff ->
+      console.log("TreehouseDiff", diff.toString())
+      display.apply(diff)
     }
+  )
+  eventSink.composition = server
 
-    val serializer = Json {
-      useArrayPolymorphism = true
-      serializersModule = SerializersModule {
-        polymorphic(Any::class) {
-          subclass(String::class, String.serializer())
-          subclass(Boolean::class, Boolean.serializer())
-        }
-      }
-    }
-
-    client.ws(host = "localhost", port = 8765, path = "/counter") {
-      val treehouse = TreehouseDisplay(
-        root = HtmlSunspotBox(content),
-        factory = HtmlSunspotNodeFactory,
-      ) { event ->
-          console.log("TreehouseEvent: $event")
-          val json = serializer.encodeToString(Event.serializer(), event)
-          outgoing.offer(Frame.Text(json))
-      }
-
-      for (frame in incoming) {
-        val json = (frame as Frame.Text).readText()
-        val diff = serializer.decodeFromString(TreeDiff.serializer(), json)
-        console.log("TreehouseDiff: $diff")
-        treehouse.apply(diff)
-      }
-    }
+  server.setContent {
+    Counter()
   }
 }

@@ -12,7 +12,6 @@ include ':treehouse-schema-generator'
 include ':treehouse-schema-runtime'
 
 include ':example:android'
-include ':example:jvm-server'
 include ':example:shared'
 include ':example:sunspot'
 include ':example:sunspot:compose'
