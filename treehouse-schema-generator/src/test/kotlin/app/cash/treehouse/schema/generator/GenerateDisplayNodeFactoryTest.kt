@@ -21,7 +21,7 @@ class GenerateDisplayNodeFactoryTest {
   data class Button(@Property(1) val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class.java)
+    val schema = parseSchema(SimpleNameCollisionSchema::class)
 
     val fileSpec = generateDisplayNodeFactory(schema)
     assertThat(fileSpec.toString()).contains("""
@@ -47,7 +47,7 @@ class GenerateDisplayNodeFactoryTest {
   data class Node12(@Property(1) val text: String)
 
   @Test fun `names are sorted by their node tags`() {
-    val schema = parseSchema(SortedByTagSchema::class.java)
+    val schema = parseSchema(SortedByTagSchema::class)
 
     val fileSpec = generateDisplayNodeFactory(schema)
     assertThat(fileSpec.toString()).contains("""

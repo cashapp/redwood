@@ -35,7 +35,10 @@ private class TreehouseGenerator : CliktCommand() {
 
   private val schemaType by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
-    .convert { Class.forName(it) as Class<*> }
+    .convert {
+      // Replace with https://youtrack.jetbrains.com/issue/KT-10440 once it ships.
+      Class.forName(it).kotlin
+    }
 
   override fun run() {
     val schema = parseSchema(schemaType)
