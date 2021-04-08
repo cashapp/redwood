@@ -19,7 +19,7 @@ class GenerateComposeNodeTest {
   )
 
   @Test fun `id property does not collide`() {
-    val schema = parseSchema(IdPropertyNameCollisionSchema::class.java)
+    val schema = parseSchema(IdPropertyNameCollisionSchema::class)
 
     val fileSpec = generateComposeNode(schema, schema.nodes.single())
     assertThat(fileSpec.toString()).contains("""

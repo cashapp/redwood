@@ -11,9 +11,9 @@ class SchemaParserTest {
 
   @Test fun nonAnnotatedSchemaThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(NonAnnotationSchema::class.java)
+      parseSchema(NonAnnotationSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Schema app.cash.treehouse.schema.parser.SchemaParserTest\$NonAnnotationSchema missing @Schema annotation")
+      "Schema app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation")
   }
 
   @Schema([
@@ -26,9 +26,9 @@ class SchemaParserTest {
 
   @Test fun nonAnnotatedNodeThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(NonAnnotatedNodeSchema::class.java)
+      parseSchema(NonAnnotatedNodeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.treehouse.schema.parser.SchemaParserTest\$NonAnnotatedNode missing @Node annotation")
+      "app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotatedNode missing @Node annotation")
   }
 
   @Schema([
@@ -52,12 +52,12 @@ class SchemaParserTest {
 
   @Test fun duplicateNodeTagThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(DuplicateNodeTagSchema::class.java)
+      parseSchema(DuplicateNodeTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
       |Schema @Node tags must be unique
       |
-      |- @Node(1): app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateNodeTagA, app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateNodeTagB
+      |- @Node(1): app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateNodeTagA, app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateNodeTagB
       """.trimMargin())
   }
 
@@ -73,12 +73,12 @@ class SchemaParserTest {
 
   @Test fun repeatedNodeTypeThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(RepeatedNodeTypeSchema::class.java)
+      parseSchema(RepeatedNodeTypeSchema::class)
     }.hasMessageThat().isEqualTo(
       """
       |Schema contains repeated node
       |
-      |- app.cash.treehouse.schema.parser.SchemaParserTest${'$'}RepeatedNode
+      |- app.cash.treehouse.schema.parser.SchemaParserTest.RepeatedNode
       """.trimMargin())
   }
 
@@ -96,10 +96,10 @@ class SchemaParserTest {
 
   @Test fun duplicatePropertyTagThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(DuplicatePropertyTagSchema::class.java)
+      parseSchema(DuplicatePropertyTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicatePropertyTagNode's @Property tags must be unique
+      |Node app.cash.treehouse.schema.parser.SchemaParserTest.DuplicatePropertyTagNode's @Property tags must be unique
       |
       |- @Property(1): name, nickname
       """.trimMargin())
@@ -118,10 +118,10 @@ class SchemaParserTest {
 
   @Test fun duplicateChildrenTagThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(DuplicateChildrenTagSchema::class.java)
+      parseSchema(DuplicateChildrenTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.parser.SchemaParserTest${'$'}DuplicateChildrenTagNode's @Children tags must be unique
+      |Node app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateChildrenTagNode's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
       """.trimMargin())
@@ -140,9 +140,9 @@ class SchemaParserTest {
 
   @Test fun unannotatedPrimaryParameterThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(UnannotatedPrimaryParameterSchema::class.java)
+      parseSchema(UnannotatedPrimaryParameterSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest\$UnannotatedPrimaryParameterNode")
+      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterNode")
   }
 
   @Schema([
@@ -156,9 +156,9 @@ class SchemaParserTest {
 
   @Test fun nonDataClassThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(NonDataClassSchema::class.java)
+      parseSchema(NonDataClassSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Node app.cash.treehouse.schema.parser.SchemaParserTest\$NonDataClassNode must be 'data' class")
+      "@Node app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassNode must be 'data' class")
   }
 
   @Schema([
@@ -172,8 +172,8 @@ class SchemaParserTest {
 
   @Test fun invalidChildrenTypeThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(InvalidChildrenTypeSchema::class.java)
+      parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.treehouse.schema.parser.SchemaParserTest\$InvalidChildrenTypeNode#children must be of type 'List<Any>'")
+      "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeNode#children must be of type 'List<Any>'")
   }
 }
