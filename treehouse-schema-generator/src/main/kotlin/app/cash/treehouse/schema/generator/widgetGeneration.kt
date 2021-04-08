@@ -2,9 +2,9 @@ package app.cash.treehouse.schema.generator
 
 import app.cash.treehouse.schema.parser.Children
 import app.cash.treehouse.schema.parser.Event
-import app.cash.treehouse.schema.parser.Node
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
+import app.cash.treehouse.schema.parser.Widget
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 /*
-interface SunspotNodeFactory<T : Any> : TreeNodeFactory<T> {
+interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
   fun SunspotText(parent: TreeNode<T>): SunspotText<T>
   fun SunspotButton(parent: TreeNode<T>, onClick: () -> Unit): SunspotButton<T>
 
@@ -39,15 +39,15 @@ interface SunspotNodeFactory<T : Any> : TreeNodeFactory<T> {
   }
 }
 */
-fun generateDisplayNodeFactory(schema: Schema): FileSpec {
+fun generateWidgetFactory(schema: Schema): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
-  return FileSpec.builder(schema.displayPackage, schema.getNodeFactoryType().simpleName)
-    .addType(TypeSpec.interfaceBuilder(schema.getNodeFactoryType())
+  return FileSpec.builder(schema.displayPackage, schema.getWidgetFactoryType().simpleName)
+    .addType(TypeSpec.interfaceBuilder(schema.getWidgetFactoryType())
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)
-      .addSuperinterface(treeNodeFactory.parameterizedBy(typeVariableT))
+      .addSuperinterface(widgetFactory.parameterizedBy(typeVariableT))
       .apply {
-        for (node in schema.nodes) {
+        for (node in schema.widgets) {
           addFunction(FunSpec.builder(node.flatName)
             .addModifiers(PUBLIC, ABSTRACT)
             .addParameter("parent", typeVariableT)
@@ -56,7 +56,7 @@ fun generateDisplayNodeFactory(schema: Schema): FileSpec {
                 addParameter(event.name, LambdaTypeName.get(returnType = UNIT))
               }
             }
-            .returns(schema.displayNodeType(node).parameterizedBy(typeVariableT))
+            .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
             .build())
         }
       }
@@ -66,10 +66,10 @@ fun generateDisplayNodeFactory(schema: Schema): FileSpec {
         .addParameter("kind", INT)
         .addParameter("id", LONG)
         .addParameter("events", eventSink)
-        .returns(treeNode.parameterizedBy(typeVariableT))
+        .returns(widget.parameterizedBy(typeVariableT))
         .beginControlFlow("return when (kind)")
         .apply {
-          for (node in schema.nodes.sortedBy { it.tag }) {
+          for (node in schema.widgets.sortedBy { it.tag }) {
             val factoryArguments = mutableListOf(CodeBlock.of("parent"))
             for (event in node.traits.filterIsInstance<Event>()) {
               factoryArguments += CodeBlock.of("{ events.send(%T(id, %L, null)) }", eventType, event.tag)
@@ -100,16 +100,16 @@ interface SunspotButton<out T: Any> : SunspotNode<T> {
   }
 }
 */
-fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
+fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
-  val childrenOfT = treeNodeChildren.parameterizedBy(typeVariableT)
-  return FileSpec.builder(schema.displayPackage, node.flatName)
-    .addType(TypeSpec.interfaceBuilder(node.flatName)
+  val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)
+  return FileSpec.builder(schema.displayPackage, widget.flatName)
+    .addType(TypeSpec.interfaceBuilder(widget.flatName)
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)
-      .addSuperinterface(treeNode.parameterizedBy(typeVariableT))
+      .addSuperinterface(app.cash.treehouse.schema.generator.widget.parameterizedBy(typeVariableT))
       .apply {
-        for (trait in node.traits) {
+        for (trait in widget.traits) {
           when (trait) {
             is Property -> {
               addFunction(FunSpec.builder(trait.name)
@@ -130,7 +130,7 @@ fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
             }
           }
         }
-        val childrens = node.traits.filterIsInstance<Children>()
+        val childrens = widget.traits.filterIsInstance<Children>()
         if (childrens.isNotEmpty()) {
           addFunction(FunSpec.builder("children")
             .addModifiers(PUBLIC, OVERRIDE)
@@ -152,7 +152,7 @@ fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
         .addParameter("diff", propertyDiff)
         .beginControlFlow("when (val tag = diff.tag)")
         .apply {
-          for (trait in node.traits) {
+          for (trait in widget.traits) {
             val type = when (trait) {
               is Property -> trait.type.asTypeName()
               is Event -> BOOLEAN

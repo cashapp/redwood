@@ -1,7 +1,7 @@
 package app.cash.treehouse.gradle
 
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Compose
-import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Display
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Widget
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
@@ -12,7 +12,7 @@ import java.io.File
 class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaDisplayPlugin : TreehouseSchemaGeneratorPlugin(Display)
+class TreehouseSchemaWidgetPlugin : TreehouseSchemaGeneratorPlugin(Widget)
 
 abstract class TreehouseSchemaGeneratorPlugin(
   private val strategy: Strategy,
@@ -22,7 +22,7 @@ abstract class TreehouseSchemaGeneratorPlugin(
     internal val dependencyCoordinate: String,
   ) {
     Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
-    Display("--display", "app.cash.treehouse:treehouse-display:$treehouseVersion"),
+    Widget("--widget", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
   }
 
   override fun apply(project: Project) {

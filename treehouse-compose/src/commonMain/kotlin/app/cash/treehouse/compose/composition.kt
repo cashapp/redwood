@@ -7,10 +7,10 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.withFrameMillis
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.NodeDiff
+import app.cash.treehouse.protocol.WidgetDiff
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.TreeDiff
-import app.cash.treehouse.protocol.TreeDiff.Companion.RootId
+import app.cash.treehouse.protocol.Diff
+import app.cash.treehouse.protocol.Diff.Companion.RootId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -23,7 +23,7 @@ interface TreehouseComposition {
 }
 
 fun interface DiffSink {
-  fun apply(diff: TreeDiff)
+  fun apply(diff: Diff)
 }
 
 /**
@@ -47,7 +47,7 @@ private class RealTreehouseComposition(
   private val clock: MonotonicFrameClock,
   private val diffSink: DiffSink,
 ) : TreehouseComposition {
-  private var nodeDiffs = mutableListOf<NodeDiff>()
+  private var nodeDiffs = mutableListOf<WidgetDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
   private val treehouseScope = RealTreehouseScope()
@@ -56,7 +56,7 @@ private class RealTreehouseComposition(
     private var nextId = RootId + 1
     override fun nextId() = nextId++
 
-    override fun appendDiff(diff: NodeDiff) {
+    override fun appendDiff(diff: WidgetDiff) {
       nodeDiffs.add(diff)
     }
 
@@ -99,8 +99,8 @@ private class RealTreehouseComposition(
                 nodeDiffs = mutableListOf()
                 propertyDiffs = mutableListOf()
 
-                diffSink.apply(TreeDiff(
-                  nodeDiffs = existingNodeDiffs,
+                diffSink.apply(Diff(
+                  widgetDiffs = existingNodeDiffs,
                   propertyDiffs = existingPropertyDiffs,
                 ))
               }

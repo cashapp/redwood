@@ -9,41 +9,41 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import app.cash.treehouse.schema.Children as ChildrenAnnotation
 import app.cash.treehouse.schema.Default as DefaultAnnotation
-import app.cash.treehouse.schema.Node as NodeAnnotation
 import app.cash.treehouse.schema.Property as PropertyAnnotation
 import app.cash.treehouse.schema.Schema as SchemaAnnotation
+import app.cash.treehouse.schema.Widget as WidgetAnnotation
 
 private val LIST_OF_ANY_TYPE = List::class.createType(
   arguments = listOf(invariant(Any::class.createType()))
 )
 
 fun parseSchema(schemaType: KClass<*>): Schema {
-  val nodes = mutableListOf<Node>()
+  val widgets = mutableListOf<Widget>()
 
-  val nodeTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
+  val widgetTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
     "Schema ${schemaType.qualifiedName} missing @Schema annotation"
-  }.nodes
+  }.widgets
 
-  val duplicatedNodes = nodeTypes.groupBy { it }.filterValues { it.size > 1 }.keys
-  if (duplicatedNodes.isNotEmpty()) {
+  val duplicatedWidgets = widgetTypes.groupBy { it }.filterValues { it.size > 1 }.keys
+  if (duplicatedWidgets.isNotEmpty()) {
     throw IllegalArgumentException(buildString {
-      append("Schema contains repeated node")
-      if (duplicatedNodes.size > 1) {
+      append("Schema contains repeated widget")
+      if (duplicatedWidgets.size > 1) {
         append('s')
       }
-      duplicatedNodes.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
+      duplicatedWidgets.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
     })
   }
 
-  for (nodeType in nodeTypes) {
-    val nodeAnnotation = requireNotNull(nodeType.findAnnotation<NodeAnnotation>()) {
-      "${nodeType.qualifiedName} missing @Node annotation"
+  for (widgetType in widgetTypes) {
+    val widgetAnnotation = requireNotNull(widgetType.findAnnotation<WidgetAnnotation>()) {
+      "${widgetType.qualifiedName} missing @Widget annotation"
     }
-    require(nodeType.isData) {
-      "@Node ${nodeType.qualifiedName} must be 'data' class"
+    require(widgetType.isData) {
+      "@Widget ${widgetType.qualifiedName} must be 'data' class"
     }
 
-    val traits = nodeType.primaryConstructor!!.parameters.map {
+    val traits = widgetType.primaryConstructor!!.parameters.map {
       val property = it.findAnnotation<PropertyAnnotation>()
       val children = it.findAnnotation<ChildrenAnnotation>()
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
@@ -56,11 +56,11 @@ fun parseSchema(schemaType: KClass<*>): Schema {
         }
       } else if (children != null) {
         require(it.type == LIST_OF_ANY_TYPE) {
-          "@Children ${nodeType.qualifiedName}#${it.name} must be of type 'List<Any>'"
+          "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
         }
         Children(it.name!!, children.value)
       } else {
-        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${nodeType.qualifiedName}")
+        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
       }
     }
 
@@ -68,10 +68,10 @@ fun parseSchema(schemaType: KClass<*>): Schema {
       traits.filterIsInstance<Children>().groupBy(Children::tag).filterValues { it.size > 1 }
     if (badChildren.isNotEmpty()) {
       throw IllegalArgumentException(buildString {
-        appendLine("Node ${nodeType.qualifiedName}'s @Children tags must be unique")
-        for ((tag, children) in badChildren) {
+        appendLine("Widget ${widgetType.qualifiedName}'s @Children tags must be unique")
+        for ((tag, group) in badChildren) {
           append("\n- @Children($tag): ")
-          children.joinTo(this) { it.name }
+          group.joinTo(this) { it.name }
         }
       })
     }
@@ -80,27 +80,27 @@ fun parseSchema(schemaType: KClass<*>): Schema {
       traits.filterIsInstance<Property>().groupBy(Property::tag).filterValues { it.size > 1 }
     if (badProperties.isNotEmpty()) {
       throw IllegalArgumentException(buildString {
-        appendLine("Node ${nodeType.qualifiedName}'s @Property tags must be unique")
-        for ((tag, property) in badProperties) {
+        appendLine("Widget ${widgetType.qualifiedName}'s @Property tags must be unique")
+        for ((tag, group) in badProperties) {
           append("\n- @Property($tag): ")
-          property.joinTo(this) { it.name }
+          group.joinTo(this) { it.name }
         }
       })
     }
 
-    nodes += Node(nodeAnnotation.value, nodeType, traits)
+    widgets += Widget(widgetAnnotation.value, widgetType, traits)
   }
 
-  val badNodes = nodes.groupBy(Node::tag).filterValues { it.size > 1 }
-  if (badNodes.isNotEmpty()) {
+  val badWidgets = widgets.groupBy(Widget::tag).filterValues { it.size > 1 }
+  if (badWidgets.isNotEmpty()) {
     throw IllegalArgumentException(buildString {
-      appendLine("Schema @Node tags must be unique")
-      for ((tag, node) in badNodes) {
-        append("\n- @Node($tag): ")
-        node.joinTo(this) { it.className.qualifiedName!! }
+      appendLine("Schema @Widget tags must be unique")
+      for ((tag, group) in badWidgets) {
+        append("\n- @Widget($tag): ")
+        group.joinTo(this) { it.className.qualifiedName!! }
       }
     })
   }
 
-  return Schema(schemaType.simpleName!!, schemaType.packageName, nodes)
+  return Schema(schemaType.simpleName!!, schemaType.packageName, widgets)
 }

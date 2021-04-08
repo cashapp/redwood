@@ -1,8 +1,8 @@
 package example.web.sunspot
 
-import example.sunspot.display.SunspotBox
-import example.sunspot.display.SunspotButton
-import example.sunspot.display.SunspotText
+import example.sunspot.widget.SunspotBox
+import example.sunspot.widget.SunspotButton
+import example.sunspot.widget.SunspotText
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement

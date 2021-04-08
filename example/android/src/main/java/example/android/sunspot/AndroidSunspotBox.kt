@@ -2,7 +2,7 @@ package example.android.sunspot
 
 import android.view.View
 import android.widget.LinearLayout
-import example.sunspot.display.SunspotBox
+import example.sunspot.widget.SunspotBox
 
 class AndroidSunspotBox(
   override val value: LinearLayout,

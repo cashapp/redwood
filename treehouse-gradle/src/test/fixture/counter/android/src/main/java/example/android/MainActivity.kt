@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.display.EventSink
-import app.cash.treehouse.display.TreehouseDisplay
 import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.widget.EventSink
+import app.cash.treehouse.widget.WidgetDisplay
 import example.android.counter.AndroidCounterBox
-import example.android.counter.AndroidCounterNodeFactory
+import example.android.counter.AndroidCounterWidgetFactory
 import example.shared.Counter
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -38,9 +38,9 @@ class MainActivity : Activity() {
       }
     }
 
-    val display = TreehouseDisplay(
+    val display = WidgetDisplay(
       root = AndroidCounterBox(root),
-      factory = AndroidCounterNodeFactory,
+      factory = AndroidCounterWidgetFactory,
       events = eventSink,
     )
 

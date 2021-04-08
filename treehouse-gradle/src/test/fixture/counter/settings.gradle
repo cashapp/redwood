@@ -1,5 +1,5 @@
 include ':android'
 include ':schema'
 include ':schema:compose'
-include ':schema:display'
+include ':schema:widget'
 include ':shared'

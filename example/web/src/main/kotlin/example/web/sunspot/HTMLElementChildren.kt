@@ -1,18 +1,18 @@
 package example.web.sunspot
 
-import app.cash.treehouse.display.TreeNode
+import app.cash.treehouse.widget.Widget
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
 class HTMLElementChildren(
   private val parent: HTMLElement,
-) : TreeNode.Children<HTMLElement> {
-  override fun insert(index: Int, node: HTMLElement) {
+) : Widget.Children<HTMLElement> {
+  override fun insert(index: Int, widget: HTMLElement) {
     if (index == parent.childElementCount) {
-      parent.appendChild(node)
+      parent.appendChild(widget)
     } else {
       val current = parent.children[index]!!
-      parent.insertBefore(current, node)
+      parent.insertBefore(current, widget)
     }
   }
 

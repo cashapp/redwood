@@ -2,8 +2,8 @@ package example.web
 
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
-import app.cash.treehouse.display.EventSink
-import app.cash.treehouse.display.TreehouseDisplay
+import app.cash.treehouse.widget.EventSink
+import app.cash.treehouse.widget.WidgetDisplay
 import app.cash.treehouse.protocol.Event
 import example.shared.Counter
 import example.web.sunspot.HtmlSunspotBox
@@ -24,7 +24,7 @@ fun main() {
   }
 
   val content = document.getElementById("content")!! as HTMLElement
-  val display = TreehouseDisplay(
+  val display = WidgetDisplay(
     root = HtmlSunspotBox(content),
     factory = HtmlSunspotNodeFactory,
     events = eventSink,

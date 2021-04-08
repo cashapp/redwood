@@ -4,14 +4,14 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.NodeDiff
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.TreeDiff
+import app.cash.treehouse.protocol.WidgetDiff
 
 interface TreehouseScope {
   fun nextId(): Long
-  fun appendDiff(diff: NodeDiff)
+  fun appendDiff(diff: WidgetDiff)
   fun appendDiff(diff: PropertyDiff)
 }
 
@@ -53,7 +53,7 @@ private sealed class ChildrenNode(id: Long) : Node(id, -1) {
     override var childrenIndex = -1
   }
 
-  class Root : ChildrenNode(TreeDiff.RootId) {
+  class Root : ChildrenNode(Diff.RootId) {
     // TODO We cannot actually guarantee this is what index the display root uses for children.
     override val childrenIndex get() = 1
   }
@@ -119,7 +119,7 @@ internal class ProtocolApplier(
 
       nodes[instance.id] = instance
       scope.appendDiff(
-        NodeDiff.Insert(current.id, current.childrenIndex, instance.id, instance.type, index))
+        WidgetDiff.Insert(current.id, current.childrenIndex, instance.id, instance.type, index))
     }
   }
 
@@ -136,7 +136,7 @@ internal class ProtocolApplier(
       nodes.remove(children[i].id)
     }
     children.remove(index, count)
-    scope.appendDiff(NodeDiff.Remove(current.id, current.childrenIndex, index, count))
+    scope.appendDiff(WidgetDiff.Remove(current.id, current.childrenIndex, index, count))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
@@ -144,13 +144,13 @@ internal class ProtocolApplier(
     val current = current as ChildrenNode
 
     current.children.move(from, to, count)
-    scope.appendDiff(NodeDiff.Move(current.id, current.childrenIndex, from, to, count))
+    scope.appendDiff(WidgetDiff.Move(current.id, current.childrenIndex, from, to, count))
   }
 
   override fun onClear() {
     current.children.clear()
     nodes.clear()
     nodes[current.id] = current // Restore root node into map.
-    scope.appendDiff(NodeDiff.Clear)
+    scope.appendDiff(WidgetDiff.Clear)
   }
 }

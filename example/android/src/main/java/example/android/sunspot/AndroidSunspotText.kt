@@ -3,7 +3,7 @@ package example.android.sunspot
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
-import example.sunspot.display.SunspotText
+import example.sunspot.widget.SunspotText
 
 class AndroidSunspotText(
   override val value: TextView,

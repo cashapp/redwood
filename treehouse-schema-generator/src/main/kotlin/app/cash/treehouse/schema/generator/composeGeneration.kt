@@ -3,9 +3,9 @@ package app.cash.treehouse.schema.generator
 import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.parser.Children
 import app.cash.treehouse.schema.parser.Event
-import app.cash.treehouse.schema.parser.Node
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
+import app.cash.treehouse.schema.parser.Widget
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -31,7 +31,7 @@ fun TreehouseScope.Button(
   enabled: Boolean = true,
   onClick: (() -> Unit)? = null,
 ) {
-  ComposeNode<ButtonNode, Applier<Node>>({ ButtonNode(nextId()) }) {
+  ComposeNode<ButtonComposeNode, Applier<Node>>({ ButtonNode(nextId()) }) {
     set(text) {
       appendDiff(PropertyDiff(id, 1 /* text */, text))
     }
@@ -45,7 +45,7 @@ fun TreehouseScope.Button(
   }
 }
 
-private class ButtonNode(id: Long) : Node(id, 2) {
+private class ButtonComposeNode(id: Long) : Node(id, 2) {
   var onClick: (() -> Unit)? = null
 
   override fun sendEvent(event: Event) {
@@ -56,21 +56,21 @@ private class ButtonNode(id: Long) : Node(id, 2) {
   }
 }
 */
-fun generateComposeNode(schema: Schema, node: Node): FileSpec {
-  val events = node.traits.filterIsInstance<Event>()
+fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
+  val events = widget.traits.filterIsInstance<Event>()
   val nodeType = if (events.isEmpty()) {
     composeNode
   } else {
-    schema.composeNodeType(node)
+    schema.composeNodeType(widget)
   }
   val applierOfServerNode = applier.parameterizedBy(composeNode)
-  return FileSpec.builder(schema.composePackage, node.flatName)
-    .addFunction(FunSpec.builder(node.flatName)
+  return FileSpec.builder(schema.composePackage, widget.flatName)
+    .addFunction(FunSpec.builder(widget.flatName)
       .addModifiers(PUBLIC)
       .addAnnotation(composable)
       .receiver(treehouseScope)
       .apply {
-        for (trait in node.traits) {
+        for (trait in widget.traits) {
           addParameter(when (trait) {
             is Property -> {
               ParameterSpec.builder(trait.name, trait.type.asTypeName())
@@ -103,7 +103,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
           .indent()
           .apply {
             if (events.isEmpty()) {
-              add("%T(nextId(), %L)\n", nodeType, node.tag)
+              add("%T(nextId(), %L)\n", nodeType, widget.tag)
             } else {
               add("%T(nextId())\n", nodeType)
             }
@@ -114,7 +114,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
 
         val updateLambda = CodeBlock.builder()
         val childrenLambda = CodeBlock.builder()
-        for (trait in node.traits) {
+        for (trait in widget.traits) {
           @Exhaustive when (trait) {
             is Property -> {
               updateLambda.apply {
@@ -178,7 +178,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
             .build())
           .superclass(composeNode)
           .addSuperclassConstructorParameter("id")
-          .addSuperclassConstructorParameter("%L", node.tag)
+          .addSuperclassConstructorParameter("%L", widget.tag)
           .apply {
             for (event in events) {
               val type = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)

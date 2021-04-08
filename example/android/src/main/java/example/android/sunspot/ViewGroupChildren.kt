@@ -2,11 +2,11 @@ package example.android.sunspot
 
 import android.view.View
 import android.view.ViewGroup
-import app.cash.treehouse.display.TreeNode
+import app.cash.treehouse.widget.Widget
 
-class ViewGroupChildren(private val parent: ViewGroup) : TreeNode.Children<View> {
-  override fun insert(index: Int, node: View) {
-    parent.addView(node, index)
+class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
+  override fun insert(index: Int, widget: View) {
+    parent.addView(widget, index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {

@@ -4,7 +4,7 @@ package app.cash.treehouse.schema.generator
 
 import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
-import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Display
+import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Widget
 import app.cash.treehouse.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -22,11 +22,12 @@ fun main(vararg args: String) {
 
 private class TreehouseGenerator : CliktCommand() {
   enum class Type {
-    Display, Compose
+    Compose,
+    Widget,
   }
 
   private val type by option()
-    .switch("--display" to Display, "--compose" to Compose)
+    .switch("--compose" to Compose, "--widget" to Widget)
     .help("Type of code to generate")
     .required()
 
@@ -43,15 +44,15 @@ private class TreehouseGenerator : CliktCommand() {
   override fun run() {
     val schema = parseSchema(schemaType)
     @Exhaustive when (type) {
-      Display -> {
-        generateDisplayNodeFactory(schema).writeTo(out)
-        for (node in schema.nodes) {
-          generateDisplayNode(schema, node).writeTo(out)
+      Widget -> {
+        generateWidgetFactory(schema).writeTo(out)
+        for (widget in schema.widgets) {
+          generateWidget(schema, widget).writeTo(out)
         }
       }
       Compose -> {
-        for (node in schema.nodes) {
-          generateComposeNode(schema, node).writeTo(out)
+        for (widget in schema.widgets) {
+          generateComposeNode(schema, widget).writeTo(out)
         }
       }
     }

@@ -1,26 +1,26 @@
-package app.cash.treehouse.display
+package app.cash.treehouse.widget
 
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 
-interface TreeNode<T : Any> {
+interface Widget<T : Any> {
   val value: T
 
   fun apply(diff: PropertyDiff)
 
   fun children(index: Int): Children<T> {
-    throw IllegalArgumentException("Node does not support children")
+    throw IllegalArgumentException("Widget does not support children")
   }
 
   interface Children<T : Any> {
-    fun insert(index: Int, node: T)
+    fun insert(index: Int, widget: T)
     fun move(fromIndex: Int, toIndex: Int, count: Int)
     fun remove(index: Int, count: Int)
     fun clear()
   }
 
   interface Factory<T : Any> {
-    fun create(parent: T, kind: Int, id: Long, events: EventSink): TreeNode<T>
+    fun create(parent: T, kind: Int, id: Long, events: EventSink): Widget<T>
   }
 }
 
