@@ -5,7 +5,7 @@ import app.cash.treehouse.protocol.TreeDiff
 
 class TreehouseDisplay<T : Any>(
   private val root: TreeNode<T>,
-  private val factory: TreeNodeFactory<T>,
+  private val factory: TreeNode.Factory<T>,
   private val events: EventSink,
 ) {
   private val nodes = mutableMapOf(TreeDiff.RootId to root)
