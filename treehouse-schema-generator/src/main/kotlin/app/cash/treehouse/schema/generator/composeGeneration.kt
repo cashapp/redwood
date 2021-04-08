@@ -1,6 +1,11 @@
 package app.cash.treehouse.schema.generator
 
 import app.cash.exhaustive.Exhaustive
+import app.cash.treehouse.schema.parser.Children
+import app.cash.treehouse.schema.parser.Event
+import app.cash.treehouse.schema.parser.Node
+import app.cash.treehouse.schema.parser.Property
+import app.cash.treehouse.schema.parser.Schema
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -15,6 +20,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 import com.squareup.kotlinpoet.jvm.jvmField
 
@@ -67,7 +73,7 @@ fun generateComposeNode(schema: Schema, node: Node): FileSpec {
         for (trait in node.traits) {
           addParameter(when (trait) {
             is Property -> {
-              ParameterSpec.builder(trait.name, trait.type)
+              ParameterSpec.builder(trait.name, trait.type.asTypeName())
                 .apply {
                   trait.defaultExpression?.let { defaultValue(it) }
                 }

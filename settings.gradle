@@ -9,6 +9,7 @@ include ':treehouse-display'
 include ':treehouse-gradle'
 include ':treehouse-protocol'
 include ':treehouse-schema-generator'
+include ':treehouse-schema-parser'
 include ':treehouse-schema-runtime'
 
 include ':example:android'

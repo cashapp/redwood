@@ -1,12 +1,10 @@
 apply plugin: 'java-library'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'app.cash.exhaustive'
 
 dependencies {
-  implementation project(':treehouse-schema-parser')
-  implementation deps.kotlinPoet
-  implementation deps.clikt
+  api project(':treehouse-schema-runtime')
+  api deps.kotlin.reflect
 
   testImplementation deps.junit
   testImplementation deps.truth

@@ -1,5 +1,10 @@
 package app.cash.treehouse.schema.generator
 
+import app.cash.treehouse.schema.parser.Children
+import app.cash.treehouse.schema.parser.Event
+import app.cash.treehouse.schema.parser.Node
+import app.cash.treehouse.schema.parser.Property
+import app.cash.treehouse.schema.parser.Schema
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
@@ -16,6 +21,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 /*
@@ -35,8 +41,8 @@ interface SunspotNodeFactory<T : Any> : TreeNodeFactory<T> {
 */
 fun generateDisplayNodeFactory(schema: Schema): FileSpec {
   val typeVariableT = TypeVariableName("T", listOf(ANY))
-  return FileSpec.builder(schema.displayPackage, schema.nodeFactoryType.simpleName)
-    .addType(TypeSpec.interfaceBuilder(schema.nodeFactoryType)
+  return FileSpec.builder(schema.displayPackage, schema.getNodeFactoryType().simpleName)
+    .addType(TypeSpec.interfaceBuilder(schema.getNodeFactoryType())
       .addModifiers(PUBLIC)
       .addTypeVariable(typeVariableT)
       .addSuperinterface(treeNodeFactory.parameterizedBy(typeVariableT))
@@ -108,7 +114,7 @@ fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
             is Property -> {
               addFunction(FunSpec.builder(trait.name)
                 .addModifiers(PUBLIC, ABSTRACT)
-                .addParameter(trait.name, trait.type)
+                .addParameter(trait.name, trait.type.asTypeName())
                 .build())
             }
             is Event -> {
@@ -148,7 +154,7 @@ fun generateDisplayNode(schema: Schema, node: Node): FileSpec {
         .apply {
           for (trait in node.traits) {
             val type = when (trait) {
-              is Property -> trait.type
+              is Property -> trait.type.asTypeName()
               is Event -> BOOLEAN
               is Children -> continue
             }
