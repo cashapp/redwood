@@ -3,7 +3,7 @@ package example.android.counter
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
-import example.counter.display.CounterText
+import example.counter.widget.CounterText
 
 class AndroidCounterText(
   override val value: TextView,

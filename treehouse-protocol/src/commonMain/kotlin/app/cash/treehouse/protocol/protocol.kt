@@ -11,8 +11,8 @@ data class Event(
 )
 
 @Serializable
-data class TreeDiff(
-  val nodeDiffs: List<NodeDiff> = emptyList(),
+data class Diff(
+  val widgetDiffs: List<WidgetDiff> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
 ) {
   companion object {
@@ -29,13 +29,13 @@ data class PropertyDiff(
 )
 
 @Serializable
-sealed class NodeDiff {
+sealed class WidgetDiff {
   abstract val id: Long
   abstract val childrenIndex: Int
 
   @Serializable
-  object Clear : NodeDiff() {
-    override val id get() = TreeDiff.RootId
+  object Clear : WidgetDiff() {
+    override val id get() = Diff.RootId
     override val childrenIndex get() = throw UnsupportedOperationException()
   }
 
@@ -46,7 +46,7 @@ sealed class NodeDiff {
     val childId: Long,
     val kind: Int,
     val index: Int,
-  ) : NodeDiff()
+  ) : WidgetDiff()
 
   @Serializable
   data class Move(
@@ -55,7 +55,7 @@ sealed class NodeDiff {
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
-  ) : NodeDiff()
+  ) : WidgetDiff()
 
   @Serializable
   data class Remove(
@@ -63,5 +63,5 @@ sealed class NodeDiff {
     override val childrenIndex: Int,
     val index: Int,
     val count: Int,
-  ) : NodeDiff()
+  ) : WidgetDiff()
 }

@@ -6,10 +6,10 @@ import kotlin.reflect.KType
 data class Schema(
   val name: String,
   val `package`: String,
-  val nodes: List<Node>,
+  val widgets: List<Widget>,
 )
 
-data class Node(
+data class Widget(
   val tag: Int,
   val className: KClass<*>,
   val traits: List<Trait>,

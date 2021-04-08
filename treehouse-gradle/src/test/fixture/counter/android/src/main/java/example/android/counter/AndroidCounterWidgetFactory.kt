@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import example.counter.display.CounterBox
-import example.counter.display.CounterButton
-import example.counter.display.CounterNodeFactory
-import example.counter.display.CounterText
+import example.counter.widget.CounterBox
+import example.counter.widget.CounterButton
+import example.counter.widget.CounterText
+import example.counter.widget.CounterWidgetFactory
 
-object AndroidCounterNodeFactory : CounterNodeFactory<View> {
+object AndroidCounterWidgetFactory : CounterWidgetFactory<View> {
   override fun CounterBox(parent: View): CounterBox<View> {
     val view = LinearLayout(parent.context)
     return AndroidCounterBox(view)

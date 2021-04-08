@@ -13,7 +13,7 @@ kotlin {
   sourceSets {
     main {
       dependencies {
-        implementation project(':example:sunspot:display')
+        implementation project(':example:sunspot:widget')
         implementation project(':example:shared')
         implementation deps.kotlinx.coroutines.core
       }

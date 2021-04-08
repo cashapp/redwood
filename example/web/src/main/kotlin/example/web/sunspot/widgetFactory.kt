@@ -1,15 +1,15 @@
 package example.web.sunspot
 
-import example.sunspot.display.SunspotBox
-import example.sunspot.display.SunspotButton
-import example.sunspot.display.SunspotNodeFactory
-import example.sunspot.display.SunspotText
+import example.sunspot.widget.SunspotBox
+import example.sunspot.widget.SunspotButton
+import example.sunspot.widget.SunspotText
+import example.sunspot.widget.SunspotWidgetFactory
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 
-object HtmlSunspotNodeFactory : SunspotNodeFactory<HTMLElement> {
+object HtmlSunspotNodeFactory : SunspotWidgetFactory<HTMLElement> {
   override fun SunspotBox(parent: HTMLElement): SunspotBox<HTMLElement> {
     val div = parent.ownerDocument!!.createElement("div") as HTMLDivElement
     return HtmlSunspotBox(div)

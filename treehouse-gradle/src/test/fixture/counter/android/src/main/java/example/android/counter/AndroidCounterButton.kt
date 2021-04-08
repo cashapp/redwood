@@ -2,7 +2,7 @@ package example.android.counter
 
 import android.view.View
 import android.widget.Button
-import example.counter.display.CounterButton
+import example.counter.widget.CounterButton
 
 class AndroidCounterButton(
   override val value: Button,

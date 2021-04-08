@@ -1,9 +1,9 @@
 package app.cash.treehouse.schema.parser
 
 import app.cash.treehouse.schema.Children
-import app.cash.treehouse.schema.Node
 import app.cash.treehouse.schema.Property
 import app.cash.treehouse.schema.Schema
+import app.cash.treehouse.schema.Widget
 import org.junit.Test
 
 class SchemaParserTest {
@@ -17,78 +17,78 @@ class SchemaParserTest {
   }
 
   @Schema([
-    NonAnnotatedNode::class,
+    NonAnnotatedWidget::class,
   ])
-  interface NonAnnotatedNodeSchema
-  data class NonAnnotatedNode(
+  interface NonAnnotatedWidgetSchema
+  data class NonAnnotatedWidget(
     @Property(1) val name: String,
   )
 
-  @Test fun nonAnnotatedNodeThrows() {
+  @Test fun nonAnnotatedWidgetThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(NonAnnotatedNodeSchema::class)
+      parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotatedNode missing @Node annotation")
+      "app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotatedWidget missing @Widget annotation")
   }
 
   @Schema([
-    DuplicateNodeTagA::class,
-    NonDuplicateNodeTag::class,
-    DuplicateNodeTagB::class,
+    DuplicateWidgetTagA::class,
+    NonDuplicateWidgetTag::class,
+    DuplicateWidgetTagB::class,
   ])
-  interface DuplicateNodeTagSchema
-  @Node(1)
-  data class DuplicateNodeTagA(
+  interface DuplicateWidgetTagSchema
+  @Widget(1)
+  data class DuplicateWidgetTagA(
     @Property(1) val name: String,
   )
-  @Node(2)
-  data class NonDuplicateNodeTag(
+  @Widget(2)
+  data class NonDuplicateWidgetTag(
     @Property(1) val name: String,
   )
-  @Node(1)
-  data class DuplicateNodeTagB(
+  @Widget(1)
+  data class DuplicateWidgetTagB(
     @Property(1) val name: String,
   )
 
-  @Test fun duplicateNodeTagThrows() {
+  @Test fun duplicateWidgetTagThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(DuplicateNodeTagSchema::class)
+      parseSchema(DuplicateWidgetTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Schema @Node tags must be unique
+      |Schema @Widget tags must be unique
       |
-      |- @Node(1): app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateNodeTagA, app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateNodeTagB
+      |- @Widget(1): app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateWidgetTagA, app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateWidgetTagB
       """.trimMargin())
   }
 
   @Schema([
-    RepeatedNode::class,
-    RepeatedNode::class,
+    RepeatedWidget::class,
+    RepeatedWidget::class,
   ])
-  interface RepeatedNodeTypeSchema
-  @Node(1)
-  data class RepeatedNode(
+  interface RepeatedWidgetTypeSchema
+  @Widget(1)
+  data class RepeatedWidget(
     @Property(1) val name: String,
   )
 
-  @Test fun repeatedNodeTypeThrows() {
+  @Test fun repeatedWidgetTypeThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(RepeatedNodeTypeSchema::class)
+      parseSchema(RepeatedWidgetTypeSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Schema contains repeated node
+      |Schema contains repeated widget
       |
-      |- app.cash.treehouse.schema.parser.SchemaParserTest.RepeatedNode
+      |- app.cash.treehouse.schema.parser.SchemaParserTest.RepeatedWidget
       """.trimMargin())
   }
 
   @Schema([
-    DuplicatePropertyTagNode::class,
+    DuplicatePropertyTagWidget::class,
   ])
   interface DuplicatePropertyTagSchema
 
-  @Node(1)
-  data class DuplicatePropertyTagNode(
+  @Widget(1)
+  data class DuplicatePropertyTagWidget(
     @Property(1) val name: String,
     @Property(2) val age: Int,
     @Property(1) val nickname: String,
@@ -99,18 +99,18 @@ class SchemaParserTest {
       parseSchema(DuplicatePropertyTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.parser.SchemaParserTest.DuplicatePropertyTagNode's @Property tags must be unique
+      |Widget app.cash.treehouse.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
       |- @Property(1): name, nickname
       """.trimMargin())
   }
 
   @Schema([
-    DuplicateChildrenTagNode::class,
+    DuplicateChildrenTagWidget::class,
   ])
   interface DuplicateChildrenTagSchema
-  @Node(1)
-  data class DuplicateChildrenTagNode(
+  @Widget(1)
+  data class DuplicateChildrenTagWidget(
     @Children(1) val childrenA: List<Any>,
     @Property(1) val name: String,
     @Children(1) val childrenB: List<Any>,
@@ -121,18 +121,18 @@ class SchemaParserTest {
       parseSchema(DuplicateChildrenTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Node app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateChildrenTagNode's @Children tags must be unique
+      |Widget app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
       """.trimMargin())
   }
 
   @Schema([
-    UnannotatedPrimaryParameterNode::class,
+    UnannotatedPrimaryParameterWidget::class,
   ])
   interface UnannotatedPrimaryParameterSchema
-  @Node(1)
-  data class UnannotatedPrimaryParameterNode(
+  @Widget(1)
+  data class UnannotatedPrimaryParameterWidget(
     @Property(1) val name: String,
     @Children(1) val children: List<Any>,
     val unannotated: String,
@@ -142,15 +142,15 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnannotatedPrimaryParameterSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterNode")
+      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget")
   }
 
   @Schema([
-    NonDataClassNode::class,
+    NonDataClassWidget::class,
   ])
   interface NonDataClassSchema
-  @Node(1)
-  class NonDataClassNode(
+  @Widget(1)
+  class NonDataClassWidget(
     @Property(1) val name: String,
   )
 
@@ -158,15 +158,15 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Node app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassNode must be 'data' class")
+      "@Widget app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class")
   }
 
   @Schema([
-    InvalidChildrenTypeNode::class,
+    InvalidChildrenTypeWidget::class,
   ])
   interface InvalidChildrenTypeSchema
-  @Node(1)
-  data class InvalidChildrenTypeNode(
+  @Widget(1)
+  data class InvalidChildrenTypeWidget(
     @Children(1) val children: List<String>,
   )
 
@@ -174,6 +174,6 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeNode#children must be of type 'List<Any>'")
+      "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'")
   }
 }

@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import example.sunspot.display.SunspotBox
-import example.sunspot.display.SunspotButton
-import example.sunspot.display.SunspotNodeFactory
-import example.sunspot.display.SunspotText
+import example.sunspot.widget.SunspotBox
+import example.sunspot.widget.SunspotButton
+import example.sunspot.widget.SunspotText
+import example.sunspot.widget.SunspotWidgetFactory
 
-object AndroidSunspotNodeFactory : SunspotNodeFactory<View> {
+object AndroidSunspotWidgetFactory : SunspotWidgetFactory<View> {
   override fun SunspotBox(parent: View): SunspotBox<View> {
     val view = LinearLayout(parent.context)
     return AndroidSunspotBox(view)
