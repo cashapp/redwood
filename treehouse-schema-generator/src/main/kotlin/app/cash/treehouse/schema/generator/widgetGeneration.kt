@@ -72,7 +72,7 @@ fun generateWidgetFactory(schema: Schema): FileSpec {
           for (node in schema.widgets.sortedBy { it.tag }) {
             val factoryArguments = mutableListOf(CodeBlock.of("parent"))
             for (event in node.traits.filterIsInstance<Event>()) {
-              factoryArguments += CodeBlock.of("{ events.send(%T(id, %L, null)) }", eventType, event.tag)
+              factoryArguments += CodeBlock.of("{ events(%T(id, %L, null)) }", eventType, event.tag)
             }
             addStatement("%L -> %N(%L)", node.tag, node.flatName, factoryArguments.joinToCode())
           }

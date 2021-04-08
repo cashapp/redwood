@@ -7,18 +7,18 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
+import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.widget.EventSink
 import app.cash.treehouse.widget.WidgetDisplay
 import example.android.counter.AndroidCounterBox
 import example.android.counter.AndroidCounterWidgetFactory
 import example.shared.Counter
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
 class MainActivity : Activity() {
-  private val scope = MainScope()
+  private val scope = CoroutineScope(AndroidUiDispatcher.Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -29,29 +29,24 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
-    // Indirection to create a cyclic dependency between the client and the server for the demo.
-    val eventSink = object : EventSink {
-      lateinit var composition: TreehouseComposition
-      override fun send(event: Event) {
-        Log.d("TreehouseEvent", event.toString())
-        composition.sendEvent(event)
-      }
-    }
-
     val display = WidgetDisplay(
       root = AndroidCounterBox(root),
       factory = AndroidCounterWidgetFactory,
-      events = eventSink,
     )
 
+    lateinit var events: (Event) -> Unit
     val composition = TreehouseComposition(
       scope = scope,
-      diff = { diff ->
+      diffs = { diff ->
         Log.d("TreehouseDiff", diff.toString())
-        display.apply(diff)
+        display.apply(diff, events)
       }
     )
-    eventSink.composition = composition
+
+    events = { event ->
+      Log.d("TreehouseEvent", event.toString())
+      composition.sendEvent(event)
+    }
 
     composition.setContent {
       Counter()
