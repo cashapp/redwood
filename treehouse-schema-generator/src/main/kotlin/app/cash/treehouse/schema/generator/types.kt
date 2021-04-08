@@ -6,7 +6,7 @@ import com.squareup.kotlinpoet.MemberName
 internal val eventSink = ClassName("app.cash.treehouse.display", "EventSink")
 internal val treeNode = ClassName("app.cash.treehouse.display", "TreeNode")
 internal val treeNodeChildren = treeNode.nestedClass("Children")
-internal val treeNodeFactory = ClassName("app.cash.treehouse.display", "TreeNodeFactory")
+internal val treeNodeFactory = treeNode.nestedClass("Factory")
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")

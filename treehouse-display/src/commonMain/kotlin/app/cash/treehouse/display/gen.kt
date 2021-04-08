@@ -18,10 +18,10 @@ interface TreeNode<T : Any> {
     fun remove(index: Int, count: Int)
     fun clear()
   }
-}
 
-interface TreeNodeFactory<T : Any> {
-  fun create(parent: T, kind: Int, id: Long, events: EventSink): TreeNode<T>
+  interface Factory<T : Any> {
+    fun create(parent: T, kind: Int, id: Long, events: EventSink): TreeNode<T>
+  }
 }
 
 fun interface EventSink {
