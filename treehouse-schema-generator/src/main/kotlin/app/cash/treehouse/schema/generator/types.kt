@@ -1,15 +1,17 @@
 package app.cash.treehouse.schema.generator
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
-
-internal val eventSink = ClassName("app.cash.treehouse.widget", "EventSink")
-internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
-internal val widgetChildren = widget.nestedClass("Children")
-internal val widgetFactory = widget.nestedClass("Factory")
+import com.squareup.kotlinpoet.UNIT
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
+
+internal val eventSink = LambdaTypeName.get(eventType, returnType = UNIT)
+internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
+internal val widgetChildren = widget.nestedClass("Children")
+internal val widgetFactory = widget.nestedClass("Factory")
 
 internal val composeNode = ClassName("app.cash.treehouse.compose", "Node")
 internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "\$SyntheticChildren")

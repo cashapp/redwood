@@ -6,11 +6,11 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.withFrameMillis
-import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.WidgetDiff
-import app.cash.treehouse.protocol.PropertyDiff
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Diff.Companion.RootId
+import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.protocol.PropertyDiff
+import app.cash.treehouse.protocol.WidgetDiff
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -22,22 +22,18 @@ interface TreehouseComposition {
   fun cancel()
 }
 
-fun interface DiffSink {
-  fun apply(diff: Diff)
-}
-
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
 fun TreehouseComposition(
   scope: CoroutineScope,
-  diff: DiffSink,
+  diffs: (Diff) -> Unit,
 ): TreehouseComposition {
   val clock = requireNotNull(scope.coroutineContext[MonotonicFrameClock]) {
     "Composition scope's CoroutineContext must have a MonotonicFrameClock key"
   }
-  val server = RealTreehouseComposition(scope, clock, diff)
+  val server = RealTreehouseComposition(scope, clock, diffs)
   server.launch()
   return server
 }
@@ -45,7 +41,7 @@ fun TreehouseComposition(
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
   private val clock: MonotonicFrameClock,
-  private val diffSink: DiffSink,
+  private val diffs: (Diff) -> Unit,
 ) : TreehouseComposition {
   private var nodeDiffs = mutableListOf<WidgetDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
@@ -99,7 +95,7 @@ private class RealTreehouseComposition(
                 nodeDiffs = mutableListOf()
                 propertyDiffs = mutableListOf()
 
-                diffSink.apply(Diff(
+                diffs(Diff(
                   widgetDiffs = existingNodeDiffs,
                   propertyDiffs = existingPropertyDiffs,
                 ))

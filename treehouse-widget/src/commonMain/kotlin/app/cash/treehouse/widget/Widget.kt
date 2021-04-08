@@ -20,10 +20,6 @@ interface Widget<T : Any> {
   }
 
   interface Factory<T : Any> {
-    fun create(parent: T, kind: Int, id: Long, events: EventSink): Widget<T>
+    fun create(parent: T, kind: Int, id: Long, events: (Event) -> Unit): Widget<T>
   }
-}
-
-fun interface EventSink {
-  fun send(event: Event)
 }

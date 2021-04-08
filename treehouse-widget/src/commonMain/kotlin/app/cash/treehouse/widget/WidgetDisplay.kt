@@ -1,16 +1,20 @@
 package app.cash.treehouse.widget
 
 import app.cash.treehouse.protocol.Diff
+import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.WidgetDiff
+
+interface Display {
+  fun apply(diff: Diff, events: (Event) -> Unit)
+}
 
 class WidgetDisplay<T : Any>(
   private val root: Widget<T>,
   private val factory: Widget.Factory<T>,
-  private val events: EventSink,
-) {
+) : Display {
   private val widgets = mutableMapOf(Diff.RootId to root)
 
-  fun apply(diff: Diff) {
+  override fun apply(diff: Diff, events: (Event) -> Unit) {
     for (widgetDiff in diff.widgetDiffs) {
       val widget = checkNotNull(widgets[widgetDiff.id]) {
         "Unknown widget ID ${widgetDiff.id}"
@@ -39,7 +43,7 @@ class WidgetDisplay<T : Any>(
 
     for (propertyDiff in diff.propertyDiffs) {
       val widget = checkNotNull(widgets[propertyDiff.id]) {
-        "Unknown widget iD ${propertyDiff.id}"
+        "Unknown widget ID ${propertyDiff.id}"
       }
 
       widget.apply(propertyDiff)
