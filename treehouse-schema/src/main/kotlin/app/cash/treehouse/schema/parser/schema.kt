@@ -16,28 +16,28 @@ data class Widget(
 )
 
 sealed class Trait {
-  abstract val name: String
   abstract val tag: Int
+  abstract val name: String
   abstract val defaultExpression: String?
 }
 
 data class Property(
-  override val name: String,
   override val tag: Int,
+  override val name: String,
   val type: KType,
   override val defaultExpression: String?,
 ) : Trait()
 
 data class Event(
-  override val name: String,
   override val tag: Int,
+  override val name: String,
   // TODO parameter type list?
   override val defaultExpression: String?,
 ) : Trait()
 
 data class Children(
-  override val name: String,
   override val tag: Int,
+  override val name: String,
 ) : Trait() {
   override val defaultExpression: String? get() = null
 }

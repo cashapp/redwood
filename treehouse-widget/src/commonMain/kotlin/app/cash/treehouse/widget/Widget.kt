@@ -8,7 +8,7 @@ interface Widget<T : Any> {
 
   fun apply(diff: PropertyDiff)
 
-  fun children(index: Int): Children<T> {
+  fun children(tag: Int): Children<T> {
     throw IllegalArgumentException("Widget does not support children")
   }
 

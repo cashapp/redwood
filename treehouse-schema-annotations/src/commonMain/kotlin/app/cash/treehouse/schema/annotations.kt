@@ -19,7 +19,7 @@ annotation class Schema(val widgets: Array<KClass<*>>)
 
 /**
  * Annotates a data class which represents a widget in a UI tree. Each widget in a [Schema] must
- * have a unique [value] among all [@Widget][Widget] annotations in the [Schema].
+ * have a unique [tag] among all [@Widget][Widget] annotations in the [Schema].
  *
  * All of the properties in the class must be annotated with either [Property] or [Children].
  *
@@ -31,11 +31,11 @@ annotation class Schema(val widgets: Array<KClass<*>>)
  * )
  * ```
  */
-annotation class Widget(val value: Int)
+annotation class Widget(val tag: Int)
 
 /**
  * Annotates a [Widget] property which represents a property on the associated UI widget. Properties
- * in a [Widget] class must have a unique [value] among all [@Property][Property] annotations in
+ * in a [Widget] class must have a unique [tag] among all [@Property][Property] annotations in
  * the class.
  *
  * ```
@@ -45,11 +45,11 @@ annotation class Widget(val value: Int)
  * )
  * ```
  */
-annotation class Property(val value: Int)
+annotation class Property(val tag: Int)
 
 /**
  * Annotates a [Widget] property as representing child widgets which are contained within the
- * enclosing widget. Children in a [Widget] class must have a unique [value] among all
+ * enclosing widget. Children in a [Widget] class must have a unique [tag] among all
  * [@Children][Children] annotations in the class. The type of the property must be `List<Any>`.
  *
  * ```
@@ -59,7 +59,7 @@ annotation class Property(val value: Int)
  * )
  * ```
  */
-annotation class Children(val value: Int)
+annotation class Children(val tag: Int)
 
 /**
  * Annotates a [Property] with an associated default expression. The [expression] is not

@@ -4,14 +4,15 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
-import app.cash.treehouse.protocol.Diff
+import app.cash.treehouse.protocol.ChildrenDiff
+import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
+import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.WidgetDiff
 
 interface TreehouseScope {
   fun nextId(): Long
-  fun appendDiff(diff: WidgetDiff)
+  fun appendDiff(diff: ChildrenDiff)
   fun appendDiff(diff: PropertyDiff)
 }
 
@@ -30,12 +31,12 @@ interface TreehouseScope {
  * @see ProtocolApplier
  */
 @Composable
-fun `$SyntheticChildren`(index: Int, content: @Composable () -> Unit) {
+fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
   ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
     factory = ChildrenNode::Intermediate,
     update = {
-      set(index) {
-        childrenIndex = index
+      set(tag) {
+        this.tag = tag
       }
     },
     content = content,
@@ -47,15 +48,15 @@ fun `$SyntheticChildren`(index: Int, content: @Composable () -> Unit) {
  * appear directly in the protocol.
  */
 private sealed class ChildrenNode(id: Long) : Node(id, -1) {
-  abstract val childrenIndex: Int
+  abstract val tag: Int
 
   class Intermediate : ChildrenNode(-1) {
-    override var childrenIndex = -1
+    override var tag = -1
   }
 
-  class Root : ChildrenNode(Diff.RootId) {
-    // TODO We cannot actually guarantee this is what index the display root uses for children.
-    override val childrenIndex get() = 1
+  class Root : ChildrenNode(RootId) {
+    // TODO We cannot actually guarantee this is the tag that the display root uses for children.
+    override val tag get() = RootChildrenTag
   }
 }
 
@@ -93,14 +94,14 @@ open class Node(
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
  * But the protocol diff output would only record non-[ChildrenNode] nodes using their
- * [ChildrenNode.childrenIndex] value:
+ * [ChildrenNode.tag] value:
  * ```
- * Insert(id=<root-id>, childrenIndex=1, type=<toolbar-type>, childId=<toolbar-id>)
- * Insert(id=<toolbar-id>, childrenIndex=1, type=<button-type>, childId=..)
- * Insert(id=<toolbar-id>, childrenIndex=2, type=<button-type>, childId=..)
- * Insert(id=<root-id>, childrenIndex=1, type=<list-type>, childId=<list-id>)
- * Insert(id=<list-id>, childrenIndex=1, type=<text-type>, childId=..)
- * Insert(id=<list-id>, childrenIndex=1, type=<text-type>, childId=..)
+ * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
+ * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
+ * Insert(id=<toolbar-id>, tag=2, type=<button-type>, childId=..)
+ * Insert(id=<root-id>, tag=1, type=<list-type>, childId=<list-id>)
+ * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
+ * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
  * ```
  */
 internal class ProtocolApplier(
@@ -119,7 +120,7 @@ internal class ProtocolApplier(
 
       nodes[instance.id] = instance
       scope.appendDiff(
-        WidgetDiff.Insert(current.id, current.childrenIndex, instance.id, instance.type, index))
+        ChildrenDiff.Insert(current.id, current.tag, instance.id, instance.type, index))
     }
   }
 
@@ -136,7 +137,7 @@ internal class ProtocolApplier(
       nodes.remove(children[i].id)
     }
     children.remove(index, count)
-    scope.appendDiff(WidgetDiff.Remove(current.id, current.childrenIndex, index, count))
+    scope.appendDiff(ChildrenDiff.Remove(current.id, current.tag, index, count))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
@@ -144,13 +145,13 @@ internal class ProtocolApplier(
     val current = current as ChildrenNode
 
     current.children.move(from, to, count)
-    scope.appendDiff(WidgetDiff.Move(current.id, current.childrenIndex, from, to, count))
+    scope.appendDiff(ChildrenDiff.Move(current.id, current.tag, from, to, count))
   }
 
   override fun onClear() {
     current.children.clear()
     nodes.clear()
     nodes[current.id] = current // Restore root node into map.
-    scope.appendDiff(WidgetDiff.Clear)
+    scope.appendDiff(ChildrenDiff.Clear)
   }
 }
