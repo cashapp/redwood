@@ -1,6 +1,7 @@
 package app.cash.treehouse.widget
 
 import app.cash.treehouse.protocol.ChildrenDiff
+import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
@@ -13,6 +14,12 @@ class WidgetDisplay<T : Any>(
   private val root: Widget<T>,
   private val factory: Widget.Factory<T>,
 ) : Display {
+  init {
+    // Check that the root widget has a group of children with the shared root tag. This call
+    // will throw if that invariant does not hold.
+    root.children(RootChildrenTag)
+  }
+
   private val widgets = mutableMapOf(RootId to root)
 
   override fun apply(diff: Diff, events: (Event) -> Unit) {

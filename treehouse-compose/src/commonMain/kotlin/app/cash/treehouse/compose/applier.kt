@@ -55,7 +55,6 @@ private sealed class ChildrenNode(id: Long) : Node(id, -1) {
   }
 
   class Root : ChildrenNode(RootId) {
-    // TODO We cannot actually guarantee this is the tag that the display root uses for children.
     override val tag get() = RootChildrenTag
   }
 }
