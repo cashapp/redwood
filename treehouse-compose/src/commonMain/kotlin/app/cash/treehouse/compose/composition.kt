@@ -6,11 +6,11 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.withFrameMillis
+import app.cash.treehouse.protocol.ChildrenDiff
+import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
-import app.cash.treehouse.protocol.Diff.Companion.RootId
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.protocol.WidgetDiff
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -43,7 +43,7 @@ private class RealTreehouseComposition(
   private val clock: MonotonicFrameClock,
   private val diffs: (Diff) -> Unit,
 ) : TreehouseComposition {
-  private var nodeDiffs = mutableListOf<WidgetDiff>()
+  private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
   private val treehouseScope = RealTreehouseScope()
@@ -52,8 +52,8 @@ private class RealTreehouseComposition(
     private var nextId = RootId + 1
     override fun nextId() = nextId++
 
-    override fun appendDiff(diff: WidgetDiff) {
-      nodeDiffs.add(diff)
+    override fun appendDiff(diff: ChildrenDiff) {
+      childrenDiffs.add(diff)
     }
 
     override fun appendDiff(diff: PropertyDiff) {
@@ -89,14 +89,14 @@ private class RealTreehouseComposition(
         launch {
           while (true) {
             clock.withFrameMillis {
-              val existingNodeDiffs = nodeDiffs
+              val existingChildrenDiffs = childrenDiffs
               val existingPropertyDiffs = propertyDiffs
-              if (existingPropertyDiffs.isNotEmpty() || existingNodeDiffs.isNotEmpty()) {
-                nodeDiffs = mutableListOf()
+              if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
+                childrenDiffs = mutableListOf()
                 propertyDiffs = mutableListOf()
 
                 diffs(Diff(
-                  widgetDiffs = existingNodeDiffs,
+                  childrenDiffs = existingChildrenDiffs,
                   propertyDiffs = existingPropertyDiffs,
                 ))
               }
@@ -108,10 +108,10 @@ private class RealTreehouseComposition(
   }
 
   override fun sendEvent(event: Event) {
-    val node = applier.nodes[event.nodeId]
+    val node = applier.nodes[event.id]
     if (node == null) {
       // TODO how to handle race where an incoming event targets this removed node?
-      throw IllegalArgumentException("Unknown node ${event.nodeId} for event with tag ${event.tag}")
+      throw IllegalArgumentException("Unknown node ${event.id} for event with tag ${event.tag}")
     }
     node.sendEvent(event)
   }

@@ -5,63 +5,69 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Event(
-  val nodeId: Long,
+  /** Identifier for the widget from which this event originated. */
+  val id: Long,
+  /** Identifies which event occurred on the widget with [id]. */
   val tag: Int,
   @Polymorphic val value: Any?,
 )
 
 @Serializable
 data class Diff(
-  val widgetDiffs: List<WidgetDiff> = emptyList(),
+  val childrenDiffs: List<ChildrenDiff> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
-) {
-  companion object {
-    const val RootId = 0L
-    const val RootChildrenIndex = 1
-  }
-}
+)
 
 @Serializable
 data class PropertyDiff(
+  /** Identifier for the widget whose property has changed. */
   val id: Long,
+  /** Identifies which property changed on the widget with [id]. */
   val tag: Int,
   @Polymorphic val value: Any?,
 )
 
 @Serializable
-sealed class WidgetDiff {
+sealed class ChildrenDiff {
+  /** Identifier for the widget whose children have changed. */
   abstract val id: Long
-  abstract val childrenIndex: Int
+  /** Identifies which group of children changed on the widget with [id]. */
+  abstract val tag: Int
 
   @Serializable
-  object Clear : WidgetDiff() {
-    override val id get() = Diff.RootId
-    override val childrenIndex get() = throw UnsupportedOperationException()
+  object Clear : ChildrenDiff() {
+    override val id get() = RootId
+    override val tag get() = RootChildrenTag
   }
 
   @Serializable
   data class Insert(
     override val id: Long,
-    override val childrenIndex: Int,
+    override val tag: Int,
     val childId: Long,
     val kind: Int,
     val index: Int,
-  ) : WidgetDiff()
+  ) : ChildrenDiff()
 
   @Serializable
   data class Move(
     override val id: Long,
-    override val childrenIndex: Int,
+    override val tag: Int,
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
-  ) : WidgetDiff()
+  ) : ChildrenDiff()
 
   @Serializable
   data class Remove(
     override val id: Long,
-    override val childrenIndex: Int,
+    override val tag: Int,
     val index: Int,
     val count: Int,
-  ) : WidgetDiff()
+  ) : ChildrenDiff()
+
+  companion object {
+    const val RootId = 0L
+    const val RootChildrenTag = 1
+  }
 }

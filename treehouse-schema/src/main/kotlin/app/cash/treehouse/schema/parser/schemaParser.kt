@@ -50,15 +50,15 @@ fun parseSchema(schemaType: KClass<*>): Schema {
 
       if (property != null) {
         if (it.type.isSubtypeOf(Function::class.starProjectedType)) {
-          Event(it.name!!, property.value, defaultExpression)
+          Event(property.tag, it.name!!, defaultExpression)
         } else {
-          Property(it.name!!, property.value, it.type, defaultExpression)
+          Property(property.tag, it.name!!, it.type, defaultExpression)
         }
       } else if (children != null) {
         require(it.type == LIST_OF_ANY_TYPE) {
           "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
         }
-        Children(it.name!!, children.value)
+        Children(children.tag, it.name!!)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
       }
@@ -88,7 +88,7 @@ fun parseSchema(schemaType: KClass<*>): Schema {
       })
     }
 
-    widgets += Widget(widgetAnnotation.value, widgetType, traits)
+    widgets += Widget(widgetAnnotation.tag, widgetType, traits)
   }
 
   val badWidgets = widgets.groupBy(Widget::tag).filterValues { it.size > 1 }

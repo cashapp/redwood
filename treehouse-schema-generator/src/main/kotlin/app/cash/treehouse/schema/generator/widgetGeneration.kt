@@ -134,15 +134,15 @@ fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         if (childrens.isNotEmpty()) {
           addFunction(FunSpec.builder("children")
             .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("index", INT)
+            .addParameter("tag", INT)
             .returns(childrenOfT)
-            .beginControlFlow("return when (index)")
+            .beginControlFlow("return when (tag)")
             .apply {
               for (children in childrens) {
                 addStatement("%L -> %N", children.tag, children.name)
               }
             }
-            .addStatement("else -> throw %T(\"Unknown index \$index\")", iae)
+            .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
             .endControlFlow()
             .build())
         }
