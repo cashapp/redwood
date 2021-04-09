@@ -4,7 +4,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'app.cash.exhaustive'
 
 dependencies {
-  implementation project(':treehouse-schema-parser')
+  implementation project(':treehouse-schema')
   implementation deps.kotlinPoet
   implementation deps.clikt
 
