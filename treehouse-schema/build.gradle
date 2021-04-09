@@ -3,7 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
-  api project(':treehouse-schema-runtime')
+  api project(':treehouse-schema-annotations')
   api deps.kotlin.reflect
 
   testImplementation deps.junit

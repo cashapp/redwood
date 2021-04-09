@@ -15,7 +15,7 @@ class TreehouseSchemaPlugin : Plugin<Project> {
       kotlin.target.apply {
         compilations.getByName("main") { compilation ->
           compilation.dependencies {
-            api("app.cash.treehouse:treehouse-schema-runtime:$treehouseVersion")
+            api("app.cash.treehouse:treehouse-schema-annotations:$treehouseVersion")
           }
         }
       }
