@@ -20,5 +20,10 @@ kotlin {
         implementation deps.exhaustiveAnnotation
       }
     }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+      }
+    }
   }
 }

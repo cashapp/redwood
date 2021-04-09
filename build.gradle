@@ -13,6 +13,7 @@ buildscript {
       'compiler': "org.jetbrains.kotlin:kotlin-compiler:${versions.kotlin}",
       'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
       'reflect': 'org.jetbrains.kotlin:kotlin-reflect',
+      'test': 'org.jetbrains.kotlin:kotlin-test-multiplatform',
     ],
     'kotlinx': [
       'coroutines': [
