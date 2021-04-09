@@ -6,9 +6,7 @@ import example.counter.widget.CounterButton
 
 class AndroidCounterButton(
   override val value: Button,
-  private val onClick: () -> Unit,
-) : CounterButton<View>,
-    View.OnClickListener {
+) : CounterButton<View> {
   override fun text(text: String?) {
     value.text = text
   }
@@ -17,11 +15,11 @@ class AndroidCounterButton(
     value.isEnabled = enabled
   }
 
-  override fun onClick(onClick: Boolean) {
-    value.setOnClickListener(if (onClick) this else null)
-  }
-
-  override fun onClick(v: View?) {
-    onClick.invoke()
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.setOnClickListener(if (onClick != null) {
+      { onClick() }
+    } else {
+      null
+    })
   }
 }

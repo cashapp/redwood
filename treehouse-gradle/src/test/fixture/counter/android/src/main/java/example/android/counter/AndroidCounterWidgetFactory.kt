@@ -24,9 +24,8 @@ object AndroidCounterWidgetFactory : CounterWidgetFactory<View> {
 
   override fun CounterButton(
     parent: View,
-    onClick: () -> Unit,
   ): CounterButton<View> {
     val view = Button(parent.context)
-    return AndroidCounterButton(view, onClick)
+    return AndroidCounterButton(view)
   }
 }

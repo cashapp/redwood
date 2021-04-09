@@ -31,7 +31,6 @@ class HtmlSunspotText(
 
 class HtmlSunspotButton(
   override val value: HTMLButtonElement,
-  private val onClick: () -> Unit,
 ) : SunspotButton<HTMLElement> {
   override fun text(text: String?) {
     value.textContent = text
@@ -41,9 +40,9 @@ class HtmlSunspotButton(
     value.disabled = !enabled
   }
 
-  override fun onClick(onClick: Boolean) {
-    value.onclick = if (onClick) {
-      { this.onClick.invoke() }
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.onclick = if (onClick != null) {
+      { onClick() }
     } else {
       null
     }

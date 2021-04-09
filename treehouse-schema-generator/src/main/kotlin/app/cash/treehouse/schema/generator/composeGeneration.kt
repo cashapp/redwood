@@ -6,7 +6,6 @@ import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -14,12 +13,10 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LONG
-import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 import com.squareup.kotlinpoet.jvm.jvmField
@@ -80,17 +77,12 @@ fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 .build()
             }
             is Event -> {
-              val type = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
-              ParameterSpec.builder(trait.name, type)
+              ParameterSpec.builder(trait.name, eventLambda.copy(nullable = true))
                 .defaultValue("null")
                 .build()
             }
             is Children -> {
-              val type = LambdaTypeName.get(returnType = UNIT)
-                .copy(annotations = listOf(
-                  AnnotationSpec.builder(composable).build(),
-                ))
-              ParameterSpec.builder(trait.name, type)
+              ParameterSpec.builder(trait.name, composableLambda)
                 .build()
             }
           })
@@ -181,8 +173,7 @@ fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
           .addSuperclassConstructorParameter("%L", widget.tag)
           .apply {
             for (event in events) {
-              val type = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
-              addProperty(PropertySpec.builder(event.name, type)
+              addProperty(PropertySpec.builder(event.name, eventLambda.copy(nullable = true))
                 .mutable(true)
                 .initializer("null")
                 .jvmField() // Method count optimization as this is implementation detail.

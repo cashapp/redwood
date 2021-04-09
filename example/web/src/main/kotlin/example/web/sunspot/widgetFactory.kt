@@ -24,9 +24,8 @@ object HtmlSunspotNodeFactory : SunspotWidgetFactory<HTMLElement> {
 
   override fun SunspotButton(
     parent: HTMLElement,
-    onClick: () -> Unit,
   ): SunspotButton<HTMLElement> {
     val button = parent.ownerDocument!!.createElement("button") as HTMLButtonElement
-    return HtmlSunspotButton(button, onClick)
+    return HtmlSunspotButton(button)
   }
 }
