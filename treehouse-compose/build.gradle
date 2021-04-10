@@ -22,11 +22,26 @@ kotlin {
         api project(':compose:runtime')
       }
     }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+        implementation project(':treehouse-test-schema:compose')
+      }
+    }
     androidMain {
       dependencies {
         implementation deps.androidx.core
       }
     }
+    androidTest {
+      dependsOn jvmTest
+    }
+  }
+}
+
+android {
+  testOptions {
+    unitTests.returnDefaultValues = true
   }
 }
 

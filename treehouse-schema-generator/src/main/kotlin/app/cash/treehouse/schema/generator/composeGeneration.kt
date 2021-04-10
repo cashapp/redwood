@@ -28,18 +28,26 @@ fun TreehouseScope.Button(
   enabled: Boolean = true,
   onClick: (() -> Unit)? = null,
 ) {
-  ComposeNode<ButtonComposeNode, Applier<Node>>({ ButtonNode(nextId()) }) {
-    set(text) {
-      appendDiff(PropertyDiff(id, 1 /* text */, text))
+  ComposeNode<ButtonComposeNode, Applier<Node>>(
+    factory = {
+      ButtonNode(nextId())
+    },
+    update = {
+      set(text) {
+        appendDiff(PropertyDiff(id, 1, text))
+      }
+      set(enabled) {
+        appendDiff(PropertyDiff(id, 2, enabled))
+      }
+      set(onClick) {
+        val onClickSet = onClick != null
+        if (onClickSet != (this.onClick != null)) {
+          appendDiff(PropertyDiff(id, 3, onClickSet))
+        }
+        this.onClick = onClick
+      }
     }
-    set(enabled) {
-      appendDiff(PropertyDiff(id, 2 /* enabled */, enabled))
-    }
-    set(onClick) {
-      this.onClick = onClick
-      appendDiff(PropertyDiff(id, 3 /* onClick */, onClick != null))
-    }
-  }
+  )
 }
 
 private class ButtonComposeNode(id: Long) : Node(id, 2) {
@@ -132,8 +140,13 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 updateLambda.apply {
                   add("set(%N) {\n", trait.name)
                   indent()
+                  add("val %1NSet = %1N != null\n", trait.name)
+                  add("if (%1NSet != (this.%1N != null)) {\n", trait.name)
+                  indent()
+                  add("appendDiff(%T(this.id, %L, %NSet))\n", propertyDiff, trait.tag, trait.name)
+                  unindent()
+                  add("}\n")
                   add("this.%1N = %1N\n", trait.name)
-                  add("appendDiff(%T(this.id, %L, %N != null))\n", propertyDiff, trait.tag, trait.name)
                   unindent()
                   add("}\n")
                 }
