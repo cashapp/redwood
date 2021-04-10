@@ -6,9 +6,7 @@ import example.sunspot.widget.SunspotButton
 
 class AndroidSunspotButton(
   override val value: Button,
-  private val onClick: () -> Unit,
-) : SunspotButton<View>,
-    View.OnClickListener {
+) : SunspotButton<View> {
   override fun text(text: String?) {
     value.text = text
   }
@@ -17,11 +15,11 @@ class AndroidSunspotButton(
     value.isEnabled = enabled
   }
 
-  override fun onClick(onClick: Boolean) {
-    value.setOnClickListener(if (onClick) this else null)
-  }
-
-  override fun onClick(v: View?) {
-    onClick.invoke()
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.setOnClickListener(if (onClick != null) {
+      { onClick() }
+    } else {
+      null
+    })
   }
 }

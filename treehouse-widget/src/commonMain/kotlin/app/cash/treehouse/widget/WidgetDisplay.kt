@@ -31,7 +31,7 @@ class WidgetDisplay<T : Any>(
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(widget.value, childrenDiff.kind, childrenDiff.childId, events)
+          val childWidget = factory.create(widget.value, childrenDiff.kind, childrenDiff.childId)
           widgets[childrenDiff.childId] = childWidget
           children.insert(childrenDiff.index, childWidget.value)
         }
@@ -55,7 +55,7 @@ class WidgetDisplay<T : Any>(
         "Unknown widget ID ${propertyDiff.id}"
       }
 
-      widget.apply(propertyDiff)
+      widget.apply(propertyDiff, events)
     }
   }
 }

@@ -24,9 +24,8 @@ object AndroidSunspotWidgetFactory : SunspotWidgetFactory<View> {
 
   override fun SunspotButton(
     parent: View,
-    onClick: () -> Unit,
   ): SunspotButton<View> {
     val view = Button(parent.context)
-    return AndroidSunspotButton(view, onClick)
+    return AndroidSunspotButton(view)
   }
 }
