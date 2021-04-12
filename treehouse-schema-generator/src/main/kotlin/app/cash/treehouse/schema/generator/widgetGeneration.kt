@@ -23,13 +23,13 @@ import com.squareup.kotlinpoet.asTypeName
 
 /*
 interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
-  fun SunspotText(parent: T): SunspotText<T>
-  fun SunspotButton(parent: T): SunspotButton<T>
+  fun SunspotText(): SunspotText<T>
+  fun SunspotButton(): SunspotButton<T>
 
-  override fun create(parent: T, kind: Int, id: Long): TreeNode<T> {
+  override fun create(, kind: Int, id: Long): TreeNode<T> {
     return when (kind) {
-      1 -> SunspotText(parent)
-      2 -> SunspotButton(parent)
+      1 -> SunspotText()
+      2 -> SunspotButton()
       else -> throw IllegalArgumentException("Unknown kind $kind")
     }
   }
@@ -47,7 +47,6 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
             addFunction(
               FunSpec.builder(node.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
-                .addParameter("parent", typeVariableT)
                 .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
                 .build()
             )
@@ -56,14 +55,13 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
         .addFunction(
           FunSpec.builder("create")
             .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("parent", typeVariableT)
             .addParameter("kind", INT)
             .addParameter("id", LONG)
             .returns(widgetOfT)
             .beginControlFlow("return when (kind)")
             .apply {
               for (node in schema.widgets.sortedBy { it.tag }) {
-                addStatement("%L -> %N(parent)", node.tag, node.flatName)
+                addStatement("%L -> %N()", node.tag, node.flatName)
               }
             }
             .addStatement("else -> throw %T(\"Unknown kind \$kind\")", iae)

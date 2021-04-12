@@ -31,7 +31,7 @@ class MainActivity : Activity() {
 
     val display = WidgetDisplay(
       root = AndroidSunspotBox(root),
-      factory = AndroidSunspotWidgetFactory,
+      factory = AndroidSunspotWidgetFactory(this),
     )
 
     lateinit var events: (Event) -> Unit
