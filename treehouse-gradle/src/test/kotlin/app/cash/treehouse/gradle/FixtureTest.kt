@@ -16,6 +16,8 @@ class FixtureTest(
     @Parameters(name = "{0}")
     fun parameters() = listOf(
       arrayOf("counter"),
+      arrayOf("schema-multiplatform"),
+      arrayOf("schema-jvm"),
     )
   }
 
