@@ -7,6 +7,7 @@ import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Widget
 import app.cash.treehouse.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -38,7 +39,11 @@ private class TreehouseGenerator : CliktCommand() {
     .help("Fully-qualified class name for the @Schema-annotated interface")
     .convert {
       // Replace with https://youtrack.jetbrains.com/issue/KT-10440 once it ships.
-      Class.forName(it).kotlin
+      try {
+        Class.forName(it).kotlin
+      } catch (e: ClassNotFoundException) {
+        throw CliktError("Unable to load class: $it", e)
+      }
     }
 
   override fun run() {
