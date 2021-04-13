@@ -1,12 +1,12 @@
-package example.web
+package example.browser
 
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.widget.WidgetDisplay
+import example.browser.counter.HtmlSunspotBox
+import example.browser.counter.HtmlSunspotNodeFactory
 import example.shared.Counter
-import example.web.sunspot.HtmlSunspotBox
-import example.web.sunspot.HtmlSunspotNodeFactory
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.plus

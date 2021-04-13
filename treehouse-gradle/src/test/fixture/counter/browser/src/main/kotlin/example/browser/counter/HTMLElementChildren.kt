@@ -1,4 +1,4 @@
-package example.web.sunspot
+package example.browser.counter
 
 import app.cash.treehouse.widget.Widget
 import org.w3c.dom.HTMLElement
