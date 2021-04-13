@@ -7,9 +7,5 @@ import example.sunspot.widget.SunspotBox
 class AndroidSunspotBox(
   override val value: LinearLayout,
 ) : SunspotBox<View> {
-  override fun orientation(orientation: Boolean) {
-    value.orientation = if (orientation) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
-  }
-
   override val children = ViewGroupChildren(value)
 }
