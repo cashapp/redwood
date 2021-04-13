@@ -32,9 +32,11 @@ interface TreehouseScope {
  * @suppress
  */
 @Composable
-fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
+fun `$SyntheticChildren`(parentId: Long, tag: Int, content: @Composable () -> Unit) {
   ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
-    factory = ChildrenNode::Intermediate,
+    factory = {
+      ChildrenNode.Intermediate(parentId)
+    },
     update = {
       set(tag) {
         this.tag = tag
@@ -46,12 +48,13 @@ fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
 
 /**
  * A node which exists in the tree to emulate supporting multiple children sets but which does not
- * appear directly in the protocol.
+ * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
+ * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
-private sealed class ChildrenNode(id: Long) : Node(id, -1) {
+private sealed class ChildrenNode(parentId: Long) : Node(parentId, -1) {
   abstract val tag: Int
 
-  class Intermediate : ChildrenNode(-1) {
+  class Intermediate(parentId: Long) : ChildrenNode(parentId) {
     override var tag = -1
   }
 
