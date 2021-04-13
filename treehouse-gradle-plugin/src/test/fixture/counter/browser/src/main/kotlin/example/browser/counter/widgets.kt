@@ -1,8 +1,5 @@
 package example.browser.counter
 
-import example.counter.widget.CounterBox
-import example.counter.widget.CounterButton
-import example.counter.widget.CounterText
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement

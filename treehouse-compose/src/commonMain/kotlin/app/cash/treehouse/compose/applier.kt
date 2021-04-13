@@ -123,7 +123,8 @@ internal class ProtocolApplier(
 
       nodes[instance.id] = instance
       scope.appendDiff(
-        ChildrenDiff.Insert(current.id, current.tag, instance.id, instance.type, index))
+        ChildrenDiff.Insert(current.id, current.tag, instance.id, instance.type, index)
+      )
     }
   }
 

@@ -6,11 +6,13 @@ import app.cash.treehouse.schema.Property
 import app.cash.treehouse.schema.Schema
 import app.cash.treehouse.schema.Widget
 
-@Schema([
-  SunspotBox::class,
-  SunspotText::class,
-  SunspotButton::class,
-])
+@Schema(
+  [
+    SunspotBox::class,
+    SunspotText::class,
+    SunspotButton::class,
+  ]
+)
 interface Sunspot
 
 @Widget(1)

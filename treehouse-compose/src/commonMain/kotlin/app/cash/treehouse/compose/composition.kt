@@ -95,10 +95,12 @@ private class RealTreehouseComposition(
                 childrenDiffs = mutableListOf()
                 propertyDiffs = mutableListOf()
 
-                diffs(Diff(
-                  childrenDiffs = existingChildrenDiffs,
-                  propertyDiffs = existingPropertyDiffs,
-                ))
+                diffs(
+                  Diff(
+                    childrenDiffs = existingChildrenDiffs,
+                    propertyDiffs = existingPropertyDiffs,
+                  )
+                )
               }
             }
           }
@@ -126,4 +128,3 @@ private class RealTreehouseComposition(
     job.cancel()
   }
 }
-

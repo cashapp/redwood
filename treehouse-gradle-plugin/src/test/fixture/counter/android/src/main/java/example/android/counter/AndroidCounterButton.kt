@@ -16,10 +16,12 @@ class AndroidCounterButton(
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
-    value.setOnClickListener(if (onClick != null) {
-      { onClick() }
-    } else {
-      null
-    })
+    value.setOnClickListener(
+      if (onClick != null) {
+        { onClick() }
+      } else {
+        null
+      }
+    )
   }
 }
