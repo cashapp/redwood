@@ -29,6 +29,7 @@ interface TreehouseScope {
  * This function is named weirdly to prevent normal usage since bad things will happen.
  *
  * @see ProtocolApplier
+ * @suppress
  */
 @Composable
 fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
@@ -59,6 +60,9 @@ private sealed class ChildrenNode(id: Long) : Node(id, -1) {
   }
 }
 
+/**
+ * @suppress
+ */
 open class Node(
   val id: Long,
   val type: Int,
