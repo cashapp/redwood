@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "app.cash.treehouse:treehouse-gradle:$treehouseVersion"
+    classpath "app.cash.treehouse:treehouse-gradle-plugin:$treehouseVersion"
     classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31'
   }
 
