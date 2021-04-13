@@ -53,7 +53,7 @@ private class ButtonComposeNode(id: Long) : Node(id, 2) {
   }
 }
 */
-fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
+internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
   val events = widget.traits.filterIsInstance<Event>()
   val nodeType = if (events.isEmpty()) {
     composeNode

@@ -35,7 +35,7 @@ interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
   }
 }
 */
-fun generateWidgetFactory(schema: Schema): FileSpec {
+internal fun generateWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(schema.displayPackage, schema.getWidgetFactoryType().simpleName)
     .addType(TypeSpec.interfaceBuilder(schema.getWidgetFactoryType())
       .addModifiers(PUBLIC)
@@ -93,7 +93,7 @@ interface SunspotButton<out T: Any> : SunspotNode<T> {
   }
 }
 */
-fun generateWidget(schema: Schema, widget: Widget): FileSpec {
+internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   return FileSpec.builder(schema.displayPackage, widget.flatName)
     .addType(TypeSpec.interfaceBuilder(widget.flatName)
       .addModifiers(PUBLIC)
