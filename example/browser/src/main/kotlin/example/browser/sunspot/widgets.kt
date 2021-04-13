@@ -1,4 +1,4 @@
-package example.web.sunspot
+package example.browser.sunspot
 
 import example.sunspot.widget.SunspotBox
 import example.sunspot.widget.SunspotButton
