@@ -1,0 +1,21 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.treehouse.widget////PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/index.html
+$dokka.location:app.cash.treehouse.widget/Display///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-display/index.html
+$dokka.location:app.cash.treehouse.widget/Display/apply/#app.cash.treehouse.protocol.Diff#kotlin.Function1[app.cash.treehouse.protocol.Event,kotlin.Unit]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-display/apply.html
+$dokka.location:app.cash.treehouse.widget/Widget.Children///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/index.html
+$dokka.location:app.cash.treehouse.widget/Widget.Children/clear/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/clear.html
+$dokka.location:app.cash.treehouse.widget/Widget.Children/insert/#kotlin.Int#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/insert.html
+$dokka.location:app.cash.treehouse.widget/Widget.Children/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/move.html
+$dokka.location:app.cash.treehouse.widget/Widget.Children/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/remove.html
+$dokka.location:app.cash.treehouse.widget/Widget.Factory///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/index.html
+$dokka.location:app.cash.treehouse.widget/Widget.Factory/create/#TypeParam(bounds=[kotlin.Any])#kotlin.Int#kotlin.Long/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/create.html
+$dokka.location:app.cash.treehouse.widget/Widget///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/index.html
+$dokka.location:app.cash.treehouse.widget/Widget/apply/#app.cash.treehouse.protocol.PropertyDiff#kotlin.Function1[app.cash.treehouse.protocol.Event,kotlin.Unit]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/apply.html
+$dokka.location:app.cash.treehouse.widget/Widget/children/#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/children.html
+$dokka.location:app.cash.treehouse.widget/Widget/value/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/value.html
+$dokka.location:app.cash.treehouse.widget/WidgetDisplay///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/index.html
+$dokka.location:app.cash.treehouse.widget/WidgetDisplay/WidgetDisplay/#app.cash.treehouse.widget.Widget[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.widget.Widget.Factory[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/-widget-display.html
+$dokka.location:app.cash.treehouse.widget/WidgetDisplay/apply/#app.cash.treehouse.protocol.Diff#kotlin.Function1[app.cash.treehouse.protocol.Event,kotlin.Unit]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/apply.html
+app.cash.treehouse.widget
+

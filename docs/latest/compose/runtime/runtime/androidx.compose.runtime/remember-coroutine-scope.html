@@ -1,0 +1,40 @@
+<html><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>rememberCoroutineScope</title>
+</head><body><link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script><script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script><link href="../../../../styles/style.css" rel="Stylesheet"><link href="../../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../../scripts/main.js" async></script>
+  
+    <div id="container">
+      <div id="leftColumn"><a href="../../../../index.html">
+            <div id="logo"></div>
+          </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <script type="text/javascript" src="../../../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
+
+        <div class="main-content" id="content" pageids="runtime::androidx.compose.runtime//rememberCoroutineScope/#kotlin.Function0[kotlin.coroutines.CoroutineContext]/PointingToDeclaration//-1544505597">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">runtime</a>/<a href="index.html">androidx.compose.runtime</a>/<a href="remember-coroutine-scope.html">rememberCoroutineScope</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":compose:runtime:dokkaHtmlPartial/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>remember</span><wbr><span>Coroutine</span><wbr><span>Scope</span></h1>
+          </div>
+<div class="divergent-group" data-filterable-current=":compose:runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="-composable/index.html">Composable</a>()</div></div>inline fun <a href="remember-coroutine-scope.html">rememberCoroutineScope</a>(getContext: <span>@<a href="-disallow-composable-calls/index.html">DisallowComposableCalls</a>()&nbsp;</span>() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = { EmptyCoroutineContext }): <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<p class="paragraph">Return a <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> bound to this point in the composition using the optional <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> provided by <a href="remember-coroutine-scope.html">getContext</a>. <a href="remember-coroutine-scope.html">getContext</a> will only be called once and the same <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> instance will be returned across recompositions.</p><p class="paragraph">This scope will be <span data-unresolved-link="kotlinx.coroutines//cancel/kotlinx.coroutines.CoroutineScope#kotlin.String#kotlin.Throwable?/PointingToDeclaration/">cancelled</span> when this call leaves the composition. The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> returned by <a href="remember-coroutine-scope.html">getContext</a> may not contain a <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span> as this scope is considered to be a child of the composition.</p><p class="paragraph">The default dispatcher of this scope if one is not provided by the context returned by <a href="remember-coroutine-scope.html">getContext</a> will be the applying dispatcher of the composition's <a href="-recomposer/index.html">Recomposer</a>.</p><p class="paragraph">Use this scope to launch jobs in response to callback events such as clicks or other user interaction where the response to that event needs to unfold over time and be cancelled if the composable managing that process leaves the composition. Jobs should never be launched into any coroutine scope as a side effect of composition itself. For scoped ongoing jobs initiated by composition, see <a href="-launched-effect.html">LaunchedEffect</a>.</p><p class="paragraph">This function will not throw if preconditions are not met, as composable functions do not yet fully support exceptions. Instead the returned scope's <span data-unresolved-link="kotlinx.coroutines/CoroutineScope/coroutineContext/#/PointingToDeclaration/">CoroutineScope.coroutineContext</span> will contain a failed <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span> with the associated exception and will not be capable of launching child jobs.</p></div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  
+
+
+</body></html>

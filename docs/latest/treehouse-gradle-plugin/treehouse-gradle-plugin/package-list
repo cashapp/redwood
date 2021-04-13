@@ -1,0 +1,34 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.treehouse.gradle////PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/TreehousePlugin/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/-treehouse-plugin.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/applyToCompilation/#org.jetbrains.kotlin.gradle.plugin.KotlinCompilation[*]/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/apply-to-compilation.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/getCompilerPluginId/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/get-compiler-plugin-id.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/getPluginArtifact/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/get-plugin-artifact.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/isApplicable/#org.jetbrains.kotlin.gradle.plugin.KotlinCompilation[*]/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/is-applicable.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaComposePlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-compose-plugin/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaComposePlugin/TreehouseSchemaComposePlugin/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-compose-plugin/-treehouse-schema-compose-plugin.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaExtension///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-extension/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaExtension/schema/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-extension/schema.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Compose///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-compose/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Compose/dependencyCoordinate/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-compose/dependency-coordinate.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Compose/generatorFlag/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-compose/generator-flag.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Compose/name/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-compose/name.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Compose/ordinal/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-compose/ordinal.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Widget///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-widget/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Widget/dependencyCoordinate/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-widget/dependency-coordinate.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Widget/generatorFlag/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-widget/generator-flag.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Widget/name/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-widget/name.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy.Widget/ordinal/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/-widget/ordinal.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin.Strategy///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-strategy/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin/TreehouseSchemaGeneratorPlugin/#app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/-treehouse-schema-generator-plugin.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaGeneratorPlugin/apply/#org.gradle.api.Project/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-generator-plugin/apply.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaPlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-plugin/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaPlugin/TreehouseSchemaPlugin/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-plugin/-treehouse-schema-plugin.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaPlugin/apply/#org.gradle.api.Project/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-plugin/apply.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaWidgetPlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-widget-plugin/index.html
+$dokka.location:app.cash.treehouse.gradle/TreehouseSchemaWidgetPlugin/TreehouseSchemaWidgetPlugin/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-schema-widget-plugin/-treehouse-schema-widget-plugin.html
+app.cash.treehouse.gradle
+

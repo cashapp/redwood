@@ -1,0 +1,20 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.treehouse.schema////PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/index.html
+$dokka.location:app.cash.treehouse.schema/Children///PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-children/index.html
+$dokka.location:app.cash.treehouse.schema/Children/Children/#kotlin.Int/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-children/-children.html
+$dokka.location:app.cash.treehouse.schema/Children/tag/#/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-children/tag.html
+$dokka.location:app.cash.treehouse.schema/Default///PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-default/index.html
+$dokka.location:app.cash.treehouse.schema/Default/Default/#kotlin.String/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-default/-default.html
+$dokka.location:app.cash.treehouse.schema/Default/expression/#/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-default/expression.html
+$dokka.location:app.cash.treehouse.schema/Property///PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-property/index.html
+$dokka.location:app.cash.treehouse.schema/Property/Property/#kotlin.Int/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-property/-property.html
+$dokka.location:app.cash.treehouse.schema/Property/tag/#/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-property/tag.html
+$dokka.location:app.cash.treehouse.schema/Schema///PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-schema/index.html
+$dokka.location:app.cash.treehouse.schema/Schema/Schema/#kotlin.Array[kotlin.reflect.KClass[*]]/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-schema/-schema.html
+$dokka.location:app.cash.treehouse.schema/Schema/widgets/#/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-schema/widgets.html
+$dokka.location:app.cash.treehouse.schema/Widget///PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-widget/index.html
+$dokka.location:app.cash.treehouse.schema/Widget/Widget/#kotlin.Int/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-widget/-widget.html
+$dokka.location:app.cash.treehouse.schema/Widget/tag/#/PointingToDeclaration/treehouse-schema-annotations/app.cash.treehouse.schema/-widget/tag.html
+app.cash.treehouse.schema
+
