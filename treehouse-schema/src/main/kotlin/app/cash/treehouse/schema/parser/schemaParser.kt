@@ -26,13 +26,15 @@ fun parseSchema(schemaType: KClass<*>): Schema {
 
   val duplicatedWidgets = widgetTypes.groupBy { it }.filterValues { it.size > 1 }.keys
   if (duplicatedWidgets.isNotEmpty()) {
-    throw IllegalArgumentException(buildString {
-      append("Schema contains repeated widget")
-      if (duplicatedWidgets.size > 1) {
-        append('s')
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema contains repeated widget")
+        if (duplicatedWidgets.size > 1) {
+          append('s')
+        }
+        duplicatedWidgets.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
       }
-      duplicatedWidgets.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
-    })
+    )
   }
 
   for (widgetType in widgetTypes) {
@@ -67,25 +69,29 @@ fun parseSchema(schemaType: KClass<*>): Schema {
     val badChildren =
       traits.filterIsInstance<Children>().groupBy(Children::tag).filterValues { it.size > 1 }
     if (badChildren.isNotEmpty()) {
-      throw IllegalArgumentException(buildString {
-        appendLine("Widget ${widgetType.qualifiedName}'s @Children tags must be unique")
-        for ((tag, group) in badChildren) {
-          append("\n- @Children($tag): ")
-          group.joinTo(this) { it.name }
+      throw IllegalArgumentException(
+        buildString {
+          appendLine("Widget ${widgetType.qualifiedName}'s @Children tags must be unique")
+          for ((tag, group) in badChildren) {
+            append("\n- @Children($tag): ")
+            group.joinTo(this) { it.name }
+          }
         }
-      })
+      )
     }
 
     val badProperties =
       traits.filterIsInstance<Property>().groupBy(Property::tag).filterValues { it.size > 1 }
     if (badProperties.isNotEmpty()) {
-      throw IllegalArgumentException(buildString {
-        appendLine("Widget ${widgetType.qualifiedName}'s @Property tags must be unique")
-        for ((tag, group) in badProperties) {
-          append("\n- @Property($tag): ")
-          group.joinTo(this) { it.name }
+      throw IllegalArgumentException(
+        buildString {
+          appendLine("Widget ${widgetType.qualifiedName}'s @Property tags must be unique")
+          for ((tag, group) in badProperties) {
+            append("\n- @Property($tag): ")
+            group.joinTo(this) { it.name }
+          }
         }
-      })
+      )
     }
 
     widgets += Widget(widgetAnnotation.tag, widgetType, traits)
@@ -93,13 +99,15 @@ fun parseSchema(schemaType: KClass<*>): Schema {
 
   val badWidgets = widgets.groupBy(Widget::tag).filterValues { it.size > 1 }
   if (badWidgets.isNotEmpty()) {
-    throw IllegalArgumentException(buildString {
-      appendLine("Schema @Widget tags must be unique")
-      for ((tag, group) in badWidgets) {
-        append("\n- @Widget($tag): ")
-        group.joinTo(this) { it.className.qualifiedName!! }
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema @Widget tags must be unique")
+        for ((tag, group) in badWidgets) {
+          append("\n- @Widget($tag): ")
+          group.joinTo(this) { it.className.qualifiedName!! }
+        }
       }
-    })
+    )
   }
 
   return Schema(schemaType.simpleName!!, schemaType.packageName, widgets)

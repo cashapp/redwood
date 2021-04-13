@@ -8,10 +8,12 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class GenerateWidgetFactoryTest {
-  @Schema([
-    NavigationBar.Button::class,
-    Button::class,
-  ])
+  @Schema(
+    [
+      NavigationBar.Button::class,
+      Button::class,
+    ]
+  )
   interface SimpleNameCollisionSchema
   interface NavigationBar {
     @Widget(1)
@@ -24,18 +26,22 @@ class GenerateWidgetFactoryTest {
     val schema = parseSchema(SimpleNameCollisionSchema::class)
 
     val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).contains("""
-        |    1 -> GenerateWidgetFactoryTestNavigationBarButton(parent)
-        |    3 -> GenerateWidgetFactoryTestButton(parent)
-        |""".trimMargin())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |    1 -> GenerateWidgetFactoryTestNavigationBarButton(parent)
+      |    3 -> GenerateWidgetFactoryTestButton(parent)
+      |""".trimMargin()
+    )
   }
 
-  @Schema([
-    Node12::class,
-    Node1::class,
-    Node3::class,
-    Node2::class,
-  ])
+  @Schema(
+    [
+      Node12::class,
+      Node1::class,
+      Node3::class,
+      Node2::class,
+    ]
+  )
   interface SortedByTagSchema
   @Widget(1)
   data class Node1(@Property(1) val text: String)
@@ -50,11 +56,13 @@ class GenerateWidgetFactoryTest {
     val schema = parseSchema(SortedByTagSchema::class)
 
     val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).contains("""
-        |    1 -> GenerateWidgetFactoryTestNode1(parent)
-        |    2 -> GenerateWidgetFactoryTestNode2(parent)
-        |    3 -> GenerateWidgetFactoryTestNode3(parent)
-        |    12 -> GenerateWidgetFactoryTestNode12(parent)
-        |""".trimMargin())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |    1 -> GenerateWidgetFactoryTestNode1(parent)
+      |    2 -> GenerateWidgetFactoryTestNode2(parent)
+      |    3 -> GenerateWidgetFactoryTestNode3(parent)
+      |    12 -> GenerateWidgetFactoryTestNode12(parent)
+      |""".trimMargin()
+    )
   }
 }

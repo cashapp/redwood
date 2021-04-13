@@ -33,3 +33,13 @@ kotlin {
 dependencies {
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
 }
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/androidMain/kotlin/app/cash/treehouse/compose/AndroidUiDispatcher.kt",
+      "src/androidMain/kotlin/app/cash/treehouse/compose/AndroidUiFrameClock.kt",
+    )
+  }
+}

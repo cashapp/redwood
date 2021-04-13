@@ -13,12 +13,15 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotationSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Schema app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation")
+      "Schema app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation"
+    )
   }
 
-  @Schema([
-    NonAnnotatedWidget::class,
-  ])
+  @Schema(
+    [
+      NonAnnotatedWidget::class,
+    ]
+  )
   interface NonAnnotatedWidgetSchema
   data class NonAnnotatedWidget(
     @Property(1) val name: String,
@@ -28,14 +31,17 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotatedWidget missing @Widget annotation")
+      "app.cash.treehouse.schema.parser.SchemaParserTest.NonAnnotatedWidget missing @Widget annotation"
+    )
   }
 
-  @Schema([
-    DuplicateWidgetTagA::class,
-    NonDuplicateWidgetTag::class,
-    DuplicateWidgetTagB::class,
-  ])
+  @Schema(
+    [
+      DuplicateWidgetTagA::class,
+      NonDuplicateWidgetTag::class,
+      DuplicateWidgetTagB::class,
+    ]
+  )
   interface DuplicateWidgetTagSchema
   @Widget(1)
   data class DuplicateWidgetTagA(
@@ -58,13 +64,16 @@ class SchemaParserTest {
       |Schema @Widget tags must be unique
       |
       |- @Widget(1): app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateWidgetTagA, app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateWidgetTagB
-      """.trimMargin())
+      """.trimMargin()
+    )
   }
 
-  @Schema([
-    RepeatedWidget::class,
-    RepeatedWidget::class,
-  ])
+  @Schema(
+    [
+      RepeatedWidget::class,
+      RepeatedWidget::class,
+    ]
+  )
   interface RepeatedWidgetTypeSchema
   @Widget(1)
   data class RepeatedWidget(
@@ -79,12 +88,15 @@ class SchemaParserTest {
       |Schema contains repeated widget
       |
       |- app.cash.treehouse.schema.parser.SchemaParserTest.RepeatedWidget
-      """.trimMargin())
+      """.trimMargin()
+    )
   }
 
-  @Schema([
-    DuplicatePropertyTagWidget::class,
-  ])
+  @Schema(
+    [
+      DuplicatePropertyTagWidget::class,
+    ]
+  )
   interface DuplicatePropertyTagSchema
 
   @Widget(1)
@@ -102,12 +114,15 @@ class SchemaParserTest {
       |Widget app.cash.treehouse.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
       |- @Property(1): name, nickname
-      """.trimMargin())
+      """.trimMargin()
+    )
   }
 
-  @Schema([
-    DuplicateChildrenTagWidget::class,
-  ])
+  @Schema(
+    [
+      DuplicateChildrenTagWidget::class,
+    ]
+  )
   interface DuplicateChildrenTagSchema
   @Widget(1)
   data class DuplicateChildrenTagWidget(
@@ -124,12 +139,15 @@ class SchemaParserTest {
       |Widget app.cash.treehouse.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
-      """.trimMargin())
+      """.trimMargin()
+    )
   }
 
-  @Schema([
-    UnannotatedPrimaryParameterWidget::class,
-  ])
+  @Schema(
+    [
+      UnannotatedPrimaryParameterWidget::class,
+    ]
+  )
   interface UnannotatedPrimaryParameterSchema
   @Widget(1)
   data class UnannotatedPrimaryParameterWidget(
@@ -142,12 +160,15 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnannotatedPrimaryParameterSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget")
+      "Unannotated parameter \"unannotated\" on app.cash.treehouse.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget"
+    )
   }
 
-  @Schema([
-    NonDataClassWidget::class,
-  ])
+  @Schema(
+    [
+      NonDataClassWidget::class,
+    ]
+  )
   interface NonDataClassSchema
   @Widget(1)
   class NonDataClassWidget(
@@ -158,12 +179,15 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class")
+      "@Widget app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class"
+    )
   }
 
-  @Schema([
-    InvalidChildrenTypeWidget::class,
-  ])
+  @Schema(
+    [
+      InvalidChildrenTypeWidget::class,
+    ]
+  )
   interface InvalidChildrenTypeSchema
   @Widget(1)
   data class InvalidChildrenTypeWidget(
@@ -174,6 +198,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'")
+      "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'"
+    )
   }
 }

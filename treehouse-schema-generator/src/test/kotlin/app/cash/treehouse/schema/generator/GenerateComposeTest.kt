@@ -8,9 +8,11 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class GenerateComposeTest {
-  @Schema([
-    IdPropertyNameCollisionNode::class,
-  ])
+  @Schema(
+    [
+      IdPropertyNameCollisionNode::class,
+    ]
+  )
   interface IdPropertyNameCollisionSchema
   @Widget(1)
   data class IdPropertyNameCollisionNode(
@@ -22,10 +24,12 @@ class GenerateComposeTest {
     val schema = parseSchema(IdPropertyNameCollisionSchema::class)
 
     val fileSpec = generateComposeNode(schema, schema.widgets.single())
-    assertThat(fileSpec.toString()).contains("""
-        |        set(id) {
-        |          appendDiff(PropertyDiff(this.id, 2, id))
-        |        }
-        |""".trimMargin())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |        set(id) {
+      |          appendDiff(PropertyDiff(this.id, 2, id))
+      |        }
+      |""".trimMargin()
+    )
   }
 }

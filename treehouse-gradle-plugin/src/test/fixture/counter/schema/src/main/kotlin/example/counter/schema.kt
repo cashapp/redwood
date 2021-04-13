@@ -6,11 +6,13 @@ import app.cash.treehouse.schema.Property
 import app.cash.treehouse.schema.Schema
 import app.cash.treehouse.schema.Widget
 
-@Schema([
-  CounterBox::class,
-  CounterText::class,
-  CounterButton::class,
-])
+@Schema(
+  [
+    CounterBox::class,
+    CounterText::class,
+    CounterButton::class,
+  ]
+)
 interface Counter
 
 @Widget(1)
