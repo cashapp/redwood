@@ -11,10 +11,6 @@ class HtmlSunspotBox(
   override val value: HTMLElement,
 ) : SunspotBox<HTMLElement> {
   override val children = HTMLElementChildren(value)
-
-  override fun orientation(orientation: Boolean) {
-    // TODO something?
-  }
 }
 
 class HtmlSunspotText(

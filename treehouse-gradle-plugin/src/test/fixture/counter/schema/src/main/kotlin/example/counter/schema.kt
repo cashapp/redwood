@@ -15,7 +15,6 @@ interface Counter
 
 @Widget(1)
 data class CounterBox(
-  @Property(1) val orientation: Boolean, // TODO enum or whatever
   @Children(1) val children: List<Any>,
 )
 

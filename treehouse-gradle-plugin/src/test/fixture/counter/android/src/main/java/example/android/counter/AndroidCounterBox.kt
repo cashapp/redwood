@@ -7,9 +7,5 @@ import example.counter.widget.CounterBox
 class AndroidCounterBox(
   override val value: LinearLayout,
 ) : CounterBox<View> {
-  override fun orientation(orientation: Boolean) {
-    value.orientation = if (orientation) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
-  }
-
   override val children = ViewGroupChildren(value)
 }
