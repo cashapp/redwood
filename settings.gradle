@@ -5,7 +5,7 @@ include ':compose:compiler-hosted'
 include ':compose:runtime'
 
 include ':treehouse-compose'
-include ':treehouse-gradle'
+include ':treehouse-gradle-plugin'
 include ':treehouse-protocol'
 include ':treehouse-schema'
 include ':treehouse-schema-annotations'

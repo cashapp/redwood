@@ -45,7 +45,7 @@ test {
   dependsOn(':compose:compiler:installArchives')
   dependsOn(':compose:runtime:installArchives')
   dependsOn(':treehouse-compose:installArchives')
-  dependsOn(':treehouse-gradle:installArchives')
+  dependsOn(':treehouse-gradle-plugin:installArchives')
   dependsOn(':treehouse-protocol:installArchives')
   dependsOn(':treehouse-schema:installArchives')
   dependsOn(':treehouse-schema-generator:installArchives')
