@@ -91,6 +91,14 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
             )
           }
 
+          val hasChildren = widget.traits.any { it is Children }
+          val nodeId = if (hasChildren) {
+            addStatement("val nodeId = %M { nextId() }", rememberReference)
+            CodeBlock.of("nodeId")
+          } else {
+            CodeBlock.of("nextId()")
+          }
+
           val arguments = mutableListOf<CodeBlock>()
 
           arguments += CodeBlock.builder()
@@ -98,9 +106,9 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
             .indent()
             .apply {
               if (events.isEmpty()) {
-                add("%T(nextId(), %L)\n", nodeType, widget.tag)
+                add("%T(%L, %L)\n", nodeType, nodeId, widget.tag)
               } else {
-                add("%T(nextId())\n", nodeType)
+                add("%T(%L)\n", nodeType, nodeId)
               }
             }
             .unindent()
@@ -132,7 +140,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("%M(%L) {\n", syntheticChildren, trait.tag)
+                  add("%M(%L, %L) {\n", syntheticChildren, nodeId, trait.tag)
                   indent()
                   add("%N()\n", trait.name)
                   unindent()
@@ -150,7 +158,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
             .add("}")
             .build()
 
-          if (childrenLambda.isNotEmpty()) {
+          if (hasChildren) {
             arguments += CodeBlock.builder()
               .add("content = {\n")
               .indent()
