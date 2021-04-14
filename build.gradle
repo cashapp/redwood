@@ -31,6 +31,7 @@ buildscript {
     'clikt': 'com.github.ajalt.clikt:clikt:3.1.0',
     'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
     'junit': 'junit:junit:4.13.1',
+    'testParameterInjector': 'com.google.testparameterinjector:test-parameter-injector:1.1',
     'truth': 'com.google.truth:truth:1.1',
   ]
 

@@ -1,0 +1,22 @@
+buildscript {
+  dependencies {
+    classpath "app.cash.treehouse:treehouse-gradle-plugin:$treehouseVersion"
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31'
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+  }
+}
