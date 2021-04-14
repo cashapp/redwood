@@ -1,8 +1,10 @@
 buildscript {
+  apply from: "../../../../../gradle/dependencies.gradle"
+
   dependencies {
     classpath "app.cash.treehouse:treehouse-gradle-plugin:$treehouseVersion"
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31'
-    classpath 'com.android.tools.build:gradle:4.1.1'
+    classpath deps.kotlin.gradlePlugin
+    classpath deps.androidGradlePlugin
   }
 
   repositories {

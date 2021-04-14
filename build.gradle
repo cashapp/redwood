@@ -1,44 +1,10 @@
 buildscript {
-  ext.versions = [
-    'kotlin': '1.4.32',
-    'kotlinx': [
-      'coroutines': '1.4.3',
-      'serialization': '1.0.0',
-    ],
-    'exhaustive': '0.1.1',
-  ]
-
-  ext.deps = [
-    'kotlin': [
-      'compiler': "org.jetbrains.kotlin:kotlin-compiler:${versions.kotlin}",
-      'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
-      'reflect': 'org.jetbrains.kotlin:kotlin-reflect',
-      'test': 'org.jetbrains.kotlin:kotlin-test-multiplatform',
-    ],
-    'kotlinx': [
-      'coroutines': [
-        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinx.coroutines}",
-        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinx.coroutines}",
-      ],
-      'serialization': [
-        'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
-      ],
-    ],
-    'androidx': [
-      'core': 'androidx.core:core-ktx:1.2.0',
-    ],
-    'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
-    'clikt': 'com.github.ajalt.clikt:clikt:3.1.0',
-    'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",
-    'junit': 'junit:junit:4.13.1',
-    'testParameterInjector': 'com.google.testparameterinjector:test-parameter-injector:1.1',
-    'truth': 'com.google.truth:truth:1.1',
-  ]
+  apply from: 'gradle/dependencies.gradle'
 
   dependencies {
     classpath deps.kotlin.gradlePlugin
+    classpath deps.androidGradlePlugin
     classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
-    classpath 'com.android.tools.build:gradle:4.0.2'
     classpath "app.cash.exhaustive:exhaustive-gradle:${versions.exhaustive}"
     classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
     classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
