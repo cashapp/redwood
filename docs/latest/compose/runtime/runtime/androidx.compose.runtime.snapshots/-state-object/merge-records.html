@@ -1,0 +1,40 @@
+<html><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>mergeRecords</title>
+</head><body><link href="../../../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script><script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script><link href="../../../../../styles/style.css" rel="Stylesheet"><link href="../../../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../../../scripts/main.js" async></script>
+  
+    <div id="container">
+      <div id="leftColumn"><a href="../../../../../index.html">
+            <div id="logo"></div>
+          </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <script type="text/javascript" src="../../../../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
+
+        <div class="main-content" id="content" pageids="runtime::androidx.compose.runtime.snapshots/StateObject/mergeRecords/#androidx.compose.runtime.snapshots.StateRecord#androidx.compose.runtime.snapshots.StateRecord#androidx.compose.runtime.snapshots.StateRecord/PointingToDeclaration//-59835339">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">runtime</a>/<a href="../index.html">androidx.compose.runtime.snapshots</a>/<a href="index.html">StateObject</a>/<a href="merge-records.html">mergeRecords</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":compose:runtime:dokkaHtmlPartial/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>merge</span><wbr><span>Records</span></h1>
+          </div>
+<div class="divergent-group" data-filterable-current=":compose:runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open fun <a href="merge-records.html">mergeRecords</a>(previous: <a href="../-state-record/index.html">StateRecord</a>, current: <a href="../-state-record/index.html">StateRecord</a>, applied: <a href="../-state-record/index.html">StateRecord</a>): <a href="../-state-record/index.html">StateRecord</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<p class="paragraph">Produce a merged state based on the conflicting state changes.</p><p class="paragraph">This method must not modify any of the records received and should treat the state records as immutable, even the <a href="merge-records.html">applied</a> record.</p><h4 class="">Return</h4><p class="paragraph">the modified state or <code>null</code> if the values cannot be merged. If the states cannot be merged the current apply will fail. Any of the parameters can be returned as a result. If it is not one of the parameter values then it must be a new value that is created by calling <a href="../-state-record/create.html">StateRecord.create</a> on one of the records passed and then can be modified to have the merged value before being returned. If a new record is returned <a href="../-mutable-snapshot/apply.html">MutableSnapshot.apply</a> will update the internal snapshot id and call <a href="prepend-state-record.html">prependStateRecord</a> if the record is used.</p><h2 class="">Parameters</h2><div data-togglable="Parameters"><div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":compose:runtime:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":compose:runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">previous</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the state record that was used to create the <a href="merge-records.html">applied</a> record and is a state that also (though indirectly) produced the <a href="merge-records.html">current</a> record.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":compose:runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">current</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the state record of the parent snapshot or global state.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":compose:runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":compose:runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">applied</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the state record that is being applied of the parent snapshot or global state.</p></div></div></div></div></div></div></div></div></div></div></div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  
+
+
+</body></html>
