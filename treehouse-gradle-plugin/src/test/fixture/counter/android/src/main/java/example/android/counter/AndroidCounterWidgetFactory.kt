@@ -1,5 +1,6 @@
 package example.android.counter
 
+import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -9,23 +10,21 @@ import example.counter.widget.CounterButton
 import example.counter.widget.CounterText
 import example.counter.widget.CounterWidgetFactory
 
-object AndroidCounterWidgetFactory : CounterWidgetFactory<View> {
-  override fun CounterBox(parent: View): CounterBox<View> {
-    val view = LinearLayout(parent.context)
+class AndroidCounterWidgetFactory(
+  private val context: Context,
+) : CounterWidgetFactory<View> {
+  override fun CounterBox(): CounterBox<View> {
+    val view = LinearLayout(context)
     return AndroidCounterBox(view)
   }
 
-  override fun CounterText(
-    parent: View,
-  ): CounterText<View> {
-    val view = TextView(parent.context)
+  override fun CounterText(): CounterText<View> {
+    val view = TextView(context)
     return AndroidCounterText(view)
   }
 
-  override fun CounterButton(
-    parent: View,
-  ): CounterButton<View> {
-    val view = Button(parent.context)
+  override fun CounterButton(): CounterButton<View> {
+    val view = Button(context)
     return AndroidCounterButton(view)
   }
 }

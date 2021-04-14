@@ -16,7 +16,7 @@ fun main() {
   val content = document.getElementById("content")!! as HTMLElement
   val display = WidgetDisplay(
     root = HtmlSunspotBox(content),
-    factory = HtmlSunspotNodeFactory,
+    factory = HtmlSunspotNodeFactory(document),
   )
 
   lateinit var events: (Event) -> Unit

@@ -1,5 +1,6 @@
 package example.android.sunspot
 
+import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -9,23 +10,21 @@ import example.sunspot.widget.SunspotButton
 import example.sunspot.widget.SunspotText
 import example.sunspot.widget.SunspotWidgetFactory
 
-object AndroidSunspotWidgetFactory : SunspotWidgetFactory<View> {
-  override fun SunspotBox(parent: View): SunspotBox<View> {
-    val view = LinearLayout(parent.context)
+class AndroidSunspotWidgetFactory(
+  private val context: Context,
+) : SunspotWidgetFactory<View> {
+  override fun SunspotBox(): SunspotBox<View> {
+    val view = LinearLayout(context)
     return AndroidSunspotBox(view)
   }
 
-  override fun SunspotText(
-    parent: View,
-  ): SunspotText<View> {
-    val view = TextView(parent.context)
+  override fun SunspotText(): SunspotText<View> {
+    val view = TextView(context)
     return AndroidSunspotText(view)
   }
 
-  override fun SunspotButton(
-    parent: View,
-  ): SunspotButton<View> {
-    val view = Button(parent.context)
+  override fun SunspotButton(): SunspotButton<View> {
+    val view = Button(context)
     return AndroidSunspotButton(view)
   }
 }

@@ -63,6 +63,15 @@ allprojects {
     jcenter()
   }
 
+  tasks.withType(Test).configureEach {
+    testLogging {
+      if (System.getenv("CI") == "true") {
+        events = ["failed", "skipped", "passed"]
+      }
+      exceptionFormat "full"
+    }
+  }
+
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
     kotlin.sourceSets.all {
       languageSettings {

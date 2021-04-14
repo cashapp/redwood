@@ -28,8 +28,8 @@ class GenerateWidgetFactoryTest {
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).contains(
       """
-      |    1 -> GenerateWidgetFactoryTestNavigationBarButton(parent)
-      |    3 -> GenerateWidgetFactoryTestButton(parent)
+      |    1 -> GenerateWidgetFactoryTestNavigationBarButton()
+      |    3 -> GenerateWidgetFactoryTestButton()
       |""".trimMargin()
     )
   }
@@ -58,10 +58,10 @@ class GenerateWidgetFactoryTest {
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).contains(
       """
-      |    1 -> GenerateWidgetFactoryTestNode1(parent)
-      |    2 -> GenerateWidgetFactoryTestNode2(parent)
-      |    3 -> GenerateWidgetFactoryTestNode3(parent)
-      |    12 -> GenerateWidgetFactoryTestNode12(parent)
+      |    1 -> GenerateWidgetFactoryTestNode1()
+      |    2 -> GenerateWidgetFactoryTestNode2()
+      |    3 -> GenerateWidgetFactoryTestNode3()
+      |    12 -> GenerateWidgetFactoryTestNode12()
       |""".trimMargin()
     )
   }

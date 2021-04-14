@@ -31,7 +31,7 @@ class MainActivity : Activity() {
 
     val display = WidgetDisplay(
       root = AndroidCounterBox(root),
-      factory = AndroidCounterWidgetFactory,
+      factory = AndroidCounterWidgetFactory(this),
     )
 
     lateinit var events: (Event) -> Unit
