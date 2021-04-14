@@ -8,6 +8,7 @@ dependencies {
   compileOnly deps.kotlin.gradlePlugin
 
   testImplementation deps.junit
+  testImplementation deps.testParameterInjector
   testImplementation deps.truth
   testImplementation gradleTestKit()
 }

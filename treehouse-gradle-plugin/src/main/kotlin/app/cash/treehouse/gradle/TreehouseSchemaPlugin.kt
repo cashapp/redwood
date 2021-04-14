@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
 class TreehouseSchemaPlugin : Plugin<Project> {
@@ -22,7 +23,11 @@ class TreehouseSchemaPlugin : Plugin<Project> {
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.targets.all { it.applySchemaAnnotationDependency() }
 
-      // TODO check there is a JVM target in an afterEvaluate
+      project.afterEvaluate {
+        check(kotlin.targets.any { it.platformType == KotlinPlatformType.jvm }) {
+          "Treehouse schema plugin requires a jvm() target when used with Kotlin multiplatform"
+        }
+      }
     }
 
     project.afterEvaluate {
