@@ -10,6 +10,8 @@ include ':treehouse-protocol'
 include ':treehouse-schema'
 include ':treehouse-schema-annotations'
 include ':treehouse-schema-generator'
+include ':treehouse-test-schema'
+include ':treehouse-test-schema:compose'
 include ':treehouse-widget'
 
 include ':example:android'

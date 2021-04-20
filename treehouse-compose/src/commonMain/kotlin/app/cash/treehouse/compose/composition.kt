@@ -12,8 +12,8 @@ import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 interface TreehouseComposition {
@@ -65,7 +65,8 @@ private class RealTreehouseComposition(
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
 
-  private lateinit var job: Job
+  private lateinit var recomposeJob: Job
+  private lateinit var diffJob: Job
 
   fun launch() {
     // Set up a trigger to apply changes on the next frame if a global write was observed.
@@ -81,28 +82,26 @@ private class RealTreehouseComposition(
       }
     }
 
-    job = scope.launch {
-      coroutineScope {
-        launch {
-          recomposer.runRecomposeAndApplyChanges()
-        }
-        launch {
-          while (true) {
-            clock.withFrameMillis {
-              val existingChildrenDiffs = childrenDiffs
-              val existingPropertyDiffs = propertyDiffs
-              if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-                childrenDiffs = mutableListOf()
-                propertyDiffs = mutableListOf()
+    // These launch undispatched so that they reach their first suspension points before returning
+    // control to the caller.
+    recomposeJob = scope.launch(start = UNDISPATCHED) {
+      recomposer.runRecomposeAndApplyChanges()
+    }
+    diffJob = scope.launch(start = UNDISPATCHED) {
+      while (true) {
+        clock.withFrameMillis {
+          val existingChildrenDiffs = childrenDiffs
+          val existingPropertyDiffs = propertyDiffs
+          if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
+            childrenDiffs = mutableListOf()
+            propertyDiffs = mutableListOf()
 
-                diffs(
-                  Diff(
-                    childrenDiffs = existingChildrenDiffs,
-                    propertyDiffs = existingPropertyDiffs,
-                  )
-                )
-              }
-            }
+            diffs(
+              Diff(
+                childrenDiffs = existingChildrenDiffs,
+                propertyDiffs = existingPropertyDiffs,
+              )
+            )
           }
         }
       }
@@ -125,6 +124,8 @@ private class RealTreehouseComposition(
   }
 
   override fun cancel() {
-    job.cancel()
+    diffJob.cancel()
+    recomposeJob.cancel()
+    recomposer.cancel()
   }
 }
