@@ -1,9 +1,13 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
 apply plugin: 'app.cash.exhaustive'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
+  android {
+    publishAllLibraryVariants()
+  }
   js {
     browser()
   }
@@ -23,6 +27,11 @@ kotlin {
     commonTest {
       dependencies {
         implementation deps.kotlin.test
+      }
+    }
+    androidTest {
+      dependencies {
+        implementation deps.robolectric
       }
     }
   }

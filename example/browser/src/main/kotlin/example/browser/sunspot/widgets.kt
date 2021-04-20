@@ -1,5 +1,6 @@
 package example.browser.sunspot
 
+import app.cash.treehouse.widget.HTMLElementChildren
 import example.sunspot.widget.SunspotBox
 import example.sunspot.widget.SunspotButton
 import example.sunspot.widget.SunspotText

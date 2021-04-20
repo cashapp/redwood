@@ -1,5 +1,6 @@
 package example.browser.counter
 
+import app.cash.treehouse.widget.HTMLElementChildren
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
