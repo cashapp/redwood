@@ -34,5 +34,6 @@ buildscript {
     'junit': 'junit:junit:4.13.1',
     'testParameterInjector': 'com.google.testparameterinjector:test-parameter-injector:1.1',
     'truth': 'com.google.truth:truth:1.1',
+    'robolectric': 'org.robolectric:robolectric:4.5.1',
   ]
 }
