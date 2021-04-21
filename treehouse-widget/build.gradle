@@ -1,6 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
-apply plugin: 'app.cash.exhaustive'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
@@ -18,10 +17,6 @@ kotlin {
     commonMain {
       dependencies {
         api project(':treehouse-protocol')
-
-        // TODO remove once https://github.com/cashapp/exhaustive/issues/6 is fixed.
-        // TODO compileOnly once https://github.com/cashapp/exhaustive/issues/9 is fixed.
-        implementation deps.exhaustiveAnnotation
       }
     }
     commonTest {
