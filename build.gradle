@@ -49,7 +49,6 @@ allprojects {
     kotlin.sourceSets.all {
       languageSettings {
         useExperimentalAnnotation('kotlin.RequiresOptIn')
-        useExperimentalAnnotation('androidx.compose.runtime.ExperimentalComposeApi')
       }
     }
   }
@@ -60,7 +59,6 @@ allprojects {
       useIR = true
       freeCompilerArgs += [
         '-Xopt-in=kotlin.RequiresOptIn',
-        '-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi',
       ]
     }
   }
