@@ -15,8 +15,8 @@
  */
 package app.cash.treehouse.gradle
 
-interface TreehouseSchemaExtension {
-  var schema: String?
+public interface TreehouseSchemaExtension {
+  public var schema: String?
 }
 
 // Gradle requires this type to be open since it runtime extends it.

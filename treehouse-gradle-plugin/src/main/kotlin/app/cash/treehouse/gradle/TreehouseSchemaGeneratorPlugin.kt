@@ -27,15 +27,15 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
+public class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-class TreehouseSchemaWidgetPlugin : TreehouseSchemaGeneratorPlugin(Widget)
+public class TreehouseSchemaWidgetPlugin : TreehouseSchemaGeneratorPlugin(Widget)
 
-abstract class TreehouseSchemaGeneratorPlugin(
+public abstract class TreehouseSchemaGeneratorPlugin(
   private val strategy: Strategy,
 ) : Plugin<Project> {
-  enum class Strategy(
+  public enum class Strategy(
     internal val generatorFlag: String,
     internal val dependencyCoordinate: String,
   ) {

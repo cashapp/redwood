@@ -22,7 +22,7 @@ import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
-class HTMLElementChildren(
+public class HTMLElementChildren(
   private val parent: HTMLElement,
 ) : Widget.Children<HTMLElement> {
   override fun insert(index: Int, widget: HTMLElement) {

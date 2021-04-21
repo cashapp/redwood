@@ -20,7 +20,7 @@ import kotlinx.browser.window
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-object WindowAnimationFrameClock : MonotonicFrameClock {
+public object WindowAnimationFrameClock : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(
     onFrame: (Long) -> R
   ): R = suspendCoroutine { continuation ->
