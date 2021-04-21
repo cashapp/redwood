@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
+@Suppress("unused") // Invoked reflectively by Gradle.
 public class TreehouseSchemaPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     var applied = false
