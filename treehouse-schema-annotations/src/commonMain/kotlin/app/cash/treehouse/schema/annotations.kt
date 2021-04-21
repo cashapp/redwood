@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  * interface Name
  * ```
  */
-annotation class Schema(val widgets: Array<KClass<*>>)
+public annotation class Schema(val widgets: Array<KClass<*>>)
 
 /**
  * Annotates a data class which represents a widget in a UI tree. Each widget in a [Schema] must
@@ -46,7 +46,7 @@ annotation class Schema(val widgets: Array<KClass<*>>)
  * )
  * ```
  */
-annotation class Widget(val tag: Int)
+public annotation class Widget(val tag: Int)
 
 /**
  * Annotates a [Widget] property which represents a property on the associated UI widget. Properties
@@ -60,7 +60,7 @@ annotation class Widget(val tag: Int)
  * )
  * ```
  */
-annotation class Property(val tag: Int)
+public annotation class Property(val tag: Int)
 
 /**
  * Annotates a [Widget] property as representing child widgets which are contained within the
@@ -74,7 +74,7 @@ annotation class Property(val tag: Int)
  * )
  * ```
  */
-annotation class Children(val tag: Int)
+public annotation class Children(val tag: Int)
 
 /**
  * Annotates a [Property] with an associated default expression. The [expression] is not
@@ -88,4 +88,4 @@ annotation class Children(val tag: Int)
  * )
  * ```
  */
-annotation class Default(val expression: String)
+public annotation class Default(val expression: String)

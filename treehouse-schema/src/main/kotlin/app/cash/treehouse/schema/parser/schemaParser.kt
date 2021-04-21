@@ -32,7 +32,7 @@ private val LIST_OF_ANY_TYPE = List::class.createType(
   arguments = listOf(invariant(Any::class.createType()))
 )
 
-fun parseSchema(schemaType: KClass<*>): Schema {
+public fun parseSchema(schemaType: KClass<*>): Schema {
   val widgets = mutableListOf<Widget>()
 
   val widgetTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {

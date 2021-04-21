@@ -28,12 +28,12 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
-  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>) = true
+public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
+  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
-  override fun getCompilerPluginId() = "app.cash.treehouse"
+  override fun getCompilerPluginId(): String = "app.cash.treehouse"
 
-  override fun getPluginArtifact() = SubpluginArtifact(
+  override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
     "app.cash.treehouse",
     "compose-compiler",
     treehouseVersion,

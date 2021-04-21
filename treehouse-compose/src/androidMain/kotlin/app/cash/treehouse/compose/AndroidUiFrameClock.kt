@@ -23,7 +23,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.coroutineContext
 
-class AndroidUiFrameClock(
+public class AndroidUiFrameClock(
   private val choreographer: Choreographer
 ) : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(

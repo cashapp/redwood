@@ -18,29 +18,29 @@ package app.cash.treehouse.widget
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 
-interface Widget<T : Any> {
-  val value: T
+public interface Widget<T : Any> {
+  public val value: T
 
-  fun apply(diff: PropertyDiff, events: (Event) -> Unit)
+  public fun apply(diff: PropertyDiff, events: (Event) -> Unit)
 
-  fun children(tag: Int): Children<T> {
+  public fun children(tag: Int): Children<T> {
     throw IllegalArgumentException("Widget does not support children")
   }
 
-  interface Children<T : Any> {
-    fun insert(index: Int, widget: T)
-    fun move(fromIndex: Int, toIndex: Int, count: Int)
-    fun remove(index: Int, count: Int)
-    fun clear()
+  public interface Children<T : Any> {
+    public fun insert(index: Int, widget: T)
+    public fun move(fromIndex: Int, toIndex: Int, count: Int)
+    public fun remove(index: Int, count: Int)
+    public fun clear()
 
-    companion object {
-      fun validateInsert(childCount: Int, index: Int) {
+    public companion object {
+      public fun validateInsert(childCount: Int, index: Int) {
         if (index < 0 || index > childCount) {
           throw IndexOutOfBoundsException("index must be in range [0, $childCount]: $index")
         }
       }
 
-      fun validateMove(childCount: Int, fromIndex: Int, toIndex: Int, count: Int) {
+      public fun validateMove(childCount: Int, fromIndex: Int, toIndex: Int, count: Int) {
         if (fromIndex < 0 || fromIndex >= childCount) {
           throw IndexOutOfBoundsException(
             "fromIndex must be in range [0, $childCount): $fromIndex"
@@ -61,7 +61,7 @@ interface Widget<T : Any> {
         }
       }
 
-      fun validateRemove(childCount: Int, index: Int, count: Int) {
+      public fun validateRemove(childCount: Int, index: Int, count: Int) {
         if (index < 0 || index >= childCount) {
           throw IndexOutOfBoundsException("Index must be in range [0, $childCount): $index")
         }
@@ -75,7 +75,7 @@ interface Widget<T : Any> {
     }
   }
 
-  interface Factory<T : Any> {
-    fun create(kind: Int, id: Long): Widget<T>
+  public interface Factory<T : Any> {
+    public fun create(kind: Int, id: Long): Widget<T>
   }
 }

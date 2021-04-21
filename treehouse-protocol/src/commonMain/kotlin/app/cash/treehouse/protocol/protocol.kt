@@ -19,7 +19,7 @@ import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Event(
+public data class Event(
   /** Identifier for the widget from which this event originated. */
   val id: Long,
   /** Identifies which event occurred on the widget with [id]. */
@@ -28,13 +28,13 @@ data class Event(
 )
 
 @Serializable
-data class Diff(
+public data class Diff(
   val childrenDiffs: List<ChildrenDiff> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
 )
 
 @Serializable
-data class PropertyDiff(
+public data class PropertyDiff(
   /** Identifier for the widget whose property has changed. */
   val id: Long,
   /** Identifies which property changed on the widget with [id]. */
@@ -43,20 +43,20 @@ data class PropertyDiff(
 )
 
 @Serializable
-sealed class ChildrenDiff {
+public sealed class ChildrenDiff {
   /** Identifier for the widget whose children have changed. */
-  abstract val id: Long
+  public abstract val id: Long
   /** Identifies which group of children changed on the widget with [id]. */
-  abstract val tag: Int
+  public abstract val tag: Int
 
   @Serializable
-  object Clear : ChildrenDiff() {
-    override val id get() = RootId
-    override val tag get() = RootChildrenTag
+  public object Clear : ChildrenDiff() {
+    override val id: Long get() = RootId
+    override val tag: Int get() = RootChildrenTag
   }
 
   @Serializable
-  data class Insert(
+  public data class Insert(
     override val id: Long,
     override val tag: Int,
     val childId: Long,
@@ -65,7 +65,7 @@ sealed class ChildrenDiff {
   ) : ChildrenDiff()
 
   @Serializable
-  data class Move(
+  public data class Move(
     override val id: Long,
     override val tag: Int,
     val fromIndex: Int,
@@ -74,15 +74,15 @@ sealed class ChildrenDiff {
   ) : ChildrenDiff()
 
   @Serializable
-  data class Remove(
+  public data class Remove(
     override val id: Long,
     override val tag: Int,
     val index: Int,
     val count: Int,
   ) : ChildrenDiff()
 
-  companion object {
-    const val RootId = 0L
-    const val RootChildrenTag = 1
+  public companion object {
+    public const val RootId: Long = 0L
+    public const val RootChildrenTag: Int = 1
   }
 }

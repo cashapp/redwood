@@ -21,7 +21,7 @@ import app.cash.treehouse.widget.Widget.Children.Companion.validateInsert
 import app.cash.treehouse.widget.Widget.Children.Companion.validateMove
 import app.cash.treehouse.widget.Widget.Children.Companion.validateRemove
 
-class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
+public class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
   override fun insert(index: Int, widget: View) {
     validateInsert(parent.childCount, index)
 

@@ -27,20 +27,20 @@ import app.cash.treehouse.schema.Widget
     Button::class,
   ]
 )
-interface ExampleSchema
+public interface ExampleSchema
 
 @Widget(1)
-data class Box(
+public data class Box(
   @Children(1) val children: List<Any>,
 )
 
 @Widget(2)
-data class Text(
+public data class Text(
   @Property(1) val text: String?,
 )
 
 @Widget(3)
-data class Button(
+public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: () -> Unit,
 )

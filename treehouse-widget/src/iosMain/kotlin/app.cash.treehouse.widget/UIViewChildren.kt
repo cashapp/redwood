@@ -25,7 +25,7 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.subviews
 import platform.darwin.NSInteger
 
-class UIViewChildren(
+public class UIViewChildren(
   private val root: UIView,
 ) : Widget.Children<UIView> {
   override fun insert(index: Int, widget: UIView) {

@@ -45,10 +45,24 @@ allprojects {
     }
   }
 
+  plugins.withId('org.jetbrains.kotlin.jvm') {
+    kotlin {
+      if (project.path.startsWith(':treehouse-')) {
+        explicitApi()
+      }
+    }
+  }
+
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
-    kotlin.sourceSets.all {
-      languageSettings {
-        useExperimentalAnnotation('kotlin.RequiresOptIn')
+    kotlin {
+      if (project.path.startsWith(':treehouse-')) {
+        explicitApi()
+      }
+
+      sourceSets.all {
+        languageSettings {
+          useExperimentalAnnotation('kotlin.RequiresOptIn')
+        }
       }
     }
   }

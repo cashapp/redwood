@@ -25,10 +25,10 @@ import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 
-interface TreehouseScope {
-  fun nextId(): Long
-  fun appendDiff(diff: ChildrenDiff)
-  fun appendDiff(diff: PropertyDiff)
+public interface TreehouseScope {
+  public fun nextId(): Long
+  public fun appendDiff(diff: ChildrenDiff)
+  public fun appendDiff(diff: PropertyDiff)
 }
 
 /**
@@ -47,7 +47,7 @@ interface TreehouseScope {
  * @suppress
  */
 @Composable
-fun `$SyntheticChildren`(parentId: Long, tag: Int, content: @Composable () -> Unit) {
+public fun `$SyntheticChildren`(parentId: Long, tag: Int, content: @Composable () -> Unit) {
   ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
     factory = {
       ChildrenNode.Intermediate(parentId)
@@ -81,13 +81,13 @@ private sealed class ChildrenNode(parentId: Long) : Node(parentId, -1) {
 /**
  * @suppress
  */
-open class Node(
-  val id: Long,
-  val type: Int,
+public open class Node(
+  public val id: Long,
+  public val type: Int,
 ) {
   internal val children = mutableListOf<Node>()
 
-  open fun sendEvent(event: Event) {
+  public open fun sendEvent(event: Event) {
     throw IllegalStateException("Node ID $id of type $type does not handle events")
   }
 }

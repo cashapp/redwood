@@ -21,11 +21,11 @@ import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 
-interface Display {
-  fun apply(diff: Diff, events: (Event) -> Unit)
+public interface Display {
+  public fun apply(diff: Diff, events: (Event) -> Unit)
 }
 
-class WidgetDisplay<T : Any>(
+public class WidgetDisplay<T : Any>(
   private val root: Widget<T>,
   private val factory: Widget.Factory<T>,
 ) : Display {

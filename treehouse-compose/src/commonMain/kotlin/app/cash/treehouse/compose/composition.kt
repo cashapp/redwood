@@ -31,17 +31,17 @@ import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-interface TreehouseComposition {
-  fun sendEvent(event: Event)
-  fun setContent(content: @Composable TreehouseScope.() -> Unit)
-  fun cancel()
+public interface TreehouseComposition {
+  public fun sendEvent(event: Event)
+  public fun setContent(content: @Composable TreehouseScope.() -> Unit)
+  public fun cancel()
 }
 
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-fun TreehouseComposition(
+public fun TreehouseComposition(
   scope: CoroutineScope,
   diffs: (Diff) -> Unit,
 ): TreehouseComposition {
