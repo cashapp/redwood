@@ -47,15 +47,12 @@ public interface TreehouseScope {
  * @suppress
  */
 @Composable
-public fun `$SyntheticChildren`(parentId: Long, tag: Int, content: @Composable () -> Unit) {
+public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
   ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
     factory = {
-      ChildrenNode.Intermediate(parentId)
+      ChildrenNode.Intermediate(tag)
     },
     update = {
-      set(tag) {
-        this.tag = tag
-      }
     },
     content = content,
   )
@@ -66,25 +63,24 @@ public fun `$SyntheticChildren`(parentId: Long, tag: Int, content: @Composable (
  * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
-private sealed class ChildrenNode(parentId: Long) : Node(parentId, -1) {
-  abstract val tag: Int
-
-  class Intermediate(parentId: Long) : ChildrenNode(parentId) {
-    override var tag = -1
-  }
-
-  class Root : ChildrenNode(RootId) {
-    override val tag get() = RootChildrenTag
-  }
+private sealed class ChildrenNode(
+  parentId: Long,
+  val tag: Int,
+) : Node(parentId, -1) {
+  class Intermediate(tag: Int) : ChildrenNode(-1, tag)
+  class Root : ChildrenNode(RootId, RootChildrenTag)
 }
 
 /**
  * @suppress
  */
 public open class Node(
-  public val id: Long,
+  id: Long,
   public val type: Int,
 ) {
+  public var id: Long = id
+    internal set
+
   internal val children = mutableListOf<Node>()
 
   public open fun sendEvent(event: Event) {
@@ -133,10 +129,14 @@ internal class ProtocolApplier(
   override fun insertTopDown(index: Int, instance: Node) {
     current.children.add(index, instance)
 
-    // We do not add ChildrenNode instances to the map (they have no unique IDs and are only
-    // available through indexing on the parent) and we do not send them over the wire to the
-    // display (they are always implied by the display interfaces).
-    if (instance !is ChildrenNode) {
+    if (instance is ChildrenNode) {
+      // Inherit the ID from the current node such that changes to the children can be reported
+      // as if they occurred directly on the parent.
+      instance.id = current.id
+    } else {
+      // We do not add ChildrenNode instances to the map (they have no unique IDs and are only
+      // available through indexing on the parent) and we do not send them over the wire to the
+      // display (they are always implied by the display interfaces).
       val current = current as ChildrenNode
 
       nodes[instance.id] = instance

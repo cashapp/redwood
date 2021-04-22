@@ -38,7 +38,6 @@ internal val treehouseScope = ClassName("app.cash.treehouse.compose", "Treehouse
 internal val applier = ClassName("androidx.compose.runtime", "Applier")
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
 internal val composeNodeReference = MemberName("androidx.compose.runtime", "ComposeNode")
-internal val rememberReference = MemberName("androidx.compose.runtime", "remember")
 
 internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
   .copy(

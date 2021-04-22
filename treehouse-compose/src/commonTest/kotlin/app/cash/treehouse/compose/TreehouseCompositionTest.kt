@@ -26,7 +26,9 @@ import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
+import example.treehouse.compose.Box
 import example.treehouse.compose.Button
+import example.treehouse.compose.Text
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -37,6 +39,40 @@ import kotlin.test.assertEquals
 import kotlin.test.fail
 
 class TreehouseCompositionTest {
+  @Test fun childrenInheritIdFromSyntheticParent() = runTest {
+    val clock = BroadcastFrameClock()
+    val diffs = ArrayDeque<Diff>()
+    val composition = TreehouseComposition(this + clock, diffs::add)
+
+    composition.setContent {
+      Box {
+        Text("hey")
+        Box {
+          Text("hello")
+        }
+      }
+    }
+
+    clock.awaitFrame()
+    assertEquals(
+      Diff(
+        childrenDiffs = listOf(
+          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 1 /* box */, 0),
+          ChildrenDiff.Insert(1L, 1, 2L, 2 /* text */, 0),
+          ChildrenDiff.Insert(1L, 1, 3L, 1 /* box */, 1),
+          ChildrenDiff.Insert(3L, 1, 4L, 2 /* text */, 0),
+        ),
+        propertyDiffs = listOf(
+          PropertyDiff(2L, 1 /* text */, "hey"),
+          PropertyDiff(4L, 1 /* text */, "hello"),
+        ),
+      ),
+      diffs.removeFirst()
+    )
+
+    composition.cancel()
+  }
+
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     val diffs = ArrayDeque<Diff>()
