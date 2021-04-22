@@ -116,7 +116,7 @@ allprojects {
 
     spotless {
       kotlin {
-        target("src/**/*.kt")
+        target("src/*/kotlin/**/*.kt")
         licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
         // Spotless doesn't read .editorconfig yet: https://github.com/diffplug/spotless/issues/142
         ktlint('0.41.0').userData([
