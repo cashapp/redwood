@@ -48,9 +48,9 @@ public interface TreehouseScope {
  */
 @Composable
 public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
-  ComposeNode<ChildrenNode.Intermediate, Applier<Node>>(
+  ComposeNode<ProtocolChildrenNode.Intermediate, Applier<ProtocolNode>>(
     factory = {
-      ChildrenNode.Intermediate(tag)
+      ProtocolChildrenNode.Intermediate(tag)
     },
     update = {
     },
@@ -63,25 +63,25 @@ public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
  * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
-private sealed class ChildrenNode(
+private sealed class ProtocolChildrenNode(
   parentId: Long,
   val tag: Int,
-) : Node(parentId, -1) {
-  class Intermediate(tag: Int) : ChildrenNode(-1, tag)
-  class Root : ChildrenNode(RootId, RootChildrenTag)
+) : ProtocolNode(parentId, -1) {
+  class Intermediate(tag: Int) : ProtocolChildrenNode(-1, tag)
+  class Root : ProtocolChildrenNode(RootId, RootChildrenTag)
 }
 
 /**
  * @suppress
  */
-public open class Node(
+public open class ProtocolNode(
   id: Long,
   public val type: Int,
 ) {
   public var id: Long = id
     internal set
 
-  internal val children = mutableListOf<Node>()
+  internal val children = mutableListOf<ProtocolNode>()
 
   public open fun sendEvent(event: Event) {
     throw IllegalStateException("Node ID $id of type $type does not handle events")
@@ -93,25 +93,25 @@ public open class Node(
  * by the display layer. Additionally, it has special handling for emulating nodes which contain
  * multiple children.
  *
- * Nodes in the tree are required to alternate between [ChildrenNode] instances and
- * non-[ChildrenNode] [Node] subtypes starting from the root. This invariant is maintained by
- * virtue of the fact that all of the input `@Composeables` should be generated code.
+ * Nodes in the tree are required to alternate between [ProtocolChildrenNode] instances and
+ * non-[ProtocolChildrenNode] [ProtocolNode] subtypes starting from the root. This invariant is
+ * maintained by virtue of the fact that all of the input `@Composables` should be generated code.
  *
  * For example, a node tree may look like this:
  * ```
- *                    ChildrenNode(1)
+ *                    Children(tag=1)
  *                     /          \
  *                    /            \
  *            ToolbarNode        ListNode
  *             /     \                 \
  *            /       \                 \
- * ChildrenNode(1)  ChildrenNode(2)   ChildrenNode(1)
+ * Children(tag=1)  Children(tag=2)   Children(tag=1)
  *        |              |               /       \
  *        |              |              /         \
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
- * But the protocol diff output would only record non-[ChildrenNode] nodes using their
- * [ChildrenNode.tag] value:
+ * But the protocol diff output would only record non-[ProtocolChildrenNode] nodes using their
+ * [ProtocolChildrenNode.tag] value:
  * ```
  * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
  * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
@@ -123,21 +123,21 @@ public open class Node(
  */
 internal class ProtocolApplier(
   private val scope: TreehouseScope,
-) : AbstractApplier<Node>(ChildrenNode.Root()) {
+) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()) {
   val nodes = mutableMapOf(root.id to root)
 
-  override fun insertTopDown(index: Int, instance: Node) {
+  override fun insertTopDown(index: Int, instance: ProtocolNode) {
     current.children.add(index, instance)
 
-    if (instance is ChildrenNode) {
+    if (instance is ProtocolChildrenNode) {
       // Inherit the ID from the current node such that changes to the children can be reported
       // as if they occurred directly on the parent.
       instance.id = current.id
-    } else {
-      // We do not add ChildrenNode instances to the map (they have no unique IDs and are only
+      // We do not add children instances to the map (they have no unique IDs and are only
       // available through indexing on the parent) and we do not send them over the wire to the
       // display (they are always implied by the display interfaces).
-      val current = current as ChildrenNode
+    } else {
+      val current = current as ProtocolChildrenNode
 
       nodes[instance.id] = instance
       scope.appendDiff(
@@ -146,13 +146,13 @@ internal class ProtocolApplier(
     }
   }
 
-  override fun insertBottomUp(index: Int, instance: Node) {
+  override fun insertBottomUp(index: Int, instance: ProtocolNode) {
     // Ignored, we insert top-down for now.
   }
 
   override fun remove(index: Int, count: Int) {
-    // ChildrenNode instances are never removed from their parents.
-    val current = current as ChildrenNode
+    // Children instances are never removed from their parents.
+    val current = current as ProtocolChildrenNode
 
     val children = current.children
     for (i in index until index + count) {
@@ -163,8 +163,8 @@ internal class ProtocolApplier(
   }
 
   override fun move(from: Int, to: Int, count: Int) {
-    // ChildrenNode instances are never moved within their parents.
-    val current = current as ChildrenNode
+    // Children instances are never moved within their parents.
+    val current = current as ProtocolChildrenNode
 
     current.children.move(from, to, count)
     scope.appendDiff(ChildrenDiff.Move(current.id, current.tag, from, to, count))
