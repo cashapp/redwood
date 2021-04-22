@@ -58,12 +58,12 @@ class TreehouseCompositionTest {
       Diff(
         childrenDiffs = listOf(
           ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 1 /* box */, 0),
-          ChildrenDiff.Insert(1L, 1, 3L, 2 /* text */, 0),
-          ChildrenDiff.Insert(1L, 1, 2L, 1 /* box */, 1),
-          ChildrenDiff.Insert(2L, 1, 4L, 2 /* text */, 0),
+          ChildrenDiff.Insert(1L, 1, 2L, 2 /* text */, 0),
+          ChildrenDiff.Insert(1L, 1, 3L, 1 /* box */, 1),
+          ChildrenDiff.Insert(3L, 1, 4L, 2 /* text */, 0),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(3L, 1 /* text */, "hey"),
+          PropertyDiff(2L, 1 /* text */, "hey"),
           PropertyDiff(4L, 1 /* text */, "hello"),
         ),
       ),
