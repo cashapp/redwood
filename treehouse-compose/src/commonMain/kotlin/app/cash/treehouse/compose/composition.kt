@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.withFrameMillis
 import app.cash.treehouse.protocol.ChildrenDiff
@@ -80,6 +81,8 @@ private class RealTreehouseComposition(
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
 
+  private lateinit var snapshotHandle: ObserverHandle
+  private var snapshotJob: Job? = null
   private lateinit var recomposeJob: Job
   private lateinit var diffJob: Job
 
@@ -87,10 +90,10 @@ private class RealTreehouseComposition(
     // Set up a trigger to apply changes on the next frame if a global write was observed.
     // TODO where should this live?
     var applyScheduled = false
-    Snapshot.registerGlobalWriteObserver {
+    snapshotHandle = Snapshot.registerGlobalWriteObserver {
       if (!applyScheduled) {
         applyScheduled = true
-        scope.launch {
+        snapshotJob = scope.launch {
           applyScheduled = false
           Snapshot.sendApplyNotifications()
         }
@@ -139,6 +142,8 @@ private class RealTreehouseComposition(
   }
 
   override fun cancel() {
+    snapshotHandle.dispose()
+    snapshotJob?.cancel()
     diffJob.cancel()
     recomposeJob.cancel()
     recomposer.cancel()
