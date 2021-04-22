@@ -31,13 +31,13 @@ internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
 internal val widgetChildren = widget.nestedClass("Children")
 internal val widgetFactory = widget.nestedClass("Factory")
 
-internal val composeNode = ClassName("app.cash.treehouse.compose", "Node")
+internal val protocolNode = ClassName("app.cash.treehouse.compose", "ProtocolNode")
 internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "\$SyntheticChildren")
 internal val treehouseScope = ClassName("app.cash.treehouse.compose", "TreehouseScope")
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
-internal val composeNodeReference = MemberName("androidx.compose.runtime", "ComposeNode")
+internal val composeNode = MemberName("androidx.compose.runtime", "ComposeNode")
 
 internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
   .copy(

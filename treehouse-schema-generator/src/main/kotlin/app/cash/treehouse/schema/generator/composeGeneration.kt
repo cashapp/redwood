@@ -79,11 +79,11 @@ private class ButtonComposeNode(id: Long) : Node(id, 2) {
 internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
   val events = widget.traits.filterIsInstance<Event>()
   val nodeType = if (events.isEmpty()) {
-    composeNode
+    protocolNode
   } else {
     schema.composeNodeType(widget)
   }
-  val applierOfServerNode = applier.parameterizedBy(composeNode)
+  val applierOfServerNode = applier.parameterizedBy(protocolNode)
   return FileSpec.builder(schema.composePackage, widget.flatName)
     .addFunction(
       FunSpec.builder(widget.flatName)
@@ -189,7 +189,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
           }
 
           addStatement(
-            "%M<%T, %T>(%L)", composeNodeReference, nodeType, applierOfServerNode,
+            "%M<%T, %T>(%L)", composeNode, nodeType, applierOfServerNode,
             arguments.joinToCode(",\n", "\n", ",\n")
           )
         }
@@ -205,7 +205,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 .addParameter("id", LONG)
                 .build()
             )
-            .superclass(composeNode)
+            .superclass(protocolNode)
             .addSuperclassConstructorParameter("id")
             .addSuperclassConstructorParameter("%L", widget.tag)
             .apply {
