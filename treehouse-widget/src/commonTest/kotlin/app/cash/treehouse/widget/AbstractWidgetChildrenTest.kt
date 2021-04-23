@@ -17,7 +17,6 @@ package app.cash.treehouse.widget
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 abstract class AbstractWidgetChildrenTest<T : Any> {
   abstract val children: Widget.Children<T>
@@ -43,18 +42,6 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     children.insert(0, widget("two"))
     children.insert(1, widget("three"))
     assertEquals(listOf("two", "three", "one"), names())
-  }
-
-  @Test fun insertIndexTooLarge() {
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.insert(1, widget("one"))
-    }
-  }
-
-  @Test fun insertIndexTooSmall() {
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.insert(-1, widget("one"))
-    }
   }
 
   @Test fun moveSingleForward() {
@@ -110,60 +97,6 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     assertEquals(listOf("one", "two", "three"), names())
   }
 
-  @Test fun moveFromIndexTooSmall() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(-1, 1, 1)
-    }
-  }
-
-  @Test fun moveFromIndexTooLarge() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(4, 1, 1)
-    }
-  }
-
-  @Test fun moveToIndexTooSmall() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(1, -1, 1)
-    }
-  }
-
-  @Test fun moveToIndexTooLarge() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(1, 4, 1)
-    }
-  }
-
-  @Test fun moveCountTooSmall() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(0, 1, -1)
-    }
-  }
-
-  @Test fun moveCountTooLarge() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.move(0, 1, 4)
-    }
-  }
-
   @Test fun removeSingleStart() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
@@ -202,42 +135,6 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     children.insert(2, widget("three"))
     children.remove(1, 0)
     assertEquals(listOf("one", "two", "three"), names())
-  }
-
-  @Test fun removeIndexTooSmall() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.remove(-1, 1)
-    }
-  }
-
-  @Test fun removeIndexTooLarge() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.remove(3, 1)
-    }
-  }
-
-  @Test fun removeCountTooSmall() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.remove(1, -1)
-    }
-  }
-
-  @Test fun removeCountTooLarge() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.insert(2, widget("three"))
-    assertFailsWith<IndexOutOfBoundsException> {
-      children.remove(1, 3)
-    }
   }
 
   @Test fun clearWhenEmpty() {

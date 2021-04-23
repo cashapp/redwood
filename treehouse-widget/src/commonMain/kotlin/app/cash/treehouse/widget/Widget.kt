@@ -27,52 +27,28 @@ public interface Widget<T : Any> {
     throw IllegalArgumentException("Widget does not support children")
   }
 
+  /**
+   * An interface for manipulating a widget's list of child widgets.
+   *
+   * Arguments to these methods can be assumed to be validated against the current state of the
+   * list. No additional validation needs to be performed (for example, checking index bounds).
+   */
   public interface Children<T : Any> {
+    /** Insert child [widget] at [index]. */
     public fun insert(index: Int, widget: T)
+    /**
+     * Move [count] child widgets from [fromIndex] to [toIndex].
+     *
+     * Both indices are relative to the position before the change. For example, to move the
+     * widget at position 1 to after the widget at position 2, [fromIndex] should be 1 and
+     * [toIndex] should be 3. If the widgets were `A B C D E`, calling `move(1, 3, 1)` would
+     * result in the widgets being reordered to `A C B D E`.
+     */
     public fun move(fromIndex: Int, toIndex: Int, count: Int)
+    /** Remove [count] child widgets starting from [index]. */
     public fun remove(index: Int, count: Int)
+    /** Remove all child widgets. */
     public fun clear()
-
-    public companion object {
-      public fun validateInsert(childCount: Int, index: Int) {
-        if (index < 0 || index > childCount) {
-          throw IndexOutOfBoundsException("index must be in range [0, $childCount]: $index")
-        }
-      }
-
-      public fun validateMove(childCount: Int, fromIndex: Int, toIndex: Int, count: Int) {
-        if (fromIndex < 0 || fromIndex >= childCount) {
-          throw IndexOutOfBoundsException(
-            "fromIndex must be in range [0, $childCount): $fromIndex"
-          )
-        }
-        if (toIndex < 0 || toIndex > childCount) {
-          throw IndexOutOfBoundsException(
-            "toIndex must be in range [0, $childCount]: $toIndex"
-          )
-        }
-        if (count < 0) {
-          throw IndexOutOfBoundsException("count must be > 0: $count")
-        }
-        if (fromIndex + count > childCount) {
-          throw IndexOutOfBoundsException(
-            "count exceeds children: fromIndex=$fromIndex, count=$count, children=$childCount"
-          )
-        }
-      }
-
-      public fun validateRemove(childCount: Int, index: Int, count: Int) {
-        if (index < 0 || index >= childCount) {
-          throw IndexOutOfBoundsException("Index must be in range [0, $childCount): $index")
-        }
-        val toIndex = index + count
-        if (toIndex < index || toIndex > childCount) {
-          throw IndexOutOfBoundsException(
-            "Count must be in range [0, ${childCount - index}): $count"
-          )
-        }
-      }
-    }
   }
 
   public interface Factory<T : Any> {
