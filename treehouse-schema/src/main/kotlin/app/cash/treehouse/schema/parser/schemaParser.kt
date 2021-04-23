@@ -119,7 +119,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
         appendLine("Schema @Widget tags must be unique")
         for ((tag, group) in badWidgets) {
           append("\n- @Widget($tag): ")
-          group.joinTo(this) { it.className.qualifiedName!! }
+          group.joinTo(this) { it.type.qualifiedName!! }
         }
       }
     )

@@ -26,7 +26,7 @@ public data class Schema(
 
 public data class Widget(
   val tag: Int,
-  val className: KClass<*>,
+  val type: KClass<*>,
   val traits: List<Trait>,
 )
 
