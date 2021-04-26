@@ -15,9 +15,6 @@
  */
 package app.cash.treehouse.widget
 
-import app.cash.treehouse.widget.Widget.Children.Companion.validateInsert
-import app.cash.treehouse.widget.Widget.Children.Companion.validateMove
-import app.cash.treehouse.widget.Widget.Children.Companion.validateRemove
 import kotlinx.cinterop.convert
 import platform.UIKit.UIView
 import platform.UIKit.insertSubview
@@ -29,14 +26,10 @@ public class UIViewChildren(
   private val root: UIView,
 ) : Widget.Children<UIView> {
   override fun insert(index: Int, widget: UIView) {
-    validateInsert(root.subviews.size, index)
-
     root.insertSubview(widget, index.convert<NSInteger>())
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    validateMove(root.subviews.size, fromIndex, toIndex, count)
-
     val views = Array(count) {
       val subview = root.subviews[fromIndex] as UIView
       subview.removeFromSuperview()
@@ -54,8 +47,6 @@ public class UIViewChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    validateRemove(root.subviews.size, index, count)
-
     repeat(count) {
       (root.subviews[index] as UIView).removeFromSuperview()
     }

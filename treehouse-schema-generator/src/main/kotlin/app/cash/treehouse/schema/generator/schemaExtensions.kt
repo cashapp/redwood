@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.asClassName
  * `NavigationBarButton`.
  */
 internal val Widget.flatName: String
-  get() = className.asClassName().simpleNames.joinToString(separator = "")
+  get() = type.asClassName().simpleNames.joinToString(separator = "")
 
 internal fun Schema.composeNodeType(widget: Widget): ClassName {
   return ClassName(composePackage, widget.flatName + "ComposeNode")
