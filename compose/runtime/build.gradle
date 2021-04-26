@@ -24,7 +24,7 @@ kotlin {
       dependencies {
         api deps.kotlinx.coroutines.core
         // Keep in sync with upstream/compose/runtime/runtime/build.gradle
-        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3'
+        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4'
       }
     }
     // TODO get tests working
