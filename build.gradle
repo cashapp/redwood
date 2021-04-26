@@ -30,9 +30,6 @@ allprojects {
   repositories {
     mavenCentral()
     google()
-    maven {
-      url 'https://kotlin.bintray.com/kotlinx'
-    }
     jcenter()
   }
 
