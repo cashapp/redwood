@@ -29,8 +29,8 @@ $dokka.location:app.cash.treehouse.schema.parser/Trait/name/#/PointingToDeclarat
 $dokka.location:app.cash.treehouse.schema.parser/Trait/tag/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-trait/tag.html
 $dokka.location:app.cash.treehouse.schema.parser/Widget///PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/index.html
 $dokka.location:app.cash.treehouse.schema.parser/Widget/Widget/#kotlin.Int#kotlin.reflect.KClass[*]#kotlin.collections.List[app.cash.treehouse.schema.parser.Trait]/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/-widget.html
-$dokka.location:app.cash.treehouse.schema.parser/Widget/className/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/class-name.html
 $dokka.location:app.cash.treehouse.schema.parser/Widget/tag/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/tag.html
 $dokka.location:app.cash.treehouse.schema.parser/Widget/traits/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/traits.html
+$dokka.location:app.cash.treehouse.schema.parser/Widget/type/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-widget/type.html
 app.cash.treehouse.schema.parser
 
