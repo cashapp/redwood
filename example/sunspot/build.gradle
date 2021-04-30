@@ -1,6 +1,16 @@
-apply plugin: 'java-library'
-apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
-dependencies {
-  implementation project(':treehouse-schema-annotations')
+kotlin {
+  jvm()
+  js {
+    browser()
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':treehouse-schema-annotations')
+      }
+    }
+  }
 }

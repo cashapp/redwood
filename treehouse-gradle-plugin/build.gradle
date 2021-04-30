@@ -33,7 +33,13 @@ gradlePlugin {
       description = "Treehouse schema Compose code generation Gradle plugin"
       implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaComposePlugin"
     }
-    treehouseSchemaDisplay {
+    treehouseSchemaTest {
+      id = "app.cash.treehouse.schema.test"
+      displayName = "Treehouse schema (test generator)"
+      description = "Treehouse schema test code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaTestPlugin"
+    }
+    treehouseSchemaWidget {
       id = "app.cash.treehouse.schema.widget"
       displayName = "Treehouse schema (widget generator)"
       description = "Treehouse schema widget code generation Gradle plugin"

@@ -15,8 +15,18 @@
  */
 package app.cash.treehouse.widget
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
   override val children = MutableListChildren<String>()
   override fun widget(name: String) = name
   override fun names() = children.list
+
+  @Test fun iterableIteratesChildren() {
+    assertEquals(emptyList(), children.toList())
+
+    children.insert(0, widget("one"))
+    assertEquals(listOf("one"), children.toList())
+  }
 }

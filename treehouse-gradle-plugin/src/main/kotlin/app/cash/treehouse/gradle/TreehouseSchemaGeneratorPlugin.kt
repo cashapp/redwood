@@ -16,6 +16,7 @@
 package app.cash.treehouse.gradle
 
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Compose
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Test
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Widget
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,6 +31,9 @@ import java.io.File
 public class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
+public class TreehouseSchemaTestPlugin : TreehouseSchemaGeneratorPlugin(Test)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
 public class TreehouseSchemaWidgetPlugin : TreehouseSchemaGeneratorPlugin(Widget)
 
 public abstract class TreehouseSchemaGeneratorPlugin(
@@ -40,6 +44,7 @@ public abstract class TreehouseSchemaGeneratorPlugin(
     internal val dependencyCoordinate: String,
   ) {
     Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
+    Test("--test", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     Widget("--widget", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
   }
 
@@ -52,7 +57,7 @@ public abstract class TreehouseSchemaGeneratorPlugin(
 
     val extension = project.extensions.create(
       TreehouseSchemaExtension::class.java,
-      "treehouse",
+      "treehouseSchema",
       TreehouseSchemaExtensionImpl::class.java,
     )
 
@@ -78,20 +83,31 @@ public abstract class TreehouseSchemaGeneratorPlugin(
       }
     }
 
+    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      applied = true
+    }
+
     project.afterEvaluate {
+      check(applied) {
+        "Treehouse schema plugin requires the Kotlin multiplatform plugin to be applied."
+      }
+
+      val schemaType = requireNotNull(extension.type) {
+        "Treehouse schema type name must be specified!"
+      }
+      val schemaProject = requireNotNull(extension.source) {
+        "Treehouse schema project must be specified!"
+      }
+
+      project.dependencies.add(configuration.name, schemaProject)
+
       generate.configure {
         it.args = listOf(
           strategy.generatorFlag,
           "--out", generatedDir.toString(),
-          requireNotNull(extension.schema) {
-            "Treehouse schema type name must be specified!"
-          }
+          schemaType
         )
       }
-    }
-
-    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
-      applied = true
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
 
@@ -99,6 +115,10 @@ public abstract class TreehouseSchemaGeneratorPlugin(
         sourceSet.kotlin.srcDir(generatedDir)
         sourceSet.dependencies {
           api(strategy.dependencyCoordinate)
+
+          if (strategy == Test) {
+            api(schemaProject)
+          }
         }
       }
 
@@ -108,12 +128,6 @@ public abstract class TreehouseSchemaGeneratorPlugin(
             it.dependsOn(generate.get())
           }
         }
-      }
-    }
-
-    project.afterEvaluate {
-      check(applied) {
-        "Treehouse schema plugin requires the Kotlin multiplatform plugin to be applied."
       }
     }
   }

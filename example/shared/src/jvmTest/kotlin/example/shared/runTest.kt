@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.gradle
+package example.shared
 
-import org.gradle.api.Project
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
-public interface TreehouseSchemaExtension {
-  public var source: Project?
-  public var type: String?
-}
-
-// Gradle requires this type to be open since it runtime extends it.
-internal open class TreehouseSchemaExtensionImpl @JvmOverloads constructor(
-  override var source: Project? = null,
-  override var type: String? = null,
-) : TreehouseSchemaExtension
+actual fun runTest(body: suspend CoroutineScope.() -> Unit) = runBlocking { body() }
