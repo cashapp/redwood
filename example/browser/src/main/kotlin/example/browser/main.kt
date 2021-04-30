@@ -17,7 +17,6 @@ package example.browser
 
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
-import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.widget.WidgetDisplay
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
@@ -34,18 +33,12 @@ fun main() {
     factory = HtmlSunspotNodeFactory(document),
   )
 
-  lateinit var events: (Event) -> Unit
   val composition = TreehouseComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
-    diffs = { diff ->
-      console.log("TreehouseDiff", diff.toString())
-      display.apply(diff, events)
-    }
+    display = display::apply,
+    onDiff = { console.log("TreehouseDiff", it.toString()) },
+    onEvent = { console.log("TreehouseEvent", it.toString()) },
   )
-  events = { event ->
-    console.log("TreehouseEvent", event.toString())
-    composition.sendEvent(event)
-  }
 
   composition.setContent {
     Counter()

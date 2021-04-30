@@ -24,7 +24,6 @@ import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.widget.WidgetDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
@@ -49,19 +48,12 @@ class MainActivity : Activity() {
       factory = AndroidSunspotWidgetFactory(this),
     )
 
-    lateinit var events: (Event) -> Unit
     val composition = TreehouseComposition(
       scope = scope,
-      diffs = { diff ->
-        Log.d("TreehouseDiff", diff.toString())
-        display.apply(diff, events)
-      }
+      display = display::apply,
+      onDiff = { Log.d("TreehouseDiff", it.toString()) },
+      onEvent = { Log.d("TreehouseEvent", it.toString()) },
     )
-
-    events = { event ->
-      Log.d("TreehouseEvent", event.toString())
-      composition.sendEvent(event)
-    }
 
     composition.setContent {
       Counter()
