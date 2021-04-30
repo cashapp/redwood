@@ -42,6 +42,14 @@ allprojects {
     }
   }
 
+  plugins.withId('java-base') {
+    java {
+      toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+      }
+    }
+  }
+
   plugins.withId('org.jetbrains.kotlin.jvm') {
     kotlin {
       if (project.path.startsWith(':treehouse-')) {
