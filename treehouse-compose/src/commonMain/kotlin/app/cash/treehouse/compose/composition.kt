@@ -44,12 +44,14 @@ public interface TreehouseComposition {
  */
 public fun TreehouseComposition(
   scope: CoroutineScope,
-  diffs: (Diff) -> Unit,
+  display: (diff: Diff, events: (Event) -> Unit) -> Unit,
+  onDiff: (Diff) -> Unit = {},
+  onEvent: (Event) -> Unit = {},
 ): TreehouseComposition {
   val clock = requireNotNull(scope.coroutineContext[MonotonicFrameClock]) {
     "Composition scope's CoroutineContext must have a MonotonicFrameClock key"
   }
-  val server = RealTreehouseComposition(scope, clock, diffs)
+  val server = RealTreehouseComposition(scope, clock, display, onDiff, onEvent)
   server.launch()
   return server
 }
@@ -57,7 +59,9 @@ public fun TreehouseComposition(
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
   private val clock: MonotonicFrameClock,
-  private val diffs: (Diff) -> Unit,
+  private val display: (Diff, (Event) -> Unit) -> Unit,
+  private val onDiff: (Diff) -> Unit,
+  private val onEvent: (Event) -> Unit,
 ) : TreehouseComposition {
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
@@ -106,6 +110,9 @@ private class RealTreehouseComposition(
       recomposer.runRecomposeAndApplyChanges()
     }
     diffJob = scope.launch(start = UNDISPATCHED) {
+      // Caching type conversion of function reference to lambda to avoid future allocations.
+      val eventSink: (Event) -> Unit = ::sendEvent
+
       while (true) {
         clock.withFrameMillis {
           val existingChildrenDiffs = childrenDiffs
@@ -114,12 +121,12 @@ private class RealTreehouseComposition(
             childrenDiffs = mutableListOf()
             propertyDiffs = mutableListOf()
 
-            diffs(
-              Diff(
-                childrenDiffs = existingChildrenDiffs,
-                propertyDiffs = existingPropertyDiffs,
-              )
+            val diff = Diff(
+              childrenDiffs = existingChildrenDiffs,
+              propertyDiffs = existingPropertyDiffs,
             )
+            onDiff(diff)
+            display(diff, eventSink)
           }
         }
       }
@@ -127,6 +134,8 @@ private class RealTreehouseComposition(
   }
 
   override fun sendEvent(event: Event) {
+    onEvent(event)
+
     val node = applier.nodes[event.id]
     if (node == null) {
       // TODO how to handle race where an incoming event targets this removed node?

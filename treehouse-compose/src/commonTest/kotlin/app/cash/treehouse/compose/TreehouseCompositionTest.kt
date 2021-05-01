@@ -42,7 +42,10 @@ class TreehouseCompositionTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
     val diffs = ArrayDeque<Diff>()
-    val composition = TreehouseComposition(this + clock, diffs::add)
+    val composition = TreehouseComposition(
+      scope = this + clock,
+      display = { diff, _ -> diffs += diff },
+    )
 
     composition.setContent {
       Box {
@@ -76,7 +79,10 @@ class TreehouseCompositionTest {
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     val diffs = ArrayDeque<Diff>()
-    val composition = TreehouseComposition(this + clock, diffs::add)
+    val composition = TreehouseComposition(
+      scope = this + clock,
+      display = { diff, _ -> diffs += diff },
+    )
 
     var state by mutableStateOf(0)
     composition.setContent {

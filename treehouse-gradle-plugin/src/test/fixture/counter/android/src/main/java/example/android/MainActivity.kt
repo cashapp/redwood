@@ -17,14 +17,12 @@ package example.android
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.widget.WidgetDisplay
 import example.android.counter.AndroidCounterBox
 import example.android.counter.AndroidCounterWidgetFactory
@@ -49,19 +47,10 @@ class MainActivity : Activity() {
       factory = AndroidCounterWidgetFactory(this),
     )
 
-    lateinit var events: (Event) -> Unit
     val composition = TreehouseComposition(
       scope = scope,
-      diffs = { diff ->
-        Log.d("TreehouseDiff", diff.toString())
-        display.apply(diff, events)
-      }
+      display = display::apply,
     )
-
-    events = { event ->
-      Log.d("TreehouseEvent", event.toString())
-      composition.sendEvent(event)
-    }
 
     composition.setContent {
       Counter()
