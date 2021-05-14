@@ -19,6 +19,7 @@ package app.cash.treehouse.schema.generator
 
 import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
+import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Test
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Widget
 import app.cash.treehouse.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
@@ -39,11 +40,16 @@ public fun main(vararg args: String) {
 private class TreehouseGenerator : CliktCommand() {
   enum class Type {
     Compose,
+    Test,
     Widget,
   }
 
   private val type by option()
-    .switch("--compose" to Compose, "--widget" to Widget)
+    .switch(
+      "--compose" to Compose,
+      "--test" to Test,
+      "--widget" to Widget,
+    )
     .help("Type of code to generate")
     .required()
 
@@ -73,6 +79,12 @@ private class TreehouseGenerator : CliktCommand() {
       Compose -> {
         for (widget in schema.widgets) {
           generateComposeNode(schema, widget).writeTo(out)
+        }
+      }
+      Test -> {
+        generateSchemaWidgetFactory(schema).writeTo(out)
+        for (widget in schema.widgets) {
+          generateSchemaWidget(schema, widget).writeTo(out)
         }
       }
     }

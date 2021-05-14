@@ -1,18 +1,23 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'com.android.library'
 
 kotlin {
-  android()
   js {
     browser()
   }
+  jvm()
 
   sourceSets {
     commonMain {
       dependencies {
         api project(':example:sunspot:compose')
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+        implementation project(':example:sunspot:test')
       }
     }
   }

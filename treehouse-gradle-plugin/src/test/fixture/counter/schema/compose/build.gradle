@@ -6,10 +6,7 @@ kotlin {
   android()
 }
 
-treehouse {
-  schema = 'example.counter.Counter'
-}
-
-dependencies {
-  treehouseSchema project(':schema')
+treehouseSchema {
+  source = project(':schema')
+  type = 'example.counter.Counter'
 }

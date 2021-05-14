@@ -38,12 +38,12 @@ data class SunspotBox(
 @Widget(2)
 data class SunspotText(
   @Property(1) val text: String?,
-  @Property(2) @Default("\"black\"") val color: String,
+  @Property(2) @Default("\"black\"") val color: String = "black",
 )
 
 @Widget(3)
 data class SunspotButton(
   @Property(1) val text: String?,
-  @Property(2) @Default("true") val enabled: Boolean,
-  @Property(3) val onClick: () -> Unit,
+  @Property(2) @Default("true") val enabled: Boolean = true,
+  @Property(3) val onClick: (() -> Unit)? = null,
 )
