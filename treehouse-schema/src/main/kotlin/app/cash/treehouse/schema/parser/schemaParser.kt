@@ -22,15 +22,18 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.full.withNullability
 import app.cash.treehouse.schema.Children as ChildrenAnnotation
 import app.cash.treehouse.schema.Default as DefaultAnnotation
 import app.cash.treehouse.schema.Property as PropertyAnnotation
 import app.cash.treehouse.schema.Schema as SchemaAnnotation
 import app.cash.treehouse.schema.Widget as WidgetAnnotation
 
-private val LIST_OF_ANY_TYPE = List::class.createType(
+private val childrenType = List::class.createType(
   arguments = listOf(invariant(Any::class.createType()))
 )
+private val eventType = Function::class.starProjectedType
+private val optionalEventType = eventType.withNullability(true)
 
 public fun parseSchema(schemaType: KClass<*>): Schema {
   val widgets = mutableListOf<Widget>()
@@ -66,13 +69,13 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
 
       if (property != null) {
-        if (it.type.isSubtypeOf(Function::class.starProjectedType)) {
+        if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
           Event(property.tag, it.name!!, defaultExpression)
         } else {
           Property(property.tag, it.name!!, it.type, defaultExpression)
         }
       } else if (children != null) {
-        require(it.type == LIST_OF_ANY_TYPE) {
+        require(it.type == childrenType) {
           "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
         }
         Children(children.tag, it.name!!)

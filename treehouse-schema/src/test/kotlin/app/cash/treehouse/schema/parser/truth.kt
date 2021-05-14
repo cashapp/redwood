@@ -15,6 +15,7 @@
  */
 package app.cash.treehouse.schema.parser
 
+import com.google.common.truth.Subject
 import com.google.common.truth.ThrowableSubject
 import com.google.common.truth.Truth.assertThat
 
@@ -30,4 +31,8 @@ inline fun <reified T : Throwable> assertThrows(body: () -> Unit): ThrowableSubj
   throw AssertionError(
     "Expect body to throw ${T::class.java.simpleName} but it completed successfully"
   )
+}
+
+inline fun <reified T : Any> Subject.isInstanceOf() {
+  isInstanceOf(T::class.java)
 }

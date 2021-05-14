@@ -19,6 +19,7 @@ import app.cash.treehouse.schema.Children
 import app.cash.treehouse.schema.Property
 import app.cash.treehouse.schema.Schema
 import app.cash.treehouse.schema.Widget
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class SchemaParserTest {
@@ -215,5 +216,24 @@ class SchemaParserTest {
     }.hasMessageThat().isEqualTo(
       "@Children app.cash.treehouse.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'"
     )
+  }
+
+  @Schema(
+    [
+      EventTypeWidget::class,
+    ]
+  )
+  interface EventTypeSchema
+  @Widget(1)
+  data class EventTypeWidget(
+    @Property(1) val requiredEvent: () -> Unit,
+    @Property(2) val optionalEvent: (() -> Unit)?,
+  )
+
+  @Test fun eventTypes() {
+    val schema = parseSchema(EventTypeSchema::class)
+    val widget = schema.widgets.single()
+    assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
+    assertThat(widget.traits.single { it.name == "optionalEvent" }).isInstanceOf<Event>()
   }
 }
