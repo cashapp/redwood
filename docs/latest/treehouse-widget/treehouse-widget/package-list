@@ -13,6 +13,7 @@ $dokka.location:app.cash.treehouse.widget/MutableListChildren///PointingToDeclar
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/MutableListChildren/#kotlin.collections.MutableList[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/-mutable-list-children.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/clear/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/clear.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/insert/#kotlin.Int#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/insert.html
+$dokka.location:app.cash.treehouse.widget/MutableListChildren/iterator/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/iterator.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/list/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/list.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/move.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/remove.html
