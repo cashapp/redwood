@@ -1,0 +1,9 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse.schema'
+
+kotlin {
+  jvm()
+  js {
+    browser()
+  }
+}

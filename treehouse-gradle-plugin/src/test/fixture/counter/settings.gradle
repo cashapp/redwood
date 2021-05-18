@@ -1,5 +1,0 @@
-include ':android'
-include ':schema'
-include ':schema:compose'
-include ':schema:widget'
-include ':shared'

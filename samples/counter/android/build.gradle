@@ -1,0 +1,9 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.treehouse'
+
+dependencies {
+  implementation project(':samples:counter:sunspot:widget')
+  implementation project(':samples:counter:shared')
+  implementation deps.kotlinx.coroutines.android
+}

@@ -1,0 +1,23 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse'
+
+kotlin {
+  js {
+    browser()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':samples:counter:sunspot:compose')
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+        implementation project(':samples:counter:sunspot:test')
+      }
+    }
+  }
+}

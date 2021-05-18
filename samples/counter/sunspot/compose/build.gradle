@@ -1,0 +1,14 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse.schema.compose'
+
+kotlin {
+  js {
+    browser()
+  }
+  jvm()
+}
+
+treehouseSchema {
+  source = project(':samples:counter:sunspot')
+  type = 'example.sunspot.Sunspot'
+}

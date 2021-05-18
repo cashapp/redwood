@@ -8,5 +8,8 @@
 build
 /reports
 
+# Gradle (nested build)
+/treehouse/.gradle
+
 # Android
 local.properties
