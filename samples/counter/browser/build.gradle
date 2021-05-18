@@ -1,0 +1,21 @@
+apply plugin: 'org.jetbrains.kotlin.js'
+apply plugin: 'app.cash.treehouse'
+
+archivesBaseName = 'counter'
+
+kotlin {
+  js {
+    browser()
+    binaries.executable()
+  }
+
+  sourceSets {
+    main {
+      dependencies {
+        implementation project(':samples:counter:sunspot:widget')
+        implementation project(':samples:counter:shared')
+        implementation deps.kotlinx.coroutines.core
+      }
+    }
+  }
+}

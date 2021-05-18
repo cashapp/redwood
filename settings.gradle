@@ -1,23 +1,20 @@
-rootProject.name = 'treehouse'
+rootProject.name = 'treehouse-root'
 
-include ':compose:compiler'
-include ':compose:compiler-hosted'
-include ':compose:runtime'
+include ':samples:counter:android'
+include ':samples:counter:browser'
+include ':samples:counter:shared'
+include ':samples:counter:sunspot'
+include ':samples:counter:sunspot:compose'
+include ':samples:counter:sunspot:test'
+include ':samples:counter:sunspot:widget'
 
-include ':treehouse-compose'
-include ':treehouse-gradle-plugin'
-include ':treehouse-protocol'
-include ':treehouse-schema'
-include ':treehouse-schema-annotations'
-include ':treehouse-schema-generator'
-include ':treehouse-test-schema'
-include ':treehouse-test-schema:compose'
-include ':treehouse-widget'
-
-include ':example:android'
-include ':example:browser'
-include ':example:shared'
-include ':example:sunspot'
-include ':example:sunspot:compose'
-include ':example:sunspot:test'
-include ':example:sunspot:widget'
+includeBuild('treehouse') {
+  dependencySubstitution {
+    substitute module('app.cash.treehouse:treehouse-compose') with project(':treehouse-compose')
+    substitute module('app.cash.treehouse:treehouse-gradle-plugin') with project(':treehouse-gradle-plugin')
+    substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
+    substitute module('app.cash.treehouse:treehouse-schema-generator') with project(':treehouse-schema-generator')
+    substitute module('app.cash.treehouse:treehouse-widget') with project(':treehouse-widget')
+    substitute module('app.cash.treehouse:compose-compiler') with project(':compose:compiler')
+  }
+}

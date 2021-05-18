@@ -1,0 +1,24 @@
+buildscript {
+  apply from: '../../../../../../gradle/dependencies.gradle'
+
+  dependencies {
+    classpath "app.cash.treehouse:treehouse-gradle-plugin:$treehouseVersion"
+    classpath deps.kotlin.gradlePlugin
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+  }
+}
