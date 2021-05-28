@@ -41,7 +41,7 @@ class ProtocolTest {
 
   @Test fun eventNullValue() {
     val model = Event(1, 2, null)
-    val json = """{"id":1,"tag":2,"value":null}"""
+    val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
@@ -66,7 +66,7 @@ class ProtocolTest {
       """["app.cash.treehouse.protocol.ChildrenDiff.Remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
       """],"propertyDiffs":[""" +
       """{"id":1,"tag":2,"value":["kotlin.String","Hello"]},""" +
-      """{"id":1,"tag":2,"value":null}""" +
+      """{"id":1,"tag":2}""" +
       """]}"""
     assertJsonRoundtrip(Diff.serializer(), model, json)
   }

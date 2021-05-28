@@ -24,7 +24,7 @@ public data class Event(
   val id: Long,
   /** Identifies which event occurred on the widget with [id]. */
   val tag: Int,
-  @Polymorphic val value: Any?,
+  @Polymorphic val value: Any? = null,
 )
 
 @Serializable
@@ -39,7 +39,7 @@ public data class PropertyDiff(
   val id: Long,
   /** Identifies which property changed on the widget with [id]. */
   val tag: Int,
-  @Polymorphic val value: Any?,
+  @Polymorphic val value: Any? = null,
 )
 
 @Serializable
