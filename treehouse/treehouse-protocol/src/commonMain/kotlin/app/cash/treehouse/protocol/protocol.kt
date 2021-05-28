@@ -16,6 +16,7 @@
 package app.cash.treehouse.protocol
 
 import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -50,12 +51,14 @@ public sealed class ChildrenDiff {
   public abstract val tag: Int
 
   @Serializable
+  @SerialName("clear")
   public object Clear : ChildrenDiff() {
     override val id: Long get() = RootId
     override val tag: Int get() = RootChildrenTag
   }
 
   @Serializable
+  @SerialName("insert")
   public data class Insert(
     override val id: Long,
     override val tag: Int,
@@ -65,6 +68,7 @@ public sealed class ChildrenDiff {
   ) : ChildrenDiff()
 
   @Serializable
+  @SerialName("move")
   public data class Move(
     override val id: Long,
     override val tag: Int,
@@ -74,6 +78,7 @@ public sealed class ChildrenDiff {
   ) : ChildrenDiff()
 
   @Serializable
+  @SerialName("remove")
   public data class Remove(
     override val id: Long,
     override val tag: Int,

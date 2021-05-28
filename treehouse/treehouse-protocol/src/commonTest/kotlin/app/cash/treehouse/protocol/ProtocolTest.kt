@@ -60,10 +60,10 @@ class ProtocolTest {
     )
     val json = "" +
       """{"childrenDiffs":[""" +
-      """["app.cash.treehouse.protocol.ChildrenDiff.Clear",{}],""" +
-      """["app.cash.treehouse.protocol.ChildrenDiff.Insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
-      """["app.cash.treehouse.protocol.ChildrenDiff.Move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
-      """["app.cash.treehouse.protocol.ChildrenDiff.Remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
+      """["clear",{}],""" +
+      """["insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
+      """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
+      """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
       """],"propertyDiffs":[""" +
       """{"id":1,"tag":2,"value":["kotlin.String","Hello"]},""" +
       """{"id":1,"tag":2}""" +
