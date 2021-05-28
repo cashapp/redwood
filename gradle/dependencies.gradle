@@ -22,6 +22,7 @@ buildscript {
       ],
       'serialization': [
         'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
+        'json': "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.kotlinx.serialization}",
       ],
     ],
     'androidx': [
