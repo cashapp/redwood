@@ -16,5 +16,11 @@ kotlin {
         api deps.kotlinx.serialization.core
       }
     }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+        implementation deps.kotlinx.serialization.json
+      }
+    }
   }
 }
