@@ -119,7 +119,6 @@ class TreehouseCompositionTest {
     clock.awaitFrame()
     assertEquals(
       Diff(
-        childrenDiffs = listOf(),
         propertyDiffs = listOf(
           PropertyDiff(1L, 1 /* text */, "state: 1"),
         ),
@@ -134,7 +133,6 @@ class TreehouseCompositionTest {
     clock.awaitFrame()
     assertEquals(
       Diff(
-        childrenDiffs = listOf(),
         propertyDiffs = listOf(
           PropertyDiff(1L, 1 /* text */, "state: 2"),
           PropertyDiff(1L, 2 /* text */, false),
@@ -150,7 +148,6 @@ class TreehouseCompositionTest {
     clock.awaitFrame()
     assertEquals(
       Diff(
-        childrenDiffs = listOf(),
         propertyDiffs = listOf(
           PropertyDiff(1L, 1 /* text */, "state: 3"),
         ),

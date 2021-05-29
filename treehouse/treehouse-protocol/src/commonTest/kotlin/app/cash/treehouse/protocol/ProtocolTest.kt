@@ -71,6 +71,15 @@ class ProtocolTest {
     assertJsonRoundtrip(Diff.serializer(), model, json)
   }
 
+  @Test fun diffEmptyLists() {
+    val model = Diff(
+      childrenDiffs = listOf(),
+      propertyDiffs = listOf(),
+    )
+    val json = "{}"
+    assertJsonRoundtrip(Diff.serializer(), model, json)
+  }
+
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {
     assertEquals(json, format.encodeToString(serializer, model))
     assertEquals(model, format.decodeFromString(serializer, json))
