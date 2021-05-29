@@ -22,12 +22,12 @@ import androidx.compose.runtime.ComposeNode
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
+import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 
 public interface TreehouseScope {
   public fun nextId(): Long
-  public fun appendDiff(diff: ChildrenDiff)
   public fun appendDiff(diff: PropertyDiff)
 }
 
@@ -122,8 +122,37 @@ public open class ProtocolNode(
  * ```
  */
 internal class ProtocolApplier(
-  private val scope: TreehouseScope,
+  private val onDiff: (Diff) -> Unit,
 ) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()) {
+  private var childrenDiffs = mutableListOf<ChildrenDiff>()
+  private var propertyDiffs = mutableListOf<PropertyDiff>()
+
+  val scope: TreehouseScope = RealTreehouseScope()
+  inner class RealTreehouseScope : TreehouseScope {
+    // TODO atomics if compose becomes multithreaded?
+    private var nextId = RootId + 1
+    override fun nextId() = nextId++
+
+    override fun appendDiff(diff: PropertyDiff) {
+      propertyDiffs.add(diff)
+    }
+  }
+
+  override fun onEndChanges() {
+    val existingChildrenDiffs = childrenDiffs
+    val existingPropertyDiffs = propertyDiffs
+    if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
+      childrenDiffs = mutableListOf()
+      propertyDiffs = mutableListOf()
+
+      val diff = Diff(
+        childrenDiffs = existingChildrenDiffs,
+        propertyDiffs = existingPropertyDiffs,
+      )
+      onDiff(diff)
+    }
+  }
+
   val nodes = mutableMapOf(root.id to root)
 
   override fun insertTopDown(index: Int, instance: ProtocolNode) {
@@ -140,7 +169,7 @@ internal class ProtocolApplier(
       val current = current as ProtocolChildrenNode
 
       nodes[instance.id] = instance
-      scope.appendDiff(
+      childrenDiffs.add(
         ChildrenDiff.Insert(current.id, current.tag, instance.id, instance.type, index)
       )
     }
@@ -159,7 +188,7 @@ internal class ProtocolApplier(
       nodes.remove(children[i].id)
     }
     children.remove(index, count)
-    scope.appendDiff(ChildrenDiff.Remove(current.id, current.tag, index, count))
+    childrenDiffs.add(ChildrenDiff.Remove(current.id, current.tag, index, count))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
@@ -167,13 +196,13 @@ internal class ProtocolApplier(
     val current = current as ProtocolChildrenNode
 
     current.children.move(from, to, count)
-    scope.appendDiff(ChildrenDiff.Move(current.id, current.tag, from, to, count))
+    childrenDiffs.add(ChildrenDiff.Move(current.id, current.tag, from, to, count))
   }
 
   override fun onClear() {
     current.children.clear()
     nodes.clear()
     nodes[current.id] = current // Restore root node into map.
-    scope.appendDiff(ChildrenDiff.Clear)
+    childrenDiffs.add(ChildrenDiff.Clear)
   }
 }
