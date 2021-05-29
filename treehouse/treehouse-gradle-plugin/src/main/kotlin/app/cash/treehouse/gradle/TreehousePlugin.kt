@@ -43,16 +43,18 @@ public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
     kotlinCompilation.dependencies {
       implementation("app.cash.treehouse:treehouse-compose:$treehouseVersion")
     }
-    kotlinCompilation.enableIr()
+    kotlinCompilation.ensureIr()
 
     return kotlinCompilation.target.project.provider { emptyList() }
   }
 }
 
-internal fun KotlinCompilation<*>.enableIr() {
+internal fun KotlinCompilation<*>.ensureIr() {
   @Exhaustive when (platformType) {
     androidJvm, jvm -> {
-      (kotlinOptions as KotlinJvmOptions).useIR = true
+      if ((kotlinOptions as KotlinJvmOptions).useOldBackend) {
+        throw IllegalStateException("Treehouse only works with the default IR-based backend")
+      }
     }
     common, js, native -> {
       // Nothing to do!

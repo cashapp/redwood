@@ -23,8 +23,6 @@ kotlin {
       }
       dependencies {
         api deps.kotlinx.coroutines.core
-        // Keep in sync with upstream/compose/runtime/runtime/build.gradle
-        api 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4'
       }
     }
     // TODO get tests working
@@ -46,11 +44,6 @@ kotlin {
         api 'androidx.annotation:annotation:1.1.0'
       }
     }
-    jsMain {
-      kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/jsMain/kotlin'
-      }
-    }
     jvmMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
@@ -65,6 +58,10 @@ android {
     main {
       manifest.srcFile '../upstream/compose/runtime/runtime/src/androidMain/AndroidManifest.xml'
     }
+  }
+
+  defaultConfig {
+    consumerProguardFiles '../upstream/compose/runtime/runtime/proguard-rules.pro'
   }
 }
 

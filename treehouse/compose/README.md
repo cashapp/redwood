@@ -9,27 +9,19 @@ canonical copy in AOSP.
  * Add JVM runtime artifact target
  * Add JS runtime artifact target
 
-**Compiler differences:**
-
- * Support JS_IR backend output
-
 
 # Updating
 
-Note: Currently we are targeting the [JetBrains/androidx](https://github.com/JetBrains/androidx)
-repository instead of AOSP. This fork is farther along in its JS and Native support for the compiler
-plugin.
-
 ```
-$ cd compose/upstream
+$ cd treehouse/compose/upstream
 $ git fetch origin
-$ git checkout origin/compose-web-main
+$ git checkout origin/androidx-main
 $ cd -
-$ git add compose/upstream 
+$ git add treehouse/compose/upstream 
 ```
 
-Run a full `./gradlew clean build`.
+Run a full `./gradlew -p treehouse clean build` and `./gradlew clean build`.
 
-If any of the checks in `compose/build.gradle` fail, look in
-`upstream/buildSrc/build_dependencies.gradle` for the Kotlin and kotlinx.coroutines versions in use
+If any of the checks in `treehouse/compose/build.gradle` fail, look in
+`upstream/gradle/libs.versions.toml` for the Kotlin and kotlinx.coroutines versions in use
 and update `build.gradle` to match.

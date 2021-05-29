@@ -1,4 +1,4 @@
 [submodule "treehouse/compose/upstream"]
 	path = treehouse/compose/upstream
-	url = https://github.com/JetBrains/androidx.git
-	branch = compose-web-main
+	url = https://android.googlesource.com/platform/frameworks/support
+	branch = androidx-main
