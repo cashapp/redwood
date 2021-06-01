@@ -16,7 +16,6 @@ $dokka.location:app.cash.treehouse.compose/TreehouseComposition/cancel/#/Pointin
 $dokka.location:app.cash.treehouse.compose/TreehouseComposition/sendEvent/#app.cash.treehouse.protocol.Event/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition/send-event.html
 $dokka.location:app.cash.treehouse.compose/TreehouseComposition/setContent/#kotlin.Function1[app.cash.treehouse.compose.TreehouseScope,kotlin.Unit]/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition/set-content.html
 $dokka.location:app.cash.treehouse.compose/TreehouseScope///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-scope/index.html
-$dokka.location:app.cash.treehouse.compose/TreehouseScope/appendDiff/#app.cash.treehouse.protocol.ChildrenDiff/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-scope/append-diff.html
 $dokka.location:app.cash.treehouse.compose/TreehouseScope/appendDiff/#app.cash.treehouse.protocol.PropertyDiff/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-scope/append-diff.html
 $dokka.location:app.cash.treehouse.compose/TreehouseScope/nextId/#/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-scope/next-id.html
 $dokka.location:app.cash.treehouse.compose/WindowAnimationFrameClock///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-window-animation-frame-clock/index.html
