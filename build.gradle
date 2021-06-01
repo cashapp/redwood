@@ -45,7 +45,6 @@ allprojects {
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
     task.kotlinOptions {
       jvmTarget = '1.8'
-      useIR = true
     }
   }
 
@@ -61,6 +60,10 @@ allprojects {
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
     android.compileSdkVersion 30
+    android.compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+    }
     android.defaultConfig {
       minSdkVersion 21
       targetSdkVersion 30
