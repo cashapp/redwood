@@ -21,12 +21,8 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
-import androidx.compose.runtime.withFrameMillis
-import app.cash.treehouse.protocol.ChildrenDiff
-import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
-import app.cash.treehouse.protocol.PropertyDiff
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
@@ -48,47 +44,30 @@ public fun TreehouseComposition(
   onDiff: (Diff) -> Unit = {},
   onEvent: (Event) -> Unit = {},
 ): TreehouseComposition {
-  val clock = requireNotNull(scope.coroutineContext[MonotonicFrameClock]) {
-    "Composition scope's CoroutineContext must have a MonotonicFrameClock key"
-  }
-  val server = RealTreehouseComposition(scope, clock, display, onDiff, onEvent)
+  val server = RealTreehouseComposition(scope, display, onDiff, onEvent)
   server.launch()
   return server
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
-  private val clock: MonotonicFrameClock,
   private val display: (Diff, (Event) -> Unit) -> Unit,
   private val onDiff: (Diff) -> Unit,
   private val onEvent: (Event) -> Unit,
 ) : TreehouseComposition {
-  private var childrenDiffs = mutableListOf<ChildrenDiff>()
-  private var propertyDiffs = mutableListOf<PropertyDiff>()
-
-  private val treehouseScope = RealTreehouseScope()
-  inner class RealTreehouseScope : TreehouseScope {
-    // TODO atomics if compose becomes multithreaded?
-    private var nextId = RootId + 1
-    override fun nextId() = nextId++
-
-    override fun appendDiff(diff: ChildrenDiff) {
-      childrenDiffs.add(diff)
-    }
-
-    override fun appendDiff(diff: PropertyDiff) {
-      propertyDiffs.add(diff)
-    }
+  // Caching type conversion of function reference to lambda to avoid future allocations.
+  private val eventSink: (Event) -> Unit = ::sendEvent
+  private val applier = ProtocolApplier { diff ->
+    onDiff(diff)
+    display(diff, eventSink)
   }
 
-  private val applier = ProtocolApplier(treehouseScope)
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
 
   private lateinit var snapshotHandle: ObserverHandle
   private var snapshotJob: Job? = null
   private lateinit var recomposeJob: Job
-  private lateinit var diffJob: Job
 
   fun launch() {
     // Set up a trigger to apply changes on the next frame if a global write was observed.
@@ -109,28 +88,6 @@ private class RealTreehouseComposition(
     recomposeJob = scope.launch(start = UNDISPATCHED) {
       recomposer.runRecomposeAndApplyChanges()
     }
-    diffJob = scope.launch(start = UNDISPATCHED) {
-      // Caching type conversion of function reference to lambda to avoid future allocations.
-      val eventSink: (Event) -> Unit = ::sendEvent
-
-      while (true) {
-        clock.withFrameMillis {
-          val existingChildrenDiffs = childrenDiffs
-          val existingPropertyDiffs = propertyDiffs
-          if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-            childrenDiffs = mutableListOf()
-            propertyDiffs = mutableListOf()
-
-            val diff = Diff(
-              childrenDiffs = existingChildrenDiffs,
-              propertyDiffs = existingPropertyDiffs,
-            )
-            onDiff(diff)
-            display(diff, eventSink)
-          }
-        }
-      }
-    }
   }
 
   override fun sendEvent(event: Event) {
@@ -146,14 +103,13 @@ private class RealTreehouseComposition(
 
   override fun setContent(content: @Composable TreehouseScope.() -> Unit) {
     composition.setContent {
-      treehouseScope.content()
+      applier.scope.content()
     }
   }
 
   override fun cancel() {
     snapshotHandle.dispose()
     snapshotJob?.cancel()
-    diffJob.cancel()
     recomposeJob.cancel()
     recomposer.cancel()
   }
