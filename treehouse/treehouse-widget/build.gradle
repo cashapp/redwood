@@ -7,11 +7,19 @@ kotlin {
   android {
     publishAllLibraryVariants()
   }
+  iosArm32()
+  iosArm64()
+  iosX64()
   js {
     browser()
   }
   jvm()
-  ios()
+  macosX64()
+  mingwX64()
+  tvosX64()
+  tvosArm64()
+  watchosArm32()
+  watchosArm64()
 
   sourceSets {
     commonMain {
