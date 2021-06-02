@@ -32,9 +32,9 @@ internal val widgetChildren = widget.nestedClass("Children")
 internal val widgetFactory = widget.nestedClass("Factory")
 internal val mutableListChildren = ClassName("app.cash.treehouse.widget", "MutableListChildren")
 
+internal val protocolApplier = ClassName("app.cash.treehouse.compose", "ProtocolApplier")
 internal val protocolNode = ClassName("app.cash.treehouse.compose", "ProtocolNode")
 internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "\$SyntheticChildren")
-internal val treehouseScope = ClassName("app.cash.treehouse.compose", "TreehouseScope")
 
 internal val applier = ClassName("androidx.compose.runtime", "Applier")
 internal val composable = ClassName("androidx.compose.runtime", "Composable")

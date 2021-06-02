@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 public interface TreehouseComposition {
   public fun sendEvent(event: Event)
-  public fun setContent(content: @Composable TreehouseScope.() -> Unit)
+  public fun setContent(content: @Composable () -> Unit)
   public fun cancel()
 }
 
@@ -101,10 +101,8 @@ private class RealTreehouseComposition(
     node.sendEvent(event)
   }
 
-  override fun setContent(content: @Composable TreehouseScope.() -> Unit) {
-    composition.setContent {
-      applier.scope.content()
-    }
+  override fun setContent(content: @Composable () -> Unit) {
+    composition.setContent(content)
   }
 
   override fun cancel() {
