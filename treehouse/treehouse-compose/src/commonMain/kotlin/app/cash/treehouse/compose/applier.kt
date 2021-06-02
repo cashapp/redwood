@@ -129,7 +129,6 @@ internal class ProtocolApplier(
 
   val scope: TreehouseScope = RealTreehouseScope()
   inner class RealTreehouseScope : TreehouseScope {
-    // TODO atomics if compose becomes multithreaded?
     private var nextId = RootId + 1
     override fun nextId() = nextId++
 
