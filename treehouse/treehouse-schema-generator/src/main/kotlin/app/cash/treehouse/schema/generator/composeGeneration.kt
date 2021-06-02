@@ -27,7 +27,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
-import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -38,15 +37,13 @@ import com.squareup.kotlinpoet.jvm.jvmField
 
 /*
 @Composable
-fun TreehouseScope.Button(
+fun Button(
   text: String,
   enabled: Boolean = true,
   onClick: (() -> Unit)? = null,
 ) {
-  ComposeNode<ButtonComposeNode, Applier<Node>>(
-    factory = {
-      ButtonNode(nextId())
-    },
+  ComposeNode<ButtonComposeNode, ProtocolApplier>(
+    factory = ::ButtonNode,
     update = {
       set(text) {
         appendDiff(PropertyDiff(id, 1, text))
@@ -89,7 +86,6 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
       FunSpec.builder(widget.flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(composable)
-        .receiver(treehouseScope)
         .apply {
           for (trait in widget.traits) {
             addParameter(
@@ -117,17 +113,14 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
           val arguments = mutableListOf<CodeBlock>()
 
           arguments += CodeBlock.builder()
-            .add("factory = {\n")
-            .indent()
+            .add("factory = ")
             .apply {
               if (events.isEmpty()) {
-                add("%T(nextId(), %L)\n", nodeType, widget.tag)
+                add("{\n⇥%T(%L)\n⇤}", nodeType, widget.tag)
               } else {
-                add("%T(nextId())\n", nodeType)
+                add("::%T", nodeType)
               }
             }
-            .unindent()
-            .add("}")
             .build()
 
           val updateLambda = CodeBlock.builder()
@@ -200,13 +193,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
         addType(
           TypeSpec.classBuilder(nodeType)
             .addModifiers(PRIVATE)
-            .primaryConstructor(
-              FunSpec.constructorBuilder()
-                .addParameter("id", LONG)
-                .build()
-            )
             .superclass(protocolNode)
-            .addSuperclassConstructorParameter("id")
             .addSuperclassConstructorParameter("%L", widget.tag)
             .apply {
               for (event in events) {

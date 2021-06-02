@@ -26,11 +26,6 @@ import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 
-public interface TreehouseScope {
-  public fun nextId(): Long
-  public fun appendDiff(diff: PropertyDiff)
-}
-
 /**
  * A synthetic node which allows the applier to differentiate between multiple groups of children.
  *
@@ -64,24 +59,32 @@ public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
 private sealed class ProtocolChildrenNode(
-  parentId: Long,
   val tag: Int,
-) : ProtocolNode(parentId, -1) {
-  class Intermediate(tag: Int) : ProtocolChildrenNode(-1, tag)
-  class Root : ProtocolChildrenNode(RootId, RootChildrenTag)
+) : ProtocolNode(-1) {
+  class Intermediate(tag: Int) : ProtocolChildrenNode(tag)
+  class Root : ProtocolChildrenNode(RootChildrenTag) {
+    init {
+      id = RootId
+    }
+  }
 }
 
 /**
  * @suppress
  */
 public open class ProtocolNode(
-  id: Long,
   public val type: Int,
 ) {
-  public var id: Long = id
+  public var id: Long = -1
     internal set
 
+  internal lateinit var applier: ProtocolApplier
+
   internal val children = mutableListOf<ProtocolNode>()
+
+  public fun appendDiff(diff: PropertyDiff) {
+    applier.appendDiff(diff)
+  }
 
   public open fun sendEvent(event: Event) {
     throw IllegalStateException("Node ID $id of type $type does not handle events")
@@ -124,17 +127,13 @@ public open class ProtocolNode(
 internal class ProtocolApplier(
   private val onDiff: (Diff) -> Unit,
 ) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()) {
+  private var nextId = RootId + 1
+  val nodes = mutableMapOf(root.id to root)
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
-  val scope: TreehouseScope = RealTreehouseScope()
-  inner class RealTreehouseScope : TreehouseScope {
-    private var nextId = RootId + 1
-    override fun nextId() = nextId++
-
-    override fun appendDiff(diff: PropertyDiff) {
-      propertyDiffs.add(diff)
-    }
+  fun appendDiff(diff: PropertyDiff) {
+    propertyDiffs.add(diff)
   }
 
   override fun onEndChanges() {
@@ -152,8 +151,6 @@ internal class ProtocolApplier(
     }
   }
 
-  val nodes = mutableMapOf(root.id to root)
-
   override fun insertTopDown(index: Int, instance: ProtocolNode) {
     current.children.add(index, instance)
 
@@ -167,10 +164,12 @@ internal class ProtocolApplier(
     } else {
       val current = current as ProtocolChildrenNode
 
-      nodes[instance.id] = instance
-      childrenDiffs.add(
-        ChildrenDiff.Insert(current.id, current.tag, instance.id, instance.type, index)
-      )
+      val id = nextId++
+      instance.id = id
+      instance.applier = this
+
+      nodes[id] = instance
+      childrenDiffs.add(ChildrenDiff.Insert(current.id, current.tag, id, instance.type, index))
     }
   }
 
