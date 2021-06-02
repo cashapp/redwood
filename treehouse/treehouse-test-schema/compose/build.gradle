@@ -5,6 +5,7 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 def generatedDir = 'build/generated/treehouse'
 
 kotlin {
+  ios()
   jvm()
   js {
     browser()
@@ -28,6 +29,7 @@ configurations {
 
 dependencies {
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
 
   generator project(':treehouse-schema-generator')
   generator project(':treehouse-test-schema')
