@@ -28,7 +28,7 @@ This can be done by either recursively cloning the repo from scratch
 $ git clone --recurse-submodules
 ```
 
-Or by initializing the submodule in an existing copy of the repo within the `treehouse/compose/upstream` directory. 
+Or by initializing the submodule in an existing copy of the repo. 
 
 ```
 $ git submodule update --init
