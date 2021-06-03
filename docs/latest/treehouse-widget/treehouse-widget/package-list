@@ -17,12 +17,6 @@ $dokka.location:app.cash.treehouse.widget/MutableListChildren/iterator/#/Pointin
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/list/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/list.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/move.html
 $dokka.location:app.cash.treehouse.widget/MutableListChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-mutable-list-children/remove.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/index.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren/UIViewChildren/#UIView/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/-u-i-view-children.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren/clear/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/clear.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren/insert/#kotlin.Int#UIView/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/insert.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/move.html
-$dokka.location:app.cash.treehouse.widget/UIViewChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-u-i-view-children/remove.html
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/index.html
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/ViewGroupChildren/#android.view.ViewGroup/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/-view-group-children.html
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/clear/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/clear.html
