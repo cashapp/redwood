@@ -19,6 +19,7 @@ buildscript {
       'coroutines': [
         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinx.coroutines}",
         'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinx.coroutines}",
+        'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.kotlinx.coroutines}",
       ],
       'serialization': [
         'core': "org.jetbrains.kotlinx:kotlinx-serialization-core:${versions.kotlinx.serialization}",
