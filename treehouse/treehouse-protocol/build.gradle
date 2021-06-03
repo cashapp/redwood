@@ -4,11 +4,19 @@ apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
+  iosArm32()
+  iosArm64()
+  iosX64()
   js {
     browser()
   }
   jvm()
-  ios()
+  macosX64()
+  mingwX64()
+  tvosX64()
+  tvosArm64()
+  watchosArm32()
+  watchosArm64()
 
   sourceSets {
     commonMain {
