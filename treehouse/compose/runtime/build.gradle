@@ -11,6 +11,7 @@ kotlin {
   android {
     publishAllLibraryVariants()
   }
+  ios()
   js {
     browser()
   }
@@ -44,12 +45,21 @@ kotlin {
         api 'androidx.annotation:annotation:1.1.0'
       }
     }
+    nativeMain {
+    }
+    nativeTest {
+    }
     jvmMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
         srcDir '../upstream/compose/runtime/runtime/src/desktopMain/kotlin'
       }
     }
+  }
+
+  configure([targets.iosX64, targets.iosArm64]) {
+    compilations.main.source(sourceSets.nativeMain)
+    compilations.test.source(sourceSets.nativeTest)
   }
 }
 
@@ -67,4 +77,5 @@ android {
 
 dependencies {
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
 }

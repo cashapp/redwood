@@ -39,6 +39,12 @@ public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
     treehouseVersion,
   )
 
+  override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(
+    "app.cash.treehouse",
+    "compose-compiler-hosted",
+    treehouseVersion,
+  )
+
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
       implementation("app.cash.treehouse:treehouse-compose:$treehouseVersion")

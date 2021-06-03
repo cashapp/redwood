@@ -9,6 +9,7 @@ kotlin {
   android {
     publishAllLibraryVariants()
   }
+  ios()
   js {
     browser()
   }
@@ -36,6 +37,12 @@ kotlin {
     androidTest {
       dependsOn jvmTest
     }
+    nativeTest {
+    }
+  }
+
+  configure([targets.iosX64, targets.iosArm64]) {
+    compilations.test.source(sourceSets.nativeTest)
   }
 }
 
@@ -47,6 +54,7 @@ android {
 
 dependencies {
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
 }
 
 spotless {

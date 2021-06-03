@@ -50,6 +50,7 @@ gradlePlugin {
 
 test {
   dependsOn(':compose:compiler:installArchives')
+  dependsOn(':compose:compiler-hosted:installArchives')
   dependsOn(':compose:runtime:installArchives')
   dependsOn(':treehouse-compose:installArchives')
   dependsOn(':treehouse-gradle-plugin:installArchives')
