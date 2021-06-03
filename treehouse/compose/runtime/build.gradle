@@ -25,15 +25,15 @@ kotlin {
         api deps.kotlinx.coroutines.core
       }
     }
-    // TODO get tests working
-    // commonTest {
-    //   kotlin {
-    //     srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
-    //   }
-    //   dependencies {
-    //     implementation 'org.jetbrains.kotlin:kotlin-test-multiplatform'
-    //   }
-    // }
+    commonTest {
+      kotlin {
+        // TODO get tests working on all platforms
+        // srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
+      }
+      dependencies {
+        implementation deps.kotlin.test
+      }
+    }
     androidMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/androidMain/kotlin'
@@ -48,6 +48,14 @@ kotlin {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
         srcDir '../upstream/compose/runtime/runtime/src/desktopMain/kotlin'
+      }
+    }
+    jvmTest {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
+      }
+      dependencies {
+        implementation deps.kotlinx.coroutines.test
       }
     }
   }
