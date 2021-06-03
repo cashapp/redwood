@@ -2,6 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.treehouse'
 
 kotlin {
+  ios()
   js {
     browser {
       testTask {
@@ -24,5 +25,14 @@ kotlin {
         implementation project(':samples:counter:sunspot:test')
       }
     }
+    nativeTest {
+    }
+  }
+
+  configure([
+    targets.iosArm64,
+    targets.iosX64,
+  ]) {
+    compilations.test.source(sourceSets.nativeTest)
   }
 }

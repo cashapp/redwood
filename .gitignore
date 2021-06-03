@@ -13,3 +13,10 @@ build
 
 # Android
 local.properties
+
+# iOS / XCode
+*.xcworkspace
+xcuserdata
+
+# Cocoapods
+Pods

@@ -2,6 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.treehouse.schema.test'
 
 kotlin {
+  ios()
   js {
     browser()
   }

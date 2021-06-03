@@ -1,0 +1,57 @@
+/*
+ * Copyright (C) 2021 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
+apply plugin: 'app.cash.treehouse'
+
+version = 1.0
+
+kotlin {
+  def sdkName = System.getenv("SDK_NAME")
+  if (sdkName != null && sdkName.startsWith("iphoneos")) {
+    iosArm64("ios")
+  } else {
+    iosX64("ios")
+  }
+
+  sourceSets {
+    iosMain {
+      dependencies {
+        implementation project(':samples:counter:sunspot:widget')
+        implementation project(':samples:counter:shared')
+
+        // We aren't multithreading, but we need Dispatchers.Main to refer to the actual main thread
+        // instead of being an alias for Dispatchers.Default.
+        implementation(deps.kotlinx.coroutines.coreNativeMultithreading) {
+          version {
+            strictly("${versions.kotlinx.coroutines}-native-mt")
+          }
+        }
+      }
+    }
+  }
+
+  cocoapods {
+    summary = 'Treehouse Sample Counter'
+    homepage = 'https://github.com/cashapp/treehouse/'
+  }
+}
+
+// TODO Remove disabling release https://github.com/square/treehouse/issues/119
+tasks.named('linkReleaseFrameworkIos').configure { task ->
+  task.enabled = false
+}
