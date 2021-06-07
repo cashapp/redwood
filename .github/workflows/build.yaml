@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-java@v2.1.0
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 14
 
       - run: ./gradlew -p treehouse build dokkaHtmlMultiModule
       - run: ./gradlew build
