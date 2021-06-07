@@ -50,5 +50,6 @@ class FixtureTest {
     return GradleRunner.create()
       .withProjectDir(fixtureDir)
       .withArguments("clean", "build", "--stacktrace", "-PtreehouseVersion=$treehouseVersion")
+      .withDebug(true) // Do not use a daemon.
   }
 }
