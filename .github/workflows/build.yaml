@@ -30,8 +30,8 @@ jobs:
           distribution: 'zulu'
           java-version: 14
 
-      - run: ./gradlew -p treehouse build dokkaHtmlMultiModule
-      - run: ./gradlew build
+      - run: ./gradlew -p treehouse build dokkaHtmlMultiModule --parallel
+      - run: ./gradlew build --parallel
 
       - run: ./gradlew -p treehouse publish
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'square/treehouse' && matrix.os == 'macos-latest' }}
