@@ -195,7 +195,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class"
+      "@Widget app.cash.treehouse.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'"
     )
   }
 
@@ -235,5 +235,20 @@ class SchemaParserTest {
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
     assertThat(widget.traits.single { it.name == "optionalEvent" }).isInstanceOf<Event>()
+  }
+
+  @Schema(
+    [
+      ObjectWidget::class,
+    ]
+  )
+  interface ObjectSchema
+  @Widget(1)
+  object ObjectWidget
+
+  @Test fun objectWidget() {
+    val schema = parseSchema(ObjectSchema::class)
+    val widget = schema.widgets.single()
+    assertThat(widget.traits).isEmpty()
   }
 }

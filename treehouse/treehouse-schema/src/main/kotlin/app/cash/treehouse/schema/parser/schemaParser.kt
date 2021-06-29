@@ -59,29 +59,34 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
     val widgetAnnotation = requireNotNull(widgetType.findAnnotation<WidgetAnnotation>()) {
       "${widgetType.qualifiedName} missing @Widget annotation"
     }
-    require(widgetType.isData) {
-      "@Widget ${widgetType.qualifiedName} must be 'data' class"
-    }
 
-    val traits = widgetType.primaryConstructor!!.parameters.map {
-      val property = it.findAnnotation<PropertyAnnotation>()
-      val children = it.findAnnotation<ChildrenAnnotation>()
-      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
+    val traits = if (widgetType.isData) {
+      widgetType.primaryConstructor!!.parameters.map {
+        val property = it.findAnnotation<PropertyAnnotation>()
+        val children = it.findAnnotation<ChildrenAnnotation>()
+        val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
 
-      if (property != null) {
-        if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
-          Event(property.tag, it.name!!, defaultExpression)
+        if (property != null) {
+          if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
+            Event(property.tag, it.name!!, defaultExpression)
+          } else {
+            Property(property.tag, it.name!!, it.type, defaultExpression)
+          }
+        } else if (children != null) {
+          require(it.type == childrenType) {
+            "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
+          }
+          Children(children.tag, it.name!!)
         } else {
-          Property(property.tag, it.name!!, it.type, defaultExpression)
+          throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
         }
-      } else if (children != null) {
-        require(it.type == childrenType) {
-          "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
-        }
-        Children(children.tag, it.name!!)
-      } else {
-        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
       }
+    } else if (widgetType.objectInstance != null) {
+      emptyList()
+    } else {
+      throw IllegalArgumentException(
+        "@Widget ${widgetType.qualifiedName} must be 'data' class or 'object'"
+      )
     }
 
     val badChildren =

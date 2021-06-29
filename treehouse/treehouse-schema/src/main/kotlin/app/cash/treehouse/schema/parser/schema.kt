@@ -26,7 +26,9 @@ public data class Schema(
 
 public data class Widget(
   val tag: Int,
+  /** Either a 'data class' or 'object'. */
   val type: KClass<*>,
+  /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   val traits: List<Trait>,
 )
 
