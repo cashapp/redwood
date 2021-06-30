@@ -176,10 +176,16 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
             PropertySpec.builder("schema", widgetType, OVERRIDE)
               .getter(
                 FunSpec.getterBuilder()
-                  .addStatement(
-                    "return %T(%L)", widgetType,
-                    schemaParameters.joinToCode(separator = ",\n", prefix = "\n", suffix = "\n")
-                  )
+                  .apply {
+                    if (schemaParameters.isEmpty()) {
+                      addStatement("return %T", widgetType)
+                    } else {
+                      addStatement(
+                        "return %T(%L)", widgetType,
+                        schemaParameters.joinToCode(separator = ",\n", prefix = "\n", suffix = "\n")
+                      )
+                    }
+                  }
                   .build()
               )
               .build()
