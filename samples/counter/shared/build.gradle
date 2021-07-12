@@ -3,7 +3,12 @@ apply plugin: 'app.cash.treehouse'
 
 kotlin {
   js {
-    browser()
+    browser {
+      testTask {
+        // TODO re-enable https://github.com/square/treehouse/issues/129
+        enabled = false
+      }
+    }
   }
   jvm()
 

@@ -1,6 +1,5 @@
 rootProject.name = 'treehouse'
 
-include ':compose:compiler'
 include ':compose:compiler-hosted'
 include ':compose:runtime'
 

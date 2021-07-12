@@ -36,7 +36,7 @@ configurations {
 }
 
 dependencies {
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler'))
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.androidx.compose.compiler)
   add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
 
   generator project(':treehouse-schema-generator')

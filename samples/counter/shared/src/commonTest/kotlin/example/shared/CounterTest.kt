@@ -40,7 +40,9 @@ class CounterTest {
     val clock = BroadcastFrameClock()
     val composition = TreehouseComposition(
       scope = this + clock,
-      display = display::apply
+      display = display::apply,
+      onDiff = { println(it) },
+      onEvent = { println(it) },
     )
 
     composition.setContent {
