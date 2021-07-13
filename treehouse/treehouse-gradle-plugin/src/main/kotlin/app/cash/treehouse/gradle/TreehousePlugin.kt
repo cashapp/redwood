@@ -49,21 +49,23 @@ public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
     kotlinCompilation.dependencies {
       implementation("app.cash.treehouse:treehouse-compose:$treehouseVersion")
     }
-    kotlinCompilation.ensureIr()
 
-    return kotlinCompilation.target.project.provider { emptyList() }
-  }
-}
-
-internal fun KotlinCompilation<*>.ensureIr() {
-  @Exhaustive when (platformType) {
-    androidJvm, jvm -> {
-      if ((kotlinOptions as KotlinJvmOptions).useOldBackend) {
-        throw IllegalStateException("Treehouse only works with the default IR-based backend")
+    @Exhaustive when (kotlinCompilation.platformType) {
+      androidJvm, jvm -> {
+        if ((kotlinCompilation.kotlinOptions as KotlinJvmOptions).useOldBackend) {
+          throw IllegalStateException("Treehouse only works with the default IR-based backend")
+        }
+      }
+      js -> {
+        // This enables a workaround for Compose lambda generation to function correctly in JS.
+        kotlinCompilation.kotlinOptions.freeCompilerArgs +=
+          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true")
+      }
+      common, native -> {
+        // Nothing to do!
       }
     }
-    common, js, native -> {
-      // Nothing to do!
-    }
+
+    return kotlinCompilation.target.project.provider { emptyList() }
   }
 }

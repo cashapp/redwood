@@ -47,15 +47,6 @@ allprojects {
     }
   }
 
-  // This is required for JetBrains' Compose fork to build JS correctly.
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile).configureEach { task ->
-    task.kotlinOptions {
-      freeCompilerArgs += [
-        "-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true",
-      ]
-    }
-  }
-
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
     android.compileSdkVersion 30
