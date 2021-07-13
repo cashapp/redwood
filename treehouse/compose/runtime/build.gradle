@@ -8,7 +8,9 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 archivesBaseName = 'treehouse-jetpack-compose'
 
 kotlin {
-  android()
+  android {
+    publishAllLibraryVariants()
+  }
   iosArm32()
   iosArm64()
   iosX64()
