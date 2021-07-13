@@ -98,7 +98,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                     .build()
                 }
                 is Event -> {
-                  ParameterSpec.builder(trait.name, eventLambda.copy(nullable = true))
+                  ParameterSpec.builder(trait.name, trait.lambdaType)
                     .defaultValue("null")
                     .build()
                 }
@@ -198,7 +198,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
             .apply {
               for (event in events) {
                 addProperty(
-                  PropertySpec.builder(event.name, eventLambda.copy(nullable = true))
+                  PropertySpec.builder(event.name, event.lambdaType)
                     .mutable(true)
                     .initializer("null")
                     .jvmField() // Method count optimization as this is implementation detail.
@@ -213,7 +213,14 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 .beginControlFlow("when (val tag = event.tag)")
                 .apply {
                   for (event in events) {
-                    addStatement("%L -> %N?.invoke()", event.tag, event.name)
+                    if (event.parameterType != null) {
+                      addStatement(
+                        "%L -> %N?.invoke(event.value as %T)", event.tag, event.name,
+                        event.parameterType!!.asTypeName()
+                      )
+                    } else {
+                      addStatement("%L -> %N?.invoke()", event.tag, event.name)
+                    }
                   }
                 }
                 .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)

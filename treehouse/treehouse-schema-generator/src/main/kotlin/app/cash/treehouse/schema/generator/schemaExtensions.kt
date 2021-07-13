@@ -15,10 +15,15 @@
  */
 package app.cash.treehouse.schema.generator
 
+import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 
 /**
  * Returns a single string that is likely to be unique within a schema, like `MapEntry` or
@@ -26,6 +31,17 @@ import com.squareup.kotlinpoet.asClassName
  */
 internal val Widget.flatName: String
   get() = type.asClassName().simpleNames.joinToString(separator = "")
+
+internal val Event.lambdaType: TypeName
+  get() {
+    parameterType?.let { parameterType ->
+      return LambdaTypeName.get(null, parameterType.asTypeName(), returnType = UNIT)
+        .copy(nullable = true)
+    }
+    return noArgumentEventLambda
+  }
+
+private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
 
 internal fun Schema.composeNodeType(widget: Widget): ClassName {
   return ClassName(composePackage, widget.flatName + "ComposeNode")

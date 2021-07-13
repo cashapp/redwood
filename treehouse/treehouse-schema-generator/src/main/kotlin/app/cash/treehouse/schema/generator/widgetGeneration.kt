@@ -134,7 +134,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
-                    .addParameter(trait.name, eventLambda)
+                    .addParameter(trait.name, trait.lambdaType)
                     .build()
                 )
               }

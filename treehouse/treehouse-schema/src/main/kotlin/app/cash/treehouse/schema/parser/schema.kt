@@ -48,8 +48,8 @@ public data class Property(
 public data class Event(
   override val tag: Int,
   override val name: String,
-  // TODO parameter type list?
   override val defaultExpression: String?,
+  val parameterType: KType?,
 ) : Trait()
 
 public data class Children(

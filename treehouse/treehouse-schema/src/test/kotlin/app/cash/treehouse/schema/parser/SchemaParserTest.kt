@@ -21,6 +21,7 @@ import app.cash.treehouse.schema.Schema
 import app.cash.treehouse.schema.Widget
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import kotlin.reflect.full.createType
 
 class SchemaParserTest {
   interface NonAnnotationSchema
@@ -235,6 +236,51 @@ class SchemaParserTest {
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
     assertThat(widget.traits.single { it.name == "optionalEvent" }).isInstanceOf<Event>()
+  }
+
+  @Schema(
+    [
+      EventArgumentsWidget::class,
+    ]
+  )
+  interface EventArgumentsSchema
+  @Widget(1)
+  data class EventArgumentsWidget(
+    @Property(1) val noArguments: () -> Unit,
+    @Property(2) val argument: (String) -> Unit,
+    @Property(3) val argumentOptionalLambda: ((String) -> Unit)?,
+  )
+
+  @Test fun eventArguments() {
+    val schema = parseSchema(EventArgumentsSchema::class)
+    val widget = schema.widgets.single()
+
+    val noArguments = widget.traits.single { it.name == "noArguments" } as Event
+    assertThat(noArguments.parameterType).isNull()
+    val argument = widget.traits.single { it.name == "argument" } as Event
+    assertThat(argument.parameterType).isEqualTo(String::class.createType())
+    val argumentOptionalLambda = widget.traits.single { it.name == "argumentOptionalLambda" } as Event
+    assertThat(argumentOptionalLambda.parameterType).isEqualTo(String::class.createType())
+  }
+
+  @Schema(
+    [
+      EventArgumentsInvalidWidget::class,
+    ]
+  )
+  interface EventArgumentsInvalidSchema
+  @Widget(1)
+  data class EventArgumentsInvalidWidget(
+    @Property(3) val tooManyArguments: ((String, Boolean, Long) -> Unit)?,
+  )
+
+  @Test fun eventArgumentsInvalid() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(EventArgumentsInvalidSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Property app.cash.treehouse.schema.parser.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
+        "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]"
+    )
   }
 
   @Schema(
