@@ -25,7 +25,6 @@ dokkaHtmlMultiModule {
   removeChildTasks([
     // Do not include Compose in our documentation site.
     project(":compose:runtime"),
-    project(":compose:compiler"),
     project(":compose:compiler-hosted"),
   ])
 }
