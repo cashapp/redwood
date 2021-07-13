@@ -8,9 +8,10 @@ $dokka.location:app.cash.treehouse.schema.parser/Children/defaultExpression/#/Po
 $dokka.location:app.cash.treehouse.schema.parser/Children/name/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-children/name.html
 $dokka.location:app.cash.treehouse.schema.parser/Children/tag/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-children/tag.html
 $dokka.location:app.cash.treehouse.schema.parser/Event///PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/index.html
-$dokka.location:app.cash.treehouse.schema.parser/Event/Event/#kotlin.Int#kotlin.String#kotlin.String?/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/-event.html
+$dokka.location:app.cash.treehouse.schema.parser/Event/Event/#kotlin.Int#kotlin.String#kotlin.String?#kotlin.reflect.KType?/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/-event.html
 $dokka.location:app.cash.treehouse.schema.parser/Event/defaultExpression/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/default-expression.html
 $dokka.location:app.cash.treehouse.schema.parser/Event/name/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/name.html
+$dokka.location:app.cash.treehouse.schema.parser/Event/parameterType/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/parameter-type.html
 $dokka.location:app.cash.treehouse.schema.parser/Event/tag/#/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-event/tag.html
 $dokka.location:app.cash.treehouse.schema.parser/Property///PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-property/index.html
 $dokka.location:app.cash.treehouse.schema.parser/Property/Property/#kotlin.Int#kotlin.String#kotlin.reflect.KType#kotlin.String?/PointingToDeclaration/treehouse-schema/app.cash.treehouse.schema.parser/-property/-property.html
