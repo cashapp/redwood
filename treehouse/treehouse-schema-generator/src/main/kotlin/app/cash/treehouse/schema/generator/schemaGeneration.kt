@@ -142,10 +142,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
               }
               is Event -> {
                 addProperty(
-                  PropertySpec.builder(
-                    trait.name, eventLambda.copy(nullable = true),
-                    PRIVATE
-                  )
+                  PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
                     .mutable(true)
                     .initializer("null")
                     .build()
@@ -153,7 +150,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
-                    .addParameter(trait.name, eventLambda.copy(nullable = true))
+                    .addParameter(trait.name, trait.lambdaType)
                     .addStatement("this.%1N = %1N", trait.name)
                     .build()
                 )

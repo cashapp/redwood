@@ -25,6 +25,7 @@ import app.cash.treehouse.schema.Widget
     Box::class,
     Text::class,
     Button::class,
+    TextInput::class,
   ]
 )
 public interface ExampleSchema
@@ -43,4 +44,10 @@ public data class Text(
 public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: () -> Unit,
+)
+
+@Widget(4)
+public data class TextInput(
+  @Property(1) val text: String?,
+  @Property(2) val onChange: (String) -> Unit,
 )

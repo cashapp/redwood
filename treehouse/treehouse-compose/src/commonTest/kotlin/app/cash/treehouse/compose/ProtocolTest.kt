@@ -19,7 +19,6 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameMillis
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
@@ -29,16 +28,13 @@ import app.cash.treehouse.protocol.PropertyDiff
 import example.treehouse.compose.Box
 import example.treehouse.compose.Button
 import example.treehouse.compose.Text
-import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class TreehouseCompositionTest {
+class ProtocolTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
     val diffs = ArrayDeque<Diff>()
@@ -156,21 +152,5 @@ class TreehouseCompositionTest {
     )
 
     composition.cancel()
-  }
-
-  private suspend fun BroadcastFrameClock.awaitFrame() {
-    // TODO Remove the need for two frames to happen!
-    //  I think this is because of the diff-sender is a hot loop that immediately reschedules
-    //  itself on the clock. This schedules it ahead of the coroutine which applies changes and
-    //  so we need to trigger an additional frame to actually emit the change's diffs.
-    repeat(2) {
-      coroutineScope {
-        launch(start = UNDISPATCHED) {
-          withFrameMillis {
-          }
-        }
-        sendFrame(0L)
-      }
-    }
   }
 }

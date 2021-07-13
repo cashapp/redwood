@@ -68,7 +68,11 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
 
         if (property != null) {
           if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
-            Event(property.tag, it.name!!, defaultExpression)
+            val arguments = it.type.arguments.dropLast(1) // Drop return type.
+            require(arguments.size <= 1) {
+              "@Property ${widgetType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
+            }
+            Event(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
           } else {
             Property(property.tag, it.name!!, it.type, defaultExpression)
           }
