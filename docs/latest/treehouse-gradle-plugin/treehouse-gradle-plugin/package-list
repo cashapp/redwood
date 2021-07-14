@@ -3,6 +3,7 @@ $dokka.linkExtension:html
 $dokka.location:app.cash.treehouse.gradle////PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/index.html
 $dokka.location:app.cash.treehouse.gradle/TreehousePlugin///PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/index.html
 $dokka.location:app.cash.treehouse.gradle/TreehousePlugin/TreehousePlugin/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/-treehouse-plugin.html
+$dokka.location:app.cash.treehouse.gradle/TreehousePlugin/apply/#org.gradle.api.Project/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/apply.html
 $dokka.location:app.cash.treehouse.gradle/TreehousePlugin/applyToCompilation/#org.jetbrains.kotlin.gradle.plugin.KotlinCompilation[*]/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/apply-to-compilation.html
 $dokka.location:app.cash.treehouse.gradle/TreehousePlugin/getCompilerPluginId/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/get-compiler-plugin-id.html
 $dokka.location:app.cash.treehouse.gradle/TreehousePlugin/getPluginArtifact/#/PointingToDeclaration/treehouse-gradle-plugin/app.cash.treehouse.gradle/-treehouse-plugin/get-plugin-artifact.html
