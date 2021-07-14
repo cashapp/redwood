@@ -1,0 +1,61 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+def generatedDir = 'build/generated/treehouse'
+
+kotlin {
+  iosArm32()
+  iosArm64()
+  iosX64()
+  js {
+    browser()
+  }
+  jvm()
+  macosX64()
+  mingwX64()
+  tvosX64()
+  tvosArm64()
+  watchosArm32()
+  watchosArm64()
+
+  sourceSets {
+    commonMain {
+      kotlin {
+        srcDir generatedDir
+      }
+      dependencies {
+        api project(':treehouse-widget')
+      }
+    }
+  }
+}
+
+configurations {
+  generator
+}
+
+dependencies {
+  generator project(':treehouse-schema-generator')
+  generator project(':treehouse-test-schema')
+}
+
+def generate = tasks.register('treehouseGenerate', JavaExec) {
+  it.classpath(configurations.generator)
+  it.main('app.cash.treehouse.schema.generator.Main')
+  it.args(
+    '--widget',
+    '--out', generatedDir,
+    'example.treehouse.ExampleSchema',
+  )
+
+  it.doFirst {
+    file(generatedDir).deleteDir()
+  }
+}
+
+kotlin.targets.all { target ->
+  target.compilations.all { compilation ->
+    compilation.compileKotlinTask.dependsOn(generate.get())
+  }
+}

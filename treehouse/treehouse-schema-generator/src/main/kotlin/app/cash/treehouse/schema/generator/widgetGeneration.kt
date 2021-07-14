@@ -183,9 +183,11 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   }
                   is Event -> {
                     beginControlFlow("%L ->", trait.tag)
-                    beginControlFlow("val %N = if (diff.value as %T)", trait.name, BOOLEAN)
-                    addStatement("val event = %T(diff.id, %L, null);", eventType, trait.tag)
-                    addStatement("{ events(event) }")
+                    beginControlFlow("val %N: %T = if (diff.value as %T)", trait.name, trait.lambdaType, BOOLEAN)
+                    addStatement(
+                      "{ events(%T(diff.id, %L, %L)) }", eventType, trait.tag,
+                      if (trait.parameterType != null) "it" else "null"
+                    )
                     nextControlFlow("else")
                     addStatement("null")
                     endControlFlow()
