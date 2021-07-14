@@ -42,14 +42,22 @@ class FixtureTest {
     )
   }
 
-  private fun fixtureGradleRunner(name: String): GradleRunner {
+  @Test fun composeUiAppPackagingSucceeds() {
+    // If our dependency substitution did not work the D8 step would fail with duplicate classes.
+    fixtureGradleRunner("compose-ui", "assemble").build()
+  }
+
+  private fun fixtureGradleRunner(
+    name: String,
+    task: String = "build",
+  ): GradleRunner {
     val fixtureDir = File("src/test/fixture", name)
     val gradleRoot = File(fixtureDir, "gradle").also { it.mkdir() }
     File("../../gradle/wrapper").copyRecursively(File(gradleRoot, "wrapper"), true)
 
     return GradleRunner.create()
       .withProjectDir(fixtureDir)
-      .withArguments("clean", "build", "--stacktrace", "-PtreehouseVersion=$treehouseVersion")
+      .withArguments("clean", task, "--stacktrace", "-PtreehouseVersion=$treehouseVersion")
       .withDebug(true) // Do not use a daemon.
   }
 }
