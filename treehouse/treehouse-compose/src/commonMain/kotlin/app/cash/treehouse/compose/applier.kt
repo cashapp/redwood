@@ -180,13 +180,19 @@ internal class ProtocolApplier(
   override fun remove(index: Int, count: Int) {
     // Children instances are never removed from their parents.
     val current = current as ProtocolChildrenNode
-
     val children = current.children
+
+    // TODO We should not have to track this and send it as part of the protocol.
+    //  Ideally this would be entirely encapsulated on the display-side with additional bookkeeping.
+    //  For now, we track it here and send it in the protocol as a simple solution.
+    val removedIds = ArrayList<Long>(count)
     for (i in index until index + count) {
-      nodes.remove(children[i].id)
+      removedIds.add(children[i].id)
     }
+
+    nodes.keys.removeAll(removedIds)
     children.remove(index, count)
-    childrenDiffs.add(ChildrenDiff.Remove(current.id, current.tag, index, count))
+    childrenDiffs.add(ChildrenDiff.Remove(current.id, current.tag, index, count, removedIds))
   }
 
   override fun move(from: Int, to: Int, count: Int) {

@@ -84,7 +84,14 @@ public sealed class ChildrenDiff {
     override val tag: Int,
     val index: Int,
     val count: Int,
-  ) : ChildrenDiff()
+    val removedIds: List<Long>,
+  ) : ChildrenDiff() {
+    init {
+      require(count == removedIds.size) {
+        "Count $count != Removed ID list size ${removedIds.size}"
+      }
+    }
+  }
 
   public companion object {
     public const val RootId: Long = 0L
