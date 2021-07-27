@@ -55,7 +55,7 @@ public class WidgetDisplay<T : Any>(
         }
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
-          // TODO we need to remove widgets from our map!
+          widgets.keys.removeAll(childrenDiff.removedIds)
         }
         ChildrenDiff.Clear -> {
           children.clear()

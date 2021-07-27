@@ -22,6 +22,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ProtocolTest {
   private val format = Json {
@@ -51,7 +52,7 @@ class ProtocolTest {
         ChildrenDiff.Clear,
         ChildrenDiff.Insert(1, 2, 3, 4, 5),
         ChildrenDiff.Move(1, 2, 3, 4, 5),
-        ChildrenDiff.Remove(1, 2, 3, 4),
+        ChildrenDiff.Remove(1, 2, 3, 4, listOf(5, 6, 7, 8)),
       ),
       propertyDiffs = listOf(
         PropertyDiff(1, 2, "Hello"),
@@ -63,7 +64,7 @@ class ProtocolTest {
       """["clear",{}],""" +
       """["insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
-      """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
+      """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
       """],"propertyDiffs":[""" +
       """{"id":1,"tag":2,"value":["kotlin.String","Hello"]},""" +
       """{"id":1,"tag":2}""" +
@@ -78,6 +79,12 @@ class ProtocolTest {
     )
     val json = "{}"
     assertJsonRoundtrip(Diff.serializer(), model, json)
+  }
+
+  @Test fun removeCountMustMatchListSize() {
+    assertFailsWith<IllegalArgumentException>("Count 4 != Removed ID list size 3") {
+      ChildrenDiff.Remove(1, 2, 3, 4, listOf(5, 6, 7))
+    }
   }
 
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {
