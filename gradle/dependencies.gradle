@@ -1,6 +1,6 @@
 buildscript {
   ext.versions = [
-    'compose': '1.0.0-rc02',
+    'compose': '1.0.0',
     'kotlin': '1.5.10',
     'kotlinx': [
       'coroutines': '1.5.0',
