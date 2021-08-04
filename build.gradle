@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
+
 buildscript {
   apply from: 'gradle/dependencies.gradle'
 
@@ -45,6 +47,15 @@ allprojects {
     task.kotlinOptions {
       jvmTarget = '1.8'
     }
+  }
+
+  // Kotlin/Native compiler reports its version like 1.4.21-344 whereas Kotlin/JVM and Kotlin/JS say
+  // only 1.4.21. The Compose compiler checks this version and fails for the Kotlin/Native variant.
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinNativeCompile).configureEach {
+    it.compilerPluginOptions.addPluginArgument(
+      'androidx.compose.compiler.plugins.kotlin',
+      new SubpluginOption('suppressKotlinVersionCompatibilityCheck', 'true')
+    )
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->

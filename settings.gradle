@@ -2,6 +2,7 @@ rootProject.name = 'treehouse-root'
 
 include ':samples:counter:android'
 include ':samples:counter:browser'
+include ':samples:counter:ios:shared'
 include ':samples:counter:shared'
 include ':samples:counter:sunspot'
 include ':samples:counter:sunspot:compose'
@@ -15,5 +16,7 @@ includeBuild('treehouse') {
     substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
     substitute module('app.cash.treehouse:treehouse-schema-generator') with project(':treehouse-schema-generator')
     substitute module('app.cash.treehouse:treehouse-widget') with project(':treehouse-widget')
+
+    substitute module('app.cash.treehouse:compose-compiler-hosted') with project(':compose:compiler-hosted')
   }
 }

@@ -20,6 +20,7 @@ buildscript {
       'coroutines': [
         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinx.coroutines}",
         'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinx.coroutines}",
+        'coreNativeMultithreading': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinx.coroutines}-native-mt",
         'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.kotlinx.coroutines}",
       ],
       'serialization': [
