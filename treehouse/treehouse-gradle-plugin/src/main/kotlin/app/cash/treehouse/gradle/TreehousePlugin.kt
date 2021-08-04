@@ -83,7 +83,13 @@ public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
         kotlinCompilation.kotlinOptions.freeCompilerArgs +=
           listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true")
       }
-      common, native -> {
+      native -> {
+        // Kotlin/Native compiler reports its version like 1.4.21-344 whereas Kotlin/JVM and
+        // Kotlin/JS say only 1.4.21. Compose checks this version and fails for Kotlin/Native.
+        kotlinCompilation.kotlinOptions.freeCompilerArgs +=
+          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true")
+      }
+      common -> {
         // Nothing to do!
       }
     }
