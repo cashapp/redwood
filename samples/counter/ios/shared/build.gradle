@@ -18,8 +18,6 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
 apply plugin: 'app.cash.treehouse'
 
-version = 1.0
-
 kotlin {
   def sdkName = System.getenv("SDK_NAME")
   if (sdkName != null && sdkName.startsWith("iphoneos")) {
@@ -43,11 +41,6 @@ kotlin {
         }
       }
     }
-  }
-
-  cocoapods {
-    summary = 'Treehouse Sample Counter'
-    homepage = 'https://github.com/cashapp/treehouse/'
   }
 }
 

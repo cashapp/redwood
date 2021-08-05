@@ -33,7 +33,6 @@ jobs:
       - name: Build Xcode samples
         # TODO Remove "-configuration Debug" https://github.com/square/treehouse/issues/119
         run: |
-          ./gradlew :samples:counter:ios:shared:generateDummyFramework
           cd samples/counter/ios/app
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
