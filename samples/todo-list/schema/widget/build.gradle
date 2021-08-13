@@ -1,0 +1,12 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse.schema.widget'
+
+kotlin {
+  ios()
+  jvm()
+}
+
+treehouseSchema {
+  source = project(':samples:todo-list:schema')
+  type = 'example.schema.Todo'
+}

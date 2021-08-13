@@ -1,0 +1,15 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse'
+
+kotlin {
+  ios()
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':samples:todo-list:schema:compose')
+      }
+    }
+  }
+}
