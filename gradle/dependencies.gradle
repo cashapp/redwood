@@ -29,12 +29,16 @@ buildscript {
       ],
     ],
     'androidx': [
+      'activity': 'androidx.activity:activity:1.3.1',
+      'appCompat': 'androidx.appcompat:appcompat:1.3.1',
       'compose': [
         'compiler': "androidx.compose.compiler:compiler:${versions.compose}",
+        'material': "androidx.compose.material:material:${versions.compose}"
       ],
       'core': 'androidx.core:core-ktx:1.2.0',
     ],
     'androidGradlePlugin': 'com.android.tools.build:gradle:7.0.0',
+    'materialDesign': 'com.google.android.material:material:1.4.0',
     'kotlinPoet': 'com.squareup:kotlinpoet:1.7.2',
     'clikt': 'com.github.ajalt.clikt:clikt:3.1.0',
     'exhaustiveAnnotation': "app.cash.exhaustive:exhaustive-annotation:${versions.exhaustive}",

@@ -62,6 +62,28 @@ allprojects {
       checkDependencies true
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
     }
+
+    // Normally the TreehousePlugin performs dependency substitution to replace our Compose runtime
+    // for Android with the official AndroidX one. However, because we are using includeBuild in
+    // settings.gradle, the substitution does not match. Instead, for Android samples, we match
+    // on the included build's Compose runtime Gradle project and perform the same replacement.
+    configurations.all { configuration ->
+      configuration.resolutionStrategy.dependencySubstitution {
+        all { dependency ->
+          if (dependency.requested instanceof ProjectComponentSelector
+              && dependency.requested.buildName == 'treehouse'
+              && dependency.requested.projectPath == ':compose:runtime') {
+            dependency.useTarget("androidx.compose.runtime:runtime:${versions.compose}")
+          }
+        }
+      }
+    }
+
+    // TODO Re-enable lint on samples https://issuetracker.google.com/issues/196982350
+    afterEvaluate {
+      tasks.named('lintDebug').configure { enabled = false }
+      tasks.named('lintRelease').configure { enabled = false }
+    }
   }
 
   apply plugin: 'com.diffplug.spotless'
