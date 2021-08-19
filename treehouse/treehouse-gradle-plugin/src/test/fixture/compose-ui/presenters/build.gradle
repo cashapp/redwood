@@ -1,10 +1,9 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.treehouse'
 
 dependencies {
-  implementation project(':presenters')
-  implementation "androidx.compose.ui:ui:${versions.compose}"
+  implementation project(':schema:compose')
 }
 
 android {
@@ -22,17 +21,5 @@ android {
   defaultConfig {
     minSdkVersion 21
     targetSdkVersion 30
-  }
-
-  buildFeatures {
-    compose true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion versions.compose
-  }
-
-  lintOptions {
-    checkReleaseBuilds false
   }
 }

@@ -16,7 +16,6 @@
 package app.cash.treehouse.gradle
 
 import app.cash.exhaustive.Exhaustive
-import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -30,27 +29,6 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 public class TreehousePlugin : KotlinCompilerPluginSupportPlugin {
-  override fun apply(project: Project) {
-    super.apply(project)
-
-    project.configurations.all { configuration ->
-      configuration.resolutionStrategy.dependencySubstitution { it ->
-        val composeRuntime = it.module("androidx.compose.runtime:runtime:$composeVersion")
-        val justification =
-          "Our Android jar includes the same types in the same package as AndroidX. " +
-            "This prevents using other Compose-based libraries such as Compose UI in an app. " +
-            "Prefer the canonical version so that dependency resolution will de-duplicate them."
-
-        it.substitute(it.module("app.cash.treehouse:compose-runtime-android"))
-          .using(composeRuntime)
-          .because(justification)
-        it.substitute(it.module("app.cash.treehouse:compose-runtime-android-debug"))
-          .using(composeRuntime)
-          .because(justification)
-      }
-    }
-  }
-
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
   override fun getCompilerPluginId(): String = "app.cash.treehouse"

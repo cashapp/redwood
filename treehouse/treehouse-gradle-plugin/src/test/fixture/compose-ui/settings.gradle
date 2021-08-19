@@ -1,3 +1,4 @@
 include ':app'
+include ':presenters'
 include ':schema'
 include ':schema:compose'
