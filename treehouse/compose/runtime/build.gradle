@@ -7,6 +7,41 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 archivesBaseName = 'treehouse-jetpack-compose'
 
+tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
+  doLast {
+    // Welcome to some horrible code...
+    //
+    // This module builds the Compose runtime for all our supported platforms including Android.
+    // However, someone using Compose UI would use the AndroidX Compose runtime dependency. Since
+    // that runtime and runtime exist at different Maven coordinates the build system will include
+    // both and D8 will fail with duplicate class errors.
+    //
+    // To mitigate this, we want to modify our Gradle module metadata (which tells Gradle which
+    // artifact to use for each platform) so that the Android variants point at the AndroidX copy.
+    // This will ensure that consumers of Treehouse and something like Compose UI in Android builds
+    // will use the same Maven coordinates for the runtime and only a single copy will be used.
+    //
+    // As far as I can tell, there are no APIs comprehensive enough to do this manipulation. For
+    // now we do a proper horrible workaround by simply matching the partial JSON text we want to
+    // replace and inserting a new partial JSON text with the updated metadata JSON.
+
+    String find = file('module_find.txt').text
+    String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', versions.compose)
+
+    File file = outputFile.get().getAsFile()
+    String text = file.text
+
+    int start = text.indexOf(find)
+    if (start == -1) {
+      throw new RuntimeException("Unable to locate module_find.txt contents in module JSON")
+    }
+    int end = start + find.length()
+
+    String newText = text.substring(0, start) + replace + text.substring(end)
+    file.text = newText
+  }
+}
+
 kotlin {
   android {
     publishAllLibraryVariants()
