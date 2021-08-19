@@ -25,7 +25,7 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
     // now we do a proper horrible workaround by simply matching the partial JSON text we want to
     // replace and inserting a new partial JSON text with the updated metadata JSON.
 
-    String find = file('module_find.txt').text
+    String find = file('module_find.txt').text.replace('{TREEHOUSE_VERSION}', version)
     String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', versions.compose)
 
     File file = outputFile.get().getAsFile()
