@@ -7,10 +7,10 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android-debug/0.2.0-SNAPSHOT/compose-runtime-android-debug-0.2.0-SNAPSHOT.module",
+        "url": "../../compose-runtime-android-debug/{TREEHOUSE_VERSION}/compose-runtime-android-debug-{TREEHOUSE_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android-debug",
-        "version": "0.2.0-SNAPSHOT"
+        "version": "{TREEHOUSE_VERSION}"
       }
     },
     {
@@ -22,10 +22,10 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android-debug/0.2.0-SNAPSHOT/compose-runtime-android-debug-0.2.0-SNAPSHOT.module",
+        "url": "../../compose-runtime-android-debug/{TREEHOUSE_VERSION}/compose-runtime-android-debug-{TREEHOUSE_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android-debug",
-        "version": "0.2.0-SNAPSHOT"
+        "version": "{TREEHOUSE_VERSION}"
       }
     },
     {
@@ -37,10 +37,10 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android/0.2.0-SNAPSHOT/compose-runtime-android-0.2.0-SNAPSHOT.module",
+        "url": "../../compose-runtime-android/{TREEHOUSE_VERSION}/compose-runtime-android-{TREEHOUSE_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android",
-        "version": "0.2.0-SNAPSHOT"
+        "version": "{TREEHOUSE_VERSION}"
       }
     },
     {
@@ -52,9 +52,9 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android/0.2.0-SNAPSHOT/compose-runtime-android-0.2.0-SNAPSHOT.module",
+        "url": "../../compose-runtime-android/{TREEHOUSE_VERSION}/compose-runtime-android-{TREEHOUSE_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android",
-        "version": "0.2.0-SNAPSHOT"
+        "version": "{TREEHOUSE_VERSION}"
       }
     },
