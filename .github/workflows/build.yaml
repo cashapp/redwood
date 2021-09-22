@@ -31,20 +31,20 @@ jobs:
         run: ./gradlew build --parallel
 
       - name: Build Xcode samples
-        # TODO Remove "-configuration Debug" https://github.com/square/treehouse/issues/119
+        # TODO Remove "-configuration Debug" https://github.com/cashapp/treehouse/issues/119
         run: |
           cd samples/counter/ios/app
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
       - run: ./gradlew -p treehouse publish
-        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'square/treehouse' }}
+        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/treehouse' }}
         env:
           ORG_GRADLE_PROJECT_SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
 
       - name: Deploy docs to website
-        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'square/treehouse' }}
+        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/treehouse' }}
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,7 +55,7 @@ jobs:
 
   windows-publish:
     runs-on: windows-latest
-    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'square/treehouse' }}
+    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/treehouse' }}
 
     needs:
       - build
