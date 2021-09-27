@@ -3,7 +3,7 @@ if (!file('upstream/.git').exists()) {
     "Missing 'upstream' git submodule clone. Did you run 'git submodule update --init'?")
 }
 
-def upstreamLibraryVersions = file('upstream/buildSrc/src/main/kotlin/androidx/build/LibraryVersions.kt').text.readLines()
+def upstreamLibraryVersions = file('upstream/buildSrc/public/src/main/kotlin/androidx/build/LibraryVersions.kt').text.readLines()
 def upstreamDependencyVersions = file('upstream/gradle/libs.versions.toml').text.readLines()
 
 def upstreamComposeVersion = upstreamLibraryVersions.find { it.contains("val COMPOSE = ") }
