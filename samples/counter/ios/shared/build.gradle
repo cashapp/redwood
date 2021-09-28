@@ -43,8 +43,3 @@ kotlin {
     }
   }
 }
-
-// TODO Remove disabling release https://github.com/square/treehouse/issues/119
-tasks.named('linkReleaseFrameworkIos').configure { task ->
-  task.enabled = false
-}

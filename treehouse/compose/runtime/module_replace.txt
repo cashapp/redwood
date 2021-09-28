@@ -2,7 +2,6 @@
       "name": "debugApiElements-published",
       "attributes": {
         "com.android.build.api.attributes.BuildTypeAttr": "debug",
-        "com.android.build.gradle.internal.attributes.VariantAttr": "debug",
         "org.gradle.usage": "java-api",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
@@ -20,7 +19,6 @@
       "name": "debugRuntimeElements-published",
       "attributes": {
         "com.android.build.api.attributes.BuildTypeAttr": "debug",
-        "com.android.build.gradle.internal.attributes.VariantAttr": "debug",
         "org.gradle.usage": "java-runtime",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
@@ -37,8 +35,6 @@
     {
       "name": "releaseApiElements-published",
       "attributes": {
-        "com.android.build.api.attributes.BuildTypeAttr": "release",
-        "com.android.build.gradle.internal.attributes.VariantAttr": "release",
         "org.gradle.usage": "java-api",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
@@ -55,8 +51,6 @@
     {
       "name": "releaseRuntimeElements-published",
       "attributes": {
-        "com.android.build.api.attributes.BuildTypeAttr": "release",
-        "com.android.build.gradle.internal.attributes.VariantAttr": "release",
         "org.gradle.usage": "java-runtime",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
