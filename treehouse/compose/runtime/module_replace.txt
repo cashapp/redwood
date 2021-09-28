@@ -1,38 +1,4 @@
     {
-      "name": "debugApiElements-published",
-      "attributes": {
-        "com.android.build.api.attributes.BuildTypeAttr": "debug",
-        "org.gradle.usage": "java-api",
-        "org.jetbrains.kotlin.platform.type": "androidJvm"
-      },
-      "dependencies": [
-        {
-          "group": "androidx.compose.runtime",
-          "module": "runtime",
-          "version": {
-            "prefers": "{COMPOSE_VERSION}"
-          }
-        }
-      ]
-    },
-    {
-      "name": "debugRuntimeElements-published",
-      "attributes": {
-        "com.android.build.api.attributes.BuildTypeAttr": "debug",
-        "org.gradle.usage": "java-runtime",
-        "org.jetbrains.kotlin.platform.type": "androidJvm"
-      },
-      "dependencies": [
-        {
-          "group": "androidx.compose.runtime",
-          "module": "runtime",
-          "version": {
-            "prefers": "{COMPOSE_VERSION}"
-          }
-        }
-      ]
-    },
-    {
       "name": "releaseApiElements-published",
       "attributes": {
         "org.gradle.usage": "java-api",

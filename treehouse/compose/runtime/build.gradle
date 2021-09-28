@@ -33,7 +33,7 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
 
     int start = text.indexOf(find)
     if (start == -1) {
-      throw new RuntimeException("Unable to locate module_find.txt contents in module JSON")
+      throw new RuntimeException("Unable to locate module_find.txt contents in module JSON ($file)")
     }
     int end = start + find.length()
 
@@ -44,7 +44,7 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
 
 kotlin {
   android {
-    publishAllLibraryVariants()
+    publishLibraryVariants('release')
   }
   iosArm32()
   iosArm64()
