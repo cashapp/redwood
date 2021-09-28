@@ -7,7 +7,7 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
   android {
-    publishAllLibraryVariants()
+    publishLibraryVariants('release')
   }
   iosArm32()
   iosArm64()
