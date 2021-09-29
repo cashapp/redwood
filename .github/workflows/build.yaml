@@ -20,7 +20,7 @@ jobs:
       - run: git submodule update --init
 
       - uses: gradle/wrapper-validation-action@v1
-      - uses: actions/setup-java@v2.3.0
+      - uses: actions/setup-java@v2.3.1
         with:
           distribution: 'zulu'
           java-version: 14
@@ -64,7 +64,7 @@ jobs:
       - run: git submodule update --init
 
       - uses: gradle/wrapper-validation-action@v1
-      - uses: actions/setup-java@v2.3.0
+      - uses: actions/setup-java@v2.3.1
         with:
           distribution: 'zulu'
           java-version: 14
