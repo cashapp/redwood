@@ -24,6 +24,8 @@ includeBuild('treehouse') {
     substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
     substitute module('app.cash.treehouse:treehouse-schema-generator') with project(':treehouse-schema-generator')
     substitute module('app.cash.treehouse:treehouse-widget') with project(':treehouse-widget')
+    substitute module('app.cash.treehouse:treehouse-widget-zipline') with project(':treehouse-widget-zipline')
+    substitute module('app.cash.treehouse:treehouse-zipline') with project(':treehouse-zipline')
 
     substitute module('app.cash.treehouse:compose-compiler-hosted') with project(':compose:compiler-hosted')
   }

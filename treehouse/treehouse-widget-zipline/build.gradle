@@ -1,0 +1,32 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  iosArm32()
+  iosArm64()
+  iosX64()
+  js {
+    browser()
+  }
+  jvm()
+  macosX64()
+  mingwX64()
+  tvosX64()
+  tvosArm64()
+  watchosArm32()
+  watchosArm64()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':treehouse-protocol')
+        api project(':treehouse-zipline')
+        api project(':treehouse-widget')
+        api deps.kotlinx.coroutines.core
+        api 'app.cash.zipline:zipline'
+      }
+    }
+  }
+}

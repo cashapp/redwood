@@ -8,6 +8,8 @@ dependencies {
   implementation deps.kotlinx.coroutines.android
   implementation deps.androidx.appCompat
   implementation deps.materialDesign
+  implementation 'app.cash.treehouse:treehouse-widget-zipline'
+  implementation 'app.cash.treehouse:treehouse-zipline'
 }
 
 android {

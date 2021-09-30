@@ -4,11 +4,20 @@ apply plugin: 'app.cash.treehouse'
 kotlin {
   ios()
   jvm()
+  js {
+    nodejs()
+  }
 
   sourceSets {
     commonMain {
       dependencies {
         api project(':samples:todo-list:schema:compose')
+      }
+    }
+    jsMain {
+      dependencies {
+        api 'app.cash.treehouse:treehouse-zipline'
+        api deps.zipline
       }
     }
   }

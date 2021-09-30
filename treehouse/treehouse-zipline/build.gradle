@@ -1,0 +1,40 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  iosArm32()
+  iosArm64()
+  iosX64()
+  js {
+    browser()
+  }
+  jvm()
+  macosX64()
+  mingwX64()
+  tvosX64()
+  tvosArm64()
+  watchosArm32()
+  watchosArm64()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':compose:runtime')
+        api project(':treehouse-compose')
+        api project(':treehouse-protocol')
+        api deps.kotlinx.coroutines.core
+        api deps.zipline
+      }
+    }
+  }
+}
+
+dependencies {
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.androidx.compose.compiler)
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
+}
+

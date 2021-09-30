@@ -17,17 +17,18 @@
 package example.android.views
 
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.treehouse.compose.TreehouseComposition
+import app.cash.treehouse.zipline.RealZiplineComposition
+import app.cash.treehouse.widget.zipline.setDisplay
 import app.cash.treehouse.widget.WidgetDisplay
 import example.presenters.TodoPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class TodoActivity : AppCompatActivity() {
   private val scope = CoroutineScope(Main)
@@ -46,15 +47,13 @@ class TodoActivity : AppCompatActivity() {
       factory = ViewWidgetFactory(this),
     )
 
-    val composition = TreehouseComposition(
-      scope = scope,
-      display = display::apply,
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
-    )
-
+    val composition = RealZiplineComposition(coroutineScope = scope)
     composition.setContent {
       TodoPresenter()
+    }
+
+    scope.launch {
+      composition.setDisplay(display)
     }
   }
 

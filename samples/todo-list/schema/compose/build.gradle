@@ -4,6 +4,9 @@ apply plugin: 'app.cash.treehouse.schema.compose'
 kotlin {
   ios()
   jvm()
+  js {
+    nodejs()
+  }
 }
 
 treehouseSchema {
