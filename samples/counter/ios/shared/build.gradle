@@ -43,3 +43,8 @@ kotlin {
     }
   }
 }
+
+// TODO Remove disabling release https://github.com/square/treehouse/issues/119
+tasks.named('linkPodReleaseFrameworkIos').configure { task ->
+  task.enabled = false
+}
