@@ -26,9 +26,12 @@ import app.cash.treehouse.protocol.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 
 public interface TreehouseComposition {
+  public val diffs: ReceiveChannel<Diff>
   public fun sendEvent(event: Event)
   public fun setContent(content: @Composable () -> Unit)
   public fun cancel()
@@ -40,26 +43,25 @@ public interface TreehouseComposition {
  */
 public fun TreehouseComposition(
   scope: CoroutineScope,
-  display: (diff: Diff, events: (Event) -> Unit) -> Unit,
   onDiff: (Diff) -> Unit = {},
   onEvent: (Event) -> Unit = {},
 ): TreehouseComposition {
-  val server = RealTreehouseComposition(scope, display, onDiff, onEvent)
+  val server = RealTreehouseComposition(scope, onDiff, onEvent)
   server.launch()
   return server
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
-  private val display: (Diff, (Event) -> Unit) -> Unit,
   private val onDiff: (Diff) -> Unit,
   private val onEvent: (Event) -> Unit,
 ) : TreehouseComposition {
-  // Caching type conversion of function reference to lambda to avoid future allocations.
-  private val eventSink: (Event) -> Unit = ::sendEvent
+  private val diffsChannel = Channel<Diff>(capacity = Channel.UNLIMITED)
+  override val diffs = diffsChannel
+
   private val applier = ProtocolApplier { diff ->
     onDiff(diff)
-    display(diff, eventSink)
+    diffsChannel.trySend(diff)
   }
 
   private val recomposer = Recomposer(scope.coroutineContext)
@@ -110,5 +112,6 @@ private class RealTreehouseComposition(
     snapshotJob?.cancel()
     recomposeJob.cancel()
     recomposer.cancel()
+    diffsChannel.close()
   }
 }

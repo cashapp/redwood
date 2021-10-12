@@ -18,29 +18,36 @@ package example.browser
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
 import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.widget.applyAll
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
   val content = document.getElementById("content")!! as HTMLElement
-  val display = WidgetDisplay(
-    root = HtmlSunspotBox(content),
-    factory = HtmlSunspotNodeFactory(document),
-  )
 
   val composition = TreehouseComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
-    display = display::apply,
     onDiff = { console.log("TreehouseDiff", it.toString()) },
     onEvent = { console.log("TreehouseEvent", it.toString()) },
   )
 
   composition.setContent {
     Counter()
+  }
+
+  val display = WidgetDisplay(
+    root = HtmlSunspotBox(content),
+    factory = HtmlSunspotNodeFactory(document),
+    events = composition::sendEvent,
+  )
+
+  GlobalScope.launch {
+    display.applyAll(composition.diffs)
   }
 }

@@ -25,15 +25,27 @@ import androidx.appcompat.app.AppCompatActivity
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.widget.applyAll
 import example.presenters.TodoPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class TodoActivity : AppCompatActivity() {
   private val scope = CoroutineScope(Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    val composition = TreehouseComposition(
+      scope = scope,
+      onDiff = { Log.d("TreehouseDiff", it.toString()) },
+      onEvent = { Log.d("TreehouseEvent", it.toString()) },
+    )
+
+    composition.setContent {
+      TodoPresenter()
+    }
 
     val root = LinearLayout(this).apply {
       orientation = VERTICAL
@@ -44,17 +56,11 @@ class TodoActivity : AppCompatActivity() {
     val display = WidgetDisplay(
       root = ViewColumn(root),
       factory = ViewWidgetFactory(this),
+      events = composition::sendEvent,
     )
 
-    val composition = TreehouseComposition(
-      scope = scope,
-      display = display::apply,
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
-    )
-
-    composition.setContent {
-      TodoPresenter()
+    scope.launch {
+      display.applyAll(composition.diffs)
     }
   }
 

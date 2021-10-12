@@ -25,6 +25,7 @@ kotlin {
     commonMain {
       dependencies {
         api project(':treehouse-protocol')
+        api deps.kotlinx.coroutines.core
       }
     }
     commonTest {

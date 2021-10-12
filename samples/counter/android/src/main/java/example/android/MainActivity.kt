@@ -24,12 +24,14 @@ import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
+import app.cash.treehouse.widget.applyAll
 import app.cash.treehouse.widget.WidgetDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class MainActivity : Activity() {
   private val scope = CoroutineScope(AndroidUiDispatcher.Main)
@@ -43,20 +45,24 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
-    val display = WidgetDisplay(
-      root = AndroidSunspotBox(root),
-      factory = AndroidSunspotWidgetFactory(this),
-    )
-
     val composition = TreehouseComposition(
       scope = scope,
-      display = display::apply,
       onDiff = { Log.d("TreehouseDiff", it.toString()) },
       onEvent = { Log.d("TreehouseEvent", it.toString()) },
     )
 
     composition.setContent {
       Counter()
+    }
+
+    val display = WidgetDisplay(
+      root = AndroidSunspotBox(root),
+      factory = AndroidSunspotWidgetFactory(this),
+      events = composition::sendEvent
+    )
+
+    scope.launch {
+      display.applyAll(composition.diffs)
     }
   }
 

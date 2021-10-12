@@ -20,14 +20,24 @@ import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
 
 public interface Display {
-  public fun apply(diff: Diff, events: (Event) -> Unit)
+  public fun apply(diff: Diff)
+}
+
+/** Consumes diffs until it is exhausted. Typically this is when the composition is canceled. */
+public suspend fun Display.applyAll(diffs: ReceiveChannel<Diff>) {
+  diffs.consumeEach { diff ->
+    apply(diff)
+  }
 }
 
 public class WidgetDisplay<T : Any>(
   private val root: Widget<T>,
   private val factory: Widget.Factory<T>,
+  private val events: (Event) -> Unit,
 ) : Display {
   init {
     // Check that the root widget has a group of children with the shared root tag. This call
@@ -37,7 +47,7 @@ public class WidgetDisplay<T : Any>(
 
   private val widgets = mutableMapOf(RootId to root)
 
-  override fun apply(diff: Diff, events: (Event) -> Unit) {
+  override fun apply(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
       val widget = checkNotNull(widgets[childrenDiff.id]) {
         "Unknown widget ID ${childrenDiff.id}"

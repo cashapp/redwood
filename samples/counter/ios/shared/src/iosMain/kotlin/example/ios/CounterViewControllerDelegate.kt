@@ -18,6 +18,7 @@ package example.ios
 import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.widget.applyAll
 import example.ios.sunspot.IosSunspotBox
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
@@ -34,20 +35,24 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val display = WidgetDisplay(
-      root = IosSunspotBox(root),
-      factory = IosSunspotNodeFactory,
-    )
-
     val composition = TreehouseComposition(
       scope = scope,
-      display = display::apply,
       onDiff = { NSLog("TreehouseDiff: $it") },
       onEvent = { NSLog("TreehouseEvent: $it") }
     )
 
     composition.setContent {
       Counter()
+    }
+
+    val display = WidgetDisplay(
+      root = IosSunspotBox(root),
+      factory = IosSunspotNodeFactory,
+      events = composition::sendEvent,
+    )
+
+    scope.launch {
+      display.applyAll(composition.diffs)
     }
   }
 

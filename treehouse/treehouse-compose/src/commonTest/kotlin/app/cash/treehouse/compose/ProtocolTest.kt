@@ -37,10 +37,8 @@ import kotlin.test.fail
 class ProtocolTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
-    val diffs = ArrayDeque<Diff>()
     val composition = TreehouseComposition(
       scope = this + clock,
-      display = { diff, _ -> diffs += diff },
     )
 
     composition.setContent {
@@ -66,7 +64,7 @@ class ProtocolTest {
           PropertyDiff(4L, 1 /* text */, "hello"),
         ),
       ),
-      diffs.removeFirst()
+      composition.diffs.receive()
     )
 
     composition.cancel()
@@ -74,10 +72,8 @@ class ProtocolTest {
 
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
-    val diffs = ArrayDeque<Diff>()
     val composition = TreehouseComposition(
       scope = this + clock,
-      display = { diff, _ -> diffs += diff },
     )
 
     var state by mutableStateOf(0)
@@ -105,7 +101,7 @@ class ProtocolTest {
           PropertyDiff(1L, 2 /* onClick */, true),
         ),
       ),
-      diffs.removeFirst()
+      composition.diffs.receive()
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
@@ -119,7 +115,7 @@ class ProtocolTest {
           PropertyDiff(1L, 1 /* text */, "state: 1"),
         ),
       ),
-      diffs.removeFirst()
+      composition.diffs.receive()
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
@@ -134,7 +130,7 @@ class ProtocolTest {
           PropertyDiff(1L, 2 /* text */, false),
         ),
       ),
-      diffs.removeFirst()
+      composition.diffs.receive()
     )
 
     // Manually advance state from 2 to 3 to test null to null case.
@@ -148,7 +144,7 @@ class ProtocolTest {
           PropertyDiff(1L, 1 /* text */, "state: 3"),
         ),
       ),
-      diffs.removeFirst()
+      composition.diffs.receive()
     )
 
     composition.cancel()

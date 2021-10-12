@@ -17,6 +17,7 @@ package example.shared
 
 import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.treehouse.compose.TreehouseComposition
+import app.cash.treehouse.widget.applyAll
 import app.cash.treehouse.widget.WidgetDisplay
 import example.sunspot.SunspotBox
 import example.sunspot.SunspotButton
@@ -32,21 +33,27 @@ import kotlin.test.Test
 class CounterTest {
   @Test fun basic() = runTest {
     val root = SchemaSunspotBox()
-    val display = WidgetDisplay(
-      root = root,
-      factory = SchemaSunspotWidgetFactory,
-    )
 
     val clock = BroadcastFrameClock()
+
     val composition = TreehouseComposition(
       scope = this + clock,
-      display = display::apply,
       onDiff = { println(it) },
       onEvent = { println(it) },
     )
 
     composition.setContent {
       Counter()
+    }
+
+    val display = WidgetDisplay(
+      root = root,
+      factory = SchemaSunspotWidgetFactory,
+      events = composition::sendEvent,
+    )
+
+    launch {
+      display.applyAll(composition.diffs)
     }
 
     clock.advanceFrame()
