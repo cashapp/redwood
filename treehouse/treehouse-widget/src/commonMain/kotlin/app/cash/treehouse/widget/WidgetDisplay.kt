@@ -19,16 +19,14 @@ import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
-import app.cash.treehouse.protocol.Event
-
-public interface Display {
-  public fun apply(diff: Diff, events: (Event) -> Unit)
-}
+import app.cash.treehouse.protocol.DiffSink
+import app.cash.treehouse.protocol.EventSink
 
 public class WidgetDisplay<T : Any>(
   private val root: Widget<T>,
   private val factory: Widget.Factory<T>,
-) : Display {
+  private val eventSink: EventSink,
+) : DiffSink {
   init {
     // Check that the root widget has a group of children with the shared root tag. This call
     // will throw if that invariant does not hold.
@@ -37,7 +35,7 @@ public class WidgetDisplay<T : Any>(
 
   private val widgets = mutableMapOf(RootId to root)
 
-  override fun apply(diff: Diff, events: (Event) -> Unit) {
+  override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
       val widget = checkNotNull(widgets[childrenDiff.id]) {
         "Unknown widget ID ${childrenDiff.id}"
@@ -70,7 +68,9 @@ public class WidgetDisplay<T : Any>(
         "Unknown widget ID ${propertyDiff.id}"
       }
 
-      widget.apply(propertyDiff, events)
+      widget.apply(propertyDiff) { event ->
+        eventSink.sendEvent(event)
+      }
     }
   }
 }

@@ -22,14 +22,16 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.treehouse.protocol.Diff
+import app.cash.treehouse.protocol.DiffSink
 import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.protocol.EventSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface TreehouseComposition {
-  public fun sendEvent(event: Event)
+public interface TreehouseComposition : EventSink {
+  public fun start(diffSink: DiffSink)
   public fun setContent(content: @Composable () -> Unit)
   public fun cancel()
 }
@@ -40,36 +42,35 @@ public interface TreehouseComposition {
  */
 public fun TreehouseComposition(
   scope: CoroutineScope,
-  display: (diff: Diff, events: (Event) -> Unit) -> Unit,
   onDiff: (Diff) -> Unit = {},
   onEvent: (Event) -> Unit = {},
 ): TreehouseComposition {
-  val server = RealTreehouseComposition(scope, display, onDiff, onEvent)
-  server.launch()
-  return server
+  return RealTreehouseComposition(scope, onDiff, onEvent)
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
-  private val display: (Diff, (Event) -> Unit) -> Unit,
   private val onDiff: (Diff) -> Unit,
   private val onEvent: (Event) -> Unit,
 ) : TreehouseComposition {
-  // Caching type conversion of function reference to lambda to avoid future allocations.
-  private val eventSink: (Event) -> Unit = ::sendEvent
-  private val applier = ProtocolApplier { diff ->
-    onDiff(diff)
-    display(diff, eventSink)
-  }
-
   private val recomposer = Recomposer(scope.coroutineContext)
-  private val composition = Composition(applier, recomposer)
+
+  private lateinit var applier: ProtocolApplier
+  private lateinit var composition: Composition
 
   private lateinit var snapshotHandle: ObserverHandle
   private var snapshotJob: Job? = null
   private lateinit var recomposeJob: Job
 
-  fun launch() {
+  override fun start(diffSink: DiffSink) {
+    check(!this::applier.isInitialized) { "display already initialized" }
+
+    applier = ProtocolApplier { diff ->
+      onDiff(diff)
+      diffSink.sendDiff(diff)
+    }
+    composition = Composition(applier, recomposer)
+
     // Set up a trigger to apply changes on the next frame if a global write was observed.
     // TODO where should this live?
     var applyScheduled = false
@@ -91,6 +92,8 @@ private class RealTreehouseComposition(
   }
 
   override fun sendEvent(event: Event) {
+    check(this::applier.isInitialized) { "display not initialized" }
+
     onEvent(event)
 
     val node = applier.nodes[event.id]
@@ -102,6 +105,8 @@ private class RealTreehouseComposition(
   }
 
   override fun setContent(content: @Composable () -> Unit) {
+    check(this::applier.isInitialized) { "display not initialized" }
+
     composition.setContent(content)
   }
 

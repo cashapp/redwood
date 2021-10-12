@@ -37,11 +37,9 @@ import kotlin.test.fail
 class ProtocolTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
+    val composition = TreehouseComposition(scope = this + clock)
     val diffs = ArrayDeque<Diff>()
-    val composition = TreehouseComposition(
-      scope = this + clock,
-      display = { diff, _ -> diffs += diff },
-    )
+    composition.start { diff -> diffs += diff }
 
     composition.setContent {
       Box {
@@ -74,13 +72,11 @@ class ProtocolTest {
 
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
-    val diffs = ArrayDeque<Diff>()
-    val composition = TreehouseComposition(
-      scope = this + clock,
-      display = { diff, _ -> diffs += diff },
-    )
-
     var state by mutableStateOf(0)
+    val composition = TreehouseComposition(scope = this + clock)
+    val diffs = ArrayDeque<Diff>()
+    composition.start { diff -> diffs += diff }
+
     composition.setContent {
       Button(
         "state: $state",

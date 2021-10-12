@@ -23,10 +23,10 @@ import kotlin.test.assertFailsWith
 
 class WidgetDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {
-    WidgetDisplay(GoodRootWidget, NullWidgetFactory)
+    WidgetDisplay(GoodRootWidget, NullWidgetFactory) { }
 
     assertFailsWith<IllegalArgumentException> {
-      WidgetDisplay(BadRootWidget, NullWidgetFactory)
+      WidgetDisplay(BadRootWidget, NullWidgetFactory) { }
     }
   }
 

@@ -32,18 +32,21 @@ import kotlin.test.Test
 class CounterTest {
   @Test fun basic() = runTest {
     val root = SchemaSunspotBox()
-    val display = WidgetDisplay(
-      root = root,
-      factory = SchemaSunspotWidgetFactory,
-    )
 
     val clock = BroadcastFrameClock()
     val composition = TreehouseComposition(
       scope = this + clock,
-      display = display::apply,
       onDiff = { println(it) },
       onEvent = { println(it) },
     )
+
+    val display = WidgetDisplay(
+      root = root,
+      factory = SchemaSunspotWidgetFactory,
+      eventSink = composition,
+    )
+
+    composition.start(display)
 
     composition.setContent {
       Counter()

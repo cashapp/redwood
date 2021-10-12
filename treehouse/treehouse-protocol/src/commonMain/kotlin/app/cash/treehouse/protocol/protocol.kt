@@ -19,6 +19,14 @@ import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+public fun interface EventSink {
+  public fun sendEvent(event: Event)
+}
+
+public fun interface DiffSink {
+  public fun sendDiff(diff: Diff)
+}
+
 @Serializable
 public data class Event(
   /** Identifier for the widget from which this event originated. */

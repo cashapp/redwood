@@ -35,6 +35,12 @@ class TodoActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val composition = TreehouseComposition(
+      scope = scope,
+      onDiff = { Log.d("TreehouseDiff", it.toString()) },
+      onEvent = { Log.d("TreehouseEvent", it.toString()) },
+    )
+
     val root = ComposeUiColumn()
     val composeView = ComposeView(this).apply {
       layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -45,16 +51,12 @@ class TodoActivity : ComponentActivity() {
     val display = WidgetDisplay(
       root = root,
       factory = ComposeUiWidgetFactory,
+      eventSink = composition,
     )
 
-    val composition = TreehouseComposition(
-      scope = scope,
-      display = display::apply,
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
-    )
+    composition.start(display)
 
-    composition.setContent {
+    composition.setContent{
       TodoPresenter()
     }
   }
