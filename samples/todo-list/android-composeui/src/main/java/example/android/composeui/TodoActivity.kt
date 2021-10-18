@@ -56,7 +56,7 @@ class TodoActivity : ComponentActivity() {
 
     composition.start(display)
 
-    composition.setContent{
+    composition.setContent {
       TodoPresenter()
     }
   }
