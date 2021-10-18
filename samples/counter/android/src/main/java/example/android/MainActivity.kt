@@ -37,6 +37,12 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val composition = TreehouseComposition(
+      scope = scope,
+      onDiff = { Log.d("TreehouseDiff", it.toString()) },
+      onEvent = { Log.d("TreehouseEvent", it.toString()) },
+    )
+
     val root = LinearLayout(this).apply {
       orientation = VERTICAL
       layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -46,14 +52,10 @@ class MainActivity : Activity() {
     val display = WidgetDisplay(
       root = AndroidSunspotBox(root),
       factory = AndroidSunspotWidgetFactory(this),
+      eventSink = composition,
     )
 
-    val composition = TreehouseComposition(
-      scope = scope,
-      display = display::apply,
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
-    )
+    composition.start(display)
 
     composition.setContent {
       Counter()

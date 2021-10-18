@@ -27,18 +27,20 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
+  val composition = TreehouseComposition(
+    scope = GlobalScope + WindowAnimationFrameClock,
+    onDiff = { console.log("TreehouseDiff", it.toString()) },
+    onEvent = { console.log("TreehouseEvent", it.toString()) },
+  )
+
   val content = document.getElementById("content")!! as HTMLElement
   val display = WidgetDisplay(
     root = HtmlSunspotBox(content),
     factory = HtmlSunspotNodeFactory(document),
+    eventSink = composition,
   )
 
-  val composition = TreehouseComposition(
-    scope = GlobalScope + WindowAnimationFrameClock,
-    display = display::apply,
-    onDiff = { console.log("TreehouseDiff", it.toString()) },
-    onEvent = { console.log("TreehouseEvent", it.toString()) },
-  )
+  composition.start(display)
 
   composition.setContent {
     Counter()

@@ -34,17 +34,19 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val display = WidgetDisplay(
-      root = IosSunspotBox(root),
-      factory = IosSunspotNodeFactory,
-    )
-
     val composition = TreehouseComposition(
       scope = scope,
-      display = display::apply,
       onDiff = { NSLog("TreehouseDiff: $it") },
       onEvent = { NSLog("TreehouseEvent: $it") }
     )
+
+    val display = WidgetDisplay(
+      root = IosSunspotBox(root),
+      factory = IosSunspotNodeFactory,
+      eventSink = composition
+    )
+
+    composition.start(display)
 
     composition.setContent {
       Counter()
