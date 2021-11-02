@@ -42,6 +42,10 @@ kotlin {
       }
     }
   }
+
+  cocoapods {
+    noPodspec()
+  }
 }
 
 // TODO Remove disabling release https://github.com/square/treehouse/issues/119
