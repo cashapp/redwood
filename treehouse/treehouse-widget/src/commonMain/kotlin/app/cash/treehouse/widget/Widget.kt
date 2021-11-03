@@ -32,10 +32,13 @@ public interface Widget<T : Any> {
    *
    * Arguments to these methods can be assumed to be validated against the current state of the
    * list. No additional validation needs to be performed (for example, checking index bounds).
+   *
+   * Note: This is an abstract class and not an interface so generics carry through to Objective-C
+   * and Swift.
    */
-  public interface Children<T : Any> {
+  public abstract class Children<T : Any> {
     /** Insert child [widget] at [index]. */
-    public fun insert(index: Int, widget: T)
+    public abstract fun insert(index: Int, widget: T)
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
      *
@@ -44,11 +47,11 @@ public interface Widget<T : Any> {
      * [toIndex] should be 3. If the widgets were `A B C D E`, calling `move(1, 3, 1)` would
      * result in the widgets being reordered to `A C B D E`.
      */
-    public fun move(fromIndex: Int, toIndex: Int, count: Int)
+    public abstract fun move(fromIndex: Int, toIndex: Int, count: Int)
     /** Remove [count] child widgets starting from [index]. */
-    public fun remove(index: Int, count: Int)
+    public abstract fun remove(index: Int, count: Int)
     /** Remove all child widgets. */
-    public fun clear()
+    public abstract fun clear()
   }
 
   public interface Factory<T : Any> {

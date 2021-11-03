@@ -21,7 +21,7 @@ import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
-class IosSunspotText : SunspotText<UIView> {
+class IosSunspotText : SunspotText<UIView>() {
   override val value = UILabel().apply {
     textColor = UIColor.whiteColor // TODO why is this needed?
     textAlignment = NSTextAlignmentCenter

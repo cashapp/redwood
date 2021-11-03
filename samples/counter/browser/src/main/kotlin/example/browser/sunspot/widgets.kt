@@ -25,13 +25,13 @@ import org.w3c.dom.HTMLSpanElement
 
 class HtmlSunspotBox(
   override val value: HTMLElement,
-) : SunspotBox<HTMLElement> {
+) : SunspotBox<HTMLElement>() {
   override val children = HTMLElementChildren(value)
 }
 
 class HtmlSunspotText(
   override val value: HTMLSpanElement,
-) : SunspotText<HTMLElement> {
+) : SunspotText<HTMLElement>() {
   override fun text(text: String?) {
     value.textContent = text
   }
@@ -43,7 +43,7 @@ class HtmlSunspotText(
 
 class HtmlSunspotButton(
   override val value: HTMLButtonElement,
-) : SunspotButton<HTMLElement> {
+) : SunspotButton<HTMLElement>() {
   override fun text(text: String?) {
     value.textContent = text
   }

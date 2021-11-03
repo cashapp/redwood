@@ -24,7 +24,7 @@ import platform.UIKit.subviews
 
 class UIStackViewChildren(
   private val root: UIStackView,
-) : Widget.Children<UIView> {
+) : Widget.Children<UIView>() {
   override fun insert(index: Int, widget: UIView) {
     root.insertArrangedSubview(widget, index.convert())
   }

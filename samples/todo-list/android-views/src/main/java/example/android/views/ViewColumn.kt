@@ -23,7 +23,7 @@ import example.schema.widget.Column
 
 class ViewColumn(
   linearLayout: LinearLayout,
-) : Column<View> {
+) : Column<View>() {
   override val value = linearLayout
   override val children = ViewGroupChildren(linearLayout)
 }

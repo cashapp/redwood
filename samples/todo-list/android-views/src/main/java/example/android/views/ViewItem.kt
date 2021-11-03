@@ -20,7 +20,7 @@ import android.view.View
 import example.android.views.databinding.ItemBinding
 import example.schema.widget.Item
 
-class ViewItem(private val binding: ItemBinding) : Item<View> {
+class ViewItem(private val binding: ItemBinding) : Item<View>() {
   override val value get() = binding.root
 
   override fun content(content: String) {

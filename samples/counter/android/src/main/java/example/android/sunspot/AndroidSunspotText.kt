@@ -22,7 +22,7 @@ import example.sunspot.widget.SunspotText
 
 class AndroidSunspotText(
   override val value: TextView,
-) : SunspotText<View> {
+) : SunspotText<View>() {
   override fun text(text: String?) {
     value.text = text
   }

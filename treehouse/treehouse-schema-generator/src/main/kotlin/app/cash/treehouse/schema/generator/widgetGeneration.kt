@@ -36,25 +36,30 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asTypeName
 
-/*
-interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
-  fun SunspotText(): SunspotText<T>
-  fun SunspotButton(): SunspotButton<T>
-
-  override fun create(, kind: Int, id: Long): TreeNode<T> {
-    return when (kind) {
-      1 -> SunspotText()
-      2 -> SunspotButton()
-      else -> throw IllegalArgumentException("Unknown kind $kind")
-    }
-  }
-}
-*/
+/**
+ * ```kotlin
+ * abstract class SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
+ *   abstract fun SunspotText(): SunspotText<T>
+ *   abstract fun SunspotButton(): SunspotButton<T>
+ *
+ *   override fun create(kind: Int, id: Long): TreeNode<T> {
+ *     return when (kind) {
+ *       1 -> SunspotText()
+ *       2 -> SunspotButton()
+ *       else -> throw IllegalArgumentException("Unknown kind $kind")
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * Note: We generate an abstract class and not an interface so generics carry through to Objective-C
+ * and Swift.
+ */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(schema.displayPackage, schema.getWidgetFactoryType().simpleName)
     .addType(
-      TypeSpec.interfaceBuilder(schema.getWidgetFactoryType())
-        .addModifiers(PUBLIC)
+      TypeSpec.classBuilder(schema.getWidgetFactoryType())
+        .addModifiers(PUBLIC, ABSTRACT)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(factoryOfT)
         .apply {
@@ -88,35 +93,40 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
     .build()
 }
 
-/*
-interface SunspotButton<out T: Any> : SunspotNode<T> {
-  fun text(text: String?)
-  fun enabled(enabled: Boolean)
-  fun onClick(onClick: (() -> Unit)?)
-
-  override fun apply(diff: PropertyDiff, events: (Event) -> Unit) {
-    when (val tag = diff.tag) {
-      1 -> text(diff.value as String?)
-      2 -> enabled(diff.value as Boolean)
-      3 -> {
-        val onClick: (() -> Unit)? = if (diff.value as Boolean) {
-          val event = Event(diff.id, 3, null);
-          { events(event) }
-        } else {
-          null
-        }
-        onClick(onClick)
-      }
-      else -> throw IllegalArgumentException("Unknown tag $tag")
-    }
-  }
-}
-*/
+/**
+ * ```kotlin
+ * abstract class SunspotButton<out T: Any> : SunspotNode<T> {
+ *   abstract fun text(text: String?)
+ *   abstract fun enabled(enabled: Boolean)
+ *   abstract fun onClick(onClick: (() -> Unit)?)
+ *
+ *   override fun apply(diff: PropertyDiff, events: (Event) -> Unit) {
+ *     when (val tag = diff.tag) {
+ *       1 -> text(diff.value as String?)
+ *       2 -> enabled(diff.value as Boolean)
+ *       3 -> {
+ *         val onClick: (() -> Unit)? = if (diff.value as Boolean) {
+ *           val event = Event(diff.id, 3, null);
+ *           { events(event) }
+ *         } else {
+ *           null
+ *         }
+ *         onClick(onClick)
+ *       }
+ *       else -> throw IllegalArgumentException("Unknown tag $tag")
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * Note: We generate an abstract class and not an interface so generics carry through to Objective-C
+ * and Swift.
+ */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   return FileSpec.builder(schema.displayPackage, widget.flatName)
     .addType(
-      TypeSpec.interfaceBuilder(widget.flatName)
-        .addModifiers(PUBLIC)
+      TypeSpec.classBuilder(widget.flatName)
+        .addModifiers(PUBLIC, ABSTRACT)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(widgetOfT)
         .apply {

@@ -39,7 +39,7 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 /*
-class SchemaSunspotWidgetFactory : SunspotWidgetFactory<Nothing> {
+class SchemaSunspotWidgetFactory : SunspotWidgetFactory<Nothing>() {
   override fun SunspotBox(): SunspotBox<Nothing> = SchemaSunspotBox(scope)
   // ...
 }
@@ -56,7 +56,7 @@ internal fun generateSchemaWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(schema.testPackage, widgetFactoryType.simpleName)
     .addType(
       TypeSpec.objectBuilder(widgetFactoryType)
-        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(schemaWidgetType))
+        .superclass(schema.getWidgetFactoryType().parameterizedBy(schemaWidgetType))
         .apply {
           for (widget in schema.widgets) {
             addFunction(
@@ -91,7 +91,7 @@ internal fun generateSchemaWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-private class SchemaSunspotBox : SunspotBox<SchemaWidget>, SchemaWidget {
+private class SchemaSunspotBox : SunspotBox<SchemaWidget>(), SchemaWidget {
   // ...
 }
  */
@@ -102,7 +102,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
   return FileSpec.builder(schema.testPackage, className.simpleName)
     .addType(
       TypeSpec.classBuilder(className)
-        .addSuperinterface(schema.widgetType(widget).parameterizedBy(schemaWidgetType))
+        .superclass(schema.widgetType(widget).parameterizedBy(schemaWidgetType))
         .addSuperinterface(schemaWidgetType)
         .addProperty(
           PropertySpec.builder("value", schemaWidgetType, OVERRIDE)

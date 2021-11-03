@@ -23,7 +23,7 @@ import platform.UIKit.UIControlStateNormal
 import platform.UIKit.UIView
 import platform.objc.sel_registerName
 
-class IosSunspotButton : SunspotButton<UIView> {
+class IosSunspotButton : SunspotButton<UIView>() {
   override val value = UIButton()
 
   override fun text(text: String?) {

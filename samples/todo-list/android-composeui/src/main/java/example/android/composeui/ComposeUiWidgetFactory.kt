@@ -19,7 +19,7 @@ package example.android.composeui
 import androidx.compose.runtime.Composable
 import example.schema.widget.TodoWidgetFactory
 
-object ComposeUiWidgetFactory : TodoWidgetFactory<@Composable () -> Unit> {
+object ComposeUiWidgetFactory : TodoWidgetFactory<@Composable () -> Unit>() {
   override fun Toolbar() = ComposeUiToolbar()
   override fun ScrollableColumn() = ComposeUiScrollableColumn()
   override fun Item() = ComposeUiItem()

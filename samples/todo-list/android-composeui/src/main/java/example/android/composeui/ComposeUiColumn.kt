@@ -20,11 +20,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import example.schema.widget.Column
 
-class ComposeUiColumn : Column<@Composable () -> Unit> {
+class ComposeUiColumn : Column<@Composable () -> Unit>() {
   override val children = ComposeUiWidgetChildren()
   override val value = @Composable {
     Column {
-      children.render()
+      children.Render()
     }
   }
 }

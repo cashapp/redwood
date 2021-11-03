@@ -27,7 +27,7 @@ import example.schema.widget.TodoWidgetFactory
 
 class ViewWidgetFactory(
   private val context: Context,
-) : TodoWidgetFactory<View> {
+) : TodoWidgetFactory<View>() {
   private val inflater = LayoutInflater.from(context)
 
   override fun Toolbar() = ViewToolbar(ToolbarBinding.inflate(inflater))

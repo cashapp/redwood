@@ -49,7 +49,7 @@ class WidgetDisplayTest {
     override fun create(kind: Int, id: Long) = throw UnsupportedOperationException()
   }
 
-  private object NullWidgetChildren : Widget.Children<Unit> {
+  private object NullWidgetChildren : Widget.Children<Unit>() {
     override fun insert(index: Int, widget: Unit) = throw UnsupportedOperationException()
     override fun move(fromIndex: Int, toIndex: Int, count: Int) = throw UnsupportedOperationException()
     override fun remove(index: Int, count: Int) = throw UnsupportedOperationException()

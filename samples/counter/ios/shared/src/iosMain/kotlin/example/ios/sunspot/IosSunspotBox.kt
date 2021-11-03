@@ -26,6 +26,6 @@ class IosSunspotBox(
     distribution = UIStackViewDistributionFillEqually
     axis = UILayoutConstraintAxisHorizontal
   }
-) : SunspotBox<UIView> {
+) : SunspotBox<UIView>() {
   override val children = UIStackViewChildren(value)
 }

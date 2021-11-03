@@ -20,7 +20,7 @@ import kotlin.jvm.JvmOverloads
 public class MutableListChildren<T : Any>
 @JvmOverloads constructor(
   public val list: MutableList<T> = mutableListOf(),
-) : Widget.Children<T>, Iterable<T> {
+) : Widget.Children<T>(), Iterable<T> {
   override fun insert(index: Int, widget: T) {
     list.add(index, widget)
   }

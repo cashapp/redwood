@@ -21,7 +21,7 @@ import app.cash.treehouse.widget.ViewGroupChildren
 import example.android.views.databinding.ScrollableColumnBinding
 import example.schema.widget.ScrollableColumn
 
-class ViewScrollableColumn(binding: ScrollableColumnBinding) : ScrollableColumn<View> {
+class ViewScrollableColumn(binding: ScrollableColumnBinding) : ScrollableColumn<View>() {
   override val value = binding.root
   override val children = ViewGroupChildren(binding.children)
 }

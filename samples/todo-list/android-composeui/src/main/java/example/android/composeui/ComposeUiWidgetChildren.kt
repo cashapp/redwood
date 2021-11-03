@@ -20,11 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import app.cash.treehouse.widget.Widget
 
-class ComposeUiWidgetChildren : Widget.Children<@Composable () -> Unit> {
+class ComposeUiWidgetChildren : Widget.Children<@Composable () -> Unit>() {
   private val children = mutableStateListOf<@Composable () -> Unit>()
 
   @Composable
-  fun render() {
+  fun Render() {
     for (child in children) {
       child()
     }

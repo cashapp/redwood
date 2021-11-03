@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import example.schema.widget.Item
 
-class ComposeUiItem : Item<@Composable () -> Unit> {
+class ComposeUiItem : Item<@Composable () -> Unit>() {
   private var content by mutableStateOf("")
   private var onComplete: (() -> Unit)? = null
 

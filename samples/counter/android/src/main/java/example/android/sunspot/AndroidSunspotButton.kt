@@ -21,7 +21,7 @@ import example.sunspot.widget.SunspotButton
 
 class AndroidSunspotButton(
   override val value: Button,
-) : SunspotButton<View> {
+) : SunspotButton<View>() {
   override fun text(text: String?) {
     value.text = text
   }

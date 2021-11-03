@@ -18,7 +18,7 @@ package example.ios.sunspot
 import example.sunspot.widget.SunspotWidgetFactory
 import platform.UIKit.UIView
 
-object IosSunspotNodeFactory : SunspotWidgetFactory<UIView> {
+object IosSunspotNodeFactory : SunspotWidgetFactory<UIView>() {
   override fun SunspotBox() = IosSunspotBox()
   override fun SunspotText() = IosSunspotText()
   override fun SunspotButton() = IosSunspotButton()

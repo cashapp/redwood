@@ -23,11 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import example.schema.widget.ScrollableColumn
 
-class ComposeUiScrollableColumn : ScrollableColumn<@Composable () -> Unit> {
+class ComposeUiScrollableColumn : ScrollableColumn<@Composable () -> Unit>() {
   override val children = ComposeUiWidgetChildren()
   override val value = @Composable {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-      children.render()
+      children.Render()
     }
   }
 }

@@ -22,6 +22,6 @@ import example.sunspot.widget.SunspotBox
 
 class AndroidSunspotBox(
   override val value: LinearLayout,
-) : SunspotBox<View> {
+) : SunspotBox<View>() {
   override val children = ViewGroupChildren(value)
 }

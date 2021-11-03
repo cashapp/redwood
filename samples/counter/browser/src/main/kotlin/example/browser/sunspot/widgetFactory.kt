@@ -27,7 +27,7 @@ import org.w3c.dom.HTMLSpanElement
 
 class HtmlSunspotNodeFactory(
   private val document: Document,
-) : SunspotWidgetFactory<HTMLElement> {
+) : SunspotWidgetFactory<HTMLElement>() {
   override fun SunspotBox(): SunspotBox<HTMLElement> {
     val div = document.createElement("div") as HTMLDivElement
     return HtmlSunspotBox(div)

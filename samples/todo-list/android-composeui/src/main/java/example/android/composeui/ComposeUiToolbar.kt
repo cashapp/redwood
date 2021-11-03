@@ -24,7 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import example.schema.widget.Toolbar
 
-class ComposeUiToolbar : Toolbar<@Composable () -> Unit> {
+class ComposeUiToolbar : Toolbar<@Composable () -> Unit>() {
   private var title by mutableStateOf("")
 
   override val value = @Composable {

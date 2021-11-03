@@ -20,7 +20,7 @@ import android.view.View
 import example.android.views.databinding.ToolbarBinding
 import example.schema.widget.Toolbar
 
-class ViewToolbar(private val binding: ToolbarBinding) : Toolbar<View> {
+class ViewToolbar(private val binding: ToolbarBinding) : Toolbar<View>() {
   override val value get() = binding.root
 
   override fun title(title: String) {

@@ -27,7 +27,7 @@ import example.sunspot.widget.SunspotWidgetFactory
 
 class AndroidSunspotWidgetFactory(
   private val context: Context,
-) : SunspotWidgetFactory<View> {
+) : SunspotWidgetFactory<View>() {
   override fun SunspotBox(): SunspotBox<View> {
     val view = LinearLayout(context)
     return AndroidSunspotBox(view)
