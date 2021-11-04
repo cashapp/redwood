@@ -22,6 +22,10 @@ kotlin {
   tvosArm64()
   watchosArm32()
   watchosArm64()
+  macosArm64()
+  iosSimulatorArm64()
+  watchosSimulatorArm64()
+  tvosSimulatorArm64()
 
   sourceSets {
     commonMain {
@@ -59,6 +63,10 @@ kotlin {
     targets.tvosX64,
     targets.watchosArm32,
     targets.watchosArm64,
+    targets.macosArm64(),
+    targets.iosSimulatorArm64(),
+    targets.watchosSimulatorArm64(),
+    targets.tvosSimulatorArm64(),
   ]) {
     compilations.test.source(sourceSets.nativeTest)
   }
