@@ -18,8 +18,9 @@ if (!upstreamKotlinVersion.contains("\"${versions.kotlin}\"")) {
     "Upstream git repository Kotlin version does not match project version ${versions.kotlin}: $upstreamKotlinVersion")
 }
 
-def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
-if (!upstreamCoroutinesVersion.contains("\"${versions.kotlinx.coroutines}\"")) {
-  throw new RuntimeException(
-    "Upstream git repository Kotlin coroutines version does not match project version ${versions.kotlinx.coroutines}: $upstreamCoroutinesVersion")
-}
+// TODO Re-enable check once Compose bumps to a version of coroutines with Apple silicon support.
+//def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
+//if (!upstreamCoroutinesVersion.contains("\"${versions.kotlinx.coroutines}\"")) {
+//  throw new RuntimeException(
+//    "Upstream git repository Kotlin coroutines version does not match project version ${versions.kotlinx.coroutines}: $upstreamCoroutinesVersion")
+//}
