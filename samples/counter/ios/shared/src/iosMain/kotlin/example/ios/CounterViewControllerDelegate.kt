@@ -23,7 +23,6 @@ import example.shared.Counter
 import example.sunspot.compose.ProtocolComposeWidgetFactory
 import example.sunspot.compose.SunspotComposition
 import example.sunspot.widget.ProtocolDisplayWidgetFactory
-import example.sunspot.widget.ProtocolSunspotBox
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
@@ -44,9 +43,10 @@ class CounterViewControllerDelegate(
       onEvent = { NSLog("TreehouseEvent: $it") }
     )
 
+    val factory = ProtocolDisplayWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(
-      root = ProtocolSunspotBox(IosSunspotBox(root)),
-      factory = ProtocolDisplayWidgetFactory(IosSunspotNodeFactory),
+      root = factory.wrap(IosSunspotBox(root)),
+      factory = factory,
       eventSink = composition
     )
 

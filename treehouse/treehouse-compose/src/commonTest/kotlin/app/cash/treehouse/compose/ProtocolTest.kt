@@ -32,6 +32,7 @@ import example.treehouse.compose.ProtocolComposeWidgetFactory
 import example.treehouse.compose.Text
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -65,8 +66,8 @@ class ProtocolTest {
           ChildrenDiff.Insert(3L, 1, 4L, 2 /* text */, 0),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(2L, 1 /* text */, "hey"),
-          PropertyDiff(4L, 1 /* text */, "hello"),
+          PropertyDiff(2L, 1 /* text */, JsonPrimitive("hey")),
+          PropertyDiff(4L, 1 /* text */, JsonPrimitive("hello")),
         ),
       ),
       diffs.removeFirst()
@@ -105,37 +106,37 @@ class ProtocolTest {
           ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 3 /* button */, 0),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 0"),
-          PropertyDiff(1L, 2 /* onClick */, true),
+          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 0")),
+          PropertyDiff(1L, 2 /* onClick */, JsonPrimitive(true)),
         ),
       ),
       diffs.removeFirst()
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    composition.sendEvent(Event(1L, 2, null))
+    composition.sendEvent(Event(1L, 2))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 1"),
+          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 1")),
         ),
       ),
       diffs.removeFirst()
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    composition.sendEvent(Event(1L, 2, null))
+    composition.sendEvent(Event(1L, 2))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 2"),
-          PropertyDiff(1L, 2 /* text */, false),
+          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 2")),
+          PropertyDiff(1L, 2 /* text */, JsonPrimitive(false)),
         ),
       ),
       diffs.removeFirst()
@@ -149,7 +150,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 3"),
+          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 3")),
         ),
       ),
       diffs.removeFirst()

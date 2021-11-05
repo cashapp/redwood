@@ -23,7 +23,6 @@ import example.shared.Counter
 import example.sunspot.compose.ProtocolComposeWidgetFactory
 import example.sunspot.compose.SunspotComposition
 import example.sunspot.widget.ProtocolDisplayWidgetFactory
-import example.sunspot.widget.ProtocolSunspotBox
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.plus
@@ -38,9 +37,10 @@ fun main() {
   )
 
   val content = document.getElementById("content")!! as HTMLElement
+  val factory = ProtocolDisplayWidgetFactory(HtmlSunspotNodeFactory(document))
   val display = ProtocolDisplay(
-    root = ProtocolSunspotBox(HtmlSunspotBox(content)),
-    factory = ProtocolDisplayWidgetFactory(HtmlSunspotNodeFactory(document)),
+    root = factory.wrap(HtmlSunspotBox(content)),
+    factory = factory,
     eventSink = composition,
   )
 

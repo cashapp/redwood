@@ -27,16 +27,20 @@ import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.NOTHING
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-class ProtocolComposeWidgetFactory : SunspotWidgetFactory<Nothing> {
-  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox()
-  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText()
-  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton()
+class ProtocolComposeWidgetFactory(
+  private val serializerModule: SerializersModule = SerializersModule { },
+) : SunspotWidgetFactory<Nothing> {
+  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(serializerModule)
+  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(serializerModule)
+  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(serializerModule)
 }
 */
 internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
@@ -44,6 +48,22 @@ internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
     .addType(
       TypeSpec.classBuilder("ProtocolComposeWidgetFactory")
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
+        .primaryConstructor(
+          FunSpec.constructorBuilder()
+            .addParameter(
+              ParameterSpec.builder("serializersModule", serializersModule)
+                // TODO Use EmptySerializersModule once stable
+                //  https://github.com/Kotlin/kotlinx.serialization/issues/1765
+                .defaultValue("%T { }", serializersModule)
+                .build()
+            )
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("serializersModule", serializersModule, PRIVATE)
+            .initializer("serializersModule")
+            .build()
+        )
         .apply {
           for (widget in schema.widgets) {
             val protocolWidgetName = schema.composeProtocolWidgetType(widget)
@@ -51,7 +71,7 @@ internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder(widget.flatName)
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
-                .addStatement("return %T()", protocolWidgetName)
+                .addStatement("return %T(serializersModule)", protocolWidgetName)
                 .build()
             )
           }
@@ -62,10 +82,15 @@ internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-internal class ProtocolSunspotButton : ProtocolNode(3), SunspotButton<Nothing> {
+internal class ProtocolSunspotButton(
+  serializerModule: SerializersModule,
+) : ProtocolNode(3), SunspotButton<Nothing> {
   override val value: Nothing get() = throw AssertionError()
 
   private var onClick: (() -> Unit)? = null
+
+  private val serializer_0: KSerializer<String?> = serializerModule.serializer()
+  private val serializer_1: KSerializer<Boolean> = serializerModule.serializer()
 
   override fun text(text: String?) {
     appendDiff(PropertyDiff(this.id, 1, text))
@@ -97,6 +122,11 @@ internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): File
         .superclass(protocolNode)
         .addSuperclassConstructorParameter("%L", widget.tag)
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
+        .primaryConstructor(
+          FunSpec.constructorBuilder()
+            .addParameter("serializersModule", serializersModule)
+            .build()
+        )
         .addProperty(
           PropertySpec.builder("value", NOTHING, OVERRIDE)
             .getter(
@@ -108,14 +138,22 @@ internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): File
         )
         .apply {
           var hasEvents = false
+          var nextSerializerId = 0
+          val serializerIds = mutableMapOf<TypeName, Int>()
+
           for (trait in widget.traits) {
             @Exhaustive when (trait) {
               is Property -> {
+                val traitTypeName = trait.type.asTypeName()
+                val serializerId = serializerIds.computeIfAbsent(traitTypeName) {
+                  nextSerializerId++
+                }
+
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
-                    .addParameter(trait.name, trait.type.asTypeName())
-                    .addStatement("appendDiff(%T(this.id, %L, %N))", propertyDiff, trait.tag, trait.name)
+                    .addParameter(trait.name, traitTypeName)
+                    .addStatement("appendDiff(%T(this.id, %L, %M(serializer_%L, %N)))", propertyDiff, trait.tag, encodeToJsonElement, serializerId, trait.name)
                     .build()
                 )
               }
@@ -134,7 +172,7 @@ internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): File
                     .addParameter(trait.name, trait.lambdaType)
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
-                    .addStatement("appendDiff(%T(this.id, %L, %NSet))", propertyDiff, trait.tag, trait.name)
+                    .addStatement("appendDiff(%T(this.id, %L, %M(%NSet)))", propertyDiff, trait.tag, jsonPrimitive, trait.name)
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
                     .build()
@@ -162,10 +200,13 @@ internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): File
                 .beginControlFlow("when (val tag = event.tag)")
                 .apply {
                   for (event in widget.traits.filterIsInstance<Event>()) {
-                    if (event.parameterType != null) {
+                    val parameterType = event.parameterType?.asTypeName()
+                    if (parameterType != null) {
+                      val serializerId = serializerIds.computeIfAbsent(parameterType) {
+                        nextSerializerId++
+                      }
                       addStatement(
-                        "%L -> %N?.invoke(event.value as %T)", event.tag, event.name,
-                        event.parameterType!!.asTypeName()
+                        "%L -> %N?.invoke(%M(serializer_%L, event.value))", event.tag, event.name, decodeFromJsonElement, serializerId,
                       )
                     } else {
                       addStatement("%L -> %N?.invoke()", event.tag, event.name)
@@ -174,6 +215,15 @@ internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): File
                 }
                 .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
                 .endControlFlow()
+                .build()
+            )
+          }
+
+          for ((typeName, id) in serializerIds) {
+            addProperty(
+              PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
+                .addModifiers(PRIVATE)
+                .initializer("serializersModule.%M()", serializer)
                 .build()
             )
           }

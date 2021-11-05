@@ -52,9 +52,10 @@ class TodoActivity : ComponentActivity() {
     }
     setContentView(composeView)
 
+    val factory = ProtocolDisplayWidgetFactory(ComposeUiWidgetFactory)
     val display = ProtocolDisplay(
-      root = ProtocolColumn(root),
-      factory = ProtocolDisplayWidgetFactory(ComposeUiWidgetFactory),
+      root = factory.wrap(root),
+      factory = factory,
       eventSink = composition,
     )
 

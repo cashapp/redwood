@@ -51,9 +51,10 @@ class TodoActivity : AppCompatActivity() {
     }
     setContentView(root)
 
+    val factory = ProtocolDisplayWidgetFactory(ViewWidgetFactory(this))
     val display = ProtocolDisplay(
-      root = ProtocolColumn(ViewColumn(root)),
-      factory = ProtocolDisplayWidgetFactory(ViewWidgetFactory(this)),
+      root = factory.wrap(ViewColumn(root)),
+      factory = factory,
       eventSink = composition,
     )
 

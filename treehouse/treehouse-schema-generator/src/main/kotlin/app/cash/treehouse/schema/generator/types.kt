@@ -56,3 +56,13 @@ internal val iae = ClassName("kotlin", "IllegalArgumentException")
 
 internal val typeVariableT = TypeVariableName("T", listOf(ANY))
 internal val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)
+
+private val jsonCompanion = ClassName("kotlinx.serialization.json", "Json", "Default")
+internal val jsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
+internal val jsonPrimitiveToBoolean = MemberName("kotlinx.serialization.json", "boolean")
+internal val jsonElementToJsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
+internal val encodeToJsonElement = MemberName(jsonCompanion, "encodeToJsonElement")
+internal val decodeFromJsonElement = MemberName(jsonCompanion, "decodeFromJsonElement")
+internal val serializer = MemberName("kotlinx.serialization", "serializer")
+internal val serializersModule = ClassName("kotlinx.serialization.modules", "SerializersModule")
+internal val kSerializer = ClassName("kotlinx.serialization", "KSerializer")
