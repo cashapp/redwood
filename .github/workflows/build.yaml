@@ -19,6 +19,14 @@ jobs:
       - uses: actions/checkout@v2
       - run: git submodule update --init
 
+      - name: Cache gradle
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - uses: gradle/wrapper-validation-action@v1
       - uses: actions/setup-java@v2.3.1
         with:
