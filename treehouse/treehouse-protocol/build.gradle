@@ -22,12 +22,12 @@ kotlin {
     commonMain {
       dependencies {
         api deps.kotlinx.serialization.core
+        api deps.kotlinx.serialization.json
       }
     }
     commonTest {
       dependencies {
         implementation deps.kotlin.test
-        implementation deps.kotlinx.serialization.json
       }
     }
   }

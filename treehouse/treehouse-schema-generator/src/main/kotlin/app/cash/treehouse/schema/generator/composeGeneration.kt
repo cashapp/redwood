@@ -21,6 +21,7 @@ import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -131,7 +132,12 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 updateLambda.apply {
                   add("set(%N) {\n", trait.name)
                   indent()
-                  add("appendDiff(%T(this.id, %L, %N))\n", propertyDiff, trait.tag, trait.name)
+                  add(
+                    "appendDiff(%T(this.id, %L, %L))\n",
+                    propertyDiff,
+                    trait.tag,
+                    trait.type.jsonEncode("%N", trait.name)
+                  )
                   unindent()
                   add("}\n")
                 }
@@ -143,7 +149,12 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                   add("val %1NSet = %1N != null\n", trait.name)
                   add("if (%1NSet != (this.%1N != null)) {\n", trait.name)
                   indent()
-                  add("appendDiff(%T(this.id, %L, %NSet))\n", propertyDiff, trait.tag, trait.name)
+                  add(
+                    "appendDiff(%T(this.id, %L, %L))\n",
+                    propertyDiff,
+                    trait.tag,
+                    BOOLEAN.jsonEncode("%NSet", trait.name)
+                  )
                   unindent()
                   add("}\n")
                   add("this.%1N = %1N\n", trait.name)

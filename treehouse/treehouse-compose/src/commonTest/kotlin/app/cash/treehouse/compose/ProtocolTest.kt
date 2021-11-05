@@ -60,8 +60,8 @@ class ProtocolTest {
           ChildrenDiff.Insert(3L, 1, 4L, 2 /* text */, 0),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(2L, 1 /* text */, "hey"),
-          PropertyDiff(4L, 1 /* text */, "hello"),
+          PropertyDiff(2L, 1 /* text */, "hey".json),
+          PropertyDiff(4L, 1 /* text */, "hello".json),
         ),
       ),
       diffs.removeFirst()
@@ -97,8 +97,8 @@ class ProtocolTest {
           ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 3 /* button */, 0),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 0"),
-          PropertyDiff(1L, 2 /* onClick */, true),
+          PropertyDiff(1L, 1 /* text */, "state: 0".json),
+          PropertyDiff(1L, 2 /* onClick */, true.json),
         ),
       ),
       diffs.removeFirst()
@@ -112,7 +112,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 1"),
+          PropertyDiff(1L, 1 /* text */, "state: 1".json),
         ),
       ),
       diffs.removeFirst()
@@ -126,8 +126,8 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 2"),
-          PropertyDiff(1L, 2 /* text */, false),
+          PropertyDiff(1L, 1 /* text */, "state: 2".json),
+          PropertyDiff(1L, 2 /* text */, false.json),
         ),
       ),
       diffs.removeFirst()
@@ -141,7 +141,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, "state: 3"),
+          PropertyDiff(1L, 1 /* text */, "state: 3".json),
         ),
       ),
       diffs.removeFirst()

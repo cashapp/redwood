@@ -48,3 +48,7 @@ internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
 
 internal val ae = ClassName("kotlin", "AssertionError")
 internal val iae = ClassName("kotlin", "IllegalArgumentException")
+
+internal val jsonCompanion = ClassName("kotlinx.serialization.json", "Json", "Default")
+internal val encodeToJsonElement = MemberName(jsonCompanion, "encodeToJsonElement")
+internal val decodeFromJsonElement = MemberName(jsonCompanion, "decodeFromJsonElement")

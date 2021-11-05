@@ -177,13 +177,20 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 @Exhaustive when (trait) {
                   is Property -> {
                     addStatement(
-                      "%L -> %N(diff.value as %T)", trait.tag, trait.name,
-                      trait.type.asTypeName()
+                      "%L -> %N(%L)",
+                      trait.tag,
+                      trait.name,
+                      trait.type.jsonDecode("diff.value")
                     )
                   }
                   is Event -> {
                     beginControlFlow("%L ->", trait.tag)
-                    beginControlFlow("val %N: %T = if (diff.value as %T)", trait.name, trait.lambdaType, BOOLEAN)
+                    beginControlFlow(
+                      "val %N: %T = if (%L)",
+                      trait.name,
+                      trait.lambdaType,
+                      BOOLEAN.jsonDecode("diff.value")
+                    )
                     addStatement(
                       "{ events(%T(diff.id, %L, %L)) }", eventType, trait.tag,
                       if (trait.parameterType != null) "it" else "null"

@@ -18,6 +18,8 @@ package app.cash.treehouse.protocol
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlin.test.Test
@@ -55,8 +57,8 @@ class ProtocolTest {
         ChildrenDiff.Remove(1, 2, 3, 4, listOf(5, 6, 7, 8)),
       ),
       propertyDiffs = listOf(
-        PropertyDiff(1, 2, "Hello"),
-        PropertyDiff(1, 2, null),
+        PropertyDiff(1, 2, JsonPrimitive("Hello")),
+        PropertyDiff(1, 2, JsonNull),
       ),
     )
     val json = "" +
@@ -66,8 +68,8 @@ class ProtocolTest {
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
       """],"propertyDiffs":[""" +
-      """{"id":1,"tag":2,"value":["kotlin.String","Hello"]},""" +
-      """{"id":1,"tag":2}""" +
+      """{"id":1,"tag":2,"value":"Hello"},""" +
+      """{"id":1,"tag":2,"value":null}""" +
       """]}"""
     assertJsonRoundtrip(Diff.serializer(), model, json)
   }

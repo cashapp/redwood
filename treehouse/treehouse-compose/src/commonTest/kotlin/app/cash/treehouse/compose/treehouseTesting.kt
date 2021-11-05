@@ -20,6 +20,9 @@ import androidx.compose.runtime.withFrameMillis
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 suspend fun BroadcastFrameClock.awaitFrame() {
   // TODO Remove the need for two frames to happen!
@@ -35,3 +38,6 @@ suspend fun BroadcastFrameClock.awaitFrame() {
     }
   }
 }
+
+val String.json: JsonElement get() = Json.encodeToJsonElement(String.serializer(), this)
+val Boolean.json: JsonElement get() = Json.encodeToJsonElement(Boolean.serializer(), this)
