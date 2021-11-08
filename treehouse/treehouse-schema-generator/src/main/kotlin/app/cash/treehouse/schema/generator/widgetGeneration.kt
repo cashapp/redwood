@@ -22,7 +22,6 @@ import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
 import com.squareup.kotlinpoet.ANY
-import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
@@ -169,6 +168,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         .addFunction(
           FunSpec.builder("apply")
             .addModifiers(PUBLIC, OVERRIDE)
+            .addParameter("serializers", mapIntKSerializer)
             .addParameter("diff", propertyDiff)
             .addParameter("events", eventSink)
             .beginControlFlow("when (val tag = diff.tag)")
@@ -177,19 +177,23 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 @Exhaustive when (trait) {
                   is Property -> {
                     addStatement(
-                      "%L -> %N(%L)",
+                      "%L -> %N(%M(serializers[%L] as %T<%T>, diff.value))",
                       trait.tag,
                       trait.name,
-                      trait.type.jsonDecode("diff.value")
+                      decodeFromJsonElement,
+                      trait.tag,
+                      kSerializer,
+                      trait.type.asTypeName(),
                     )
                   }
                   is Event -> {
                     beginControlFlow("%L ->", trait.tag)
                     beginControlFlow(
-                      "val %N: %T = if (%L)",
+                      "val %N: %T = if (%M(%M, diff.value))",
                       trait.name,
                       trait.lambdaType,
-                      BOOLEAN.jsonDecode("diff.value")
+                      decodeFromJsonElement,
+                      booleanSerializer,
                     )
                     addStatement(
                       "{ events(%T(diff.id, %L, %L)) }", eventType, trait.tag,
@@ -209,6 +213,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
             .endControlFlow()
             .build()
         )
+        .addFunction(createSerializers(widget))
         .build()
     )
     .build()

@@ -21,7 +21,6 @@ import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
-import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -133,10 +132,12 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                   add("set(%N) {\n", trait.name)
                   indent()
                   add(
-                    "appendDiff(%T(this.id, %L, %L))\n",
+                    "appendDiff(%T(this.id, %L, %M(serializer(%L), %N)))\n",
                     propertyDiff,
                     trait.tag,
-                    trait.type.jsonEncode("%N", trait.name)
+                    encodeToJsonElement,
+                    trait.tag,
+                    trait.name,
                   )
                   unindent()
                   add("}\n")
@@ -150,10 +151,12 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                   add("if (%1NSet != (this.%1N != null)) {\n", trait.name)
                   indent()
                   add(
-                    "appendDiff(%T(this.id, %L, %L))\n",
+                    "appendDiff(%T(this.id, %L, %M(%M, %NSet)))\n",
                     propertyDiff,
                     trait.tag,
-                    BOOLEAN.jsonEncode("%NSet", trait.name)
+                    encodeToJsonElement,
+                    booleanSerializer,
+                    trait.name
                   )
                   unindent()
                   add("}\n")
@@ -238,6 +241,7 @@ internal fun generateComposeNode(schema: Schema, widget: Widget): FileSpec {
                 .endControlFlow()
                 .build()
             )
+            .addFunction(createSerializers(widget))
             .build()
         )
       }

@@ -15,9 +15,11 @@
  */
 package app.cash.treehouse.protocol
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 
 public fun interface EventSink {
@@ -42,6 +44,10 @@ public data class Diff(
   val childrenDiffs: List<ChildrenDiff> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
 )
+
+// TODO(jwilson): fix KotlinPoet so we can import both kotlinx.serialization.builtins.serializer
+//     and kotlinx.serialization.serializer in the same file, then delete this from our public API.
+public val BooleanSerializer: KSerializer<Boolean> = Boolean.serializer()
 
 @Serializable
 public data class PropertyDiff(

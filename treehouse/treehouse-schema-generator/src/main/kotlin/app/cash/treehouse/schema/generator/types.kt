@@ -17,8 +17,11 @@ package app.cash.treehouse.schema.generator
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.UNIT
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
@@ -52,3 +55,10 @@ internal val iae = ClassName("kotlin", "IllegalArgumentException")
 internal val jsonCompanion = ClassName("kotlinx.serialization.json", "Json", "Default")
 internal val encodeToJsonElement = MemberName(jsonCompanion, "encodeToJsonElement")
 internal val decodeFromJsonElement = MemberName(jsonCompanion, "decodeFromJsonElement")
+internal val booleanSerializer = MemberName("app.cash.treehouse.protocol", "BooleanSerializer")
+internal val serializer = MemberName("kotlinx.serialization", "serializer")
+internal val serializersModule = ClassName("kotlinx.serialization.modules", "SerializersModule")
+internal val kSerializer = ClassName("kotlinx.serialization", "KSerializer")
+internal val kSerializerOfStar = kSerializer.parameterizedBy(STAR)
+internal val mapIntKSerializer = ClassName("kotlin.collections", "Map")
+  .parameterizedBy(INT, kSerializerOfStar)

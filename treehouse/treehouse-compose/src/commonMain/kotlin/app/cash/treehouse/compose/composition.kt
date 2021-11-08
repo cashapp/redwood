@@ -29,6 +29,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 
 public interface TreehouseComposition : EventSink {
   public fun start(diffSink: DiffSink)
@@ -42,14 +45,16 @@ public interface TreehouseComposition : EventSink {
  */
 public fun TreehouseComposition(
   scope: CoroutineScope,
+  serializersModule: SerializersModule = EmptySerializersModule,
   onDiff: (Diff) -> Unit = {},
   onEvent: (Event) -> Unit = {},
 ): TreehouseComposition {
-  return RealTreehouseComposition(scope, onDiff, onEvent)
+  return RealTreehouseComposition(scope, serializersModule, onDiff, onEvent)
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
+  private val serializersModule: SerializersModule,
   private val onDiff: (Diff) -> Unit,
   private val onEvent: (Event) -> Unit,
 ) : TreehouseComposition {
@@ -65,7 +70,7 @@ private class RealTreehouseComposition(
   override fun start(diffSink: DiffSink) {
     check(!this::applier.isInitialized) { "display already initialized" }
 
-    applier = ProtocolApplier { diff ->
+    applier = ProtocolApplier(serializersModule) { diff ->
       onDiff(diff)
       diffSink.sendDiff(diff)
     }

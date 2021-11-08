@@ -25,6 +25,9 @@ import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.modules.SerializersModule
 
 /**
  * A synthetic node which allows the applier to differentiate between multiple groups of children.
@@ -79,8 +82,14 @@ public open class ProtocolNode(
     internal set
 
   internal lateinit var applier: ProtocolApplier
+  internal lateinit var serializers: Map<Int, KSerializer<*>>
 
   internal val children = mutableListOf<ProtocolNode>()
+
+  public open fun createSerializers(module: SerializersModule): Map<Int, KSerializer<*>> =
+    mapOf()
+
+  public fun <T> serializer(tag: Int): KSerializer<T> = serializers[tag] as KSerializer<T>
 
   public fun appendDiff(diff: PropertyDiff) {
     applier.appendDiff(diff)
@@ -125,8 +134,11 @@ public open class ProtocolNode(
  * ```
  */
 internal class ProtocolApplier(
+  private val serializersModule: SerializersModule,
   private val onDiff: (Diff) -> Unit,
 ) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()) {
+  /** Keys are types, values are serializers for that node type. */
+  private val serializersCache = mutableMapOf<Int, Map<Int, KSerializer<*>>>()
   private var nextId = RootId + 1
   val nodes = mutableMapOf(root.id to root)
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
@@ -167,6 +179,9 @@ internal class ProtocolApplier(
       val id = nextId++
       instance.id = id
       instance.applier = this
+      instance.serializers = serializersCache.getOrPut(instance.type) {
+        instance.createSerializers(serializersModule)
+      }
 
       nodes[id] = instance
       childrenDiffs.add(ChildrenDiff.Insert(current.id, current.tag, id, instance.type, index))

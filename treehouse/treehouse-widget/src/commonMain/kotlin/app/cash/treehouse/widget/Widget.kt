@@ -17,15 +17,23 @@ package app.cash.treehouse.widget
 
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.modules.SerializersModule
 
 public interface Widget<T : Any> {
   public val value: T
 
-  public fun apply(diff: PropertyDiff, events: (Event) -> Unit)
+  public fun apply(
+    serializers: Map<Int, KSerializer<*>>,
+    diff: PropertyDiff,
+    events: (Event) -> Unit,
+  )
 
   public fun children(tag: Int): Children<T> {
     throw IllegalArgumentException("Widget does not support children")
   }
+
+  public fun createSerializers(module: SerializersModule): Map<Int, KSerializer<*>> = mapOf()
 
   /**
    * An interface for manipulating a widget's list of child widgets.
