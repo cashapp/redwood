@@ -27,7 +27,7 @@ internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDi
 internal val eventSink = LambdaTypeName.get(receiver = null, eventType, returnType = UNIT)
 
 internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
-internal val widgetChildren = widget.nestedClass("Children")
+internal val widgetChildren = ClassName("app.cash.treehouse.widget", "WidgetChildren")
 internal val widgetFactory = widget.nestedClass("Factory")
 internal val mutableListChildren = ClassName("app.cash.treehouse.widget", "MutableListChildren")
 
