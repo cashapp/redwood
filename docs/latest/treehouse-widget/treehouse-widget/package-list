@@ -27,7 +27,7 @@ $dokka.location:app.cash.treehouse.widget/Widget.Children/insert/#kotlin.Int#Typ
 $dokka.location:app.cash.treehouse.widget/Widget.Children/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/move.html
 $dokka.location:app.cash.treehouse.widget/Widget.Children/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-children/remove.html
 $dokka.location:app.cash.treehouse.widget/Widget.Factory///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/index.html
-$dokka.location:app.cash.treehouse.widget/Widget.Factory/create/#kotlin.Int#kotlin.Long/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/create.html
+$dokka.location:app.cash.treehouse.widget/Widget.Factory/create/#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/create.html
 $dokka.location:app.cash.treehouse.widget/Widget///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/index.html
 $dokka.location:app.cash.treehouse.widget/Widget/apply/#app.cash.treehouse.protocol.PropertyDiff#kotlin.Function1[app.cash.treehouse.protocol.Event,kotlin.Unit]/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/apply.html
 $dokka.location:app.cash.treehouse.widget/Widget/children/#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/children.html
