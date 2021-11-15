@@ -87,19 +87,19 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-interface SunspotButton<out T: Any> : SunspotNode<T> {
+interface SunspotButton<out T: Any> : Widget<T> {
   fun text(text: String?)
   fun enabled(enabled: Boolean)
   fun onClick(onClick: (() -> Unit)?)
 
-  override fun apply(diff: PropertyDiff, events: (Event) -> Unit) {
+  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
     when (val tag = diff.tag) {
       1 -> text(diff.value as String?)
       2 -> enabled(diff.value as Boolean)
       3 -> {
         val onClick: (() -> Unit)? = if (diff.value as Boolean) {
           val event = Event(diff.id, 3, null);
-          { events(event) }
+          { eventSink.sendEvent(event) }
         } else {
           null
         }
@@ -168,7 +168,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
           FunSpec.builder("apply")
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("diff", propertyDiff)
-            .addParameter("events", eventSink)
+            .addParameter("eventSink", eventSink)
             .beginControlFlow("when (val tag = diff.tag)")
             .apply {
               for (trait in widget.traits) {
@@ -183,7 +183,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     beginControlFlow("%L ->", trait.tag)
                     beginControlFlow("val %N: %T = if (diff.value as %T)", trait.name, trait.lambdaType, BOOLEAN)
                     addStatement(
-                      "{ events(%T(diff.id, %L, %L)) }", eventType, trait.tag,
+                      "{ eventSink.sendEvent(%T(diff.id, %L, %L)) }", eventType, trait.tag,
                       if (trait.parameterType != null) "it" else "null"
                     )
                     nextControlFlow("else")

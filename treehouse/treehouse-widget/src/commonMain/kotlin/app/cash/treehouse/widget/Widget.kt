@@ -15,13 +15,13 @@
  */
 package app.cash.treehouse.widget
 
-import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
 
 public interface Widget<T : Any> {
   public val value: T
 
-  public fun apply(diff: PropertyDiff, events: (Event) -> Unit)
+  public fun apply(diff: PropertyDiff, eventSink: EventSink)
 
   public fun children(tag: Int): WidgetChildren<T> {
     throw IllegalArgumentException("Widget does not support children")
