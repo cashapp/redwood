@@ -52,6 +52,6 @@ public interface Widget<T : Any> {
   }
 
   public interface Factory<T : Any> {
-    public fun create(kind: Int, id: Long): Widget<T>
+    public fun create(kind: Int): Widget<T>
   }
 }

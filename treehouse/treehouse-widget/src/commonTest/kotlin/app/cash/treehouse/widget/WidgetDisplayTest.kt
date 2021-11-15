@@ -46,7 +46,7 @@ class WidgetDisplayTest {
   }
 
   private object NullWidgetFactory : Widget.Factory<Unit> {
-    override fun create(kind: Int, id: Long) = throw UnsupportedOperationException()
+    override fun create(kind: Int) = throw UnsupportedOperationException()
   }
 
   private object NullWidgetChildren : Widget.Children<Unit> {
