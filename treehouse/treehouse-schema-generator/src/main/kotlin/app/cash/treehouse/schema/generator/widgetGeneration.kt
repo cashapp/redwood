@@ -29,7 +29,6 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
-import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -41,7 +40,7 @@ interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
   fun SunspotText(): SunspotText<T>
   fun SunspotButton(): SunspotButton<T>
 
-  override fun create(, kind: Int, id: Long): TreeNode<T> {
+  override fun create(kind: Int): TreeNode<T> {
     return when (kind) {
       1 -> SunspotText()
       2 -> SunspotButton()
@@ -71,7 +70,6 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
           FunSpec.builder("create")
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("kind", INT)
-            .addParameter("id", LONG)
             .returns(widgetOfT)
             .beginControlFlow("return when (kind)")
             .apply {
