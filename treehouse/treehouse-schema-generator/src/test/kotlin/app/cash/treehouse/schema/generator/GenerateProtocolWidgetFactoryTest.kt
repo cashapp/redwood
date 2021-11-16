@@ -21,8 +21,10 @@ import app.cash.treehouse.schema.Widget
 import app.cash.treehouse.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.util.regex.Pattern
+import java.util.regex.Pattern.MULTILINE
 
-class GenerateWidgetFactoryTest {
+class GenerateProtocolWidgetFactoryTest {
   @Schema(
     [
       NavigationBar.Button::class,
@@ -41,12 +43,10 @@ class GenerateWidgetFactoryTest {
     val schema = parseSchema(SimpleNameCollisionSchema::class)
 
     val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).contains(
-      """
-      |    1 -> GenerateWidgetFactoryTestNavigationBarButton()
-      |    3 -> GenerateWidgetFactoryTestButton()
-      |""".trimMargin()
-    )
+    assertThat(fileSpec.toString()).apply {
+      contains("fun GenerateProtocolWidgetFactoryTestNavigationBarButton()")
+      contains("fun GenerateProtocolWidgetFactoryTestButton()")
+    }
   }
 
   @Schema(
@@ -70,14 +70,9 @@ class GenerateWidgetFactoryTest {
   @Test fun `names are sorted by their node tags`() {
     val schema = parseSchema(SortedByTagSchema::class)
 
-    val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).contains(
-      """
-      |    1 -> GenerateWidgetFactoryTestNode1()
-      |    2 -> GenerateWidgetFactoryTestNode2()
-      |    3 -> GenerateWidgetFactoryTestNode3()
-      |    12 -> GenerateWidgetFactoryTestNode12()
-      |""".trimMargin()
+    val fileSpec = generateDisplayProtocolWidgetFactory(schema)
+    assertThat(fileSpec.toString()).containsMatch(
+      Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE)
     )
   }
 }

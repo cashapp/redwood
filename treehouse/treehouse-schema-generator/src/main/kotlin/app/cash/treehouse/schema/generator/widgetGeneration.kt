@@ -15,47 +15,33 @@
  */
 package app.cash.treehouse.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.parser.Children
 import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
-import com.squareup.kotlinpoet.ANY
-import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
-import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
+interface SunspotWidgetFactory<T : Any> {
   fun SunspotText(): SunspotText<T>
   fun SunspotButton(): SunspotButton<T>
-
-  override fun create(kind: Int): TreeNode<T> {
-    return when (kind) {
-      1 -> SunspotText()
-      2 -> SunspotButton()
-      else -> throw IllegalArgumentException("Unknown kind $kind")
-    }
-  }
 }
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
-  return FileSpec.builder(schema.displayPackage, schema.getWidgetFactoryType().simpleName)
+  val widgetFactoryType = schema.getWidgetFactoryType()
+  return FileSpec.builder(widgetFactoryType.packageName, widgetFactoryType.simpleName)
     .addType(
-      TypeSpec.interfaceBuilder(schema.getWidgetFactoryType())
+      TypeSpec.interfaceBuilder(widgetFactoryType)
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(factoryOfT)
         .apply {
           for (node in schema.widgets) {
             addFunction(
@@ -66,48 +52,17 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
             )
           }
         }
-        .addFunction(
-          FunSpec.builder("create")
-            .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("kind", INT)
-            .returns(widgetOfT)
-            .beginControlFlow("return when (kind)")
-            .apply {
-              for (node in schema.widgets.sortedBy { it.tag }) {
-                addStatement("%L -> %N()", node.tag, node.flatName)
-              }
-            }
-            .addStatement("else -> throw %T(\"Unknown kind \$kind\")", iae)
-            .endControlFlow()
-            .build()
-        )
         .build()
     )
     .build()
 }
 
 /*
-interface SunspotButton<out T: Any> : Widget<T> {
+interface SunspotButton<T: Any> {
+  val value: T
   fun text(text: String?)
   fun enabled(enabled: Boolean)
   fun onClick(onClick: (() -> Unit)?)
-
-  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    when (val tag = diff.tag) {
-      1 -> text(diff.value as String?)
-      2 -> enabled(diff.value as Boolean)
-      3 -> {
-        val onClick: (() -> Unit)? = if (diff.value as Boolean) {
-          val event = Event(diff.id, 3, null);
-          { eventSink.sendEvent(event) }
-        } else {
-          null
-        }
-        onClick(onClick)
-      }
-      else -> throw IllegalArgumentException("Unknown tag $tag")
-    }
-  }
 }
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
@@ -116,7 +71,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
       TypeSpec.interfaceBuilder(widget.flatName)
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(widgetOfT)
+        .addProperty("value", typeVariableT)
         .apply {
           for (trait in widget.traits) {
             when (trait) {
@@ -145,67 +100,8 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               }
             }
           }
-          val childrens = widget.traits.filterIsInstance<Children>()
-          if (childrens.isNotEmpty()) {
-            addFunction(
-              FunSpec.builder("children")
-                .addModifiers(PUBLIC, OVERRIDE)
-                .addParameter("tag", INT)
-                .returns(childrenOfT)
-                .beginControlFlow("return when (tag)")
-                .apply {
-                  for (children in childrens) {
-                    addStatement("%L -> %N", children.tag, children.name)
-                  }
-                }
-                .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
-                .endControlFlow()
-                .build()
-            )
-          }
         }
-        .addFunction(
-          FunSpec.builder("apply")
-            .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("diff", propertyDiff)
-            .addParameter("eventSink", eventSink)
-            .beginControlFlow("when (val tag = diff.tag)")
-            .apply {
-              for (trait in widget.traits) {
-                @Exhaustive when (trait) {
-                  is Property -> {
-                    addStatement(
-                      "%L -> %N(diff.value as %T)", trait.tag, trait.name,
-                      trait.type.asTypeName()
-                    )
-                  }
-                  is Event -> {
-                    beginControlFlow("%L ->", trait.tag)
-                    beginControlFlow("val %N: %T = if (diff.value as %T)", trait.name, trait.lambdaType, BOOLEAN)
-                    addStatement(
-                      "{ eventSink.sendEvent(%T(diff.id, %L, %L)) }", eventType, trait.tag,
-                      if (trait.parameterType != null) "it" else "null"
-                    )
-                    nextControlFlow("else")
-                    addStatement("null")
-                    endControlFlow()
-                    addStatement("%1N(%1N)", trait.name)
-                    endControlFlow()
-                  }
-                  is Children -> {}
-                }
-              }
-            }
-            .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
-            .endControlFlow()
-            .build()
-        )
         .build()
     )
     .build()
 }
-
-private val typeVariableT = TypeVariableName("T", listOf(ANY))
-private val widgetOfT = widget.parameterizedBy(typeVariableT)
-private val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)
-private val factoryOfT = widgetFactory.parameterizedBy(typeVariableT)

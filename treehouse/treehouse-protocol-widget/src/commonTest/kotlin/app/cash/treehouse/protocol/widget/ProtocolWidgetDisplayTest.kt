@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.widget
+package app.cash.treehouse.protocol.widget
 
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
+import app.cash.treehouse.widget.WidgetChildren
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class WidgetDisplayTest {
+class ProtocolWidgetDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {
-    WidgetDisplay(GoodRootWidget, NullWidgetFactory) { }
+    ProtocolWidgetDisplay(GoodRootWidget, NullWidgetFactory) { }
 
     assertFailsWith<IllegalArgumentException> {
-      WidgetDisplay(BadRootWidget, NullWidgetFactory) { }
+      ProtocolWidgetDisplay(BadRootWidget, NullWidgetFactory) { }
     }
   }
 
-  private object BadRootWidget : Widget<Unit> {
+  private object BadRootWidget : ProtocolWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = throw IllegalArgumentException()
   }
 
-  private object GoodRootWidget : Widget<Unit> {
+  private object GoodRootWidget : ProtocolWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = when (tag) {
@@ -45,7 +46,7 @@ class WidgetDisplayTest {
     }
   }
 
-  private object NullWidgetFactory : Widget.Factory<Unit> {
+  private object NullWidgetFactory : ProtocolWidget.Factory<Unit> {
     override fun create(kind: Int) = throw UnsupportedOperationException()
   }
 

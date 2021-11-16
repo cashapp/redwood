@@ -8,6 +8,7 @@ include ':samples:counter:sunspot'
 include ':samples:counter:sunspot:compose'
 include ':samples:counter:sunspot:test'
 include ':samples:counter:sunspot:widget'
+include ':samples:counter:sunspot:widget:protocol'
 
 include ':samples:todo-list:android-composeui'
 include ':samples:todo-list:android-views'
@@ -15,12 +16,13 @@ include ':samples:todo-list:presenters'
 include ':samples:todo-list:schema'
 include ':samples:todo-list:schema:compose'
 include ':samples:todo-list:schema:widget'
+include ':samples:todo-list:schema:widget:protocol'
 
 includeBuild('treehouse') {
   dependencySubstitution {
-    substitute module('app.cash.treehouse:compose-compiler-hosted') with project(':compose:compiler-hosted')
     substitute module('app.cash.treehouse:treehouse-compose') with project(':treehouse-compose')
     substitute module('app.cash.treehouse:treehouse-gradle-plugin') with project(':treehouse-gradle-plugin')
+    substitute module('app.cash.treehouse:treehouse-protocol-widget') with project(':treehouse-protocol-widget')
     substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
     substitute module('app.cash.treehouse:treehouse-schema-generator') with project(':treehouse-schema-generator')
     substitute module('app.cash.treehouse:treehouse-widget') with project(':treehouse-widget')

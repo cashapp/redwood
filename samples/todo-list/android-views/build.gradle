@@ -3,7 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.treehouse'
 
 dependencies {
-  implementation project(':samples:todo-list:schema:widget')
+  implementation project(':samples:todo-list:schema:widget:protocol')
   implementation project(':samples:todo-list:presenters')
   implementation deps.kotlinx.coroutines.android
   implementation deps.androidx.appCompat

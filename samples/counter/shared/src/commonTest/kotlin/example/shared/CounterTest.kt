@@ -17,12 +17,14 @@ package example.shared
 
 import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.sunspot.SunspotBox
 import example.sunspot.SunspotButton
 import example.sunspot.SunspotText
 import example.sunspot.test.SchemaSunspotBox
 import example.sunspot.test.SchemaSunspotWidgetFactory
+import example.sunspot.widget.ProtocolSunspotBox
+import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -40,9 +42,9 @@ class CounterTest {
       onEvent = { println(it) },
     )
 
-    val display = WidgetDisplay(
-      root = root,
-      factory = SchemaSunspotWidgetFactory,
+    val display = ProtocolWidgetDisplay(
+      root = ProtocolSunspotBox(root),
+      factory = ProtocolWidgetFactory(SchemaSunspotWidgetFactory),
       eventSink = composition,
     )
 

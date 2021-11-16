@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.widget
+package app.cash.treehouse.protocol.widget
 
 import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
+import app.cash.treehouse.widget.WidgetChildren
 
-public interface Widget<T : Any> {
+public interface ProtocolWidget<T : Any> {
   public val value: T
 
-  public fun apply(diff: PropertyDiff, eventSink: EventSink)
+  public fun apply(diff: PropertyDiff, eventSink: EventSink) {
+    throw IllegalArgumentException("Widget has no properties")
+  }
 
   public fun children(tag: Int): WidgetChildren<T> {
     throw IllegalArgumentException("Widget does not support children")
   }
 
   public interface Factory<T : Any> {
-    public fun create(kind: Int): Widget<T>
+    public fun create(kind: Int): ProtocolWidget<T>
   }
 }

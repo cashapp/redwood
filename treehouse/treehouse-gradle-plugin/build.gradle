@@ -45,6 +45,12 @@ gradlePlugin {
       description = "Treehouse schema widget code generation Gradle plugin"
       implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaWidgetPlugin"
     }
+    treehouseSchemaWidgetProtocol {
+      id = "app.cash.treehouse.schema.widget.protocol"
+      displayName = "Treehouse schema (widget protocol generator)"
+      description = "Treehouse schema widget protocol code generation Gradle plugin"
+      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaWidgetProtocolPlugin"
+    }
   }
 }
 

@@ -17,10 +17,12 @@ package example.ios
 
 import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.ios.sunspot.IosSunspotBox
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.widget.ProtocolSunspotBox
+import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
@@ -40,9 +42,9 @@ class CounterViewControllerDelegate(
       onEvent = { NSLog("TreehouseEvent: $it") }
     )
 
-    val display = WidgetDisplay(
-      root = IosSunspotBox(root),
-      factory = IosSunspotNodeFactory,
+    val display = ProtocolWidgetDisplay(
+      root = ProtocolSunspotBox(IosSunspotBox(root)),
+      factory = ProtocolWidgetFactory(IosSunspotNodeFactory),
       eventSink = composition
     )
 
