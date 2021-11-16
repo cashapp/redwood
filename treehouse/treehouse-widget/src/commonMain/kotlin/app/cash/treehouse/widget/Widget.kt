@@ -23,32 +23,8 @@ public interface Widget<T : Any> {
 
   public fun apply(diff: PropertyDiff, events: (Event) -> Unit)
 
-  public fun children(tag: Int): Children<T> {
+  public fun children(tag: Int): WidgetChildren<T> {
     throw IllegalArgumentException("Widget does not support children")
-  }
-
-  /**
-   * An interface for manipulating a widget's list of child widgets.
-   *
-   * Arguments to these methods can be assumed to be validated against the current state of the
-   * list. No additional validation needs to be performed (for example, checking index bounds).
-   */
-  public interface Children<T : Any> {
-    /** Insert child [widget] at [index]. */
-    public fun insert(index: Int, widget: T)
-    /**
-     * Move [count] child widgets from [fromIndex] to [toIndex].
-     *
-     * Both indices are relative to the position before the change. For example, to move the
-     * widget at position 1 to after the widget at position 2, [fromIndex] should be 1 and
-     * [toIndex] should be 3. If the widgets were `A B C D E`, calling `move(1, 3, 1)` would
-     * result in the widgets being reordered to `A C B D E`.
-     */
-    public fun move(fromIndex: Int, toIndex: Int, count: Int)
-    /** Remove [count] child widgets starting from [index]. */
-    public fun remove(index: Int, count: Int)
-    /** Remove all child widgets. */
-    public fun clear()
   }
 
   public interface Factory<T : Any> {

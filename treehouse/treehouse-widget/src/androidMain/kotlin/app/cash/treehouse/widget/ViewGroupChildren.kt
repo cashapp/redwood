@@ -18,7 +18,7 @@ package app.cash.treehouse.widget
 import android.view.View
 import android.view.ViewGroup
 
-public class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
+public class ViewGroupChildren(private val parent: ViewGroup) : WidgetChildren<View> {
   override fun insert(index: Int, widget: View) {
     parent.addView(widget, index)
   }
