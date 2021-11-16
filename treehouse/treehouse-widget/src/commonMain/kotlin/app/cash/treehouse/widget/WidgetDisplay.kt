@@ -67,10 +67,7 @@ public class WidgetDisplay<T : Any>(
       val widget = checkNotNull(widgets[propertyDiff.id]) {
         "Unknown widget ID ${propertyDiff.id}"
       }
-
-      widget.apply(propertyDiff) { event ->
-        eventSink.sendEvent(event)
-      }
+      widget.apply(propertyDiff, eventSink)
     }
   }
 }

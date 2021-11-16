@@ -16,7 +16,7 @@
 package app.cash.treehouse.widget
 
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.treehouse.protocol.Event
+import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -32,13 +32,13 @@ class WidgetDisplayTest {
 
   private object BadRootWidget : Widget<Unit> {
     override val value get() = Unit
-    override fun apply(diff: PropertyDiff, events: (Event) -> Unit) = throw UnsupportedOperationException()
+    override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = throw IllegalArgumentException()
   }
 
   private object GoodRootWidget : Widget<Unit> {
     override val value get() = Unit
-    override fun apply(diff: PropertyDiff, events: (Event) -> Unit) = throw UnsupportedOperationException()
+    override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = when (tag) {
       RootChildrenTag -> NullWidgetChildren
       else -> throw IllegalArgumentException()

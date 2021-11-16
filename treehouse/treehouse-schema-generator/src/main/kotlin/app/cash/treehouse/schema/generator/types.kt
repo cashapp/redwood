@@ -22,9 +22,8 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.UNIT
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
+internal val eventSink = ClassName("app.cash.treehouse.protocol", "EventSink")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
-
-internal val eventSink = LambdaTypeName.get(receiver = null, eventType, returnType = UNIT)
 
 internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
 internal val widgetChildren = ClassName("app.cash.treehouse.widget", "WidgetChildren")
