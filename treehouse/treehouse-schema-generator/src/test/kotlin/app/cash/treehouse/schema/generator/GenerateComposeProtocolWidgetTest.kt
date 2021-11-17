@@ -22,7 +22,7 @@ import app.cash.treehouse.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class GenerateComposeTest {
+class GenerateComposeProtocolWidgetTest {
   @Schema(
     [
       IdPropertyNameCollisionNode::class,
@@ -38,12 +38,12 @@ class GenerateComposeTest {
   @Test fun `id property does not collide`() {
     val schema = parseSchema(IdPropertyNameCollisionSchema::class)
 
-    val fileSpec = generateComposeNode(schema, schema.widgets.single())
+    val fileSpec = generateComposeProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
-      |        set(id) {
-      |          appendDiff(PropertyDiff(this.id, 2, id))
-      |        }
+      |  public override fun id(id: String): Unit {
+      |    appendDiff(PropertyDiff(this.id, 2, id))
+      |  }
       |""".trimMargin()
     )
   }

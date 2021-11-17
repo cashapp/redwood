@@ -16,11 +16,11 @@
 package example.ios
 
 import androidx.compose.runtime.BroadcastFrameClock
-import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.ios.sunspot.IosSunspotBox
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.compose.ProtocolSunspotComposition
 import example.sunspot.widget.ProtocolSunspotBox
 import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.MainScope
@@ -36,7 +36,7 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val composition = TreehouseComposition(
+    val composition = ProtocolSunspotComposition(
       scope = scope,
       onDiff = { NSLog("TreehouseDiff: $it") },
       onEvent = { NSLog("TreehouseEvent: $it") }

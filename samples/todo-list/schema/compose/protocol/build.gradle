@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.treehouse.schema.compose'
+apply plugin: 'app.cash.treehouse.schema.compose.protocol'
 
 kotlin {
   ios()

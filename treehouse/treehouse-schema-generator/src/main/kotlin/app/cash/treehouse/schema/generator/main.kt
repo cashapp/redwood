@@ -19,6 +19,7 @@ package app.cash.treehouse.schema.generator
 
 import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
+import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.ComposeProtocol
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Test
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Widget
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.WidgetProtocol
@@ -41,6 +42,7 @@ public fun main(vararg args: String) {
 private class TreehouseGenerator : CliktCommand() {
   enum class Type {
     Compose,
+    ComposeProtocol,
     Test,
     Widget,
     WidgetProtocol,
@@ -49,6 +51,7 @@ private class TreehouseGenerator : CliktCommand() {
   private val type by option()
     .switch(
       "--compose" to Compose,
+      "--compose-protocol" to ComposeProtocol,
       "--test" to Test,
       "--widget" to Widget,
       "--widget-protocol" to WidgetProtocol,
@@ -75,7 +78,13 @@ private class TreehouseGenerator : CliktCommand() {
     @Exhaustive when (type) {
       Compose -> {
         for (widget in schema.widgets) {
-          generateComposeNode(schema, widget).writeTo(out)
+          generateComposable(schema, widget).writeTo(out)
+        }
+      }
+      ComposeProtocol -> {
+        generateComposeProtocolWidgetFactory(schema).writeTo(out)
+        for (widget in schema.widgets) {
+          generateComposeProtocolWidget(schema, widget).writeTo(out)
         }
       }
       Test -> {

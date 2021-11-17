@@ -69,7 +69,7 @@ internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
             .beginControlFlow("return when (kind)")
             .apply {
               for (widget in schema.widgets.sortedBy { it.tag }) {
-                val protocolType = schema.protocolWidgetType(widget)
+                val protocolType = schema.displayProtocolWidgetType(widget)
                 addStatement("%L -> %T(delegate.%N())", widget.tag, protocolType, widget.flatName)
               }
             }
@@ -107,7 +107,7 @@ public class ProtocolSunspotButton<T : Any>(
 }
 */
 internal fun generateDisplayProtocolWidget(schema: Schema, widget: Widget): FileSpec {
-  val type = schema.protocolWidgetType(widget)
+  val type = schema.displayProtocolWidgetType(widget)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableT)
   val protocolType = protocolWidget.parameterizedBy(typeVariableT)
   return FileSpec.builder(type.packageName, type.simpleName)

@@ -29,6 +29,7 @@ kotlin {
   sourceSets {
     iosMain {
       dependencies {
+        implementation project(':samples:counter:sunspot:compose:protocol')
         implementation project(':samples:counter:sunspot:widget:protocol')
         implementation project(':samples:counter:shared')
 

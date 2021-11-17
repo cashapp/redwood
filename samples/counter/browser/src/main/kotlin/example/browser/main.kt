@@ -15,12 +15,12 @@
  */
 package example.browser
 
-import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
 import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.compose.ProtocolSunspotComposition
 import example.sunspot.widget.ProtocolSunspotBox
 import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.browser.document
@@ -29,7 +29,7 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
-  val composition = TreehouseComposition(
+  val composition = ProtocolSunspotComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     onDiff = { console.log("TreehouseDiff", it.toString()) },
     onEvent = { console.log("TreehouseEvent", it.toString()) },

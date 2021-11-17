@@ -23,6 +23,8 @@ kotlin {
       dependencies {
         implementation deps.kotlin.test
         implementation project(':samples:counter:sunspot:test')
+        // TODO remove the need for these dependencies!
+        implementation project(':samples:counter:sunspot:compose:protocol')
         implementation project(':samples:counter:sunspot:widget:protocol')
       }
     }

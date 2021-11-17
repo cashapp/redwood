@@ -16,6 +16,7 @@
 package app.cash.treehouse.gradle
 
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Compose
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.ComposeProtocol
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Test
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Widget
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.WidgetProtocol
@@ -31,6 +32,9 @@ import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class TreehouseSchemaComposePlugin : TreehouseSchemaGeneratorPlugin(Compose)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
+public class TreehouseSchemaComposeProtocolPlugin : TreehouseSchemaGeneratorPlugin(ComposeProtocol)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class TreehouseSchemaTestPlugin : TreehouseSchemaGeneratorPlugin(Test)
@@ -49,6 +53,7 @@ public abstract class TreehouseSchemaGeneratorPlugin(
     internal val dependencyCoordinate: String,
   ) {
     Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
+    ComposeProtocol("--compose-protocol", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
     Test("--test", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     Widget("--widget", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     WidgetProtocol("--widget-protocol", "app.cash.treehouse:treehouse-protocol-widget:$treehouseVersion"),
