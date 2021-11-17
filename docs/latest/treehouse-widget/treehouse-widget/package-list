@@ -21,19 +21,10 @@ $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/clear/#/PointingToDe
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/insert/#kotlin.Int#android.view.View/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/insert.html
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/move.html
 $dokka.location:app.cash.treehouse.widget/ViewGroupChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-view-group-children/remove.html
-$dokka.location:app.cash.treehouse.widget/Widget.Factory///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/index.html
-$dokka.location:app.cash.treehouse.widget/Widget.Factory/create/#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/-factory/create.html
-$dokka.location:app.cash.treehouse.widget/Widget///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/index.html
-$dokka.location:app.cash.treehouse.widget/Widget/apply/#app.cash.treehouse.protocol.PropertyDiff#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/apply.html
-$dokka.location:app.cash.treehouse.widget/Widget/children/#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/children.html
-$dokka.location:app.cash.treehouse.widget/Widget/value/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget/value.html
 $dokka.location:app.cash.treehouse.widget/WidgetChildren///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-children/index.html
 $dokka.location:app.cash.treehouse.widget/WidgetChildren/clear/#/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-children/clear.html
 $dokka.location:app.cash.treehouse.widget/WidgetChildren/insert/#kotlin.Int#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-children/insert.html
 $dokka.location:app.cash.treehouse.widget/WidgetChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-children/move.html
 $dokka.location:app.cash.treehouse.widget/WidgetChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-children/remove.html
-$dokka.location:app.cash.treehouse.widget/WidgetDisplay///PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/index.html
-$dokka.location:app.cash.treehouse.widget/WidgetDisplay/WidgetDisplay/#app.cash.treehouse.widget.Widget[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.widget.Widget.Factory[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/-widget-display.html
-$dokka.location:app.cash.treehouse.widget/WidgetDisplay/sendDiff/#app.cash.treehouse.protocol.Diff/PointingToDeclaration/treehouse-widget/app.cash.treehouse.widget/-widget-display/send-diff.html
 app.cash.treehouse.widget
 

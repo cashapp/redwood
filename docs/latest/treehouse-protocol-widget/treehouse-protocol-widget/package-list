@@ -1,0 +1,14 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.treehouse.protocol.widget////PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget.Factory///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/-factory/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget.Factory/create/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/-factory/create.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/apply/#app.cash.treehouse.protocol.PropertyDiff#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/apply.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/children/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/children.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/value/#/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/value.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidgetDisplay///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget-display/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidgetDisplay/ProtocolWidgetDisplay/#app.cash.treehouse.protocol.widget.ProtocolWidget[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.widget.ProtocolWidget.Factory[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget-display/-protocol-widget-display.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidgetDisplay/sendDiff/#app.cash.treehouse.protocol.Diff/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget-display/send-diff.html
+app.cash.treehouse.protocol.widget
+
