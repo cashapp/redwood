@@ -1,0 +1,22 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':treehouse-protocol')
+        api project(':treehouse-widget')
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+      }
+    }
+  }
+}

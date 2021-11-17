@@ -18,6 +18,7 @@ package app.cash.treehouse.gradle
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Compose
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Test
 import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.Widget
+import app.cash.treehouse.gradle.TreehouseSchemaGeneratorPlugin.Strategy.WidgetProtocol
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Usage
@@ -37,6 +38,9 @@ public class TreehouseSchemaTestPlugin : TreehouseSchemaGeneratorPlugin(Test)
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class TreehouseSchemaWidgetPlugin : TreehouseSchemaGeneratorPlugin(Widget)
 
+@Suppress("unused") // Invoked reflectively by Gradle.
+public class TreehouseSchemaWidgetProtocolPlugin : TreehouseSchemaGeneratorPlugin(WidgetProtocol)
+
 public abstract class TreehouseSchemaGeneratorPlugin(
   private val strategy: Strategy,
 ) : Plugin<Project> {
@@ -47,6 +51,7 @@ public abstract class TreehouseSchemaGeneratorPlugin(
     Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
     Test("--test", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     Widget("--widget", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
+    WidgetProtocol("--widget-protocol", "app.cash.treehouse:treehouse-protocol-widget:$treehouseVersion"),
   }
 
   override fun apply(project: Project) {

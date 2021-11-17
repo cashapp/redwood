@@ -24,8 +24,10 @@ import android.widget.LinearLayout.VERTICAL
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.presenters.TodoPresenter
+import example.schema.widget.ProtocolColumn
+import example.schema.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -47,9 +49,9 @@ class TodoActivity : AppCompatActivity() {
     }
     setContentView(root)
 
-    val display = WidgetDisplay(
-      root = ViewColumn(root),
-      factory = ViewWidgetFactory(this),
+    val display = ProtocolWidgetDisplay(
+      root = ProtocolColumn(ViewColumn(root)),
+      factory = ProtocolWidgetFactory(ViewWidgetFactory(this)),
       eventSink = composition,
     )
 

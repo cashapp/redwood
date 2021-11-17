@@ -49,6 +49,10 @@ internal fun Schema.composeNodeType(widget: Widget): ClassName {
 
 internal val Schema.composePackage get() = "$`package`.compose"
 
+internal fun Schema.protocolWidgetType(widget: Widget): ClassName {
+  return ClassName(displayPackage, "Protocol${widget.flatName}")
+}
+
 internal fun Schema.widgetType(widget: Widget): ClassName {
   return ClassName(displayPackage, widget.flatName)
 }

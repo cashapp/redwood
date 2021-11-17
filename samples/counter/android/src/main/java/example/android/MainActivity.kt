@@ -24,10 +24,12 @@ import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.AndroidUiDispatcher
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
+import example.sunspot.widget.ProtocolSunspotBox
+import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -49,9 +51,9 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
-    val display = WidgetDisplay(
-      root = AndroidSunspotBox(root),
-      factory = AndroidSunspotWidgetFactory(this),
+    val display = ProtocolWidgetDisplay(
+      root = ProtocolSunspotBox(AndroidSunspotBox(root)),
+      factory = ProtocolWidgetFactory(AndroidSunspotWidgetFactory(this)),
       eventSink = composition,
     )
 

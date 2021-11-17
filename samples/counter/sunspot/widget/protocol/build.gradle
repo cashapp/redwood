@@ -1,0 +1,23 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.treehouse.schema.widget.protocol'
+
+kotlin {
+  ios()
+  js {
+    browser()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api(project(':samples:counter:sunspot:widget'))
+      }
+    }
+  }
+}
+
+treehouseSchema {
+  source = project(':samples:counter:sunspot')
+  type = 'example.sunspot.Sunspot'
+}

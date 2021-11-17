@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.widget
+package app.cash.treehouse.protocol.widget
 
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
@@ -22,9 +22,9 @@ import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.DiffSink
 import app.cash.treehouse.protocol.EventSink
 
-public class WidgetDisplay<T : Any>(
-  private val root: Widget<T>,
-  private val factory: Widget.Factory<T>,
+public class ProtocolWidgetDisplay<T : Any>(
+  private val root: ProtocolWidget<T>,
+  private val factory: ProtocolWidget.Factory<T>,
   private val eventSink: EventSink,
 ) : DiffSink {
   init {

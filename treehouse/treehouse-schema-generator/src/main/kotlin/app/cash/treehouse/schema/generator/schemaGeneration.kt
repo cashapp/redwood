@@ -44,7 +44,7 @@ class SchemaSunspotWidgetFactory : SunspotWidgetFactory<Nothing> {
   // ...
 }
 
-interface SchemaWidget : Widget<SchemaWidget> {
+interface SchemaWidget {
   val schema: Any
   fun assertSchema(expected: Any, path: String = "$")
 }
@@ -72,7 +72,6 @@ internal fun generateSchemaWidgetFactory(schema: Schema): FileSpec {
     )
     .addType(
       TypeSpec.interfaceBuilder(schemaWidgetType.simpleName)
-        .addSuperinterface(widget.parameterizedBy(schemaWidgetType))
         .addProperty("schema", ANY, ABSTRACT)
         .addFunction(
           FunSpec.builder("assertSchema")

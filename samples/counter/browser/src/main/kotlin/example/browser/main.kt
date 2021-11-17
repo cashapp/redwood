@@ -17,10 +17,12 @@ package example.browser
 
 import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.compose.WindowAnimationFrameClock
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.widget.ProtocolSunspotBox
+import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.plus
@@ -34,9 +36,9 @@ fun main() {
   )
 
   val content = document.getElementById("content")!! as HTMLElement
-  val display = WidgetDisplay(
-    root = HtmlSunspotBox(content),
-    factory = HtmlSunspotNodeFactory(document),
+  val display = ProtocolWidgetDisplay(
+    root = ProtocolSunspotBox(HtmlSunspotBox(content)),
+    factory = ProtocolWidgetFactory(HtmlSunspotNodeFactory(document)),
     eventSink = composition,
   )
 

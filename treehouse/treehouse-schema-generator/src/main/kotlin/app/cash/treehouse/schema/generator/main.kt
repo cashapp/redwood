@@ -21,6 +21,7 @@ import app.cash.exhaustive.Exhaustive
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Compose
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Test
 import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.Widget
+import app.cash.treehouse.schema.generator.TreehouseGenerator.Type.WidgetProtocol
 import app.cash.treehouse.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.CliktError
@@ -42,6 +43,7 @@ private class TreehouseGenerator : CliktCommand() {
     Compose,
     Test,
     Widget,
+    WidgetProtocol,
   }
 
   private val type by option()
@@ -49,6 +51,7 @@ private class TreehouseGenerator : CliktCommand() {
       "--compose" to Compose,
       "--test" to Test,
       "--widget" to Widget,
+      "--widget-protocol" to WidgetProtocol,
     )
     .help("Type of code to generate")
     .required()
@@ -70,12 +73,6 @@ private class TreehouseGenerator : CliktCommand() {
   override fun run() {
     val schema = parseSchema(schemaType)
     @Exhaustive when (type) {
-      Widget -> {
-        generateWidgetFactory(schema).writeTo(out)
-        for (widget in schema.widgets) {
-          generateWidget(schema, widget).writeTo(out)
-        }
-      }
       Compose -> {
         for (widget in schema.widgets) {
           generateComposeNode(schema, widget).writeTo(out)
@@ -85,6 +82,18 @@ private class TreehouseGenerator : CliktCommand() {
         generateSchemaWidgetFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateSchemaWidget(schema, widget).writeTo(out)
+        }
+      }
+      Widget -> {
+        generateWidgetFactory(schema).writeTo(out)
+        for (widget in schema.widgets) {
+          generateWidget(schema, widget).writeTo(out)
+        }
+      }
+      WidgetProtocol -> {
+        generateDisplayProtocolWidgetFactory(schema).writeTo(out)
+        for (widget in schema.widgets) {
+          generateDisplayProtocolWidget(schema, widget).writeTo(out)
         }
       }
     }

@@ -24,8 +24,10 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.treehouse.compose.TreehouseComposition
-import app.cash.treehouse.widget.WidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.presenters.TodoPresenter
+import example.schema.widget.ProtocolColumn
+import example.schema.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -48,9 +50,9 @@ class TodoActivity : ComponentActivity() {
     }
     setContentView(composeView)
 
-    val display = WidgetDisplay(
-      root = root,
-      factory = ComposeUiWidgetFactory,
+    val display = ProtocolWidgetDisplay(
+      root = ProtocolColumn(root),
+      factory = ProtocolWidgetFactory(ComposeUiWidgetFactory),
       eventSink = composition,
     )
 

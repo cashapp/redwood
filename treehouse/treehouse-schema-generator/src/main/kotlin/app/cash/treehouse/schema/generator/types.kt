@@ -15,19 +15,23 @@
  */
 package app.cash.treehouse.schema.generator
 
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val eventSink = ClassName("app.cash.treehouse.protocol", "EventSink")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
 
-internal val widget = ClassName("app.cash.treehouse.widget", "Widget")
+internal val protocolWidget = ClassName("app.cash.treehouse.protocol.widget", "ProtocolWidget")
+internal val protocolWidgetFactory = protocolWidget.nestedClass("Factory")
+
 internal val widgetChildren = ClassName("app.cash.treehouse.widget", "WidgetChildren")
-internal val widgetFactory = widget.nestedClass("Factory")
 internal val mutableListChildren = ClassName("app.cash.treehouse.widget", "MutableListChildren")
 
 internal val protocolApplier = ClassName("app.cash.treehouse.compose", "ProtocolApplier")
@@ -47,3 +51,6 @@ internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
 
 internal val ae = ClassName("kotlin", "AssertionError")
 internal val iae = ClassName("kotlin", "IllegalArgumentException")
+
+internal val typeVariableT = TypeVariableName("T", listOf(ANY))
+internal val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)

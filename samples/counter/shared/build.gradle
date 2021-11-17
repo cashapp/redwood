@@ -23,6 +23,7 @@ kotlin {
       dependencies {
         implementation deps.kotlin.test
         implementation project(':samples:counter:sunspot:test')
+        implementation project(':samples:counter:sunspot:widget:protocol')
       }
     }
     nativeTest {
