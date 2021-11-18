@@ -23,11 +23,12 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolDisplay
 import example.presenters.TodoPresenter
-import example.schema.compose.ProtocolTodoComposition
+import example.schema.compose.ProtocolComposeWidgetFactory
+import example.schema.compose.TodoComposition
 import example.schema.widget.ProtocolColumn
-import example.schema.widget.ProtocolWidgetFactory
+import example.schema.widget.ProtocolDisplayWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -37,8 +38,9 @@ class TodoActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = ProtocolTodoComposition(
+    val composition = TodoComposition(
       scope = scope,
+      factory = ProtocolComposeWidgetFactory(),
       onDiff = { Log.d("TreehouseDiff", it.toString()) },
       onEvent = { Log.d("TreehouseEvent", it.toString()) },
     )
@@ -49,9 +51,9 @@ class TodoActivity : AppCompatActivity() {
     }
     setContentView(root)
 
-    val display = ProtocolWidgetDisplay(
+    val display = ProtocolDisplay(
       root = ProtocolColumn(ViewColumn(root)),
-      factory = ProtocolWidgetFactory(ViewWidgetFactory(this)),
+      factory = ProtocolDisplayWidgetFactory(ViewWidgetFactory(this)),
       eventSink = composition,
     )
 

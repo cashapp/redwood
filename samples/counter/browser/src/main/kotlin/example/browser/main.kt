@@ -16,29 +16,31 @@
 package example.browser
 
 import app.cash.treehouse.compose.WindowAnimationFrameClock
-import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolDisplay
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
-import example.sunspot.compose.ProtocolSunspotComposition
+import example.sunspot.compose.ProtocolComposeWidgetFactory
+import example.sunspot.compose.SunspotComposition
+import example.sunspot.widget.ProtocolDisplayWidgetFactory
 import example.sunspot.widget.ProtocolSunspotBox
-import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
-  val composition = ProtocolSunspotComposition(
+  val composition = SunspotComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
+    factory = ProtocolComposeWidgetFactory(),
     onDiff = { console.log("TreehouseDiff", it.toString()) },
     onEvent = { console.log("TreehouseEvent", it.toString()) },
   )
 
   val content = document.getElementById("content")!! as HTMLElement
-  val display = ProtocolWidgetDisplay(
+  val display = ProtocolDisplay(
     root = ProtocolSunspotBox(HtmlSunspotBox(content)),
-    factory = ProtocolWidgetFactory(HtmlSunspotNodeFactory(document)),
+    factory = ProtocolDisplayWidgetFactory(HtmlSunspotNodeFactory(document)),
     eventSink = composition,
   )
 

@@ -24,10 +24,10 @@ import kotlin.test.assertFailsWith
 
 class ProtocolWidgetDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {
-    ProtocolWidgetDisplay(GoodRootWidget, NullWidgetFactory) { }
+    ProtocolDisplay(GoodRootWidget, NullWidgetFactory) { }
 
     assertFailsWith<IllegalArgumentException> {
-      ProtocolWidgetDisplay(BadRootWidget, NullWidgetFactory) { }
+      ProtocolDisplay(BadRootWidget, NullWidgetFactory) { }
     }
   }
 
