@@ -1,7 +1,8 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:app.cash.treehouse.compose////PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/index.html
-$dokka.location:app.cash.treehouse.compose//TreehouseComposition/#kotlinx.coroutines.CoroutineScope#kotlin.Function1[app.cash.treehouse.protocol.Diff,kotlin.Unit]#kotlin.Function1[app.cash.treehouse.protocol.Event,kotlin.Unit]/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition.html
+$dokka.location:app.cash.treehouse.compose//TreehouseComposeNode/#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[androidx.compose.runtime.Updater[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-compose-node.html
+$dokka.location:app.cash.treehouse.compose//TreehouseComposition/#kotlinx.coroutines.CoroutineScope#kotlin.Any#app.cash.treehouse.protocol.DiffSink#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition.html
 $dokka.location:app.cash.treehouse.compose/AndroidUiDispatcher.Companion///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-dispatcher/-companion/index.html
 $dokka.location:app.cash.treehouse.compose/AndroidUiDispatcher.Companion/Main/#/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-dispatcher/-companion/-main.html
 $dokka.location:app.cash.treehouse.compose/AndroidUiDispatcher///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-dispatcher/index.html
@@ -11,6 +12,13 @@ $dokka.location:app.cash.treehouse.compose/AndroidUiDispatcher/frameClock/#/Poin
 $dokka.location:app.cash.treehouse.compose/AndroidUiFrameClock///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-frame-clock/index.html
 $dokka.location:app.cash.treehouse.compose/AndroidUiFrameClock/AndroidUiFrameClock/#android.view.Choreographer/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-frame-clock/-android-ui-frame-clock.html
 $dokka.location:app.cash.treehouse.compose/AndroidUiFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-android-ui-frame-clock/with-frame-nanos.html
+$dokka.location:app.cash.treehouse.compose/DiffAppender///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-diff-appender/index.html
+$dokka.location:app.cash.treehouse.compose/DiffAppender/DiffAppender/#app.cash.treehouse.protocol.DiffSink/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-diff-appender/-diff-appender.html
+$dokka.location:app.cash.treehouse.compose/DiffAppender/append/#app.cash.treehouse.protocol.ChildrenDiff/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-diff-appender/append.html
+$dokka.location:app.cash.treehouse.compose/DiffAppender/append/#app.cash.treehouse.protocol.PropertyDiff/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-diff-appender/append.html
+$dokka.location:app.cash.treehouse.compose/DiffAppender/trySend/#/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-diff-appender/try-send.html
+$dokka.location:app.cash.treehouse.compose/TreehouseApplier///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-applier/index.html
+$dokka.location:app.cash.treehouse.compose/TreehouseApplier/factory/#/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-applier/factory.html
 $dokka.location:app.cash.treehouse.compose/TreehouseComposition///PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition/index.html
 $dokka.location:app.cash.treehouse.compose/TreehouseComposition/cancel/#/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition/cancel.html
 $dokka.location:app.cash.treehouse.compose/TreehouseComposition/setContent/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/treehouse-compose/app.cash.treehouse.compose/-treehouse-composition/set-content.html
