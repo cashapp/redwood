@@ -77,6 +77,7 @@ private class TreehouseGenerator : CliktCommand() {
     val schema = parseSchema(schemaType)
     @Exhaustive when (type) {
       Compose -> {
+        generateCompositionFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
         }

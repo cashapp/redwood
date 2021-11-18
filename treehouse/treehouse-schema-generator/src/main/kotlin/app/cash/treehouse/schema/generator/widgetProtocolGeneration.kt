@@ -33,7 +33,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-public class ProtocolWidgetFactory<T : Any>(
+public class ProtocolDisplayWidgetFactory<T : Any>(
   private val delegate: SunspotWidgetFactory<T>
 ) : ProtocolWidget.Factory<T> {
   public override fun create(kind: Int): ProtocolWidget<T> = when (kind) {
@@ -46,9 +46,9 @@ public class ProtocolWidgetFactory<T : Any>(
 */
 internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
   val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableT)
-  return FileSpec.builder(schema.displayPackage, "ProtocolWidgetFactory")
+  return FileSpec.builder(schema.displayPackage, "ProtocolDisplayWidgetFactory")
     .addType(
-      TypeSpec.classBuilder("ProtocolWidgetFactory")
+      TypeSpec.classBuilder("ProtocolDisplayWidgetFactory")
         .addTypeVariable(typeVariableT)
         .addSuperinterface(protocolWidgetFactory.parameterizedBy(typeVariableT))
         .primaryConstructor(

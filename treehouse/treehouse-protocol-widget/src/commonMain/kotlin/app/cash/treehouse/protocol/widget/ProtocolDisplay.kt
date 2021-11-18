@@ -22,7 +22,7 @@ import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.DiffSink
 import app.cash.treehouse.protocol.EventSink
 
-public class ProtocolWidgetDisplay<T : Any>(
+public class ProtocolDisplay<T : Any>(
   private val root: ProtocolWidget<T>,
   private val factory: ProtocolWidget.Factory<T>,
   private val eventSink: EventSink,

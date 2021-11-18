@@ -21,57 +21,28 @@ import app.cash.treehouse.schema.parser.Event
 import app.cash.treehouse.schema.parser.Property
 import app.cash.treehouse.schema.parser.Schema
 import app.cash.treehouse.schema.parser.Widget
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.NOTHING
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-public fun ProtocolSunspotComposition(
-  scope: CoroutineScope,
-  onDiff: DiffSink = DiffSink {},
-  onEvent: EventSink = EventSink {},
-): TreehouseComposition {
-  return TreehouseComposition(scope, ProtocolWidgetFactory(), onDiff, onEvent)
-}
-
-private class ProtocolWidgetFactory : SunspotWidgetFactory<Nothing> {
+class ProtocolComposeWidgetFactory : SunspotWidgetFactory<Nothing> {
   override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox()
   override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText()
   override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton()
 }
 */
 internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
-  val factory = ClassName(schema.composePackage, "Protocol${schema.name}WidgetFactory")
-  return FileSpec.builder(schema.composePackage, "composition")
-    .addFunction(
-      FunSpec.builder("Protocol${schema.name}Composition")
-        .addParameter("scope", coroutineScope)
-        .addParameter(
-          ParameterSpec.builder("onDiff", diffSink)
-            .defaultValue("%T {}", diffSink)
-            .build()
-        )
-        .addParameter(
-          ParameterSpec.builder("onEvent", eventSink)
-            .defaultValue("%T {}", eventSink)
-            .build()
-        )
-        .returns(treehouseComposition)
-        .addStatement("return %T(scope, %T(), onDiff, onEvent)", treehouseComposition, factory)
-        .build()
-    )
+  return FileSpec.builder(schema.composePackage, "ProtocolComposeWidgetFactory")
     .addType(
-      TypeSpec.classBuilder(factory)
-        .addModifiers(PRIVATE)
+      TypeSpec.classBuilder("ProtocolComposeWidgetFactory")
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
         .apply {
           for (widget in schema.widgets) {

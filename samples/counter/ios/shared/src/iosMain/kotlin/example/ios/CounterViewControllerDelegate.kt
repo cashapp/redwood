@@ -16,13 +16,14 @@
 package example.ios
 
 import androidx.compose.runtime.BroadcastFrameClock
-import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
+import app.cash.treehouse.protocol.widget.ProtocolDisplay
 import example.ios.sunspot.IosSunspotBox
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
-import example.sunspot.compose.ProtocolSunspotComposition
+import example.sunspot.compose.ProtocolComposeWidgetFactory
+import example.sunspot.compose.SunspotComposition
+import example.sunspot.widget.ProtocolDisplayWidgetFactory
 import example.sunspot.widget.ProtocolSunspotBox
-import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
@@ -36,15 +37,16 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val composition = ProtocolSunspotComposition(
+    val composition = SunspotComposition(
       scope = scope,
+      factory = ProtocolComposeWidgetFactory(),
       onDiff = { NSLog("TreehouseDiff: $it") },
       onEvent = { NSLog("TreehouseEvent: $it") }
     )
 
-    val display = ProtocolWidgetDisplay(
+    val display = ProtocolDisplay(
       root = ProtocolSunspotBox(IosSunspotBox(root)),
-      factory = ProtocolWidgetFactory(IosSunspotNodeFactory),
+      factory = ProtocolDisplayWidgetFactory(IosSunspotNodeFactory),
       eventSink = composition
     )
 
