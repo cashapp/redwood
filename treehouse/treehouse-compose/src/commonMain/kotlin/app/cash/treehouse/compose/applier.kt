@@ -19,12 +19,48 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import androidx.compose.runtime.DisallowComposableCalls
+import androidx.compose.runtime.Updater
+import androidx.compose.runtime.currentComposer
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
-import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
+
+/**
+ * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
+ * we expose the factory type [F] to our factory function so the correct widget can be created.
+ */
+@Composable
+public inline fun <F, W> TreehouseComposeNode(
+  crossinline factory: (F) -> W,
+  update: @DisallowComposableCalls Updater<W>.() -> Unit,
+  content: @Composable () -> Unit = {},
+) {
+  // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
+  //  with currentComposer) in sync with ComposeNode.
+  currentComposer.startNode()
+
+  if (currentComposer.inserting) {
+    @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
+    val applier = currentComposer.applier as TreehouseApplier<F, W>
+    currentComposer.createNode {
+      factory(applier.factory)
+    }
+  } else {
+    currentComposer.useNode()
+  }
+
+  Updater<W>(currentComposer).update()
+  content()
+
+  currentComposer.endNode()
+}
+
+public interface TreehouseApplier<F, N> : Applier<N> {
+  public val factory: F
+}
 
 /**
  * A synthetic node which allows the applier to differentiate between multiple groups of children.
@@ -78,19 +114,20 @@ public open class ProtocolNode(
   public var id: Long = -1
     internal set
 
-  internal lateinit var applier: ProtocolApplier
+  @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
+  internal lateinit var _diffAppender: DiffAppender
 
-  internal val children = mutableListOf<ProtocolNode>()
+  @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
+  internal val _children = mutableListOf<ProtocolNode>()
 
   public fun appendDiff(diff: PropertyDiff) {
-    applier.appendDiff(diff)
+    _diffAppender.append(diff)
   }
 
   public open fun sendEvent(event: Event) {
     throw IllegalStateException("Node ID $id of type $type does not handle events")
   }
 }
-
 /**
  * An [Applier] which records operations on the tree as models which can then be separately applied
  * by the display layer. Additionally, it has special handling for emulating nodes which contain
@@ -125,34 +162,19 @@ public open class ProtocolNode(
  * ```
  */
 internal class ProtocolApplier(
-  private val onDiff: (Diff) -> Unit,
-) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()) {
+  override val factory: Any,
+  private val diffAppender: DiffAppender,
+) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()),
+  TreehouseApplier<Any, ProtocolNode> {
   private var nextId = RootId + 1
-  val nodes = mutableMapOf(root.id to root)
-  private var childrenDiffs = mutableListOf<ChildrenDiff>()
-  private var propertyDiffs = mutableListOf<PropertyDiff>()
-
-  fun appendDiff(diff: PropertyDiff) {
-    propertyDiffs.add(diff)
-  }
+  internal val nodes = mutableMapOf(root.id to root)
 
   override fun onEndChanges() {
-    val existingChildrenDiffs = childrenDiffs
-    val existingPropertyDiffs = propertyDiffs
-    if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-      childrenDiffs = mutableListOf()
-      propertyDiffs = mutableListOf()
-
-      val diff = Diff(
-        childrenDiffs = existingChildrenDiffs,
-        propertyDiffs = existingPropertyDiffs,
-      )
-      onDiff(diff)
-    }
+    diffAppender.trySend()
   }
 
   override fun insertTopDown(index: Int, instance: ProtocolNode) {
-    current.children.add(index, instance)
+    current._children.add(index, instance)
 
     if (instance is ProtocolChildrenNode) {
       // Inherit the ID from the current node such that changes to the children can be reported
@@ -166,10 +188,10 @@ internal class ProtocolApplier(
 
       val id = nextId++
       instance.id = id
-      instance.applier = this
+      instance._diffAppender = diffAppender
 
       nodes[id] = instance
-      childrenDiffs.add(ChildrenDiff.Insert(current.id, current.tag, id, instance.type, index))
+      diffAppender.append(ChildrenDiff.Insert(current.id, current.tag, id, instance.type, index))
     }
   }
 
@@ -180,7 +202,7 @@ internal class ProtocolApplier(
   override fun remove(index: Int, count: Int) {
     // Children instances are never removed from their parents.
     val current = current as ProtocolChildrenNode
-    val children = current.children
+    val children = current._children
 
     // TODO We should not have to track this and send it as part of the protocol.
     //  Ideally this would be entirely encapsulated on the display-side with additional bookkeeping.
@@ -192,21 +214,21 @@ internal class ProtocolApplier(
 
     nodes.keys.removeAll(removedIds)
     children.remove(index, count)
-    childrenDiffs.add(ChildrenDiff.Remove(current.id, current.tag, index, count, removedIds))
+    diffAppender.append(ChildrenDiff.Remove(current.id, current.tag, index, count, removedIds))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
     // Children instances are never moved within their parents.
     val current = current as ProtocolChildrenNode
 
-    current.children.move(from, to, count)
-    childrenDiffs.add(ChildrenDiff.Move(current.id, current.tag, from, to, count))
+    current._children.move(from, to, count)
+    diffAppender.append(ChildrenDiff.Move(current.id, current.tag, from, to, count))
   }
 
   override fun onClear() {
-    current.children.clear()
+    current._children.clear()
     nodes.clear()
     nodes[current.id] = current // Restore root node into map.
-    childrenDiffs.add(ChildrenDiff.Clear)
+    diffAppender.append(ChildrenDiff.Clear)
   }
 }

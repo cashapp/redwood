@@ -3,6 +3,14 @@ apply plugin: 'app.cash.treehouse.schema.compose'
 
 kotlin {
   jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api(project(':schema:widget'))
+      }
+    }
+  }
 }
 
 treehouseSchema {

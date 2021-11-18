@@ -21,7 +21,6 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
-import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.DiffSink
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.EventSink
@@ -42,16 +41,18 @@ public interface TreehouseComposition : EventSink {
  */
 public fun TreehouseComposition(
   scope: CoroutineScope,
-  onDiff: (Diff) -> Unit = {},
-  onEvent: (Event) -> Unit = {},
+  factory: Any,
+  onDiff: DiffSink,
+  onEvent: EventSink,
 ): TreehouseComposition {
-  return RealTreehouseComposition(scope, onDiff, onEvent)
+  return RealTreehouseComposition(scope, factory, onDiff, onEvent)
 }
 
 private class RealTreehouseComposition(
   private val scope: CoroutineScope,
-  private val onDiff: (Diff) -> Unit,
-  private val onEvent: (Event) -> Unit,
+  private val factory: Any,
+  private val onDiff: DiffSink,
+  private val onEvent: EventSink,
 ) : TreehouseComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
 
@@ -65,10 +66,12 @@ private class RealTreehouseComposition(
   override fun start(diffSink: DiffSink) {
     check(!this::applier.isInitialized) { "display already initialized" }
 
-    applier = ProtocolApplier { diff ->
-      onDiff(diff)
+    val diffAppender = DiffAppender { diff ->
+      onDiff.sendDiff(diff)
       diffSink.sendDiff(diff)
     }
+
+    applier = ProtocolApplier(factory, diffAppender)
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.
@@ -94,7 +97,7 @@ private class RealTreehouseComposition(
   override fun sendEvent(event: Event) {
     check(this::applier.isInitialized) { "display not initialized" }
 
-    onEvent(event)
+    onEvent.sendEvent(event)
 
     val node = applier.nodes[event.id]
     if (node == null) {

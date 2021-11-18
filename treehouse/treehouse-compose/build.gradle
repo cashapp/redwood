@@ -12,7 +12,8 @@ kotlin {
     commonMain {
       dependencies {
         api deps.kotlinx.coroutines.core
-        api project(':treehouse-protocol')
+        api project(':treehouse-protocol') // TODO Remove and create treehouse-protocol-compose!
+        api project(':treehouse-widget')
         api project(':compose:runtime')
       }
     }
@@ -20,6 +21,7 @@ kotlin {
       dependencies {
         implementation deps.kotlin.test
         implementation project(':treehouse-test-schema:compose')
+        implementation project(':treehouse-test-schema:compose:protocol')
       }
     }
     androidMain {

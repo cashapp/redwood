@@ -27,6 +27,7 @@ import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 import example.treehouse.compose.Box
 import example.treehouse.compose.Button
+import example.treehouse.compose.ProtocolExampleSchemaComposition
 import example.treehouse.compose.Text
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
@@ -37,7 +38,7 @@ import kotlin.test.fail
 class ProtocolTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
-    val composition = TreehouseComposition(scope = this + clock)
+    val composition = ProtocolExampleSchemaComposition(scope = this + clock)
     val diffs = ArrayDeque<Diff>()
     composition.start { diff -> diffs += diff }
 
@@ -73,7 +74,7 @@ class ProtocolTest {
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
-    val composition = TreehouseComposition(scope = this + clock)
+    val composition = ProtocolExampleSchemaComposition(scope = this + clock)
     val diffs = ArrayDeque<Diff>()
     composition.start { diff -> diffs += diff }
 

@@ -28,6 +28,7 @@ import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
+import example.sunspot.compose.ProtocolSunspotComposition
 import example.sunspot.widget.ProtocolSunspotBox
 import example.sunspot.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineScope
@@ -39,7 +40,7 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = TreehouseComposition(
+    val composition = ProtocolSunspotComposition(
       scope = scope,
       onDiff = { Log.d("TreehouseDiff", it.toString()) },
       onEvent = { Log.d("TreehouseEvent", it.toString()) },

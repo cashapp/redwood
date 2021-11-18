@@ -16,11 +16,11 @@
 package example.shared
 
 import androidx.compose.runtime.BroadcastFrameClock
-import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.sunspot.SunspotBox
 import example.sunspot.SunspotButton
 import example.sunspot.SunspotText
+import example.sunspot.compose.ProtocolSunspotComposition
 import example.sunspot.test.SchemaSunspotBox
 import example.sunspot.test.SchemaSunspotWidgetFactory
 import example.sunspot.widget.ProtocolSunspotBox
@@ -36,7 +36,7 @@ class CounterTest {
     val root = SchemaSunspotBox()
 
     val clock = BroadcastFrameClock()
-    val composition = TreehouseComposition(
+    val composition = ProtocolSunspotComposition(
       scope = this + clock,
       onDiff = { println(it) },
       onEvent = { println(it) },

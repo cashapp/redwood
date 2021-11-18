@@ -23,9 +23,9 @@ import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.treehouse.compose.TreehouseComposition
 import app.cash.treehouse.protocol.widget.ProtocolWidgetDisplay
 import example.presenters.TodoPresenter
+import example.schema.compose.ProtocolTodoComposition
 import example.schema.widget.ProtocolColumn
 import example.schema.widget.ProtocolWidgetFactory
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +37,7 @@ class TodoActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = TreehouseComposition(
+    val composition = ProtocolTodoComposition(
       scope = scope,
       onDiff = { Log.d("TreehouseDiff", it.toString()) },
       onEvent = { Log.d("TreehouseEvent", it.toString()) },
