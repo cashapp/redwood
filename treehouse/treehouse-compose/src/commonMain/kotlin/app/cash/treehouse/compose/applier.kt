@@ -36,7 +36,7 @@ import app.cash.treehouse.protocol.PropertyDiff
 public inline fun <F, W> TreehouseComposeNode(
   crossinline factory: (F) -> W,
   update: @DisallowComposableCalls Updater<W>.() -> Unit,
-  content: @Composable () -> Unit = {},
+  content: @Composable () -> Unit,
 ) {
   // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
   //  with currentComposer) in sync with ComposeNode.
