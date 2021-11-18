@@ -60,25 +60,3 @@ jobs:
           FOLDER: treehouse/build/dokka/htmlMultiModule
           TARGET_FOLDER: docs/latest/
           CLEAN: true
-
-  windows-publish:
-    runs-on: windows-latest
-    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/treehouse' }}
-
-    needs:
-      - build
-
-    steps:
-      - uses: actions/checkout@v2
-      - run: git submodule update --init
-
-      - uses: gradle/wrapper-validation-action@v1
-      - uses: actions/setup-java@v2.3.1
-        with:
-          distribution: 'zulu'
-          java-version: 14
-
-      - run: ./gradlew -p treehouse publishMingwX64PublicationToMavenRepository
-        env:
-          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
