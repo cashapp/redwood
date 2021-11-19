@@ -22,7 +22,7 @@ import app.cash.treehouse.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class GenerateComposeProtocolWidgetTest {
+class DiffProducingGenerationTest {
   @Schema(
     [
       IdPropertyNameCollisionNode::class,
@@ -38,7 +38,7 @@ class GenerateComposeProtocolWidgetTest {
   @Test fun `id property does not collide`() {
     val schema = parseSchema(IdPropertyNameCollisionSchema::class)
 
-    val fileSpec = generateComposeProtocolWidget(schema, schema.widgets.single())
+    val fileSpec = generateDiffProducingWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
       |  public override fun id(id: String): Unit {

@@ -1,0 +1,29 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api project(':treehouse-protocol')
+        api project(':treehouse-compose')
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+      }
+    }
+  }
+}
+
+dependencies {
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.androidx.compose.compiler)
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
+}

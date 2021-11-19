@@ -32,39 +32,6 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 /*
-public fun SunspotComposition(
-  scope: CoroutineScope,
-  factory: SunspotWidgetFactory<*>,
-  onDiff: DiffSink = DiffSink {},
-  onEvent: EventSink = EventSink {},
-): TreehouseComposition {
-  return TreehouseComposition(scope, factory, onDiff, onEvent)
-}
-*/
-internal fun generateCompositionFactory(schema: Schema): FileSpec {
-  return FileSpec.builder(schema.composePackage, "composition")
-    .addFunction(
-      FunSpec.builder("${schema.name}Composition")
-        .addParameter("scope", coroutineScope)
-        .addParameter("factory", schema.getWidgetFactoryType().parameterizedBy(STAR))
-        .addParameter(
-          ParameterSpec.builder("onDiff", diffSink)
-            .defaultValue("%T {}", diffSink)
-            .build()
-        )
-        .addParameter(
-          ParameterSpec.builder("onEvent", eventSink)
-            .defaultValue("%T {}", eventSink)
-            .build()
-        )
-        .returns(treehouseComposition)
-        .addStatement("return %T(scope, factory, onDiff, onEvent)", treehouseComposition)
-        .build()
-    )
-    .build()
-}
-
-/*
 @Composable
 fun SunspotButton(
   text: String?,

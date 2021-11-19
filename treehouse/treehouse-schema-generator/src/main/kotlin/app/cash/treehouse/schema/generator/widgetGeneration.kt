@@ -30,7 +30,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-interface SunspotWidgetFactory<T : Any> {
+interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
   fun SunspotText(): SunspotText<T>
   fun SunspotButton(): SunspotButton<T>
 }
@@ -40,8 +40,8 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(widgetFactoryType.packageName, widgetFactoryType.simpleName)
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
-        .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
+        .addSuperinterface(widgetFactory.parameterizedBy(typeVariableT))
         .apply {
           for (node in schema.widgets) {
             addFunction(
@@ -58,20 +58,19 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-interface SunspotButton<T: Any> {
-  val value: T
+interface SunspotButton<T: Any> : Widget<T> {
   fun text(text: String?)
   fun enabled(enabled: Boolean)
   fun onClick(onClick: (() -> Unit)?)
 }
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
-  return FileSpec.builder(schema.displayPackage, widget.flatName)
+  return FileSpec.builder(schema.widgetPackage, widget.flatName)
     .addType(
       TypeSpec.interfaceBuilder(widget.flatName)
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
-        .addProperty("value", typeVariableT)
+        .addSuperinterface(widgetType.parameterizedBy(typeVariableT))
         .apply {
           for (trait in widget.traits) {
             when (trait) {

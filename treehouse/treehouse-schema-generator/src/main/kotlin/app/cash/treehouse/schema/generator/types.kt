@@ -24,21 +24,24 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
-internal val diffSink = ClassName("app.cash.treehouse.protocol", "DiffSink")
 internal val eventType = ClassName("app.cash.treehouse.protocol", "Event")
 internal val eventSink = ClassName("app.cash.treehouse.protocol", "EventSink")
 internal val propertyDiff = ClassName("app.cash.treehouse.protocol", "PropertyDiff")
 
-internal val protocolWidget = ClassName("app.cash.treehouse.protocol.widget", "ProtocolWidget")
-internal val protocolWidgetFactory = protocolWidget.nestedClass("Factory")
+internal val abstractDiffProducingWidget = ClassName("app.cash.treehouse.protocol.compose", "AbstractDiffProducingWidget")
+internal val diffProducingWidget = ClassName("app.cash.treehouse.protocol.compose", "DiffProducingWidget")
+internal val diffProducingWidgetFactory = diffProducingWidget.nestedClass("Factory")
+internal val syntheticChildren = MemberName("app.cash.treehouse.protocol.compose", "\$SyntheticChildren")
 
-internal val widgetChildren = ClassName("app.cash.treehouse.widget", "WidgetChildren")
+internal val DiffConsumingWidget = ClassName("app.cash.treehouse.protocol.widget", "DiffConsumingWidget")
+internal val DiffConsumingWidgetFactory = DiffConsumingWidget.nestedClass("Factory")
+
+internal val widgetType = ClassName("app.cash.treehouse.widget", "Widget")
+internal val widgetChildren = widgetType.nestedClass("Children")
+internal val widgetFactory = widgetType.nestedClass("Factory")
 internal val mutableListChildren = ClassName("app.cash.treehouse.widget", "MutableListChildren")
 
-internal val protocolNode = ClassName("app.cash.treehouse.compose", "ProtocolNode")
-internal val syntheticChildren = MemberName("app.cash.treehouse.compose", "\$SyntheticChildren")
 internal val treehouseComposeNode = MemberName("app.cash.treehouse.compose", "TreehouseComposeNode")
-internal val treehouseComposition = ClassName("app.cash.treehouse.compose", "TreehouseComposition")
 
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
 
@@ -48,8 +51,6 @@ internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
       AnnotationSpec.builder(composable).build(),
     )
   )
-
-internal val coroutineScope = ClassName("kotlinx.coroutines", "CoroutineScope")
 
 internal val ae = ClassName("kotlin", "AssertionError")
 internal val iae = ClassName("kotlin", "IllegalArgumentException")

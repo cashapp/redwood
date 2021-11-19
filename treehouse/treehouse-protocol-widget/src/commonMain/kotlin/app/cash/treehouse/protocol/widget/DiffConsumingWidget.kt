@@ -17,20 +17,21 @@ package app.cash.treehouse.protocol.widget
 
 import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.widget.WidgetChildren
+import app.cash.treehouse.widget.Widget
 
-public interface ProtocolWidget<T : Any> {
-  public val value: T
-
+/**
+ * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
+ */
+public interface DiffConsumingWidget<T : Any> : Widget<T> {
   public fun apply(diff: PropertyDiff, eventSink: EventSink) {
     throw IllegalArgumentException("Widget has no properties")
   }
 
-  public fun children(tag: Int): WidgetChildren<T> {
+  public fun children(tag: Int): Widget.Children<T> {
     throw IllegalArgumentException("Widget does not support children")
   }
 
   public interface Factory<T : Any> {
-    public fun create(kind: Int): ProtocolWidget<T>
+    public fun create(kind: Int): DiffConsumingWidget<T>
   }
 }

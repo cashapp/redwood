@@ -15,7 +15,7 @@
  */
 package example.ios.sunspot
 
-import app.cash.treehouse.widget.WidgetChildren
+import app.cash.treehouse.widget.Widget
 import kotlinx.cinterop.convert
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
@@ -24,7 +24,7 @@ import platform.UIKit.subviews
 
 class UIStackViewChildren(
   private val root: UIStackView,
-) : WidgetChildren<UIView> {
+) : Widget.Children<UIView> {
   override fun insert(index: Int, widget: UIView) {
     root.insertArrangedSubview(widget, index.convert())
   }

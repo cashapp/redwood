@@ -35,19 +35,21 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-class ProtocolComposeWidgetFactory(
+class DiffProducingSunspotWidgetFactory(
   private val serializerModule: SerializersModule = SerializersModule { },
-) : SunspotWidgetFactory<Nothing> {
+) : SunspotWidgetFactory<Nothing>, DiffProducingWidget.Factory {
   override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(serializerModule)
   override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(serializerModule)
   override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(serializerModule)
 }
 */
-internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
-  return FileSpec.builder(schema.composePackage, "ProtocolComposeWidgetFactory")
+internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
+  val type = schema.diffProducingWidgetFactoryType()
+  return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
-      TypeSpec.classBuilder("ProtocolComposeWidgetFactory")
+      TypeSpec.classBuilder(type)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
+        .addSuperinterface(diffProducingWidgetFactory)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter(
@@ -66,12 +68,13 @@ internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
         )
         .apply {
           for (widget in schema.widgets) {
-            val protocolWidgetName = schema.composeProtocolWidgetType(widget)
             addFunction(
               FunSpec.builder(widget.flatName)
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
-                .addStatement("return %T(serializersModule)", protocolWidgetName)
+                .addStatement(
+                  "return %T(serializersModule)", schema.diffProducingWidgetType(widget)
+                )
                 .build()
             )
           }
@@ -82,11 +85,9 @@ internal fun generateComposeProtocolWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-internal class ProtocolSunspotButton(
+internal class DiffProducingSunspotButton(
   serializerModule: SerializersModule,
-) : ProtocolNode(3), SunspotButton<Nothing> {
-  override val value: Nothing get() = throw AssertionError()
-
+) : AbstractDiffProducingWidget(3), SunspotButton<Nothing> {
   private var onClick: (() -> Unit)? = null
 
   private val serializer_0: KSerializer<String?> = serializerModule.serializer()
@@ -112,28 +113,19 @@ internal class ProtocolSunspotButton(
   }
 }
 */
-internal fun generateComposeProtocolWidget(schema: Schema, widget: Widget): FileSpec {
-  val protocolWidgetName = schema.composeProtocolWidgetType(widget)
+internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSpec {
+  val type = schema.diffProducingWidgetType(widget)
   val widgetName = schema.widgetType(widget)
-  return FileSpec.builder(protocolWidgetName.packageName, protocolWidgetName.simpleName)
+  return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
-      TypeSpec.classBuilder(protocolWidgetName)
+      TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .superclass(protocolNode)
+        .superclass(abstractDiffProducingWidget)
         .addSuperclassConstructorParameter("%L", widget.tag)
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("serializersModule", serializersModule)
-            .build()
-        )
-        .addProperty(
-          PropertySpec.builder("value", NOTHING, OVERRIDE)
-            .getter(
-              FunSpec.getterBuilder()
-                .addStatement("throw %T()", ae)
-                .build()
-            )
             .build()
         )
         .apply {

@@ -13,54 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.compose
+package app.cash.treehouse.protocol.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.DisallowComposableCalls
-import androidx.compose.runtime.Updater
-import androidx.compose.runtime.currentComposer
+import app.cash.treehouse.compose.TreehouseApplier
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootId
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
-
-/**
- * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
- * we expose the factory type [F] to our factory function so the correct widget can be created.
- */
-@Composable
-public inline fun <F, W> TreehouseComposeNode(
-  crossinline factory: (F) -> W,
-  update: @DisallowComposableCalls Updater<W>.() -> Unit,
-  content: @Composable () -> Unit,
-) {
-  // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
-  //  with currentComposer) in sync with ComposeNode.
-  currentComposer.startNode()
-
-  if (currentComposer.inserting) {
-    @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as TreehouseApplier<F, W>
-    currentComposer.createNode {
-      factory(applier.factory)
-    }
-  } else {
-    currentComposer.useNode()
-  }
-
-  Updater<W>(currentComposer).update()
-  content()
-
-  currentComposer.endNode()
-}
-
-public interface TreehouseApplier<F, N> : Applier<N> {
-  public val factory: F
-}
 
 /**
  * A synthetic node which allows the applier to differentiate between multiple groups of children.
@@ -75,13 +39,13 @@ public interface TreehouseApplier<F, N> : Applier<N> {
  * This function is named weirdly to prevent normal usage since bad things will happen.
  *
  * @see ProtocolApplier
- * @suppress
+ * @suppress For generated code usage only.
  */
 @Composable
 public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
-  ComposeNode<ProtocolChildrenNode.Intermediate, Applier<ProtocolNode>>(
+  ComposeNode<DiffProducingChildrenWidget.Intermediate, Applier<*>>(
     factory = {
-      ProtocolChildrenNode.Intermediate(tag)
+      DiffProducingChildrenWidget.Intermediate(tag)
     },
     update = {
     },
@@ -94,11 +58,11 @@ public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
  * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
-private sealed class ProtocolChildrenNode(
+private sealed class DiffProducingChildrenWidget(
   val tag: Int,
-) : ProtocolNode(-1) {
-  class Intermediate(tag: Int) : ProtocolChildrenNode(tag)
-  class Root : ProtocolChildrenNode(RootChildrenTag) {
+) : AbstractDiffProducingWidget(-1) {
+  class Intermediate(tag: Int) : DiffProducingChildrenWidget(tag)
+  class Root : DiffProducingChildrenWidget(RootChildrenTag) {
     init {
       id = RootId
     }
@@ -106,11 +70,14 @@ private sealed class ProtocolChildrenNode(
 }
 
 /**
- * @suppress
+ * @suppress For generated code usage only.
  */
-public open class ProtocolNode(
+public abstract class AbstractDiffProducingWidget(
   public val type: Int,
-) {
+) : DiffProducingWidget {
+  override val value: Nothing
+    get() = throw AssertionError()
+
   public var id: Long = -1
     internal set
 
@@ -118,9 +85,9 @@ public open class ProtocolNode(
   internal lateinit var _diffAppender: DiffAppender
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
-  internal val _children = mutableListOf<ProtocolNode>()
+  internal val _children = mutableListOf<AbstractDiffProducingWidget>()
 
-  public fun appendDiff(diff: PropertyDiff) {
+  protected fun appendDiff(diff: PropertyDiff) {
     _diffAppender.append(diff)
   }
 
@@ -128,14 +95,16 @@ public open class ProtocolNode(
     throw IllegalStateException("Node ID $id of type $type does not handle events")
   }
 }
+
 /**
  * An [Applier] which records operations on the tree as models which can then be separately applied
  * by the display layer. Additionally, it has special handling for emulating nodes which contain
  * multiple children.
  *
- * Nodes in the tree are required to alternate between [ProtocolChildrenNode] instances and
- * non-[ProtocolChildrenNode] [ProtocolNode] subtypes starting from the root. This invariant is
- * maintained by virtue of the fact that all of the input `@Composables` should be generated code.
+ * Nodes in the tree are required to alternate between [DiffProducingChildrenWidget] instances
+ * and non-[DiffProducingChildrenWidget] [AbstractDiffProducingWidget] subtypes starting
+ * from the root. This invariant is maintained by virtue of the fact that all of the input
+ * `@Composables` should be generated code.
  *
  * For example, a node tree may look like this:
  * ```
@@ -150,8 +119,8 @@ public open class ProtocolNode(
  *        |              |              /         \
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
- * But the protocol diff output would only record non-[ProtocolChildrenNode] nodes using their
- * [ProtocolChildrenNode.tag] value:
+ * But the protocol diff output would only record non-[DiffProducingChildrenWidget] nodes using
+ * their [DiffProducingChildrenWidget.tag] value:
  * ```
  * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
  * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
@@ -162,10 +131,10 @@ public open class ProtocolNode(
  * ```
  */
 internal class ProtocolApplier(
-  override val factory: Any,
+  override val factory: DiffProducingWidget.Factory,
   private val diffAppender: DiffAppender,
-) : AbstractApplier<ProtocolNode>(ProtocolChildrenNode.Root()),
-  TreehouseApplier<Any, ProtocolNode> {
+) : AbstractApplier<AbstractDiffProducingWidget>(DiffProducingChildrenWidget.Root()),
+  TreehouseApplier<DiffProducingWidget.Factory> {
   private var nextId = RootId + 1
   internal val nodes = mutableMapOf(root.id to root)
 
@@ -173,10 +142,10 @@ internal class ProtocolApplier(
     diffAppender.trySend()
   }
 
-  override fun insertTopDown(index: Int, instance: ProtocolNode) {
+  override fun insertTopDown(index: Int, instance: AbstractDiffProducingWidget) {
     current._children.add(index, instance)
 
-    if (instance is ProtocolChildrenNode) {
+    if (instance is DiffProducingChildrenWidget) {
       // Inherit the ID from the current node such that changes to the children can be reported
       // as if they occurred directly on the parent.
       instance.id = current.id
@@ -184,7 +153,7 @@ internal class ProtocolApplier(
       // available through indexing on the parent) and we do not send them over the wire to the
       // display (they are always implied by the display interfaces).
     } else {
-      val current = current as ProtocolChildrenNode
+      val current = current as DiffProducingChildrenWidget
 
       val id = nextId++
       instance.id = id
@@ -195,13 +164,13 @@ internal class ProtocolApplier(
     }
   }
 
-  override fun insertBottomUp(index: Int, instance: ProtocolNode) {
+  override fun insertBottomUp(index: Int, instance: AbstractDiffProducingWidget) {
     // Ignored, we insert top-down for now.
   }
 
   override fun remove(index: Int, count: Int) {
     // Children instances are never removed from their parents.
-    val current = current as ProtocolChildrenNode
+    val current = current as DiffProducingChildrenWidget
     val children = current._children
 
     // TODO We should not have to track this and send it as part of the protocol.
@@ -219,7 +188,7 @@ internal class ProtocolApplier(
 
   override fun move(from: Int, to: Int, count: Int) {
     // Children instances are never moved within their parents.
-    val current = current as ProtocolChildrenNode
+    val current = current as DiffProducingChildrenWidget
 
     current._children.move(from, to, count)
     diffAppender.append(ChildrenDiff.Move(current.id, current.tag, from, to, count))

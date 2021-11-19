@@ -14,7 +14,7 @@ kotlin {
       }
       dependencies {
         api project(':treehouse-test-schema:widget')
-        api project(':treehouse-compose')
+        api project(':treehouse-protocol-compose') // TODO should be treehouse-compose!
       }
     }
   }

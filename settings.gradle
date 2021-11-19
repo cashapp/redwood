@@ -24,6 +24,7 @@ includeBuild('treehouse') {
   dependencySubstitution {
     substitute module('app.cash.treehouse:treehouse-compose') with project(':treehouse-compose')
     substitute module('app.cash.treehouse:treehouse-gradle-plugin') with project(':treehouse-gradle-plugin')
+    substitute module('app.cash.treehouse:treehouse-protocol-compose') with project(':treehouse-protocol-compose')
     substitute module('app.cash.treehouse:treehouse-protocol-widget') with project(':treehouse-protocol-widget')
     substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
     substitute module('app.cash.treehouse:treehouse-schema-generator') with project(':treehouse-schema-generator')

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.compose
+package app.cash.treehouse.protocol.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface TreehouseComposition : EventSink {
+public interface ProtocolTreehouseComposition : EventSink {
   public fun start(diffSink: DiffSink)
   public fun setContent(content: @Composable () -> Unit)
   public fun cancel()
@@ -39,21 +39,21 @@ public interface TreehouseComposition : EventSink {
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-public fun TreehouseComposition(
+public fun ProtocolTreehouseComposition(
   scope: CoroutineScope,
-  factory: Any,
-  onDiff: DiffSink,
-  onEvent: EventSink,
-): TreehouseComposition {
-  return RealTreehouseComposition(scope, factory, onDiff, onEvent)
+  factory: DiffProducingWidget.Factory,
+  onDiff: DiffSink = DiffSink {},
+  onEvent: EventSink = EventSink {},
+): ProtocolTreehouseComposition {
+  return DiffProducingTreehouseComposition(scope, factory, onDiff, onEvent)
 }
 
-private class RealTreehouseComposition(
+private class DiffProducingTreehouseComposition(
   private val scope: CoroutineScope,
-  private val factory: Any,
+  private val factory: DiffProducingWidget.Factory,
   private val onDiff: DiffSink,
   private val onEvent: EventSink,
-) : TreehouseComposition {
+) : ProtocolTreehouseComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
 
   private lateinit var applier: ProtocolApplier
