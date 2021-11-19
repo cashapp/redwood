@@ -1,0 +1,12 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.treehouse.protocol.compose////PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/index.html
+$dokka.location:app.cash.treehouse.protocol.compose//ProtocolTreehouseComposition/#kotlinx.coroutines.CoroutineScope#app.cash.treehouse.protocol.compose.DiffProducingWidget.Factory#app.cash.treehouse.protocol.DiffSink#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-protocol-treehouse-composition.html
+$dokka.location:app.cash.treehouse.protocol.compose/DiffProducingWidget.Factory///PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-diff-producing-widget/-factory/index.html
+$dokka.location:app.cash.treehouse.protocol.compose/DiffProducingWidget///PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-diff-producing-widget/index.html
+$dokka.location:app.cash.treehouse.protocol.compose/ProtocolTreehouseComposition///PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-protocol-treehouse-composition/index.html
+$dokka.location:app.cash.treehouse.protocol.compose/ProtocolTreehouseComposition/cancel/#/PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-protocol-treehouse-composition/cancel.html
+$dokka.location:app.cash.treehouse.protocol.compose/ProtocolTreehouseComposition/setContent/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-protocol-treehouse-composition/set-content.html
+$dokka.location:app.cash.treehouse.protocol.compose/ProtocolTreehouseComposition/start/#app.cash.treehouse.protocol.DiffSink/PointingToDeclaration/treehouse-protocol-compose/app.cash.treehouse.protocol.compose/-protocol-treehouse-composition/start.html
+app.cash.treehouse.protocol.compose
+

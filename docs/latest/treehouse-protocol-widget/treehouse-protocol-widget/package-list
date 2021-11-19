@@ -1,14 +1,13 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:app.cash.treehouse.protocol.widget////PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/DiffConsumingWidget.Factory///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-diff-consuming-widget/-factory/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/DiffConsumingWidget.Factory/create/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-diff-consuming-widget/-factory/create.html
+$dokka.location:app.cash.treehouse.protocol.widget/DiffConsumingWidget///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-diff-consuming-widget/index.html
+$dokka.location:app.cash.treehouse.protocol.widget/DiffConsumingWidget/apply/#app.cash.treehouse.protocol.PropertyDiff#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-diff-consuming-widget/apply.html
+$dokka.location:app.cash.treehouse.protocol.widget/DiffConsumingWidget/children/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-diff-consuming-widget/children.html
 $dokka.location:app.cash.treehouse.protocol.widget/ProtocolDisplay///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-display/index.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolDisplay/ProtocolDisplay/#app.cash.treehouse.protocol.widget.ProtocolWidget[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.widget.ProtocolWidget.Factory[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-display/-protocol-display.html
+$dokka.location:app.cash.treehouse.protocol.widget/ProtocolDisplay/ProtocolDisplay/#app.cash.treehouse.protocol.widget.DiffConsumingWidget[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.widget.DiffConsumingWidget.Factory[TypeParam(bounds=[kotlin.Any])]#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-display/-protocol-display.html
 $dokka.location:app.cash.treehouse.protocol.widget/ProtocolDisplay/sendDiff/#app.cash.treehouse.protocol.Diff/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-display/send-diff.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget.Factory///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/-factory/index.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget.Factory/create/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/-factory/create.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget///PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/index.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/apply/#app.cash.treehouse.protocol.PropertyDiff#app.cash.treehouse.protocol.EventSink/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/apply.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/children/#kotlin.Int/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/children.html
-$dokka.location:app.cash.treehouse.protocol.widget/ProtocolWidget/value/#/PointingToDeclaration/treehouse-protocol-widget/app.cash.treehouse.protocol.widget/-protocol-widget/value.html
 app.cash.treehouse.protocol.widget
 
