@@ -24,7 +24,7 @@ import platform.darwin.NSInteger
 
 public class UIViewChildren(
   private val root: UIView,
-) : WidgetChildren<UIView> {
+) : Widget.Children<UIView> {
   override fun insert(index: Int, widget: UIView) {
     root.insertSubview(widget, index.convert<NSInteger>())
   }

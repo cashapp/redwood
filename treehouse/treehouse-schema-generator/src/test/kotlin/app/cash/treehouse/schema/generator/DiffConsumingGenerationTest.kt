@@ -24,31 +24,7 @@ import org.junit.Test
 import java.util.regex.Pattern
 import java.util.regex.Pattern.MULTILINE
 
-class GenerateProtocolWidgetFactoryTest {
-  @Schema(
-    [
-      NavigationBar.Button::class,
-      Button::class,
-    ]
-  )
-  interface SimpleNameCollisionSchema
-  interface NavigationBar {
-    @Widget(1)
-    data class Button(@Property(1) val text: String)
-  }
-  @Widget(3)
-  data class Button(@Property(1) val text: String)
-
-  @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class)
-
-    val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).apply {
-      contains("fun GenerateProtocolWidgetFactoryTestNavigationBarButton()")
-      contains("fun GenerateProtocolWidgetFactoryTestButton()")
-    }
-  }
-
+class DiffConsumingGenerationTest {
   @Schema(
     [
       Node12::class,
@@ -70,7 +46,7 @@ class GenerateProtocolWidgetFactoryTest {
   @Test fun `names are sorted by their node tags`() {
     val schema = parseSchema(SortedByTagSchema::class)
 
-    val fileSpec = generateDisplayProtocolWidgetFactory(schema)
+    val fileSpec = generateDiffConsumingWidgetFactory(schema)
     assertThat(fileSpec.toString()).containsMatch(
       Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE)
     )

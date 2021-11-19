@@ -52,8 +52,9 @@ public abstract class TreehouseSchemaGeneratorPlugin(
     internal val generatorFlag: String,
     internal val dependencyCoordinate: String,
   ) {
-    Compose("--compose", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
-    ComposeProtocol("--compose-protocol", "app.cash.treehouse:treehouse-compose:$treehouseVersion"),
+    // TODO This should only rely on treehouse-compose and not treehouse-protocol-compose.
+    Compose("--compose", "app.cash.treehouse:treehouse-protocol-compose:$treehouseVersion"),
+    ComposeProtocol("--compose-protocol", "app.cash.treehouse:treehouse-protocol-compose:$treehouseVersion"),
     Test("--test", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     Widget("--widget", "app.cash.treehouse:treehouse-widget:$treehouseVersion"),
     WidgetProtocol("--widget-protocol", "app.cash.treehouse:treehouse-protocol-widget:$treehouseVersion"),

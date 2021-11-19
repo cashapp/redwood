@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse.compose
+package app.cash.treehouse.protocol.compose
 
 import app.cash.treehouse.protocol.ChildrenDiff
 import app.cash.treehouse.protocol.Diff
@@ -26,15 +26,15 @@ import app.cash.treehouse.protocol.PropertyDiff
  *
  * This class is not thread safe.
  */
-public class DiffAppender(private val diffSink: DiffSink) {
+internal class DiffAppender(private val diffSink: DiffSink) {
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
-  public fun append(childrenDiff: ChildrenDiff) {
+  fun append(childrenDiff: ChildrenDiff) {
     childrenDiffs += childrenDiff
   }
 
-  public fun append(propertyDiff: PropertyDiff) {
+  fun append(propertyDiff: PropertyDiff) {
     propertyDiffs += propertyDiff
   }
 
@@ -43,7 +43,7 @@ public class DiffAppender(private val diffSink: DiffSink) {
    * to [diffSink] and reset the internal lists to be empty. This function is a no-op if there were
    * no calls to [append] since the last invocation.
    */
-  public fun trySend() {
+  fun trySend() {
     val existingChildrenDiffs = childrenDiffs
     val existingPropertyDiffs = propertyDiffs
     if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {

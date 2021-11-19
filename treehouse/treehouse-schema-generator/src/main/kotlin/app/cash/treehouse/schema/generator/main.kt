@@ -77,15 +77,14 @@ private class TreehouseGenerator : CliktCommand() {
     val schema = parseSchema(schemaType)
     @Exhaustive when (type) {
       Compose -> {
-        generateCompositionFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
         }
       }
       ComposeProtocol -> {
-        generateComposeProtocolWidgetFactory(schema).writeTo(out)
+        generateDiffProducingWidgetFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
-          generateComposeProtocolWidget(schema, widget).writeTo(out)
+          generateDiffProducingWidget(schema, widget).writeTo(out)
         }
       }
       Test -> {
@@ -101,9 +100,9 @@ private class TreehouseGenerator : CliktCommand() {
         }
       }
       WidgetProtocol -> {
-        generateDisplayProtocolWidgetFactory(schema).writeTo(out)
+        generateDiffConsumingWidgetFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
-          generateDisplayProtocolWidget(schema, widget).writeTo(out)
+          generateDiffConsumingWidget(schema, widget).writeTo(out)
         }
       }
     }

@@ -23,13 +23,13 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
 import app.cash.treehouse.compose.AndroidUiDispatcher
+import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
 import app.cash.treehouse.protocol.widget.ProtocolDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
-import example.sunspot.compose.ProtocolComposeWidgetFactory
-import example.sunspot.compose.SunspotComposition
-import example.sunspot.widget.ProtocolDisplayWidgetFactory
+import example.sunspot.compose.DiffProducingSunspotWidgetFactory
+import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -39,9 +39,9 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = SunspotComposition(
+    val composition = ProtocolTreehouseComposition(
       scope = scope,
-      factory = ProtocolComposeWidgetFactory(),
+      factory = DiffProducingSunspotWidgetFactory(),
       onDiff = { Log.d("TreehouseDiff", it.toString()) },
       onEvent = { Log.d("TreehouseEvent", it.toString()) },
     )
@@ -52,7 +52,7 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
-    val factory = ProtocolDisplayWidgetFactory(AndroidSunspotWidgetFactory(this))
+    val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory(this))
     val display = ProtocolDisplay(
       root = factory.wrap(AndroidSunspotBox(root)),
       factory = factory,

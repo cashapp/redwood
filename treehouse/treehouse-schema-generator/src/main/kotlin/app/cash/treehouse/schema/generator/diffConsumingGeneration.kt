@@ -34,10 +34,10 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-public class ProtocolDisplayWidgetFactory<T : Any>(
+public class DiffConsumingSunspotWidgetFactory<T : Any>(
   private val delegate: SunspotWidgetFactory<T>,
   private val serializersModule: SerializersModule = SerializersModule { }
-) : ProtocolWidget.Factory<T> {
+) : DiffConsumingWidget.Factory<T> {
   public override fun create(kind: Int): ProtocolWidget<T> = when (kind) {
     1 -> wrap(delegate.SunspotBox())
     2 -> wrap(delegate.SunspotText())
@@ -45,19 +45,20 @@ public class ProtocolDisplayWidgetFactory<T : Any>(
     else -> throw IllegalArgumentException("Unknown kind $kind")
   }
 
-  public fun wrap(value: SunspotBox): ProtocolSunspotBox {
+  public fun wrap(value: SunspotBox<T>): DiffConsumingWidget<T> {
     return ProtocolSunspotBox(delegate.SunspotBox(), serializersModule)
   }
   etc.
 }
 */
-internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
+internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
   val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableT)
-  return FileSpec.builder(schema.displayPackage, "ProtocolDisplayWidgetFactory")
+  val type = schema.diffConsumingWidgetFactoryType()
+  return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
-      TypeSpec.classBuilder("ProtocolDisplayWidgetFactory")
+      TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(protocolWidgetFactory.parameterizedBy(typeVariableT))
+        .addSuperinterface(DiffConsumingWidgetFactory.parameterizedBy(typeVariableT))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetFactory)
@@ -84,7 +85,7 @@ internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
           FunSpec.builder("create")
             .addModifiers(OVERRIDE)
             .addParameter("kind", INT)
-            .returns(protocolWidget.parameterizedBy(typeVariableT))
+            .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
             .beginControlFlow("return when (kind)")
             .apply {
               for (widget in schema.widgets.sortedBy { it.tag }) {
@@ -97,12 +98,11 @@ internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
         )
         .apply {
           for (widget in schema.widgets.sortedBy { it.flatName }) {
-            val protocolWidgetType = schema.displayProtocolWidgetType(widget)
             addFunction(
               FunSpec.builder("wrap")
                 .addParameter("value", schema.widgetType(widget).parameterizedBy(typeVariableT))
-                .returns(protocolWidgetType.parameterizedBy(typeVariableT))
-                .addStatement("return %T(value, serializersModule)", protocolWidgetType)
+                .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
+                .addStatement("return %T(value, serializersModule)", schema.diffConsumingWidgetType(widget))
                 .build()
             )
           }
@@ -113,10 +113,10 @@ internal fun generateDisplayProtocolWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-public class ProtocolSunspotButton<T : Any>(
+internal class DiffConsumingSunspotButton<T : Any>(
   private val delegate: SunspotButton<T>,
   serializersModule: SerializersModule,
-) : ProtocolWidget<T> {
+) : DiffConsumingWidget<T> {
   public override val value: T get() = delegate.value
 
   private val serializer_0: KSerializer<String?> = serializersModule.serializer()
@@ -139,10 +139,10 @@ public class ProtocolSunspotButton<T : Any>(
   }
 }
 */
-internal fun generateDisplayProtocolWidget(schema: Schema, widget: Widget): FileSpec {
-  val type = schema.displayProtocolWidgetType(widget)
+internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSpec {
+  val type = schema.diffConsumingWidgetType(widget)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableT)
-  val protocolType = protocolWidget.parameterizedBy(typeVariableT)
+  val protocolType = DiffConsumingWidget.parameterizedBy(typeVariableT)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
@@ -181,7 +181,7 @@ internal fun generateDisplayProtocolWidget(schema: Schema, widget: Widget): File
                 .addParameter("eventSink", eventSink)
                 .beginControlFlow("when (val tag = diff.tag)")
                 .apply {
-                  for (trait in widget.traits) {
+                  for (trait in properties) {
                     @Exhaustive when (trait) {
                       is Property -> {
                         val propertyType = trait.type.asTypeName()

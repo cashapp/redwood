@@ -22,28 +22,28 @@ import app.cash.treehouse.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class GenerateSchemaTest {
+class WidgetGenerationTest {
   @Schema(
     [
-      DataClassWidget::class,
-      ObjectWidget::class,
+      NavigationBar.Button::class,
+      Button::class,
     ]
   )
-  interface TestSchema
-  @Widget(1)
-  data class DataClassWidget(
-    @Property(1) val label: String,
-  )
-  @Widget(2)
-  object ObjectWidget
+  interface SimpleNameCollisionSchema
+  interface NavigationBar {
+    @Widget(1)
+    data class Button(@Property(1) val text: String)
+  }
+  @Widget(3)
+  data class Button(@Property(1) val text: String)
 
-  @Test fun schemaInstanceCreation() {
-    val schema = parseSchema(TestSchema::class)
+  @Test fun `simple names do not collide`() {
+    val schema = parseSchema(SimpleNameCollisionSchema::class)
 
-    val dataClassWidget = generateSchemaWidget(schema, schema.widgets.single { it.type == DataClassWidget::class })
-    assertThat(dataClassWidget.toString()).contains("get() = GenerateSchemaTest.DataClassWidget(\n")
-
-    val objectWidget = generateSchemaWidget(schema, schema.widgets.single { it.type == ObjectWidget::class })
-    assertThat(objectWidget.toString()).contains("get() = GenerateSchemaTest.ObjectWidget\n")
+    val fileSpec = generateWidgetFactory(schema)
+    assertThat(fileSpec.toString()).apply {
+      contains("fun WidgetGenerationTestNavigationBarButton()")
+      contains("fun WidgetGenerationTestButton()")
+    }
   }
 }

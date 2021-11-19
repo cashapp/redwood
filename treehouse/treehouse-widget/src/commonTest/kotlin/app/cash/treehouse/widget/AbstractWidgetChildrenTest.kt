@@ -19,7 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 abstract class AbstractWidgetChildrenTest<T : Any> {
-  abstract val children: WidgetChildren<T>
+  abstract val children: Widget.Children<T>
   abstract fun widget(name: String): T
   abstract fun names(): List<String>
 

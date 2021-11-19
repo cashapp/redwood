@@ -18,11 +18,11 @@ package app.cash.treehouse.protocol.widget
 import app.cash.treehouse.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.treehouse.protocol.EventSink
 import app.cash.treehouse.protocol.PropertyDiff
-import app.cash.treehouse.widget.WidgetChildren
+import app.cash.treehouse.widget.Widget
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class ProtocolWidgetDisplayTest {
+class ProtocolDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {
     ProtocolDisplay(GoodRootWidget, NullWidgetFactory) { }
 
@@ -31,13 +31,13 @@ class ProtocolWidgetDisplayTest {
     }
   }
 
-  private object BadRootWidget : ProtocolWidget<Unit> {
+  private object BadRootWidget : DiffConsumingWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = throw IllegalArgumentException()
   }
 
-  private object GoodRootWidget : ProtocolWidget<Unit> {
+  private object GoodRootWidget : DiffConsumingWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = when (tag) {
@@ -46,11 +46,11 @@ class ProtocolWidgetDisplayTest {
     }
   }
 
-  private object NullWidgetFactory : ProtocolWidget.Factory<Unit> {
+  private object NullWidgetFactory : DiffConsumingWidget.Factory<Unit> {
     override fun create(kind: Int) = throw UnsupportedOperationException()
   }
 
-  private object NullWidgetChildren : WidgetChildren<Unit> {
+  private object NullWidgetChildren : Widget.Children<Unit> {
     override fun insert(index: Int, widget: Unit) = throw UnsupportedOperationException()
     override fun move(fromIndex: Int, toIndex: Int, count: Int) = throw UnsupportedOperationException()
     override fun remove(index: Int, count: Int) = throw UnsupportedOperationException()

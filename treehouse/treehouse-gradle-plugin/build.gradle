@@ -66,6 +66,8 @@ test {
   dependsOn(':treehouse-compose:installArchives')
   dependsOn(':treehouse-gradle-plugin:installArchives')
   dependsOn(':treehouse-protocol:installArchives')
+  dependsOn(':treehouse-protocol-compose:installArchives')
+  dependsOn(':treehouse-protocol-widget:installArchives')
   dependsOn(':treehouse-schema:installArchives')
   dependsOn(':treehouse-schema-generator:installArchives')
   dependsOn(':treehouse-schema-annotations:installArchives')

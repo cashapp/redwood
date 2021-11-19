@@ -16,15 +16,15 @@
 package example.shared
 
 import androidx.compose.runtime.BroadcastFrameClock
+import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
 import app.cash.treehouse.protocol.widget.ProtocolDisplay
 import example.sunspot.SunspotBox
 import example.sunspot.SunspotButton
 import example.sunspot.SunspotText
-import example.sunspot.compose.ProtocolComposeWidgetFactory
-import example.sunspot.compose.SunspotComposition
+import example.sunspot.compose.DiffProducingSunspotWidgetFactory
 import example.sunspot.test.SchemaSunspotBox
 import example.sunspot.test.SchemaSunspotWidgetFactory
-import example.sunspot.widget.ProtocolDisplayWidgetFactory
+import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -36,14 +36,14 @@ class CounterTest {
     val root = SchemaSunspotBox()
 
     val clock = BroadcastFrameClock()
-    val composition = SunspotComposition(
+    val composition = ProtocolTreehouseComposition(
       scope = this + clock,
-      factory = ProtocolComposeWidgetFactory(),
+      factory = DiffProducingSunspotWidgetFactory(),
       onDiff = { println(it) },
       onEvent = { println(it) },
     )
 
-    val factory = ProtocolDisplayWidgetFactory(SchemaSunspotWidgetFactory)
+    val factory = DiffConsumingSunspotWidgetFactory(SchemaSunspotWidgetFactory)
     val display = ProtocolDisplay(
       root = factory.wrap(root),
       factory = factory,

@@ -43,29 +43,33 @@ internal val Event.lambdaType: TypeName
 
 private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
 
-internal fun Schema.composeNodeType(widget: Widget): ClassName {
-  return ClassName(composePackage, widget.flatName + "ComposeNode")
-}
-
 internal val Schema.composePackage get() = "$`package`.compose"
 
-internal fun Schema.composeProtocolWidgetType(widget: Widget): ClassName {
-  return ClassName(composePackage, "Protocol${widget.flatName}")
+internal fun Schema.diffProducingWidgetFactoryType(): ClassName {
+  return ClassName(composePackage, "DiffProducing${name}WidgetFactory")
 }
 
-internal fun Schema.displayProtocolWidgetType(widget: Widget): ClassName {
-  return ClassName(displayPackage, "Protocol${widget.flatName}")
+internal fun Schema.diffProducingWidgetType(widget: Widget): ClassName {
+  return ClassName(composePackage, "DiffProducing${widget.flatName}")
+}
+
+internal fun Schema.diffConsumingWidgetFactoryType(): ClassName {
+  return ClassName(widgetPackage, "DiffConsuming${name}WidgetFactory")
+}
+
+internal fun Schema.diffConsumingWidgetType(widget: Widget): ClassName {
+  return ClassName(widgetPackage, "DiffConsuming${widget.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
-  return ClassName(displayPackage, widget.flatName)
+  return ClassName(widgetPackage, widget.flatName)
 }
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
-  return ClassName(displayPackage, "${name}WidgetFactory")
+  return ClassName(widgetPackage, "${name}WidgetFactory")
 }
 
-internal val Schema.displayPackage get() = "$`package`.widget"
+internal val Schema.widgetPackage get() = "$`package`.widget"
 
 internal fun Schema.testType(widget: Widget): ClassName {
   return ClassName(testPackage, "Schema${widget.flatName}")
