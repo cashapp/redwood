@@ -38,14 +38,14 @@ $dokka.location:app.cash.treehouse.protocol/Diff/propertyDiffs/#/PointingToDecla
 $dokka.location:app.cash.treehouse.protocol/DiffSink///PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-diff-sink/index.html
 $dokka.location:app.cash.treehouse.protocol/DiffSink/sendDiff/#app.cash.treehouse.protocol.Diff/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-diff-sink/send-diff.html
 $dokka.location:app.cash.treehouse.protocol/Event///PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/index.html
-$dokka.location:app.cash.treehouse.protocol/Event/Event/#kotlin.Long#kotlin.Int#kotlin.Any?/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/-event.html
+$dokka.location:app.cash.treehouse.protocol/Event/Event/#kotlin.Long#kotlin.Int#kotlinx.serialization.json.JsonElement/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/-event.html
 $dokka.location:app.cash.treehouse.protocol/Event/id/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/id.html
 $dokka.location:app.cash.treehouse.protocol/Event/tag/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/tag.html
 $dokka.location:app.cash.treehouse.protocol/Event/value/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event/value.html
 $dokka.location:app.cash.treehouse.protocol/EventSink///PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event-sink/index.html
 $dokka.location:app.cash.treehouse.protocol/EventSink/sendEvent/#app.cash.treehouse.protocol.Event/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-event-sink/send-event.html
 $dokka.location:app.cash.treehouse.protocol/PropertyDiff///PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/index.html
-$dokka.location:app.cash.treehouse.protocol/PropertyDiff/PropertyDiff/#kotlin.Long#kotlin.Int#kotlin.Any?/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/-property-diff.html
+$dokka.location:app.cash.treehouse.protocol/PropertyDiff/PropertyDiff/#kotlin.Long#kotlin.Int#kotlinx.serialization.json.JsonElement/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/-property-diff.html
 $dokka.location:app.cash.treehouse.protocol/PropertyDiff/id/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/id.html
 $dokka.location:app.cash.treehouse.protocol/PropertyDiff/tag/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/tag.html
 $dokka.location:app.cash.treehouse.protocol/PropertyDiff/value/#/PointingToDeclaration/treehouse-protocol/app.cash.treehouse.protocol/-property-diff/value.html
