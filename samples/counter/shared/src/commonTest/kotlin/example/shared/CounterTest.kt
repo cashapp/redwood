@@ -25,7 +25,6 @@ import example.sunspot.compose.SunspotComposition
 import example.sunspot.test.SchemaSunspotBox
 import example.sunspot.test.SchemaSunspotWidgetFactory
 import example.sunspot.widget.ProtocolDisplayWidgetFactory
-import example.sunspot.widget.ProtocolSunspotBox
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -44,9 +43,10 @@ class CounterTest {
       onEvent = { println(it) },
     )
 
+    val factory = ProtocolDisplayWidgetFactory(SchemaSunspotWidgetFactory)
     val display = ProtocolDisplay(
-      root = ProtocolSunspotBox(root),
-      factory = ProtocolDisplayWidgetFactory(SchemaSunspotWidgetFactory),
+      root = factory.wrap(root),
+      factory = factory,
       eventSink = composition,
     )
 

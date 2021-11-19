@@ -16,10 +16,9 @@
 package app.cash.treehouse.protocol
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -27,21 +26,16 @@ import kotlin.test.assertFailsWith
 class ProtocolTest {
   private val format = Json {
     useArrayPolymorphism = true
-    serializersModule = SerializersModule {
-      polymorphic(Any::class) {
-        subclass(String::class, String.serializer())
-      }
-    }
   }
 
   @Test fun eventNonNullValue() {
-    val model = Event(1, 2, "Hello")
-    val json = """{"id":1,"tag":2,"value":["kotlin.String","Hello"]}"""
+    val model = Event(1, 2, JsonPrimitive("Hello"))
+    val json = """{"id":1,"tag":2,"value":"Hello"}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
   @Test fun eventNullValue() {
-    val model = Event(1, 2, null)
+    val model = Event(1, 2)
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
@@ -55,8 +49,8 @@ class ProtocolTest {
         ChildrenDiff.Remove(1, 2, 3, 4, listOf(5, 6, 7, 8)),
       ),
       propertyDiffs = listOf(
-        PropertyDiff(1, 2, "Hello"),
-        PropertyDiff(1, 2, null),
+        PropertyDiff(1, 2, JsonPrimitive("Hello")),
+        PropertyDiff(1, 2, JsonNull),
       ),
     )
     val json = "" +
@@ -66,7 +60,7 @@ class ProtocolTest {
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
       """],"propertyDiffs":[""" +
-      """{"id":1,"tag":2,"value":["kotlin.String","Hello"]},""" +
+      """{"id":1,"tag":2,"value":"Hello"},""" +
       """{"id":1,"tag":2}""" +
       """]}"""
     assertJsonRoundtrip(Diff.serializer(), model, json)

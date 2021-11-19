@@ -30,7 +30,6 @@ import example.shared.Counter
 import example.sunspot.compose.ProtocolComposeWidgetFactory
 import example.sunspot.compose.SunspotComposition
 import example.sunspot.widget.ProtocolDisplayWidgetFactory
-import example.sunspot.widget.ProtocolSunspotBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -53,9 +52,10 @@ class MainActivity : Activity() {
     }
     setContentView(root)
 
+    val factory = ProtocolDisplayWidgetFactory(AndroidSunspotWidgetFactory(this))
     val display = ProtocolDisplay(
-      root = ProtocolSunspotBox(AndroidSunspotBox(root)),
-      factory = ProtocolDisplayWidgetFactory(AndroidSunspotWidgetFactory(this)),
+      root = factory.wrap(AndroidSunspotBox(root)),
+      factory = factory,
       eventSink = composition,
     )
 

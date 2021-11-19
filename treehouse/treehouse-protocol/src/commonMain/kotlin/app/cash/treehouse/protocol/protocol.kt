@@ -15,9 +15,10 @@
  */
 package app.cash.treehouse.protocol
 
-import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 
 public fun interface EventSink {
   public fun sendEvent(event: Event)
@@ -33,7 +34,7 @@ public data class Event(
   val id: Long,
   /** Identifies which event occurred on the widget with [id]. */
   val tag: Int,
-  @Polymorphic val value: Any? = null,
+  val value: JsonElement = JsonNull,
 )
 
 @Serializable
@@ -48,7 +49,7 @@ public data class PropertyDiff(
   val id: Long,
   /** Identifies which property changed on the widget with [id]. */
   val tag: Int,
-  @Polymorphic val value: Any? = null,
+  val value: JsonElement = JsonNull,
 )
 
 @Serializable
