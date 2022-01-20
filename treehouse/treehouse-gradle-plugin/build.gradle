@@ -17,45 +17,45 @@ gradlePlugin {
   plugins {
     treehouse {
       id = "app.cash.treehouse"
-      displayName = "Treehouse"
-      description = "Treehouse client Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehousePlugin"
+      displayName = "Redwood"
+      description = "Redwood client Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodPlugin"
     }
     treehouseSchema {
       id = "app.cash.treehouse.schema"
-      displayName = "Treehouse schema"
-      description = "Treehouse schema Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaPlugin"
+      displayName = "Redwood schema"
+      description = "Redwood schema Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaPlugin"
     }
     treehouseSchemaCompose {
       id = "app.cash.treehouse.schema.compose"
-      displayName = "Treehouse schema (Compose generator)"
-      description = "Treehouse schema Compose code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaComposePlugin"
+      displayName = "Redwood schema (Compose generator)"
+      description = "Redwood schema Compose code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaComposePlugin"
     }
     treehouseSchemaComposeProtocol {
       id = "app.cash.treehouse.schema.compose.protocol"
-      displayName = "Treehouse schema (Compose protocolgenerator)"
-      description = "Treehouse schema Compose protocol code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaComposeProtocolPlugin"
+      displayName = "Redwood schema (Compose protocolgenerator)"
+      description = "Redwood schema Compose protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaComposeProtocolPlugin"
     }
     treehouseSchemaTest {
       id = "app.cash.treehouse.schema.test"
-      displayName = "Treehouse schema (test generator)"
-      description = "Treehouse schema test code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaTestPlugin"
+      displayName = "Redwood schema (test generator)"
+      description = "Redwood schema test code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaTestPlugin"
     }
     treehouseSchemaWidget {
       id = "app.cash.treehouse.schema.widget"
-      displayName = "Treehouse schema (widget generator)"
-      description = "Treehouse schema widget code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaWidgetPlugin"
+      displayName = "Redwood schema (widget generator)"
+      description = "Redwood schema widget code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaWidgetPlugin"
     }
     treehouseSchemaWidgetProtocol {
       id = "app.cash.treehouse.schema.widget.protocol"
-      displayName = "Treehouse schema (widget protocol generator)"
-      description = "Treehouse schema widget protocol code generation Gradle plugin"
-      implementationClass = "app.cash.treehouse.gradle.TreehouseSchemaWidgetProtocolPlugin"
+      displayName = "Redwood schema (widget protocol generator)"
+      description = "Redwood schema widget protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaWidgetProtocolPlugin"
     }
   }
 }
@@ -84,17 +84,17 @@ task pluginVersion {
   def outputDir = file(versionDirectory)
 
   inputs.property 'composeVersion', versions.compose
-  inputs.property 'treehouseVersion', project.version
+  inputs.property 'redwoodVersion', project.version
   outputs.dir outputDir
 
   doLast {
-    def versionFile = file("$outputDir/app/cash/treehouse/gradle/version.kt")
+    def versionFile = file("$outputDir/app/cash/redwood/gradle/version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.text = """// Generated file. Do not edit!
-package app.cash.treehouse.gradle
+package app.cash.redwood.gradle
 
 internal const val composeVersion = "${versions.compose}"
-internal const val treehouseVersion = "${project.version}"
+internal const val redwoodVersion = "${project.version}"
 """
   }
 }

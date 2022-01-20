@@ -2,7 +2,7 @@ buildscript {
   apply from: '../../../../../../gradle/dependencies.gradle'
 
   dependencies {
-    classpath "app.cash.treehouse:treehouse-gradle-plugin:$treehouseVersion"
+    classpath "app.cash.treehouse:treehouse-gradle-plugin:$redwoodVersion"
     classpath deps.kotlin.gradlePlugin
   }
 

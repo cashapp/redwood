@@ -26,10 +26,10 @@ import app.cash.treehouse.protocol.Diff
 import app.cash.treehouse.protocol.Event
 import app.cash.treehouse.protocol.PropertyDiff
 import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
-import example.treehouse.compose.Box
-import example.treehouse.compose.Button
-import example.treehouse.compose.DiffProducingExampleSchemaWidgetFactory
-import example.treehouse.compose.Text
+import example.redwood.compose.Box
+import example.redwood.compose.Button
+import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
+import example.redwood.compose.Text
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
 import kotlinx.serialization.json.JsonPrimitive

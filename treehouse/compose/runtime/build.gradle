@@ -18,14 +18,14 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
     //
     // To mitigate this, we want to modify our Gradle module metadata (which tells Gradle which
     // artifact to use for each platform) so that the Android variants point at the AndroidX copy.
-    // This will ensure that consumers of Treehouse and something like Compose UI in Android builds
+    // This will ensure that consumers of Redwood and something like Compose UI in Android builds
     // will use the same Maven coordinates for the runtime and only a single copy will be used.
     //
     // As far as I can tell, there are no APIs comprehensive enough to do this manipulation. For
     // now we do a proper horrible workaround by simply matching the partial JSON text we want to
     // replace and inserting a new partial JSON text with the updated metadata JSON.
 
-    String find = file('module_find.txt').text.replace('{TREEHOUSE_VERSION}', version)
+    String find = file('module_find.txt').text.replace('{REDWOOD_VERSION}', version)
     String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', versions.compose)
 
     File file = outputFile.get().getAsFile()
