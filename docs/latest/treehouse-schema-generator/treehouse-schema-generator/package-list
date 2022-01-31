@@ -1,6 +1,6 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:app.cash.treehouse.schema.generator////PointingToDeclaration/treehouse-schema-generator/app.cash.treehouse.schema.generator/index.html
-$dokka.location:app.cash.treehouse.schema.generator//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/treehouse-schema-generator/app.cash.treehouse.schema.generator/main.html
-app.cash.treehouse.schema.generator
+$dokka.location:app.cash.redwood.schema.generator////PointingToDeclaration/treehouse-schema-generator/app.cash.redwood.schema.generator/index.html
+$dokka.location:app.cash.redwood.schema.generator//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/treehouse-schema-generator/app.cash.redwood.schema.generator/main.html
+app.cash.redwood.schema.generator
 
