@@ -22,9 +22,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.LinearLayout.VERTICAL
-import app.cash.treehouse.compose.AndroidUiDispatcher
-import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
-import app.cash.treehouse.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.AndroidUiDispatcher
+import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import example.android.sunspot.AndroidSunspotBox
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
@@ -39,11 +39,11 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = ProtocolTreehouseComposition(
+    val composition = ProtocolRedwoodComposition(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
+      onDiff = { Log.d("RedwoodDiff", it.toString()) },
+      onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
     val root = LinearLayout(this).apply {

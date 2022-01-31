@@ -1,9 +1,9 @@
-Treehouse
-=========
+Redwood
+=======
 
-Treehouse is a library for building reactive Android, iOS, and web UIs using Kotlin.
+Redwood is a library for building reactive Android, iOS, and web UIs using Kotlin.
 
-**Treehouse is currently under development and not ready for use by anyone.**
+**Redwood is currently under development and not ready for use by anyone.**
 
 
 ### Reactive UIs
@@ -67,16 +67,16 @@ The design system helps with collaboration between programmers and designers. It
 uniformity within the application and across platforms.
 
 
-### What Is Treehouse?
+### What Is Redwood?
 
-Treehouse integrates the Compose compiler, a design system, and a set of platform-specific displays.
-Each Treehouse project is implemented in three parts:
+Redwood integrates the Compose compiler, a design system, and a set of platform-specific displays.
+Each Redwood project is implemented in three parts:
 
- * **A design system.** Treehouse includes a sample design system called ‘Sunspot’. Most
+ * **A design system.** Redwood includes a sample design system called ‘Sunspot’. Most
    applications should customize this to match their product needs.
    
  * **Displays for UI platforms.** The display draws the pixels of the design system on-screen.
-   Displays can be implemented for any UI platform. Treehouse includes sample displays for Sunspot
+   Displays can be implemented for any UI platform. Redwood includes sample displays for Sunspot
    for Android, iOS, and web.
    
  * **Composable Functions.** This is client logic that accepts application state and returns
@@ -84,14 +84,14 @@ Each Treehouse project is implemented in three parts:
    system.
 
 
-### Why Treehouse?
+### Why Redwood?
 
 We're eager to start writing reactive UIs! But we're reluctant to continue duplicating code across
 iOS, Android, and web platforms. In particular, we don't like how supporting multiple platforms
 reduces our overall agility.
 
 We'd like to shortcut the slow native UI development process. Iterating on UIs for Android requires
-a slow compile step and a slow `adb install` step. With Treehouse, we hope to use the web as our
+a slow compile step and a slow `adb install` step. With Redwood, we hope to use the web as our
 development target while we iterate on composable function changes.
 
 We want the option to change application behavior without waiting for users to update their apps.
@@ -105,15 +105,15 @@ with little performance penalty.
 React Native is compelling. But we've read about [difficulties integrating it][react_native_airbnb]
 into an existing application and team.
 
-**Treehouse is a library, not a framework.** It is designed to be adopted incrementally, and to
-be low-risk to integrate in an existing Android project. Using Treehouse in an iOS or web
+**Redwood is a library, not a framework.** It is designed to be adopted incrementally, and to
+be low-risk to integrate in an existing Android project. Using Redwood in an iOS or web
 application is riskier! We've had good experiences with [Kotlin Multiplatform Mobile][kmm], and
-expect a similar outcome with Treehouse.
+expect a similar outcome with Redwood.
 
 
 ### Code Sample
 
-We start by expressing our design system as a set of Kotlin data classes. Treehouse will use these
+We start by expressing our design system as a set of Kotlin data classes. Redwood will use these
 classes to generate type-safe APIs for the displays and composable functions.
 
 ```kotlin
@@ -152,7 +152,7 @@ API features like `remember()`.
 
 ```kotlin
 @Composable
-fun TreehouseScope.Counter(value: Int = 0) {
+fun Counter(value: Int = 0) {
   var count by remember { mutableStateOf(value) }
 
   SunspotButton("-1", onClick = { count-- })

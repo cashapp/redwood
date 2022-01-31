@@ -18,7 +18,7 @@ package example.android.composeui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import app.cash.treehouse.widget.Widget
+import app.cash.redwood.widget.Widget
 
 class ComposeUiWidgetChildren : Widget.Children<@Composable () -> Unit> {
   private val children = mutableStateListOf<@Composable () -> Unit>()

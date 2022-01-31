@@ -1,0 +1,9 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.schema'
+
+kotlin {
+  js {
+    nodejs()
+  }
+  jvm()
+}

@@ -54,7 +54,7 @@ allprojects {
 
   plugins.withId('org.jetbrains.kotlin.jvm') {
     kotlin {
-      if (project.path.startsWith(':treehouse-')) {
+      if (project.path.startsWith(':redwood-')) {
         explicitApi()
       }
     }
@@ -62,7 +62,7 @@ allprojects {
 
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
     kotlin {
-      if (project.path.startsWith(':treehouse-')) {
+      if (project.path.startsWith(':redwood-')) {
         explicitApi()
       }
 

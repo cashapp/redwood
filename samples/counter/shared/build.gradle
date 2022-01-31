@@ -1,12 +1,12 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.treehouse'
+apply plugin: 'app.cash.redwood'
 
 kotlin {
   ios()
   js {
     browser {
       testTask {
-        // TODO re-enable https://github.com/square/treehouse/issues/129
+        // TODO re-enable https://github.com/cashapp/redwood/issues/129
         enabled = false
       }
     }

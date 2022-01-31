@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'com.vanniktech.maven.publish'
+
+dependencies {
+  api project(':redwood-schema-annotations')
+  api deps.kotlin.reflect
+
+  testImplementation deps.junit
+  testImplementation deps.truth
+}

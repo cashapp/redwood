@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'app.cash.treehouse'
+apply plugin: 'app.cash.redwood'
 
 dependencies {
   implementation project(':samples:todo-list:schema:compose:protocol')

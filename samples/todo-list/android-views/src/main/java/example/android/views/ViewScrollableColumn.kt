@@ -17,7 +17,7 @@
 package example.android.views
 
 import android.view.View
-import app.cash.treehouse.widget.ViewGroupChildren
+import app.cash.redwood.widget.ViewGroupChildren
 import example.android.views.databinding.ScrollableColumnBinding
 import example.schema.widget.ScrollableColumn
 

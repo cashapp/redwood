@@ -1,0 +1,48 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+def generatedDir = 'build/generated/redwood'
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      kotlin {
+        srcDir generatedDir
+      }
+      dependencies {
+        api project(':redwood-protocol-compose')
+        api project(':redwood-test-schema:widget')
+      }
+    }
+  }
+}
+
+configurations {
+  generator
+}
+
+dependencies {
+  generator project(':redwood-schema-generator')
+  generator project(':redwood-test-schema')
+}
+
+def generate = tasks.register('redwoodGenerate', JavaExec) {
+  it.classpath(configurations.generator)
+  it.main('app.cash.redwood.schema.generator.Main')
+  it.args(
+    '--compose-protocol',
+    '--out', generatedDir,
+    'example.redwood.ExampleSchema',
+  )
+
+  it.doFirst {
+    file(generatedDir).deleteDir()
+  }
+}
+
+kotlin.targets.all { target ->
+  target.compilations.all { compilation ->
+    compilation.compileKotlinTask.dependsOn(generate.get())
+  }
+}

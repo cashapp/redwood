@@ -1,0 +1,19 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.schema.compose'
+
+kotlin {
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api(project(':schema:widget'))
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = project(':schema')
+  type = 'example.counter.Counter'
+}

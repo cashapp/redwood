@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.js'
-apply plugin: 'app.cash.treehouse'
+apply plugin: 'app.cash.redwood'
 
 archivesBaseName = 'counter'
 
