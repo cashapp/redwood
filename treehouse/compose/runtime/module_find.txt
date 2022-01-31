@@ -5,10 +5,10 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android/{TREEHOUSE_VERSION}/compose-runtime-android-{TREEHOUSE_VERSION}.module",
+        "url": "../../compose-runtime-android/{REDWOOD_VERSION}/compose-runtime-android-{REDWOOD_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android",
-        "version": "{TREEHOUSE_VERSION}"
+        "version": "{REDWOOD_VERSION}"
       }
     },
     {
@@ -18,9 +18,9 @@
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
       "available-at": {
-        "url": "../../compose-runtime-android/{TREEHOUSE_VERSION}/compose-runtime-android-{TREEHOUSE_VERSION}.module",
+        "url": "../../compose-runtime-android/{REDWOOD_VERSION}/compose-runtime-android-{REDWOOD_VERSION}.module",
         "group": "app.cash.treehouse",
         "module": "compose-runtime-android",
-        "version": "{TREEHOUSE_VERSION}"
+        "version": "{REDWOOD_VERSION}"
       }
     },

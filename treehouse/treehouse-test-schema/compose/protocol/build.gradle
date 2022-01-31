@@ -1,6 +1,6 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
-def generatedDir = 'build/generated/treehouse'
+def generatedDir = 'build/generated/redwood'
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
@@ -27,13 +27,13 @@ dependencies {
   generator project(':treehouse-test-schema')
 }
 
-def generate = tasks.register('treehouseGenerate', JavaExec) {
+def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
-  it.main('app.cash.treehouse.schema.generator.Main')
+  it.main('app.cash.redwood.schema.generator.Main')
   it.args(
     '--compose-protocol',
     '--out', generatedDir,
-    'example.treehouse.ExampleSchema',
+    'example.redwood.ExampleSchema',
   )
 
   it.doFirst {
