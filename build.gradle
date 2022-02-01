@@ -71,7 +71,7 @@ allprojects {
       configuration.resolutionStrategy.dependencySubstitution {
         all { dependency ->
           if (dependency.requested instanceof ProjectComponentSelector
-              && dependency.requested.buildName == 'treehouse'
+              && dependency.requested.buildName == 'redwood'
               && dependency.requested.projectPath == ':compose:runtime') {
             dependency.useTarget("androidx.compose.runtime:runtime:${versions.compose}")
           }

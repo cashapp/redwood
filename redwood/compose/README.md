@@ -31,7 +31,7 @@ Copy the git SHA which corresponds to the "B"s.
 Update the Compose submodule HEAD to this git SHA, run:
 
 ```
-$ cd treehouse/compose/upstream
+$ cd redwood/compose/upstream
 $ git fetch origin
 $ git checkout BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 $ cd -
@@ -39,16 +39,16 @@ $ cd -
 
 (replacing the "B"s with the real git SHA, obviously)
 
-Run a full `./gradlew -p treehouse clean build` and `./gradlew clean build`.
+Run a full `./gradlew -p redwood clean build` and `./gradlew clean build`.
 
-If any of the checks in `treehouse/compose/build.gradle` fail, look in
-`treehouse/compose/upstream/gradle/libs.versions.toml` for the Kotlin and kotlinx.coroutines versions in use
+If any of the checks in `redwood/compose/build.gradle` fail, look in
+`redwood/compose/upstream/gradle/libs.versions.toml` for the Kotlin and kotlinx.coroutines versions in use
 and update `gradle/dependencies.gradle` to match.
 
 If either the `jsMain/` or `nativeMain/` sources fail to compile, the `actual`s may need updated.
 The JS actuals come from the `compose-web-main` branch [here](https://github.com/JetBrains/androidx/tree/compose-web-main/compose/runtime/runtime/src/jsMain/).
 The native actuals come from the `compose-native-main` branch [here](https://github.com/JetBrains/androidx/tree/compose-native-main/compose/runtime/runtime/src/nativeMain/).
-Assuming JetBrains has updated their fork (which you may have to wait for), copy the new files into the Redwood project at `treehouse/compose/runtime/src/jsMain/` and/or `treehouse/compose/runtime/src/nativeMain/`.
+Assuming JetBrains has updated their fork (which you may have to wait for), copy the new files into the Redwood project at `redwood/compose/runtime/src/jsMain/` and/or `redwood/compose/runtime/src/nativeMain/`.
 
 If any of the other modules fail to compile there are probably changes and/or deprecations in Compose that will need to be corrected.
 This will be a problem for _any_ Compose-based project, so the official change log should have instructions.
@@ -64,7 +64,7 @@ Ensure that your submodule is properly cloned.
 You can check by listing git remotes in the `upstream` directory. 
 
 ```
-$ cd treehouse/compose/upstream
+$ cd redwood/compose/upstream
 $ git remote -v 
 origin	https://android.googlesource.com/platform/frameworks/support (fetch)
 origin	https://android.googlesource.com/platform/frameworks/support (push)
