@@ -20,7 +20,7 @@ include ':samples:todo-list:schema:compose:protocol'
 include ':samples:todo-list:schema:widget'
 include ':samples:todo-list:schema:widget:protocol'
 
-includeBuild('treehouse') {
+includeBuild('redwood') {
   dependencySubstitution {
     substitute module('app.cash.redwood:redwood-compose') with project(':redwood-compose')
     substitute module('app.cash.redwood:redwood-gradle-plugin') with project(':redwood-gradle-plugin')

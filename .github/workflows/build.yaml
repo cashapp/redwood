@@ -33,7 +33,7 @@ jobs:
           distribution: 'zulu'
           java-version: 14
 
-      - run: ./gradlew -p treehouse build dokkaHtmlMultiModule --parallel
+      - run: ./gradlew -p redwood build dokkaHtmlMultiModule --parallel
 
       - name: Build samples
         run: ./gradlew build --parallel
@@ -45,7 +45,7 @@ jobs:
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
-      - run: ./gradlew -p treehouse publish
+      - run: ./gradlew -p redwood publish
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
         env:
           ORG_GRADLE_PROJECT_SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
@@ -57,6 +57,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: treehouse/build/dokka/htmlMultiModule
+          FOLDER: redwood/build/dokka/htmlMultiModule
           TARGET_FOLDER: docs/latest/
           CLEAN: true

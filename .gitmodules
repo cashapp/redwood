@@ -1,4 +1,4 @@
-[submodule "treehouse/compose/upstream"]
-	path = treehouse/compose/upstream
+[submodule "redwood/compose/upstream"]
+	path = redwood/compose/upstream
 	url = https://android.googlesource.com/platform/frameworks/support
 	branch = androidx-main

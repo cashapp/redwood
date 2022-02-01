@@ -9,7 +9,7 @@ build
 /reports
 
 # Gradle (nested build)
-/treehouse/.gradle
+/redwood/.gradle
 
 # Android
 local.properties
