@@ -16,8 +16,8 @@
 package example.ios
 
 import androidx.compose.runtime.BroadcastFrameClock
-import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
-import app.cash.treehouse.protocol.widget.ProtocolDisplay
+import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import example.ios.sunspot.IosSunspotBox
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
@@ -36,11 +36,11 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val composition = ProtocolTreehouseComposition(
+    val composition = ProtocolRedwoodComposition(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
-      onDiff = { NSLog("TreehouseDiff: $it") },
-      onEvent = { NSLog("TreehouseEvent: $it") }
+      onDiff = { NSLog("RedwoodDiff: $it") },
+      onEvent = { NSLog("RedwoodEvent: $it") }
     )
 
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)

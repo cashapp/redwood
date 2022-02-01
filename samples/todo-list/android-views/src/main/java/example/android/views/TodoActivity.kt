@@ -22,9 +22,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.treehouse.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
-import app.cash.treehouse.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
+import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import example.presenters.TodoPresenter
 import example.schema.compose.DiffProducingTodoWidgetFactory
 import example.schema.widget.DiffConsumingTodoWidgetFactory
@@ -37,11 +37,11 @@ class TodoActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = ProtocolTreehouseComposition(
+    val composition = ProtocolRedwoodComposition(
       scope = scope,
       factory = DiffProducingTodoWidgetFactory(),
-      onDiff = { Log.d("TreehouseDiff", it.toString()) },
-      onEvent = { Log.d("TreehouseEvent", it.toString()) },
+      onDiff = { Log.d("RedwoodDiff", it.toString()) },
+      onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
     val root = LinearLayout(this).apply {

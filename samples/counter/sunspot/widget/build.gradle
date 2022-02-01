@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.treehouse.schema.widget'
+apply plugin: 'app.cash.redwood.schema.widget'
 
 kotlin {
   ios()
@@ -9,7 +9,7 @@ kotlin {
   jvm()
 }
 
-treehouseSchema {
+redwoodSchema {
   source = project(':samples:counter:sunspot')
   type = 'example.sunspot.Sunspot'
 }

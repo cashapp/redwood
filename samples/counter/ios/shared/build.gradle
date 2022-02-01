@@ -16,7 +16,7 @@
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
-apply plugin: 'app.cash.treehouse'
+apply plugin: 'app.cash.redwood'
 
 kotlin {
   def sdkName = System.getenv("SDK_NAME")
@@ -49,7 +49,7 @@ kotlin {
   }
 }
 
-// TODO Remove disabling release https://github.com/square/treehouse/issues/119
+// TODO Remove disabling release https://github.com/cashapp/redwood/issues/119
 tasks.named('linkPodReleaseFrameworkIos').configure { task ->
   task.enabled = false
 }

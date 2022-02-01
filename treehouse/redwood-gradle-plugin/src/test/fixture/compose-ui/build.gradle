@@ -1,0 +1,27 @@
+buildscript {
+  apply from: '../../../../../../gradle/dependencies.gradle'
+
+  dependencies {
+    classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
+    classpath deps.androidGradlePlugin
+    classpath deps.kotlin.gradlePlugin
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+  }
+}

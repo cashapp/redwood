@@ -1,4 +1,4 @@
-rootProject.name = 'treehouse-root'
+rootProject.name = 'redwood-root'
 
 include ':samples:counter:android'
 include ':samples:counter:browser'
@@ -22,14 +22,14 @@ include ':samples:todo-list:schema:widget:protocol'
 
 includeBuild('treehouse') {
   dependencySubstitution {
-    substitute module('app.cash.treehouse:treehouse-compose') with project(':treehouse-compose')
-    substitute module('app.cash.treehouse:treehouse-gradle-plugin') with project(':treehouse-gradle-plugin')
-    substitute module('app.cash.treehouse:treehouse-protocol-compose') with project(':treehouse-protocol-compose')
-    substitute module('app.cash.treehouse:treehouse-protocol-widget') with project(':treehouse-protocol-widget')
-    substitute module('app.cash.treehouse:treehouse-schema-annotations') with project(':treehouse-schema-annotations')
-    substitute module('app.cash.treehouse:redwood-schema-generator') with project(':treehouse-schema-generator')
-    substitute module('app.cash.treehouse:treehouse-widget') with project(':treehouse-widget')
+    substitute module('app.cash.redwood:redwood-compose') with project(':redwood-compose')
+    substitute module('app.cash.redwood:redwood-gradle-plugin') with project(':redwood-gradle-plugin')
+    substitute module('app.cash.redwood:redwood-protocol-compose') with project(':redwood-protocol-compose')
+    substitute module('app.cash.redwood:redwood-protocol-widget') with project(':redwood-protocol-widget')
+    substitute module('app.cash.redwood:redwood-schema-annotations') with project(':redwood-schema-annotations')
+    substitute module('app.cash.redwood:redwood-schema-generator') with project(':redwood-schema-generator')
+    substitute module('app.cash.redwood:redwood-widget') with project(':redwood-widget')
 
-    substitute module('app.cash.treehouse:compose-compiler-hosted') with project(':compose:compiler-hosted')
+    substitute module('app.cash.redwood:compose-compiler-hosted') with project(':compose:compiler-hosted')
   }
 }

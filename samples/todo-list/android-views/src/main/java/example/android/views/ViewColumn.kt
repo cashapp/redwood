@@ -18,7 +18,7 @@ package example.android.views
 
 import android.view.View
 import android.widget.LinearLayout
-import app.cash.treehouse.widget.ViewGroupChildren
+import app.cash.redwood.widget.ViewGroupChildren
 import example.schema.widget.Column
 
 class ViewColumn(

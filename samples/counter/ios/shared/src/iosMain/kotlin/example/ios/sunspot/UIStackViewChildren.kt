@@ -15,7 +15,7 @@
  */
 package example.ios.sunspot
 
-import app.cash.treehouse.widget.Widget
+import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.convert
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView

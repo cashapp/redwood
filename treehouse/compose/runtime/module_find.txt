@@ -6,7 +6,7 @@
       },
       "available-at": {
         "url": "../../compose-runtime-android/{REDWOOD_VERSION}/compose-runtime-android-{REDWOOD_VERSION}.module",
-        "group": "app.cash.treehouse",
+        "group": "app.cash.redwood",
         "module": "compose-runtime-android",
         "version": "{REDWOOD_VERSION}"
       }
@@ -19,7 +19,7 @@
       },
       "available-at": {
         "url": "../../compose-runtime-android/{REDWOOD_VERSION}/compose-runtime-android-{REDWOOD_VERSION}.module",
-        "group": "app.cash.treehouse",
+        "group": "app.cash.redwood",
         "module": "compose-runtime-android",
         "version": "{REDWOOD_VERSION}"
       }

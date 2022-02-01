@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.treehouse.schema.compose'
+apply plugin: 'app.cash.redwood.schema.compose'
 
 kotlin {
   ios()
@@ -14,7 +14,7 @@ kotlin {
   }
 }
 
-treehouseSchema {
+redwoodSchema {
   source = project(':samples:todo-list:schema')
   type = 'example.schema.Todo'
 }

@@ -15,10 +15,10 @@
  */
 package example.schema
 
-import app.cash.treehouse.schema.Children
-import app.cash.treehouse.schema.Property
-import app.cash.treehouse.schema.Schema
-import app.cash.treehouse.schema.Widget
+import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.Property
+import app.cash.redwood.schema.Schema
+import app.cash.redwood.schema.Widget
 
 @Schema(
   [

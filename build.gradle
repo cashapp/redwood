@@ -9,7 +9,7 @@ buildscript {
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
-    classpath 'app.cash.treehouse:treehouse-gradle-plugin'
+    classpath 'app.cash.redwood:redwood-gradle-plugin'
   }
   repositories {
     mavenCentral()
@@ -63,7 +63,7 @@ allprojects {
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
     }
 
-    // Normally the TreehousePlugin performs dependency substitution to replace our Compose runtime
+    // Normally the RedwoodPlugin performs dependency substitution to replace our Compose runtime
     // for Android with the official AndroidX one. However, because we are using includeBuild in
     // settings.gradle, the substitution does not match. Instead, for Android samples, we match
     // on the included build's Compose runtime Gradle project and perform the same replacement.

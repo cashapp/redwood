@@ -1,0 +1,57 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api deps.kotlinx.coroutines.core
+        api project(':redwood-protocol') // TODO Remove and create redwood-protocol-compose!
+        api project(':redwood-widget')
+        api project(':compose:runtime')
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+        implementation project(':redwood-test-schema:compose')
+        implementation project(':redwood-test-schema:compose:protocol')
+      }
+    }
+    androidMain {
+      dependencies {
+        implementation deps.androidx.core
+      }
+    }
+    androidTest {
+      dependsOn jvmTest
+    }
+  }
+}
+
+android {
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+}
+
+dependencies {
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.androidx.compose.compiler)
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/androidMain/kotlin/app/cash/redwood/compose/AndroidUiDispatcher.kt",
+      "src/androidMain/kotlin/app/cash/redwood/compose/AndroidUiFrameClock.kt",
+    )
+  }
+}

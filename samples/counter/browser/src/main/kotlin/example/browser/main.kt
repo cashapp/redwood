@@ -15,9 +15,9 @@
  */
 package example.browser
 
-import app.cash.treehouse.compose.WindowAnimationFrameClock
-import app.cash.treehouse.protocol.compose.ProtocolTreehouseComposition
-import app.cash.treehouse.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import example.browser.sunspot.HtmlSunspotBox
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
@@ -29,11 +29,11 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
-  val composition = ProtocolTreehouseComposition(
+  val composition = ProtocolRedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     factory = DiffProducingSunspotWidgetFactory(),
-    onDiff = { console.log("TreehouseDiff", it.toString()) },
-    onEvent = { console.log("TreehouseEvent", it.toString()) },
+    onDiff = { console.log("RedwoodDiff", it.toString()) },
+    onEvent = { console.log("RedwoodEvent", it.toString()) },
   )
 
   val content = document.getElementById("content")!! as HTMLElement

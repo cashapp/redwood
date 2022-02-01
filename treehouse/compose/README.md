@@ -1,4 +1,4 @@
-# Treehouse's Compose
+# Redwood's Compose
 
 We build our own copy of the Compose runtime as a multiplatform project with JVM, JS, and native
 targets in addition to the regular Android. The Android and JVM `actual`s are sourced from AOSP,
@@ -48,7 +48,7 @@ and update `gradle/dependencies.gradle` to match.
 If either the `jsMain/` or `nativeMain/` sources fail to compile, the `actual`s may need updated.
 The JS actuals come from the `compose-web-main` branch [here](https://github.com/JetBrains/androidx/tree/compose-web-main/compose/runtime/runtime/src/jsMain/).
 The native actuals come from the `compose-native-main` branch [here](https://github.com/JetBrains/androidx/tree/compose-native-main/compose/runtime/runtime/src/nativeMain/).
-Assuming JetBrains has updated their fork (which you may have to wait for), copy the new files into the Treehouse project at `treehouse/compose/runtime/src/jsMain/` and/or `treehouse/compose/runtime/src/nativeMain/`.
+Assuming JetBrains has updated their fork (which you may have to wait for), copy the new files into the Redwood project at `treehouse/compose/runtime/src/jsMain/` and/or `treehouse/compose/runtime/src/nativeMain/`.
 
 If any of the other modules fail to compile there are probably changes and/or deprecations in Compose that will need to be corrected.
 This will be a problem for _any_ Compose-based project, so the official change log should have instructions.

@@ -5,7 +5,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
-archivesBaseName = 'treehouse-jetpack-compose'
+archivesBaseName = 'redwood-jetpack-compose'
 
 tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
   doLast {

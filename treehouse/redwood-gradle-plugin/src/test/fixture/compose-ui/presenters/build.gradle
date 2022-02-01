@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.redwood'
+
+dependencies {
+  implementation project(':schema:compose')
+}
+
+android {
+  compileSdkVersion 31
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+
+  defaultConfig {
+    minSdkVersion 21
+    targetSdkVersion 30
+  }
+}
