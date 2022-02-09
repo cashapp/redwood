@@ -1,0 +1,33 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.redwood.widget////PointingToDeclaration/redwood-widget/app.cash.redwood.widget/index.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/index.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren/HTMLElementChildren/#org.w3c.dom.HTMLElement/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/-h-t-m-l-element-children.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren/clear/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/clear.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren/insert/#kotlin.Int#org.w3c.dom.HTMLElement/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/insert.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/move.html
+$dokka.location:app.cash.redwood.widget/HTMLElementChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-h-t-m-l-element-children/remove.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/index.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/MutableListChildren/#kotlin.collections.MutableList[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/-mutable-list-children.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/clear/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/clear.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/insert/#kotlin.Int#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/insert.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/iterator/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/iterator.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/list/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/list.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/move.html
+$dokka.location:app.cash.redwood.widget/MutableListChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-mutable-list-children/remove.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/index.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren/ViewGroupChildren/#android.view.ViewGroup/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/-view-group-children.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren/clear/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/clear.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren/insert/#kotlin.Int#android.view.View/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/insert.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/move.html
+$dokka.location:app.cash.redwood.widget/ViewGroupChildren/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-view-group-children/remove.html
+$dokka.location:app.cash.redwood.widget/Widget.Children///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-children/index.html
+$dokka.location:app.cash.redwood.widget/Widget.Children/clear/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-children/clear.html
+$dokka.location:app.cash.redwood.widget/Widget.Children/insert/#kotlin.Int#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-children/insert.html
+$dokka.location:app.cash.redwood.widget/Widget.Children/move/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-children/move.html
+$dokka.location:app.cash.redwood.widget/Widget.Children/remove/#kotlin.Int#kotlin.Int/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-children/remove.html
+$dokka.location:app.cash.redwood.widget/Widget.Factory///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/-factory/index.html
+$dokka.location:app.cash.redwood.widget/Widget///PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/index.html
+$dokka.location:app.cash.redwood.widget/Widget/value/#/PointingToDeclaration/redwood-widget/app.cash.redwood.widget/-widget/value.html
+app.cash.redwood.widget
+

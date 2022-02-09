@@ -1,0 +1,20 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.redwood.schema////PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/index.html
+$dokka.location:app.cash.redwood.schema/Children///PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-children/index.html
+$dokka.location:app.cash.redwood.schema/Children/Children/#kotlin.Int/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-children/-children.html
+$dokka.location:app.cash.redwood.schema/Children/tag/#/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-children/tag.html
+$dokka.location:app.cash.redwood.schema/Default///PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-default/index.html
+$dokka.location:app.cash.redwood.schema/Default/Default/#kotlin.String/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-default/-default.html
+$dokka.location:app.cash.redwood.schema/Default/expression/#/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-default/expression.html
+$dokka.location:app.cash.redwood.schema/Property///PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-property/index.html
+$dokka.location:app.cash.redwood.schema/Property/Property/#kotlin.Int/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-property/-property.html
+$dokka.location:app.cash.redwood.schema/Property/tag/#/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-property/tag.html
+$dokka.location:app.cash.redwood.schema/Schema///PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-schema/index.html
+$dokka.location:app.cash.redwood.schema/Schema/Schema/#kotlin.Array[kotlin.reflect.KClass[*]]/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-schema/-schema.html
+$dokka.location:app.cash.redwood.schema/Schema/widgets/#/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-schema/widgets.html
+$dokka.location:app.cash.redwood.schema/Widget///PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-widget/index.html
+$dokka.location:app.cash.redwood.schema/Widget/Widget/#kotlin.Int/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-widget/-widget.html
+$dokka.location:app.cash.redwood.schema/Widget/tag/#/PointingToDeclaration/redwood-schema-annotations/app.cash.redwood.schema/-widget/tag.html
+app.cash.redwood.schema
+

@@ -1,0 +1,20 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.redwood.compose////PointingToDeclaration/redwood-compose/app.cash.redwood.compose/index.html
+$dokka.location:app.cash.redwood.compose//RedwoodComposition/#kotlinx.coroutines.CoroutineScope#app.cash.redwood.widget.Widget[TypeParam(bounds=[kotlin.Any])]#app.cash.redwood.widget.Widget.Factory[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-redwood-composition.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher.Companion///PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/-companion/index.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher.Companion/Main/#/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/-companion/-main.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher///PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/index.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher/choreographer/#/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/choreographer.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher/dispatch/#kotlin.coroutines.CoroutineContext#java.lang.Runnable/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/dispatch.html
+$dokka.location:app.cash.redwood.compose/AndroidUiDispatcher/frameClock/#/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/frame-clock.html
+$dokka.location:app.cash.redwood.compose/AndroidUiFrameClock///PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-frame-clock/index.html
+$dokka.location:app.cash.redwood.compose/AndroidUiFrameClock/AndroidUiFrameClock/#android.view.Choreographer/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-frame-clock/-android-ui-frame-clock.html
+$dokka.location:app.cash.redwood.compose/AndroidUiFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-android-ui-frame-clock/with-frame-nanos.html
+$dokka.location:app.cash.redwood.compose/RedwoodComposition///PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-redwood-composition/index.html
+$dokka.location:app.cash.redwood.compose/RedwoodComposition/cancel/#/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-redwood-composition/cancel.html
+$dokka.location:app.cash.redwood.compose/RedwoodComposition/setContent/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-redwood-composition/set-content.html
+$dokka.location:app.cash.redwood.compose/WindowAnimationFrameClock///PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-window-animation-frame-clock/index.html
+$dokka.location:app.cash.redwood.compose/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/redwood-compose/app.cash.redwood.compose/-window-animation-frame-clock/with-frame-nanos.html
+app.cash.redwood.compose
+

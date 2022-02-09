@@ -1,0 +1,13 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.redwood.protocol.widget////PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/index.html
+$dokka.location:app.cash.redwood.protocol.widget/DiffConsumingWidget.Factory///PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-diff-consuming-widget/-factory/index.html
+$dokka.location:app.cash.redwood.protocol.widget/DiffConsumingWidget.Factory/create/#kotlin.Int/PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-diff-consuming-widget/-factory/create.html
+$dokka.location:app.cash.redwood.protocol.widget/DiffConsumingWidget///PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-diff-consuming-widget/index.html
+$dokka.location:app.cash.redwood.protocol.widget/DiffConsumingWidget/apply/#app.cash.redwood.protocol.PropertyDiff#app.cash.redwood.protocol.EventSink/PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-diff-consuming-widget/apply.html
+$dokka.location:app.cash.redwood.protocol.widget/DiffConsumingWidget/children/#kotlin.Int/PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-diff-consuming-widget/children.html
+$dokka.location:app.cash.redwood.protocol.widget/ProtocolDisplay///PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-protocol-display/index.html
+$dokka.location:app.cash.redwood.protocol.widget/ProtocolDisplay/ProtocolDisplay/#app.cash.redwood.protocol.widget.DiffConsumingWidget[TypeParam(bounds=[kotlin.Any])]#app.cash.redwood.protocol.widget.DiffConsumingWidget.Factory[TypeParam(bounds=[kotlin.Any])]#app.cash.redwood.protocol.EventSink/PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-protocol-display/-protocol-display.html
+$dokka.location:app.cash.redwood.protocol.widget/ProtocolDisplay/sendDiff/#app.cash.redwood.protocol.Diff/PointingToDeclaration/redwood-protocol-widget/app.cash.redwood.protocol.widget/-protocol-display/send-diff.html
+app.cash.redwood.protocol.widget
+

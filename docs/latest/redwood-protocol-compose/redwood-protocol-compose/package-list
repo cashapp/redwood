@@ -1,0 +1,12 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.redwood.protocol.compose////PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/index.html
+$dokka.location:app.cash.redwood.protocol.compose//ProtocolRedwoodComposition/#kotlinx.coroutines.CoroutineScope#app.cash.redwood.protocol.compose.DiffProducingWidget.Factory#app.cash.redwood.protocol.DiffSink#app.cash.redwood.protocol.EventSink/PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-protocol-redwood-composition.html
+$dokka.location:app.cash.redwood.protocol.compose/DiffProducingWidget.Factory///PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-diff-producing-widget/-factory/index.html
+$dokka.location:app.cash.redwood.protocol.compose/DiffProducingWidget///PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-diff-producing-widget/index.html
+$dokka.location:app.cash.redwood.protocol.compose/ProtocolRedwoodComposition///PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-protocol-redwood-composition/index.html
+$dokka.location:app.cash.redwood.protocol.compose/ProtocolRedwoodComposition/cancel/#/PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-protocol-redwood-composition/cancel.html
+$dokka.location:app.cash.redwood.protocol.compose/ProtocolRedwoodComposition/setContent/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-protocol-redwood-composition/set-content.html
+$dokka.location:app.cash.redwood.protocol.compose/ProtocolRedwoodComposition/start/#app.cash.redwood.protocol.DiffSink/PointingToDeclaration/redwood-protocol-compose/app.cash.redwood.protocol.compose/-protocol-redwood-composition/start.html
+app.cash.redwood.protocol.compose
+
