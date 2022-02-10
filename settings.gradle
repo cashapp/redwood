@@ -29,7 +29,5 @@ includeBuild('redwood') {
     substitute module('app.cash.redwood:redwood-schema-annotations') with project(':redwood-schema-annotations')
     substitute module('app.cash.redwood:redwood-schema-generator') with project(':redwood-schema-generator')
     substitute module('app.cash.redwood:redwood-widget') with project(':redwood-widget')
-
-    substitute module('app.cash.redwood:compose-compiler-hosted') with project(':compose:compiler-hosted')
   }
 }

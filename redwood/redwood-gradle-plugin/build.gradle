@@ -61,7 +61,6 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':compose:compiler-hosted:installArchives')
   dependsOn(':compose:runtime:installArchives')
   dependsOn(':redwood-compose:installArchives')
   dependsOn(':redwood-gradle-plugin:installArchives')
@@ -83,7 +82,7 @@ sourceSets {
 task pluginVersion {
   def outputDir = file(versionDirectory)
 
-  inputs.property 'composeVersion', versions.compose
+  inputs.property 'jbComposeVersion', versions.jbCompose
   inputs.property 'redwoodVersion', project.version
   outputs.dir outputDir
 
@@ -93,7 +92,7 @@ task pluginVersion {
     versionFile.text = """// Generated file. Do not edit!
 package app.cash.redwood.gradle
 
-internal const val composeVersion = "${versions.compose}"
+internal const val jbComposeVersion = "${versions.jbCompose}"
 internal const val redwoodVersion = "${project.version}"
 """
   }

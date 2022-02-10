@@ -1,4 +1,3 @@
 [submodule "redwood/compose/upstream"]
 	path = redwood/compose/upstream
-	url = https://android.googlesource.com/platform/frameworks/support
-	branch = androidx-main
+	url = https://github.com/JetBrains/androidx.git

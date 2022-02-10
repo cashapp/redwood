@@ -34,15 +34,15 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
   override fun getCompilerPluginId(): String = "app.cash.redwood"
 
   override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-    "androidx.compose.compiler",
+    "org.jetbrains.compose.compiler",
     "compiler",
-    composeVersion,
+    jbComposeVersion,
   )
 
   override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(
-    "app.cash.redwood",
-    "compose-compiler-hosted",
-    redwoodVersion,
+    "org.jetbrains.compose.compiler",
+    "compiler-hosted",
+    jbComposeVersion,
   )
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
