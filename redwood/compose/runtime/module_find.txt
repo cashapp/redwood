@@ -1,6 +1,7 @@
     {
       "name": "releaseApiElements-published",
       "attributes": {
+        "org.gradle.category": "library",
         "org.gradle.usage": "java-api",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },
@@ -14,6 +15,7 @@
     {
       "name": "releaseRuntimeElements-published",
       "attributes": {
+        "org.gradle.category": "library",
         "org.gradle.usage": "java-runtime",
         "org.jetbrains.kotlin.platform.type": "androidJvm"
       },

@@ -1,6 +1,5 @@
 rootProject.name = 'redwood'
 
-include ':compose:compiler-hosted'
 include ':compose:runtime'
 
 include ':redwood-compose'

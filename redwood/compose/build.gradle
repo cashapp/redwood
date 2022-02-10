@@ -3,14 +3,15 @@ if (!file('upstream/.git').exists()) {
     "Missing 'upstream' git submodule clone. Did you run 'git submodule update --init'?")
 }
 
-def upstreamLibraryVersions = file('upstream/buildSrc/src/main/kotlin/androidx/build/LibraryVersions.kt').text.readLines()
+def upstreamLibraryVersions = file('upstream/buildSrc/public/src/main/kotlin/androidx/build/LibraryVersions.kt').text.readLines()
 def upstreamDependencyVersions = file('upstream/gradle/libs.versions.toml').text.readLines()
 
-def upstreamComposeVersion = upstreamLibraryVersions.find { it.contains("val COMPOSE = ") }
-if (!upstreamComposeVersion.contains("\"${versions.compose}\"")) {
-  throw new RuntimeException(
-    "Upstream git repository Compose version does not match project version ${versions.compose}: $upstreamComposeVersion")
-}
+// TODO re-enable once JetBrains releases their 1.1.0 version.
+//def upstreamComposeVersion = upstreamLibraryVersions.find { it.contains("val COMPOSE = ") }
+//if (!upstreamComposeVersion.contains("\"${versions.jbCompose}\"")) {
+//  throw new RuntimeException(
+//    "Upstream git repository Compose version does not match project version ${versions.jbCompose}: $upstreamComposeVersion")
+//}
 
 def upstreamKotlinVersion = upstreamDependencyVersions.find { it.startsWith("kotlin = ") }
 if (!upstreamKotlinVersion.contains("\"${versions.kotlin}\"")) {
@@ -18,9 +19,8 @@ if (!upstreamKotlinVersion.contains("\"${versions.kotlin}\"")) {
     "Upstream git repository Kotlin version does not match project version ${versions.kotlin}: $upstreamKotlinVersion")
 }
 
-// TODO Re-enable check once Compose bumps to a version of coroutines with Apple silicon support.
-//def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
-//if (!upstreamCoroutinesVersion.contains("\"${versions.kotlinx.coroutines}\"")) {
-//  throw new RuntimeException(
-//    "Upstream git repository Kotlin coroutines version does not match project version ${versions.kotlinx.coroutines}: $upstreamCoroutinesVersion")
-//}
+def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
+if (!upstreamCoroutinesVersion.contains("\"${versions.kotlinx.coroutines}\"")) {
+  throw new RuntimeException(
+    "Upstream git repository Kotlin coroutines version does not match project version ${versions.kotlinx.coroutines}: $upstreamCoroutinesVersion")
+}

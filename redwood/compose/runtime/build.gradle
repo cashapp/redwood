@@ -26,7 +26,7 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
     // replace and inserting a new partial JSON text with the updated metadata JSON.
 
     String find = file('module_find.txt').text.replace('{REDWOOD_VERSION}', version)
-    String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', versions.compose)
+    String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', versions.androidCompose)
 
     File file = outputFile.get().getAsFile()
     String text = file.text
@@ -56,11 +56,12 @@ kotlin {
     }
     commonTest {
       kotlin {
-        // TODO get tests working on all platforms
-        // srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
+         srcDir '../upstream/compose/runtime/runtime/src/commonTest/kotlin'
+         srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
       }
       dependencies {
         implementation deps.kotlin.test
+        implementation("org.jetbrains.kotlinx:atomicfu:0.14.4")
       }
     }
     androidMain {
@@ -73,6 +74,21 @@ kotlin {
         api 'androidx.annotation:annotation:1.1.0'
       }
     }
+    androidTest {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/jvmTest/kotlin'
+      }
+    }
+    jsMain {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/jsMain/kotlin'
+      }
+    }
+    jsTest {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/jsTest/kotlin'
+      }
+    }
     jvmMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jvmMain/kotlin'
@@ -81,10 +97,20 @@ kotlin {
     }
     jvmTest {
       kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
+        srcDir '../upstream/compose/runtime/runtime/src/jvmTest/kotlin'
       }
       dependencies {
         implementation deps.kotlinx.coroutines.test
+      }
+    }
+    nativeMain {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/nativeMain/kotlin'
+      }
+    }
+    nativeTest {
+      kotlin {
+        srcDir '../upstream/compose/runtime/runtime/src/nativeTest/kotlin'
       }
     }
   }
@@ -100,9 +126,13 @@ android {
   defaultConfig {
     consumerProguardFiles '../upstream/compose/runtime/runtime/proguard-rules.pro'
   }
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }
 
 dependencies {
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.androidx.compose.compiler)
-  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(':compose:compiler-hosted'))
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compiler)
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compilerHosted)
 }

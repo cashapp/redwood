@@ -48,8 +48,3 @@ kotlin {
     noPodspec()
   }
 }
-
-// TODO Remove disabling release https://github.com/cashapp/redwood/issues/119
-tasks.named('linkPodReleaseFrameworkIos').configure { task ->
-  task.enabled = false
-}

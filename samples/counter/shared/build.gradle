@@ -4,12 +4,7 @@ apply plugin: 'app.cash.redwood'
 kotlin {
   ios()
   js {
-    browser {
-      testTask {
-        // TODO re-enable https://github.com/cashapp/redwood/issues/129
-        enabled = false
-      }
-    }
+    browser()
   }
   jvm()
 
