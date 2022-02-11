@@ -29,9 +29,9 @@ kotlin {
   sourceSets {
     iosMain {
       dependencies {
-        implementation project(':samples:counter:sunspot:compose:protocol')
-        implementation project(':samples:counter:sunspot:widget:protocol')
-        implementation project(':samples:counter:shared')
+        implementation projects.samples.counter.sunspot.compose.protocol
+        implementation projects.samples.counter.sunspot.widget.protocol
+        implementation projects.samples.counter.shared
 
         // We aren't multithreading, but we need Dispatchers.Main to refer to the actual main thread
         // instead of being an alias for Dispatchers.Default.

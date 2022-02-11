@@ -13,8 +13,8 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api project(':redwood-test-schema:widget')
-        api project(':redwood-protocol-compose') // TODO should be redwood-compose!
+        api projects.redwoodTestSchema.widget
+        api projects.redwoodProtocolCompose // TODO should be redwoodCompose!
       }
     }
   }
@@ -28,8 +28,8 @@ dependencies {
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compiler)
   add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compilerHosted)
 
-  generator project(':redwood-schema-generator')
-  generator project(':redwood-test-schema')
+  generator projects.redwoodSchemaGenerator
+  generator projects.redwoodTestSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {

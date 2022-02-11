@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
-  implementation project(':redwood-schema-annotations')
+  implementation projects.redwoodSchemaAnnotations
 }

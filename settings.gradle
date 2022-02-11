@@ -22,12 +22,14 @@ include ':samples:todo-list:schema:widget:protocol'
 
 includeBuild('redwood') {
   dependencySubstitution {
-    substitute module('app.cash.redwood:redwood-compose') with project(':redwood-compose')
-    substitute module('app.cash.redwood:redwood-gradle-plugin') with project(':redwood-gradle-plugin')
-    substitute module('app.cash.redwood:redwood-protocol-compose') with project(':redwood-protocol-compose')
-    substitute module('app.cash.redwood:redwood-protocol-widget') with project(':redwood-protocol-widget')
-    substitute module('app.cash.redwood:redwood-schema-annotations') with project(':redwood-schema-annotations')
-    substitute module('app.cash.redwood:redwood-schema-generator') with project(':redwood-schema-generator')
-    substitute module('app.cash.redwood:redwood-widget') with project(':redwood-widget')
+    substitute module('app.cash.redwood:redwood-compose') using project(':redwood-compose')
+    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
+    substitute module('app.cash.redwood:redwood-protocol-compose') using project(':redwood-protocol-compose')
+    substitute module('app.cash.redwood:redwood-protocol-widget') using project(':redwood-protocol-widget')
+    substitute module('app.cash.redwood:redwood-schema-annotations') using project(':redwood-schema-annotations')
+    substitute module('app.cash.redwood:redwood-schema-generator') using project(':redwood-schema-generator')
+    substitute module('app.cash.redwood:redwood-widget') using project(':redwood-widget')
   }
 }
+
+enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')

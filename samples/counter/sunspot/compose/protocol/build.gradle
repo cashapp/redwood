@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation(project(':samples:counter:sunspot:widget'))
+        implementation(projects.samples.counter.sunspot.widget)
       }
     }
   }

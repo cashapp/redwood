@@ -16,3 +16,5 @@ include ':redwood-test-schema'
 include ':redwood-test-schema:compose'
 include ':redwood-test-schema:compose:protocol'
 include ':redwood-test-schema:widget'
+
+enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
