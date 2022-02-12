@@ -5,11 +5,11 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly deps.kotlin.gradlePlugin
+  compileOnly libs.kotlin.gradlePlugin
 
-  testImplementation deps.junit
-  testImplementation deps.testParameterInjector
-  testImplementation deps.truth
+  testImplementation libs.junit
+  testImplementation libs.testParameterInjector
+  testImplementation libs.truth
   testImplementation gradleTestKit()
 }
 
@@ -82,7 +82,7 @@ sourceSets {
 task pluginVersion {
   def outputDir = file(versionDirectory)
 
-  inputs.property 'jbComposeVersion', versions.jbCompose
+  inputs.property 'jbComposeVersion', libs.versions.jbCompose.get()
   inputs.property 'redwoodVersion', project.version
   outputs.dir outputDir
 
@@ -92,7 +92,7 @@ task pluginVersion {
     versionFile.text = """// Generated file. Do not edit!
 package app.cash.redwood.gradle
 
-internal const val jbComposeVersion = "${versions.jbCompose}"
+internal const val jbComposeVersion = "${libs.versions.jbCompose.get()}"
 internal const val redwoodVersion = "${project.version}"
 """
   }

@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api deps.kotlinx.coroutines.core
+        api libs.kotlinx.coroutines.core
         api projects.redwoodProtocol // TODO Remove and create redwoodProtocolCompose!
         api projects.redwoodWidget
         api projects.compose.runtime
@@ -19,14 +19,14 @@ kotlin {
     }
     commonTest {
       dependencies {
-        implementation deps.kotlin.test
+        implementation libs.kotlin.test
         implementation projects.redwoodTestSchema.compose
         implementation projects.redwoodTestSchema.compose.protocol
       }
     }
     androidMain {
       dependencies {
-        implementation deps.androidx.core
+        implementation libs.androidx.core
       }
     }
     androidTest {
@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compiler)
-  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.jetbrains.compose.compilerHosted)
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, libs.jetbrains.compose.compiler)
+  add(KotlinPluginKt.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, libs.jetbrains.compose.compilerHosted)
 }
 
 spotless {

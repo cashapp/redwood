@@ -5,9 +5,9 @@ apply plugin: 'app.cash.exhaustive'
 
 dependencies {
   implementation projects.redwoodSchema
-  implementation deps.kotlinPoet
-  implementation deps.clikt
+  implementation libs.kotlinPoet
+  implementation libs.clikt
 
-  testImplementation deps.junit
-  testImplementation deps.truth
+  testImplementation libs.junit
+  testImplementation libs.truth
 }

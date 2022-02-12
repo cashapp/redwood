@@ -6,9 +6,9 @@ dependencies {
   implementation projects.samples.todoList.schema.compose.protocol
   implementation projects.samples.todoList.schema.widget.protocol
   implementation projects.samples.todoList.presenters
-  implementation deps.kotlinx.coroutines.android
-  implementation deps.androidx.appCompat
-  implementation deps.materialDesign
+  implementation libs.kotlinx.coroutines.android
+  implementation libs.androidx.appCompat
+  implementation libs.materialDesign
 }
 
 android {

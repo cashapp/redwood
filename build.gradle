@@ -1,10 +1,8 @@
 buildscript {
-  apply from: 'gradle/dependencies.gradle'
-
   dependencies {
-    classpath deps.kotlin.gradlePlugin
-    classpath deps.androidGradlePlugin
-    classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
+    classpath libs.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
+    classpath "org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}"
     classpath 'com.diffplug.spotless:spotless-plugin-gradle:5.8.2'
 
     // Normally you would declare a version here, but we use dependency substitution in
@@ -73,7 +71,7 @@ allprojects {
           if (dependency.requested instanceof ProjectComponentSelector
               && dependency.requested.buildName == 'redwood'
               && dependency.requested.projectPath == ':compose:runtime') {
-            dependency.useTarget("androidx.compose.runtime:runtime:${versions.androidCompose}")
+            dependency.useTarget("androidx.compose.runtime:runtime:${libs.versions.androidCompose.get()}")
           }
         }
       }

@@ -1,10 +1,8 @@
 buildscript {
-  apply from: '../../../../../../gradle/dependencies.gradle'
-
   dependencies {
     classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
-    classpath deps.androidGradlePlugin
-    classpath deps.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
+    classpath libs.kotlin.gradlePlugin
   }
 
   repositories {

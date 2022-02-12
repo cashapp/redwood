@@ -14,12 +14,12 @@ kotlin {
     }
     commonTest {
       dependencies {
-        implementation deps.kotlin.test
+        implementation libs.kotlin.test
       }
     }
     androidTest {
       dependencies {
-        implementation deps.robolectric
+        implementation libs.robolectric
       }
     }
   }

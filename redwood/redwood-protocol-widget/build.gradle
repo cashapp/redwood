@@ -15,7 +15,7 @@ kotlin {
     }
     commonTest {
       dependencies {
-        implementation deps.kotlin.test
+        implementation libs.kotlin.test
       }
     }
   }

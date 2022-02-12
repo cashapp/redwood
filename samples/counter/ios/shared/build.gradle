@@ -35,11 +35,7 @@ kotlin {
 
         // We aren't multithreading, but we need Dispatchers.Main to refer to the actual main thread
         // instead of being an alias for Dispatchers.Default.
-        implementation(deps.kotlinx.coroutines.coreNativeMultithreading) {
-          version {
-            strictly("${versions.kotlinx.coroutines}-native-mt")
-          }
-        }
+        implementation(libs.kotlinx.coroutines.coreNativeMultithreading)
       }
     }
   }
