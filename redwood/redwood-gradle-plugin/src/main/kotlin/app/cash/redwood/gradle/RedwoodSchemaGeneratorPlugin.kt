@@ -89,7 +89,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       exec.outputs.dir(generatedDir)
 
       exec.classpath(configuration)
-      exec.main = "app.cash.redwood.schema.generator.Main"
+      exec.mainClass.set("app.cash.redwood.schema.generator.Main")
 
       exec.doFirst {
         generatedDir.deleteRecursively()
