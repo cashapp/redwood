@@ -3,7 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
-  api project(':redwood-schema-annotations')
+  api projects.redwoodSchemaAnnotations
   api deps.kotlin.reflect
 
   testImplementation deps.junit

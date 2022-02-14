@@ -9,8 +9,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api project(':redwood-protocol')
-        api project(':redwood-widget')
+        api projects.redwoodProtocol
+        api projects.redwoodWidget
       }
     }
     commonTest {

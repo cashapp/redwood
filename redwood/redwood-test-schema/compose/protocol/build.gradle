@@ -11,8 +11,8 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api project(':redwood-protocol-compose')
-        api project(':redwood-test-schema:widget')
+        api projects.redwoodProtocolCompose
+        api projects.redwoodTestSchema.widget
       }
     }
   }
@@ -23,8 +23,8 @@ configurations {
 }
 
 dependencies {
-  generator project(':redwood-schema-generator')
-  generator project(':redwood-test-schema')
+  generator projects.redwoodSchemaGenerator
+  generator projects.redwoodTestSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {

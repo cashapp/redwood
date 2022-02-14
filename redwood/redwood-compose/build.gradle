@@ -12,16 +12,16 @@ kotlin {
     commonMain {
       dependencies {
         api deps.kotlinx.coroutines.core
-        api project(':redwood-protocol') // TODO Remove and create redwood-protocol-compose!
-        api project(':redwood-widget')
-        api project(':compose:runtime')
+        api projects.redwoodProtocol // TODO Remove and create redwoodProtocolCompose!
+        api projects.redwoodWidget
+        api projects.compose.runtime
       }
     }
     commonTest {
       dependencies {
         implementation deps.kotlin.test
-        implementation project(':redwood-test-schema:compose')
-        implementation project(':redwood-test-schema:compose:protocol')
+        implementation projects.redwoodTestSchema.compose
+        implementation projects.redwoodTestSchema.compose.protocol
       }
     }
     androidMain {

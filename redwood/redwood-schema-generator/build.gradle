@@ -4,7 +4,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'app.cash.exhaustive'
 
 dependencies {
-  implementation project(':redwood-schema')
+  implementation projects.redwoodSchema
   implementation deps.kotlinPoet
   implementation deps.clikt
 
