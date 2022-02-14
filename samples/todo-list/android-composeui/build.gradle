@@ -6,9 +6,9 @@ dependencies {
   implementation projects.samples.todoList.schema.compose.protocol
   implementation projects.samples.todoList.schema.widget.protocol
   implementation projects.samples.todoList.presenters
-  implementation deps.kotlinx.coroutines.android
-  implementation deps.androidx.compose.material
-  implementation deps.androidx.activity
+  implementation libs.kotlinx.coroutines.android
+  implementation libs.androidx.compose.material
+  implementation libs.androidx.activity
 }
 
 android {
@@ -17,6 +17,6 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion versions.androidCompose
+    kotlinCompilerExtensionVersion libs.versions.androidCompose.get()
   }
 }

@@ -4,8 +4,8 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
   api projects.redwoodSchemaAnnotations
-  api deps.kotlin.reflect
+  api libs.kotlin.reflect
 
-  testImplementation deps.junit
-  testImplementation deps.truth
+  testImplementation libs.junit
+  testImplementation libs.truth
 }

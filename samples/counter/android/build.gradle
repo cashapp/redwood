@@ -6,5 +6,5 @@ dependencies {
   implementation projects.samples.counter.sunspot.compose.protocol
   implementation projects.samples.counter.sunspot.widget.protocol
   implementation projects.samples.counter.shared
-  implementation deps.kotlinx.coroutines.android
+  implementation libs.kotlinx.coroutines.android
 }

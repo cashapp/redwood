@@ -1,13 +1,11 @@
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 buildscript {
-  apply from: '../gradle/dependencies.gradle'
-
   dependencies {
-    classpath deps.kotlin.gradlePlugin
-    classpath deps.androidGradlePlugin
-    classpath "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}"
-    classpath "app.cash.exhaustive:exhaustive-gradle:${versions.exhaustive}"
+    classpath libs.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
+    classpath "org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}"
+    classpath "app.cash.exhaustive:exhaustive-gradle:${libs.versions.exhaustive.get()}"
     classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
     classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
     classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'

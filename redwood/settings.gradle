@@ -18,3 +18,11 @@ include ':redwood-test-schema:compose:protocol'
 include ':redwood-test-schema:widget'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+
+dependencyResolutionManagement {
+  versionCatalogs {
+    libs {
+      from(files("../gradle/libs.versions.toml"))
+    }
+  }
+}

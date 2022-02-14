@@ -16,7 +16,7 @@ kotlin {
     }
     commonTest {
       dependencies {
-        implementation deps.kotlin.test
+        implementation libs.kotlin.test
         implementation projects.samples.counter.sunspot.test
         // TODO remove the need for these dependencies!
         implementation projects.samples.counter.sunspot.compose.protocol
