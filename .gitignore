@@ -4,12 +4,9 @@
 *.iml
 
 # Gradle
-/.gradle
+.gradle
 build
 /reports
-
-# Gradle (nested build)
-/redwood/.gradle
 
 # Android
 local.properties

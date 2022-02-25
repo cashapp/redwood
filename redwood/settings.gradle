@@ -26,3 +26,9 @@ dependencyResolutionManagement {
     }
   }
 }
+
+includeBuild('compose-gradle-plugin') {
+  dependencySubstitution {
+    substitute module('app.cash.redwood.tools:compose-gradle-plugin') using project(':')
+  }
+}
