@@ -1,0 +1,41 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+def generatedDir = 'build/generated/redwood'
+
+sourceSets {
+  main {
+    kotlin {
+      srcDir generatedDir
+    }
+  }
+}
+
+dependencies {
+  api projects.redwoodTestSchema
+  api projects.redwoodTestSchema.widget
+}
+
+configurations {
+  generator
+}
+
+dependencies {
+  generator projects.redwoodSchemaGenerator
+  generator projects.redwoodTestSchema
+}
+
+def generate = tasks.register('redwoodGenerate', JavaExec) {
+  it.classpath(configurations.generator)
+  it.main('app.cash.redwood.schema.generator.Main')
+  it.args(
+    '--test',
+    '--out', generatedDir,
+    'example.redwood.ExampleSchema',
+  )
+
+  it.doFirst {
+    file(generatedDir).deleteDir()
+  }
+}
+
+compileKotlin.dependsOn(generate.get())

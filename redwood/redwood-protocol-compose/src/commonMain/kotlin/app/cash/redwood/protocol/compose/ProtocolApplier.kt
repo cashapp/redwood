@@ -67,6 +67,11 @@ private sealed class DiffProducingChildrenWidget(
       id = RootId
     }
   }
+
+  override fun sendEvent(event: Event) {
+    // These types should never make it into the node map and thus cannot be targeted by events.
+    throw AssertionError()
+  }
 }
 
 /**
@@ -91,9 +96,7 @@ public abstract class AbstractDiffProducingWidget(
     _diffAppender.append(diff)
   }
 
-  public open fun sendEvent(event: Event) {
-    throw IllegalStateException("Node ID $id of type $type does not handle events")
-  }
+  public abstract fun sendEvent(event: Event)
 }
 
 /**
