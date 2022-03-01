@@ -18,7 +18,6 @@ include ':redwood-test-schema:compose:protocol'
 include ':redwood-test-schema:test'
 include ':redwood-test-schema:widget'
 include ':redwood-test-schema:widget:protocol'
-include ':redwood-test-values'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
