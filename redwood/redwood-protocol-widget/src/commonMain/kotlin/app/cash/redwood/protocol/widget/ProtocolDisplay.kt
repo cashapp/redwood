@@ -28,9 +28,10 @@ public class ProtocolDisplay<T : Any>(
   private val eventSink: EventSink,
 ) : DiffSink {
   init {
-    // Check that the root widget has a group of children with the shared root tag. This call
-    // will throw if that invariant does not hold.
-    root.children(RootChildrenTag)
+    // Check that the root widget has a group of children with the shared root tag.
+    requireNotNull(root.children(RootChildrenTag)) {
+      "Root widget does not support children with tag $RootChildrenTag"
+    }
   }
 
   private val widgets = mutableMapOf(RootId to root)
@@ -40,11 +41,11 @@ public class ProtocolDisplay<T : Any>(
       val widget = checkNotNull(widgets[childrenDiff.id]) {
         "Unknown widget ID ${childrenDiff.id}"
       }
-      val children = widget.children(childrenDiff.tag)
+      val children = widget.children(childrenDiff.tag) ?: continue
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(childrenDiff.kind)
+          val childWidget = factory.create(childrenDiff.kind) ?: continue
           widgets[childrenDiff.childId] = childWidget
           children.insert(childrenDiff.index, childWidget.value)
         }

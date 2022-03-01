@@ -18,5 +18,11 @@ kotlin {
         implementation libs.kotlin.test
       }
     }
+    jvmTest { // TODO all targets!
+      dependencies {
+        implementation projects.redwoodTestSchema.widget.protocol
+        implementation projects.redwoodTestSchema.test
+      }
+    }
   }
 }

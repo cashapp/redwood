@@ -32,9 +32,11 @@ internal val abstractDiffProducingWidget = ClassName("app.cash.redwood.protocol.
 internal val diffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
 internal val diffProducingWidgetFactory = diffProducingWidget.nestedClass("Factory")
 internal val syntheticChildren = MemberName("app.cash.redwood.protocol.compose", "\$SyntheticChildren")
+internal val ComposeProtocolMismatchHandler = ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
 
 internal val DiffConsumingWidget = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingWidget")
 internal val DiffConsumingWidgetFactory = DiffConsumingWidget.nestedClass("Factory")
+internal val WidgetProtocolMismatchHandler = ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
 
 internal val widgetType = ClassName("app.cash.redwood.widget", "Widget")
 internal val widgetChildren = widgetType.nestedClass("Children")
@@ -53,7 +55,6 @@ internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
   )
 
 internal val ae = ClassName("kotlin", "AssertionError")
-internal val iae = ClassName("kotlin", "IllegalArgumentException")
 
 internal val typeVariableT = TypeVariableName("T", listOf(ANY))
 internal val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)

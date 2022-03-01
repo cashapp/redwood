@@ -23,15 +23,25 @@ import app.cash.redwood.widget.Widget
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
  */
 public interface DiffConsumingWidget<T : Any> : Widget<T> {
-  public fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    throw IllegalArgumentException("Widget has no properties")
-  }
+  public fun apply(diff: PropertyDiff, eventSink: EventSink)
 
-  public fun children(tag: Int): Widget.Children<T> {
-    throw IllegalArgumentException("Widget does not support children")
-  }
+  /**
+   * Return one of this widget's children groups by its [tag].
+   *
+   * Invalid [tag] values can either produce an exception or result in `null` being returned.
+   * If `null` is returned, the caller should make every effort to ignore these children and
+   * continue executing.
+   */
+  public fun children(tag: Int): Widget.Children<T>?
 
   public interface Factory<T : Any> {
-    public fun create(kind: Int): DiffConsumingWidget<T>
+    /**
+     * Create a new protocol-consuming widget of the specified [kind].
+     *
+     * Invalid [kind] values can either produce an exception or result in `null` being returned.
+     * If `null` is returned, the caller should make every effort to ignore this widget and
+     * continue executing.
+     */
+    public fun create(kind: Int): DiffConsumingWidget<T>?
   }
 }

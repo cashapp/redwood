@@ -36,17 +36,21 @@ import com.squareup.kotlinpoet.asTypeName
 /*
 public class DiffConsumingSunspotWidgetFactory<T : Any>(
   private val delegate: SunspotWidgetFactory<T>,
-  private val serializersModule: SerializersModule = SerializersModule { }
+  private val serializersModule: SerializersModule = SerializersModule { },
+  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : DiffConsumingWidget.Factory<T> {
-  public override fun create(kind: Int): ProtocolWidget<T> = when (kind) {
+  public override fun create(kind: Int): DiffConsumingWidget<T>? = when (kind) {
     1 -> wrap(delegate.SunspotBox())
     2 -> wrap(delegate.SunspotText())
     3 -> wrap(delegate.SunspotButton())
-    else -> throw IllegalArgumentException("Unknown kind $kind")
+    else -> {
+      mismatchHandler.onUnknownWidget(kind)
+      null
+    }
   }
 
   public fun wrap(value: SunspotBox<T>): DiffConsumingWidget<T> {
-    return ProtocolSunspotBox(delegate.SunspotBox(), serializersModule)
+    return ProtocolSunspotBox(delegate.SunspotBox(), serializersModule, mismatchHandler)
   }
   etc.
 }
@@ -69,6 +73,11 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
                 .defaultValue("%T { }", serializersModule)
                 .build()
             )
+            .addParameter(
+              ParameterSpec.builder("mismatchHandler", WidgetProtocolMismatchHandler)
+                .defaultValue("%T.Throwing", WidgetProtocolMismatchHandler)
+                .build()
+            )
             .build()
         )
         .addProperty(
@@ -81,18 +90,26 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .initializer("serializersModule")
             .build()
         )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", WidgetProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
+            .build()
+        )
         .addFunction(
           FunSpec.builder("create")
             .addModifiers(OVERRIDE)
             .addParameter("kind", INT)
-            .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
+            .returns(DiffConsumingWidget.parameterizedBy(typeVariableT).copy(nullable = true))
             .beginControlFlow("return when (kind)")
             .apply {
               for (widget in schema.widgets.sortedBy { it.tag }) {
                 addStatement("%L -> wrap(delegate.%N())", widget.tag, widget.flatName)
               }
             }
-            .addStatement("else -> throw %T(\"Unknown kind \$kind\")", iae)
+            .beginControlFlow("else ->")
+            .addStatement("mismatchHandler.onUnknownWidget(kind)")
+            .addStatement("null")
+            .endControlFlow()
             .endControlFlow()
             .build()
         )
@@ -102,7 +119,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder("wrap")
                 .addParameter("value", schema.widgetType(widget).parameterizedBy(typeVariableT))
                 .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
-                .addStatement("return %T(value, serializersModule)", schema.diffConsumingWidgetType(widget))
+                .addStatement("return %T(value, serializersModule, mismatchHandler)", schema.diffConsumingWidgetType(widget))
                 .build()
             )
           }
@@ -116,6 +133,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
 internal class DiffConsumingSunspotButton<T : Any>(
   private val delegate: SunspotButton<T>,
   serializersModule: SerializersModule,
+  private val mismatchHandler: ProtocolMismatchHandler,
 ) : DiffConsumingWidget<T> {
   public override val value: T get() = delegate.value
 
@@ -134,7 +152,7 @@ internal class DiffConsumingSunspotButton<T : Any>(
         }
         delegate.onClick(onClick)
       }
-      else -> throw IllegalArgumentException("Unknown tag $tag")
+      else -> mismatchHandler.onUnknownProperty(12, tag)
     }
   }
 }
@@ -152,11 +170,17 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetType)
             .addParameter("serializersModule", serializersModule)
+            .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
             .build()
         )
         .addProperty(
           PropertySpec.builder("delegate", widgetType, PRIVATE)
             .initializer("delegate")
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", WidgetProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
             .build()
         )
         .addProperty(
@@ -173,84 +197,83 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
           var nextSerializerId = 0
           val serializerIds = mutableMapOf<TypeName, Int>()
 
-          if (properties.isNotEmpty()) {
-            addFunction(
-              FunSpec.builder("apply")
-                .addModifiers(OVERRIDE)
-                .addParameter("diff", propertyDiff)
-                .addParameter("eventSink", eventSink)
-                .beginControlFlow("when (val tag = diff.tag)")
-                .apply {
-                  for (trait in properties) {
-                    @Exhaustive when (trait) {
-                      is Property -> {
-                        val propertyType = trait.type.asTypeName()
-                        val serializerId = serializerIds.computeIfAbsent(propertyType) {
+          addFunction(
+            FunSpec.builder("apply")
+              .addModifiers(OVERRIDE)
+              .addParameter("diff", propertyDiff)
+              .addParameter("eventSink", eventSink)
+              .beginControlFlow("when (val tag = diff.tag)")
+              .apply {
+                for (trait in properties) {
+                  @Exhaustive when (trait) {
+                    is Property -> {
+                      val propertyType = trait.type.asTypeName()
+                      val serializerId = serializerIds.computeIfAbsent(propertyType) {
+                        nextSerializerId++
+                      }
+
+                      addStatement(
+                        "%L -> delegate.%N(%M(serializer_%L, diff.value))", trait.tag, trait.name,
+                        decodeFromJsonElement, serializerId
+                      )
+                    }
+                    is Event -> {
+                      beginControlFlow("%L ->", trait.tag)
+                      beginControlFlow(
+                        "val %N: %T = if (diff.value.%M.%M)", trait.name, trait.lambdaType,
+                        jsonElementToJsonPrimitive, jsonPrimitiveToBoolean
+                      )
+                      val parameterType = trait.parameterType?.asTypeName()
+                      if (parameterType != null) {
+                        val serializerId = serializerIds.computeIfAbsent(parameterType) {
                           nextSerializerId++
                         }
-
-                        addStatement(
-                          "%L -> delegate.%N(%M(serializer_%L, diff.value))", trait.tag, trait.name,
-                          decodeFromJsonElement, serializerId
-                        )
+                        addStatement("{ eventSink.sendEvent(%T(diff.id, %L, %M(serializer_%L, it))) }", eventType, trait.tag, encodeToJsonElement, serializerId)
+                      } else {
+                        addStatement("{ eventSink.sendEvent(%T(diff.id, %L)) }", eventType, trait.tag,)
                       }
-                      is Event -> {
-                        beginControlFlow("%L ->", trait.tag)
-                        beginControlFlow(
-                          "val %N: %T = if (diff.value.%M.%M)", trait.name, trait.lambdaType,
-                          jsonElementToJsonPrimitive, jsonPrimitiveToBoolean
-                        )
-                        val parameterType = trait.parameterType?.asTypeName()
-                        if (parameterType != null) {
-                          val serializerId = serializerIds.computeIfAbsent(parameterType) {
-                            nextSerializerId++
-                          }
-                          addStatement("{ eventSink.sendEvent(%T(diff.id, %L, %M(serializer_%L, it))) }", eventType, trait.tag, encodeToJsonElement, serializerId)
-                        } else {
-                          addStatement("{ eventSink.sendEvent(%T(diff.id, %L)) }", eventType, trait.tag,)
-                        }
-                        nextControlFlow("else")
-                        addStatement("null")
-                        endControlFlow()
-                        addStatement("delegate.%1N(%1N)", trait.name)
-                        endControlFlow()
-                      }
-                      is Children -> throw AssertionError()
+                      nextControlFlow("else")
+                      addStatement("null")
+                      endControlFlow()
+                      addStatement("delegate.%1N(%1N)", trait.name)
+                      endControlFlow()
                     }
-                  }
-
-                  for ((typeName, id) in serializerIds) {
-                    addProperty(
-                      PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
-                        .addModifiers(PRIVATE)
-                        .initializer("serializersModule.%M()", serializer)
-                        .build()
-                    )
+                    is Children -> throw AssertionError()
                   }
                 }
-                .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
-                .endControlFlow()
-                .build()
-            )
-          }
 
-          if (childrens.isNotEmpty()) {
-            addFunction(
-              FunSpec.builder("children")
-                .addModifiers(OVERRIDE)
-                .addParameter("tag", INT)
-                .returns(childrenOfT)
-                .beginControlFlow("return when (tag)")
-                .apply {
-                  for (children in childrens) {
-                    addStatement("%L -> delegate.%N", children.tag, children.name)
-                  }
+                for ((typeName, id) in serializerIds) {
+                  addProperty(
+                    PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
+                      .addModifiers(PRIVATE)
+                      .initializer("serializersModule.%M()", serializer)
+                      .build()
+                  )
                 }
-                .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
-                .endControlFlow()
-                .build()
-            )
-          }
+              }
+              .addStatement("else -> mismatchHandler.onUnknownProperty(%L, tag)", widget.tag)
+              .endControlFlow()
+              .build()
+          )
+
+          addFunction(
+            FunSpec.builder("children")
+              .addModifiers(OVERRIDE)
+              .addParameter("tag", INT)
+              .returns(childrenOfT.copy(nullable = true))
+              .beginControlFlow("return when (tag)")
+              .apply {
+                for (children in childrens) {
+                  addStatement("%L -> delegate.%N", children.tag, children.name)
+                }
+              }
+              .beginControlFlow("else ->")
+              .addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
+              .addStatement("null")
+              .endControlFlow()
+              .endControlFlow()
+              .build()
+          )
         }
         .build()
     )

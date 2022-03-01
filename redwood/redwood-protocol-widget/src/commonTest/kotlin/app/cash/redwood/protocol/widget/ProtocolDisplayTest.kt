@@ -24,20 +24,32 @@ import kotlin.test.assertFailsWith
 
 class ProtocolDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {
-    ProtocolDisplay(GoodRootWidget, NullWidgetFactory) { }
+    ProtocolDisplay(RootWidgetWithChildren, NullWidgetFactory) { }
 
     assertFailsWith<IllegalArgumentException> {
-      ProtocolDisplay(BadRootWidget, NullWidgetFactory) { }
+      ProtocolDisplay(RootWidgetChildrenThrows, NullWidgetFactory) { }
+    }
+
+    // Calls to children() are allowed to return null (usually from a ProtocolMismatchHandler)
+    // so ensure that this very important case still causes an exception given that behavior.
+    assertFailsWith<IllegalArgumentException> {
+      ProtocolDisplay(RootWidgetChildrenNull, NullWidgetFactory) { }
     }
   }
 
-  private object BadRootWidget : DiffConsumingWidget<Unit> {
+  private object RootWidgetChildrenThrows : DiffConsumingWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = throw IllegalArgumentException()
   }
 
-  private object GoodRootWidget : DiffConsumingWidget<Unit> {
+  private object RootWidgetChildrenNull : DiffConsumingWidget<Unit> {
+    override val value get() = Unit
+    override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
+    override fun children(tag: Int) = null
+  }
+
+  private object RootWidgetWithChildren : DiffConsumingWidget<Unit> {
     override val value get() = Unit
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
     override fun children(tag: Int) = when (tag) {

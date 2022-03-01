@@ -18,6 +18,7 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
+        implementation projects.redwoodTestSchema.compose.protocol
       }
     }
   }

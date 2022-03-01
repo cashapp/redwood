@@ -37,10 +37,11 @@ import com.squareup.kotlinpoet.asTypeName
 /*
 class DiffProducingSunspotWidgetFactory(
   private val serializerModule: SerializersModule = SerializersModule { },
+  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : SunspotWidgetFactory<Nothing>, DiffProducingWidget.Factory {
-  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(serializerModule)
-  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(serializerModule)
-  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(serializerModule)
+  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(serializerModule, mismatchHandler)
+  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(serializerModule, mismatchHandler)
+  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(serializerModule, mismatchHandler)
 }
 */
 internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
@@ -59,11 +60,21 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
                 .defaultValue("%T { }", serializersModule)
                 .build()
             )
+            .addParameter(
+              ParameterSpec.builder("mismatchHandler", ComposeProtocolMismatchHandler)
+                .defaultValue("%T.Throwing", ComposeProtocolMismatchHandler)
+                .build()
+            )
             .build()
         )
         .addProperty(
           PropertySpec.builder("serializersModule", serializersModule, PRIVATE)
             .initializer("serializersModule")
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
             .build()
         )
         .apply {
@@ -73,7 +84,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
-                  "return %T(serializersModule)", schema.diffProducingWidgetType(widget)
+                  "return %T(serializersModule, mismatchHandler)", schema.diffProducingWidgetType(widget)
                 )
                 .build()
             )
@@ -87,6 +98,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
 /*
 internal class DiffProducingSunspotButton(
   serializerModule: SerializersModule,
+  private val mismatchHandler: ProtocolMismatchHandler,
 ) : AbstractDiffProducingWidget(3), SunspotButton<Nothing> {
   private var onClick: (() -> Unit)? = null
 
@@ -108,7 +120,7 @@ internal class DiffProducingSunspotButton(
   override fun sendEvent(event: Event) {
     when (val tag = event.tag) {
       3 -> onClick?.invoke()
-      else -> throw IllegalArgumentException("Unknown tag $tag")
+      else -> mismatchHandler.onUnknownEvent(12, tag)
     }
   }
 }
@@ -126,10 +138,15 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("serializersModule", serializersModule)
+            .addParameter("mismatchHandler", ComposeProtocolMismatchHandler)
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
             .build()
         )
         .apply {
-          var hasEvents = false
           var nextSerializerId = 0
           val serializerIds = mutableMapOf<TypeName, Int>()
 
@@ -150,8 +167,6 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                 )
               }
               is Event -> {
-                hasEvents = true
-
                 addProperty(
                   PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
                     .mutable(true)
@@ -184,32 +199,30 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
             }
           }
 
-          if (hasEvents) {
-            addFunction(
-              FunSpec.builder("sendEvent")
-                .addModifiers(OVERRIDE)
-                .addParameter("event", eventType)
-                .beginControlFlow("when (val tag = event.tag)")
-                .apply {
-                  for (event in widget.traits.filterIsInstance<Event>()) {
-                    val parameterType = event.parameterType?.asTypeName()
-                    if (parameterType != null) {
-                      val serializerId = serializerIds.computeIfAbsent(parameterType) {
-                        nextSerializerId++
-                      }
-                      addStatement(
-                        "%L -> %N?.invoke(%M(serializer_%L, event.value))", event.tag, event.name, decodeFromJsonElement, serializerId,
-                      )
-                    } else {
-                      addStatement("%L -> %N?.invoke()", event.tag, event.name)
+          addFunction(
+            FunSpec.builder("sendEvent")
+              .addModifiers(OVERRIDE)
+              .addParameter("event", eventType)
+              .beginControlFlow("when (val tag = event.tag)")
+              .apply {
+                for (event in widget.traits.filterIsInstance<Event>()) {
+                  val parameterType = event.parameterType?.asTypeName()
+                  if (parameterType != null) {
+                    val serializerId = serializerIds.computeIfAbsent(parameterType) {
+                      nextSerializerId++
                     }
+                    addStatement(
+                      "%L -> %N?.invoke(%M(serializer_%L, event.value))", event.tag, event.name, decodeFromJsonElement, serializerId,
+                    )
+                  } else {
+                    addStatement("%L -> %N?.invoke()", event.tag, event.name)
                   }
                 }
-                .addStatement("else -> throw %T(\"Unknown tag \$tag\")", iae)
-                .endControlFlow()
-                .build()
-            )
-          }
+              }
+              .addStatement("else -> mismatchHandler.onUnknownEvent(%L, tag)", widget.tag)
+              .endControlFlow()
+              .build()
+          )
 
           for ((typeName, id) in serializerIds) {
             addProperty(
