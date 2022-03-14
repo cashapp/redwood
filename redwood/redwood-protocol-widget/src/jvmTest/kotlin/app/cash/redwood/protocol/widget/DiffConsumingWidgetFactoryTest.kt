@@ -108,7 +108,7 @@ class DiffConsumingWidgetFactoryTest {
     }
     val factory = DiffConsumingExampleSchemaWidgetFactory(
       `delegate` = SchemaExampleSchemaWidgetFactory,
-      serializersModule = json.serializersModule,
+      json = json,
     )
     val lazyColumn = factory.create(5)!!
 

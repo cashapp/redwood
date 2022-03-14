@@ -36,12 +36,12 @@ import com.squareup.kotlinpoet.asTypeName
 
 /*
 class DiffProducingSunspotWidgetFactory(
-  private val serializerModule: SerializersModule = SerializersModule { },
+  private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : SunspotWidgetFactory<Nothing>, DiffProducingWidget.Factory {
-  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(serializerModule, mismatchHandler)
-  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(serializerModule, mismatchHandler)
-  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(serializerModule, mismatchHandler)
+  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(json, mismatchHandler)
+  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(json, mismatchHandler)
+  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(json, mismatchHandler)
 }
 */
 internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
@@ -54,10 +54,8 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter(
-              ParameterSpec.builder("serializersModule", serializersModule)
-                // TODO Use EmptySerializersModule once stable
-                //  https://github.com/Kotlin/kotlinx.serialization/issues/1765
-                .defaultValue("%T { }", serializersModule)
+              ParameterSpec.builder("json", json)
+                .defaultValue("%T", jsonCompanion)
                 .build()
             )
             .addParameter(
@@ -68,8 +66,8 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
             .build()
         )
         .addProperty(
-          PropertySpec.builder("serializersModule", serializersModule, PRIVATE)
-            .initializer("serializersModule")
+          PropertySpec.builder("json", json, PRIVATE)
+            .initializer("json")
             .build()
         )
         .addProperty(
@@ -84,7 +82,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
-                  "return %T(serializersModule, mismatchHandler)", schema.diffProducingWidgetType(widget)
+                  "return %T(json, mismatchHandler)", schema.diffProducingWidgetType(widget)
                 )
                 .build()
             )
@@ -97,16 +95,16 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
 
 /*
 internal class DiffProducingSunspotButton(
-  serializerModule: SerializersModule,
+  private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : AbstractDiffProducingWidget(3), SunspotButton<Nothing> {
   private var onClick: (() -> Unit)? = null
 
-  private val serializer_0: KSerializer<String?> = serializerModule.serializer()
-  private val serializer_1: KSerializer<Boolean> = serializerModule.serializer()
+  private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
+  private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   override fun text(text: String?) {
-    appendDiff(PropertyDiff(this.id, 1, text))
+    appendDiff(PropertyDiff(this.id, 1, json.encodeToJsonElement(serializer_0, text)))
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
@@ -137,8 +135,13 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("serializersModule", serializersModule)
+            .addParameter("json", json)
             .addParameter("mismatchHandler", ComposeProtocolMismatchHandler)
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("json", json, PRIVATE)
+            .initializer("json")
             .build()
         )
         .addProperty(
@@ -162,7 +165,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
-                    .addStatement("appendDiff(%T(this.id, %L, %M(serializer_%L, %N)))", propertyDiff, trait.tag, encodeToJsonElement, serializerId, trait.name)
+                    .addStatement("appendDiff(%T(this.id, %L, json.encodeToJsonElement(serializer_%L, %N)))", propertyDiff, trait.tag, serializerId, trait.name)
                     .build()
                 )
               }
@@ -212,7 +215,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                       nextSerializerId++
                     }
                     addStatement(
-                      "%L -> %N?.invoke(%M(serializer_%L, event.value))", event.tag, event.name, decodeFromJsonElement, serializerId,
+                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))", event.tag, event.name, serializerId,
                     )
                   } else {
                     addStatement("%L -> %N?.invoke()", event.tag, event.name)
@@ -228,7 +231,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
             addProperty(
               PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
                 .addModifiers(PRIVATE)
-                .initializer("serializersModule.%M()", serializer)
+                .initializer("json.serializersModule.%M()", serializer)
                 .build()
             )
           }

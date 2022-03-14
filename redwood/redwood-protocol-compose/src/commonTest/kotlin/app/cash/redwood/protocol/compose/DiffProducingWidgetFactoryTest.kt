@@ -60,7 +60,7 @@ class DiffProducingWidgetFactoryTest {
         contextual(IntRange::class, IntRangeAsStringSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json.serializersModule)
+    val factory = DiffProducingExampleSchemaWidgetFactory(json)
     val lazyColumn = factory.LazyColumn()
 
     (lazyColumn as AbstractDiffProducingWidget)._diffAppender = DiffAppender { diffs += it }
