@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     val composition = RedwoodComposition(
       scope = scope,
-      container = redwoodView.children,
+      view = redwoodView,
       provider = SchemaWidgetFactories(
         Schema = AndroidWidgetFactory(this),
         RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this),

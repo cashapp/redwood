@@ -64,6 +64,7 @@ private class RedwoodZiplineTreehouseUi(
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
       changesSink = changesSink,
+      uiConfigurations = uiConfigurations,
     )
     this.composition = composition
 
@@ -78,7 +79,6 @@ private class RedwoodZiplineTreehouseUi(
 
     composition.bind(
       treehouseUi = treehouseUi,
-      uiConfigurations = uiConfigurations,
       saveableStateRegistry = saveableStateRegistry,
     )
   }

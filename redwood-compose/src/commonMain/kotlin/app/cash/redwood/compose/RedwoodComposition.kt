@@ -19,13 +19,17 @@ import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.Composition
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
@@ -43,16 +47,17 @@ public interface RedwoodComposition {
  */
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
-  container: Widget.Children<W>,
+  view: RedwoodView<W>,
   provider: Widget.Provider<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, NodeApplier(provider, container, onEndChanges))
+  return WidgetRedwoodComposition(scope, view, NodeApplier(provider, view.children, onEndChanges))
 }
 
-private class WidgetRedwoodComposition(
+private class WidgetRedwoodComposition<W : Any>(
   private val scope: CoroutineScope,
-  applier: NodeApplier<*>,
+  private val view: RedwoodView<W>,
+  applier: NodeApplier<W>,
 ) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
@@ -75,7 +80,12 @@ private class WidgetRedwoodComposition(
   }
 
   override fun setContent(content: @Composable () -> Unit) {
-    composition.setContent(content)
+    composition.setContent {
+      val uiConfiguration by view.uiConfiguration.collectAsState()
+      CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
+        content()
+      }
+    }
   }
 
   override fun cancel() {

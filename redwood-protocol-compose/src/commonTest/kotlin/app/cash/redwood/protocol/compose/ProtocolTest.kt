@@ -32,6 +32,7 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.testing.TestRedwoodComposition
+import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.Button
@@ -41,6 +42,7 @@ import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.Text
 import kotlin.test.Test
 import kotlin.test.fail
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.TestScope
@@ -56,6 +58,7 @@ class ProtocolTest {
       bridge = bridge,
       changesSink = ::error,
       widgetVersion = 22U,
+      uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
 
     var actualDisplayVersion = 0U
@@ -224,6 +227,7 @@ class ProtocolTest {
       scope = backgroundScope,
       provider = bridge.provider,
       container = bridge.root,
+      uiConfigurations = MutableStateFlow(UiConfiguration()),
     ) {
       bridge.getChangesOrNull() ?: emptyList()
     }
