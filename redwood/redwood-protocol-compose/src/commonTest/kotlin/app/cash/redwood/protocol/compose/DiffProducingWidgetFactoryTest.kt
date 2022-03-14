@@ -15,9 +15,17 @@
  */
 package app.cash.redwood.protocol.compose
 
+import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
+import example.redwood.values.IntRangeAsStringSerializer
+import example.redwood.values.IntRangeBox
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -42,5 +50,23 @@ class DiffProducingWidgetFactoryTest {
     button.sendEvent(Event(1L, 3456543))
 
     assertEquals(listOf("Unknown event 3456543 for 3"), handler.events)
+  }
+
+  @Test fun contextualSerializerIsInvoked() {
+    val diffs = mutableListOf<Diff>()
+
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(IntRange::class, IntRangeAsStringSerializer)
+      }
+    }
+    val factory = DiffProducingExampleSchemaWidgetFactory(json.serializersModule)
+    val lazyColumn = factory.LazyColumn()
+
+    (lazyColumn as AbstractDiffProducingWidget)._diffAppender = DiffAppender { diffs += it }
+    lazyColumn.adapter(IntRangeBox(10..20))
+    (lazyColumn as AbstractDiffProducingWidget)._diffAppender.trySend()
+
+    assertContentEquals(diffs, listOf(Diff(propertyDiffs = listOf(PropertyDiff(-1, 1, json.encodeToJsonElement(IntRangeBox(10..20)))))))
   }
 }
