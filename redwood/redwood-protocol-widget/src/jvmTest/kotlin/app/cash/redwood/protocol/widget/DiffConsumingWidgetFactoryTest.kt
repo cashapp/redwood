@@ -17,8 +17,14 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
+import example.redwood.LazyColumn
 import example.redwood.test.SchemaExampleSchemaWidgetFactory
+import example.redwood.values.IntRangeAsStringSerializer
+import example.redwood.values.IntRangeBox
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -92,5 +98,22 @@ class DiffConsumingWidgetFactoryTest {
     button.apply(PropertyDiff(1L, 345432)) { throw UnsupportedOperationException() }
 
     assertEquals(listOf("Unknown property 345432 for 3"), handler.events)
+  }
+
+  @Test fun contextualSerializerIsInvoked() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(IntRange::class, IntRangeAsStringSerializer)
+      }
+    }
+    val factory = DiffConsumingExampleSchemaWidgetFactory(
+      `delegate` = SchemaExampleSchemaWidgetFactory,
+      json = json,
+    )
+    val lazyColumn = factory.create(5)!!
+
+    lazyColumn.apply(PropertyDiff(1L, 1, json.encodeToJsonElement(IntRangeBox(10..20)))) { throw UnsupportedOperationException() }
+
+    lazyColumn.value.assertSchema(LazyColumn(IntRangeBox(10..20)))
   }
 }

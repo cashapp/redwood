@@ -1,0 +1,16 @@
+plugins {
+  id 'org.jetbrains.kotlin.multiplatform'
+  id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.kotlinx.serialization.core
+      }
+    }
+  }
+}

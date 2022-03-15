@@ -19,6 +19,7 @@ import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
+import example.redwood.values.IntRangeBox
 
 @Schema(
   [
@@ -26,6 +27,7 @@ import app.cash.redwood.schema.Widget
     Text::class,
     Button::class,
     TextInput::class,
+    LazyColumn::class,
   ]
 )
 public interface ExampleSchema
@@ -50,4 +52,9 @@ public data class Button(
 public data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val onChange: (String) -> Unit,
+)
+
+@Widget(5)
+public data class LazyColumn(
+  @Property(1) val adapter: IntRangeBox,
 )
