@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
-
 buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
@@ -10,6 +8,7 @@ buildscript {
     classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
     classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
     classpath 'com.diffplug.spotless:spotless-plugin-gradle:5.8.2'
+    classpath 'app.cash.redwood.tools:compose-gradle-plugin'
   }
   repositories {
     mavenCentral()
@@ -78,24 +77,6 @@ allprojects {
         '-Xopt-in=kotlin.RequiresOptIn',
       ]
     }
-  }
-
-  // This is required for JetBrains' Compose fork to build JS correctly.
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile).configureEach { task ->
-    task.kotlinOptions {
-      freeCompilerArgs += [
-        "-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true",
-      ]
-    }
-  }
-
-  // Kotlin/Native compiler reports its version like 1.4.21-344 whereas Kotlin/JVM and Kotlin/JS say
-  // only 1.4.21. The Compose compiler checks this version and fails for the Kotlin/Native variant.
-  tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinNativeCompile).configureEach {
-    it.compilerPluginOptions.addPluginArgument(
-      'androidx.compose.compiler.plugins.kotlin',
-      new SubpluginOption('suppressKotlinVersionCompatibilityCheck', 'true')
-    )
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
