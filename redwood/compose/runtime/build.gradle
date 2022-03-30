@@ -103,6 +103,7 @@ kotlin {
       }
     }
     nativeMain {
+      dependsOn(commonMain)
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/nativeMain/kotlin'
       }
