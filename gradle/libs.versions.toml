@@ -30,7 +30,7 @@ jetbrains-compose-compilerHosted = { module = "org.jetbrains.compose.compiler:co
 
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.0.2" }
 materialDesign = { module = "com.google.android.material:material", version = "1.4.0" }
-kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.7.2" }
+kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.11.0" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "3.1.0" }
 exhaustiveAnnotation = { module = "app.cash.exhaustive:exhaustive-annotation", version.ref = "exhaustive" }
 junit = { module = "junit:junit", version = "4.13.1" }
