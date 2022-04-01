@@ -19,7 +19,7 @@ import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import example.redwood.values.IntRangeBox
+import kotlin.time.Duration
 
 @Schema(
   [
@@ -27,7 +27,6 @@ import example.redwood.values.IntRangeBox
     Text::class,
     Button::class,
     TextInput::class,
-    LazyColumn::class,
   ]
 )
 public interface ExampleSchema
@@ -51,10 +50,7 @@ public data class Button(
 @Widget(4)
 public data class TextInput(
   @Property(1) val text: String?,
-  @Property(2) val onChange: (String) -> Unit,
-)
-
-@Widget(5)
-public data class LazyColumn(
-  @Property(1) val adapter: IntRangeBox,
+  @Property(2) val customType: Duration?,
+  @Property(3) val onChange: (String) -> Unit,
+  @Property(4) val onChangeCustomType: (Duration) -> Unit,
 )

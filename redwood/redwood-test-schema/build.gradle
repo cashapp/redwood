@@ -2,5 +2,4 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
   implementation projects.redwoodSchemaAnnotations
-  implementation projects.redwoodTestValues
 }

@@ -19,17 +19,64 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
-import example.redwood.values.IntRangeAsStringSerializer
-import example.redwood.values.IntRangeBox
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class DiffProducingWidgetFactoryTest {
+  @Test fun propertyUsesSerializersModule() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val textInput = factory.TextInput()
+
+    val diffProducingWidget = textInput as AbstractDiffProducingWidget
+    val diffSink = RecordingDiffSink()
+    val diffAppender = DiffAppender(diffSink)
+    diffProducingWidget.id = 1L
+    diffProducingWidget._diffAppender = diffAppender
+
+    textInput.customType(10.seconds)
+    diffAppender.trySend()
+
+    val expected = Diff(
+      propertyDiffs = listOf(
+        PropertyDiff(1L, 2, JsonPrimitive("PT10S")),
+      ),
+    )
+    assertEquals(expected, diffSink.diffs.single())
+  }
+
+  @Test fun eventUsesSerializersModule() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val textInput = factory.TextInput()
+
+    val diffProducingWidget = textInput as AbstractDiffProducingWidget
+    diffProducingWidget._diffAppender = DiffAppender(RecordingDiffSink())
+
+    var argument: Duration? = null
+    textInput.onChangeCustomType {
+      argument = it
+    }
+
+    diffProducingWidget.sendEvent(Event(1L, 4, JsonPrimitive("PT10S")))
+
+    assertEquals(10.seconds, argument)
+  }
+
   @Test fun unknownEventThrowsDefault() {
     val factory = DiffProducingExampleSchemaWidgetFactory()
     val button = factory.Button() as AbstractDiffProducingWidget
@@ -49,24 +96,6 @@ class DiffProducingWidgetFactoryTest {
 
     button.sendEvent(Event(1L, 3456543))
 
-    assertEquals(listOf("Unknown event 3456543 for 3"), handler.events)
-  }
-
-  @Test fun contextualSerializerIsInvoked() {
-    val diffs = mutableListOf<Diff>()
-
-    val json = Json {
-      serializersModule = SerializersModule {
-        contextual(IntRange::class, IntRangeAsStringSerializer)
-      }
-    }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
-    val lazyColumn = factory.LazyColumn()
-
-    (lazyColumn as AbstractDiffProducingWidget)._diffAppender = DiffAppender { diffs += it }
-    lazyColumn.adapter(IntRangeBox(10..20))
-    (lazyColumn as AbstractDiffProducingWidget)._diffAppender.trySend()
-
-    assertContentEquals(diffs, listOf(Diff(propertyDiffs = listOf(PropertyDiff(-1, 1, json.encodeToJsonElement(IntRangeBox(10..20)))))))
+    assertEquals("Unknown event 3456543 for 3", handler.events.single())
   }
 }

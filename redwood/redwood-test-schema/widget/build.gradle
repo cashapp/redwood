@@ -12,7 +12,6 @@ kotlin {
       }
       dependencies {
         api projects.redwoodWidget
-        api projects.redwoodTestValues
       }
     }
   }

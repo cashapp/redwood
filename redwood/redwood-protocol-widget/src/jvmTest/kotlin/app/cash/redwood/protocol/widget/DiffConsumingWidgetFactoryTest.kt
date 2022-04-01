@@ -15,20 +15,21 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
-import example.redwood.LazyColumn
+import example.redwood.TextInput
 import example.redwood.test.SchemaExampleSchemaWidgetFactory
-import example.redwood.values.IntRangeAsStringSerializer
-import example.redwood.values.IntRangeBox
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class DiffConsumingWidgetFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
@@ -49,7 +50,7 @@ class DiffConsumingWidgetFactoryTest {
 
     assertNull(factory.create(345432))
 
-    assertEquals(listOf("Unknown widget 345432"), handler.events)
+    assertEquals("Unknown widget 345432", handler.events.single())
   }
 
   @Test fun unknownChildrenThrowsDefault() {
@@ -72,7 +73,25 @@ class DiffConsumingWidgetFactoryTest {
     val button = factory.create(3) as DiffConsumingWidget<*>
     assertNull(button.children(345432))
 
-    assertEquals(listOf("Unknown children 345432 for 3"), handler.events)
+    assertEquals("Unknown children 345432 for 3", handler.events.single())
+  }
+
+  @Test fun propertyUsesSerializersModule() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val factory = DiffConsumingExampleSchemaWidgetFactory(
+      delegate = SchemaExampleSchemaWidgetFactory,
+      json = json,
+    )
+    val textInput = factory.create(4)!!
+
+    val throwingEventSink = EventSink { error(it) }
+    textInput.apply(PropertyDiff(1L, 2, JsonPrimitive("PT10S")), throwingEventSink)
+
+    textInput.value.assertSchema(TextInput(null, 10.seconds, { }, { }))
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
@@ -97,23 +116,26 @@ class DiffConsumingWidgetFactoryTest {
 
     button.apply(PropertyDiff(1L, 345432)) { throw UnsupportedOperationException() }
 
-    assertEquals(listOf("Unknown property 345432 for 3"), handler.events)
+    assertEquals("Unknown property 345432 for 3", handler.events.single())
   }
 
-  @Test fun contextualSerializerIsInvoked() {
+  @Test fun eventUsesSerializersModule() {
     val json = Json {
       serializersModule = SerializersModule {
-        contextual(IntRange::class, IntRangeAsStringSerializer)
+        contextual(Duration::class, DurationIsoSerializer)
       }
     }
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      `delegate` = SchemaExampleSchemaWidgetFactory,
+      delegate = SchemaExampleSchemaWidgetFactory,
       json = json,
     )
-    val lazyColumn = factory.create(5)!!
+    val textInput = factory.create(4)!!
 
-    lazyColumn.apply(PropertyDiff(1L, 1, json.encodeToJsonElement(IntRangeBox(10..20)))) { throw UnsupportedOperationException() }
+    val eventSink = RecordingEventSink()
+    textInput.apply(PropertyDiff(1L, 4, JsonPrimitive(true)), eventSink)
 
-    lazyColumn.value.assertSchema(LazyColumn(IntRangeBox(10..20)))
+    (textInput.value.schema as TextInput).onChangeCustomType(10.seconds)
+
+    assertEquals(Event(1L, 4, JsonPrimitive("PT10S")), eventSink.events.single())
   }
 }

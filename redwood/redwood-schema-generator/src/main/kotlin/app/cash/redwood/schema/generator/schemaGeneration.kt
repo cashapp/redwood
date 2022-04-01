@@ -194,7 +194,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
             .addParameter("path", STRING)
             .beginControlFlow("if (expected !is %T)", widgetType)
             .addStatement(
-              "throw %T(\"Expected: \${expected::class} but was: ${widgetType.simpleNames.joinToString(".")}\\n  at \$path\")",
+              "throw %T(\"Expected:·\${expected::class}·but·was:·${widgetType.simpleNames.joinToString(".")}\\n··at·\$path\")",
               ae
             )
             .endControlFlow()
@@ -204,7 +204,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
                   is Property -> {
                     beginControlFlow("if (expected.%1N != %1N)", trait.name)
                     addStatement(
-                      "throw %1T(\"Expected: \${expected.%2N} but was: \$%2N\\n  at \$path.%2N\")",
+                      "throw %1T(\"Expected:·\${expected.%2N}·but·was:·\$%2N\\n··at·\$path.%2N\")",
                       ae, trait.name
                     )
                     endControlFlow()
