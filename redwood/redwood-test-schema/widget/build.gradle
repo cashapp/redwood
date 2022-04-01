@@ -5,6 +5,9 @@ def generatedDir = 'build/generated/redwood'
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
 
+  // Ensure our codegen correctly works in explicit API mode.
+  explicitApi()
+
   sourceSets {
     commonMain {
       kotlin {
@@ -12,6 +15,21 @@ kotlin {
       }
       dependencies {
         api projects.redwoodWidget
+      }
+    }
+  }
+
+  targets.all {
+    compilations.all {
+      kotlinOptions {
+        // Ensure our codegen does not produce any warnings.
+        allWarningsAsErrors = true
+
+        freeCompilerArgs += [
+          // Ensure our codegen can handle the latest language semantics.
+          // https://kotlinlang.org/docs/compiler-reference.html#progressive
+          '-progressive'
+        ]
       }
     }
   }
