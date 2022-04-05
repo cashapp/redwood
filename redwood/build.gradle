@@ -3,7 +3,6 @@ buildscript {
     classpath libs.kotlin.gradlePlugin
     classpath libs.androidGradlePlugin
     classpath "org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}"
-    classpath "app.cash.exhaustive:exhaustive-gradle:${libs.versions.exhaustive.get()}"
     classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
     classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
     classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
@@ -67,6 +66,14 @@ allprojects {
           optIn('kotlin.RequiresOptIn')
         }
       }
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
+    task.kotlinOptions {
+      freeCompilerArgs += [
+        '-progressive', // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+      ]
     }
   }
 

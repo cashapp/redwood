@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.redwood.schema.parser.Children
 import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Property
@@ -154,7 +153,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
           val serializerIds = mutableMapOf<TypeName, Int>()
 
           for (trait in widget.traits) {
-            @Exhaustive when (trait) {
+            when (trait) {
               is Property -> {
                 val traitTypeName = trait.type.asTypeName()
                 val serializerId = serializerIds.computeIfAbsent(traitTypeName) {

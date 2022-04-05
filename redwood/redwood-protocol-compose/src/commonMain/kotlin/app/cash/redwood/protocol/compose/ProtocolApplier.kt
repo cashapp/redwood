@@ -42,7 +42,8 @@ import app.cash.redwood.protocol.PropertyDiff
  * @suppress For generated code usage only.
  */
 @Composable
-public fun `$SyntheticChildren`(tag: Int, content: @Composable () -> Unit) {
+@Suppress("FunctionName") // Hiding from auto-complete.
+public fun _SyntheticChildren(tag: Int, content: @Composable () -> Unit) {
   ComposeNode<DiffProducingChildrenWidget.Intermediate, Applier<*>>(
     factory = {
       DiffProducingChildrenWidget.Intermediate(tag)

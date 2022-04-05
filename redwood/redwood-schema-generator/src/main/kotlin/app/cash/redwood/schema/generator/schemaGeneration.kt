@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.redwood.schema.parser.Children
 import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Property
@@ -115,7 +114,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
         .apply {
           val schemaParameters = mutableListOf<CodeBlock>()
           for (trait in widget.traits) {
-            @Exhaustive when (trait) {
+            when (trait) {
               is Property -> {
                 addProperty(
                   PropertySpec.builder(
@@ -200,7 +199,7 @@ internal fun generateSchemaWidget(schema: Schema, widget: Widget): FileSpec {
             .endControlFlow()
             .apply {
               for (trait in widget.traits) {
-                @Exhaustive when (trait) {
+                when (trait) {
                   is Property -> {
                     beginControlFlow("if (expected.%1N != %1N)", trait.name)
                     addStatement(

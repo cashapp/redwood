@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.redwood.schema.parser.Children
 import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Property
@@ -89,7 +88,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
           val updateLambda = CodeBlock.builder()
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
-            @Exhaustive when (trait) {
+            when (trait) {
               is Property,
               is Event -> {
                 updateLambda.add("set(%1N) { %1N(%1N) }\n", trait.name)
