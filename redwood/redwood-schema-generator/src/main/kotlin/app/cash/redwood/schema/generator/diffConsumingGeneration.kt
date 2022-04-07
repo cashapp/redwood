@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.redwood.schema.parser.Children
 import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Property
@@ -208,7 +207,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
               .beginControlFlow("when (val tag = diff.tag)")
               .apply {
                 for (trait in properties) {
-                  @Exhaustive when (trait) {
+                  when (trait) {
                     is Property -> {
                       val propertyType = trait.type.asTypeName()
                       val serializerId = serializerIds.computeIfAbsent(propertyType) {

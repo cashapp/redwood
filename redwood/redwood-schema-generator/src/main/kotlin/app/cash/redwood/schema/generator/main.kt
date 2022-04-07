@@ -17,7 +17,6 @@
 
 package app.cash.redwood.schema.generator
 
-import app.cash.exhaustive.Exhaustive
 import app.cash.redwood.schema.generator.RedwoodGenerator.Type.Compose
 import app.cash.redwood.schema.generator.RedwoodGenerator.Type.ComposeProtocol
 import app.cash.redwood.schema.generator.RedwoodGenerator.Type.Test
@@ -75,7 +74,7 @@ private class RedwoodGenerator : CliktCommand() {
 
   override fun run() {
     val schema = parseSchema(schemaType)
-    @Exhaustive when (type) {
+    when (type) {
       Compose -> {
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)

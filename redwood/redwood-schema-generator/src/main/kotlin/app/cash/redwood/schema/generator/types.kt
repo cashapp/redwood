@@ -31,7 +31,7 @@ internal val propertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff
 internal val abstractDiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
 internal val diffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
 internal val diffProducingWidgetFactory = diffProducingWidget.nestedClass("Factory")
-internal val syntheticChildren = MemberName("app.cash.redwood.protocol.compose", "\$SyntheticChildren")
+internal val syntheticChildren = MemberName("app.cash.redwood.protocol.compose", "_SyntheticChildren")
 internal val ComposeProtocolMismatchHandler = ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
 
 internal val DiffConsumingWidget = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingWidget")

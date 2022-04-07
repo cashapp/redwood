@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.gradle
 
-import app.cash.exhaustive.Exhaustive
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -50,7 +49,7 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
       api("app.cash.redwood:redwood-compose:$redwoodVersion")
     }
 
-    @Exhaustive when (kotlinCompilation.platformType) {
+    when (kotlinCompilation.platformType) {
       androidJvm, jvm -> {
         if ((kotlinCompilation.kotlinOptions as KotlinJvmOptions).useOldBackend) {
           throw IllegalStateException("Redwood only works with the default IR-based backend")
