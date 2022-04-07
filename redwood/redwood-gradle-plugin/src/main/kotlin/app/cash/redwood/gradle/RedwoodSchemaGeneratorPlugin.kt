@@ -20,8 +20,10 @@ import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.ComposeProt
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Test
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Widget
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.WidgetProtocol
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.JAVA_RUNTIME
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
@@ -91,9 +93,13 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       exec.classpath(configuration)
       exec.mainClass.set("app.cash.redwood.schema.generator.Main")
 
-      exec.doFirst {
-        generatedDir.deleteRecursively()
+      @Suppress("ObjectLiteralToLambda") // Gradle wants an anonymous class and not a lambda.
+      val deleteGeneratedDir = object : Action<Task> {
+        override fun execute(task: Task) {
+          generatedDir.deleteRecursively()
+        }
       }
+      exec.doFirst(deleteGeneratedDir)
     }
 
     project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
