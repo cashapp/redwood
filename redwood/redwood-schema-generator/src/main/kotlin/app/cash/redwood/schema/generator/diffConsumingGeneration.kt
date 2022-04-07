@@ -271,17 +271,22 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
               .addModifiers(OVERRIDE)
               .addParameter("tag", INT)
               .returns(childrenOfT.copy(nullable = true))
-              .beginControlFlow("return when (tag)")
               .apply {
-                for (children in childrens) {
-                  addStatement("%L -> delegate.%N", children.tag, children.name)
+                if (childrens.isNotEmpty()) {
+                  beginControlFlow("return when (tag)")
+                  for (children in childrens) {
+                    addStatement("%L -> delegate.%N", children.tag, children.name)
+                  }
+                  beginControlFlow("else ->")
+                  addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
+                  addStatement("null")
+                  endControlFlow()
+                  endControlFlow()
+                } else {
+                  addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
+                  addStatement("return null")
                 }
               }
-              .beginControlFlow("else ->")
-              .addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
-              .addStatement("null")
-              .endControlFlow()
-              .endControlFlow()
               .build()
           )
         }
