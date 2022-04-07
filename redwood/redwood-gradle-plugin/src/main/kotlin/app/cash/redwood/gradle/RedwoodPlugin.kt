@@ -47,7 +47,7 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      implementation("app.cash.redwood:redwood-compose:$redwoodVersion")
+      api("app.cash.redwood:redwood-compose:$redwoodVersion")
     }
 
     @Exhaustive when (kotlinCompilation.platformType) {
