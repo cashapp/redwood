@@ -21,8 +21,8 @@ public class MutableListChildren<T : Any>
 @JvmOverloads constructor(
   public val list: MutableList<T> = mutableListOf(),
 ) : Widget.Children<T>, Iterable<T> {
-  override fun insert(index: Int, widget: T) {
-    list.add(index, widget)
+  override fun insert(index: Int, widget: Widget<T>) {
+    list.add(index, widget.value)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {

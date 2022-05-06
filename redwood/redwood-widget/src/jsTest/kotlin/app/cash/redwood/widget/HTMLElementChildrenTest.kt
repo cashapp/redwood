@@ -21,12 +21,14 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
 class HTMLElementChildrenTest : AbstractWidgetChildrenTest<HTMLElement>() {
-  private val parent = widget("root")
+  private val parent = widget("root").value
   override val children = HTMLElementChildren(parent)
 
-  override fun widget(name: String): HTMLElement {
-    return (document.createElement("div") as HTMLDivElement).apply {
-      id = name
+  override fun widget(name: String): Widget<HTMLElement> {
+    return object : Widget<HTMLElement> {
+      override val value = (document.createElement("div") as HTMLDivElement).apply {
+        id = name
+      }
     }
   }
 

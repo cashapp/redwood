@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 
 abstract class AbstractWidgetChildrenTest<T : Any> {
   abstract val children: Widget.Children<T>
-  abstract fun widget(name: String): T
+  abstract fun widget(name: String): Widget<T>
   abstract fun names(): List<String>
 
   @Test fun insertAppend() {

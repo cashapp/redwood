@@ -20,8 +20,10 @@ import kotlin.test.assertEquals
 
 class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
   override val children = MutableListChildren<String>()
-  override fun widget(name: String) = name
   override fun names() = children.list
+  override fun widget(name: String) = object : Widget<String> {
+    override val value get() = name
+  }
 
   @Test fun iterableIteratesChildren() {
     assertEquals(emptyList(), children.toList())

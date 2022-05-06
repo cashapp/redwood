@@ -47,7 +47,7 @@ public class ProtocolDisplay<T : Any>(
         is ChildrenDiff.Insert -> {
           val childWidget = factory.create(childrenDiff.kind) ?: continue
           widgets[childrenDiff.childId] = childWidget
-          children.insert(childrenDiff.index, childWidget.value)
+          children.insert(childrenDiff.index, childWidget)
         }
         is ChildrenDiff.Move -> {
           children.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)

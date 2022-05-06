@@ -63,7 +63,7 @@ class ProtocolDisplayTest {
   }
 
   private object NullWidgetChildren : Widget.Children<Unit> {
-    override fun insert(index: Int, widget: Unit) = throw UnsupportedOperationException()
+    override fun insert(index: Int, widget: Widget<Unit>) = throw UnsupportedOperationException()
     override fun move(fromIndex: Int, toIndex: Int, count: Int) = throw UnsupportedOperationException()
     override fun remove(index: Int, count: Int) = throw UnsupportedOperationException()
     override fun clear() = throw UnsupportedOperationException()

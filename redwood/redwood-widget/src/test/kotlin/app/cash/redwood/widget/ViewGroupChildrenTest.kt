@@ -26,9 +26,11 @@ class ViewGroupChildrenTest : AbstractWidgetChildrenTest<View>() {
   private val parent = FrameLayout(RuntimeEnvironment.application)
   override val children = ViewGroupChildren(parent)
 
-  override fun widget(name: String): View {
-    return View(RuntimeEnvironment.application).apply {
-      tag = name
+  override fun widget(name: String): Widget<View> {
+    return object : Widget<View> {
+      override val value = View(RuntimeEnvironment.application).apply {
+        tag = name
+      }
     }
   }
 

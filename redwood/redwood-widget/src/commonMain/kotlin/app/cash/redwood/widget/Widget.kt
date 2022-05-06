@@ -35,7 +35,7 @@ public interface Widget<T : Any> {
    */
   public interface Children<T : Any> {
     /** Insert child [widget] at [index]. */
-    public fun insert(index: Int, widget: T)
+    public fun insert(index: Int, widget: Widget<T>)
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
      *
