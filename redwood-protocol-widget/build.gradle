@@ -2,7 +2,6 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
-apply plugin: 'app.cash.redwood.tools.compose'
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
@@ -11,13 +10,18 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocol
-        api projects.redwoodCompose
+        api projects.redwoodWidget
       }
     }
     commonTest {
       dependencies {
         implementation libs.kotlin.test
-        implementation projects.redwoodTestSchema.compose.protocol
+      }
+    }
+    jvmTest { // TODO all targets!
+      dependencies {
+        implementation projects.testSchema.widget.protocol
+        implementation projects.testSchema.test
       }
     }
   }

@@ -11,16 +11,16 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.samples.counter.sunspot.compose
+        api projects.counter.sunspot.compose
       }
     }
     commonTest {
       dependencies {
         implementation libs.kotlin.test
-        implementation projects.samples.counter.sunspot.test
+        implementation projects.counter.sunspot.test
         // TODO remove the need for these dependencies!
-        implementation projects.samples.counter.sunspot.compose.protocol
-        implementation projects.samples.counter.sunspot.widget.protocol
+        implementation projects.counter.sunspot.compose.protocol
+        implementation projects.counter.sunspot.widget.protocol
       }
     }
     nativeTest {

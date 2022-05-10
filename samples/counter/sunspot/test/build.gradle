@@ -11,13 +11,13 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.samples.counter.sunspot.widget
+        api projects.counter.sunspot.widget
       }
     }
   }
 }
 
 redwoodSchema {
-  source = project(':samples:counter:sunspot')
+  source = project(':counter:sunspot')
   type = 'example.sunspot.Sunspot'
 }

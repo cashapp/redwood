@@ -34,7 +34,7 @@ For unstable versions, you likely just need to update the `jb-main` branch to la
 Update the Compose submodule to the desired SHA:
 
 ```
-$ cd redwood/compose/upstream
+$ cd compose/upstream
 $ git fetch origin
 $ git checkout <REF>
 $ cd -
@@ -44,8 +44,8 @@ Replacing "<REF>" with `release/X.Y.Z` or `jb-main` or whatever.
 
 Run a full `./gradlew -p redwood clean build` and `./gradlew clean build`.
 
-If any of the checks in `redwood/compose/build.gradle` fail, look in
-`redwood/compose/upstream/gradle/libs.versions.toml` for the Kotlin and kotlinx.coroutines versions in use
+If any of the checks in `compose/build.gradle` fail, look in
+`compose/upstream/gradle/libs.versions.toml` for the Kotlin and kotlinx.coroutines versions in use
 and update `gradle/dependencies.gradle` to match.
 
 Once everything builds, you're done. Commit, push, and PR!
@@ -59,7 +59,7 @@ Ensure that your submodule is properly cloned.
 You can check by listing git remotes in the `upstream` directory. 
 
 ```
-$ cd redwood/compose/upstream
+$ cd compose/upstream
 $ git remote -v 
 origin	https://android.googlesource.com/platform/frameworks/support (fetch)
 origin	https://android.googlesource.com/platform/frameworks/support (push)
