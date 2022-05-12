@@ -1,0 +1,102 @@
+buildscript {
+  dependencies {
+    classpath libs.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
+    classpath "org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}"
+    classpath 'com.diffplug.spotless:spotless-plugin-gradle:5.8.2'
+
+    // Normally you would declare a version here, but we use dependency substitution in
+    // settings.gradle to use the version built from inside the repo.
+    classpath 'app.cash.redwood:redwood-gradle-plugin'
+  }
+  repositories {
+    mavenCentral()
+    google()
+    jcenter()
+  }
+}
+
+allprojects {
+  repositories {
+    mavenCentral()
+    google()
+    jcenter()
+  }
+
+  tasks.withType(Test).configureEach {
+    testLogging {
+      if (System.getenv("CI") == "true") {
+        events = ["failed", "skipped", "passed"]
+      }
+      exceptionFormat "full"
+    }
+  }
+
+  plugins.withId('java-base') {
+    java {
+      sourceCompatibility = JavaVersion.VERSION_1_8
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+    task.kotlinOptions {
+      jvmTarget = '1.8'
+    }
+  }
+
+  plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
+    def android = plugin.extension
+    android.compileSdkVersion 31
+    android.compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android.defaultConfig {
+      minSdkVersion 21
+      targetSdkVersion 30
+    }
+    android.lintOptions {
+      checkDependencies true
+      checkReleaseBuilds false // Full lint runs as part of 'build' task.
+    }
+
+    // Normally the RedwoodPlugin performs dependency substitution to replace our Compose runtime
+    // for Android with the official AndroidX one. However, because we are using includeBuild in
+    // settings.gradle, the substitution does not match. Instead, for Android samples, we match
+    // on the included build's Compose runtime Gradle project and perform the same replacement.
+    configurations.all { configuration ->
+      configuration.resolutionStrategy.dependencySubstitution {
+        all { dependency ->
+          if (dependency.requested instanceof ProjectComponentSelector
+              && dependency.requested.buildName == 'redwood'
+              && dependency.requested.projectPath == ':compose:runtime') {
+            dependency.useTarget("androidx.compose.runtime:runtime:${libs.versions.androidCompose.get()}")
+          }
+        }
+      }
+    }
+
+    // TODO Re-enable lint on samples https://issuetracker.google.com/issues/196982350
+    afterEvaluate {
+      tasks.named('lintDebug').configure { enabled = false }
+      tasks.named('lintRelease').configure { enabled = false }
+    }
+  }
+
+  apply plugin: 'com.diffplug.spotless'
+
+  spotless {
+    kotlin {
+      target("src/*/kotlin/**/*.kt")
+      licenseHeaderFile(rootProject.file('../gradle/license-header.txt'))
+      // Spotless doesn't read .editorconfig yet: https://github.com/diffplug/spotless/issues/142
+      ktlint('0.41.0').userData([
+        'insert_final_newline': 'true',
+        'end_of_line': 'lf',
+        'charset': 'utf-8',
+        'indent_size': '2',
+      ])
+    }
+  }
+}

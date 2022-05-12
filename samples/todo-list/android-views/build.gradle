@@ -3,9 +3,9 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.redwood'
 
 dependencies {
-  implementation projects.samples.todoList.schema.compose.protocol
-  implementation projects.samples.todoList.schema.widget.protocol
-  implementation projects.samples.todoList.presenters
+  implementation projects.todoList.schema.compose.protocol
+  implementation projects.todoList.schema.widget.protocol
+  implementation projects.todoList.presenters
   implementation libs.kotlinx.coroutines.android
   implementation libs.androidx.appCompat
   implementation libs.materialDesign

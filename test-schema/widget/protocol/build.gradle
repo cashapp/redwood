@@ -1,5 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.tools.compose'
 
 def generatedDir = 'build/generated/redwood'
 
@@ -15,8 +14,8 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api projects.redwoodTestSchema.widget
-        api projects.redwoodProtocolCompose // TODO should be redwoodCompose!
+        api projects.redwoodProtocolWidget
+        api projects.testSchema.widget
       }
     }
   }
@@ -43,14 +42,14 @@ configurations {
 
 dependencies {
   generator projects.redwoodSchemaGenerator
-  generator projects.redwoodTestSchema
+  generator projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
   it.main('app.cash.redwood.schema.generator.Main')
   it.args(
-    '--compose',
+    '--widget-protocol',
     '--out', generatedDir,
     'example.redwood.ExampleSchema',
   )

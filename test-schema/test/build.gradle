@@ -11,8 +11,8 @@ sourceSets {
 }
 
 dependencies {
-  api projects.redwoodTestSchema
-  api projects.redwoodTestSchema.widget
+  api projects.testSchema
+  api projects.testSchema.widget
 }
 
 configurations {
@@ -21,7 +21,7 @@ configurations {
 
 dependencies {
   generator projects.redwoodSchemaGenerator
-  generator projects.redwoodTestSchema
+  generator projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {

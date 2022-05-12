@@ -19,8 +19,8 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
-        implementation projects.redwoodTestSchema.compose
-        implementation projects.redwoodTestSchema.compose.protocol
+        implementation projects.testSchema.compose
+        implementation projects.testSchema.compose.protocol
       }
     }
     androidMain {

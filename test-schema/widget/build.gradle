@@ -14,8 +14,7 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api projects.redwoodProtocolWidget
-        api projects.redwoodTestSchema.widget
+        api projects.redwoodWidget
       }
     }
   }
@@ -42,14 +41,14 @@ configurations {
 
 dependencies {
   generator projects.redwoodSchemaGenerator
-  generator projects.redwoodTestSchema
+  generator projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
   it.main('app.cash.redwood.schema.generator.Main')
   it.args(
-    '--widget-protocol',
+    '--widget',
     '--out', generatedDir,
     'example.redwood.ExampleSchema',
   )

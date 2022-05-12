@@ -15,7 +15,7 @@ kotlin {
       }
       dependencies {
         api projects.redwoodProtocolCompose
-        api projects.redwoodTestSchema.widget
+        api projects.testSchema.widget
       }
     }
   }
@@ -42,7 +42,7 @@ configurations {
 
 dependencies {
   generator projects.redwoodSchemaGenerator
-  generator projects.redwoodTestSchema
+  generator projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {

@@ -1,35 +1,28 @@
-rootProject.name = 'redwood-root'
+rootProject.name = 'redwood'
 
-include ':samples:counter:android'
-include ':samples:counter:browser'
-include ':samples:counter:ios:shared'
-include ':samples:counter:shared'
-include ':samples:counter:sunspot'
-include ':samples:counter:sunspot:compose'
-include ':samples:counter:sunspot:compose:protocol'
-include ':samples:counter:sunspot:test'
-include ':samples:counter:sunspot:widget'
-include ':samples:counter:sunspot:widget:protocol'
+include ':compose:runtime'
 
-include ':samples:todo-list:android-composeui'
-include ':samples:todo-list:android-views'
-include ':samples:todo-list:presenters'
-include ':samples:todo-list:schema'
-include ':samples:todo-list:schema:compose'
-include ':samples:todo-list:schema:compose:protocol'
-include ':samples:todo-list:schema:widget'
-include ':samples:todo-list:schema:widget:protocol'
+include ':redwood-compose'
+include ':redwood-gradle-plugin'
+include ':redwood-protocol'
+include ':redwood-protocol-compose'
+include ':redwood-protocol-widget'
+include ':redwood-schema'
+include ':redwood-schema-annotations'
+include ':redwood-schema-generator'
+include ':redwood-widget'
 
-includeBuild('redwood') {
-  dependencySubstitution {
-    substitute module('app.cash.redwood:redwood-compose') using project(':redwood-compose')
-    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
-    substitute module('app.cash.redwood:redwood-protocol-compose') using project(':redwood-protocol-compose')
-    substitute module('app.cash.redwood:redwood-protocol-widget') using project(':redwood-protocol-widget')
-    substitute module('app.cash.redwood:redwood-schema-annotations') using project(':redwood-schema-annotations')
-    substitute module('app.cash.redwood:redwood-schema-generator') using project(':redwood-schema-generator')
-    substitute module('app.cash.redwood:redwood-widget') using project(':redwood-widget')
-  }
-}
+include ':test-schema'
+include ':test-schema:compose'
+include ':test-schema:compose:protocol'
+include ':test-schema:test'
+include ':test-schema:widget'
+include ':test-schema:widget:protocol'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+
+includeBuild('compose-gradle-plugin') {
+  dependencySubstitution {
+    substitute module('app.cash.redwood.tools:compose-gradle-plugin') using project(':')
+  }
+}
