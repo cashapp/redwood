@@ -74,7 +74,10 @@ public annotation class Property(val tag: Int)
  * )
  * ```
  */
-public annotation class Children(val tag: Int)
+public annotation class Children(
+  val tag: Int,
+  val scope: KClass<*> = Unit::class,
+)
 
 /**
  * Annotates a [Property] with an associated default expression. The [expression] is not

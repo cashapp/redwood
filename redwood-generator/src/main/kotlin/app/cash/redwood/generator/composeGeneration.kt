@@ -20,6 +20,7 @@ import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Property
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -27,8 +28,10 @@ import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
+import kotlin.reflect.KClass
 
 /*
 @Composable
@@ -72,7 +75,8 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                     .build()
                 }
                 is Children -> {
-                  ParameterSpec.builder(trait.name, composableLambda)
+                  val scope = trait.scope?.let { ClassName(schema.composePackage, it.simpleName!!) }
+                  ParameterSpec.builder(trait.name, composableLambda(scope))
                     .build()
                 }
               }
@@ -97,6 +101,9 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                 childrenLambda.apply {
                   add("%M(%L) {\n", syntheticChildren, trait.tag)
                   indent()
+                  trait.scope?.let { scope ->
+                    add("%T.", ClassName(schema.composePackage, scope.simpleName!!))
+                  }
                   add("%N()\n", trait.name)
                   unindent()
                   add("}\n")
@@ -126,6 +133,19 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
             arguments.joinToCode(",\n", "\n", ",\n")
           )
         }
+        .build()
+    )
+    .build()
+}
+
+/*
+object RowScope
+*/
+internal fun generateComposableScope(schema: Schema, scope: KClass<*>): FileSpec {
+  val scopeName = scope.simpleName!!
+  return FileSpec.builder(schema.composePackage, scopeName)
+    .addType(
+      TypeSpec.objectBuilder(scopeName)
         .build()
     )
     .build()

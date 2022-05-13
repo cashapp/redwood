@@ -21,6 +21,7 @@ import kotlin.reflect.KType
 public data class Schema(
   val name: String,
   val `package`: String,
+  val scopes: List<KClass<*>>,
   val widgets: List<Widget>,
 )
 
@@ -55,6 +56,7 @@ public data class Event(
 public data class Children(
   override val tag: Int,
   override val name: String,
+  val scope: KClass<*>? = null,
 ) : Trait() {
   override val defaultExpression: String? get() = null
 }

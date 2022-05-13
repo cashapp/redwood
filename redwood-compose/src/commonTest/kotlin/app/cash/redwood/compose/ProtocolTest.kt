@@ -26,9 +26,9 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import example.redwood.compose.Box
 import example.redwood.compose.Button
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
+import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
@@ -48,9 +48,9 @@ class ProtocolTest {
     composition.start { diff -> diffs += diff }
 
     composition.setContent {
-      Box {
+      Row {
         Text("hey")
-        Box {
+        Row {
           Text("hello")
         }
       }
@@ -60,10 +60,10 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 1 /* box */, 0),
-          ChildrenDiff.Insert(1L, 1, 2L, 2 /* text */, 0),
-          ChildrenDiff.Insert(1L, 1, 3L, 1 /* box */, 1),
-          ChildrenDiff.Insert(3L, 1, 4L, 2 /* text */, 0),
+          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 1 /* row */, 0),
+          ChildrenDiff.Insert(1L, 1, 2L, 3 /* text */, 0),
+          ChildrenDiff.Insert(1L, 1, 3L, 1 /* row */, 1),
+          ChildrenDiff.Insert(3L, 1, 4L, 3 /* text */, 0),
         ),
         propertyDiffs = listOf(
           PropertyDiff(2L, 1 /* text */, JsonPrimitive("hey")),
@@ -103,7 +103,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 3 /* button */, 0),
+          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 4 /* button */, 0),
         ),
         propertyDiffs = listOf(
           PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 0")),

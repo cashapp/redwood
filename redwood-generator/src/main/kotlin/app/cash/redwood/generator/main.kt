@@ -76,6 +76,9 @@ private class RedwoodGenerator : CliktCommand() {
     val schema = parseSchema(schemaType)
     when (type) {
       Compose -> {
+        for (scope in schema.scopes) {
+          generateComposableScope(schema, scope).writeTo(out)
+        }
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
         }

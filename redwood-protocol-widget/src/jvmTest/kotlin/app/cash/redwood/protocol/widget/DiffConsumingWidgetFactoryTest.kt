@@ -55,12 +55,12 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownChildrenThrowsDefault() {
     val factory = DiffConsumingExampleSchemaWidgetFactory(SchemaExampleSchemaWidgetFactory)
-    val button = factory.create(3) as DiffConsumingWidget<*>
+    val button = factory.create(4) as DiffConsumingWidget<*>
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(345432)
     }
-    assertEquals("Unknown children tag 345432 for widget kind 3", t.message)
+    assertEquals("Unknown children tag 345432 for widget kind 4", t.message)
   }
 
   @Test fun unknownChildrenCallsHandler() {
@@ -70,10 +70,10 @@ class DiffConsumingWidgetFactoryTest {
       mismatchHandler = handler,
     )
 
-    val button = factory.create(3) as DiffConsumingWidget<*>
+    val button = factory.create(4) as DiffConsumingWidget<*>
     assertNull(button.children(345432))
 
-    assertEquals("Unknown children 345432 for 3", handler.events.single())
+    assertEquals("Unknown children 345432 for 4", handler.events.single())
   }
 
   @Test fun propertyUsesSerializersModule() {
@@ -86,7 +86,7 @@ class DiffConsumingWidgetFactoryTest {
       delegate = SchemaExampleSchemaWidgetFactory,
       json = json,
     )
-    val textInput = factory.create(4)!!
+    val textInput = factory.create(5)!!
 
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(1L, 2, JsonPrimitive("PT10S")), throwingEventSink)
@@ -96,14 +96,14 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownPropertyThrowsDefaults() {
     val factory = DiffConsumingExampleSchemaWidgetFactory(SchemaExampleSchemaWidgetFactory)
-    val button = factory.create(3) as DiffConsumingWidget<*>
+    val button = factory.create(4) as DiffConsumingWidget<*>
 
     val diff = PropertyDiff(1L, 345432)
     val eventSink = EventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
     }
-    assertEquals("Unknown property tag 345432 for widget kind 3", t.message)
+    assertEquals("Unknown property tag 345432 for widget kind 4", t.message)
   }
 
   @Test fun unknownPropertyCallsHandler() {
@@ -112,11 +112,11 @@ class DiffConsumingWidgetFactoryTest {
       delegate = SchemaExampleSchemaWidgetFactory,
       mismatchHandler = handler,
     )
-    val button = factory.create(3) as DiffConsumingWidget<*>
+    val button = factory.create(4) as DiffConsumingWidget<*>
 
     button.apply(PropertyDiff(1L, 345432)) { throw UnsupportedOperationException() }
 
-    assertEquals("Unknown property 345432 for 3", handler.events.single())
+    assertEquals("Unknown property 345432 for 4", handler.events.single())
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -129,7 +129,7 @@ class DiffConsumingWidgetFactoryTest {
       delegate = SchemaExampleSchemaWidgetFactory,
       json = json,
     )
-    val textInput = factory.create(4)!!
+    val textInput = factory.create(5)!!
 
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyDiff(1L, 4, JsonPrimitive(true)), eventSink)
