@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.generator
+package app.cash.redwood.generator
 
 import app.cash.redwood.schema.parser.Children
 import app.cash.redwood.schema.parser.Event

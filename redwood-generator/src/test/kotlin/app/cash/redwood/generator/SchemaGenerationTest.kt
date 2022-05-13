@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.generator
+package app.cash.redwood.generator
 
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
@@ -22,29 +22,28 @@ import app.cash.redwood.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class DiffProducingGenerationTest {
+class SchemaGenerationTest {
   @Schema(
     [
-      IdPropertyNameCollisionNode::class,
+      DataClassWidget::class,
+      ObjectWidget::class,
     ]
   )
-  interface IdPropertyNameCollisionSchema
+  interface TestSchema
   @Widget(1)
-  data class IdPropertyNameCollisionNode(
+  data class DataClassWidget(
     @Property(1) val label: String,
-    @Property(2) val id: String,
   )
+  @Widget(2)
+  object ObjectWidget
 
-  @Test fun `id property does not collide`() {
-    val schema = parseSchema(IdPropertyNameCollisionSchema::class)
+  @Test fun schemaInstanceCreation() {
+    val schema = parseSchema(TestSchema::class)
 
-    val fileSpec = generateDiffProducingWidget(schema, schema.widgets.single())
-    assertThat(fileSpec.toString()).contains(
-      """
-      |  public override fun id(id: String): Unit {
-      |    appendDiff(PropertyDiff(this.id, 2, json.encodeToJsonElement(serializer_0, id)))
-      |  }
-      |""".trimMargin()
-    )
+    val dataClassWidget = generateSchemaWidget(schema, schema.widgets.single { it.type == DataClassWidget::class })
+    assertThat(dataClassWidget.toString()).contains("get() = SchemaGenerationTest.DataClassWidget(\n")
+
+    val objectWidget = generateSchemaWidget(schema, schema.widgets.single { it.type == ObjectWidget::class })
+    assertThat(objectWidget.toString()).contains("get() = SchemaGenerationTest.ObjectWidget\n")
   }
 }

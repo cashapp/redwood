@@ -83,7 +83,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
     }
     project.dependencies.add(
       configuration.name,
-      "app.cash.redwood:redwood-schema-generator:$redwoodVersion",
+      "app.cash.redwood:redwood-generator:$redwoodVersion",
     )
 
     val generatedDir = File(project.buildDir, "generated/redwood")
@@ -91,7 +91,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       exec.outputs.dir(generatedDir)
 
       exec.classpath(configuration)
-      exec.mainClass.set("app.cash.redwood.schema.generator.Main")
+      exec.mainClass.set("app.cash.redwood.generator.Main")
 
       @Suppress("ObjectLiteralToLambda") // Gradle wants an anonymous class and not a lambda.
       val deleteGeneratedDir = object : Action<Task> {
