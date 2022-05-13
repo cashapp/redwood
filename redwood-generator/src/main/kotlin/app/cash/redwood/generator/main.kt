@@ -19,7 +19,6 @@ package app.cash.redwood.generator
 
 import app.cash.redwood.generator.RedwoodGenerator.Type.Compose
 import app.cash.redwood.generator.RedwoodGenerator.Type.ComposeProtocol
-import app.cash.redwood.generator.RedwoodGenerator.Type.Test
 import app.cash.redwood.generator.RedwoodGenerator.Type.Widget
 import app.cash.redwood.generator.RedwoodGenerator.Type.WidgetProtocol
 import app.cash.redwood.schema.parser.parseSchema
@@ -42,7 +41,6 @@ private class RedwoodGenerator : CliktCommand() {
   enum class Type {
     Compose,
     ComposeProtocol,
-    Test,
     Widget,
     WidgetProtocol,
   }
@@ -51,7 +49,6 @@ private class RedwoodGenerator : CliktCommand() {
     .switch(
       "--compose" to Compose,
       "--compose-protocol" to ComposeProtocol,
-      "--test" to Test,
       "--widget" to Widget,
       "--widget-protocol" to WidgetProtocol,
     )
@@ -87,12 +84,6 @@ private class RedwoodGenerator : CliktCommand() {
         generateDiffProducingWidgetFactory(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateDiffProducingWidget(schema, widget).writeTo(out)
-        }
-      }
-      Test -> {
-        generateSchemaWidgetFactory(schema).writeTo(out)
-        for (widget in schema.widgets) {
-          generateSchemaWidget(schema, widget).writeTo(out)
         }
       }
       Widget -> {

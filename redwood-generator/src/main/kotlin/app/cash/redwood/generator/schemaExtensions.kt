@@ -70,9 +70,3 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
 }
 
 internal val Schema.widgetPackage get() = "$`package`.widget"
-
-internal fun Schema.testType(widget: Widget): ClassName {
-  return ClassName(testPackage, "Schema${widget.flatName}")
-}
-
-internal val Schema.testPackage get() = "$`package`.test"

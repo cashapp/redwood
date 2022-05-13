@@ -21,7 +21,6 @@ kotlin {
     jvmTest { // TODO all targets!
       dependencies {
         implementation projects.testSchema.widget.protocol
-        implementation projects.testSchema.test
       }
     }
   }

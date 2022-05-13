@@ -18,9 +18,13 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
-import example.redwood.TextInput
-import example.redwood.test.SchemaExampleSchemaWidgetFactory
+import example.redwood.widget.Button
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
+import example.redwood.widget.ExampleSchemaWidgetFactory
+import example.redwood.widget.Row
+import example.redwood.widget.ScopedRow
+import example.redwood.widget.Text
+import example.redwood.widget.TextInput
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.modules.SerializersModule
@@ -33,7 +37,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class DiffConsumingWidgetFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(SchemaExampleSchemaWidgetFactory)
+    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
 
     val t = assertFailsWith<IllegalArgumentException> {
       factory.create(345432)
@@ -44,7 +48,7 @@ class DiffConsumingWidgetFactoryTest {
   @Test fun unknownWidgetCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = SchemaExampleSchemaWidgetFactory,
+      delegate = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
 
@@ -54,8 +58,8 @@ class DiffConsumingWidgetFactoryTest {
   }
 
   @Test fun unknownChildrenThrowsDefault() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(SchemaExampleSchemaWidgetFactory)
-    val button = factory.create(4) as DiffConsumingWidget<*>
+    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val button = factory.create(4)!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(345432)
@@ -66,11 +70,11 @@ class DiffConsumingWidgetFactoryTest {
   @Test fun unknownChildrenCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = SchemaExampleSchemaWidgetFactory,
+      delegate = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
 
-    val button = factory.create(4) as DiffConsumingWidget<*>
+    val button = factory.create(4)!!
     assertNull(button.children(345432))
 
     assertEquals("Unknown children 345432 for 4", handler.events.single())
@@ -82,8 +86,11 @@ class DiffConsumingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
+    val recordingTextInput = RecordingTextInput()
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = SchemaExampleSchemaWidgetFactory,
+      delegate = object : EmptyExampleSchemaWidgetFactory() {
+        override fun TextInput() = recordingTextInput
+      },
       json = json,
     )
     val textInput = factory.create(5)!!
@@ -91,11 +98,11 @@ class DiffConsumingWidgetFactoryTest {
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(1L, 2, JsonPrimitive("PT10S")), throwingEventSink)
 
-    textInput.value.assertSchema(TextInput(null, 10.seconds, { }, { }))
+    assertEquals(recordingTextInput.customType, 10.seconds)
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(SchemaExampleSchemaWidgetFactory)
+    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(4) as DiffConsumingWidget<*>
 
     val diff = PropertyDiff(1L, 345432)
@@ -109,7 +116,7 @@ class DiffConsumingWidgetFactoryTest {
   @Test fun unknownPropertyCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = SchemaExampleSchemaWidgetFactory,
+      delegate = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
     val button = factory.create(4) as DiffConsumingWidget<*>
@@ -125,8 +132,11 @@ class DiffConsumingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
+    val recordingTextInput = RecordingTextInput()
     val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = SchemaExampleSchemaWidgetFactory,
+      delegate = object : EmptyExampleSchemaWidgetFactory() {
+        override fun TextInput() = recordingTextInput
+      },
       json = json,
     )
     val textInput = factory.create(5)!!
@@ -134,8 +144,52 @@ class DiffConsumingWidgetFactoryTest {
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyDiff(1L, 4, JsonPrimitive(true)), eventSink)
 
-    (textInput.value.schema as TextInput).onChangeCustomType(10.seconds)
+    recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
     assertEquals(Event(1L, 4, JsonPrimitive("PT10S")), eventSink.events.single())
+  }
+
+  open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
+    override fun Row(): Row<Nothing> = TODO()
+    override fun ScopedRow(): ScopedRow<Nothing> = TODO()
+    override fun Text(): Text<Nothing> = TODO()
+    override fun Button() = object : Button<Nothing> {
+      override val value get() = TODO()
+      override fun text(text: String?) = TODO()
+      override fun onClick(onClick: (() -> Unit)?) = TODO()
+    }
+    override fun TextInput(): TextInput<Nothing> = TODO()
+  }
+
+  class RecordingTextInput : TextInput<Nothing> {
+    override val value get() = TODO()
+
+    var text: String? = null
+      private set
+
+    override fun text(text: String?) {
+      this.text = text
+    }
+
+    var customType: Duration? = null
+      private set
+
+    override fun customType(customType: Duration?) {
+      this.customType = customType
+    }
+
+    var onChange: ((String) -> Unit)? = null
+      private set
+
+    override fun onChange(onChange: ((String) -> Unit)?) {
+      this.onChange = onChange
+    }
+
+    var onChangeCustomType: ((Duration) -> Unit)? = null
+      private set
+
+    override fun onChangeCustomType(onChangeCustomType: ((Duration) -> Unit)?) {
+      this.onChangeCustomType = onChangeCustomType
+    }
   }
 }
