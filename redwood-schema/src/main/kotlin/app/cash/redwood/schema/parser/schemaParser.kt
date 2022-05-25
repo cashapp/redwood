@@ -80,7 +80,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
           require(it.type == childrenType) {
             "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
           }
-          Children(children.tag, it.name!!)
+          Children(children.tag, it.name!!, children.scope.takeIf { it != Unit::class })
         } else {
           throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
         }
@@ -137,5 +137,10 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
     )
   }
 
-  return Schema(schemaType.simpleName!!, schemaType.packageName, widgets)
+  val scopes = widgets
+    .flatMap { it.traits }
+    .filterIsInstance<Children>()
+    .mapNotNullTo(mutableSetOf()) { it.scope }
+
+  return Schema(schemaType.simpleName!!, schemaType.packageName, scopes.toList(), widgets)
 }

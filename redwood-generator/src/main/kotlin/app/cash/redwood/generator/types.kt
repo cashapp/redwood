@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
@@ -47,12 +48,16 @@ internal val redwoodComposeNode = MemberName("app.cash.redwood.compose", "Redwoo
 
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
 
-internal val composableLambda = LambdaTypeName.get(returnType = UNIT)
-  .copy(
+internal fun composableLambda(receiver: TypeName?): TypeName {
+  return LambdaTypeName.get(
+    returnType = UNIT,
+    receiver = receiver,
+  ).copy(
     annotations = listOf(
       AnnotationSpec.builder(composable).build(),
     )
   )
+}
 
 internal val ae = ClassName("kotlin", "AssertionError")
 

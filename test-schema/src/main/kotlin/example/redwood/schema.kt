@@ -23,7 +23,8 @@ import kotlin.time.Duration
 
 @Schema(
   [
-    Box::class,
+    Row::class,
+    ScopedRow::class,
     Text::class,
     Button::class,
     TextInput::class,
@@ -32,22 +33,29 @@ import kotlin.time.Duration
 public interface ExampleSchema
 
 @Widget(1)
-public data class Box(
+public data class Row(
   @Children(1) val children: List<Any>,
 )
 
+public object RowScope
+
 @Widget(2)
+public data class ScopedRow(
+  @Children(1, RowScope::class) val children: List<Any>,
+)
+
+@Widget(3)
 public data class Text(
   @Property(1) val text: String?,
 )
 
-@Widget(3)
+@Widget(4)
 public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: () -> Unit,
 )
 
-@Widget(4)
+@Widget(5)
 public data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val customType: Duration?,
