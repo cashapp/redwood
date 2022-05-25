@@ -1,18 +1,16 @@
 buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
+    classpath libs.kotlin.serializationPlugin
     classpath libs.androidGradlePlugin
-    classpath "org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}"
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
-    classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
-    classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
-    classpath 'com.diffplug.spotless:spotless-plugin-gradle:5.8.2'
+    classpath libs.gradleMavenPublishPlugin
+    classpath libs.dokkaPlugin
+    classpath libs.spotlessPlugin
     classpath 'app.cash.redwood.tools:compose-gradle-plugin'
   }
   repositories {
     mavenCentral()
     google()
-    jcenter()
   }
 }
 
@@ -28,7 +26,6 @@ allprojects {
   repositories {
     mavenCentral()
     google()
-    jcenter()
   }
 
   tasks.withType(Test).configureEach {
