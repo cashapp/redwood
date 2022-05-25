@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
@@ -66,7 +67,7 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
         kotlinCompilation.kotlinOptions.freeCompilerArgs +=
           listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true")
       }
-      common -> {
+      common, wasm -> {
         // Nothing to do!
       }
     }

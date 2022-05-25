@@ -12,13 +12,28 @@ buildscript {
   repositories {
     mavenCentral()
     google()
+    maven {
+      url 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
+    }
   }
 }
 
 allprojects {
+  plugins.withId('org.jetbrains.kotlin.multiplatform') {
+    afterEvaluate {
+      tasks.named("compileCommonMainKotlinMetadata").configure {
+        // https://youtrack.jetbrains.com/issue/KT-51293
+        enabled = false
+      }
+    }
+  }
+
   repositories {
     mavenCentral()
     google()
+    maven {
+      url 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
+    }
   }
 
   tasks.withType(Test).configureEach {
