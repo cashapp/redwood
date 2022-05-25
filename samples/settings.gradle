@@ -29,11 +29,11 @@ dependencyResolutionManagement {
 includeBuild('..') {
   dependencySubstitution {
     substitute module('app.cash.redwood:redwood-compose') using project(':redwood-compose')
+    substitute module('app.cash.redwood:redwood-generator') using project(':redwood-generator')
     substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
     substitute module('app.cash.redwood:redwood-protocol-compose') using project(':redwood-protocol-compose')
     substitute module('app.cash.redwood:redwood-protocol-widget') using project(':redwood-protocol-widget')
     substitute module('app.cash.redwood:redwood-schema-annotations') using project(':redwood-schema-annotations')
-    substitute module('app.cash.redwood:redwood-schema-generator') using project(':redwood-schema-generator')
     substitute module('app.cash.redwood:redwood-widget') using project(':redwood-widget')
   }
 }

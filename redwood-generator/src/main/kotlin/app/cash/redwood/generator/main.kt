@@ -15,13 +15,13 @@
  */
 @file:JvmName("Main")
 
-package app.cash.redwood.schema.generator
+package app.cash.redwood.generator
 
-import app.cash.redwood.schema.generator.RedwoodGenerator.Type.Compose
-import app.cash.redwood.schema.generator.RedwoodGenerator.Type.ComposeProtocol
-import app.cash.redwood.schema.generator.RedwoodGenerator.Type.Test
-import app.cash.redwood.schema.generator.RedwoodGenerator.Type.Widget
-import app.cash.redwood.schema.generator.RedwoodGenerator.Type.WidgetProtocol
+import app.cash.redwood.generator.RedwoodGenerator.Type.Compose
+import app.cash.redwood.generator.RedwoodGenerator.Type.ComposeProtocol
+import app.cash.redwood.generator.RedwoodGenerator.Type.Test
+import app.cash.redwood.generator.RedwoodGenerator.Type.Widget
+import app.cash.redwood.generator.RedwoodGenerator.Type.WidgetProtocol
 import app.cash.redwood.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.CliktError

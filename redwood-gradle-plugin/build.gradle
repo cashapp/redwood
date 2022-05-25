@@ -62,12 +62,12 @@ gradlePlugin {
 test {
   dependsOn(':compose:runtime:installArchives')
   dependsOn(':redwood-compose:installArchives')
+  dependsOn(':redwood-generator:installArchives')
   dependsOn(':redwood-gradle-plugin:installArchives')
   dependsOn(':redwood-protocol:installArchives')
   dependsOn(':redwood-protocol-compose:installArchives')
   dependsOn(':redwood-protocol-widget:installArchives')
   dependsOn(':redwood-schema:installArchives')
-  dependsOn(':redwood-schema-generator:installArchives')
   dependsOn(':redwood-schema-annotations:installArchives')
   dependsOn(':redwood-widget:installArchives')
 }
