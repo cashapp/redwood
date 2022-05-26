@@ -42,7 +42,6 @@ internal val WidgetProtocolMismatchHandler = ClassName("app.cash.redwood.protoco
 internal val widgetType = ClassName("app.cash.redwood.widget", "Widget")
 internal val widgetChildren = widgetType.nestedClass("Children")
 internal val widgetFactory = widgetType.nestedClass("Factory")
-internal val mutableListChildren = ClassName("app.cash.redwood.widget", "MutableListChildren")
 
 internal val redwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
 

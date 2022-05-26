@@ -15,7 +15,6 @@ include ':redwood-widget'
 include ':test-schema'
 include ':test-schema:compose'
 include ':test-schema:compose:protocol'
-include ':test-schema:test'
 include ':test-schema:widget'
 include ':test-schema:widget:protocol'
 
