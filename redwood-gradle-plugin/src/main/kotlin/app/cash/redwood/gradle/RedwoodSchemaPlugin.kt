@@ -18,8 +18,6 @@ package app.cash.redwood.gradle
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -33,22 +31,10 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       val kotlin = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
       kotlin.target.applySchemaAnnotationDependency()
     }
-    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
-      applied = true
-
-      val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-      kotlin.targets.all { it.applySchemaAnnotationDependency() }
-
-      project.afterEvaluate {
-        check(kotlin.targets.any { it.platformType == KotlinPlatformType.jvm }) {
-          "Redwood schema plugin requires a jvm() target when used with Kotlin multiplatform"
-        }
-      }
-    }
 
     project.afterEvaluate {
       check(applied) {
-        "Redwood schema plugin requires the Kotlin JVM or multiplatform plugin to be applied."
+        "Redwood schema plugin requires the Kotlin JVM plugin to be applied."
       }
     }
   }

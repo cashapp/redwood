@@ -16,29 +16,15 @@
 package app.cash.redwood.gradle
 
 import com.google.common.truth.Truth.assertThat
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.File
 
-@RunWith(TestParameterInjector::class)
 class FixtureTest {
-  @Test fun builds(
-    @TestParameter(
-      "schema-jvm",
-      "schema-multiplatform",
-    )
-    fixtureName: String,
-  ) {
-    fixtureGradleRunner(fixtureName).build()
-  }
-
   @Test fun schemaNoJvmFails() {
-    val result = fixtureGradleRunner("schema-no-jvm").buildAndFail()
+    val result = fixtureGradleRunner("schema-no-kotlin-jvm").buildAndFail()
     assertThat(result.output).contains(
-      "Redwood schema plugin requires a jvm() target when used with Kotlin multiplatform"
+      "Redwood schema plugin requires the Kotlin JVM plugin to be applied."
     )
   }
 

@@ -24,12 +24,8 @@ import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.attributes.Usage
-import org.gradle.api.attributes.Usage.JAVA_RUNTIME
-import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.tasks.JavaExec
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -75,12 +71,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       RedwoodSchemaExtensionImpl::class.java,
     )
 
-    val configuration = project.configurations.create("redwoodSchema") {
-      // Ensure we get JVM artifacts from any multiplatform dependencies for use with JavaExec.
-      val runtimeUsage = project.objects.named(Usage::class.java, JAVA_RUNTIME)
-      it.attributes.attribute(USAGE_ATTRIBUTE, runtimeUsage)
-      it.attributes.attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
-    }
+    val configuration = project.configurations.create("redwoodSchema")
     project.dependencies.add(
       configuration.name,
       "app.cash.redwood:redwood-generator:$redwoodVersion",
