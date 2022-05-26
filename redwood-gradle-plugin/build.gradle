@@ -38,12 +38,6 @@ gradlePlugin {
       description = "Redwood schema Compose protocol code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodSchemaComposeProtocolPlugin"
     }
-    redwoodSchemaTest {
-      id = "app.cash.redwood.schema.test"
-      displayName = "Redwood schema (test generator)"
-      description = "Redwood schema test code generation Gradle plugin"
-      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaTestPlugin"
-    }
     redwoodSchemaWidget {
       id = "app.cash.redwood.schema.widget"
       displayName = "Redwood schema (widget generator)"
