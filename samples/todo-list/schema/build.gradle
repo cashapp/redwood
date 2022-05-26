@@ -1,7 +1,2 @@
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'app.cash.redwood.schema'
-
-kotlin {
-  ios()
-  jvm()
-}
