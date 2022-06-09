@@ -1,6 +1,0 @@
-$dokka.format:html-v1
-$dokka.linkExtension:html
-$dokka.location:app.cash.redwood.schema.generator////PointingToDeclaration/redwood-schema-generator/app.cash.redwood.schema.generator/index.html
-$dokka.location:app.cash.redwood.schema.generator//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/redwood-schema-generator/app.cash.redwood.schema.generator/main.html
-app.cash.redwood.schema.generator
-
