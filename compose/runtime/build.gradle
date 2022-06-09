@@ -51,6 +51,7 @@ kotlin {
       }
       dependencies {
         api libs.kotlinx.coroutines.core
+        implementation libs.kotlinx.atomicFu
       }
     }
     commonTest {
@@ -60,7 +61,7 @@ kotlin {
       }
       dependencies {
         implementation libs.kotlin.test
-        implementation("org.jetbrains.kotlinx:atomicfu:0.14.4")
+        implementation libs.kotlinx.coroutines.test
       }
     }
     androidMain {
@@ -98,9 +99,6 @@ kotlin {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jvmTest/kotlin'
       }
-      dependencies {
-        implementation libs.kotlinx.coroutines.test
-      }
     }
     nativeMain {
       dependsOn(commonMain)
@@ -117,6 +115,8 @@ kotlin {
 }
 
 android {
+  namespace 'androidx.compose.runtime'
+
   sourceSets {
     main {
       manifest.srcFile '../upstream/compose/runtime/runtime/src/androidMain/AndroidManifest.xml'
