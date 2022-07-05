@@ -98,7 +98,7 @@ class DiffConsumingWidgetFactoryTest {
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(1L, 2, JsonPrimitive("PT10S")), throwingEventSink)
 
-    assertEquals(recordingTextInput.customType, 10.seconds)
+    assertEquals(10.seconds, recordingTextInput.customType)
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
