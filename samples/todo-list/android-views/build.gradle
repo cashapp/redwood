@@ -12,6 +12,8 @@ dependencies {
 }
 
 android {
+  namespace 'example.android.views'
+
   buildFeatures {
     viewBinding true
   }

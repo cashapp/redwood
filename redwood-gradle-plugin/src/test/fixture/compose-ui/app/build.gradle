@@ -8,6 +8,7 @@ dependencies {
 }
 
 android {
+  namespace 'example.android'
   compileSdkVersion 32
 
   compileOptions {

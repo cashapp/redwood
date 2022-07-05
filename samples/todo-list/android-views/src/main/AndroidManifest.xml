@@ -1,7 +1,4 @@
-<manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="example.android.views"
-  >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <application
     android:label="TODO Views"
     android:theme="@style/Theme.Todo"

@@ -16,6 +16,10 @@ kotlin {
   }
 }
 
+android {
+  namespace 'app.cash.redwood.runtime'
+}
+
 spotless {
   kotlin {
     targetExclude(

@@ -22,3 +22,7 @@ kotlin {
     }
   }
 }
+
+android {
+  namespace 'app.cash.redwood.protocol.compose'
+}

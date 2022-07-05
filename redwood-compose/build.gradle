@@ -36,6 +36,8 @@ kotlin {
 }
 
 android {
+  namespace 'app.cash.redwood.compose'
+
   testOptions {
     unitTests.returnDefaultValues = true
   }
