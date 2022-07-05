@@ -85,13 +85,14 @@ allprojects {
       jvmTarget = '1.8'
       freeCompilerArgs += [
         '-opt-in=kotlin.RequiresOptIn',
+        '-Xjvm-default=all',
       ]
     }
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
-    android.compileSdkVersion 31
+    android.compileSdkVersion 32
     android.compileOptions {
       sourceCompatibility JavaVersion.VERSION_1_8
       targetCompatibility JavaVersion.VERSION_1_8

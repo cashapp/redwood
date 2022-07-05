@@ -17,19 +17,17 @@ Despite building our own Compose we only build released versions (to enable depe
 We depend on both Google's Compose artifacts and JetBrains' Compose artifacts and need versions for both.
 While stable builds will align, pre-release builds do not.
 
-Update the `gradle/dependencies.gradle` file to reference the versions you want.
+Update the `gradle/libs.versions.toml` file to reference the versions you want.
 ```diff
- buildscript {
-   ext.versions = [
--    'androidCompose': '1.0.0',
--    'jbCompose': '1.0.0',
-+    'androidCompose': '1.1.0-rc03',
-+    'jbCompose': '1.1.0-alpha03',
+-androidCompose = "1.2.0-alpha08"
+-jbCompose = "1.2.0-alpha01-dev641"
++androidCompose = "1.2.0"
++jbCompose = "1.2.0-alpha01-dev741"
 ```
 
 JetBrains does not publish SHAs for released versions and the git repo does not have tags.
 For stable versions, there will be a branch named `release/X.Y.Z`.
-For unstable versions, you likely just need to update the `jb-main` branch to latest `HEAD`.
+For unstable versions, find the associated tag in the [compose-jb](https://github.com/JetBrains/compose-jb) repo and then grab the SHA of the `compose/frameworks/support` git submodule.
 
 Update the Compose submodule to the desired SHA:
 
@@ -40,7 +38,7 @@ $ git checkout <REF>
 $ cd -
 ```
 
-Replacing "<REF>" with `release/X.Y.Z` or `jb-main` or whatever.
+Replacing `<REF>` with `release/X.Y.Z` or `jb-main` or whatever.
 
 Run a full `./gradlew -p redwood clean build` and `./gradlew clean build`.
 

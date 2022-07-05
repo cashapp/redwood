@@ -4,11 +4,11 @@ apply plugin: 'app.cash.redwood'
 
 dependencies {
   implementation project(':presenters')
-  implementation "androidx.compose.ui:ui:${libs.versions.androidCompose.get()}"
+  implementation libs.androidx.compose.material
 }
 
 android {
-  compileSdkVersion 31
+  compileSdkVersion 32
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -29,7 +29,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion libs.versions.androidCompose.get()
+    kotlinCompilerExtensionVersion libs.versions.androidComposeCompiler.get()
   }
 
   lintOptions {

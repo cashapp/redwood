@@ -1,10 +1,11 @@
 [versions]
-kotlin = "1.6.21"
+kotlin = "1.7.0"
 kotlinx-atomicFu = "0.17.2"
-kotlinx-coroutines = "1.6.0"
+kotlinx-coroutines = "1.6.1"
 kotlinx-serialization = "1.3.0"
-androidCompose = "1.2.0-alpha08"
-jbCompose = "1.2.0-alpha01-dev686"
+androidComposeCompiler = "1.2.0"
+androidComposeRuntime = "1.3.0-alpha01"
+jbCompose = "1.2.0-alpha01-dev741"
 
 [libraries]
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
@@ -17,7 +18,7 @@ kotlinx-atomicFu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "k
 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-coreNativeMultithreading = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.6.0-native-mt" }
+kotlinx-coroutines-coreNativeMultithreading = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.6.1-native-mt" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
@@ -30,12 +31,12 @@ gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
 androidx-activity = { module = "androidx.activity:activity", version = "1.3.1" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.3.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.2.0" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidCompose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version = "1.2.0-rc03" }
 
 jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jbCompose" }
 jetbrains-compose-compilerHosted = { module = "org.jetbrains.compose.compiler:compiler-hosted", version.ref = "jbCompose" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.0.2" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.2.0" }
 materialDesign = { module = "com.google.android.material:material", version = "1.4.0" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.11.0" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "3.1.0" }

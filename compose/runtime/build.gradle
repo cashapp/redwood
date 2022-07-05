@@ -25,7 +25,7 @@ tasks.named("generateMetadataFileForKotlinMultiplatformPublication").configure {
     // replace and inserting a new partial JSON text with the updated metadata JSON.
 
     String find = file('module_find.txt').text.replace('{REDWOOD_VERSION}', version)
-    String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', libs.versions.androidCompose.get())
+    String replace = file('module_replace.txt').text.replace('{COMPOSE_VERSION}', libs.versions.androidComposeRuntime.get())
 
     File file = outputFile.get().getAsFile()
     String text = file.text
