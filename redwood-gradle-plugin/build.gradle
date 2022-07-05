@@ -61,6 +61,7 @@ test {
   dependsOn(':redwood-protocol:installArchives')
   dependsOn(':redwood-protocol-compose:installArchives')
   dependsOn(':redwood-protocol-widget:installArchives')
+  dependsOn(':redwood-runtime:installArchives')
   dependsOn(':redwood-schema:installArchives')
   dependsOn(':redwood-schema-annotations:installArchives')
   dependsOn(':redwood-widget:installArchives')

@@ -12,6 +12,7 @@ kotlin {
       dependencies {
         api libs.kotlinx.coroutines.core
         api projects.redwoodProtocol // TODO Remove and create redwoodProtocolCompose!
+        api projects.redwoodRuntime
         api projects.redwoodWidget
         api projects.compose.runtime
       }
