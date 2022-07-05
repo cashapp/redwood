@@ -17,11 +17,13 @@
 package example.android.views
 
 import android.view.View
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.ViewGroupChildren
 import example.android.views.databinding.ScrollableColumnBinding
 import example.schema.widget.ScrollableColumn
 
 class ViewScrollableColumn(binding: ScrollableColumnBinding) : ScrollableColumn<View> {
   override val value = binding.root
+  override var layoutModifiers: LayoutModifier = LayoutModifier
   override val children = ViewGroupChildren(binding.children)
 }

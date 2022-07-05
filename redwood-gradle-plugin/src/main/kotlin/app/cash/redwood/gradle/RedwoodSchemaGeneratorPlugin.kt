@@ -17,6 +17,7 @@ package app.cash.redwood.gradle
 
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Compose
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.ComposeProtocol
+import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.LayoutModifiers
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Widget
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.WidgetProtocol
 import org.gradle.api.Action
@@ -34,6 +35,9 @@ public class RedwoodSchemaComposePlugin : RedwoodSchemaGeneratorPlugin(Compose)
 public class RedwoodSchemaComposeProtocolPlugin : RedwoodSchemaGeneratorPlugin(ComposeProtocol)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
+public class RedwoodSchemaLayoutModifiersPlugin : RedwoodSchemaGeneratorPlugin(LayoutModifiers)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodSchemaWidgetPlugin : RedwoodSchemaGeneratorPlugin(Widget)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -49,6 +53,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
     // TODO This should only rely on redwood-compose and not redwood-protocol-compose.
     Compose("--compose", "app.cash.redwood:redwood-protocol-compose:$redwoodVersion"),
     ComposeProtocol("--compose-protocol", "app.cash.redwood:redwood-protocol-compose:$redwoodVersion"),
+    LayoutModifiers("--layout-modifiers", "app.cash.redwood:redwood-runtime:$redwoodVersion"),
     Widget("--widget", "app.cash.redwood:redwood-widget:$redwoodVersion"),
     WidgetProtocol("--widget-protocol", "app.cash.redwood:redwood-protocol-widget:$redwoodVersion"),
   }

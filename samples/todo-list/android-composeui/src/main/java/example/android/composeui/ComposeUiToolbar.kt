@@ -22,10 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.cash.redwood.LayoutModifier
 import example.schema.widget.Toolbar
 
 class ComposeUiToolbar : Toolbar<@Composable () -> Unit> {
   private var title by mutableStateOf("")
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
     TopAppBar(title = { Text(title) })

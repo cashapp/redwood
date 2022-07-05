@@ -17,11 +17,14 @@
 package example.android.views
 
 import android.view.View
+import app.cash.redwood.LayoutModifier
 import example.android.views.databinding.ToolbarBinding
 import example.schema.widget.Toolbar
 
 class ViewToolbar(private val binding: ToolbarBinding) : Toolbar<View> {
   override val value get() = binding.root
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun title(title: String) {
     binding.root.title = title

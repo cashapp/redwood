@@ -1,5 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 def generatedDir = 'build/generated/redwood'
 
@@ -15,9 +14,7 @@ kotlin {
         srcDir generatedDir
       }
       dependencies {
-        api projects.redwoodProtocolCompose
-        api projects.testSchema.widget
-        api projects.testSchema.layoutModifiers
+        api projects.redwoodRuntime
       }
     }
   }
@@ -51,7 +48,7 @@ def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
   it.main('app.cash.redwood.generator.Main')
   it.args(
-    '--compose-protocol',
+    '--layout-modifiers',
     '--out', generatedDir,
     'example.redwood.ExampleSchema',
   )

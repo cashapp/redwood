@@ -15,6 +15,7 @@
  */
 package example.browser.sunspot
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.HTMLElementChildren
 import example.sunspot.widget.SunspotBox
 import example.sunspot.widget.SunspotButton
@@ -26,12 +27,16 @@ import org.w3c.dom.HTMLSpanElement
 class HtmlSunspotBox(
   override val value: HTMLElement,
 ) : SunspotBox<HTMLElement> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override val children = HTMLElementChildren(value)
 }
 
 class HtmlSunspotText(
   override val value: HTMLSpanElement,
 ) : SunspotText<HTMLElement> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override fun text(text: String?) {
     value.textContent = text
   }
@@ -44,6 +49,8 @@ class HtmlSunspotText(
 class HtmlSunspotButton(
   override val value: HTMLButtonElement,
 ) : SunspotButton<HTMLElement> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override fun text(text: String?) {
     value.textContent = text
   }

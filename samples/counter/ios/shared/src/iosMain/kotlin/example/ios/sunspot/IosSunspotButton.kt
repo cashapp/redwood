@@ -15,6 +15,7 @@
  */
 package example.ios.sunspot
 
+import app.cash.redwood.LayoutModifier
 import example.sunspot.widget.SunspotButton
 import kotlinx.cinterop.ObjCAction
 import platform.UIKit.UIButton
@@ -25,6 +26,8 @@ import platform.objc.sel_registerName
 
 class IosSunspotButton : SunspotButton<UIView> {
   override val value = UIButton()
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun text(text: String?) {
     value.setTitle(text, UIControlStateNormal)

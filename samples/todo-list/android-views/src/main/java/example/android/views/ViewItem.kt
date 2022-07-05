@@ -17,11 +17,14 @@
 package example.android.views
 
 import android.view.View
+import app.cash.redwood.LayoutModifier
 import example.android.views.databinding.ItemBinding
 import example.schema.widget.Item
 
 class ViewItem(private val binding: ItemBinding) : Item<View> {
   override val value get() = binding.root
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun content(content: String) {
     binding.text.text = content

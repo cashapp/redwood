@@ -15,9 +15,12 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
+import example.redwood.compose.accessibilityDescription
+import example.redwood.compose.customType
 import example.redwood.widget.Button
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.ExampleSchemaWidgetFactory
@@ -26,7 +29,11 @@ import example.redwood.widget.ScopedRow
 import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -55,6 +62,98 @@ class DiffConsumingWidgetFactoryTest {
     assertNull(factory.create(345432))
 
     assertEquals("Unknown widget 345432", handler.events.single())
+  }
+
+  @Test fun layoutModifierUsesSerializerModule() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val recordingTextInput = RecordingTextInput()
+    val factory = DiffConsumingExampleSchemaWidgetFactory(
+      delegate = object : EmptyExampleSchemaWidgetFactory() {
+        override fun TextInput() = recordingTextInput
+      },
+      json = json,
+    )
+    val textInput = factory.create(5)!!
+
+    textInput.updateLayoutModifier(
+      buildJsonArray {
+        add(
+          buildJsonArray {
+            add(JsonPrimitive(3))
+            add(
+              buildJsonObject {
+                put("customType", JsonPrimitive("PT10S"))
+              }
+            )
+          }
+        )
+      }
+    )
+
+    assertEquals(LayoutModifier.customType(10.seconds), textInput.layoutModifiers)
+  }
+
+  @Test fun unknownLayoutModifierThrowsDefault() {
+    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val button = factory.create(4)!!
+
+    val t = assertFailsWith<IllegalArgumentException> {
+      button.updateLayoutModifier(
+        JsonArray(
+          listOf(
+            buildJsonArray {
+              add(JsonPrimitive(345432))
+              add(JsonObject(mapOf()))
+            }
+          )
+        )
+      )
+    }
+    assertEquals("Unknown layout modifier tag 345432", t.message)
+  }
+
+  @Test fun unknownLayoutModifierCallsHandler() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val handler = RecordingProtocolMismatchHandler()
+    val recordingTextInput = RecordingTextInput()
+    val factory = DiffConsumingExampleSchemaWidgetFactory(
+      delegate = object : EmptyExampleSchemaWidgetFactory() {
+        override fun TextInput() = recordingTextInput
+      },
+      json = json,
+      mismatchHandler = handler,
+    )
+
+    val textInput = factory.create(5)!!
+    textInput.updateLayoutModifier(
+      buildJsonArray {
+        add(
+          buildJsonArray {
+            add(JsonPrimitive(345432))
+            add(JsonObject(mapOf()))
+          }
+        )
+        add(
+          buildJsonArray {
+            add(JsonPrimitive(2))
+            add(buildJsonObject { put("value", JsonPrimitive("hi")) })
+          }
+        )
+      }
+    )
+
+    assertEquals("Unknown layout modifier 345432", handler.events.single())
+
+    // Ensure only the invalid LayoutModifier was discarded and not all of them.
+    assertEquals(LayoutModifier.accessibilityDescription("hi"), recordingTextInput.layoutModifiers)
   }
 
   @Test fun unknownChildrenThrowsDefault() {
@@ -155,6 +254,10 @@ class DiffConsumingWidgetFactoryTest {
     override fun Text(): Text<Nothing> = TODO()
     override fun Button() = object : Button<Nothing> {
       override val value get() = TODO()
+      override var layoutModifiers: LayoutModifier
+        get() = TODO()
+        set(_) { TODO() }
+
       override fun text(text: String?) = TODO()
       override fun onClick(onClick: (() -> Unit)?) = TODO()
     }
@@ -163,6 +266,7 @@ class DiffConsumingWidgetFactoryTest {
 
   class RecordingTextInput : TextInput<Nothing> {
     override val value get() = TODO()
+    override var layoutModifiers: LayoutModifier = LayoutModifier
 
     var text: String? = null
       private set

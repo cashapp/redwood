@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cash.redwood.LayoutModifier
 import example.schema.widget.Item
 
 class ComposeUiItem : Item<@Composable () -> Unit> {
@@ -41,6 +42,8 @@ class ComposeUiItem : Item<@Composable () -> Unit> {
       Text(content, style = MaterialTheme.typography.body1)
     }
   }
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun content(content: String) {
     this.content = content

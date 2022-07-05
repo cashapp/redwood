@@ -17,6 +17,7 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
+        implementation projects.testSchema.compose
         implementation projects.testSchema.compose.protocol
       }
     }

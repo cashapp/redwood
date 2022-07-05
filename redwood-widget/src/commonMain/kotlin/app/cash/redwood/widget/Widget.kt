@@ -15,12 +15,16 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.LayoutModifier
+
 public interface Widget<T : Any> {
   /**
    * The underlying platform-specific representation of this widget. This value will be supplied to
    * another widget's [Children] for display.
    */
   public val value: T
+
+  public var layoutModifiers: LayoutModifier
 
   /**
    * Marker interface for types whose functions create [Widget]s.

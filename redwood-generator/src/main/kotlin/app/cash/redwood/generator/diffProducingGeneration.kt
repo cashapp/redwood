@@ -20,6 +20,7 @@ import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
 import app.cash.redwood.schema.parser.Widget.Event
 import app.cash.redwood.schema.parser.Widget.Property
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
@@ -53,7 +54,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter(
-              ParameterSpec.builder("json", json)
+              ParameterSpec.builder("json", Json)
                 .defaultValue("%T", jsonCompanion)
                 .build()
             )
@@ -65,7 +66,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
             .build()
         )
         .addProperty(
-          PropertySpec.builder("json", json, PRIVATE)
+          PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
             .build()
         )
@@ -102,6 +103,15 @@ internal class DiffProducingSunspotButton(
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
+  override var layoutModifiers: LayoutModifier
+    get() = throw AssertionError()
+    set(value) {
+      val json = buildJsonArray {
+        value.foldIn(Unit) { _, element -> add(element.toJsonElement(json))
+      }
+      appendDiff(LayoutModifiers(id, json))
+    }
+
   override fun text(text: String?) {
     appendDiff(PropertyDiff(this.id, 1, json.encodeToJsonElement(serializer_0, text)))
   }
@@ -134,12 +144,12 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("json", json)
+            .addParameter("json", Json)
             .addParameter("mismatchHandler", ComposeProtocolMismatchHandler)
             .build()
         )
         .addProperty(
-          PropertySpec.builder("json", json, PRIVATE)
+          PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
             .build()
         )
@@ -171,7 +181,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
               is Event -> {
                 addProperty(
                   PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
-                    .mutable(true)
+                    .mutable()
                     .initializer("null")
                     .build()
                 )
@@ -181,7 +191,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                     .addParameter(trait.name, trait.lambdaType)
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
-                    .addStatement("appendDiff(%T(this.id, %L, %M(%NSet)))", propertyDiff, trait.tag, jsonPrimitive, trait.name)
+                    .addStatement("appendDiff(%T(this.id, %L, %M(%NSet)))", propertyDiff, trait.tag, JsonPrimitive, trait.name)
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
                     .build()
@@ -228,14 +238,108 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
 
           for ((typeName, id) in serializerIds) {
             addProperty(
-              PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
+              PropertySpec.builder("serializer_$id", KSerializer.parameterizedBy(typeName))
                 .addModifiers(PRIVATE)
                 .initializer("json.serializersModule.%M()", serializer)
                 .build()
             )
           }
         }
+        .addProperty(
+          PropertySpec.builder("layoutModifiers", LayoutModifier, OVERRIDE)
+            .mutable()
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("throw %T()", ae)
+                .build()
+            )
+            .setter(
+              FunSpec.setterBuilder()
+                .addParameter("value", LayoutModifier)
+                .beginControlFlow("val json = %M", buildJsonArray)
+                .addStatement("value.foldIn(Unit) { _, element -> add(element.toJsonElement(json)) }")
+                .endControlFlow()
+                .addStatement("appendDiff(%T(id, json))", LayoutModifiers)
+                .build()
+            )
+            .build()
+        )
         .build()
     )
+    .build()
+}
+
+internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
+  return FileSpec.builder(schema.composePackage, "layoutModifierSerialization")
+    .addFunction(
+      FunSpec.builder("toJsonElement")
+        .addModifiers(INTERNAL)
+        .receiver(LayoutModifierElement)
+        .addParameter("json", Json)
+        .returns(JsonElement)
+        .beginControlFlow("return when (this)")
+        .apply {
+          for (layoutModifier in schema.layoutModifiers) {
+            val modifierType = schema.layoutModifierType(layoutModifier)
+            val surrogate = schema.layoutModifierSurrogate(layoutModifier)
+            addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
+          }
+        }
+        .addStatement("else -> throw %T()", ae)
+        .endControlFlow()
+        .build()
+    )
+    .apply {
+      for (layoutModifier in schema.layoutModifiers) {
+        val surrogateName = schema.layoutModifierSurrogate(layoutModifier)
+        val modifierType = schema.layoutModifierType(layoutModifier)
+
+        addType(
+          TypeSpec.classBuilder(surrogateName)
+            .addAnnotation(Serializable)
+            .addModifiers(PRIVATE)
+            .addSuperinterface(modifierType)
+            .apply {
+              val primaryConstructor = FunSpec.constructorBuilder()
+
+              for (property in layoutModifier.properties) {
+                val propertyType = property.type.asTypeName()
+                primaryConstructor.addParameter(property.name, propertyType)
+                addProperty(
+                  PropertySpec.builder(property.name, propertyType)
+                    .addModifiers(OVERRIDE)
+                    .addAnnotation(Contextual)
+                    .initializer("%N", property.name)
+                    .build()
+                )
+              }
+
+              primaryConstructor(primaryConstructor.build())
+            }
+            .addFunction(
+              FunSpec.constructorBuilder()
+                .addParameter("delegate", modifierType)
+                .callThisConstructor(layoutModifier.properties.map { CodeBlock.of("delegate.${it.name}") })
+                .build()
+            )
+            .addType(
+              TypeSpec.companionObjectBuilder()
+                .addFunction(
+                  FunSpec.builder("encode")
+                    .addParameter("json", Json)
+                    .addParameter("value", modifierType)
+                    .returns(JsonElement)
+                    .beginControlFlow("return %M", buildJsonArray)
+                    .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
+                    .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
+                    .endControlFlow()
+                    .build()
+                )
+                .build()
+            )
+            .build()
+        )
+      }
+    }
     .build()
 }

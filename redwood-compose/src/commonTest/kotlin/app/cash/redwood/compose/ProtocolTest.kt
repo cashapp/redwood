@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import example.redwood.compose.Button
@@ -32,6 +33,7 @@ import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,6 +66,12 @@ class ProtocolTest {
           ChildrenDiff.Insert(1L, 1, 2L, 3 /* text */, 0),
           ChildrenDiff.Insert(1L, 1, 3L, 1 /* row */, 1),
           ChildrenDiff.Insert(3L, 1, 4L, 3 /* text */, 0),
+        ),
+        layoutModifiers = listOf(
+          LayoutModifiers(1L, JsonArray(listOf())),
+          LayoutModifiers(2L, JsonArray(listOf())),
+          LayoutModifiers(3L, JsonArray(listOf())),
+          LayoutModifiers(4L, JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
           PropertyDiff(2L, 1 /* text */, JsonPrimitive("hey")),
@@ -104,6 +112,9 @@ class ProtocolTest {
       Diff(
         childrenDiffs = listOf(
           ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 4 /* button */, 0),
+        ),
+        layoutModifiers = listOf(
+          LayoutModifiers(1L, JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
           PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 0")),

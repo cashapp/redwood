@@ -16,6 +16,7 @@ kotlin {
       }
       dependencies {
         api projects.testSchema.widget
+        api projects.testSchema.layoutModifiers
         api projects.redwoodProtocolCompose // TODO should be redwoodCompose!
       }
     }

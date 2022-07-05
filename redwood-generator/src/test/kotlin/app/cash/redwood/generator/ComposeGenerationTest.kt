@@ -44,8 +44,7 @@ class ComposeGenerationTest {
       contains("scoped: @Composable RowScope.() -> Unit")
       contains("RowScope.scoped()")
 
-      // Remove wrapping whitespace when https://github.com/square/kotlinpoet/issues/274 ships.
-      contains("unscoped: @Composable\n    () -> Unit")
+      contains("unscoped: @Composable () -> Unit")
       contains("unscoped()")
     }
   }

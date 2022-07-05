@@ -15,12 +15,17 @@
  */
 package app.cash.redwood.protocol.compose
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
+import example.redwood.compose.customType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,6 +56,46 @@ class DiffProducingWidgetFactoryTest {
       propertyDiffs = listOf(
         PropertyDiff(1L, 2, JsonPrimitive("PT10S")),
       ),
+    )
+    assertEquals(expected, diffSink.diffs.single())
+  }
+
+  @Test fun layoutModifierUsesSerializersModule() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val button = factory.Button()
+
+    val diffProducingWidget = button as AbstractDiffProducingWidget
+    val diffSink = RecordingDiffSink()
+    val diffAppender = DiffAppender(diffSink)
+    diffProducingWidget.id = 1L
+    diffProducingWidget._diffAppender = diffAppender
+
+    button.layoutModifiers = LayoutModifier.customType(10.seconds)
+    diffAppender.trySend()
+
+    val expected = Diff(
+      layoutModifiers = listOf(
+        LayoutModifiers(
+          1L,
+          buildJsonArray {
+            add(
+              buildJsonArray {
+                add(JsonPrimitive(3))
+                add(
+                  buildJsonObject {
+                    put("customType", JsonPrimitive("PT10S"))
+                  }
+                )
+              }
+            )
+          }
+        )
+      )
     )
     assertEquals(expected, diffSink.diffs.single())
   }

@@ -54,6 +54,8 @@ public class ProtocolDisplay<T : Any>(
         }
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
+
+          @Suppress("ConvertArgumentToSet") // Bad advice as the collection is iterated.
           widgets.keys.removeAll(childrenDiff.removedIds)
         }
         ChildrenDiff.Clear -> {
@@ -62,6 +64,13 @@ public class ProtocolDisplay<T : Any>(
           widgets[RootId] = root
         }
       }
+    }
+
+    for (layoutModifier in diff.layoutModifiers) {
+      val widget = checkNotNull(widgets[layoutModifier.id]) {
+        "Unknown widget ID ${layoutModifier.id}"
+      }
+      widget.updateLayoutModifier(layoutModifier.elements)
     }
 
     for (propertyDiff in diff.propertyDiffs) {

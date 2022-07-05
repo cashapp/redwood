@@ -15,6 +15,7 @@
  */
 package example.ios.sunspot
 
+import app.cash.redwood.LayoutModifier
 import example.sunspot.widget.SunspotText
 import platform.UIKit.NSTextAlignmentCenter
 import platform.UIKit.UIColor
@@ -26,6 +27,8 @@ class IosSunspotText : SunspotText<UIView> {
     textColor = UIColor.whiteColor // TODO why is this needed?
     textAlignment = NSTextAlignmentCenter
   }
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun text(text: String?) {
     value.text = text

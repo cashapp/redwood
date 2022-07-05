@@ -25,6 +25,8 @@ import kotlin.jvm.JvmField
 public interface ProtocolMismatchHandler {
   /** Handle a request to create an unknown widget [kind]. */
   public fun onUnknownWidget(kind: Int)
+  /** Handle a request to create an unknown layout modifier [tag]. */
+  public fun onUnknownLayoutModifier(tag: Int)
   /** Handle a request to manipulate unknown children [tag] for the specified widget [kind]. */
   public fun onUnknownChildren(kind: Int, tag: Int)
   /** Handle a request to set an unknown property [tag] for the specified widget [kind]. */
@@ -36,6 +38,10 @@ public interface ProtocolMismatchHandler {
     public val Throwing: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
       override fun onUnknownWidget(kind: Int) {
         throw IllegalArgumentException("Unknown widget kind $kind")
+      }
+
+      override fun onUnknownLayoutModifier(tag: Int) {
+        throw IllegalArgumentException("Unknown layout modifier tag $tag")
       }
 
       override fun onUnknownChildren(kind: Int, tag: Int) {

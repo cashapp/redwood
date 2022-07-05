@@ -17,11 +17,13 @@ package example.android.sunspot
 
 import android.view.View
 import android.widget.LinearLayout
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.ViewGroupChildren
 import example.sunspot.widget.SunspotBox
 
 class AndroidSunspotBox(
   override val value: LinearLayout,
 ) : SunspotBox<View> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
   override val children = ViewGroupChildren(value)
 }
