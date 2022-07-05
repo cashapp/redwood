@@ -15,9 +15,9 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.Event
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
+import app.cash.redwood.schema.parser.Widget.Event
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.TypeName

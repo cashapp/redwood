@@ -25,6 +25,7 @@ import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
 import app.cash.redwood.schema.Children as ChildrenAnnotation
 import app.cash.redwood.schema.Default as DefaultAnnotation
+import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
@@ -36,92 +37,40 @@ private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
 public fun parseSchema(schemaType: KClass<*>): Schema {
-  val widgets = mutableListOf<Widget>()
-
-  val widgetTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
+  val memberTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
     "Schema ${schemaType.qualifiedName} missing @Schema annotation"
-  }.widgets
+  }.members
 
-  val duplicatedWidgets = widgetTypes.groupBy { it }.filterValues { it.size > 1 }.keys
-  if (duplicatedWidgets.isNotEmpty()) {
+  val duplicatedMembers = memberTypes.groupBy { it }.filterValues { it.size > 1 }.keys
+  if (duplicatedMembers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
-        append("Schema contains repeated widget")
-        if (duplicatedWidgets.size > 1) {
+        append("Schema contains repeated member")
+        if (duplicatedMembers.size > 1) {
           append('s')
         }
-        duplicatedWidgets.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
+        duplicatedMembers.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
       }
     )
   }
 
-  for (widgetType in widgetTypes) {
-    val widgetAnnotation = requireNotNull(widgetType.findAnnotation<WidgetAnnotation>()) {
-      "${widgetType.qualifiedName} missing @Widget annotation"
-    }
+  val widgets = mutableListOf<Widget>()
+  val layoutModifiers = mutableListOf<LayoutModifier>()
+  for (memberType in memberTypes) {
+    val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
+    val layoutModifierAnnotation = memberType.findAnnotation<LayoutModifierAnnotation>()
 
-    val traits = if (widgetType.isData) {
-      widgetType.primaryConstructor!!.parameters.map {
-        val property = it.findAnnotation<PropertyAnnotation>()
-        val children = it.findAnnotation<ChildrenAnnotation>()
-        val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
-
-        if (property != null) {
-          if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
-            val arguments = it.type.arguments.dropLast(1) // Drop return type.
-            require(arguments.size <= 1) {
-              "@Property ${widgetType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
-            }
-            Event(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
-          } else {
-            Property(property.tag, it.name!!, it.type, defaultExpression)
-          }
-        } else if (children != null) {
-          require(it.type == childrenType) {
-            "@Children ${widgetType.qualifiedName}#${it.name} must be of type 'List<Any>'"
-          }
-          Children(children.tag, it.name!!, children.scope.takeIf { it != Unit::class })
-        } else {
-          throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${widgetType.qualifiedName}")
-        }
-      }
-    } else if (widgetType.objectInstance != null) {
-      emptyList()
+    if ((widgetAnnotation == null) == (layoutModifierAnnotation == null)) {
+      throw IllegalArgumentException(
+        "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier"
+      )
+    } else if (widgetAnnotation != null) {
+      widgets += parseWidget(memberType, widgetAnnotation)
+    } else if (layoutModifierAnnotation != null) {
+      layoutModifiers += parseLayoutModifier(memberType, layoutModifierAnnotation)
     } else {
-      throw IllegalArgumentException(
-        "@Widget ${widgetType.qualifiedName} must be 'data' class or 'object'"
-      )
+      throw AssertionError()
     }
-
-    val badChildren =
-      traits.filterIsInstance<Children>().groupBy(Children::tag).filterValues { it.size > 1 }
-    if (badChildren.isNotEmpty()) {
-      throw IllegalArgumentException(
-        buildString {
-          appendLine("Widget ${widgetType.qualifiedName}'s @Children tags must be unique")
-          for ((tag, group) in badChildren) {
-            append("\n- @Children($tag): ")
-            group.joinTo(this) { it.name }
-          }
-        }
-      )
-    }
-
-    val badProperties =
-      traits.filterIsInstance<Property>().groupBy(Property::tag).filterValues { it.size > 1 }
-    if (badProperties.isNotEmpty()) {
-      throw IllegalArgumentException(
-        buildString {
-          appendLine("Widget ${widgetType.qualifiedName}'s @Property tags must be unique")
-          for ((tag, group) in badProperties) {
-            append("\n- @Property($tag): ")
-            group.joinTo(this) { it.name }
-          }
-        }
-      )
-    }
-
-    widgets += Widget(widgetAnnotation.tag, widgetType, traits)
   }
 
   val badWidgets = widgets.groupBy(Widget::tag).filterValues { it.size > 1 }
@@ -137,10 +86,121 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
     )
   }
 
+  val badLayoutModifiers = layoutModifiers.groupBy(LayoutModifier::tag).filterValues { it.size > 1 }
+  if (badLayoutModifiers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema @LayoutModifier tags must be unique")
+        for ((tag, group) in badLayoutModifiers) {
+          append("\n- @LayoutModifier($tag): ")
+          group.joinTo(this) { it.type.qualifiedName!! }
+        }
+      }
+    )
+  }
+
   val scopes = widgets
     .flatMap { it.traits }
-    .filterIsInstance<Children>()
+    .filterIsInstance<Widget.Children>()
     .mapNotNullTo(mutableSetOf()) { it.scope }
 
-  return Schema(schemaType.simpleName!!, schemaType.packageName, scopes.toList(), widgets)
+  return Schema(
+    schemaType.simpleName!!,
+    schemaType.packageName,
+    scopes.toList(),
+    widgets,
+    layoutModifiers,
+  )
+}
+
+private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Widget {
+  val traits = if (memberType.isData) {
+    memberType.primaryConstructor!!.parameters.map {
+      val property = it.findAnnotation<PropertyAnnotation>()
+      val children = it.findAnnotation<ChildrenAnnotation>()
+      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
+
+      if (property != null) {
+        if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
+          val arguments = it.type.arguments.dropLast(1) // Drop return type.
+          require(arguments.size <= 1) {
+            "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
+          }
+          Widget.Event(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
+        } else {
+          Widget.Property(property.tag, it.name!!, it.type, defaultExpression)
+        }
+      } else if (children != null) {
+        require(it.type == childrenType) {
+          "@Children ${memberType.qualifiedName}#${it.name} must be of type 'List<Any>'"
+        }
+        Widget.Children(children.tag, it.name!!, children.scope.takeIf { it != Unit::class })
+      } else {
+        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
+      }
+    }
+  } else if (memberType.objectInstance != null) {
+    emptyList()
+  } else {
+    throw IllegalArgumentException(
+      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'"
+    )
+  }
+
+  val badChildren = traits.filterIsInstance<Widget.Children>()
+    .groupBy(Widget.Children::tag)
+    .filterValues { it.size > 1 }
+  if (badChildren.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("${memberType.qualifiedName}'s @Children tags must be unique")
+        for ((tag, group) in badChildren) {
+          append("\n- @Children($tag): ")
+          group.joinTo(this) { it.name }
+        }
+      }
+    )
+  }
+
+  val badProperties = traits.filterIsInstance<Widget.Property>()
+    .groupBy(Widget.Property::tag)
+    .filterValues { it.size > 1 }
+  if (badProperties.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("${memberType.qualifiedName}'s @Property tags must be unique")
+        for ((tag, group) in badProperties) {
+          append("\n- @Property($tag): ")
+          group.joinTo(this) { it.name }
+        }
+      }
+    )
+  }
+
+  return Widget(annotation.tag, memberType, traits)
+}
+
+private fun parseLayoutModifier(
+  memberType: KClass<*>,
+  annotation: LayoutModifierAnnotation,
+): LayoutModifier {
+  val properties = if (memberType.isData) {
+    memberType.primaryConstructor!!.parameters.map {
+      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
+      LayoutModifier.Property(it.name!!, it.type, defaultExpression)
+    }
+  } else if (memberType.objectInstance != null) {
+    emptyList()
+  } else {
+    throw IllegalArgumentException(
+      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'"
+    )
+  }
+
+  return LayoutModifier(
+    annotation.tag,
+    annotation.scopes.toList(),
+    memberType,
+    properties,
+  )
 }

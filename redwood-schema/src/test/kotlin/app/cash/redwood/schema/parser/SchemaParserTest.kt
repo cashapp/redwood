@@ -16,9 +16,11 @@
 package app.cash.redwood.schema.parser
 
 import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.schema.parser.Widget.Event
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import kotlin.reflect.full.createType
@@ -48,7 +50,27 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedWidget missing @Widget annotation"
+      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedWidget must be annotated with either @Widget or @LayoutModifier"
+    )
+  }
+
+  @Schema(
+    [
+      DoubleAnnotatedWidget::class,
+    ]
+  )
+  interface DoubleAnnotatedWidgetSchema
+  @Widget(1)
+  @LayoutModifier(1)
+  data class DoubleAnnotatedWidget(
+    @Property(1) val name: String,
+  )
+
+  @Test fun doubleAnnotatedWidgetThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(DoubleAnnotatedWidgetSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "app.cash.redwood.schema.parser.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier"
     )
   }
 
@@ -87,6 +109,39 @@ class SchemaParserTest {
 
   @Schema(
     [
+      DuplicateLayoutModifierTagA::class,
+      NonDuplicateLayoutModifierTag::class,
+      DuplicateLayoutModifierTagB::class,
+    ]
+  )
+  interface DuplicateLayoutModifierTagSchema
+  @LayoutModifier(1)
+  data class DuplicateLayoutModifierTagA(
+    val name: String,
+  )
+  @LayoutModifier(2)
+  data class NonDuplicateLayoutModifierTag(
+    val name: String,
+  )
+  @LayoutModifier(1)
+  data class DuplicateLayoutModifierTagB(
+    val name: String,
+  )
+
+  @Test fun duplicateLayoutModifierTagThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(DuplicateLayoutModifierTagSchema::class)
+    }.hasMessageThat().isEqualTo(
+      """
+      |Schema @LayoutModifier tags must be unique
+      |
+      |- @LayoutModifier(1): app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagA, app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagB
+      """.trimMargin()
+    )
+  }
+
+  @Schema(
+    [
       RepeatedWidget::class,
       RepeatedWidget::class,
     ]
@@ -102,7 +157,7 @@ class SchemaParserTest {
       parseSchema(RepeatedWidgetTypeSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Schema contains repeated widget
+      |Schema contains repeated member
       |
       |- app.cash.redwood.schema.parser.SchemaParserTest.RepeatedWidget
       """.trimMargin()
@@ -128,7 +183,7 @@ class SchemaParserTest {
       parseSchema(DuplicatePropertyTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Widget app.cash.redwood.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
+      |app.cash.redwood.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
       |- @Property(1): name, nickname
       """.trimMargin()
@@ -153,7 +208,7 @@ class SchemaParserTest {
       parseSchema(DuplicateChildrenTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |Widget app.cash.redwood.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
+      |app.cash.redwood.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
       """.trimMargin()

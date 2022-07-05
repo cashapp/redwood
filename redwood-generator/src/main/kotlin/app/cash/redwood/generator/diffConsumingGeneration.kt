@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.Children
-import app.cash.redwood.schema.parser.Event
-import app.cash.redwood.schema.parser.Property
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
+import app.cash.redwood.schema.parser.Widget.Children
+import app.cash.redwood.schema.parser.Widget.Event
+import app.cash.redwood.schema.parser.Widget.Property
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT

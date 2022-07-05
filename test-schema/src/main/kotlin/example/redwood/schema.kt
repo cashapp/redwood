@@ -16,6 +16,7 @@
 package example.redwood
 
 import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
@@ -25,6 +26,9 @@ import kotlin.time.Duration
   [
     Row::class,
     ScopedRow::class,
+    RowVerticalAlignment::class,
+    AccessibilityDescription::class,
+    CustomType::class,
     Text::class,
     Button::class,
     TextInput::class,
@@ -61,4 +65,20 @@ public data class TextInput(
   @Property(2) val customType: Duration?,
   @Property(3) val onChange: (String) -> Unit,
   @Property(4) val onChangeCustomType: (Duration) -> Unit,
+)
+
+@LayoutModifier(1, RowScope::class)
+public data class RowVerticalAlignment(
+  /** -1 for top, 0 for middle, 1 for bottom. */
+  val direction: Int,
+)
+
+@LayoutModifier(2)
+public data class AccessibilityDescription(
+  val value: String,
+)
+
+@LayoutModifier(3)
+public data class CustomType(
+  val customType: Duration,
 )

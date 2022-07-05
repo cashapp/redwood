@@ -18,25 +18,29 @@ package app.cash.redwood.schema
 import kotlin.reflect.KClass
 
 /**
- * Annotates an otherwise unused type with a set of the [Widget]-annotated classes which are all
- * part of this schema.
+ * Annotates an otherwise unused type with a set of [Widget]-annotated or [LayoutModifier]-annotated
+ * classes which are all part of this schema.
  *
  * ```
  * @Schema([
- *   Box::class,
+ *   Row::class,
+ *   RowAlignment::class,
  *   Button::class,
  *   Text::class,
  * ])
  * interface Name
  * ```
+ *
+ * @see Widget
+ * @see LayoutModifier
  */
-public annotation class Schema(val widgets: Array<KClass<*>>)
+public annotation class Schema(val members: Array<KClass<*>>)
 
 /**
  * Annotates a data class which represents a widget in a UI tree. Each widget in a [Schema] must
  * have a unique [tag] among all [@Widget][Widget] annotations in the [Schema].
  *
- * All of the properties in the class must be annotated with either [Property] or [Children].
+ * All the properties in the class must be annotated with either [Property] or [Children].
  *
  * ```
  * @Widget(1)
@@ -92,3 +96,20 @@ public annotation class Children(
  * ```
  */
 public annotation class Default(val expression: String)
+
+/**
+ * Annotates a data class which represents a layout modifier for a [Widget]. Each layout modifier
+ * in a [Schema] must have a unique [tag] among all [@LayoutModifier][LayoutModifier] annotations
+ * in the [Schema].
+ *
+ * ```
+ * @LayoutModifier(1)
+ * data class RowAlignment(
+ *   val value: VerticalAlignment,
+ * )
+ * ```
+ */
+public annotation class LayoutModifier(
+  val tag: Int,
+  vararg val scopes: KClass<*>,
+)

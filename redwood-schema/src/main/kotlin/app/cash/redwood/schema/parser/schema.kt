@@ -23,6 +23,7 @@ public data class Schema(
   val `package`: String,
   val scopes: List<KClass<*>>,
   val widgets: List<Widget>,
+  val layoutModifiers: List<LayoutModifier>,
 )
 
 public data class Widget(
@@ -31,32 +32,47 @@ public data class Widget(
   val type: KClass<*>,
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   val traits: List<Trait>,
-)
+) {
+  public sealed class Trait {
+    public abstract val tag: Int
+    public abstract val name: String
+    public abstract val defaultExpression: String?
+  }
 
-public sealed class Trait {
-  public abstract val tag: Int
-  public abstract val name: String
-  public abstract val defaultExpression: String?
+  public data class Property(
+    override val tag: Int,
+    override val name: String,
+    val type: KType,
+    override val defaultExpression: String?,
+  ) : Trait()
+
+  public data class Event(
+    override val tag: Int,
+    override val name: String,
+    override val defaultExpression: String?,
+    val parameterType: KType?,
+  ) : Trait()
+
+  public data class Children(
+    override val tag: Int,
+    override val name: String,
+    val scope: KClass<*>? = null,
+  ) : Trait() {
+    override val defaultExpression: String? get() = null
+  }
 }
 
-public data class Property(
-  override val tag: Int,
-  override val name: String,
-  val type: KType,
-  override val defaultExpression: String?,
-) : Trait()
-
-public data class Event(
-  override val tag: Int,
-  override val name: String,
-  override val defaultExpression: String?,
-  val parameterType: KType?,
-) : Trait()
-
-public data class Children(
-  override val tag: Int,
-  override val name: String,
-  val scope: KClass<*>? = null,
-) : Trait() {
-  override val defaultExpression: String? get() = null
+public data class LayoutModifier(
+  val tag: Int,
+  val scopes: List<KClass<*>>,
+  /** Either a 'data class' or 'object'. */
+  val type: KClass<*>,
+  /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
+  val properties: List<Property>,
+) {
+  public data class Property(
+    val name: String,
+    val type: KType,
+    val defaultExpression: String?,
+  )
 }
