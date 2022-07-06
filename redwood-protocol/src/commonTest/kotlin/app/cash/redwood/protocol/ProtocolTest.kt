@@ -19,6 +19,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -48,6 +50,19 @@ class ProtocolTest {
         ChildrenDiff.Move(1, 2, 3, 4, 5),
         ChildrenDiff.Remove(1, 2, 3, 4, listOf(5, 6, 7, 8)),
       ),
+      layoutModifiers = listOf(
+        LayoutModifiers(
+          1,
+          buildJsonArray {
+            add(
+              buildJsonArray {
+                add(JsonPrimitive(1))
+                add(buildJsonObject { })
+              }
+            )
+          }
+        )
+      ),
       propertyDiffs = listOf(
         PropertyDiff(1, 2, JsonPrimitive("Hello")),
         PropertyDiff(1, 2, JsonNull),
@@ -59,6 +74,8 @@ class ProtocolTest {
       """["insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
+      """],"layoutModifiers":[""" +
+      """{"id":1,"elements":[[1,{}]]}""" +
       """],"propertyDiffs":[""" +
       """{"id":1,"tag":2,"value":"Hello"},""" +
       """{"id":1,"tag":2}""" +
@@ -69,6 +86,7 @@ class ProtocolTest {
   @Test fun diffEmptyLists() {
     val model = Diff(
       childrenDiffs = listOf(),
+      layoutModifiers = listOf(),
       propertyDiffs = listOf(),
     )
     val json = "{}"

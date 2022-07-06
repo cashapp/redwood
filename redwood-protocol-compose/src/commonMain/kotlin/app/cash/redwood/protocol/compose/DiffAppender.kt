@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.compose
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
+import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 
 /**
@@ -28,10 +29,15 @@ import app.cash.redwood.protocol.PropertyDiff
  */
 internal class DiffAppender(private val diffSink: DiffSink) {
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
+  private var layoutModifiers = mutableListOf<LayoutModifiers>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
   fun append(childrenDiff: ChildrenDiff) {
     childrenDiffs += childrenDiff
+  }
+
+  fun append(layoutModifiers: LayoutModifiers) {
+    this.layoutModifiers += layoutModifiers
   }
 
   fun append(propertyDiff: PropertyDiff) {
@@ -45,13 +51,16 @@ internal class DiffAppender(private val diffSink: DiffSink) {
    */
   fun trySend() {
     val existingChildrenDiffs = childrenDiffs
+    val existingLayoutModifierDiffs = layoutModifiers
     val existingPropertyDiffs = propertyDiffs
-    if (existingPropertyDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
+    if (existingPropertyDiffs.isNotEmpty() || existingLayoutModifierDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
       childrenDiffs = mutableListOf()
+      layoutModifiers = mutableListOf()
       propertyDiffs = mutableListOf()
 
       val diff = Diff(
         childrenDiffs = existingChildrenDiffs,
+        layoutModifiers = existingLayoutModifierDiffs,
         propertyDiffs = existingPropertyDiffs,
       )
       diffSink.sendDiff(diff)

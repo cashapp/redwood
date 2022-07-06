@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 
 /**
@@ -92,6 +93,10 @@ public abstract class AbstractDiffProducingWidget(
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
   internal val _children = mutableListOf<AbstractDiffProducingWidget>()
+
+  protected fun appendDiff(layoutModifiers: LayoutModifiers) {
+    _diffAppender.append(layoutModifiers)
+  }
 
   protected fun appendDiff(diff: PropertyDiff) {
     _diffAppender.append(diff)

@@ -17,6 +17,7 @@ package app.cash.redwood.protocol
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 
@@ -40,6 +41,7 @@ public data class Event(
 @Serializable
 public data class Diff(
   val childrenDiffs: List<ChildrenDiff> = emptyList(),
+  val layoutModifiers: List<LayoutModifiers> = emptyList(),
   val propertyDiffs: List<PropertyDiff> = emptyList()
 )
 
@@ -50,6 +52,17 @@ public data class PropertyDiff(
   /** Identifies which property changed on the widget with [id]. */
   val tag: Int,
   val value: JsonElement = JsonNull,
+)
+
+@Serializable
+public data class LayoutModifiers(
+  /** Identifier for the widget whose layout modifier has changed. */
+  val id: Long,
+  /**
+   * Array of layout modifiers. Each element of this array is itself a two-element array of the
+   * layout modifier tag and then serialized value.
+   */
+  val elements: JsonArray,
 )
 
 @Serializable
