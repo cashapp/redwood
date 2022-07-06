@@ -19,6 +19,7 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.compose.RedwoodApplier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
@@ -69,6 +70,10 @@ private sealed class DiffProducingChildrenWidget(
       id = RootId
     }
   }
+
+  override var layoutModifiers: LayoutModifier
+    get() = throw AssertionError()
+    set(_) = throw AssertionError()
 
   override fun sendEvent(event: Event) {
     // These types should never make it into the node map and thus cannot be targeted by events.

@@ -15,6 +15,7 @@
  */
 package example.ios.sunspot
 
+import app.cash.redwood.LayoutModifier
 import example.sunspot.widget.SunspotBox
 import platform.UIKit.UILayoutConstraintAxisHorizontal
 import platform.UIKit.UIStackView
@@ -27,5 +28,7 @@ class IosSunspotBox(
     axis = UILayoutConstraintAxisHorizontal
   }
 ) : SunspotBox<UIView> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override val children = UIStackViewChildren(value)
 }

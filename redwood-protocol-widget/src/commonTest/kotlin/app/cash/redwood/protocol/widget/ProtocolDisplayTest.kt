@@ -15,10 +15,12 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
+import kotlinx.serialization.json.JsonArray
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -39,19 +41,26 @@ class ProtocolDisplayTest {
 
   private object RootWidgetChildrenThrows : DiffConsumingWidget<Unit> {
     override val value get() = Unit
+    override var layoutModifiers: LayoutModifier = LayoutModifier
+
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
+    override fun updateLayoutModifier(value: JsonArray) = throw UnsupportedOperationException()
     override fun children(tag: Int) = throw IllegalArgumentException()
   }
 
   private object RootWidgetChildrenNull : DiffConsumingWidget<Unit> {
     override val value get() = Unit
+    override var layoutModifiers: LayoutModifier = LayoutModifier
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
+    override fun updateLayoutModifier(value: JsonArray) = throw UnsupportedOperationException()
     override fun children(tag: Int) = null
   }
 
   private object RootWidgetWithChildren : DiffConsumingWidget<Unit> {
     override val value get() = Unit
+    override var layoutModifiers: LayoutModifier = LayoutModifier
     override fun apply(diff: PropertyDiff, eventSink: EventSink) = throw UnsupportedOperationException()
+    override fun updateLayoutModifier(value: JsonArray) = throw UnsupportedOperationException()
     override fun children(tag: Int) = when (tag) {
       RootChildrenTag -> NullWidgetChildren
       else -> throw IllegalArgumentException()

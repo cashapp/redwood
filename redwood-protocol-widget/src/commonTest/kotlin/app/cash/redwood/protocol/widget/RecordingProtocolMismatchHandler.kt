@@ -22,6 +22,10 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
     events += "Unknown widget $kind"
   }
 
+  override fun onUnknownLayoutModifier(tag: Int) {
+    events += "Unknown layout modifier $tag"
+  }
+
   override fun onUnknownChildren(kind: Int, tag: Int) {
     events += "Unknown children $tag for $kind"
   }

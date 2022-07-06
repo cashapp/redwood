@@ -18,12 +18,15 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
+import kotlinx.serialization.json.JsonArray
 
 /**
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
  */
 public interface DiffConsumingWidget<T : Any> : Widget<T> {
   public fun apply(diff: PropertyDiff, eventSink: EventSink)
+
+  public fun updateLayoutModifier(value: JsonArray)
 
   /**
    * Return one of this widget's children groups by its [tag].

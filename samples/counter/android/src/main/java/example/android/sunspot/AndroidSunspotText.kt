@@ -18,11 +18,14 @@ package example.android.sunspot
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import app.cash.redwood.LayoutModifier
 import example.sunspot.widget.SunspotText
 
 class AndroidSunspotText(
   override val value: TextView,
 ) : SunspotText<View> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override fun text(text: String?) {
     value.text = text
   }

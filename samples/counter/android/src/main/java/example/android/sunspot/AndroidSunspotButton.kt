@@ -17,11 +17,14 @@ package example.android.sunspot
 
 import android.view.View
 import android.widget.Button
+import app.cash.redwood.LayoutModifier
 import example.sunspot.widget.SunspotButton
 
 class AndroidSunspotButton(
   override val value: Button,
 ) : SunspotButton<View> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
   override fun text(text: String?) {
     value.text = text
   }

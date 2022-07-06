@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.generator
 
+import app.cash.redwood.schema.parser.LayoutModifier
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
@@ -24,9 +25,13 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier.DATA
+import com.squareup.kotlinpoet.KModifier.OVERRIDE
+import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
@@ -36,6 +41,7 @@ import kotlin.reflect.KClass
 /*
 @Composable
 fun SunspotButton(
+  layoutModifier: LayoutModifier = LayoutModifier,
   text: String?,
   enabled: Boolean = true,
   onClick: (() -> Unit)? = null
@@ -59,7 +65,27 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
         .addModifiers(PUBLIC)
         .addAnnotation(composable)
         .apply {
-          for (trait in widget.traits) {
+          // If the last trait is a child lambda move the layout modifier position to be
+          // second-to-last. This ensures you can still use trailing lambda syntax.
+          val layoutModifierIndex = if (widget.traits.lastOrNull() is Children) {
+            widget.traits.size - 1
+          } else {
+            widget.traits.size
+          }
+
+          var index = 0
+          while (true) {
+            if (index == layoutModifierIndex) {
+              addParameter(
+                ParameterSpec.builder("layoutModifier", LayoutModifier)
+                  .defaultValue("%T", LayoutModifier)
+                  .build()
+              )
+            }
+            if (index >= widget.traits.size) {
+              break
+            }
+            val trait = widget.traits[index]
             addParameter(
               when (trait) {
                 is Property -> {
@@ -81,6 +107,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                 }
               }
             )
+            index++
           }
 
           val arguments = mutableListOf<CodeBlock>()
@@ -90,6 +117,8 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
             .build()
 
           val updateLambda = CodeBlock.builder()
+            .add("set(layoutModifier) { layoutModifiers = layoutModifier }\n")
+
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
             when (trait) {
@@ -139,14 +168,97 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
 }
 
 /*
-object RowScope
+object RowScope {
+  fun LayoutModifier.something(...): LayoutModifier {
+    return then(Something(...))
+  }
+}
+
+private data class SomethingImpl(...) : Something
 */
-internal fun generateComposableScope(schema: Schema, scope: KClass<*>): FileSpec {
+internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): FileSpec {
   val scopeName = scope.simpleName!!
   return FileSpec.builder(schema.composePackage, scopeName)
-    .addType(
-      TypeSpec.objectBuilder(scopeName)
-        .build()
-    )
+    .apply {
+      val scopeObject = TypeSpec.objectBuilder(scopeName)
+
+      for (layoutModifier in schema.layoutModifiers) {
+        if (scope !in layoutModifier.scopes) {
+          continue
+        }
+
+        val (function, type) = generateLayoutModifier(schema, layoutModifier)
+        scopeObject.addFunction(function)
+        addType(type)
+      }
+
+      addType(scopeObject.build())
+    }
     .build()
+}
+
+internal fun generateUnscopedModifiers(schema: Schema): FileSpec {
+  return FileSpec.builder(schema.composePackage, "unscopedLayoutModifiers")
+    .apply {
+      for (layoutModifier in schema.layoutModifiers) {
+        if (layoutModifier.scopes.isNotEmpty()) {
+          continue
+        }
+
+        val (function, type) = generateLayoutModifier(schema, layoutModifier)
+        addFunction(function)
+        addType(type)
+      }
+    }
+    .build()
+}
+
+private fun generateLayoutModifier(
+  schema: Schema,
+  layoutModifier: LayoutModifier
+): Pair<FunSpec, TypeSpec> {
+  val simpleName = layoutModifier.type.simpleName!!
+  val typeName = ClassName(schema.composePackage, simpleName + "Impl")
+
+  val function = FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
+    .receiver(LayoutModifier)
+    .returns(LayoutModifier)
+    .apply {
+      val arguments = mutableListOf<CodeBlock>()
+
+      for (property in layoutModifier.properties) {
+        arguments += CodeBlock.of("%N", property.name)
+
+        // TODO default generation
+        addParameter(property.name, property.type.asTypeName())
+      }
+      addStatement("return then(%T(%L))", typeName, arguments.joinToCode())
+    }
+    .build()
+
+  val interfaceType = schema.layoutModifierType(layoutModifier)
+  val type = TypeSpec.classBuilder(typeName)
+    .addModifiers(PRIVATE, DATA)
+    .addSuperinterface(interfaceType)
+    .apply {
+      val primaryConstructor = FunSpec.constructorBuilder()
+
+      for (property in layoutModifier.properties) {
+        val propertyType = property.type.asTypeName()
+        primaryConstructor.addParameter(property.name, propertyType)
+        addProperty(
+          PropertySpec.builder(property.name, propertyType)
+            .addModifiers(OVERRIDE)
+            .initializer("%N", property.name)
+            .build()
+        )
+      }
+
+      primaryConstructor(primaryConstructor.build())
+    }
+    .addFunction(layoutModifierEquals(schema, layoutModifier))
+    .addFunction(layoutModifierHashCode(layoutModifier))
+    .build()
+
+  return function to type
 }

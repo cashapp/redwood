@@ -20,9 +20,12 @@ import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
 import app.cash.redwood.schema.parser.Widget.Event
 import app.cash.redwood.schema.parser.Widget.Property
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.KModifier.DATA
+import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.ParameterSpec
@@ -66,7 +69,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetFactory)
             .addParameter(
-              ParameterSpec.builder("json", json)
+              ParameterSpec.builder("json", Json)
                 .defaultValue("%T", jsonCompanion)
                 .build()
             )
@@ -83,7 +86,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .build()
         )
         .addProperty(
-          PropertySpec.builder("json", json, PRIVATE)
+          PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
             .build()
         )
@@ -134,6 +137,10 @@ internal class DiffConsumingSunspotButton<T : Any>(
 ) : DiffConsumingWidget<T> {
   public override val value: T get() = delegate.value
 
+  public override val layoutModifiers: LayoutModifier
+    get() = delegate.layoutModifiers
+    set(value) { delegate.layoutModifiers = value }
+
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
@@ -166,7 +173,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetType)
-            .addParameter("json", json)
+            .addParameter("json", Json)
             .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
             .build()
         )
@@ -176,7 +183,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
             .build()
         )
         .addProperty(
-          PropertySpec.builder("json", json, PRIVATE)
+          PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
             .build()
         )
@@ -190,6 +197,22 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return delegate.value")
+                .build()
+            )
+            .build()
+        )
+        .addProperty(
+          PropertySpec.builder("layoutModifiers", LayoutModifier, OVERRIDE)
+            .mutable()
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return delegate.layoutModifiers")
+                .build()
+            )
+            .setter(
+              FunSpec.setterBuilder()
+                .addParameter("value", LayoutModifier)
+                .addStatement("delegate.layoutModifiers = value")
                 .build()
             )
             .build()
@@ -253,7 +276,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
 
                 for ((typeName, id) in serializerIds) {
                   addProperty(
-                    PropertySpec.builder("serializer_$id", kSerializer.parameterizedBy(typeName))
+                    PropertySpec.builder("serializer_$id", KSerializer.parameterizedBy(typeName))
                       .addModifiers(PRIVATE)
                       .initializer("json.serializersModule.%M()", serializer)
                       .build()
@@ -289,7 +312,84 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
               .build()
           )
         }
+        .addFunction(
+          FunSpec.builder("updateLayoutModifier")
+            .addModifiers(OVERRIDE)
+            .addParameter("value", JsonArray)
+            .addStatement(
+              """
+              |layoutModifiers = value.fold<%1T, %2T>(%2T) { modifier, element ->
+              |  modifier then element.toLayoutModifier(json, mismatchHandler)
+              |}
+              """.trimMargin(),
+              JsonElement, LayoutModifier
+            )
+            .build()
+        )
         .build()
     )
+    .build()
+}
+
+internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
+  return FileSpec.builder(schema.widgetPackage, "layoutModifierSerialization")
+    .addFunction(
+      FunSpec.builder("toLayoutModifier")
+        .addModifiers(INTERNAL)
+        .receiver(JsonElement)
+        .addParameter("json", Json)
+        .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
+        .returns(LayoutModifier)
+        .addStatement("val array = %M", jsonArray)
+        .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
+        .addStatement("")
+        .addStatement("val tag = array[0].%M.%M", jsonPrimitive, jsonInt)
+        .addStatement("val value = array[1].%M", jsonObject)
+        .addStatement("")
+        .beginControlFlow("return when (tag)")
+        .apply {
+          for (layoutModifier in schema.layoutModifiers) {
+            val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
+            addStatement("%L -> json.decodeFromJsonElement(%T.serializer(), value)", layoutModifier.tag, typeName)
+          }
+        }
+        .beginControlFlow("else ->")
+        .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
+        .addStatement("%T", LayoutModifier)
+        .endControlFlow()
+        .endControlFlow()
+        .build()
+    )
+    .apply {
+      for (layoutModifier in schema.layoutModifiers) {
+        val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
+        addType(
+          TypeSpec.classBuilder(typeName)
+            .addAnnotation(Serializable)
+            .addModifiers(PRIVATE, DATA)
+            .addSuperinterface(schema.layoutModifierType(layoutModifier))
+            .apply {
+              val primaryConstructor = FunSpec.constructorBuilder()
+
+              for (property in layoutModifier.properties) {
+                val propertyType = property.type.asTypeName()
+                primaryConstructor.addParameter(property.name, propertyType)
+                addProperty(
+                  PropertySpec.builder(property.name, propertyType)
+                    .addModifiers(OVERRIDE)
+                    .addAnnotation(Contextual)
+                    .initializer("%N", property.name)
+                    .build()
+                )
+              }
+
+              primaryConstructor(primaryConstructor.build())
+            }
+            .addFunction(layoutModifierEquals(schema, layoutModifier))
+            .addFunction(layoutModifierHashCode(layoutModifier))
+            .build()
+        )
+      }
+    }
     .build()
 }

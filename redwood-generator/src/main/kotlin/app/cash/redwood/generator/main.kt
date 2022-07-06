@@ -19,6 +19,7 @@ package app.cash.redwood.generator
 
 import app.cash.redwood.generator.RedwoodGenerator.Type.Compose
 import app.cash.redwood.generator.RedwoodGenerator.Type.ComposeProtocol
+import app.cash.redwood.generator.RedwoodGenerator.Type.LayoutModifiers
 import app.cash.redwood.generator.RedwoodGenerator.Type.Widget
 import app.cash.redwood.generator.RedwoodGenerator.Type.WidgetProtocol
 import app.cash.redwood.schema.parser.parseSchema
@@ -41,6 +42,7 @@ private class RedwoodGenerator : CliktCommand() {
   enum class Type {
     Compose,
     ComposeProtocol,
+    LayoutModifiers,
     Widget,
     WidgetProtocol,
   }
@@ -49,6 +51,7 @@ private class RedwoodGenerator : CliktCommand() {
     .switch(
       "--compose" to Compose,
       "--compose-protocol" to ComposeProtocol,
+      "--layout-modifiers" to LayoutModifiers,
       "--widget" to Widget,
       "--widget-protocol" to WidgetProtocol,
     )
@@ -73,8 +76,9 @@ private class RedwoodGenerator : CliktCommand() {
     val schema = parseSchema(schemaType)
     when (type) {
       Compose -> {
+        generateUnscopedModifiers(schema).writeTo(out)
         for (scope in schema.scopes) {
-          generateComposableScope(schema, scope).writeTo(out)
+          generateScopeAndScopedModifiers(schema, scope).writeTo(out)
         }
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
@@ -82,8 +86,14 @@ private class RedwoodGenerator : CliktCommand() {
       }
       ComposeProtocol -> {
         generateDiffProducingWidgetFactory(schema).writeTo(out)
+        generateDiffProducingLayoutModifier(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateDiffProducingWidget(schema, widget).writeTo(out)
+        }
+      }
+      LayoutModifiers -> {
+        for (layoutModifier in schema.layoutModifiers) {
+          generateLayoutModifierInterface(schema, layoutModifier).writeTo(out)
         }
       }
       Widget -> {
@@ -94,6 +104,7 @@ private class RedwoodGenerator : CliktCommand() {
       }
       WidgetProtocol -> {
         generateDiffConsumingWidgetFactory(schema).writeTo(out)
+        generateDiffConsumingLayoutModifier(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateDiffConsumingWidget(schema, widget).writeTo(out)
         }

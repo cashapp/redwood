@@ -1,4 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 def generatedDir = 'build/generated/redwood'
 
@@ -16,6 +17,7 @@ kotlin {
       dependencies {
         api projects.redwoodProtocolWidget
         api projects.testSchema.widget
+        api projects.testSchema.layoutModifiers
       }
     }
   }
