@@ -60,7 +60,7 @@ allprojects {
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
-    android.compileSdkVersion 31
+    android.compileSdkVersion 32
     android.compileOptions {
       sourceCompatibility JavaVersion.VERSION_1_8
       targetCompatibility JavaVersion.VERSION_1_8
@@ -84,7 +84,7 @@ allprojects {
           if (dependency.requested instanceof ProjectComponentSelector
               && dependency.requested.buildName == 'redwood'
               && dependency.requested.projectPath == ':compose:runtime') {
-            dependency.useTarget("androidx.compose.runtime:runtime:${libs.versions.androidCompose.get()}")
+            dependency.useTarget("androidx.compose.runtime:runtime:${libs.versions.androidComposeRuntime.get()}")
           }
         }
       }
@@ -92,7 +92,9 @@ allprojects {
 
     // TODO Re-enable lint on samples https://issuetracker.google.com/issues/196982350
     afterEvaluate {
+      tasks.named('lintReportDebug').configure { enabled = false }
       tasks.named('lintDebug').configure { enabled = false }
+      tasks.named('lintReportRelease').configure { enabled = false }
       tasks.named('lintRelease').configure { enabled = false }
     }
   }

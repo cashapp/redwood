@@ -6,10 +6,16 @@ if (!file('upstream/.git').exists()) {
 def upstreamLibraryVersions = file('upstream/libraryversions.toml').text.readLines()
 def upstreamDependencyVersions = file('upstream/gradle/libs.versions.toml').text.readLines()
 
-def upstreamComposeVersion = upstreamLibraryVersions.find { it.startsWith("COMPOSE = ") }
-if (!upstreamComposeVersion.contains("\"${libs.versions.androidCompose.get()}\"")) {
+def upstreamComposeRuntimeVersion = upstreamLibraryVersions.find { it.startsWith("COMPOSE = ") }
+if (!upstreamComposeRuntimeVersion.contains("\"${libs.versions.androidComposeRuntime.get()}\"")) {
   throw new RuntimeException(
-    "Upstream git repository Compose version does not match project version ${libs.versions.androidCompose.get()}: $upstreamComposeVersion")
+    "Upstream git repository Compose runtime version does not match project version ${libs.versions.androidComposeRuntime.get()}: $upstreamComposeRuntimeVersion")
+}
+
+def upstreamComposeCompilerVersion = upstreamLibraryVersions.find { it.startsWith("COMPOSE_COMPILER = ") }
+if (!upstreamComposeCompilerVersion.contains("\"${libs.versions.androidComposeCompiler.get()}\"")) {
+  throw new RuntimeException(
+    "Upstream git repository Compose runtime version does not match project version ${libs.versions.androidComposeCompiler.get()}: $upstreamComposeCompilerVersion")
 }
 
 def upstreamKotlinVersion = upstreamDependencyVersions.find { it.startsWith("kotlin = ") }
@@ -21,7 +27,7 @@ if (!upstreamKotlinVersion.contains("\"${libs.versions.kotlin.get()}\"")) {
 def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
 if (!upstreamCoroutinesVersion.contains("\"${libs.versions.kotlinx.coroutines.get()}\"")) {
   throw new RuntimeException(
-    "Upstream git repository Kotlin coroutines version does not match project version $libs.versions.kotlinx.coroutines.get()}: $upstreamCoroutinesVersion")
+    "Upstream git repository Kotlin coroutines version does not match project version ${libs.versions.kotlinx.coroutines.get()}: $upstreamCoroutinesVersion")
 }
 
 def upstreamAtomicFuVersion = upstreamDependencyVersions.find { it.startsWith("atomicFu = ") }
