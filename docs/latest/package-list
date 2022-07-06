@@ -13,6 +13,8 @@ module:redwood-protocol-compose
 app.cash.redwood.protocol.compose
 module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
+module:redwood-runtime
+app.cash.redwood
 module:redwood-schema
 app.cash.redwood.schema.parser
 module:redwood-schema-annotations
