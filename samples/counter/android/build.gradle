@@ -8,3 +8,7 @@ dependencies {
   implementation projects.counter.shared
   implementation libs.kotlinx.coroutines.android
 }
+
+android {
+  namespace 'example.android'
+}

@@ -1,7 +1,4 @@
-<manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="example.android.composeui"
-  >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <application
     android:label="TODO Compose UI"
     android:theme="@android:style/Theme.Material.Light.NoActionBar"

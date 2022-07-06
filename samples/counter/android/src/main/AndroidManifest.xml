@@ -1,7 +1,4 @@
-<manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="example.android"
-  >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <application android:label="Example">
     <activity android:name="example.android.MainActivity">
       <intent-filter>
