@@ -107,12 +107,16 @@ internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
   return FunSpec.builder("hashCode")
     .addModifiers(KModifier.OVERRIDE)
     .returns(INT)
-    .addStatement("var hash = 17")
     .apply {
-      for (property in layoutModifier.properties) {
-        addStatement("hash = 31 * hash + %N.hashCode()", property.name)
+      if (layoutModifier.properties.isEmpty()) {
+        addStatement("return %L", layoutModifier.type.simpleName!!.hashCode())
+      } else {
+        addStatement("var hash = 17")
+        for (property in layoutModifier.properties) {
+          addStatement("hash = 31 * hash + %N.hashCode()", property.name)
+        }
+        addStatement("return hash")
       }
     }
-    .addStatement("return hash")
     .build()
 }
