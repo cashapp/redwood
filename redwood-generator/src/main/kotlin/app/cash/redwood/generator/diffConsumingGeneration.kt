@@ -71,29 +71,29 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .addParameter(
               ParameterSpec.builder("json", Json)
                 .defaultValue("%T", jsonCompanion)
-                .build()
+                .build(),
             )
             .addParameter(
               ParameterSpec.builder("mismatchHandler", WidgetProtocolMismatchHandler)
                 .defaultValue("%T.Throwing", WidgetProtocolMismatchHandler)
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("delegate", widgetFactory, PRIVATE)
             .initializer("delegate")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build()
+            .build(),
         )
         .addFunction(
           FunSpec.builder("create")
@@ -111,7 +111,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .addStatement("null")
             .endControlFlow()
             .endControlFlow()
-            .build()
+            .build(),
         )
         .apply {
           for (widget in schema.widgets.sortedBy { it.flatName }) {
@@ -120,11 +120,11 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
                 .addParameter("value", schema.widgetType(widget).parameterizedBy(typeVariableT))
                 .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
                 .addStatement("return %T(value, json, mismatchHandler)", schema.diffConsumingWidgetType(widget))
-                .build()
+                .build(),
             )
           }
         }
-        .build()
+        .build(),
     )
     .build()
 }
@@ -175,31 +175,31 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
             .addParameter("delegate", widgetType)
             .addParameter("json", Json)
             .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("delegate", widgetType, PRIVATE)
             .initializer("delegate")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("value", typeVariableT, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return delegate.value")
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("layoutModifiers", LayoutModifier, OVERRIDE)
@@ -207,15 +207,15 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return delegate.layoutModifiers")
-                .build()
+                .build(),
             )
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", LayoutModifier)
                 .addStatement("delegate.layoutModifiers = value")
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
         .apply {
           val (childrens, properties) = widget.traits.partition { it is Children }
@@ -247,8 +247,11 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
                     is Event -> {
                       beginControlFlow("%L ->", trait.tag)
                       beginControlFlow(
-                        "val %N: %T = if (diff.value.%M.%M)", trait.name, trait.lambdaType,
-                        jsonElementToJsonPrimitive, jsonPrimitiveToBoolean
+                        "val %N: %T = if (diff.value.%M.%M)",
+                        trait.name,
+                        trait.lambdaType,
+                        jsonElementToJsonPrimitive,
+                        jsonPrimitiveToBoolean,
                       )
                       val parameterType = trait.parameterType?.asTypeName()
                       if (parameterType != null) {
@@ -262,7 +265,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
                           serializerId,
                         )
                       } else {
-                        addStatement("{ eventSink.sendEvent(%T(diff.id, %L)) }", eventType, trait.tag,)
+                        addStatement("{ eventSink.sendEvent(%T(diff.id, %L)) }", eventType, trait.tag)
                       }
                       nextControlFlow("else")
                       addStatement("null")
@@ -279,13 +282,13 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
                     PropertySpec.builder("serializer_$id", KSerializer.parameterizedBy(typeName))
                       .addModifiers(PRIVATE)
                       .initializer("json.serializersModule.%M()", serializer)
-                      .build()
+                      .build(),
                   )
                 }
               }
               .addStatement("else -> mismatchHandler.onUnknownProperty(%L, tag)", widget.tag)
               .endControlFlow()
-              .build()
+              .build(),
           )
 
           addFunction(
@@ -309,7 +312,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
                   addStatement("return null")
                 }
               }
-              .build()
+              .build(),
           )
         }
         .addFunction(
@@ -322,11 +325,12 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
               |  modifier then element.toLayoutModifier(json, mismatchHandler)
               |}
               """.trimMargin(),
-              JsonElement, LayoutModifier
+              JsonElement,
+              LayoutModifier,
             )
-            .build()
+            .build(),
         )
-        .build()
+        .build(),
     )
     .build()
 }
@@ -362,7 +366,7 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
         .addStatement("%T", LayoutModifier)
         .endControlFlow()
         .endControlFlow()
-        .build()
+        .build(),
     )
     .apply {
       for (layoutModifier in schema.layoutModifiers) {
@@ -383,7 +387,7 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
                     .addModifiers(OVERRIDE)
                     .addAnnotation(Contextual)
                     .initializer("%N", property.name)
-                    .build()
+                    .build(),
                 )
               }
               primaryConstructor(primaryConstructor.build())
@@ -395,7 +399,7 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
             .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))
-            .build()
+            .build(),
         )
       }
     }

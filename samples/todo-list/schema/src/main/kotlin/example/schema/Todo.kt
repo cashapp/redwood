@@ -26,7 +26,7 @@ import app.cash.redwood.schema.Widget
     ScrollableColumn::class,
     Item::class,
     Column::class,
-  ]
+  ],
 )
 interface Todo
 

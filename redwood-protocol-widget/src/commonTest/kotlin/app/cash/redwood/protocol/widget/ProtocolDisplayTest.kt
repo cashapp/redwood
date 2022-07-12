@@ -20,9 +20,9 @@ import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
-import kotlinx.serialization.json.JsonArray
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlinx.serialization.json.JsonArray
 
 class ProtocolDisplayTest {
   @Test fun rootWidgetMustHaveRootChildrenTag() {

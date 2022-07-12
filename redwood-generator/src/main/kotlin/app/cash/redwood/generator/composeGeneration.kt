@@ -79,7 +79,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
               addParameter(
                 ParameterSpec.builder("layoutModifier", LayoutModifier)
                   .defaultValue("%T", LayoutModifier)
-                  .build()
+                  .build(),
               )
             }
             if (index >= widget.traits.size) {
@@ -105,7 +105,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                   ParameterSpec.builder(trait.name, composableLambda(scope))
                     .build()
                 }
-              }
+              },
             )
             index++
           }
@@ -123,7 +123,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
           for (trait in widget.traits) {
             when (trait) {
               is Property,
-              is Event -> {
+              is Event, -> {
                 updateLambda.add("set(%1N) { %1N(%1N) }\n", trait.name)
               }
               is Children -> {
@@ -158,11 +158,14 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
             .build()
 
           addStatement(
-            "%M<%T, %T>(%L)", redwoodComposeNode, widgetFactoryType, widgetType,
-            arguments.joinToCode(",\n", "\n", ",\n")
+            "%M<%T, %T>(%L)",
+            redwoodComposeNode,
+            widgetFactoryType,
+            widgetType,
+            arguments.joinToCode(",\n", "\n", ",\n"),
           )
         }
-        .build()
+        .build(),
     )
     .build()
 }
@@ -215,7 +218,7 @@ internal fun generateUnscopedModifiers(schema: Schema): FileSpec {
 
 private fun generateLayoutModifier(
   schema: Schema,
-  layoutModifier: LayoutModifier
+  layoutModifier: LayoutModifier,
 ): Pair<FunSpec, TypeSpec> {
   val simpleName = layoutModifier.type.simpleName!!
   val typeName = ClassName(schema.composePackage, simpleName + "Impl")
@@ -256,7 +259,7 @@ private fun generateLayoutModifier(
             PropertySpec.builder(property.name, propertyType)
               .addModifiers(OVERRIDE)
               .initializer("%N", property.name)
-              .build()
+              .build(),
           )
         }
         primaryConstructor(primaryConstructor.build())

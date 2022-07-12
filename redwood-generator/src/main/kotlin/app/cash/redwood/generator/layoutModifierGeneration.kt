@@ -32,7 +32,7 @@ internal fun generateLayoutModifierInterface(schema: Schema, layoutModifier: Lay
             addProperty(trait.name, trait.type.asTypeName())
           }
         }
-        .build()
+        .build(),
     )
     .build()
 }

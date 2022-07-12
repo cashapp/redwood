@@ -27,13 +27,14 @@ class WidgetGenerationTest {
     [
       NavigationBar.Button::class,
       Button::class,
-    ]
+    ],
   )
   interface SimpleNameCollisionSchema
   interface NavigationBar {
     @Widget(1)
     data class Button(@Property(1) val text: String)
   }
+
   @Widget(3)
   data class Button(@Property(1) val text: String)
 

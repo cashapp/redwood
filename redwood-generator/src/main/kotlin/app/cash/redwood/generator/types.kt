@@ -58,7 +58,7 @@ internal fun composableLambda(receiver: TypeName?): TypeName {
   ).copy(
     annotations = listOf(
       AnnotationSpec.builder(composable).build(),
-    )
+    ),
   )
 }
 
@@ -68,19 +68,35 @@ internal val typeVariableT = TypeVariableName("T", listOf(ANY))
 internal val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)
 
 @JvmField internal val Json = ClassName("kotlinx.serialization.json", "Json")
+
 @JvmField internal val jsonCompanion = ClassName("kotlinx.serialization.json", "Json", "Default")
+
 @JvmField internal val JsonArray = ClassName("kotlinx.serialization.json", "JsonArray")
+
 @JvmField internal val JsonElement = ClassName("kotlinx.serialization.json", "JsonElement")
+
 @JvmField internal val buildJsonArray = MemberName("kotlinx.serialization.json", "buildJsonArray")
+
 @JvmField internal val buildJsonObject = MemberName("kotlinx.serialization.json", "buildJsonObject")
+
 @JvmField internal val jsonArray = MemberName("kotlinx.serialization.json", "jsonArray")
+
 @JvmField internal val jsonObject = MemberName("kotlinx.serialization.json", "jsonObject")
+
 @JvmField internal val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
+
 @JvmField internal val jsonInt = MemberName("kotlinx.serialization.json", "int")
+
 @JvmField internal val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
+
 @JvmField internal val jsonPrimitiveToBoolean = MemberName("kotlinx.serialization.json", "boolean")
+
 @JvmField internal val jsonElementToJsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
+
 @JvmField internal val Contextual = ClassName("kotlinx.serialization", "Contextual")
+
 @JvmField internal val Serializable = ClassName("kotlinx.serialization", "Serializable")
+
 @JvmField internal val serializer = MemberName("kotlinx.serialization", "serializer")
+
 @JvmField internal val KSerializer = ClassName("kotlinx.serialization", "KSerializer")

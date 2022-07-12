@@ -48,11 +48,11 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder(node.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
                 .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
-                .build()
+                .build(),
             )
           }
         }
-        .build()
+        .build(),
     )
     .build()
 }
@@ -79,7 +79,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
-                    .build()
+                    .build(),
                 )
               }
               is Event -> {
@@ -87,20 +87,20 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
-                    .build()
+                    .build(),
                 )
               }
               is Children -> {
                 addProperty(
                   PropertySpec.builder(trait.name, childrenOfT)
                     .addModifiers(PUBLIC, ABSTRACT)
-                    .build()
+                    .build(),
                 )
               }
             }
           }
         }
-        .build()
+        .build(),
     )
     .build()
 }

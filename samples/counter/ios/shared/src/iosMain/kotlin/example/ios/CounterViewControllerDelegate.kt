@@ -40,14 +40,14 @@ class CounterViewControllerDelegate(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
       onDiff = { NSLog("RedwoodDiff: $it") },
-      onEvent = { NSLog("RedwoodEvent: $it") }
+      onEvent = { NSLog("RedwoodEvent: $it") },
     )
 
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(
       root = factory.wrap(IosSunspotBox(root)),
       factory = factory,
-      eventSink = composition
+      eventSink = composition,
     )
 
     composition.start(display)

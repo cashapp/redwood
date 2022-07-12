@@ -15,15 +15,15 @@
  */
 package app.cash.redwood.protocol
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class ProtocolTest {
   private val format = Json {
@@ -58,10 +58,10 @@ class ProtocolTest {
               buildJsonArray {
                 add(JsonPrimitive(1))
                 add(buildJsonObject { })
-              }
+              },
             )
-          }
-        )
+          },
+        ),
       ),
       propertyDiffs = listOf(
         PropertyDiff(1, 2, JsonPrimitive("Hello")),

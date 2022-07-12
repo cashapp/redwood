@@ -29,7 +29,7 @@ inline fun <reified T : Throwable> assertThrows(body: () -> Unit): ThrowableSubj
     throw t
   }
   throw AssertionError(
-    "Expect body to throw ${T::class.java.simpleName} but it completed successfully"
+    "Expect body to throw ${T::class.java.simpleName} but it completed successfully",
   )
 }
 

@@ -22,8 +22,8 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.schema.parser.Widget.Event
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import kotlin.reflect.full.createType
+import org.junit.Test
 
 class SchemaParserTest {
   interface NonAnnotationSchema
@@ -32,14 +32,14 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotationSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Schema app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation"
+      "Schema app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation",
     )
   }
 
   @Schema(
     [
       NonAnnotatedWidget::class,
-    ]
+    ],
   )
   interface NonAnnotatedWidgetSchema
   data class NonAnnotatedWidget(
@@ -50,16 +50,17 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedWidget must be annotated with either @Widget or @LayoutModifier"
+      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
     )
   }
 
   @Schema(
     [
       DoubleAnnotatedWidget::class,
-    ]
+    ],
   )
   interface DoubleAnnotatedWidgetSchema
+
   @Widget(1)
   @LayoutModifier(1)
   data class DoubleAnnotatedWidget(
@@ -70,7 +71,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(DoubleAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier"
+      "app.cash.redwood.schema.parser.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
     )
   }
 
@@ -79,17 +80,20 @@ class SchemaParserTest {
       DuplicateWidgetTagA::class,
       NonDuplicateWidgetTag::class,
       DuplicateWidgetTagB::class,
-    ]
+    ],
   )
   interface DuplicateWidgetTagSchema
+
   @Widget(1)
   data class DuplicateWidgetTagA(
     @Property(1) val name: String,
   )
+
   @Widget(2)
   data class NonDuplicateWidgetTag(
     @Property(1) val name: String,
   )
+
   @Widget(1)
   data class DuplicateWidgetTagB(
     @Property(1) val name: String,
@@ -103,7 +107,7 @@ class SchemaParserTest {
       |Schema @Widget tags must be unique
       |
       |- @Widget(1): app.cash.redwood.schema.parser.SchemaParserTest.DuplicateWidgetTagA, app.cash.redwood.schema.parser.SchemaParserTest.DuplicateWidgetTagB
-      """.trimMargin()
+      """.trimMargin(),
     )
   }
 
@@ -112,17 +116,20 @@ class SchemaParserTest {
       DuplicateLayoutModifierTagA::class,
       NonDuplicateLayoutModifierTag::class,
       DuplicateLayoutModifierTagB::class,
-    ]
+    ],
   )
   interface DuplicateLayoutModifierTagSchema
+
   @LayoutModifier(1)
   data class DuplicateLayoutModifierTagA(
     val name: String,
   )
+
   @LayoutModifier(2)
   data class NonDuplicateLayoutModifierTag(
     val name: String,
   )
+
   @LayoutModifier(1)
   data class DuplicateLayoutModifierTagB(
     val name: String,
@@ -136,7 +143,7 @@ class SchemaParserTest {
       |Schema @LayoutModifier tags must be unique
       |
       |- @LayoutModifier(1): app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagA, app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagB
-      """.trimMargin()
+      """.trimMargin(),
     )
   }
 
@@ -144,9 +151,10 @@ class SchemaParserTest {
     [
       RepeatedWidget::class,
       RepeatedWidget::class,
-    ]
+    ],
   )
   interface RepeatedWidgetTypeSchema
+
   @Widget(1)
   data class RepeatedWidget(
     @Property(1) val name: String,
@@ -160,14 +168,14 @@ class SchemaParserTest {
       |Schema contains repeated member
       |
       |- app.cash.redwood.schema.parser.SchemaParserTest.RepeatedWidget
-      """.trimMargin()
+      """.trimMargin(),
     )
   }
 
   @Schema(
     [
       DuplicatePropertyTagWidget::class,
-    ]
+    ],
   )
   interface DuplicatePropertyTagSchema
 
@@ -186,16 +194,17 @@ class SchemaParserTest {
       |app.cash.redwood.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
       |- @Property(1): name, nickname
-      """.trimMargin()
+      """.trimMargin(),
     )
   }
 
   @Schema(
     [
       DuplicateChildrenTagWidget::class,
-    ]
+    ],
   )
   interface DuplicateChildrenTagSchema
+
   @Widget(1)
   data class DuplicateChildrenTagWidget(
     @Children(1) val childrenA: List<Any>,
@@ -211,16 +220,17 @@ class SchemaParserTest {
       |app.cash.redwood.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
-      """.trimMargin()
+      """.trimMargin(),
     )
   }
 
   @Schema(
     [
       UnannotatedPrimaryParameterWidget::class,
-    ]
+    ],
   )
   interface UnannotatedPrimaryParameterSchema
+
   @Widget(1)
   data class UnannotatedPrimaryParameterWidget(
     @Property(1) val name: String,
@@ -232,16 +242,17 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnannotatedPrimaryParameterSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.redwood.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget"
+      "Unannotated parameter \"unannotated\" on app.cash.redwood.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget",
     )
   }
 
   @Schema(
     [
       NonDataClassWidget::class,
-    ]
+    ],
   )
   interface NonDataClassSchema
+
   @Widget(1)
   class NonDataClassWidget(
     @Property(1) val name: String,
@@ -251,16 +262,17 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'"
+      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
     )
   }
 
   @Schema(
     [
       InvalidChildrenTypeWidget::class,
-    ]
+    ],
   )
   interface InvalidChildrenTypeSchema
+
   @Widget(1)
   data class InvalidChildrenTypeWidget(
     @Children(1) val children: List<String>,
@@ -270,16 +282,17 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'"
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'",
     )
   }
 
   @Schema(
     [
       EventTypeWidget::class,
-    ]
+    ],
   )
   interface EventTypeSchema
+
   @Widget(1)
   data class EventTypeWidget(
     @Property(1) val requiredEvent: () -> Unit,
@@ -296,9 +309,10 @@ class SchemaParserTest {
   @Schema(
     [
       EventArgumentsWidget::class,
-    ]
+    ],
   )
   interface EventArgumentsSchema
+
   @Widget(1)
   data class EventArgumentsWidget(
     @Property(1) val noArguments: () -> Unit,
@@ -321,9 +335,10 @@ class SchemaParserTest {
   @Schema(
     [
       EventArgumentsInvalidWidget::class,
-    ]
+    ],
   )
   interface EventArgumentsInvalidSchema
+
   @Widget(1)
   data class EventArgumentsInvalidWidget(
     @Property(3) val tooManyArguments: ((String, Boolean, Long) -> Unit)?,
@@ -334,16 +349,17 @@ class SchemaParserTest {
       parseSchema(EventArgumentsInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
       "@Property app.cash.redwood.schema.parser.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
-        "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]"
+        "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]",
     )
   }
 
   @Schema(
     [
       ObjectWidget::class,
-    ]
+    ],
   )
   interface ObjectSchema
+
   @Widget(1)
   object ObjectWidget
 

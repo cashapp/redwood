@@ -26,7 +26,7 @@ class IosSunspotBox(
   override val value: UIStackView = UIStackView().apply {
     distribution = UIStackViewDistributionFillEqually
     axis = UILayoutConstraintAxisHorizontal
-  }
+  },
 ) : SunspotBox<UIView> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 

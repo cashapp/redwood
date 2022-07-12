@@ -15,12 +15,12 @@
  */
 package app.cash.redwood.protocol.widget
 
+import kotlin.time.Duration
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind.STRING
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.time.Duration
 
 object DurationIsoSerializer : KSerializer<Duration> {
   override val descriptor get() = PrimitiveSerialDescriptor("Duration", STRING)

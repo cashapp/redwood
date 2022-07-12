@@ -20,13 +20,13 @@ import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.ComposeProt
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.LayoutModifiers
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Widget
 import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.WidgetProtocol
+import java.io.File
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.JavaExec
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import java.io.File
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodSchemaComposePlugin : RedwoodSchemaGeneratorPlugin(Compose)
@@ -114,8 +114,9 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       generate.configure {
         it.args = listOf(
           strategy.generatorFlag,
-          "--out", generatedDir.toString(),
-          schemaType
+          "--out",
+          generatedDir.toString(),
+          schemaType,
         )
       }
 

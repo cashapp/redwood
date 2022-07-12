@@ -16,13 +16,13 @@
 package app.cash.redwood.compose
 
 import androidx.compose.runtime.MonotonicFrameClock
-import kotlinx.browser.window
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlinx.browser.window
 
 public object WindowAnimationFrameClock : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(
-    onFrame: (Long) -> R
+    onFrame: (Long) -> R,
   ): R = suspendCoroutine { continuation ->
     window.requestAnimationFrame {
       val durationMillis = it.toLong()
