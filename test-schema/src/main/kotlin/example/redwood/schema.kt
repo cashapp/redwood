@@ -32,6 +32,8 @@ import kotlin.time.Duration
     Text::class,
     Button::class,
     TextInput::class,
+    SomeMarker::class,
+    Space::class,
   ]
 )
 public interface ExampleSchema
@@ -67,6 +69,9 @@ public data class TextInput(
   @Property(4) val onChangeCustomType: (Duration) -> Unit,
 )
 
+@Widget(6)
+public object Space
+
 @LayoutModifier(1, RowScope::class)
 public data class RowVerticalAlignment(
   /** -1 for top, 0 for middle, 1 for bottom. */
@@ -82,3 +87,6 @@ public data class AccessibilityDescription(
 public data class CustomType(
   val customType: Duration,
 )
+
+@LayoutModifier(4)
+public object SomeMarker

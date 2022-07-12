@@ -225,37 +225,47 @@ private fun generateLayoutModifier(
     .returns(LayoutModifier)
     .apply {
       val arguments = mutableListOf<CodeBlock>()
-
       for (property in layoutModifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
 
         // TODO default generation
         addParameter(property.name, property.type.asTypeName())
       }
-      addStatement("return then(%T(%L))", typeName, arguments.joinToCode())
+
+      if (arguments.isEmpty()) {
+        addStatement("return then(%T)", typeName)
+      } else {
+        addStatement("return then(%T(%L))", typeName, arguments.joinToCode())
+      }
     }
     .build()
 
   val interfaceType = schema.layoutModifierType(layoutModifier)
-  val type = TypeSpec.classBuilder(typeName)
-    .addModifiers(PRIVATE, DATA)
-    .addSuperinterface(interfaceType)
-    .apply {
-      val primaryConstructor = FunSpec.constructorBuilder()
 
-      for (property in layoutModifier.properties) {
-        val propertyType = property.type.asTypeName()
-        primaryConstructor.addParameter(property.name, propertyType)
-        addProperty(
-          PropertySpec.builder(property.name, propertyType)
-            .addModifiers(OVERRIDE)
-            .initializer("%N", property.name)
-            .build()
-        )
+  val typeBuilder = if (layoutModifier.properties.isEmpty()) {
+    TypeSpec.objectBuilder(typeName)
+  } else {
+    TypeSpec.classBuilder(typeName)
+      .addModifiers(DATA)
+      .apply {
+        val primaryConstructor = FunSpec.constructorBuilder()
+        for (property in layoutModifier.properties) {
+          val propertyType = property.type.asTypeName()
+          primaryConstructor.addParameter(property.name, propertyType)
+          addProperty(
+            PropertySpec.builder(property.name, propertyType)
+              .addModifiers(OVERRIDE)
+              .initializer("%N", property.name)
+              .build()
+          )
+        }
+        primaryConstructor(primaryConstructor.build())
       }
+  }
 
-      primaryConstructor(primaryConstructor.build())
-    }
+  val type = typeBuilder
+    .addModifiers(PRIVATE)
+    .addSuperinterface(interfaceType)
     .addFunction(layoutModifierEquals(schema, layoutModifier))
     .addFunction(layoutModifierHashCode(layoutModifier))
     .build()

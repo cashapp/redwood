@@ -282,7 +282,11 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
           for (layoutModifier in schema.layoutModifiers) {
             val modifierType = schema.layoutModifierType(layoutModifier)
             val surrogate = schema.layoutModifierSurrogate(layoutModifier)
-            addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
+            if (layoutModifier.properties.isEmpty()) {
+              addStatement("is %T -> %T.encode()", modifierType, surrogate)
+            } else {
+              addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
+            }
           }
         }
         .addStatement("else -> throw %T()", ae)
@@ -295,49 +299,63 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
         val modifierType = schema.layoutModifierType(layoutModifier)
 
         addType(
-          TypeSpec.classBuilder(surrogateName)
-            .addAnnotation(Serializable)
-            .addModifiers(PRIVATE)
-            .addSuperinterface(modifierType)
-            .apply {
-              val primaryConstructor = FunSpec.constructorBuilder()
+          if (layoutModifier.properties.isEmpty()) {
+            TypeSpec.objectBuilder(surrogateName)
+              .addFunction(
+                FunSpec.builder("encode")
+                  .returns(JsonElement)
+                  .beginControlFlow("return %M", buildJsonArray)
+                  .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
+                  .addStatement("add(%M {})", buildJsonObject)
+                  .endControlFlow()
+                  .build()
+              )
+              .build()
+          } else {
+            TypeSpec.classBuilder(surrogateName)
+              .addAnnotation(Serializable)
+              .addModifiers(PRIVATE)
+              .addSuperinterface(modifierType)
+              .apply {
+                val primaryConstructor = FunSpec.constructorBuilder()
 
-              for (property in layoutModifier.properties) {
-                val propertyType = property.type.asTypeName()
-                primaryConstructor.addParameter(property.name, propertyType)
-                addProperty(
-                  PropertySpec.builder(property.name, propertyType)
-                    .addModifiers(OVERRIDE)
-                    .addAnnotation(Contextual)
-                    .initializer("%N", property.name)
-                    .build()
-                )
+                for (property in layoutModifier.properties) {
+                  val propertyType = property.type.asTypeName()
+                  primaryConstructor.addParameter(property.name, propertyType)
+                  addProperty(
+                    PropertySpec.builder(property.name, propertyType)
+                      .addModifiers(OVERRIDE)
+                      .addAnnotation(Contextual)
+                      .initializer("%N", property.name)
+                      .build()
+                  )
+                }
+
+                primaryConstructor(primaryConstructor.build())
               }
-
-              primaryConstructor(primaryConstructor.build())
-            }
-            .addFunction(
-              FunSpec.constructorBuilder()
-                .addParameter("delegate", modifierType)
-                .callThisConstructor(layoutModifier.properties.map { CodeBlock.of("delegate.${it.name}") })
-                .build()
-            )
-            .addType(
-              TypeSpec.companionObjectBuilder()
-                .addFunction(
-                  FunSpec.builder("encode")
-                    .addParameter("json", Json)
-                    .addParameter("value", modifierType)
-                    .returns(JsonElement)
-                    .beginControlFlow("return %M", buildJsonArray)
-                    .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
-                    .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
-                    .endControlFlow()
-                    .build()
-                )
-                .build()
-            )
-            .build()
+              .addFunction(
+                FunSpec.constructorBuilder()
+                  .addParameter("delegate", modifierType)
+                  .callThisConstructor(layoutModifier.properties.map { CodeBlock.of("delegate.${it.name}") })
+                  .build()
+              )
+              .addType(
+                TypeSpec.companionObjectBuilder()
+                  .addFunction(
+                    FunSpec.builder("encode")
+                      .addParameter("json", Json)
+                      .addParameter("value", modifierType)
+                      .returns(JsonElement)
+                      .beginControlFlow("return %M", buildJsonArray)
+                      .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
+                      .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
+                      .endControlFlow()
+                      .build()
+                  )
+                  .build()
+              )
+              .build()
+          }
         )
       }
     }

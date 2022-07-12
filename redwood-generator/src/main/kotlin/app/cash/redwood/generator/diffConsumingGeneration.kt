@@ -350,7 +350,11 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
         .apply {
           for (layoutModifier in schema.layoutModifiers) {
             val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
-            addStatement("%L -> json.decodeFromJsonElement(%T.serializer(), value)", layoutModifier.tag, typeName)
+            if (layoutModifier.properties.isEmpty()) {
+              addStatement("%L -> %T", layoutModifier.tag, typeName)
+            } else {
+              addStatement("%L -> json.decodeFromJsonElement(%T.serializer(), value)", layoutModifier.tag, typeName)
+            }
           }
         }
         .beginControlFlow("else ->")
@@ -363,14 +367,14 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
     .apply {
       for (layoutModifier in schema.layoutModifiers) {
         val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
-        addType(
+        val typeBuilder = if (layoutModifier.properties.isEmpty()) {
+          TypeSpec.objectBuilder(typeName)
+        } else {
           TypeSpec.classBuilder(typeName)
+            .addModifiers(DATA)
             .addAnnotation(Serializable)
-            .addModifiers(PRIVATE, DATA)
-            .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .apply {
               val primaryConstructor = FunSpec.constructorBuilder()
-
               for (property in layoutModifier.properties) {
                 val propertyType = property.type.asTypeName()
                 primaryConstructor.addParameter(property.name, propertyType)
@@ -382,9 +386,13 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
                     .build()
                 )
               }
-
               primaryConstructor(primaryConstructor.build())
             }
+        }
+        addType(
+          typeBuilder
+            .addModifiers(PRIVATE)
+            .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))
             .build()

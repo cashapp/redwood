@@ -26,6 +26,7 @@ import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
 import example.redwood.widget.ScopedRow
+import example.redwood.widget.Space
 import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 import kotlinx.serialization.json.Json
@@ -262,6 +263,7 @@ class DiffConsumingWidgetFactoryTest {
       override fun onClick(onClick: (() -> Unit)?) = TODO()
     }
     override fun TextInput(): TextInput<Nothing> = TODO()
+    override fun Space(): Space<Nothing> = TODO()
   }
 
   class RecordingTextInput : TextInput<Nothing> {
