@@ -26,10 +26,11 @@ class ComposeGenerationTest {
   @Schema(
     [
       Row::class,
-    ]
+    ],
   )
   interface ScopedAndUnscopedSchema
   object RowScope
+
   @Widget(1)
   data class Row(
     @Children(1, RowScope::class) val scoped: List<Any>,

@@ -42,7 +42,7 @@ public data class Event(
 public data class Diff(
   val childrenDiffs: List<ChildrenDiff> = emptyList(),
   val layoutModifiers: List<LayoutModifiers> = emptyList(),
-  val propertyDiffs: List<PropertyDiff> = emptyList()
+  val propertyDiffs: List<PropertyDiff> = emptyList(),
 )
 
 @Serializable
@@ -69,6 +69,7 @@ public data class LayoutModifiers(
 public sealed class ChildrenDiff {
   /** Identifier for the widget whose children have changed. */
   public abstract val id: Long
+
   /** Identifies which group of children changed on the widget with [id]. */
   public abstract val tag: Int
 

@@ -40,6 +40,7 @@ public interface Widget<T : Any> {
   public interface Children<T : Any> {
     /** Insert child [widget] at [index]. */
     public fun insert(index: Int, widget: T)
+
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
      *
@@ -49,8 +50,10 @@ public interface Widget<T : Any> {
      * result in the widgets being reordered to `A C B D E`.
      */
     public fun move(fromIndex: Int, toIndex: Int, count: Int)
+
     /** Remove [count] child widgets starting from [index]. */
     public fun remove(index: Int, count: Int)
+
     /** Remove all child widgets. */
     public fun clear()
   }

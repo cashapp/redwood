@@ -20,9 +20,9 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import java.util.regex.Pattern
 import java.util.regex.Pattern.MULTILINE
+import org.junit.Test
 
 class DiffConsumingGenerationTest {
   @Schema(
@@ -31,15 +31,19 @@ class DiffConsumingGenerationTest {
       Node1::class,
       Node3::class,
       Node2::class,
-    ]
+    ],
   )
   interface SortedByTagSchema
+
   @Widget(1)
   data class Node1(@Property(1) val text: String)
+
   @Widget(2)
   data class Node2(@Property(1) val text: String)
+
   @Widget(3)
   data class Node3(@Property(1) val text: String)
+
   @Widget(12)
   data class Node12(@Property(1) val text: String)
 
@@ -48,7 +52,7 @@ class DiffConsumingGenerationTest {
 
     val fileSpec = generateDiffConsumingWidgetFactory(schema)
     assertThat(fileSpec.toString()).containsMatch(
-      Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE)
+      Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE),
     )
   }
 }

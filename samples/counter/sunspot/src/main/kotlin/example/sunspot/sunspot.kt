@@ -26,7 +26,7 @@ import app.cash.redwood.schema.Widget
     SunspotBox::class,
     SunspotText::class,
     SunspotButton::class,
-  ]
+  ],
 )
 interface Sunspot
 
@@ -38,12 +38,14 @@ data class SunspotBox(
 @Widget(2)
 data class SunspotText(
   @Property(1) val text: String?,
-  @Property(2) @Default("\"black\"") val color: String = "black",
+  @Property(2) @Default("\"black\"")
+  val color: String = "black",
 )
 
 @Widget(3)
 data class SunspotButton(
   @Property(1) val text: String?,
-  @Property(2) @Default("true") val enabled: Boolean = true,
+  @Property(2) @Default("true")
+  val enabled: Boolean = true,
   @Property(3) val onClick: (() -> Unit)? = null,
 )

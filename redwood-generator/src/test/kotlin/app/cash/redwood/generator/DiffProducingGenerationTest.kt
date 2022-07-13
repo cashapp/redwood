@@ -26,9 +26,10 @@ class DiffProducingGenerationTest {
   @Schema(
     [
       IdPropertyNameCollisionNode::class,
-    ]
+    ],
   )
   interface IdPropertyNameCollisionSchema
+
   @Widget(1)
   data class IdPropertyNameCollisionNode(
     @Property(1) val label: String,
@@ -44,7 +45,8 @@ class DiffProducingGenerationTest {
       |  public override fun id(id: String): Unit {
       |    appendDiff(PropertyDiff(this.id, 2, json.encodeToJsonElement(serializer_0, id)))
       |  }
-      |""".trimMargin()
+      |
+      """.trimMargin(),
     )
   }
 }

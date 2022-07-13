@@ -29,6 +29,12 @@ import example.redwood.widget.ScopedRow
 import example.redwood.widget.Space
 import example.redwood.widget.Text
 import example.redwood.widget.TextInput
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -36,12 +42,6 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 class DiffConsumingWidgetFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
@@ -88,11 +88,11 @@ class DiffConsumingWidgetFactoryTest {
             add(
               buildJsonObject {
                 put("customType", JsonPrimitive("PT10S"))
-              }
+              },
             )
-          }
+          },
         )
-      }
+      },
     )
 
     assertEquals(LayoutModifier.customType(10.seconds), textInput.layoutModifiers)
@@ -109,9 +109,9 @@ class DiffConsumingWidgetFactoryTest {
             buildJsonArray {
               add(JsonPrimitive(345432))
               add(JsonObject(mapOf()))
-            }
-          )
-        )
+            },
+          ),
+        ),
       )
     }
     assertEquals("Unknown layout modifier tag 345432", t.message)
@@ -140,15 +140,15 @@ class DiffConsumingWidgetFactoryTest {
           buildJsonArray {
             add(JsonPrimitive(345432))
             add(JsonObject(mapOf()))
-          }
+          },
         )
         add(
           buildJsonArray {
             add(JsonPrimitive(2))
             add(buildJsonObject { put("value", JsonPrimitive("hi")) })
-          }
+          },
         )
-      }
+      },
     )
 
     assertEquals("Unknown layout modifier 345432", handler.events.single())

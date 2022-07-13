@@ -22,16 +22,16 @@ import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.customType
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.modules.SerializersModule
 
 class DiffProducingWidgetFactoryTest {
   @Test fun propertyUsesSerializersModule() {
@@ -89,13 +89,13 @@ class DiffProducingWidgetFactoryTest {
                 add(
                   buildJsonObject {
                     put("customType", JsonPrimitive("PT10S"))
-                  }
+                  },
                 )
-              }
+              },
             )
-          }
-        )
-      )
+          },
+        ),
+      ),
     )
     assertEquals(expected, diffSink.diffs.single())
   }

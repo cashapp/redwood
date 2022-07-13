@@ -56,24 +56,24 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
             .addParameter(
               ParameterSpec.builder("json", Json)
                 .defaultValue("%T", jsonCompanion)
-                .build()
+                .build(),
             )
             .addParameter(
               ParameterSpec.builder("mismatchHandler", ComposeProtocolMismatchHandler)
                 .defaultValue("%T.Throwing", ComposeProtocolMismatchHandler)
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build()
+            .build(),
         )
         .apply {
           for (widget in schema.widgets) {
@@ -82,13 +82,14 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
-                  "return %T(json, mismatchHandler)", schema.diffProducingWidgetType(widget)
+                  "return %T(json, mismatchHandler)",
+                  schema.diffProducingWidgetType(widget),
                 )
-                .build()
+                .build(),
             )
           }
         }
-        .build()
+        .build(),
     )
     .build()
 }
@@ -146,17 +147,17 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
           FunSpec.constructorBuilder()
             .addParameter("json", Json)
             .addParameter("mismatchHandler", ComposeProtocolMismatchHandler)
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", Json, PRIVATE)
             .initializer("json")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build()
+            .build(),
         )
         .apply {
           var nextSerializerId = 0
@@ -175,7 +176,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
                     .addStatement("appendDiff(%T(this.id, %L, json.encodeToJsonElement(serializer_%L, %N)))", propertyDiff, trait.tag, serializerId, trait.name)
-                    .build()
+                    .build(),
                 )
               }
               is Event -> {
@@ -183,7 +184,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                   PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
                     .mutable()
                     .initializer("null")
-                    .build()
+                    .build(),
                 )
                 addFunction(
                   FunSpec.builder(trait.name)
@@ -194,7 +195,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                     .addStatement("appendDiff(%T(this.id, %L, %M(%NSet)))", propertyDiff, trait.tag, JsonPrimitive, trait.name)
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
-                    .build()
+                    .build(),
                 )
               }
               is Children -> {
@@ -203,9 +204,9 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                     .getter(
                       FunSpec.getterBuilder()
                         .addStatement("throw %T()", ae)
-                        .build()
+                        .build(),
                     )
-                    .build()
+                    .build(),
                 )
               }
             }
@@ -224,7 +225,10 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                       nextSerializerId++
                     }
                     addStatement(
-                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))", event.tag, event.name, serializerId,
+                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
+                      event.tag,
+                      event.name,
+                      serializerId,
                     )
                   } else {
                     addStatement("%L -> %N?.invoke()", event.tag, event.name)
@@ -233,7 +237,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
               }
               .addStatement("else -> mismatchHandler.onUnknownEvent(%L, tag)", widget.tag)
               .endControlFlow()
-              .build()
+              .build(),
           )
 
           for ((typeName, id) in serializerIds) {
@@ -241,7 +245,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
               PropertySpec.builder("serializer_$id", KSerializer.parameterizedBy(typeName))
                 .addModifiers(PRIVATE)
                 .initializer("json.serializersModule.%M()", serializer)
-                .build()
+                .build(),
             )
           }
         }
@@ -251,7 +255,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("throw %T()", ae)
-                .build()
+                .build(),
             )
             .setter(
               FunSpec.setterBuilder()
@@ -260,11 +264,11 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
                 .addStatement("value.foldIn(Unit) { _, element -> add(element.toJsonElement(json)) }")
                 .endControlFlow()
                 .addStatement("appendDiff(%T(id, json))", LayoutModifiers)
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
-        .build()
+        .build(),
     )
     .build()
 }
@@ -291,7 +295,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
         }
         .addStatement("else -> throw %T()", ae)
         .endControlFlow()
-        .build()
+        .build(),
     )
     .apply {
       for (layoutModifier in schema.layoutModifiers) {
@@ -308,7 +312,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
                   .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
                   .addStatement("add(%M {})", buildJsonObject)
                   .endControlFlow()
-                  .build()
+                  .build(),
               )
               .build()
           } else {
@@ -327,7 +331,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
                       .addModifiers(OVERRIDE)
                       .addAnnotation(Contextual)
                       .initializer("%N", property.name)
-                      .build()
+                      .build(),
                   )
                 }
 
@@ -337,7 +341,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
                 FunSpec.constructorBuilder()
                   .addParameter("delegate", modifierType)
                   .callThisConstructor(layoutModifier.properties.map { CodeBlock.of("delegate.${it.name}") })
-                  .build()
+                  .build(),
               )
               .addType(
                 TypeSpec.companionObjectBuilder()
@@ -350,12 +354,12 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
                       .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
                       .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
                       .endControlFlow()
-                      .build()
+                      .build(),
                   )
-                  .build()
+                  .build(),
               )
               .build()
-          }
+          },
         )
       }
     }

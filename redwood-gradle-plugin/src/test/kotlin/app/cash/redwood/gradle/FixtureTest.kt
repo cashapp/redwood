@@ -16,15 +16,15 @@
 package app.cash.redwood.gradle
 
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
-import java.io.File
 
 class FixtureTest {
   @Test fun schemaNoJvmFails() {
     val result = fixtureGradleRunner("schema-no-kotlin-jvm").buildAndFail()
     assertThat(result.output).contains(
-      "Redwood schema plugin requires the Kotlin JVM plugin to be applied."
+      "Redwood schema plugin requires the Kotlin JVM plugin to be applied.",
     )
   }
 

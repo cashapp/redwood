@@ -22,8 +22,8 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.currentComposer
 import app.cash.redwood.widget.Widget
-import kotlinx.coroutines.CoroutineScope
 import kotlin.DeprecationLevel.ERROR
+import kotlinx.coroutines.CoroutineScope
 
 public interface RedwoodComposition {
   public fun setContent(content: @Composable () -> Unit)

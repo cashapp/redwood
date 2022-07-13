@@ -15,6 +15,12 @@
  */
 package app.cash.redwood.schema.parser
 
+import app.cash.redwood.schema.Children as ChildrenAnnotation
+import app.cash.redwood.schema.Default as DefaultAnnotation
+import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
+import app.cash.redwood.schema.Property as PropertyAnnotation
+import app.cash.redwood.schema.Schema as SchemaAnnotation
+import app.cash.redwood.schema.Widget as WidgetAnnotation
 import kotlin.reflect.KClass
 import kotlin.reflect.KTypeProjection.Companion.invariant
 import kotlin.reflect.full.createType
@@ -23,15 +29,9 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
-import app.cash.redwood.schema.Children as ChildrenAnnotation
-import app.cash.redwood.schema.Default as DefaultAnnotation
-import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
-import app.cash.redwood.schema.Property as PropertyAnnotation
-import app.cash.redwood.schema.Schema as SchemaAnnotation
-import app.cash.redwood.schema.Widget as WidgetAnnotation
 
 private val childrenType = List::class.createType(
-  arguments = listOf(invariant(Any::class.createType()))
+  arguments = listOf(invariant(Any::class.createType())),
 )
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
@@ -50,7 +50,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
           append('s')
         }
         duplicatedMembers.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
-      }
+      },
     )
   }
 
@@ -62,7 +62,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
 
     if ((widgetAnnotation == null) == (layoutModifierAnnotation == null)) {
       throw IllegalArgumentException(
-        "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier"
+        "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier",
       )
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, widgetAnnotation)
@@ -82,7 +82,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
           append("\n- @Widget($tag): ")
           group.joinTo(this) { it.type.qualifiedName!! }
         }
-      }
+      },
     )
   }
 
@@ -95,7 +95,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
           append("\n- @LayoutModifier($tag): ")
           group.joinTo(this) { it.type.qualifiedName!! }
         }
-      }
+      },
     )
   }
 
@@ -143,7 +143,7 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
     emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'"
+      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'",
     )
   }
 
@@ -158,7 +158,7 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
           append("\n- @Children($tag): ")
           group.joinTo(this) { it.name }
         }
-      }
+      },
     )
   }
 
@@ -173,7 +173,7 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
           append("\n- @Property($tag): ")
           group.joinTo(this) { it.name }
         }
-      }
+      },
     )
   }
 
@@ -193,7 +193,7 @@ private fun parseLayoutModifier(
     emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'"
+      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'",
     )
   }
 

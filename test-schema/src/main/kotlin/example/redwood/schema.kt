@@ -34,7 +34,7 @@ import kotlin.time.Duration
     TextInput::class,
     SomeMarker::class,
     Space::class,
-  ]
+  ],
 )
 public interface ExampleSchema
 

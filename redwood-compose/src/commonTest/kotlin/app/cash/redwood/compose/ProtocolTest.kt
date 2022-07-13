@@ -31,13 +31,13 @@ import example.redwood.compose.Button
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.Row
 import example.redwood.compose.Text
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class ProtocolTest {
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
@@ -78,7 +78,7 @@ class ProtocolTest {
           PropertyDiff(4L, 1 /* text */, JsonPrimitive("hello")),
         ),
       ),
-      diffs.removeFirst()
+      diffs.removeFirst(),
     )
 
     composition.cancel()
@@ -103,7 +103,7 @@ class ProtocolTest {
           2 -> { null }
           3 -> { null }
           else -> fail()
-        }
+        },
       )
     }
 
@@ -121,7 +121,7 @@ class ProtocolTest {
           PropertyDiff(1L, 2 /* onClick */, JsonPrimitive(true)),
         ),
       ),
-      diffs.removeFirst()
+      diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
@@ -135,7 +135,7 @@ class ProtocolTest {
           PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 1")),
         ),
       ),
-      diffs.removeFirst()
+      diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
@@ -150,7 +150,7 @@ class ProtocolTest {
           PropertyDiff(1L, 2 /* text */, JsonPrimitive(false)),
         ),
       ),
-      diffs.removeFirst()
+      diffs.removeFirst(),
     )
 
     // Manually advance state from 2 to 3 to test null to null case.
@@ -164,7 +164,7 @@ class ProtocolTest {
           PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 3")),
         ),
       ),
-      diffs.removeFirst()
+      diffs.removeFirst(),
     )
 
     composition.cancel()
