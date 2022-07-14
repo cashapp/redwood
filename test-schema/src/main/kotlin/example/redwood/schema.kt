@@ -16,6 +16,7 @@
 package example.redwood
 
 import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
@@ -29,6 +30,7 @@ import kotlin.time.Duration
     RowVerticalAlignment::class,
     AccessibilityDescription::class,
     CustomType::class,
+    CustomTypeWithDefault::class,
     Text::class,
     Button::class,
     TextInput::class,
@@ -86,6 +88,12 @@ public data class AccessibilityDescription(
 @LayoutModifier(3)
 public data class CustomType(
   val customType: Duration,
+)
+
+@LayoutModifier(5)
+public data class CustomTypeWithDefault(
+  val customType: Duration,
+  @Default("\"sup\"") val string: String,
 )
 
 @LayoutModifier(4)

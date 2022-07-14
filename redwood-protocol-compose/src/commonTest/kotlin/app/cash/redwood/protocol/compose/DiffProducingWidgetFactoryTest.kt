@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.customType
+import example.redwood.compose.customTypeWithDefault
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -86,6 +87,46 @@ class DiffProducingWidgetFactoryTest {
             add(
               buildJsonArray {
                 add(JsonPrimitive(3))
+                add(
+                  buildJsonObject {
+                    put("customType", JsonPrimitive("PT10S"))
+                  },
+                )
+              },
+            )
+          },
+        ),
+      ),
+    )
+    assertEquals(expected, diffSink.diffs.single())
+  }
+
+  @Test fun layoutModifierDefaultValueNotSerialized() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val button = factory.Button()
+
+    val diffProducingWidget = button as AbstractDiffProducingWidget
+    val diffSink = RecordingDiffSink()
+    val diffAppender = DiffAppender(diffSink)
+    diffProducingWidget.id = 1L
+    diffProducingWidget._diffAppender = diffAppender
+
+    button.layoutModifiers = LayoutModifier.customTypeWithDefault(10.seconds, "sup")
+    diffAppender.trySend()
+
+    val expected = Diff(
+      layoutModifiers = listOf(
+        LayoutModifiers(
+          1L,
+          buildJsonArray {
+            add(
+              buildJsonArray {
+                add(JsonPrimitive(5))
                 add(
                   buildJsonObject {
                     put("customType", JsonPrimitive("PT10S"))

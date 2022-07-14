@@ -325,7 +325,15 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
 
                 for (property in layoutModifier.properties) {
                   val propertyType = property.type.asTypeName()
-                  primaryConstructor.addParameter(property.name, propertyType)
+
+                  primaryConstructor.addParameter(
+                    ParameterSpec.builder(property.name, propertyType)
+                      .apply {
+                        property.defaultExpression?.let { defaultValue(it) }
+                      }
+                      .build(),
+                  )
+
                   addProperty(
                     PropertySpec.builder(property.name, propertyType)
                       .addModifiers(OVERRIDE)
