@@ -54,16 +54,6 @@ kotlin {
         implementation libs.kotlinx.atomicFu
       }
     }
-    commonTest {
-      kotlin {
-         srcDir '../upstream/compose/runtime/runtime/src/commonTest/kotlin'
-         srcDir '../upstream/compose/runtime/runtime/src/test/kotlin'
-      }
-      dependencies {
-        implementation libs.kotlin.test
-        implementation libs.kotlinx.coroutines.test
-      }
-    }
     androidMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/androidMain/kotlin'
@@ -74,19 +64,9 @@ kotlin {
         api 'androidx.annotation:annotation:1.1.0'
       }
     }
-    androidTest {
-      kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/jvmTest/kotlin'
-      }
-    }
     jsMain {
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/jsMain/kotlin'
-      }
-    }
-    jsTest {
-      kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/jsTest/kotlin'
       }
     }
     jvmMain {
@@ -95,20 +75,10 @@ kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/desktopMain/kotlin'
       }
     }
-    jvmTest {
-      kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/jvmTest/kotlin'
-      }
-    }
     nativeMain {
       dependsOn(commonMain)
       kotlin {
         srcDir '../upstream/compose/runtime/runtime/src/nativeMain/kotlin'
-      }
-    }
-    nativeTest {
-      kotlin {
-        srcDir '../upstream/compose/runtime/runtime/src/nativeTest/kotlin'
       }
     }
   }
@@ -125,9 +95,5 @@ android {
 
   defaultConfig {
     consumerProguardFiles '../upstream/compose/runtime/runtime/proguard-rules.pro'
-  }
-
-  testOptions {
-    unitTests.returnDefaultValues = true
   }
 }
