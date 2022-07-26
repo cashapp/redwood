@@ -231,8 +231,13 @@ private fun generateLayoutModifier(
       for (property in layoutModifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
 
-        // TODO default generation
-        addParameter(property.name, property.type.asTypeName())
+        addParameter(
+          ParameterSpec.builder(property.name, property.type.asTypeName())
+            .apply {
+              property.defaultExpression?.let { defaultValue(it) }
+            }
+            .build(),
+        )
       }
 
       if (arguments.isEmpty()) {

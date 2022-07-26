@@ -21,6 +21,7 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.accessibilityDescription
 import example.redwood.compose.customType
+import example.redwood.compose.customTypeWithDefault
 import example.redwood.widget.Button
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.ExampleSchemaWidgetFactory
@@ -96,6 +97,39 @@ class DiffConsumingWidgetFactoryTest {
     )
 
     assertEquals(LayoutModifier.customType(10.seconds), textInput.layoutModifiers)
+  }
+
+  @Test fun layoutModifierDeserializationHonorsDefaultExpressions() {
+    val json = Json {
+      serializersModule = SerializersModule {
+        contextual(Duration::class, DurationIsoSerializer)
+      }
+    }
+    val recordingTextInput = RecordingTextInput()
+    val factory = DiffConsumingExampleSchemaWidgetFactory(
+      delegate = object : EmptyExampleSchemaWidgetFactory() {
+        override fun TextInput() = recordingTextInput
+      },
+      json = json,
+    )
+    val textInput = factory.create(5)!!
+
+    textInput.updateLayoutModifier(
+      buildJsonArray {
+        add(
+          buildJsonArray {
+            add(JsonPrimitive(5))
+            add(
+              buildJsonObject {
+                put("customType", JsonPrimitive("PT10S"))
+              },
+            )
+          },
+        )
+      },
+    )
+
+    assertEquals(LayoutModifier.customTypeWithDefault(10.seconds, "sup"), textInput.layoutModifiers)
   }
 
   @Test fun unknownLayoutModifierThrowsDefault() {
