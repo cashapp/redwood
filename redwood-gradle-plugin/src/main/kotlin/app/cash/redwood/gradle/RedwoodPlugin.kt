@@ -39,12 +39,6 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
     jbComposeVersion,
   )
 
-  override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(
-    "org.jetbrains.compose.compiler",
-    "compiler-hosted",
-    jbComposeVersion,
-  )
-
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
       api("app.cash.redwood:redwood-compose:$redwoodVersion")

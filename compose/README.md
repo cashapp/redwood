@@ -4,8 +4,7 @@ We build our own copy of the Compose runtime as a multiplatform project with JVM
 targets in addition to the regular Android. All sources come from
 [JetBrains' fork](https://github.com/JetBrains/androidx/) which are included as a git submodule.
 
-The compiler and "hosted" compiler (i.e., the one which works on Kotlin/Native targets) are also
-from JetBrains, but we use their binary artifacts from Maven Central.
+The compiler is also from JetBrains, but we use their binary artifact from Maven Central.
 
 
 ## Updating
