@@ -12,17 +12,18 @@ if (!upstreamComposeRuntimeVersion.contains("\"${libs.versions.androidComposeRun
     "Upstream git repository Compose runtime version does not match project version ${libs.versions.androidComposeRuntime.get()}: $upstreamComposeRuntimeVersion")
 }
 
-def upstreamComposeCompilerVersion = upstreamLibraryVersions.find { it.startsWith("COMPOSE_COMPILER = ") }
-if (!upstreamComposeCompilerVersion.contains("\"${libs.versions.androidComposeCompiler.get()}\"")) {
-  throw new RuntimeException(
-    "Upstream git repository Compose runtime version does not match project version ${libs.versions.androidComposeCompiler.get()}: $upstreamComposeCompilerVersion")
-}
-
-def upstreamKotlinVersion = upstreamDependencyVersions.find { it.startsWith("kotlin = ") }
-if (!upstreamKotlinVersion.contains("\"${libs.versions.kotlin.get()}\"")) {
-  throw new RuntimeException(
-    "Upstream git repository Kotlin version does not match project version ${libs.versions.kotlin.get()}: $upstreamKotlinVersion")
-}
+// TODO re-enable once we migrate to a runtime with Kotlin 1.7.10 and compiler 1.3.0
+//def upstreamComposeCompilerVersion = upstreamLibraryVersions.find { it.startsWith("COMPOSE_COMPILER = ") }
+//if (!upstreamComposeCompilerVersion.contains("\"${libs.versions.androidComposeCompiler.get()}\"")) {
+//  throw new RuntimeException(
+//    "Upstream git repository Compose runtime version does not match project version ${libs.versions.androidComposeCompiler.get()}: $upstreamComposeCompilerVersion")
+//}
+//
+//def upstreamKotlinVersion = upstreamDependencyVersions.find { it.startsWith("kotlin = ") }
+//if (!upstreamKotlinVersion.contains("\"${libs.versions.kotlin.get()}\"")) {
+//  throw new RuntimeException(
+//    "Upstream git repository Kotlin version does not match project version ${libs.versions.kotlin.get()}: $upstreamKotlinVersion")
+//}
 
 def upstreamCoroutinesVersion = upstreamDependencyVersions.find { it.startsWith("kotlinCoroutines = ") }
 if (!upstreamCoroutinesVersion.contains("\"${libs.versions.kotlinx.coroutines.get()}\"")) {
