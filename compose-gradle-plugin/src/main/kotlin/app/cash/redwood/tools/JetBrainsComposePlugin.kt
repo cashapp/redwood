@@ -37,10 +37,6 @@ class JetBrainsComposePlugin : KotlinCompilerPluginSupportPlugin {
     return SubpluginArtifact("org.jetbrains.compose.compiler", "compiler", jbComposeVersion)
   }
 
-  override fun getPluginArtifactForNative(): SubpluginArtifact {
-    return SubpluginArtifact("org.jetbrains.compose.compiler", "compiler-hosted", jbComposeVersion)
-  }
-
   override fun applyToCompilation(
     kotlinCompilation: KotlinCompilation<*>
   ): Provider<List<SubpluginOption>> {

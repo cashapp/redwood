@@ -34,7 +34,6 @@ androidx-core = { module = "androidx.core:core-ktx", version = "1.2.0" }
 androidx-compose-material = { module = "androidx.compose.material:material", version = "1.2.0-rc03" }
 
 jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jbCompose" }
-jetbrains-compose-compilerHosted = { module = "org.jetbrains.compose.compiler:compiler-hosted", version.ref = "jbCompose" }
 
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.2.0" }
 materialDesign = { module = "com.google.android.material:material", version = "1.4.0" }
