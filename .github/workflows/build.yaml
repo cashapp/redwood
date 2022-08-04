@@ -17,21 +17,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: git submodule update --init
-
-      - name: Cache gradle
-        uses: actions/cache@v3
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
+          submodules: recursive
       - uses: gradle/wrapper-validation-action@v1
       - uses: actions/setup-java@v3.4.1
         with:
           distribution: 'zulu'
           java-version: 14
+      - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew build dokkaHtmlMultiModule --parallel
 
