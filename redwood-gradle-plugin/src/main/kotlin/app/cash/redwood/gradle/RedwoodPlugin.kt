@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.gradle
 
+import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -29,6 +30,13 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
+  override fun apply(target: Project) {
+    super.apply(target)
+
+    // Automatically run lint on usages of our Compose plugin.
+    target.plugins.apply("app.cash.redwood.lint")
+  }
+
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
   override fun getCompilerPluginId(): String = "app.cash.redwood"

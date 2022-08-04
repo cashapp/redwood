@@ -1,0 +1,37 @@
+buildscript {
+  dependencies {
+    classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
+    classpath libs.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+  }
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.redwood.lint'
+
+kotlin {
+  android()
+  jvm()
+}
+
+android {
+  namespace 'example.android'
+  compileSdk 32
+}
+
+repositories {
+  maven {
+    url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+  }
+  mavenCentral()
+  google()
+}

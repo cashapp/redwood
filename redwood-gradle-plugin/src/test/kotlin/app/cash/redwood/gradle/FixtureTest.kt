@@ -33,6 +33,67 @@ class FixtureTest {
     fixtureGradleRunner("compose-ui", "assemble").build()
   }
 
+  @Test fun lintNoKotlinFails() {
+    val result = fixtureGradleRunner("lint-no-kotlin").buildAndFail()
+    assertThat(result.output).contains(
+      "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
+    )
+  }
+
+  @Test fun lintAndroidNoKotlinFails() {
+    val result = fixtureGradleRunner("lint-android-no-kotlin").buildAndFail()
+    assertThat(result.output).contains(
+      "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
+    )
+  }
+
+  @Test fun lintAndroid() {
+    val result = fixtureGradleRunner("lint-android").build()
+    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
+    assertThat(lintTasks).containsExactly(
+      ":redwoodLintDebug",
+      ":redwoodLintRelease",
+      ":redwoodLint",
+    )
+  }
+
+  @Test fun lintJs() {
+    val result = fixtureGradleRunner("lint-js").build()
+    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
+    assertThat(lintTasks).containsExactly(
+      ":redwoodLint",
+    )
+  }
+
+  @Test fun lintJvm() {
+    val result = fixtureGradleRunner("lint-jvm").build()
+    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
+    assertThat(lintTasks).containsExactly(
+      ":redwoodLint",
+    )
+  }
+
+  @Test fun lintMppAndroid() {
+    val result = fixtureGradleRunner("lint-mpp-android").build()
+    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
+    assertThat(lintTasks).containsExactly(
+      ":redwoodLintAndroidDebug",
+      ":redwoodLintAndroidRelease",
+      ":redwoodLintJvm",
+      ":redwoodLint",
+    )
+  }
+
+  @Test fun lintMppNoAndroid() {
+    val result = fixtureGradleRunner("lint-mpp-no-android").build()
+    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
+    assertThat(lintTasks).containsExactly(
+      ":redwoodLintJs",
+      ":redwoodLintJvm",
+      ":redwoodLint",
+    )
+  }
+
   private fun fixtureGradleRunner(
     name: String,
     task: String = "build",

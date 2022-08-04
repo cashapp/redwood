@@ -5,6 +5,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
+  compileOnly libs.androidGradlePlugin
 
   testImplementation libs.junit
   testImplementation libs.testParameterInjector
@@ -19,6 +20,12 @@ gradlePlugin {
       displayName = "Redwood"
       description = "Redwood client Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodPlugin"
+    }
+    redwoodLint {
+      id = "app.cash.redwood.lint"
+      displayName = "Redwood lint"
+      description = "Redwood lint Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodLintPlugin"
     }
     redwoodSchema {
       id = "app.cash.redwood.schema"
@@ -58,6 +65,7 @@ test {
   dependsOn(':redwood-compose:installArchives')
   dependsOn(':redwood-generator:installArchives')
   dependsOn(':redwood-gradle-plugin:installArchives')
+  dependsOn(':redwood-lint:installArchives')
   dependsOn(':redwood-protocol:installArchives')
   dependsOn(':redwood-protocol-compose:installArchives')
   dependsOn(':redwood-protocol-widget:installArchives')
