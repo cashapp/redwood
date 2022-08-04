@@ -7,6 +7,8 @@ module:redwood-generator
 app.cash.redwood.generator
 module:redwood-gradle-plugin
 app.cash.redwood.gradle
+module:redwood-lint
+app.cash.redwood.lint
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
