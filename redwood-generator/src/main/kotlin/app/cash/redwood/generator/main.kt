@@ -76,6 +76,7 @@ private class RedwoodGenerator : CliktCommand() {
     val schema = parseSchema(schemaType)
     when (type) {
       Compose -> {
+        generateComposableTargetMarker(schema).writeTo(out)
         generateUnscopedModifiers(schema).writeTo(out)
         for (scope in schema.scopes) {
           generateScopeAndScopedModifiers(schema, scope).writeTo(out)

@@ -21,6 +21,7 @@ import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
 import app.cash.redwood.schema.parser.Widget.Event
 import app.cash.redwood.schema.parser.Widget.Property
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -39,7 +40,44 @@ import com.squareup.kotlinpoet.joinToCode
 import kotlin.reflect.KClass
 
 /*
+@Retention(AnnotationRetention.BINARY)
+@ComposableTargetMarker(description = "Example Composable")
+@Target(
+  AnnotationTarget.FUNCTION,
+  AnnotationTarget.PROPERTY_GETTER,
+  AnnotationTarget.TYPE,
+  AnnotationTarget.TYPE_PARAMETER,
+)
+public annotation class SunspotComposable
+ */
+internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
+  val name = schema.composeTargetMarker
+  return FileSpec.builder(schema.composePackage, name.simpleName)
+    .addType(
+      TypeSpec.annotationBuilder(name)
+        .addAnnotation(
+          AnnotationSpec.builder(Retention::class)
+            .addMember("%T.BINARY", AnnotationRetention::class)
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(composableTargetMarker)
+            .addMember("description = %S", schema.name + " Composable")
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(Target::class)
+            .addMember("%1T.FUNCTION, %1T.PROPERTY_GETTER, %1T.TYPE, %1T.TYPE_PARAMETER", AnnotationTarget::class)
+            .build(),
+        )
+        .build(),
+    )
+    .build()
+}
+
+/*
 @Composable
+@SunspotComposable
 fun SunspotButton(
   layoutModifier: LayoutModifier = LayoutModifier,
   text: String?,
@@ -59,11 +97,13 @@ fun SunspotButton(
 internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
   val widgetFactoryType = schema.getWidgetFactoryType().parameterizedBy(STAR)
+  val composeTargetMarker = schema.composeTargetMarker
   return FileSpec.builder(schema.composePackage, widget.flatName)
     .addFunction(
       FunSpec.builder(widget.flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(composable)
+        .addAnnotation(composeTargetMarker)
         .apply {
           // If the last trait is a child lambda move the layout modifier position to be
           // second-to-last. This ensures you can still use trailing lambda syntax.
@@ -102,7 +142,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                 }
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage, it.simpleName!!) }
-                  ParameterSpec.builder(trait.name, composableLambda(scope))
+                  ParameterSpec.builder(trait.name, composableLambda(scope, composeTargetMarker))
                     .build()
                 }
               },

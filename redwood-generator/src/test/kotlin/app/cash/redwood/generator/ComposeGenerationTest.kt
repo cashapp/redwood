@@ -37,15 +37,28 @@ class ComposeGenerationTest {
     @Children(2) val unscoped: List<Any>,
   )
 
-  @Test fun scopedAndUnscopedChildren() {
+  @Test fun functionTargetMarker() {
+    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |@Composable
+      |@ScopedAndUnscopedSchemaComposable
+      |public fun
+      """.trimMargin(),
+    )
+  }
+
+  @Test fun scopedAndUnscopedChildrenWithTargetMarker() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
-      contains("scoped: @Composable RowScope.() -> Unit")
+      contains("scoped: @Composable @ScopedAndUnscopedSchemaComposable RowScope.() -> Unit")
       contains("RowScope.scoped()")
 
-      contains("unscoped: @Composable () -> Unit")
+      contains("unscoped: @Composable @ScopedAndUnscopedSchemaComposable () -> Unit")
       contains("unscoped()")
     }
   }

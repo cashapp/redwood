@@ -53,6 +53,8 @@ private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(n
 
 internal val Schema.composePackage get() = "$`package`.compose"
 
+internal val Schema.composeTargetMarker get() = ClassName(composePackage, "${name}Composable")
+
 internal fun Schema.diffProducingWidgetFactoryType(): ClassName {
   return ClassName(composePackage, "DiffProducing${name}WidgetFactory")
 }
