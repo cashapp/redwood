@@ -22,33 +22,50 @@ import org.junit.Test
 
 class FixtureTest {
   @Test fun schemaNoJvmFails() {
-    val result = fixtureGradleRunner("schema-no-kotlin-jvm").buildAndFail()
+    val fixtureDir = File("src/test/fixture/schema-no-kotlin-jvm")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
     assertThat(result.output).contains(
       "Redwood schema plugin requires the Kotlin JVM plugin to be applied.",
     )
   }
 
   @Test fun composeUiAppPackagingSucceeds() {
+    val fixtureDir = File("src/test/fixture/compose-ui")
     // If our dependency substitution did not work the D8 step would fail with duplicate classes.
-    fixtureGradleRunner("compose-ui", "assemble").build()
+    fixtureGradleRunner(fixtureDir, "assemble").build()
+  }
+
+  @Test fun schemaProjectAccessor() {
+    val fixtureDir = File("src/test/fixture/schema-project-accessor")
+    fixtureGradleRunner(fixtureDir, "assemble").build()
+    assertThat(fixtureDir.resolve("widget/build/generated/redwood").walk().toList()).isNotEmpty()
+  }
+
+  @Test fun schemaProjectReference() {
+    val fixtureDir = File("src/test/fixture/schema-project-reference")
+    fixtureGradleRunner(fixtureDir, "assemble").build()
+    assertThat(fixtureDir.resolve("widget/build/generated/redwood").walk().toList()).isNotEmpty()
   }
 
   @Test fun lintNoKotlinFails() {
-    val result = fixtureGradleRunner("lint-no-kotlin").buildAndFail()
+    val fixtureDir = File("src/test/fixture/lint-no-kotlin")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
     assertThat(result.output).contains(
       "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
     )
   }
 
   @Test fun lintAndroidNoKotlinFails() {
-    val result = fixtureGradleRunner("lint-android-no-kotlin").buildAndFail()
+    val fixtureDir = File("src/test/fixture/lint-android-no-kotlin")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
     assertThat(result.output).contains(
       "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
     )
   }
 
   @Test fun lintAndroid() {
-    val result = fixtureGradleRunner("lint-android").build()
+    val fixtureDir = File("src/test/fixture/lint-android")
+    val result = fixtureGradleRunner(fixtureDir).build()
     val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
     assertThat(lintTasks).containsExactly(
       ":redwoodLintDebug",
@@ -58,7 +75,8 @@ class FixtureTest {
   }
 
   @Test fun lintJs() {
-    val result = fixtureGradleRunner("lint-js").build()
+    val fixtureDir = File("src/test/fixture/lint-js")
+    val result = fixtureGradleRunner(fixtureDir).build()
     val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
     assertThat(lintTasks).containsExactly(
       ":redwoodLint",
@@ -66,7 +84,8 @@ class FixtureTest {
   }
 
   @Test fun lintJvm() {
-    val result = fixtureGradleRunner("lint-jvm").build()
+    val fixtureDir = File("src/test/fixture/lint-jvm")
+    val result = fixtureGradleRunner(fixtureDir).build()
     val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
     assertThat(lintTasks).containsExactly(
       ":redwoodLint",
@@ -74,7 +93,8 @@ class FixtureTest {
   }
 
   @Test fun lintMppAndroid() {
-    val result = fixtureGradleRunner("lint-mpp-android").build()
+    val fixtureDir = File("src/test/fixture/lint-mpp-android")
+    val result = fixtureGradleRunner(fixtureDir).build()
     val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
     assertThat(lintTasks).containsExactly(
       ":redwoodLintAndroidDebug",
@@ -85,7 +105,8 @@ class FixtureTest {
   }
 
   @Test fun lintMppNoAndroid() {
-    val result = fixtureGradleRunner("lint-mpp-no-android").build()
+    val fixtureDir = File("src/test/fixture/lint-mpp-no-android")
+    val result = fixtureGradleRunner(fixtureDir).build()
     val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
     assertThat(lintTasks).containsExactly(
       ":redwoodLintJs",
@@ -95,10 +116,9 @@ class FixtureTest {
   }
 
   private fun fixtureGradleRunner(
-    name: String,
+    fixtureDir: File,
     task: String = "build",
   ): GradleRunner {
-    val fixtureDir = File("src/test/fixture", name)
     val gradleRoot = File(fixtureDir, "gradle").also { it.mkdir() }
     File("../gradle/wrapper").copyRecursively(File(gradleRoot, "wrapper"), true)
 

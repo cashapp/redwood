@@ -1,0 +1,10 @@
+include ':schema'
+include ':widget'
+
+dependencyResolutionManagement {
+  versionCatalogs {
+    libs {
+      from(files('../../../../../gradle/libs.versions.toml'))
+    }
+  }
+}

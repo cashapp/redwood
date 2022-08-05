@@ -15,15 +15,19 @@
  */
 package app.cash.redwood.gradle
 
-import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.DependencyHandler
 
 public interface RedwoodSchemaExtension {
-  public var source: Project?
+  /**
+   * Reference to the project or dependency which contains the Redwood schema.
+   * This value must be a type supported by [DependencyHandler].
+   */
+  public var source: Any?
   public var type: String?
 }
 
 // Gradle requires this type to be open since it runtime extends it.
 internal open class RedwoodSchemaExtensionImpl @JvmOverloads constructor(
-  override var source: Project? = null,
+  override var source: Any? = null,
   override var type: String? = null,
 ) : RedwoodSchemaExtension
