@@ -26,6 +26,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.JavaExec
+import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -79,6 +80,9 @@ public abstract class RedwoodSchemaGeneratorPlugin(
 
     val generatedDir = File(project.buildDir, "generated/redwood")
     val generate = project.tasks.register("redwoodGenerate", JavaExec::class.java) { exec ->
+      exec.group = BUILD_GROUP
+      exec.description = "Generate Redwood sources"
+
       exec.outputs.dir(generatedDir)
 
       exec.classpath(configuration)
