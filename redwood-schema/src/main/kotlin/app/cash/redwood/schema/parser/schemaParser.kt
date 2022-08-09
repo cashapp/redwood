@@ -106,7 +106,7 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
 
   return Schema(
     schemaType.simpleName!!,
-    schemaType.packageName,
+    schemaType.java.packageName,
     scopes.toList(),
     widgets,
     layoutModifiers,
