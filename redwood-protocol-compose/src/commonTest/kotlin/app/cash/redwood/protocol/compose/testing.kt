@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.compose
+package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.withFrameMillis

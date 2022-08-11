@@ -42,6 +42,7 @@ class MainActivity : Activity() {
     val composition = ProtocolRedwoodComposition(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
+      widgetVersion = 1U,
       onDiff = { Log.d("RedwoodDiff", it.toString()) },
       onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )

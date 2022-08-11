@@ -17,10 +17,13 @@ package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
+import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
+import app.cash.redwood.compose.WidgetVersionValue
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -42,15 +45,17 @@ public interface ProtocolRedwoodComposition : EventSink {
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
   factory: DiffProducingWidget.Factory,
+  widgetVersion: UInt,
   onDiff: DiffSink = DiffSink {},
   onEvent: EventSink = EventSink {},
 ): ProtocolRedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, onDiff, onEvent)
+  return DiffProducingRedwoodComposition(scope, factory, widgetVersion, onDiff, onEvent)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
   private val factory: DiffProducingWidget.Factory,
+  private val widgetVersion: UInt,
   private val onDiff: DiffSink,
   private val onEvent: EventSink,
 ) : ProtocolRedwoodComposition {
@@ -107,10 +112,27 @@ private class DiffProducingRedwoodComposition(
     node.sendEvent(event)
   }
 
+  @OptIn(InternalComposeApi::class) // See internal function comment below.
   override fun setContent(content: @Composable () -> Unit) {
     check(this::applier.isInitialized) { "display not initialized" }
 
-    composition.setContent(content)
+    // TODO using CompositionLocalProvider fails to link in release mode with:
+    //  inlinable function call in a function with debug info must have a !dbg location
+    //    %16 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %15)
+    //  inlinable function call in a function with debug info must have a !dbg location
+    //    call void @"kfun:kotlin.Array#<init>(kotlin.Int){}"(%struct.ObjHeader* %18, i32 %17)
+    //  inlinable function call in a function with debug info must have a !dbg location
+    //    %20 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %19)
+    //  inlinable function call in a function with debug info must have a !dbg location
+    //    %24 = call %struct.ObjHeader* @"kfun:kotlin.collections#copyInto__at__kotlin.Array<out|0:0>(kotlin.Array<0:0>;kotlin.Int;kotlin.Int;kotlin.Int){0\C2\A7<kotlin.Any?>}kotlin.Array<0:0>"(%struct.ObjHeader* %21, %struct.ObjHeader* %22, i32 %23, i32 0, i32 %20, %struct.ObjHeader** %13)
+    //  inlinable function call in a function with debug info must have a !dbg location
+    //    call void @"kfun:androidx.compose.runtime#CompositionLocalProvider(kotlin.Array<out|androidx.compose.runtime.ProvidedValue<*>>...;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}"(%struct.ObjHeader* %27, %struct.ObjHeader* %1, %struct.ObjHeader* %3, i32 %28)
+    val providers = arrayOf(WidgetVersionValue provides widgetVersion)
+    composition.setContent {
+      currentComposer.startProviders(providers)
+      content()
+      currentComposer.endProviders()
+    }
   }
 
   override fun cancel() {

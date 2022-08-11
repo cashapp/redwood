@@ -17,30 +17,16 @@ kotlin {
         api projects.compose.runtime
       }
     }
-    commonTest {
-      dependencies {
-        implementation libs.kotlin.test
-        implementation projects.testSchema.compose
-        implementation projects.testSchema.compose.protocol
-      }
-    }
     androidMain {
       dependencies {
         implementation libs.androidx.core
       }
-    }
-    androidTest {
-      dependsOn jvmTest
     }
   }
 }
 
 android {
   namespace 'app.cash.redwood.compose'
-
-  testOptions {
-    unitTests.returnDefaultValues = true
-  }
 }
 
 spotless {

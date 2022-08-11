@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.compose
+package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
@@ -26,7 +27,6 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import example.redwood.compose.Button
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.Row
@@ -34,17 +34,39 @@ import example.redwood.compose.Text
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProtocolTest {
+  @Test fun widgetVersionPropagated() = runTest {
+    val clock = BroadcastFrameClock()
+    val composition = ProtocolRedwoodComposition(
+      scope = this + clock,
+      factory = DiffProducingExampleSchemaWidgetFactory(),
+      widgetVersion = 22U,
+    )
+    composition.start { }
+
+    var actualDisplayVersion = 0U
+    composition.setContent {
+      actualDisplayVersion = WidgetVersion
+    }
+    composition.cancel()
+
+    assertEquals(22U, actualDisplayVersion)
+  }
+
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
       factory = DiffProducingExampleSchemaWidgetFactory(),
+      widgetVersion = 1U,
     )
     val diffs = ArrayDeque<Diff>()
     composition.start { diff -> diffs += diff }
@@ -90,6 +112,7 @@ class ProtocolTest {
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
       factory = DiffProducingExampleSchemaWidgetFactory(),
+      widgetVersion = 1U,
     )
     val diffs = ArrayDeque<Diff>()
     composition.start { diff -> diffs += diff }
