@@ -31,7 +31,9 @@ import com.squareup.kotlinpoet.asTypeName
 
 /*
 interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
+  /** {tag=1} */
   fun SunspotText(): SunspotText<T>
+  /** {tag=2} */
   fun SunspotButton(): SunspotButton<T>
 }
 */
@@ -48,6 +50,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder(node.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
                 .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
+                .addKdoc("{tag=${node.tag}}")
                 .build(),
             )
           }
@@ -58,9 +61,13 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
+/** {tag=2} */
 interface SunspotButton<T: Any> : Widget<T> {
+  /** {tag=1} */
   fun text(text: String?)
+  /** {tag=2} */
   fun enabled(enabled: Boolean)
+  /** {tag=3} */
   fun onClick(onClick: (() -> Unit)?)
 }
 */
@@ -71,6 +78,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(widgetType.parameterizedBy(typeVariableT))
+        .addKdoc("{tag=${widget.tag}}")
         .apply {
           for (trait in widget.traits) {
             when (trait) {
@@ -79,6 +87,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
+                    .addKdoc("{tag=${trait.tag}}")
                     .build(),
                 )
               }
@@ -87,6 +96,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
+                    .addKdoc("{tag=${trait.tag}}")
                     .build(),
                 )
               }
@@ -94,6 +104,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 addProperty(
                   PropertySpec.builder(trait.name, childrenOfT)
                     .addModifiers(PUBLIC, ABSTRACT)
+                    .addKdoc("{tag=${trait.tag}}")
                     .build(),
                 )
               }

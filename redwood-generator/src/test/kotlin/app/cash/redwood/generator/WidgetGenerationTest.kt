@@ -47,4 +47,40 @@ class WidgetGenerationTest {
       contains("fun WidgetGenerationTestButton()")
     }
   }
+
+  @Test fun tagInWidgetFactoryKDoc() {
+    val schema = parseSchema(SimpleNameCollisionSchema::class)
+
+    val fileSpec = generateWidgetFactory(schema)
+    assertThat(fileSpec.toString()).contains(
+      """
+      |   * {tag=3}
+      |   */
+      |  public fun WidgetGenerationTestButton
+      """.trimMargin(),
+    )
+  }
+
+  @Test fun tagInWidgetKdoc() {
+    val schema = parseSchema(SimpleNameCollisionSchema::class)
+    val button = schema.widgets.single { it.flatName == "WidgetGenerationTestButton" }
+
+    val fileSpec = generateWidget(schema, button)
+    assertThat(fileSpec.toString()).apply {
+      contains(
+        """
+        | * {tag=3}
+        | */
+        |public interface WidgetGenerationTestButton
+        """.trimMargin(),
+      )
+      contains(
+        """
+        |   * {tag=1}
+        |   */
+        |  public fun text
+        """.trimMargin(),
+      )
+    }
+  }
 }
