@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:JvmName("Main")
-
 package app.cash.redwood.generator
 
-import app.cash.redwood.generator.RedwoodGenerator.Type.Compose
-import app.cash.redwood.generator.RedwoodGenerator.Type.ComposeProtocol
-import app.cash.redwood.generator.RedwoodGenerator.Type.LayoutModifiers
-import app.cash.redwood.generator.RedwoodGenerator.Type.Widget
-import app.cash.redwood.generator.RedwoodGenerator.Type.WidgetProtocol
+import app.cash.redwood.generator.GenerateCommand.Type.Compose
+import app.cash.redwood.generator.GenerateCommand.Type.ComposeProtocol
+import app.cash.redwood.generator.GenerateCommand.Type.LayoutModifiers
+import app.cash.redwood.generator.GenerateCommand.Type.Widget
+import app.cash.redwood.generator.GenerateCommand.Type.WidgetProtocol
 import app.cash.redwood.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.CliktError
@@ -34,11 +32,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.types.path
 
-public fun main(vararg args: String) {
-  RedwoodGenerator().main(args)
-}
-
-private class RedwoodGenerator : CliktCommand() {
+internal class GenerateCommand : CliktCommand() {
   enum class Type {
     Compose,
     ComposeProtocol,

@@ -2,8 +2,8 @@ rootProject.name = 'redwood'
 
 include ':compose:runtime'
 
+include ':redwood-cli'
 include ':redwood-compose'
-include ':redwood-generator'
 include ':redwood-gradle-plugin'
 include ':redwood-lint'
 include ':redwood-protocol'
