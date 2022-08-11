@@ -19,6 +19,7 @@ import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
@@ -37,6 +38,9 @@ internal abstract class RedwoodLintTask @Inject constructor(
   abstract val toolClasspath: ConfigurableFileCollection
 
   @get:Input
+  abstract val projectDirectory: RegularFileProperty
+
+  @get:Input
   abstract val sourceDirectories: Property<Collection<File>>
 
   @get:Classpath
@@ -47,6 +51,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodLintWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
+      it.projectDirectory.set(projectDirectory)
       it.sourceDirectories.set(sourceDirectories)
       it.dependencies.setFrom(dependencies)
     }
@@ -55,6 +60,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
 
 private interface RedwoodLintParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
+  val projectDirectory: RegularFileProperty
   val sourceDirectories: Property<Collection<File>>
   val dependencies: ConfigurableFileCollection
 }
@@ -68,6 +74,8 @@ private abstract class RedwoodLintWorker @Inject constructor(
       exec.mainClass.set("app.cash.redwood.lint.Main")
 
       exec.args = mutableListOf<String>().apply {
+        add(parameters.projectDirectory.get().asFile.absolutePath)
+
         for (file in parameters.sourceDirectories.get()) {
           add("-s")
           add(file.toString())
