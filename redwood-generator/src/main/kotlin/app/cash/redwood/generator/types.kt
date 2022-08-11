@@ -50,14 +50,19 @@ internal val widgetFactory = widgetType.nestedClass("Factory")
 internal val redwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
 
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
+internal val composableTargetMarker = ClassName("androidx.compose.runtime", "ComposableTargetMarker")
 
-internal fun composableLambda(receiver: TypeName?): TypeName {
+internal fun composableLambda(
+  receiver: TypeName?,
+  composeTargetMarker: ClassName,
+): TypeName {
   return LambdaTypeName.get(
     returnType = UNIT,
     receiver = receiver,
   ).copy(
     annotations = listOf(
       AnnotationSpec.builder(composable).build(),
+      AnnotationSpec.builder(composeTargetMarker).build(),
     ),
   )
 }
