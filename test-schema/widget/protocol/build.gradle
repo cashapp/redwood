@@ -43,13 +43,13 @@ configurations {
 }
 
 dependencies {
-  generator projects.redwoodGenerator
+  generator projects.redwoodCli
   generator projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
-  it.main('app.cash.redwood.generator.Main')
+  it.main('app.cash.redwood.cli.Main')
   it.args(
     '--widget-protocol',
     '--out', generatedDir,
