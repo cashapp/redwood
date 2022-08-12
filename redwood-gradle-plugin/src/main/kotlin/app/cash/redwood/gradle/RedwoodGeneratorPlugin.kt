@@ -15,36 +15,32 @@
  */
 package app.cash.redwood.gradle
 
-import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Compose
-import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.ComposeProtocol
-import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.LayoutModifiers
-import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.Widget
-import app.cash.redwood.gradle.RedwoodSchemaGeneratorPlugin.Strategy.WidgetProtocol
-import java.io.File
-import org.gradle.api.Action
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Compose
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ComposeProtocol
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.LayoutModifiers
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Widget
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.WidgetProtocol
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.tasks.JavaExec
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodSchemaComposePlugin : RedwoodSchemaGeneratorPlugin(Compose)
+public class RedwoodComposeGeneratorPlugin : RedwoodGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodSchemaComposeProtocolPlugin : RedwoodSchemaGeneratorPlugin(ComposeProtocol)
+public class RedwoodComposeProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ComposeProtocol)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodSchemaLayoutModifiersPlugin : RedwoodSchemaGeneratorPlugin(LayoutModifiers)
+public class RedwoodLayoutModifiersGeneratorPlugin : RedwoodGeneratorPlugin(LayoutModifiers)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodSchemaWidgetPlugin : RedwoodSchemaGeneratorPlugin(Widget)
+public class RedwoodWidgetGeneratorPlugin : RedwoodGeneratorPlugin(Widget)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodSchemaWidgetProtocolPlugin : RedwoodSchemaGeneratorPlugin(WidgetProtocol)
+public class RedwoodWidgetProtocolGeneratorPlugin : RedwoodGeneratorPlugin(WidgetProtocol)
 
-public abstract class RedwoodSchemaGeneratorPlugin(
+public abstract class RedwoodGeneratorPlugin(
   private val strategy: Strategy,
 ) : Plugin<Project> {
   public enum class Strategy(
@@ -78,23 +74,12 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       "app.cash.redwood:redwood-cli:$redwoodVersion",
     )
 
-    val generatedDir = File(project.buildDir, "generated/redwood")
-    val generate = project.tasks.register("redwoodGenerate", JavaExec::class.java) { exec ->
-      exec.group = BUILD_GROUP
-      exec.description = "Generate Redwood sources"
+    val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
+      it.group = BUILD_GROUP
+      it.description = "Generate Redwood sources"
 
-      exec.outputs.dir(generatedDir)
-
-      exec.classpath(configuration)
-      exec.mainClass.set("app.cash.redwood.cli.Main")
-
-      @Suppress("ObjectLiteralToLambda") // Gradle wants an anonymous class and not a lambda.
-      val deleteGeneratedDir = object : Action<Task> {
-        override fun execute(task: Task) {
-          generatedDir.deleteRecursively()
-        }
-      }
-      exec.doFirst(deleteGeneratedDir)
+      it.toolClasspath.from(configuration)
+      it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
     }
 
     project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
@@ -116,29 +101,15 @@ public abstract class RedwoodSchemaGeneratorPlugin(
       project.dependencies.add(configuration.name, schemaProject)
 
       generate.configure {
-        it.args = listOf(
-          "generate",
-          strategy.generatorFlag,
-          "--out",
-          generatedDir.toString(),
-          schemaType,
-        )
+        it.generatorFlag.set(strategy.generatorFlag)
+        it.schemaType.set(schemaType)
       }
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-
       kotlin.sourceSets.getByName("commonMain") { sourceSet ->
-        sourceSet.kotlin.srcDir(generatedDir)
+        sourceSet.kotlin.srcDir(generate.map { it.outputDir })
         sourceSet.dependencies {
           api(strategy.dependencyCoordinate)
-        }
-      }
-
-      kotlin.targets.all { target ->
-        target.compilations.all { compilation ->
-          compilation.compileKotlinTaskProvider.configure {
-            it.dependsOn(generate.get())
-          }
         }
       }
     }
