@@ -1,14 +1,12 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
+module:redwood-cli
+app.cash.redwood.cli
 module:redwood-compose
 app.cash.redwood.compose
-module:redwood-generator
-app.cash.redwood.generator
 module:redwood-gradle-plugin
 app.cash.redwood.gradle
-module:redwood-lint
-app.cash.redwood.lint
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
