@@ -61,7 +61,7 @@ kotlin {
       }
       dependencies {
         // Keep in sync with ../upstream/compose/runtime/runtime/build.gradle
-        api 'androidx.annotation:annotation:1.1.0'
+        api 'androidx.annotation:annotation:1.4.0'
       }
     }
     jsMain {
