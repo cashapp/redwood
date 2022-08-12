@@ -1,0 +1,153 @@
+/*
+ * Copyright (C) 2022 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package app.cash.treehouse
+
+import app.cash.zipline.Zipline
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * This class binds downloaded code to on-screen views.
+ *
+ * It updates the binding when the views change in [onContentChanged], and when new code is
+ * available in [onCodeChanged].
+ */
+class TreehouseHost<T : Any>(
+  private val scope: CoroutineScope,
+  val dispatchers: TreehouseDispatchers,
+  val viewBinder: ViewBinder,
+) {
+  /** All state is confined to [TreehouseDispatchers.zipline]. */
+  private var closed = false
+  private var ziplineSession: ZiplineSession<T>? = null
+  private val viewToBoundContent = mutableMapOf<TreehouseView<T>, TreehouseContent<T>>()
+
+  /**
+   * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
+   * returned value will be invalid when new code is loaded.
+   *
+   * It is unwise to use this instance for anything beyond measurement and monitoring, because the
+   * instance may be replaced if new code is loaded.
+   */
+  val zipline: Zipline?
+    get() = ziplineSession?.zipline
+
+  /** This function may only be invoked on [TreehouseDispatchers.main]. */
+  fun onContentChanged(view: TreehouseView<T>) {
+    dispatchers.checkMain()
+    scope.launch(dispatchers.zipline) {
+      bind(view)
+    }
+  }
+
+  /**
+   * Refresh the code. Even if no views are currently showing we refresh the code so we're ready
+   * when a view is added.
+   */
+  fun onCodeChanged(zipline: Zipline, context: T) {
+    dispatchers.checkZipline()
+    check(!closed)
+
+    // This job lets us cancel the Android Treehouse job without canceling its sibling jobs.
+    val supervisorJob = SupervisorJob(scope.coroutineContext.job)
+    val cancelableScope = CoroutineScope(supervisorJob + dispatchers.zipline)
+    cancelableScope.launch {
+      val previous = ziplineSession
+
+      val next = ZiplineSession(
+        scope = cancelableScope,
+        zipline = zipline,
+        context = context,
+        isInitialLaunch = previous != null,
+      )
+
+      previous?.cancel()
+
+      ziplineSession = next
+      for ((treehouseView, boundContent) in viewToBoundContent) {
+        next.bind(treehouseView, boundContent)
+      }
+    }
+  }
+
+  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
+  private suspend fun bind(view: TreehouseView<T>) {
+    dispatchers.checkZipline()
+
+    // Make sure we're tracking this view so we can update it when the code changes.
+    val content = view.boundContent
+    if (content == viewToBoundContent[view]) {
+      return // Nothing has changed.
+    } else if (content != null) {
+      viewToBoundContent[view] = content
+    } else {
+      viewToBoundContent.remove(view)
+    }
+
+    val ziplineSession = this.ziplineSession
+    if (ziplineSession != null) {
+      ziplineSession.bind(view, content)
+    } else {
+      // If we're waiting for code to load, show a loading indicator until it's ready.
+      withContext(dispatchers.main) {
+        viewBinder.codeLoading(view)
+      }
+    }
+  }
+
+  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
+  fun cancel() {
+    dispatchers.checkZipline()
+    closed = true
+    ziplineSession?.cancel()
+  }
+
+  /** The host state for a single code load. We get a new session each time we get new code. */
+  private inner class ZiplineSession<T : Any>(
+    val scope: CoroutineScope,
+    val context: T,
+    val zipline: Zipline,
+    val isInitialLaunch: Boolean,
+  ) {
+    /** Keep track of which views are bound to Treehouse. */
+    val bindings = mutableMapOf<TreehouseView<T>, ViewBinding>()
+
+    fun bind(
+      view: TreehouseView<T>,
+      content: TreehouseContent<T>?,
+    ) {
+      dispatchers.checkZipline()
+
+      val previous = bindings.remove(view)
+      previous?.cancel()
+
+      if (content == null) return
+
+      val ziplineTreehouseUi = content.get(context)
+      val binding = viewBinder.bind(scope, ziplineTreehouseUi, view, zipline.json, isInitialLaunch)
+      bindings[view] = binding
+    }
+
+    fun cancel() {
+      scope.cancel()
+      zipline.close()
+    }
+  }
+}

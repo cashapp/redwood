@@ -44,5 +44,10 @@ junit = { module = "junit:junit", version = "4.13.1" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.1" }
 truth = { module = "com.google.truth:truth", version = "1.1" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.5.1" }
+okio = { module = "com.squareup.okio:okio", version = "3.1.0" }
+okHttp = { module = "com.squareup.okhttp3:okhttp", version = "4.9.1" }
+zipline = { module = "app.cash.zipline:zipline", version = "0.9.0" }
+zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", version = "0.9.0" }
+zipline-loader = { module = "app.cash.zipline:zipline-loader", version = "0.9.0" }
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
