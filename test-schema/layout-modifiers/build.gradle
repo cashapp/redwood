@@ -48,6 +48,7 @@ def generate = tasks.register('redwoodGenerate', JavaExec) {
   it.classpath(configurations.generator)
   it.main('app.cash.redwood.cli.Main')
   it.args(
+    'generate',
     '--layout-modifiers',
     '--out', generatedDir,
     'example.redwood.ExampleSchema',

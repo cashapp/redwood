@@ -1,12 +1,26 @@
 apply plugin: 'java-library'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'application'
+
+application {
+  applicationName = 'redwood'
+  mainClass.set('app.cash.redwood.cli.Main')
+}
 
 dependencies {
   implementation projects.redwoodSchema
   implementation libs.kotlinPoet
+  implementation libs.lint.core
   implementation libs.clikt
 
   testImplementation libs.junit
   testImplementation libs.truth
+}
+
+tasks.named("distTar").configure { task ->
+  task.enabled = false
+}
+tasks.named("assemble").configure { task ->
+  task.dependsOn(tasks.named("installDist"))
 }

@@ -55,11 +55,7 @@ import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.config.languageVersionSettings
 
-public fun main(vararg args: String) {
-  RedwoodLint().main(args)
-}
-
-private class RedwoodLint : CliktCommand("redwood-lint") {
+internal class LintCommand : CliktCommand(name = "lint") {
   private val projectDirectory by argument("PROJECT_DIR")
     .file()
   private val sourceDirectories by option("-s", "--sources", metavar = "DIR")

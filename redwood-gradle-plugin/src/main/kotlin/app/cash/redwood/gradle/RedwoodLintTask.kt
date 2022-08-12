@@ -71,9 +71,10 @@ private abstract class RedwoodLintWorker @Inject constructor(
   override fun execute() {
     execOperations.javaexec { exec ->
       exec.classpath = parameters.toolClasspath
-      exec.mainClass.set("app.cash.redwood.lint.Main")
+      exec.mainClass.set("app.cash.redwood.cli.Main")
 
       exec.args = mutableListOf<String>().apply {
+        add("lint")
         add(parameters.projectDirectory.get().asFile.absolutePath)
 
         for (file in parameters.sourceDirectories.get()) {

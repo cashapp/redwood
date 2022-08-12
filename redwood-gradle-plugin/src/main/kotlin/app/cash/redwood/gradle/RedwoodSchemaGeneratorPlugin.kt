@@ -117,6 +117,7 @@ public abstract class RedwoodSchemaGeneratorPlugin(
 
       generate.configure {
         it.args = listOf(
+          "generate",
           strategy.generatorFlag,
           "--out",
           generatedDir.toString(),

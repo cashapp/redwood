@@ -32,7 +32,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.types.path
 
-internal class GenerateCommand : CliktCommand() {
+internal class GenerateCommand : CliktCommand(name = "generate") {
   enum class Type {
     Compose,
     ComposeProtocol,

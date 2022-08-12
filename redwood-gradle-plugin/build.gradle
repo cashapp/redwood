@@ -65,7 +65,6 @@ test {
   dependsOn(':redwood-cli:installArchives')
   dependsOn(':redwood-compose:installArchives')
   dependsOn(':redwood-gradle-plugin:installArchives')
-  dependsOn(':redwood-lint:installArchives')
   dependsOn(':redwood-protocol:installArchives')
   dependsOn(':redwood-protocol-compose:installArchives')
   dependsOn(':redwood-protocol-widget:installArchives')
