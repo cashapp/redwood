@@ -198,10 +198,10 @@ private fun Project.createRedwoodLintTask(
   sourceDirs: () -> Collection<File>,
   classpath: () -> Configuration,
 ): TaskProvider<out Task> {
-  val configuration = configurations.maybeCreate("redwoodLint")
+  val configuration = configurations.maybeCreate("redwood")
   dependencies.add(
     configuration.name,
-    "app.cash.redwood:redwood-lint:$redwoodVersion",
+    "app.cash.redwood:redwood-cli:$redwoodVersion",
   )
 
   return tasks.register(name, RedwoodLintTask::class.java) { task ->

@@ -18,7 +18,12 @@
 package app.cash.redwood.cli
 
 import app.cash.redwood.generator.GenerateCommand
+import app.cash.redwood.lint.LintCommand
+import com.github.ajalt.clikt.core.NoOpCliktCommand
+import com.github.ajalt.clikt.core.subcommands
 
 public fun main(vararg args: String) {
-  GenerateCommand().main(args)
+  NoOpCliktCommand(name = "redwood")
+    .subcommands(GenerateCommand(), LintCommand())
+    .main(args)
 }
