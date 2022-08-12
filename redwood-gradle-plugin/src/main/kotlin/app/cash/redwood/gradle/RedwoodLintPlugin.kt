@@ -211,7 +211,7 @@ private fun Project.createRedwoodLintTask(
     task.toolClasspath.setFrom(configuration.incoming.artifacts.artifactFiles)
     task.projectDirectory.set(project.projectDir)
     task.sourceDirectories.set(sourceDirs())
-    task.dependencies.setFrom(
+    task.classpath.setFrom(
       classpath().incoming.artifactView {
         it.attributes {
           it.attribute(USAGE_ATTRIBUTE, objects.named(Usage::class.java, JAVA_RUNTIME))

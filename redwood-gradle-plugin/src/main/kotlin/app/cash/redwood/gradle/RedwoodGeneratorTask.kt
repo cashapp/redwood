@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.gradle
 
+import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -40,6 +41,9 @@ internal abstract class RedwoodGeneratorTask @Inject constructor(
   @get:Input
   abstract val generatorFlag: Property<String>
 
+  @get:Classpath
+  abstract val classpath: ConfigurableFileCollection
+
   @get:Input
   abstract val schemaType: Property<String>
 
@@ -52,6 +56,7 @@ internal abstract class RedwoodGeneratorTask @Inject constructor(
     queue.submit(RedwoodGeneratorWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
       it.generatorFlag.set(generatorFlag)
+      it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
       it.outputDir.set(outputDir)
     }
@@ -61,6 +66,7 @@ internal abstract class RedwoodGeneratorTask @Inject constructor(
 private interface RedwoodGeneratorParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
   val generatorFlag: Property<String>
+  val classpath: ConfigurableFileCollection
   val schemaType: Property<String>
   val outputDir: DirectoryProperty
 }
@@ -80,6 +86,8 @@ private abstract class RedwoodGeneratorWorker @Inject constructor(
         parameters.generatorFlag.get(),
         "--out",
         parameters.outputDir.get().asFile.absolutePath,
+        "--class-path",
+        parameters.classpath.files.joinToString(File.pathSeparator),
         parameters.schemaType.get(),
       )
     }

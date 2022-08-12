@@ -65,20 +65,22 @@ public abstract class RedwoodGeneratorPlugin(
       RedwoodGeneratorExtension::class.java,
     )
 
-    val configuration = project.configurations.create("redwoodSchema")
+    val cliConfiguration = project.configurations.create("redwoodCli")
     project.dependencies.add(
-      configuration.name,
+      cliConfiguration.name,
       "app.cash.redwood:redwood-cli:$redwoodVersion",
     )
 
+    val schemaConfiguration = project.configurations.create("redwoodSchema")
     val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
       it.group = BUILD_GROUP
       it.description = "Generate Redwood sources"
 
-      it.toolClasspath.from(configuration)
+      it.toolClasspath.from(cliConfiguration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
       it.generatorFlag.set(strategy.generatorFlag)
       it.schemaType.set(extension.type)
+      it.classpath.from(schemaConfiguration)
     }
 
     project.afterEvaluate {
@@ -87,7 +89,7 @@ public abstract class RedwoodGeneratorPlugin(
       }
 
       val schemaProject = extension.source.get()
-      project.dependencies.add(configuration.name, schemaProject)
+      project.dependencies.add(schemaConfiguration.name, schemaProject)
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.sourceSets.getByName("commonMain") { sourceSet ->

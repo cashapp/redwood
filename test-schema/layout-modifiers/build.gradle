@@ -37,14 +37,26 @@ kotlin {
 
 configurations {
   generator
+  schema
 }
 
 dependencies {
   generator projects.redwoodCli
-  generator projects.testSchema
+  schema projects.testSchema
 }
 
 def generate = tasks.register('redwoodGenerate', JavaExec) {
+  def schemaFiles = configurations.schema
+    .incoming
+    .artifactView {
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.class, Usage.JAVA_RUNTIME))
+      }
+    }
+    .artifacts
+    .artifactFiles
+  it.inputs.files(schemaFiles)
+
   it.classpath(configurations.generator)
   it.main('app.cash.redwood.cli.Main')
   it.args(
@@ -52,9 +64,12 @@ def generate = tasks.register('redwoodGenerate', JavaExec) {
     '--layout-modifiers',
     '--out', generatedDir,
     'example.redwood.ExampleSchema',
+    '-cp',
   )
 
   it.doFirst {
+    it.args += schemaFiles.files.join(File.pathSeparator)
+
     file(generatedDir).deleteDir()
   }
 }
