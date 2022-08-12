@@ -17,6 +17,7 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
         implementation projects.testSchema.compose
         implementation projects.testSchema.compose.protocol
       }
@@ -26,4 +27,8 @@ kotlin {
 
 android {
   namespace 'app.cash.redwood.protocol.compose'
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }

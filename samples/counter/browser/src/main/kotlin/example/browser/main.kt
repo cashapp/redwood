@@ -32,6 +32,7 @@ fun main() {
   val composition = ProtocolRedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     factory = DiffProducingSunspotWidgetFactory(),
+    widgetVersion = 1U,
     onDiff = { console.log("RedwoodDiff", it.toString()) },
     onEvent = { console.log("RedwoodEvent", it.toString()) },
   )

@@ -39,6 +39,7 @@ class CounterViewControllerDelegate(
     val composition = ProtocolRedwoodComposition(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
+      widgetVersion = 1U,
       onDiff = { NSLog("RedwoodDiff: $it") },
       onEvent = { NSLog("RedwoodEvent: $it") },
     )
