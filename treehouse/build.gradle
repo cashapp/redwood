@@ -33,9 +33,8 @@ kotlin {
         api projects.redwoodProtocolWidget
       }
     }
-    targets.withType(KotlinNativeTarget.class) {
-      var main = compilations["main"]
-      main.defaultSourceSet.dependsOn(engineMain)
+    nativeMain {
+      dependsOn(engineMain)
     }
     androidMain {
       dependsOn(engineMain)
@@ -51,9 +50,8 @@ kotlin {
         implementation libs.kotlinx.coroutines.test
       }
     }
-    targets.withType(KotlinNativeTarget.class) {
-      var test = compilations["test"]
-      test.defaultSourceSet.dependsOn(engineTest)
+    nativeTest {
+      dependsOn(engineMain)
     }
     androidTest {
       dependsOn(engineTest)
