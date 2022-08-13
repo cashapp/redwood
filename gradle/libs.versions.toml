@@ -25,6 +25,8 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.84.2'
+
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.6.21"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.8.0"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
@@ -44,5 +46,6 @@ junit = { module = "junit:junit", version = "4.13.1" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.1" }
 truth = { module = "com.google.truth:truth", version = "1.1" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.5.1" }
+jimfs = "com.google.jimfs:jimfs:1.2"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }

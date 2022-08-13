@@ -18,12 +18,18 @@
 package app.cash.redwood.cli
 
 import app.cash.redwood.generator.GenerateCommand
+import app.cash.redwood.lint.ApiMergeCommand
 import app.cash.redwood.lint.LintCommand
 import com.github.ajalt.clikt.core.NoOpCliktCommand
 import com.github.ajalt.clikt.core.subcommands
+import java.nio.file.FileSystems
 
 public fun main(vararg args: String) {
   NoOpCliktCommand(name = "redwood")
-    .subcommands(GenerateCommand(), LintCommand())
+    .subcommands(
+      ApiMergeCommand(FileSystems.getDefault()),
+      GenerateCommand(),
+      LintCommand(),
+    )
     .main(args)
 }
