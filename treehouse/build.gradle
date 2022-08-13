@@ -51,7 +51,7 @@ kotlin {
       }
     }
     nativeTest {
-      dependsOn(engineMain)
+      dependsOn(engineTest)
     }
     androidTest {
       dependsOn(engineTest)
