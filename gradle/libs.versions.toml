@@ -26,7 +26,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.6.21"
+dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.7.10"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.8.0"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
 
