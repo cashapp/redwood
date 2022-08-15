@@ -3,6 +3,7 @@ $dokka.linkExtension:html
 
 module:redwood-cli
 app.cash.redwood.cli
+app.cash.redwood.lint
 module:redwood-compose
 app.cash.redwood.compose
 module:redwood-gradle-plugin
