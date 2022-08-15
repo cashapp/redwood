@@ -1,0 +1,64 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'app.cash.zipline'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.kotlinx.coroutines.core
+        api libs.okio
+        api projects.redwoodProtocol
+        api libs.zipline
+      }
+    }
+
+    jsMain {
+      dependencies {
+        api projects.redwoodProtocolCompose
+      }
+    }
+
+    engineMain {
+      dependsOn(commonMain)
+      dependencies {
+        api libs.zipline.loader
+        api projects.redwoodProtocolWidget
+      }
+    }
+    nativeMain {
+      dependsOn(engineMain)
+    }
+    androidMain {
+      dependsOn(engineMain)
+      dependencies {
+        api libs.okHttp
+      }
+    }
+
+    engineTest {
+      dependencies {
+        api libs.kotlinx.coroutines.core
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+      }
+    }
+    nativeTest {
+      dependsOn(engineTest)
+    }
+    androidTest {
+      dependsOn(engineTest)
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.treehouse'
+}

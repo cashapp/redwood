@@ -6,6 +6,7 @@ buildscript {
     classpath libs.gradleMavenPublishPlugin
     classpath libs.dokkaPlugin
     classpath libs.spotlessPlugin
+    classpath libs.zipline.gradlePlugin
     classpath 'app.cash.redwood.tools:compose-gradle-plugin'
   }
   repositories {
