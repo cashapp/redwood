@@ -24,9 +24,9 @@ import kotlinx.serialization.json.Json
  * Typically this is always [RealViewBinder]; in tests we have fake implementations that don't
  * require all the compose machinery.
  */
-interface ViewBinder {
+public interface ViewBinder {
   /** Show a spinner when a view is waiting for the code to load. */
-  fun codeLoading(view: TreehouseView<*>)
+  public fun codeLoading(view: TreehouseView<*>)
 
   /**
    * Binds [content] to [view].
@@ -34,7 +34,7 @@ interface ViewBinder {
    * @param isInitialCode true if this is the first code loaded into [view]. This is false for
    *     development-mode code updates, and potentially production code reloading.
    */
-  fun bind(
+  public fun bind(
     scope: CoroutineScope,
     content: ZiplineTreehouseUi,
     view: TreehouseView<*>,
@@ -42,18 +42,18 @@ interface ViewBinder {
     isInitialCode: Boolean,
   ): ViewBinding
 
-  interface Adapter {
+  public interface Adapter {
     /** Show a spinner when a view is waiting for the code to load. */
-    fun codeLoading(view: TreehouseView<*>) = Unit
+    public fun codeLoading(view: TreehouseView<*>) {}
 
     /** Clear the loading indicator when the first code is loaded. */
-    fun beforeInitialCode(view: TreehouseView<*>) = Unit
+    public fun beforeInitialCode(view: TreehouseView<*>) {}
 
     /** Clear the previous UI and show a quick animation for subsequent code updates. */
-    fun beforeUpdatedCode(view: TreehouseView<*>) = Unit
+    public fun beforeUpdatedCode(view: TreehouseView<*>) {}
 
     /** Returns a protocol display for the contents of [treehouseView]. */
-    fun protocolDisplay(
+    public fun protocolDisplay(
       treehouseView: TreehouseView<*>,
       eventSink: EventSink,
       json: Json,

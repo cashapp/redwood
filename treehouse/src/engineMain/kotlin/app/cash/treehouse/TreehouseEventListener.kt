@@ -18,7 +18,7 @@ package app.cash.treehouse
 import app.cash.zipline.EventListener
 import app.cash.zipline.ZiplineService
 
-class TreehouseEventListener(
+public class TreehouseEventListener(
   private val log: (warning: Boolean, message: String, throwable: Throwable?) -> Unit,
 ) : EventListener() {
   override fun bindService(name: String, service: ZiplineService) {

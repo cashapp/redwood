@@ -15,6 +15,6 @@
  */
 package app.cash.treehouse
 
-interface ViewBinding {
-  fun cancel()
+public interface ViewBinding {
+  public fun cancel()
 }

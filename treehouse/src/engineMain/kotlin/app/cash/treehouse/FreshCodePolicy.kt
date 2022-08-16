@@ -15,7 +15,7 @@
  */
 package app.cash.treehouse
 
-enum class FreshCodePolicy {
+public enum class FreshCodePolicy {
   /** For development; potentially throws away user state */
   ALWAYS_REFRESH_IMMEDIATELY,
 

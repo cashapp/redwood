@@ -15,8 +15,8 @@
  */
 package app.cash.treehouse
 
-expect class TreehouseView<T : Any> {
+public expect class TreehouseView<T : Any> {
   internal val boundContent: TreehouseContent<T>?
 }
 
-expect class View
+public expect class View

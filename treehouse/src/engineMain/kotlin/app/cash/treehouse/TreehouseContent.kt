@@ -15,6 +15,6 @@
  */
 package app.cash.treehouse
 
-interface TreehouseContent<T : Any> {
-  fun get(app: T): ZiplineTreehouseUi
+public interface TreehouseContent<T : Any> {
+  public fun get(app: T): ZiplineTreehouseUi
 }

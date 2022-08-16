@@ -28,7 +28,7 @@ import kotlinx.coroutines.plus
 /**
  * The Kotlin/JS side of a treehouse UI.
  */
-fun TreehouseUi.asZiplineTreehouseUi(
+public fun TreehouseUi.asZiplineTreehouseUi(
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
 ): ZiplineTreehouseUi {
@@ -57,10 +57,10 @@ private fun ProtocolRedwoodComposition.asZiplineTreehouseUi(
       delegate.sendEvent(event)
     }
 
-    override fun start(diffSinkService: DiffSinkService) {
+    override fun start(diffSink: DiffSinkService) {
       check(diffSinkToClose == null)
-      diffSinkToClose = diffSinkService
-      delegate.start { diff -> diffSinkService.sendDiff(diff) }
+      diffSinkToClose = diffSink
+      delegate.start { diff -> diffSink.sendDiff(diff) }
       startSignal()
     }
 
@@ -71,8 +71,8 @@ private fun ProtocolRedwoodComposition.asZiplineTreehouseUi(
   }
 }
 
-val scope: CoroutineScope = GlobalScope
-val frameClock by lazy { newFrameClock(scope) }
+private val scope: CoroutineScope = GlobalScope
+private val frameClock: BroadcastFrameClock by lazy { newFrameClock(scope) }
 
 // TODO(jwilson): replace this with a native frame clock.
 private fun newFrameClock(

@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 /** Displays Redwood widgets to a [TreehouseView]. */
-class RealViewBinder(
+public class RealViewBinder(
   private val dispatchers: TreehouseDispatchers,
   private val adapter: ViewBinder.Adapter,
 ) : ViewBinder {
