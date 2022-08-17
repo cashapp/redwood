@@ -57,6 +57,6 @@ public interface ViewBinder {
       treehouseView: TreehouseView<*>,
       eventSink: EventSink,
       json: Json,
-    ): ProtocolDisplay<View>
+    ): ProtocolDisplay<*>
   }
 }

@@ -17,10 +17,9 @@ package app.cash.treehouse
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.View
 import android.widget.FrameLayout
 import app.cash.redwood.widget.Widget
-
-public actual typealias View = android.view.View
 
 @SuppressLint("ViewConstructor")
 public actual class TreehouseView<T : Any>(

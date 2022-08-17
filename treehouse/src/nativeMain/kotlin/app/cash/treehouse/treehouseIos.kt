@@ -22,8 +22,6 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
-public actual typealias View = UIView
-
 public actual class TreehouseView<T : Any>(
   private val content: TreehouseContent<T>,
 ) {
