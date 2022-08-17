@@ -22,16 +22,16 @@ import android.widget.FrameLayout
 import app.cash.redwood.widget.Widget
 
 @SuppressLint("ViewConstructor")
-public actual class TreehouseView<T : Any>(
+public class TreehouseWidgetView<T : Any>(
   context: Context,
   private val treehouseHost: TreehouseHost<T>,
   public val widgetFactory: Widget.Factory<View>,
-) : FrameLayout(context) {
+) : FrameLayout(context), TreehouseView<T> {
   /** This is always the user-supplied content. */
   private var content: TreehouseContent<T>? = null
 
   /** This is the actual content, or null if not attached to the screen. */
-  internal actual val boundContent: TreehouseContent<T>?
+  override val boundContent: TreehouseContent<T>?
     get() {
       return when {
         isAttachedToWindow -> content

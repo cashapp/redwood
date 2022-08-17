@@ -22,14 +22,14 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
-public actual class TreehouseView<T : Any>(
+public class TreehouseUIKitView<T : Any>(
   private val content: TreehouseContent<T>,
-) {
+) : TreehouseView<T> {
   public val view: UIView = UIStackView(frame = cValue { CGRectZero })
   private var treehouseHost: TreehouseHost<T>? = null
 
   // TODO(jwilson): track when this view is detached from screen
-  internal actual val boundContent: TreehouseContent<T>? = content
+  override val boundContent: TreehouseContent<T>? = content
 
   public fun register(treehouseHost: TreehouseHost<T>?) {
     this.treehouseHost = treehouseHost
