@@ -19,6 +19,7 @@ import kotlinx.cinterop.cValue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import platform.CoreGraphics.CGRectZero
+import platform.Foundation.NSThread
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
@@ -43,8 +44,10 @@ public class IosTreehouseDispatchers : TreehouseDispatchers {
   override val zipline: CoroutineDispatcher = Dispatchers.Main
 
   override fun checkMain() {
+    check(NSThread.isMainThread)
   }
 
   override fun checkZipline() {
+    checkMain()
   }
 }
