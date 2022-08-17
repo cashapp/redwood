@@ -17,6 +17,7 @@ package app.cash.treehouse
 
 import androidx.compose.runtime.Composable
 
-interface TreehouseUi {
-  @Composable fun Show()
+public interface TreehouseUi {
+  @Composable
+  public fun Show()
 }

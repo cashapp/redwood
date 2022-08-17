@@ -25,7 +25,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
  * Implements [TreehouseDispatchers] suitable for production Android use. This creates a background
  * thread for all Zipline work.
  */
-class AndroidTreehouseDispatchers : TreehouseDispatchers {
+public class AndroidTreehouseDispatchers : TreehouseDispatchers {
   private lateinit var ziplineThread: Thread
 
   /** The single thread that runs all JavaScript. We only have one QuickJS instance at a time. */

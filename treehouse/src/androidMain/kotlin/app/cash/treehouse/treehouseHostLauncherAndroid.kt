@@ -28,7 +28,7 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
 
-fun <T : Any> TreehouseHostLauncher(
+public fun <T : Any> TreehouseHostLauncher(
   context: Context,
   appLauncher: TreehouseAppLauncher<T>,
   viewBinderAdapter: ViewBinder.Adapter,

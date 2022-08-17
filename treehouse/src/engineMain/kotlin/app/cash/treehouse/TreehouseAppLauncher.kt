@@ -17,9 +17,9 @@ package app.cash.treehouse
 
 import app.cash.zipline.Zipline
 
-interface TreehouseAppLauncher<T : Any> {
+public interface TreehouseAppLauncher<T : Any> {
   /** Short unique for the application like "activity" used as a cache key. */
-  val applicationName: String
-  fun bindServices(zipline: Zipline)
-  fun create(zipline: Zipline): T
+  public val applicationName: String
+  public fun bindServices(zipline: Zipline)
+  public fun create(zipline: Zipline): T
 }

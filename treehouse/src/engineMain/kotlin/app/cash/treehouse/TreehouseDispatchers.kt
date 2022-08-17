@@ -25,13 +25,13 @@ import kotlinx.coroutines.CoroutineDispatcher
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
-interface TreehouseDispatchers {
-  val main: CoroutineDispatcher
-  val zipline: CoroutineDispatcher
+public interface TreehouseDispatchers {
+  public val main: CoroutineDispatcher
+  public val zipline: CoroutineDispatcher
 
   /** Confirm that this is being called on the main thread or main dispatcher. */
-  fun checkMain()
+  public fun checkMain()
 
   /** Confirm that this is being called on the zipline thread or zipline dispatcher. */
-  fun checkZipline()
+  public fun checkZipline()
 }

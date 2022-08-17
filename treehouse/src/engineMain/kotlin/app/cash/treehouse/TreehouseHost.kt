@@ -29,10 +29,10 @@ import kotlinx.coroutines.withContext
  * It updates the binding when the views change in [onContentChanged], and when new code is
  * available in [onCodeChanged].
  */
-class TreehouseHost<T : Any>(
+public class TreehouseHost<T : Any>(
   private val scope: CoroutineScope,
-  val dispatchers: TreehouseDispatchers,
-  val viewBinder: ViewBinder,
+  public val dispatchers: TreehouseDispatchers,
+  public val viewBinder: ViewBinder,
 ) {
   /** All state is confined to [TreehouseDispatchers.zipline]. */
   private var closed = false
@@ -46,11 +46,11 @@ class TreehouseHost<T : Any>(
    * It is unwise to use this instance for anything beyond measurement and monitoring, because the
    * instance may be replaced if new code is loaded.
    */
-  val zipline: Zipline?
+  public val zipline: Zipline?
     get() = ziplineSession?.zipline
 
   /** This function may only be invoked on [TreehouseDispatchers.main]. */
-  fun onContentChanged(view: TreehouseView<T>) {
+  public fun onContentChanged(view: TreehouseView<T>) {
     dispatchers.checkMain()
     scope.launch(dispatchers.zipline) {
       bind(view)
@@ -61,7 +61,7 @@ class TreehouseHost<T : Any>(
    * Refresh the code. Even if no views are currently showing we refresh the code so we're ready
    * when a view is added.
    */
-  fun onCodeChanged(zipline: Zipline, context: T) {
+  public fun onCodeChanged(zipline: Zipline, context: T) {
     dispatchers.checkZipline()
     check(!closed)
 
@@ -113,7 +113,7 @@ class TreehouseHost<T : Any>(
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  fun cancel() {
+  public fun cancel() {
     dispatchers.checkZipline()
     closed = true
     ziplineSession?.cancel()

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
  * This works with [TreehouseHost] to create new [Zipline] instances when code is initially loaded
  * or reloaded.
  */
-class TreehouseHostLauncher<T : Any>(
+public class TreehouseHostLauncher<T : Any>(
   private val dispatchers: TreehouseDispatchers,
   private val viewBinderAdapter: ViewBinder.Adapter,
   private val launcher: TreehouseAppLauncher<T>,
@@ -40,7 +40,7 @@ class TreehouseHostLauncher<T : Any>(
 ) {
   private val scope: CoroutineScope = MainScope()
 
-  fun launch(): TreehouseHost<T> {
+  public fun launch(): TreehouseHost<T> {
     val treehouseHost = TreehouseHost<T>(
       scope = scope,
       dispatchers = dispatchers,

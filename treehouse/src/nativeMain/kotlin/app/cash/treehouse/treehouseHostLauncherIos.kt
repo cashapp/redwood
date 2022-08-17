@@ -27,7 +27,7 @@ import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIView
 
-fun TreehouseHostLauncher(
+public fun TreehouseHostLauncher(
   appLauncher: TreehouseAppLauncher<UIView>,
   cacheRootDir: String = NSTemporaryDirectory(),
   viewBinderAdapter: ViewBinder.Adapter,

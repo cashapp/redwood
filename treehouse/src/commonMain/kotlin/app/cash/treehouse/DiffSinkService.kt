@@ -19,6 +19,6 @@ import app.cash.redwood.protocol.Diff
 import app.cash.zipline.ZiplineService
 
 /** Like Redwood's [app.cash.redwood.protocol.DiffSink], but implementing [ZiplineService]. */
-interface DiffSinkService : ZiplineService {
+public interface DiffSinkService : ZiplineService {
   public fun sendDiff(diff: Diff)
 }

@@ -22,25 +22,25 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
-actual typealias View = UIView
+public actual typealias View = UIView
 
-actual class TreehouseView<T : Any>(
+public actual class TreehouseView<T : Any>(
   private val content: TreehouseContent<T>,
 ) {
-  val view = UIStackView(frame = cValue { CGRectZero })
+  public val view: UIView = UIStackView(frame = cValue { CGRectZero })
   private var treehouseHost: TreehouseHost<T>? = null
 
   // TODO(jwilson): track when this view is detached from screen
   internal actual val boundContent: TreehouseContent<T>? = content
 
-  fun register(treehouseHost: TreehouseHost<T>?) {
+  public fun register(treehouseHost: TreehouseHost<T>?) {
     this.treehouseHost = treehouseHost
     treehouseHost?.onContentChanged(this)
   }
 }
 
 // TODO(jwilson): we're currently doing everything on the main thread on iOS.
-class IosTreehouseDispatchers : TreehouseDispatchers {
+public class IosTreehouseDispatchers : TreehouseDispatchers {
   override val main: CoroutineDispatcher = Dispatchers.Main
   override val zipline: CoroutineDispatcher = Dispatchers.Main
 

@@ -23,7 +23,7 @@ import app.cash.zipline.ZiplineService
  *
  * Most callers shouldn't use this directly; instead use `TreehouseUi`.
  */
-interface ZiplineTreehouseUi : ZiplineService {
+public interface ZiplineTreehouseUi : ZiplineService {
   public fun start(diffSink: DiffSinkService)
   public fun sendEvent(event: Event)
 }
