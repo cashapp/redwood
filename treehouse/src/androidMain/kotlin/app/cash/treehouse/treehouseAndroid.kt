@@ -17,7 +17,7 @@ package app.cash.treehouse
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import app.cash.redwood.widget.Widget
 
 public actual typealias View = android.view.View
@@ -27,7 +27,7 @@ public actual class TreehouseView<T : Any>(
   context: Context,
   private val treehouseHost: TreehouseHost<T>,
   public val widgetFactory: Widget.Factory<View>,
-) : LinearLayout(context) {
+) : FrameLayout(context) {
   /** This is always the user-supplied content. */
   private var content: TreehouseContent<T>? = null
 
@@ -39,10 +39,6 @@ public actual class TreehouseView<T : Any>(
         else -> null
       }
     }
-
-  init {
-    orientation = VERTICAL
-  }
 
   public fun setContent(content: TreehouseContent<T>) {
     treehouseHost.dispatchers.checkMain()
