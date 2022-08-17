@@ -16,18 +16,13 @@
 package app.cash.redwood.gradle
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.provider.Property
 
-public interface RedwoodSchemaExtension {
+public abstract class RedwoodGeneratorExtension {
   /**
    * Reference to the project or dependency which contains the Redwood schema.
    * This value must be a type supported by [DependencyHandler].
    */
-  public var source: Any?
-  public var type: String?
+  public abstract val source: Property<Any>
+  public abstract val type: Property<String>
 }
-
-// Gradle requires this type to be open since it runtime extends it.
-internal open class RedwoodSchemaExtensionImpl @JvmOverloads constructor(
-  override var source: Any? = null,
-  override var type: String? = null,
-) : RedwoodSchemaExtension

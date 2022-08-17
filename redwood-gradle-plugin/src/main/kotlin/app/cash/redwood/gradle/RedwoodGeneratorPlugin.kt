@@ -56,16 +56,13 @@ public abstract class RedwoodGeneratorPlugin(
   }
 
   override fun apply(project: Project) {
-    var applied = false
-
     if (strategy == Compose) {
       project.plugins.apply(RedwoodPlugin::class.java)
     }
 
     val extension = project.extensions.create(
-      RedwoodSchemaExtension::class.java,
       "redwoodSchema",
-      RedwoodSchemaExtensionImpl::class.java,
+      RedwoodGeneratorExtension::class.java,
     )
 
     val configuration = project.configurations.create("redwoodSchema")
@@ -80,30 +77,17 @@ public abstract class RedwoodGeneratorPlugin(
 
       it.toolClasspath.from(configuration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
-    }
-
-    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
-      applied = true
+      it.generatorFlag.set(strategy.generatorFlag)
+      it.schemaType.set(extension.type)
     }
 
     project.afterEvaluate {
-      check(applied) {
+      check(project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
         "Redwood schema plugin requires the Kotlin multiplatform plugin to be applied."
       }
 
-      val schemaType = requireNotNull(extension.type) {
-        "Redwood schema type name must be specified!"
-      }
-      val schemaProject = requireNotNull(extension.source) {
-        "Redwood schema project must be specified!"
-      }
-
+      val schemaProject = extension.source.get()
       project.dependencies.add(configuration.name, schemaProject)
-
-      generate.configure {
-        it.generatorFlag.set(strategy.generatorFlag)
-        it.schemaType.set(schemaType)
-      }
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.sourceSets.getByName("commonMain") { sourceSet ->
