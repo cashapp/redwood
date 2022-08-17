@@ -60,7 +60,7 @@ private fun ProtocolRedwoodComposition.asZiplineTreehouseUi(
     override fun start(diffSink: DiffSinkService) {
       check(diffSinkToClose == null)
       diffSinkToClose = diffSink
-      delegate.start { diff -> diffSink.sendDiff(diff) }
+      delegate.start(diffSink)
       startSignal()
     }
 
