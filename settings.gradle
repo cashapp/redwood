@@ -24,8 +24,8 @@ include ':test-schema:widget:protocol'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
-includeBuild('compose-gradle-plugin') {
+includeBuild('build-support') {
   dependencySubstitution {
-    substitute module('app.cash.redwood.tools:compose-gradle-plugin') using project(':')
+    substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
   }
 }

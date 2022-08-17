@@ -22,10 +22,10 @@ repositories {
 gradlePlugin {
   plugins {
     jetbrainsCompose {
-      id = "app.cash.redwood.tools.compose"
+      id = "app.cash.redwood.build.compose"
       displayName = "JetBrains Compose"
       description = "Gradle plugin to apply JetBrains Compose compiler"
-      implementationClass = "app.cash.redwood.tools.JetBrainsComposePlugin"
+      implementationClass = "app.cash.redwood.buildsupport.JetBrainsComposePlugin"
     }
   }
 }
@@ -43,10 +43,10 @@ task pluginVersion {
   outputs.dir outputDir
 
   doLast {
-    def versionFile = file("$outputDir/app/cash/redwood/gradle/version.kt")
+    def versionFile = file("$outputDir/app/cash/redwood/buildsupport/version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.text = """// Generated file. Do not edit!
-package app.cash.redwood.tools
+package app.cash.redwood.buildsupport
 
 internal const val jbComposeVersion = "${libs.versions.jbCompose.get()}"
 """
