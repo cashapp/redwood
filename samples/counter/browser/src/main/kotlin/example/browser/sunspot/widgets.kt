@@ -40,10 +40,6 @@ class HtmlSunspotText(
   override fun text(text: String?) {
     value.textContent = text
   }
-
-  override fun color(color: String) {
-    value.style.color = color
-  }
 }
 
 class HtmlSunspotButton(

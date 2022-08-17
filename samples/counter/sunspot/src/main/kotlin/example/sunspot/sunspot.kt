@@ -38,8 +38,6 @@ data class SunspotBox(
 @Widget(2)
 data class SunspotText(
   @Property(1) val text: String?,
-  @Property(2) @Default("\"black\"")
-  val color: String = "black",
 )
 
 @Widget(3)

@@ -31,7 +31,7 @@ kotlin {
       dependencies {
         implementation projects.counter.sunspot.compose.protocol
         implementation projects.counter.sunspot.widget.protocol
-        implementation projects.counter.shared
+        implementation projects.counter.presenter
 
         // We aren't multithreading, but we need Dispatchers.Main to refer to the actual main thread
         // instead of being an alias for Dispatchers.Default.
