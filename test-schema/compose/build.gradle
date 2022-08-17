@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.tools.compose'
+apply plugin: 'app.cash.redwood.build.compose'
 
 def generatedDir = 'build/generated/redwood'
 
