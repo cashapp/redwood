@@ -44,7 +44,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
   abstract val sourceDirectories: Property<Collection<File>>
 
   @get:Classpath
-  abstract val dependencies: ConfigurableFileCollection
+  abstract val classpath: ConfigurableFileCollection
 
   @TaskAction
   fun run() {
@@ -53,7 +53,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
       it.toolClasspath.from(toolClasspath)
       it.projectDirectory.set(projectDirectory)
       it.sourceDirectories.set(sourceDirectories)
-      it.dependencies.setFrom(dependencies)
+      it.classpath.setFrom(classpath)
     }
   }
 }
@@ -62,7 +62,7 @@ private interface RedwoodLintParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
   val projectDirectory: RegularFileProperty
   val sourceDirectories: Property<Collection<File>>
-  val dependencies: ConfigurableFileCollection
+  val classpath: ConfigurableFileCollection
 }
 
 private abstract class RedwoodLintWorker @Inject constructor(
@@ -78,14 +78,14 @@ private abstract class RedwoodLintWorker @Inject constructor(
         add(parameters.projectDirectory.get().asFile.absolutePath)
 
         for (file in parameters.sourceDirectories.get()) {
-          add("-s")
+          add("--sources")
           add(file.toString())
         }
 
-        val dependencies = parameters.dependencies.files
-        if (dependencies.isNotEmpty()) {
-          add("-cp")
-          add(dependencies.joinToString(File.pathSeparator))
+        val files = parameters.classpath.files
+        if (files.isNotEmpty()) {
+          add("--class-path")
+          add(files.joinToString(File.pathSeparator))
         }
       }
     }

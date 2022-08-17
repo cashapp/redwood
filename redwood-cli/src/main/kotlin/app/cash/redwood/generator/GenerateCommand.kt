@@ -22,15 +22,16 @@ import app.cash.redwood.generator.GenerateCommand.Type.Widget
 import app.cash.redwood.generator.GenerateCommand.Type.WidgetProtocol
 import app.cash.redwood.schema.parser.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.arguments.help
+import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.types.path
+import java.io.File
+import java.net.URLClassLoader
 
 internal class GenerateCommand : CliktCommand(name = "generate") {
   enum class Type {
@@ -55,19 +56,18 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
   private val out by option().path().required()
     .help("Directory into which generated files are written")
 
-  private val schemaType by argument("schema")
+  private val classpath by option("-cp", "--class-path")
+    .convert { it.split(File.pathSeparator).map(::File) }
+    .required()
+
+  private val schemaTypeName by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
-    .convert {
-      // Replace with https://youtrack.jetbrains.com/issue/KT-10440 once it ships.
-      try {
-        Class.forName(it).kotlin
-      } catch (e: ClassNotFoundException) {
-        throw CliktError("Unable to load class: $it", e)
-      }
-    }
 
   override fun run() {
+    val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
+    val schemaType = classLoader.loadClass(schemaTypeName).kotlin
     val schema = parseSchema(schemaType)
+
     when (type) {
       Compose -> {
         generateComposableTargetMarker(schema).writeTo(out)

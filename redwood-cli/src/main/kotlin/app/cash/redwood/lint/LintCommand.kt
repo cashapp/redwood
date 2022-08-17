@@ -61,7 +61,7 @@ internal class LintCommand : CliktCommand(name = "lint") {
   private val sourceDirectories by option("-s", "--sources", metavar = "DIR")
     .file()
     .multiple(required = true)
-  private val classpath by option("-cp", "--classpath")
+  private val classpath by option("-cp", "--class-path")
     .convert { it.split(File.pathSeparator).map(::File) }
     .default(emptyList())
   private val jdkHome by option("--jdk", envvar = "JAVA_HOME")
