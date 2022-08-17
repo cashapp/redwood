@@ -33,8 +33,4 @@ class IosSunspotText : SunspotText<UIView> {
   override fun text(text: String?) {
     value.text = text
   }
-
-  override fun color(color: String) {
-    // TODO Parse color. Actual TODO: Use semantic color type rather than hex string.
-  }
 }

@@ -15,7 +15,6 @@
  */
 package example.android.sunspot
 
-import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.LayoutModifier
@@ -28,9 +27,5 @@ class AndroidSunspotText(
 
   override fun text(text: String?) {
     value.text = text
-  }
-
-  override fun color(color: String) {
-    value.setTextColor(Color.parseColor(color))
   }
 }

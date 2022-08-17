@@ -1,7 +1,7 @@
 include ':counter:android'
 include ':counter:browser'
 include ':counter:ios:shared'
-include ':counter:shared'
+include ':counter:presenter'
 include ':counter:sunspot'
 include ':counter:sunspot:compose'
 include ':counter:sunspot:compose:protocol'
