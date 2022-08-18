@@ -51,3 +51,5 @@ public val WidgetVersion: UInt
   @Composable
   @ReadOnlyComposable
   get() = LocalWidgetVersion.current
+
+public annotation class RequiresWidgetVersion(val version: UInt)

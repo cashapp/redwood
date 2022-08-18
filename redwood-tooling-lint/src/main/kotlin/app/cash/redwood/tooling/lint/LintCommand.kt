@@ -18,6 +18,7 @@
 
 package app.cash.redwood.tooling.lint
 
+import com.android.sdklib.AndroidVersion
 import com.android.tools.lint.LintResourceRepository.Companion.EmptyRepository
 import com.android.tools.lint.LintStats
 import com.android.tools.lint.UastEnvironment
@@ -30,7 +31,6 @@ import com.android.tools.lint.detector.api.CURRENT_API
 import com.android.tools.lint.detector.api.Context
 import com.android.tools.lint.detector.api.Desugaring
 import com.android.tools.lint.detector.api.Incident
-import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Platform
 import com.android.tools.lint.detector.api.Project
@@ -45,8 +45,10 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.clikt.parameters.types.path
 import com.intellij.pom.java.LanguageLevel
 import com.intellij.pom.java.LanguageLevel.JDK_1_7
 import java.io.File
@@ -66,8 +68,16 @@ internal class LintCommand : CliktCommand(name = "check") {
     .file()
     .split(File.pathSeparator)
     .default(emptyList())
+  private val apiDefinition by option("--api")
+    .path()
+    .required()
 
   override fun run() {
+    ApiDetector.apiDatabase = RedwoodApi(1U)
+    // apiDefinition?.let { apiDefinition ->
+    //   ApiDetector.apiDatabase = RedwoodApi.deserialize(apiDefinition.readText())
+    // }
+
     val uastConfig = UastEnvironment.Configuration.create().apply {
       javaLanguageLevel = JDK_1_7
       // UAST warns when you give it a directory that does not exist.
@@ -100,7 +110,10 @@ internal class LintCommand : CliktCommand(name = "check") {
 
 private class RedwoodIssueRegistry : IssueRegistry() {
   override val api get() = CURRENT_API
-  override val issues get() = emptyList<Issue>()
+  override val issues get() = listOf(
+    ApiDetector.UNSUPPORTED,
+    ApiDetector.OBSOLETE_SDK,
+  )
 }
 
 private class RedwoodProject(
@@ -115,6 +128,11 @@ private class RedwoodProject(
 
   override fun initialize() {
     // Not calling super as it is for Android projects only.
+  }
+
+  override fun getMinSdkVersion(): AndroidVersion {
+    // TODO support setting this
+    return super.getMinSdkVersion()
   }
 
   override fun getJavaSourceFolders() = sources

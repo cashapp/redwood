@@ -27,6 +27,29 @@ internal data class RedwoodApi(
   val modifier: List<RedwoodModifier> = emptyList(),
 ) {
   fun serialize() = xml.encodeToString(serializer(), this)
+  fun containsClass(owner: String): Boolean {
+    TODO("Not yet implemented $owner")
+  }
+
+  fun getClassVersion(owner: String): Int {
+    TODO("Not yet implemented $owner")
+  }
+
+  fun getMethodVersion(owner: String, name: String, desc: String): Int {
+    TODO("Not yet implemented $owner $name $desc")
+  }
+
+  fun getValidCastVersion(classType: String, interfaceType: String): Int {
+    TODO("Not yet implemented $classType $interfaceType")
+  }
+
+  fun isRelevantOwner(owner: String): Boolean {
+    TODO("Not yet implemented $owner")
+  }
+
+  fun getFieldVersion(owner: String, name: String): Int {
+    TODO("Not yet implemented $owner $name")
+  }
 
   companion object {
     private val xml = XML {

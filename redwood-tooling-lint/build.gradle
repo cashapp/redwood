@@ -31,3 +31,13 @@ tasks.withType(KotlinJvmCompile).configureEach {
     jvmTarget.set(JvmTarget.JVM_11)
   }
 }
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/main/kotlin/app/cash/redwood/tooling/lint/ApiDetector.kt",
+      "src/main/kotlin/app/cash/redwood/tooling/lint/VersionChecks.kt",
+    )
+  }
+}
