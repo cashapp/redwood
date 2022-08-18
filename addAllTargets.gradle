@@ -5,37 +5,55 @@ plugins.withId('org.jetbrains.kotlin.multiplatform') {
         publishLibraryVariants('release')
       }
     }
-    //iosArm32()
+
     iosArm64()
     iosX64()
+    iosSimulatorArm64()
+
     js {
       browser()
     }
+
     jvm()
-    //macosX64()
-    //mingwX64()
-    //tvosX64()
-    //tvosArm64()
-    //watchosArm32()
-    //watchosArm64()
-    //macosArm64()
-    iosSimulatorArm64()
-    //watchosSimulatorArm64()
-    //tvosSimulatorArm64()
+
+    macosArm64()
+    macosX64()
 
     sourceSets {
       nativeMain {
+        dependsOn(commonMain)
+      }
+      nativeTest {
+        dependsOn(commonTest)
       }
 
-      nativeTest {
+      iosMain {
+        dependsOn(nativeMain)
+      }
+      iosTest {
+        dependsOn(nativeTest)
+      }
+
+      macosMain {
+        dependsOn(nativeMain)
+      }
+      macosTest {
+        dependsOn(nativeTest)
       }
     }
 
     targets.all { target ->
       // Some Kotlin targets do not have this property, but native ones always will.
       if (target.hasProperty('platformType') && target.platformType.name == "native") {
-        target.compilations.main.source(sourceSets.nativeMain)
-        target.compilations.test.source(sourceSets.nativeTest)
+        if (target.name.startsWith('ios')) {
+          target.compilations.main.source(sourceSets.iosMain)
+          target.compilations.test.source(sourceSets.iosTest)
+        } else if (target.name.startsWith('macos')) {
+          target.compilations.main.source(sourceSets.macosMain)
+          target.compilations.test.source(sourceSets.macosTest)
+        } else {
+          throw new AssertionError("Unknown target ${target.name}")
+        }
       }
     }
   }
