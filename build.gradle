@@ -64,12 +64,6 @@ allprojects {
       if (project.path.startsWith(':redwood-') || project.path.startsWith(':treehouse')) {
         explicitApi()
       }
-
-      sourceSets.all {
-        languageSettings {
-          optIn('kotlin.RequiresOptIn')
-        }
-      }
     }
   }
 
@@ -85,7 +79,6 @@ allprojects {
     task.kotlinOptions {
       jvmTarget = '1.8'
       freeCompilerArgs += [
-        '-opt-in=kotlin.RequiresOptIn',
         '-Xjvm-default=all',
       ]
     }
