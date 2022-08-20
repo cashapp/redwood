@@ -29,9 +29,17 @@ public interface TreehouseDispatchers {
   public val main: CoroutineDispatcher
   public val zipline: CoroutineDispatcher
 
-  /** Confirm that this is being called on the main thread or main dispatcher. */
+  /**
+   * Confirm that this is being called on the main thread or main dispatcher.
+   *
+   * @throws IllegalStateException if invoked on non-main thread.
+   */
   public fun checkMain()
 
-  /** Confirm that this is being called on the zipline thread or zipline dispatcher. */
+  /**
+   * Confirm that this is being called on the zipline thread or zipline dispatcher.
+   *
+   * @throws IllegalStateException if invoked on non-zipline thread.
+   */
   public fun checkZipline()
 }
