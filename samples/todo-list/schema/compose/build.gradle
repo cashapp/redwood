@@ -15,6 +15,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = project(':todo-list:schema')
+  source = projects.todoList.schema
   type = 'example.schema.Todo'
 }
