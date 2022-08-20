@@ -22,7 +22,3 @@ module:redwood-schema-annotations
 app.cash.redwood.schema
 module:redwood-widget
 app.cash.redwood.widget
-module:treehouse
-app.cash.treehouse
-module:treehouse-compose
-app.cash.treehouse
