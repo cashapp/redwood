@@ -13,7 +13,7 @@ kotlin {
         api libs.okio
         api libs.zipline
         api projects.redwoodProtocolCompose
-        api projects.treehouse
+        api projects.redwoodTreehouse
       }
     }
   }
