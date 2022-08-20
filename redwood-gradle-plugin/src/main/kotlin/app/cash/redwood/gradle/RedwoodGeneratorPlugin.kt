@@ -59,6 +59,9 @@ public abstract class RedwoodGeneratorPlugin(
     if (strategy == Compose) {
       project.plugins.apply(RedwoodPlugin::class.java)
     }
+    if (strategy == ComposeProtocol || strategy == WidgetProtocol) {
+      project.plugins.apply("org.jetbrains.kotlin.plugin.serialization")
+    }
 
     val extension = project.extensions.create(
       "redwoodSchema",
