@@ -118,7 +118,7 @@ private fun configureKotlinAndroidVariants(
       if (prefix) {
         append("Android")
       }
-      append(variant.name.capitalize(ROOT))
+      append(variant.name.replaceFirstChar { it.titlecase(ROOT) })
     }
     val task = project.createRedwoodLintTask(
       taskName,
@@ -150,7 +150,7 @@ private fun configureKotlinMultiplatformTargets(
     val task = createKotlinTargetRedwoodLintTask(
       project,
       target,
-      taskName = baseTaskName + target.name.capitalize(ROOT),
+      taskName = baseTaskName + target.name.replaceFirstChar { it.titlecase(ROOT) },
     )
     rootTask.configure {
       it.dependsOn(task)
