@@ -18,27 +18,27 @@ package app.cash.treehouse
 import app.cash.zipline.EventListener
 import app.cash.zipline.ZiplineService
 
-public class TreehouseEventListener(
-  private val log: (warning: Boolean, message: String, throwable: Throwable?) -> Unit,
+internal class TreehouseEventListener(
+  private val platform: TreehousePlatform,
 ) : EventListener() {
   override fun bindService(name: String, service: ZiplineService) {
-    log(false, "Binding service $name of type ${service::class}", null)
+    platform.logInfo("Binding service $name of type ${service::class}", null)
   }
 
   override fun takeService(name: String, service: ZiplineService) {
-    log(false, "Taking service $name of type ${service::class}", null)
+    platform.logInfo("Taking service $name of type ${service::class}", null)
   }
 
   override fun serviceLeaked(name: String) {
-    log(true, "Service $name wasn't closed!", null)
+    platform.logWarning("Service $name wasn't closed!", null)
   }
 
   override fun applicationLoadStart(applicationName: String, manifestUrl: String?) {
-    log(false, "Loading application $applicationName from $manifestUrl", null)
+    platform.logInfo("Loading application $applicationName from $manifestUrl", null)
   }
 
   override fun applicationLoadEnd(applicationName: String, manifestUrl: String?) {
-    log(false, "Loaded application $applicationName", null)
+    platform.logInfo("Loaded application $applicationName", null)
   }
 
   override fun applicationLoadFailed(
@@ -46,14 +46,14 @@ public class TreehouseEventListener(
     manifestUrl: String?,
     exception: Exception,
   ) {
-    log(true, "Loading application $applicationName failed", exception)
+    platform.logWarning("Loading application $applicationName failed", exception)
   }
 
   override fun downloadFailed(applicationName: String, url: String, exception: Exception) {
-    log(false, "Downloading code failed; will retry: $exception", null)
+    platform.logInfo("Downloading code failed; will retry: $exception", null)
   }
 
   override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
-    log(false, "Failed to parse the Zipline Manifest; will retry: $exception", null)
+    platform.logInfo("Failed to parse the Zipline Manifest; will retry: $exception", null)
   }
 }

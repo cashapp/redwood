@@ -19,9 +19,12 @@ import app.cash.zipline.Zipline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 
 /**
  * This class binds downloaded code to on-screen views.
@@ -29,7 +32,7 @@ import kotlinx.coroutines.withContext
  * It updates the binding when the views change in [onContentChanged], and when new code is
  * available in [onCodeChanged].
  */
-public class TreehouseHost<T : Any>(
+public class TreehouseApp<T : Any>(
   private val scope: CoroutineScope,
   public val dispatchers: TreehouseDispatchers,
   public val viewBinder: ViewBinder,
@@ -37,7 +40,7 @@ public class TreehouseHost<T : Any>(
   /** All state is confined to [TreehouseDispatchers.zipline]. */
   private var closed = false
   private var ziplineSession: ZiplineSession<T>? = null
-  private val viewToBoundContent = mutableMapOf<TreehouseView<T>, TreehouseContent<T>>()
+  private val viewToBoundContent = mutableMapOf<TreehouseView<T>, TreehouseView.Content<T>>()
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -131,7 +134,7 @@ public class TreehouseHost<T : Any>(
 
     fun bind(
       view: TreehouseView<T>,
-      content: TreehouseContent<T>?,
+      content: TreehouseView.Content<T>?,
     ) {
       dispatchers.checkZipline()
 
@@ -149,5 +152,25 @@ public class TreehouseHost<T : Any>(
       scope.cancel()
       zipline.close()
     }
+  }
+
+  /**
+   * Configuration and code to launch a Treehouse application.
+   */
+  public abstract class Spec<T : Any> {
+    public abstract val name: String
+    public abstract val manifestUrl: Flow<String>
+
+    // TODO(jwilson): move SerializersModule from TreehousePlatform.
+    public open val serializersModule: SerializersModule
+      get() = EmptySerializersModule()
+
+    public open val freshCodePolicy: FreshCodePolicy
+      get() = FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY
+
+    public abstract val viewBinderAdapter: ViewBinder.Adapter
+
+    public abstract fun bindServices(zipline: Zipline)
+    public abstract fun create(zipline: Zipline): T
   }
 }
