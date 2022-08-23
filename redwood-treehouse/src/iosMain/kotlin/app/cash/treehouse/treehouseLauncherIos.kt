@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.modules.SerializersModule
 import okio.FileSystem
+import okio.Path
 import okio.Path.Companion.toPath
 import platform.Foundation.NSLog
 import platform.Foundation.NSTemporaryDirectory
@@ -38,11 +39,15 @@ public fun TreehouseLauncher(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
   serializersModule: SerializersModule,
+  embeddedDir: Path = "/".toPath(),
+  embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
 ): TreehouseLauncher = TreehouseLauncher(
   IosTreehousePlatform(
     httpClient,
     manifestVerifier,
     serializersModule,
+    embeddedDir,
+    embeddedFileSystem,
   ),
 )
 
@@ -50,6 +55,8 @@ internal class IosTreehousePlatform(
   private val httpClient: ZiplineHttpClient,
   private val manifestVerifier: ManifestVerifier,
   override val serializersModule: SerializersModule,
+  private val embeddedDir: Path,
+  private val embeddedFileSystem: FileSystem,
 ) : TreehousePlatform {
   override val dispatchers = IosTreehouseDispatchers()
   override val cacheDirectory = NSTemporaryDirectory().toPath() / "zipline"
@@ -82,8 +89,8 @@ internal class IosTreehousePlatform(
       directory = cacheDirectory,
       maxSizeInBytes = 50L * 1024L * 1024L,
     ).withEmbedded(
-      embeddedDir = "/".toPath(),
-      embeddedFileSystem = FileSystem.SYSTEM,
+      embeddedDir = embeddedDir,
+      embeddedFileSystem = embeddedFileSystem,
     )
   }
 }

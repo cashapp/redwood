@@ -43,12 +43,16 @@ public fun TreehouseLauncher(
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
   serializersModule: SerializersModule,
+  embeddedDir: Path = "/".toPath(),
+  embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
 ): TreehouseLauncher = TreehouseLauncher(
   AndroidTreehousePlatform(
     context,
     httpClient,
     manifestVerifier,
     serializersModule,
+    embeddedDir,
+    embeddedFileSystem,
   ),
 )
 
@@ -57,6 +61,8 @@ internal class AndroidTreehousePlatform(
   private val httpClient: OkHttpClient,
   private val manifestVerifier: ManifestVerifier,
   override val serializersModule: SerializersModule,
+  private val embeddedDir: Path,
+  private val embeddedFileSystem: FileSystem,
 ) : TreehousePlatform {
   override val dispatchers = AndroidTreehouseDispatchers()
   override val cacheDirectory: Path = context.cacheDir.toOkioPath() / "zipline"
@@ -82,8 +88,8 @@ internal class AndroidTreehousePlatform(
       directory = cacheDirectory,
       maxSizeInBytes = 50L * 1024L * 1024L,
     ).withEmbedded(
-      embeddedDir = "/".toPath(),
-      embeddedFileSystem = FileSystem.SYSTEM,
+      embeddedDir = embeddedDir,
+      embeddedFileSystem = embeddedFileSystem,
     )
   }
 }
