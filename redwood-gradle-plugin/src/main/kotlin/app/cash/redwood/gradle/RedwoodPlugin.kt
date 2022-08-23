@@ -17,7 +17,6 @@ package app.cash.redwood.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
@@ -53,23 +52,13 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
     }
 
     when (kotlinCompilation.platformType) {
-      androidJvm, jvm -> {
-        if ((kotlinCompilation.kotlinOptions as KotlinJvmOptions).useOldBackend) {
-          throw IllegalStateException("Redwood only works with the default IR-based backend")
-        }
-      }
       js -> {
         // This enables a workaround for Compose lambda generation to function correctly in JS.
+        // Note: We cannot use SubpluginOption to do this because it targets the Compose plugin.
         kotlinCompilation.kotlinOptions.freeCompilerArgs +=
           listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true")
       }
-      native -> {
-        // Kotlin/Native compiler reports its version like 1.4.21-344 whereas Kotlin/JVM and
-        // Kotlin/JS say only 1.4.21. Compose checks this version and fails for Kotlin/Native.
-        kotlinCompilation.kotlinOptions.freeCompilerArgs +=
-          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true")
-      }
-      common, wasm -> {
+      common, androidJvm, jvm, native, wasm -> {
         // Nothing to do!
       }
     }
