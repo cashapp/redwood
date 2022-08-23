@@ -15,6 +15,7 @@
  */
 package app.cash.treehouse
 
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import kotlinx.cinterop.cValue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,9 @@ public class TreehouseUIKitView<T : Any>(
 
   // TODO(jwilson): track when this view is detached from screen
   override val boundContent: TreehouseContent<T>? = content
+
+  override val protocolDisplayRoot: DiffConsumingWidget<*> =
+    ProtocolDisplayRoot(view as UIStackView)
 
   public fun register(treehouseHost: TreehouseHost<T>?) {
     this.treehouseHost = treehouseHost

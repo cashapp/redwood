@@ -17,6 +17,8 @@ package app.cash.treehouse
 
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -57,7 +59,14 @@ public class RealViewBinder(
       }
     }
 
-    val display = adapter.protocolDisplay(view, eventSink, json)
+    val widgetFactory = adapter.widgetFactory(view, json)
+
+    @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
+    val display = ProtocolDisplay(
+      root = view.protocolDisplayRoot as DiffConsumingWidget<Any>,
+      factory = widgetFactory as DiffConsumingWidget.Factory<Any>,
+      eventSink = eventSink,
+    )
 
     val diffSinkService = object : DiffSinkService {
       private var firstDiff = true

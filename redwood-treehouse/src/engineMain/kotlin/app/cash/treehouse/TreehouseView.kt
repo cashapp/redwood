@@ -15,6 +15,9 @@
  */
 package app.cash.treehouse
 
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
+
 public interface TreehouseView<T : Any> {
   public val boundContent: TreehouseContent<T>?
+  public val protocolDisplayRoot: DiffConsumingWidget<*>
 }

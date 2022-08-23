@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.FrameLayout
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.widget.Widget
 
 @SuppressLint("ViewConstructor")
@@ -38,6 +39,8 @@ public class TreehouseWidgetView<T : Any>(
         else -> null
       }
     }
+
+  override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
 
   public fun setContent(content: TreehouseContent<T>) {
     treehouseHost.dispatchers.checkMain()

@@ -15,8 +15,7 @@
  */
 package app.cash.treehouse
 
-import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
@@ -52,11 +51,10 @@ public interface ViewBinder {
     /** Clear the previous UI and show a quick animation for subsequent code updates. */
     public fun beforeUpdatedCode(view: TreehouseView<*>) {}
 
-    /** Returns a protocol display for the contents of [treehouseView]. */
-    public fun protocolDisplay(
-      treehouseView: TreehouseView<*>,
-      eventSink: EventSink,
+    /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
+    public fun widgetFactory(
+      view: TreehouseView<*>,
       json: Json,
-    ): ProtocolDisplay<*>
+    ): DiffConsumingWidget.Factory<*>
   }
 }
