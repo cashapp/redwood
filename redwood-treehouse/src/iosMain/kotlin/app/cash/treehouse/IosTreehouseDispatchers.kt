@@ -15,9 +15,20 @@
  */
 package app.cash.treehouse
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import platform.Foundation.NSThread
 
-public interface TreehouseView<T : Any> {
-  public val boundContent: TreehouseContent<T>?
-  public val protocolDisplayRoot: DiffConsumingWidget<*>
+// TODO(jwilson): we're currently doing everything on the main thread on iOS.
+public class IosTreehouseDispatchers : TreehouseDispatchers {
+  override val main: CoroutineDispatcher = Dispatchers.Main
+  override val zipline: CoroutineDispatcher = Dispatchers.Main
+
+  override fun checkMain() {
+    check(NSThread.isMainThread)
+  }
+
+  override fun checkZipline() {
+    checkMain()
+  }
 }
