@@ -22,19 +22,19 @@ import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
 public class TreehouseUIKitView<T : Any>(
-  private val content: TreehouseContent<T>,
+  private val content: TreehouseView.Content<T>,
 ) : TreehouseView<T> {
   public val view: UIView = UIStackView(frame = cValue { CGRectZero })
-  private var treehouseHost: TreehouseHost<T>? = null
+  private var treehouseApp: TreehouseApp<T>? = null
 
   // TODO(jwilson): track when this view is detached from screen
-  override val boundContent: TreehouseContent<T>? = content
+  override val boundContent: TreehouseView.Content<T>? = content
 
   override val protocolDisplayRoot: DiffConsumingWidget<*> =
-    ProtocolDisplayRoot(view as UIStackView)
+    ProtocolDisplayRoot(view)
 
-  public fun register(treehouseHost: TreehouseHost<T>?) {
-    this.treehouseHost = treehouseHost
-    treehouseHost?.onContentChanged(this)
+  public fun register(treehouseApp: TreehouseApp<T>?) {
+    this.treehouseApp = treehouseApp
+    treehouseApp?.onContentChanged(this)
   }
 }

@@ -26,14 +26,14 @@ import app.cash.redwood.widget.Widget
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView<T : Any>(
   context: Context,
-  private val treehouseHost: TreehouseHost<T>,
+  private val treehouseApp: TreehouseApp<T>,
   public val widgetFactory: Widget.Factory<View>,
 ) : FrameLayout(context), TreehouseView<T> {
   /** This is always the user-supplied content. */
-  private var content: TreehouseContent<T>? = null
+  private var content: TreehouseView.Content<T>? = null
 
   /** This is the actual content, or null if not attached to the screen. */
-  override val boundContent: TreehouseContent<T>?
+  override val boundContent: TreehouseView.Content<T>?
     get() {
       return when {
         isAttachedToWindow -> content
@@ -43,20 +43,20 @@ public class TreehouseWidgetView<T : Any>(
 
   override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
 
-  public fun setContent(content: TreehouseContent<T>) {
-    treehouseHost.dispatchers.checkMain()
+  public fun setContent(content: TreehouseView.Content<T>) {
+    treehouseApp.dispatchers.checkMain()
     this.content = content
-    treehouseHost.onContentChanged(this)
+    treehouseApp.onContentChanged(this)
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    treehouseHost.onContentChanged(this)
+    treehouseApp.onContentChanged(this)
   }
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    treehouseHost.onContentChanged(this)
+    treehouseApp.onContentChanged(this)
   }
 
   override fun generateDefaultLayoutParams(): LayoutParams =
