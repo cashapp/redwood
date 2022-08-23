@@ -21,12 +21,11 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.zipline.loader.ManifestVerifier
+import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
-import app.cash.zipline.loader.ZiplineLoader
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.modules.SerializersModule
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -38,29 +37,22 @@ import platform.UIKit.UIView
 public fun TreehouseLauncher(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
-  serializersModule: SerializersModule,
   embeddedDir: Path = "/".toPath(),
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
+  cacheName: String = "zipline",
+  cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
 ): TreehouseLauncher = TreehouseLauncher(
-  IosTreehousePlatform(
-    httpClient,
-    manifestVerifier,
-    serializersModule,
-    embeddedDir,
-    embeddedFileSystem,
-  ),
+  platform = IosTreehousePlatform(),
+  dispatchers = IosTreehouseDispatchers(),
+  httpClient = httpClient,
+  manifestVerifier = manifestVerifier,
+  embeddedDir = embeddedDir,
+  embeddedFileSystem = embeddedFileSystem,
+  cacheName = cacheName,
+  cacheMaxSizeInBytes = cacheMaxSizeInBytes,
 )
 
-internal class IosTreehousePlatform(
-  private val httpClient: ZiplineHttpClient,
-  private val manifestVerifier: ManifestVerifier,
-  override val serializersModule: SerializersModule,
-  private val embeddedDir: Path,
-  private val embeddedFileSystem: FileSystem,
-) : TreehousePlatform {
-  override val dispatchers = IosTreehouseDispatchers()
-  override val cacheDirectory = NSTemporaryDirectory().toPath() / "zipline"
-
+internal class IosTreehousePlatform : TreehousePlatform {
   override fun logInfo(message: String, throwable: Throwable?) {
     if (throwable != null) {
       NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
@@ -77,22 +69,11 @@ internal class IosTreehousePlatform(
     }
   }
 
-  override fun newZiplineLoader(): ZiplineLoader {
-    return ZiplineLoader(
-      dispatcher = dispatchers.zipline,
-      manifestVerifier = manifestVerifier,
-      httpClient = httpClient,
-      eventListener = TreehouseEventListener(this),
-      serializersModule = serializersModule,
-    ).withCache(
-      fileSystem = FileSystem.SYSTEM,
-      directory = cacheDirectory,
-      maxSizeInBytes = 50L * 1024L * 1024L,
-    ).withEmbedded(
-      embeddedDir = embeddedDir,
-      embeddedFileSystem = embeddedFileSystem,
-    )
-  }
+  override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
+    fileSystem = FileSystem.SYSTEM,
+    directory = NSTemporaryDirectory().toPath() / name,
+    maxSizeInBytes = maxSizeInBytes,
+  )
 }
 
 // TODO(jwilson): we're currently doing everything on the main thread on iOS.

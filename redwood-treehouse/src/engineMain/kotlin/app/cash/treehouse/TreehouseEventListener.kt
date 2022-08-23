@@ -37,7 +37,11 @@ internal class TreehouseEventListener(
     platform.logInfo("Loading application $applicationName from $manifestUrl", null)
   }
 
-  override fun applicationLoadEnd(applicationName: String, manifestUrl: String?) {
+  override fun applicationLoadEnd(
+    applicationName: String,
+    manifestUrl: String?,
+    startValue: Any?,
+  ) {
     platform.logInfo("Loaded application $applicationName", null)
   }
 
@@ -45,11 +49,17 @@ internal class TreehouseEventListener(
     applicationName: String,
     manifestUrl: String?,
     exception: Exception,
+    startValue: Any?,
   ) {
     platform.logWarning("Loading application $applicationName failed", exception)
   }
 
-  override fun downloadFailed(applicationName: String, url: String, exception: Exception) {
+  override fun downloadFailed(
+    applicationName: String,
+    url: String,
+    exception: Exception,
+    startValue: Any?,
+  ) {
     platform.logInfo("Downloading code failed; will retry: $exception", null)
   }
 

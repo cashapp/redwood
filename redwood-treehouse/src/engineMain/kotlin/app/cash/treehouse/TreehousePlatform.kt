@@ -15,22 +15,12 @@
  */
 package app.cash.treehouse
 
-import app.cash.zipline.loader.ZiplineLoader
-import kotlinx.serialization.modules.SerializersModule
-import okio.Path
+import app.cash.zipline.loader.ZiplineCache
 
 internal interface TreehousePlatform {
-  val dispatchers: TreehouseDispatchers
-
-  /** Directory for the cache shared by all Treehouse applications. */
-  val cacheDirectory: Path
-
-  // TODO(jwilson): move this to TreehouseLauncher.Spec.
-  val serializersModule: SerializersModule
-
   fun logInfo(message: String, throwable: Throwable?)
 
   fun logWarning(message: String, throwable: Throwable?)
 
-  fun newZiplineLoader(): ZiplineLoader
+  fun newCache(name: String, maxSizeInBytes: Long): ZiplineCache
 }
