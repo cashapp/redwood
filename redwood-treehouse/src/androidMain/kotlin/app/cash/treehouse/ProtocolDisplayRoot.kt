@@ -16,39 +16,17 @@
 package app.cash.treehouse
 
 import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.ViewGroupChildren
 import kotlinx.serialization.json.JsonArray
 
 internal class ProtocolDisplayRoot(
   override val value: TreehouseWidgetView<*>,
 ) : DiffConsumingWidget<View> {
-  private val children = object : Widget.Children<View> {
-    override fun insert(index: Int, widget: View) {
-      value.addView(widget, index, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-    }
-
-    override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-      error("not implemented")
-    }
-
-    override fun remove(index: Int, count: Int) {
-      for (i in 0 until count) {
-        value.removeViewAt(index)
-      }
-    }
-
-    override fun clear() {
-      for (i in value.childCount - 1 downTo 0) {
-        value.removeViewAt(i)
-      }
-    }
-  }
+  private val children = ViewGroupChildren(value)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 

@@ -18,6 +18,7 @@ package app.cash.treehouse
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.widget.Widget
@@ -57,4 +58,7 @@ public class TreehouseWidgetView<T : Any>(
     super.onDetachedFromWindow()
     treehouseHost.onContentChanged(this)
   }
+
+  override fun generateDefaultLayoutParams(): LayoutParams =
+    LayoutParams(MATCH_PARENT, MATCH_PARENT)
 }

@@ -19,37 +19,15 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.UIViewChildren
 import kotlinx.serialization.json.JsonArray
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.subviews
 
 internal class ProtocolDisplayRoot(
   override val value: UIStackView,
 ) : DiffConsumingWidget<UIView> {
-  private val children = object : Widget.Children<UIView> {
-    override fun insert(index: Int, widget: UIView) {
-      value.insertArrangedSubview(widget, atIndex = index.toULong())
-    }
-
-    override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-      error("not implemented")
-    }
-
-    override fun remove(index: Int, count: Int) {
-      for (i in 0 until count) {
-        (value.subviews[index] as UIView).removeFromSuperview()
-      }
-    }
-
-    override fun clear() {
-      for (subview in value.subviews) {
-        (subview as UIView).removeFromSuperview()
-      }
-    }
-  }
+  private val children = UIViewChildren(value)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
