@@ -25,13 +25,13 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.zipline.loader.ManifestVerifier
-import app.cash.zipline.loader.ZiplineLoader
+import app.cash.zipline.loader.ZiplineCache
+import app.cash.zipline.loader.asZiplineHttpClient
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.modules.SerializersModule
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
@@ -42,31 +42,24 @@ public fun TreehouseLauncher(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
-  serializersModule: SerializersModule,
   embeddedDir: Path = "/".toPath(),
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
+  cacheName: String = "zipline",
+  cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
 ): TreehouseLauncher = TreehouseLauncher(
-  AndroidTreehousePlatform(
-    context,
-    httpClient,
-    manifestVerifier,
-    serializersModule,
-    embeddedDir,
-    embeddedFileSystem,
-  ),
+  platform = AndroidTreehousePlatform(context),
+  dispatchers = AndroidTreehouseDispatchers(),
+  httpClient = httpClient.asZiplineHttpClient(),
+  manifestVerifier = manifestVerifier,
+  embeddedDir = embeddedDir,
+  embeddedFileSystem = embeddedFileSystem,
+  cacheName = cacheName,
+  cacheMaxSizeInBytes = cacheMaxSizeInBytes,
 )
 
 internal class AndroidTreehousePlatform(
   private val context: Context,
-  private val httpClient: OkHttpClient,
-  private val manifestVerifier: ManifestVerifier,
-  override val serializersModule: SerializersModule,
-  private val embeddedDir: Path,
-  private val embeddedFileSystem: FileSystem,
 ) : TreehousePlatform {
-  override val dispatchers = AndroidTreehouseDispatchers()
-  override val cacheDirectory: Path = context.cacheDir.toOkioPath() / "zipline"
-
   override fun logInfo(message: String, throwable: Throwable?) {
     Log.i("Zipline", message, throwable)
   }
@@ -75,23 +68,12 @@ internal class AndroidTreehousePlatform(
     Log.w("Zipline", message, throwable)
   }
 
-  override fun newZiplineLoader(): ZiplineLoader {
-    return ZiplineLoader(
-      context = context,
-      dispatcher = dispatchers.zipline,
-      manifestVerifier = manifestVerifier,
-      httpClient = httpClient,
-      eventListener = TreehouseEventListener(this),
-      serializersModule = serializersModule,
-    ).withCache(
-      fileSystem = FileSystem.SYSTEM,
-      directory = cacheDirectory,
-      maxSizeInBytes = 50L * 1024L * 1024L,
-    ).withEmbedded(
-      embeddedDir = embeddedDir,
-      embeddedFileSystem = embeddedFileSystem,
-    )
-  }
+  override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
+    context = context,
+    fileSystem = FileSystem.SYSTEM,
+    directory = context.cacheDir.toOkioPath() / name,
+    maxSizeInBytes = maxSizeInBytes,
+  )
 }
 
 /**

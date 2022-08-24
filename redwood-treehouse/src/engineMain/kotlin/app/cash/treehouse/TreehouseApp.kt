@@ -161,7 +161,6 @@ public class TreehouseApp<T : Any>(
     public abstract val name: String
     public abstract val manifestUrl: Flow<String>
 
-    // TODO(jwilson): move SerializersModule from TreehousePlatform.
     public open val serializersModule: SerializersModule
       get() = EmptySerializersModule()
 
