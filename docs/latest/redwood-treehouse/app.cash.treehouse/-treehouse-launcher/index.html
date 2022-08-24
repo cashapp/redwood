@@ -46,13 +46,30 @@ if(savedDarkMode === true){
     <h1 class="cover"><span>Treehouse</span><wbr><span><span>Launcher</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
       <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/engineMain">engine</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/engineMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreehouseLauncher</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This manages a cache that should be shared by all launched applications. For best performance and correctness this must be a singleton.</p></div>    </div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/engineMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreehouseLauncher</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This manages a cache that should be shared by all launched applications.</p><p class="paragraph">This class holds a stateful disk cache. At most one instance with each <a href="../../../redwood-treehouse/app.cash.treehouse/-treehouse-launcher/cache-name.html">cacheName</a> should be open at any time. Most callers should use a single <a href="index.html">TreehouseLauncher</a> for best caching.</p></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
     <div class="tabs-section-body">
       <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-382487560%2FFunctions%2F-834597710" anchor-label="launch" id="-382487560%2FFunctions%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a>
+      <div class="table" data-togglable="Functions"><a data-name="-261519219%2FFunctions%2F-834597710" anchor-label="close" id="-261519219%2FFunctions%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="close.html"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-261519219%2FFunctions%2F-834597710"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/engineMain">engine</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/engineMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-382487560%2FFunctions%2F-834597710" anchor-label="launch" id="-382487560%2FFunctions%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a>
         <div class="table-row" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
@@ -83,7 +100,7 @@ if(savedDarkMode === true){
               <div class="title">
                 <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
                   <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/engineMain">engine</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/engineMain"><a data-name="-2091767719%2FProperties%2F-834597710" anchor-label="dispatchers" id="-2091767719%2FProperties%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-2091767719%2FProperties%2F-834597710" anchor-label="dispatchers" id="-2091767719%2FProperties%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a><p class="paragraph">Dispatchers to execute code with the right capabilities.</p></div></div>                </div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/engineMain"><a data-name="-2091767719%2FProperties%2F-834597710" anchor-label="dispatchers" id="-2091767719%2FProperties%2F-834597710" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/engineMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
