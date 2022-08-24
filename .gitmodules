@@ -1,3 +1,0 @@
-[submodule "compose/upstream"]
-	path = compose/upstream
-	url = https://github.com/JetBrains/androidx.git

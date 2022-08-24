@@ -39,7 +39,7 @@ sourceSets {
 task pluginVersion {
   def outputDir = file(versionDirectory)
 
-  inputs.property 'jbComposeVersion', libs.versions.jbCompose.get()
+  inputs.property 'androidxComposeCompiler', libs.versions.androidxComposeCompiler.get()
   outputs.dir outputDir
 
   doLast {
@@ -48,7 +48,7 @@ task pluginVersion {
     versionFile.text = """// Generated file. Do not edit!
 package app.cash.redwood.buildsupport
 
-internal const val jbComposeVersion = "${libs.versions.jbCompose.get()}"
+internal const val androidxComposeCompiler = "${libs.versions.androidxComposeCompiler.get()}"
 """
   }
 }
