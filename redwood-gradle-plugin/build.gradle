@@ -1,6 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'com.github.gmazzo.buildconfig'
 
 dependencies {
   compileOnly gradleApi()
@@ -79,29 +80,13 @@ test {
   dependsOn(':redwood-widget:installArchives')
 }
 
-def versionDirectory = "$buildDir/generated/version/"
-
-sourceSets {
-  main.java.srcDir versionDirectory
-}
-
-task pluginVersion {
-  def outputDir = file(versionDirectory)
-
-  inputs.property 'androidxComposeCompiler', libs.versions.androidxComposeCompiler.get()
-  inputs.property 'redwoodVersion', project.version
-  outputs.dir outputDir
-
-  doLast {
-    def versionFile = file("$outputDir/app/cash/redwood/gradle/version.kt")
-    versionFile.parentFile.mkdirs()
-    versionFile.text = """// Generated file. Do not edit!
-package app.cash.redwood.gradle
-
-internal const val androidxComposeCompiler = "${libs.versions.androidxComposeCompiler.get()}"
-internal const val redwoodVersion = "${project.version}"
-"""
+buildConfig {
+  useKotlinOutput {
+    internalVisibility = true
+    topLevelConstants = true
   }
-}
 
-tasks.getByName('compileKotlin').dependsOn('pluginVersion')
+  packageName('app.cash.redwood.gradle')
+  buildConfigField("String", "androidxComposeCompiler", "\"${libs.versions.androidxComposeCompiler.get()}\"")
+  buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
+}

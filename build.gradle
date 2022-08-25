@@ -6,12 +6,14 @@ buildscript {
     classpath libs.gradleMavenPublishPlugin
     classpath libs.dokkaPlugin
     classpath libs.spotlessPlugin
+    classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
     classpath 'app.cash.redwood.build:gradle-plugin'
   }
   repositories {
     mavenCentral()
     google()
+    gradlePluginPortal()
     maven {
       url 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
     }
