@@ -30,7 +30,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion libs.versions.androidComposeCompiler.get()
+    kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
   }
 
   lintOptions {

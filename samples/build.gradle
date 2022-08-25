@@ -74,22 +74,6 @@ allprojects {
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
     }
 
-    // Normally the RedwoodPlugin performs dependency substitution to replace our Compose runtime
-    // for Android with the official AndroidX one. However, because we are using includeBuild in
-    // settings.gradle, the substitution does not match. Instead, for Android samples, we match
-    // on the included build's Compose runtime Gradle project and perform the same replacement.
-    configurations.all { configuration ->
-      configuration.resolutionStrategy.dependencySubstitution {
-        all { dependency ->
-          if (dependency.requested instanceof ProjectComponentSelector
-              && dependency.requested.buildName == 'redwood'
-              && dependency.requested.projectPath == ':compose:runtime') {
-            dependency.useTarget("androidx.compose.runtime:runtime:${libs.versions.androidComposeRuntime.get()}")
-          }
-        }
-      }
-    }
-
     // TODO Re-enable lint on samples https://issuetracker.google.com/issues/196982350
     afterEvaluate {
       tasks.named('lintReportDebug').configure { enabled = false }

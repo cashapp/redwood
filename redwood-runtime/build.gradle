@@ -10,7 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.compose.runtime
+        implementation libs.jetbrains.compose.runtime
       }
     }
   }

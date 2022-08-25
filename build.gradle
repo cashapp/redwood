@@ -19,12 +19,6 @@ buildscript {
 }
 
 apply plugin: 'org.jetbrains.dokka'
-dokkaHtmlMultiModule {
-  removeChildTasks([
-    // Do not include Compose in our documentation site.
-    project(":compose:runtime"),
-  ])
-}
 
 allprojects {
   repositories {

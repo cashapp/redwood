@@ -67,7 +67,6 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':compose:runtime:installArchives')
   dependsOn(':redwood-cli:installArchives')
   dependsOn(':redwood-compose:installArchives')
   dependsOn(':redwood-gradle-plugin:installArchives')
@@ -89,7 +88,7 @@ sourceSets {
 task pluginVersion {
   def outputDir = file(versionDirectory)
 
-  inputs.property 'jbComposeVersion', libs.versions.jbCompose.get()
+  inputs.property 'androidxComposeCompiler', libs.versions.androidxComposeCompiler.get()
   inputs.property 'redwoodVersion', project.version
   outputs.dir outputDir
 
@@ -99,7 +98,7 @@ task pluginVersion {
     versionFile.text = """// Generated file. Do not edit!
 package app.cash.redwood.gradle
 
-internal const val jbComposeVersion = "${libs.versions.jbCompose.get()}"
+internal const val androidxComposeCompiler = "${libs.versions.androidxComposeCompiler.get()}"
 internal const val redwoodVersion = "${project.version}"
 """
   }
