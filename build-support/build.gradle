@@ -28,7 +28,7 @@ gradlePlugin {
       id = "app.cash.redwood.build.compose"
       displayName = "JetBrains Compose"
       description = "Gradle plugin to apply JetBrains Compose compiler"
-      implementationClass = "app.cash.redwood.buildsupport.JetBrainsComposePlugin"
+      implementationClass = "app.cash.redwood.buildsupport.ComposePlugin"
     }
   }
 }
