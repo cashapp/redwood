@@ -2,8 +2,13 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'app.cash.zipline'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.zipline'
+apply plugin: 'app.cash.redwood.build.compose'
+
+redwoodBuildCompose {
+  targetCompilations = ['jsMain']
+}
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
@@ -11,8 +16,6 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api libs.kotlinx.coroutines.core
-        api libs.okio
         api projects.redwoodProtocol
         api libs.zipline
       }
@@ -21,6 +24,8 @@ kotlin {
     jsMain {
       dependencies {
         api projects.redwoodProtocolCompose
+        api libs.kotlinx.coroutines.core
+        api libs.jetbrains.compose.runtime
       }
     }
 
@@ -28,6 +33,9 @@ kotlin {
       dependsOn(commonMain)
       dependencies {
         api libs.zipline.loader
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
+        api libs.okio
         api projects.redwoodProtocolWidget
       }
     }
@@ -43,7 +51,6 @@ kotlin {
 
     engineTest {
       dependencies {
-        api libs.kotlinx.coroutines.core
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
       }
