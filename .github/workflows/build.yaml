@@ -29,11 +29,17 @@ jobs:
       - name: Build samples
         run: ./gradlew -p samples build --parallel
 
-      - name: Build Xcode samples
+      - name: Build Counter iOS sample
         run: |
           cd samples/counter/ios/app
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+
+      - name: Build Emoji Search iOS sample
+        run: |
+          cd samples/emoji-search/ios/app
+          pod install
+          xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
       - run: ./gradlew publish
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}

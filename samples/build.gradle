@@ -4,6 +4,7 @@ buildscript {
     classpath libs.kotlin.serializationPlugin
     classpath libs.androidGradlePlugin
     classpath libs.spotlessPlugin
+    classpath libs.zipline.gradlePlugin
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
@@ -21,9 +22,10 @@ buildscript {
 allprojects {
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
     afterEvaluate {
-      tasks.named("compileCommonMainKotlinMetadata").configure {
+      def compileMetadataTask = tasks.findByName("compileCommonMainKotlinMetadata")
+      if (compileMetadataTask != null) {
         // https://youtrack.jetbrains.com/issue/KT-51293
-        enabled = false
+        compileMetadataTask.enabled = false
       }
     }
   }
@@ -72,6 +74,9 @@ allprojects {
     android.lintOptions {
       checkDependencies true
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
+    }
+    android.composeOptions {
+      kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
 
     // TODO Re-enable lint on samples https://issuetracker.google.com/issues/196982350

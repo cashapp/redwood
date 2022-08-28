@@ -8,6 +8,10 @@ include ':counter:sunspot:compose:protocol'
 include ':counter:sunspot:widget'
 include ':counter:sunspot:widget:protocol'
 
+include ':emoji-search:android'
+include ':emoji-search:ios:shared'
+include ':emoji-search:presenters'
+
 include ':todo-list:android-composeui'
 include ':todo-list:android-views'
 include ':todo-list:presenters'
