@@ -1,0 +1,20 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  cocoapods {
+    noPodspec()
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation projects.emojiSearch.presenters
+      }
+    }
+  }
+}

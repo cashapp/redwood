@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.zipline'
+
+android {
+  defaultConfig {
+    applicationId = "com.example.zipline.emojisearch"
+  }
+
+  buildFeatures {
+    compose = true
+  }
+}
+
+dependencies {
+  implementation libs.zipline
+  implementation projects.emojiSearch.presenters
+  implementation libs.google.material
+  implementation libs.androidx.activity.compose
+  implementation libs.androidx.appCompat
+  implementation libs.androidx.core
+  implementation libs.coil.compose
+  implementation libs.androidx.compose.material
+  implementation libs.androidx.compose.ui
+  implementation libs.androidx.compose.ui.tooling.preview
+  debugImplementation libs.androidx.compose.ui.tooling
+}
