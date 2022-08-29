@@ -13,37 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.counter
+package example.schema
 
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 
 @Schema(
   [
-    CounterBox::class,
-    CounterText::class,
-    CounterButton::class,
-  ]
+    Column::class,
+    ScrollableColumn::class,
+    TextInput::class,
+    Image::class,
+  ],
 )
-interface Counter
+interface EmojiSearch
 
 @Widget(1)
-data class CounterBox(
+data class Column(
   @Children(1) val children: List<Any>,
 )
 
 @Widget(2)
-data class CounterText(
-  @Property(1) val text: String?,
-  @Property(2) @Default("\"black\"") val color: String,
+data class ScrollableColumn(
+  @Children(1) val children: List<Any>,
 )
 
 @Widget(3)
-data class CounterButton(
-  @Property(1) val text: String?,
-  @Property(2) @Default("true") val enabled: Boolean,
-  @Property(3) val onClick: () -> Unit,
+data class TextInput(
+  @Property(1) val hint: String,
+  @Property(2) val text: String,
+  @Property(3) val onTextChanged: (String) -> Unit,
+)
+
+@Widget(4)
+data class Image(
+  @Property(1) val url: String,
 )

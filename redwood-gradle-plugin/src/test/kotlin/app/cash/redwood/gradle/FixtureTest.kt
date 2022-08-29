@@ -21,14 +21,6 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
 
 class FixtureTest {
-  @Test fun schemaNoJvmFails() {
-    val fixtureDir = File("src/test/fixture/schema-no-kotlin-jvm")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      "Redwood schema plugin requires the Kotlin JVM plugin to be applied.",
-    )
-  }
-
   @Test fun composeUiAppPackagingSucceeds() {
     val fixtureDir = File("src/test/fixture/compose-ui")
     // If our dependency substitution did not work the D8 step would fail with duplicate classes.
