@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.DiffSink
-import app.cash.zipline.ZiplineService
-
-/** Redwood's [DiffSink] but implementing [ZiplineService]. */
-public interface DiffSinkService : ZiplineService, DiffSink
+public interface ViewBinding {
+  public fun cancel()
+}

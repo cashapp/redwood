@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import app.cash.zipline.loader.ZiplineCache
+public enum class FreshCodePolicy {
+  /** For development; potentially throws away user state */
+  ALWAYS_REFRESH_IMMEDIATELY,
 
-internal interface TreehousePlatform {
-  fun logInfo(message: String, throwable: Throwable?)
+  /** When we know fresh code is on the way, show a loading UI until it's ready */
+  WAIT_FOR_FRESH_CODE,
 
-  fun logWarning(message: String, throwable: Throwable?)
-
-  fun newCache(name: String, maxSizeInBytes: Long): ZiplineCache
+  /** Stale code now is better than fresh code soon. */
+  FAST_PIXELS,
 }

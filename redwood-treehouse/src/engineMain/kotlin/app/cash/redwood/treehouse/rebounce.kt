@@ -13,11 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import androidx.compose.runtime.Composable
+import kotlin.time.Duration
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transformLatest
 
-public interface TreehouseUi {
-  @Composable
-  public fun Show()
+/**
+ * Returns a flow that mirrors [this], but repeats the latest value every [duration] if no value is
+ * emitted by [this]. This is the inverse of `Flow.debounce()`.
+ */
+internal fun <T> Flow<T>.rebounce(duration: Duration): Flow<T> {
+  return transformLatest {
+    while (true) {
+      emit(it)
+      delay(duration)
+    }
+  }
 }
