@@ -1,2 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'app.cash.redwood.schema'
+
+dependencies {
+  // Normally you would declare a version here, but we use dependency substitution in
+  // settings.gradle to use the version built from inside the repo.
+  api 'app.cash.redwood:redwood-schema-annotations'
+}
