@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import kotlinx.coroutines.CoroutineScope

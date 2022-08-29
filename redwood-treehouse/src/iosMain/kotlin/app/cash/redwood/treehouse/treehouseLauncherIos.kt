@@ -13,43 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import android.content.Context
-import android.os.Looper
-import android.util.Log
-import android.view.View
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.widget.ViewGroupChildren
+import app.cash.redwood.widget.UIViewChildren
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
-import app.cash.zipline.loader.asZiplineHttpClient
-import java.util.concurrent.Executors
+import app.cash.zipline.loader.ZiplineHttpClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.serialization.json.JsonArray
-import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
+import platform.Foundation.NSLog
+import platform.Foundation.NSTemporaryDirectory
+import platform.Foundation.NSThread
+import platform.UIKit.UIView
 
 public fun TreehouseLauncher(
-  context: Context,
-  httpClient: OkHttpClient,
+  httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
   embeddedDir: Path = "/".toPath(),
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
 ): TreehouseLauncher = TreehouseLauncher(
-  platform = AndroidTreehousePlatform(context),
-  dispatchers = AndroidTreehouseDispatchers(),
-  httpClient = httpClient.asZiplineHttpClient(),
+  platform = IosTreehousePlatform(),
+  dispatchers = IosTreehouseDispatchers(),
+  httpClient = httpClient,
   manifestVerifier = manifestVerifier,
   embeddedDir = embeddedDir,
   embeddedFileSystem = embeddedFileSystem,
@@ -57,54 +52,48 @@ public fun TreehouseLauncher(
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
 )
 
-internal class AndroidTreehousePlatform(
-  private val context: Context,
-) : TreehousePlatform {
+internal class IosTreehousePlatform : TreehousePlatform {
   override fun logInfo(message: String, throwable: Throwable?) {
-    Log.i("Zipline", message, throwable)
+    if (throwable != null) {
+      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
+    } else {
+      NSLog("Treehouse: $message")
+    }
   }
 
   override fun logWarning(message: String, throwable: Throwable?) {
-    Log.w("Zipline", message, throwable)
+    if (throwable != null) {
+      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
+    } else {
+      NSLog("Treehouse: $message")
+    }
   }
 
   override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
-    context = context,
     fileSystem = FileSystem.SYSTEM,
-    directory = context.cacheDir.toOkioPath() / name,
+    directory = NSTemporaryDirectory().toPath() / name,
     maxSizeInBytes = maxSizeInBytes,
   )
 }
 
-/**
- * Implements [TreehouseDispatchers] suitable for production Android use. This creates a background
- * thread for all Zipline work.
- */
-internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
-  private lateinit var ziplineThread: Thread
-
-  /** The single thread that runs all JavaScript. We only have one QuickJS instance at a time. */
-  private val executorService = Executors.newSingleThreadExecutor { runnable ->
-    Thread(runnable, "Treehouse")
-      .also { ziplineThread = it }
-  }
-
+// TODO(jwilson): we're currently doing everything on the main thread on iOS.
+internal class IosTreehouseDispatchers : TreehouseDispatchers {
   override val main: CoroutineDispatcher = Dispatchers.Main
-  override val zipline: CoroutineDispatcher = executorService.asCoroutineDispatcher()
+  override val zipline: CoroutineDispatcher = Dispatchers.Main
 
   override fun checkMain() {
-    check(Looper.myLooper() == Looper.getMainLooper())
+    check(NSThread.isMainThread)
   }
 
   override fun checkZipline() {
-    check(Thread.currentThread() == ziplineThread)
+    checkMain()
   }
 }
 
 internal class ProtocolDisplayRoot(
-  override val value: TreehouseWidgetView<*>,
-) : DiffConsumingWidget<View> {
-  private val children = ViewGroupChildren(value)
+  override val value: UIView,
+) : DiffConsumingWidget<UIView> {
+  private val children = UIViewChildren(value)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 

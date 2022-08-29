@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.DiffSink
 import app.cash.zipline.ZiplineService
 
-/**
- * Adapt TreehouseComposition to conform the limitations of Zipline interfaces.
- *
- * Most callers shouldn't use this directly; instead use `TreehouseUi`.
- */
-public interface ZiplineTreehouseUi : ZiplineService {
-  public fun start(diffSink: DiffSinkService)
-  public fun sendEvent(event: Event)
-}
+/** Redwood's [DiffSink] but implementing [ZiplineService]. */
+public interface DiffSinkService : ZiplineService, DiffSink

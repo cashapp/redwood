@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.treehouse
+package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.zipline.loader.ZiplineCache
 
-public interface TreehouseView<T : Any> {
-  public val boundContent: Content<T>?
-  public val protocolDisplayRoot: DiffConsumingWidget<*>
+internal interface TreehousePlatform {
+  fun logInfo(message: String, throwable: Throwable?)
 
-  public interface Content<T : Any> {
-    public fun get(app: T): ZiplineTreehouseUi
-  }
+  fun logWarning(message: String, throwable: Throwable?)
+
+  fun newCache(name: String, maxSizeInBytes: Long): ZiplineCache
 }
