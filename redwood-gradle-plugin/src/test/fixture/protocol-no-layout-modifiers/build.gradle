@@ -1,0 +1,38 @@
+buildscript {
+  dependencies {
+    classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
+    classpath libs.androidGradlePlugin
+    classpath libs.kotlin.gradlePlugin
+    classpath libs.kotlin.serializationPlugin
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+    maven {
+      url 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
+    }
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+    maven {
+      url 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
+    }
+  }
+}
+
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+dependencies {
+  api "app.cash.redwood:redwood-schema-annotations:$redwoodVersion"
+}

@@ -78,6 +78,8 @@ test {
   dependsOn(':redwood-schema:installArchives')
   dependsOn(':redwood-schema-annotations:installArchives')
   dependsOn(':redwood-widget:installArchives')
+
+  inputs.dir(project.file('src/test/fixture'))
 }
 
 buildConfig {

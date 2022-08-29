@@ -20,6 +20,7 @@ import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
 import app.cash.redwood.schema.parser.Widget.Event
 import app.cash.redwood.schema.parser.Widget.Property
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -283,6 +284,14 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
         .returns(JsonElement)
         .beginControlFlow("return when (this)")
         .apply {
+          if (schema.layoutModifiers.isEmpty()) {
+            addAnnotation(
+              AnnotationSpec.builder(Suppress::class)
+                .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+                .build(),
+            )
+          }
+
           for (layoutModifier in schema.layoutModifiers) {
             val modifierType = schema.layoutModifierType(layoutModifier)
             val surrogate = schema.layoutModifierSurrogate(layoutModifier)
