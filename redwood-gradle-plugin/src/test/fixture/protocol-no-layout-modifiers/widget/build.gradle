@@ -1,0 +1,20 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.widget'
+
+kotlin {
+  jvm()
+
+  targets.all {
+    compilations.all {
+      kotlinOptions {
+        // Ensure our codegen does not produce any warnings.
+        allWarningsAsErrors = true
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = project(':')
+  type = 'example.counter.Counter'
+}

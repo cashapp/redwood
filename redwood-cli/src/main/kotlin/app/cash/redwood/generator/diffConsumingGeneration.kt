@@ -20,6 +20,7 @@ import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
 import app.cash.redwood.schema.parser.Widget.Event
 import app.cash.redwood.schema.parser.Widget.Property
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -352,6 +353,13 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
         .addStatement("")
         .beginControlFlow("return when (tag)")
         .apply {
+          if (schema.layoutModifiers.isEmpty()) {
+            addAnnotation(
+              AnnotationSpec.builder(Suppress::class)
+                .addMember("%S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE")
+                .build(),
+            )
+          }
           for (layoutModifier in schema.layoutModifiers) {
             val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
             if (layoutModifier.properties.isEmpty()) {
