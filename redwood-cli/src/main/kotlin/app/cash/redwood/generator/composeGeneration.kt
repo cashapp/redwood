@@ -240,14 +240,13 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
     .build()
 }
 
-internal fun generateUnscopedModifiers(schema: Schema): FileSpec {
+internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
+  val unscopedLayoutModifiers = schema.layoutModifiers.filter { it.scopes.isEmpty() }
+  if (unscopedLayoutModifiers.isEmpty()) return null
+
   return FileSpec.builder(schema.composePackage, "unscopedLayoutModifiers")
     .apply {
-      for (layoutModifier in schema.layoutModifiers) {
-        if (layoutModifier.scopes.isNotEmpty()) {
-          continue
-        }
-
+      for (layoutModifier in unscopedLayoutModifiers) {
         val (function, type) = generateLayoutModifier(schema, layoutModifier)
         addFunction(function)
         addType(type)
