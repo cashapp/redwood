@@ -1,0 +1,20 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.compose.protocol'
+
+kotlin {
+  ios()
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api(projects.emojiSearch.schema.widget)
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.emojiSearch.schema
+  type = 'example.schema.EmojiSearch'
+}
