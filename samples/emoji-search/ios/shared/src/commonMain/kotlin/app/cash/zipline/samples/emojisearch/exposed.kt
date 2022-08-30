@@ -18,11 +18,13 @@ package app.cash.zipline.samples.emojisearch
 import okio.ByteString
 import okio.toByteString
 import platform.Foundation.NSData
+import example.schema.widget.EmojiSearchWidgetFactory
 
 @Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchZipline: EmojiSearchZipline,
   emojiSearchEvent: EmojiSearchEvent,
+  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>
 ) {
   throw AssertionError()
 }
