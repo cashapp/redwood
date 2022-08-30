@@ -37,13 +37,13 @@ fun EmojiSearch(
   TextInput(
     text = viewModel.searchTerm,
     hint = "Search",
-    onTextChanged = { onEvent(SearchTermEvent(it)) }
+    onTextChanged = { onEvent(SearchTermEvent(it)) },
   )
   ScrollableColumn {
     for (image in viewModel.images) {
       Image(
         url = image.url,
-        label = image.label
+        label = image.label,
       )
     }
   }

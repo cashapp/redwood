@@ -16,6 +16,9 @@
 package app.cash.zipline.samples.emojisearch
 
 import app.cash.zipline.Zipline
+import example.schema.compose.Image
+import example.schema.compose.ScrollableColumn
+import example.schema.compose.TextInput
 
 private val zipline by lazy { Zipline.get() }
 
@@ -30,4 +33,24 @@ fun preparePresenters() {
     name = "emojiSearchPresenter",
     instance = RealEmojiSearchPresenter(hostApi),
   )
+}
+
+@Composable
+fun EmojiSearch(
+  viewModel: EmojiSearchViewModel,
+  onEvent: (EmojiSearchEvent) -> Unit,
+) {
+  TextInput(
+    text = viewModel.searchTerm,
+    hint = "Search",
+    onTextChanged = { onEvent(EmojiSearchEvent.SearchTermEvent(it)) },
+  )
+  ScrollableColumn {
+    for (image in viewModel.images) {
+      Image(
+        url = image.url,
+        label = image.label,
+      )
+    }
+  }
 }
