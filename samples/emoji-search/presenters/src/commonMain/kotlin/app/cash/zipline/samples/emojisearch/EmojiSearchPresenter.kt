@@ -18,6 +18,7 @@ package app.cash.zipline.samples.emojisearch
 import androidx.compose.runtime.Composable
 import app.cash.zipline.ZiplineService
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
+import example.schema.compose.Column
 import example.schema.compose.Image
 import example.schema.compose.ScrollableColumn
 import example.schema.compose.TextInput
@@ -34,17 +35,19 @@ fun EmojiSearch(
   viewModel: EmojiSearchViewModel,
   onEvent: (EmojiSearchEvent) -> Unit,
 ) {
-  TextInput(
-    text = viewModel.searchTerm,
-    hint = "Search",
-    onTextChanged = { onEvent(SearchTermEvent(it)) },
-  )
-  ScrollableColumn {
-    for (image in viewModel.images) {
-      Image(
-        url = image.url,
-        label = image.label,
-      )
+  Column {
+    TextInput(
+      text = viewModel.searchTerm,
+      hint = "Search",
+      onTextChanged = { onEvent(SearchTermEvent(it)) },
+    )
+    ScrollableColumn {
+      for (image in viewModel.images) {
+        Image(
+          url = image.url,
+          label = image.label,
+        )
+      }
     }
   }
 }
