@@ -72,7 +72,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     composition.setContent {
       val model by models.collectAsState()
-      EmojiSearchUi(model, events::tryEmit)
+      EmojiSearch(model, events::tryEmit)
     }
   }
 
@@ -87,6 +87,6 @@ class EmojiSearchActivity : ComponentActivity() {
 fun DefaultPreview() {
   val events = fun(_: EmojiSearchEvent) = Unit
   EmojiSearchTheme {
-    EmojiSearchUi(sampleViewModel, events)
+    EmojiSearch(sampleViewModel, events)
   }
 }

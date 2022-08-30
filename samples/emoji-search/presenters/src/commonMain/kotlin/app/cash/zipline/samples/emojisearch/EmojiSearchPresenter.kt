@@ -30,7 +30,7 @@ interface EmojiSearchPresenter : ZiplineService {
 }
 
 @Composable
-fun EmojiSearchUi(
+fun EmojiSearch(
   viewModel: EmojiSearchViewModel,
   onEvent: (EmojiSearchEvent) -> Unit,
 ) {
