@@ -19,12 +19,9 @@ apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
 apply plugin: 'app.cash.redwood'
 
 kotlin {
-  def sdkName = System.getenv("SDK_NAME")
-  if (sdkName != null && sdkName.startsWith("iphoneos")) {
-    iosArm64("ios")
-  } else {
-    iosX64("ios")
-  }
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
 
   sourceSets {
     iosMain {

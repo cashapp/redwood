@@ -2,7 +2,10 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood'
 
 kotlin {
-  ios()
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
   js {
     browser()
   }
@@ -14,22 +17,5 @@ kotlin {
         api projects.counter.sunspot.compose
       }
     }
-    commonTest {
-      dependencies {
-        implementation libs.kotlin.test
-        // TODO remove the need for these dependencies!
-        implementation projects.counter.sunspot.compose.protocol
-        implementation projects.counter.sunspot.widget.protocol
-      }
-    }
-    nativeTest {
-    }
-  }
-
-  configure([
-    targets.iosArm64,
-    targets.iosX64,
-  ]) {
-    compilations.test.source(sourceSets.nativeTest)
   }
 }
