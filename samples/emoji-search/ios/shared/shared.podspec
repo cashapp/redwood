@@ -1,17 +1,17 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'shared'
     spec.version                  = '1.0'
-    spec.homepage                 = 'https://github.com/cashapp/zipline/'
+    spec.homepage                 = 'https://github.com/cashapp/redwood/'
     spec.source                   = { :git => "Not Published", :tag => "Cocoapods/#{spec.name}/#{spec.version}" }
     spec.authors                  = ''
     spec.license                  = ''
-    spec.summary                  = 'Zipline Sample Emoji Search'
+    spec.summary                  = 'Redwood Sample Emoji Search'
 
     spec.vendored_frameworks      = "build/cocoapods/framework/shared.framework"
     spec.libraries                = "c++"
     spec.module_name              = "#{spec.name}_umbrella"
 
-    # Zipline is supported on iOS versions back to at least 9.0
+    # Redwood is supported on iOS versions back to at least 9.0
     # We're setting to 14.0 here to squash a warning since our demo app
     # uses 14.0+ UIKit features.
     spec.ios.deployment_target  = '14.0'
