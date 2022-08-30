@@ -12,6 +12,13 @@
 		635661DC21F12B8000DD7240 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 635661DB21F12B8000DD7240 /* Assets.xcassets */; };
 		635661DF21F12B8000DD7240 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635661DD21F12B8000DD7240 /* LaunchScreen.storyboard */; };
 		AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC042528AC72AC00721342 /* RemoteImageLoader.swift */; };
+		C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */; };
+		C2F7CE6828BEAE8400A66A69 /* NoopRuntimeLayoutModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6728BEAE8400A66A69 /* NoopRuntimeLayoutModifier.swift */; };
+		C2F7CE6A28BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6928BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift */; };
+		C2F7CE6C28BEAF5500A66A69 /* ColumnBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6B28BEAF5500A66A69 /* ColumnBinding.swift */; };
+		C2F7FB9E28BEB3B800A66A69 /* ChildrenBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FB9D28BEB3B800A66A69 /* ChildrenBinding.swift */; };
+		C2F7FBA028BEB42D00A66A69 /* ScrollableColumnBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FB9F28BEB42D00A66A69 /* ScrollableColumnBinding.swift */; };
+		C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */; };
 		CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */; };
 		CB85EE5426648F6900A4B218 /* Pods_EmojiSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */; };
 		CB9F7654280F4BFB008CF457 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F7653280F4BFB008CF457 /* HTTPClient.swift */; };
@@ -29,6 +36,13 @@
 		635661E021F12B8000DD7240 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63E90CF521FEBBB700449E04 /* main.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = main.framework; path = "../shared/build/xcode-frameworks/main.framework"; sourceTree = "<group>"; };
 		AACC042528AC72AC00721342 /* RemoteImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageLoader.swift; sourceTree = "<group>"; };
+		C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBinding.swift; sourceTree = "<group>"; };
+		C2F7CE6728BEAE8400A66A69 /* NoopRuntimeLayoutModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoopRuntimeLayoutModifier.swift; sourceTree = "<group>"; };
+		C2F7CE6928BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSearchWidgetFactoryBinding.swift; sourceTree = "<group>"; };
+		C2F7CE6B28BEAF5500A66A69 /* ColumnBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnBinding.swift; sourceTree = "<group>"; };
+		C2F7FB9D28BEB3B800A66A69 /* ChildrenBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenBinding.swift; sourceTree = "<group>"; };
+		C2F7FB9F28BEB42D00A66A69 /* ScrollableColumnBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableColumnBinding.swift; sourceTree = "<group>"; };
+		C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputBinding.swift; sourceTree = "<group>"; };
 		CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSearchViewController.swift; sourceTree = "<group>"; };
 		CB9F7653280F4BFB008CF457 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		CB9F76552810A8A8008CF457 /* IosHostApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosHostApi.swift; sourceTree = "<group>"; };
@@ -72,6 +86,13 @@
 				635661D421F12B7E00DD7240 /* AppDelegate.swift */,
 				CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */,
 				AACC042528AC72AC00721342 /* RemoteImageLoader.swift */,
+				C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */,
+				C2F7CE6B28BEAF5500A66A69 /* ColumnBinding.swift */,
+				C2F7FB9D28BEB3B800A66A69 /* ChildrenBinding.swift */,
+				C2F7FB9F28BEB42D00A66A69 /* ScrollableColumnBinding.swift */,
+				C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */,
+				C2F7CE6928BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift */,
+				C2F7CE6728BEAE8400A66A69 /* NoopRuntimeLayoutModifier.swift */,
 				635661D821F12B7E00DD7240 /* Main.storyboard */,
 				635661DB21F12B8000DD7240 /* Assets.xcassets */,
 				635661DD21F12B8000DD7240 /* LaunchScreen.storyboard */,
@@ -198,10 +219,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */,
+				C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */,
+				C2F7CE6A28BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift in Sources */,
 				635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */,
+				C2F7FBA028BEB42D00A66A69 /* ScrollableColumnBinding.swift in Sources */,
+				C2F7CE6828BEAE8400A66A69 /* NoopRuntimeLayoutModifier.swift in Sources */,
+				C2F7FB9E28BEB3B800A66A69 /* ChildrenBinding.swift in Sources */,
 				AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */,
 				CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */,
+				C2F7CE6C28BEAF5500A66A69 /* ColumnBinding.swift in Sources */,
 				CB9F7654280F4BFB008CF457 /* HTTPClient.swift in Sources */,
+				C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
