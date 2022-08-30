@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'app.cash.zipline'
+apply plugin: 'app.cash.redwood'
 
 android {
   defaultConfig {
@@ -10,16 +10,22 @@ android {
   buildFeatures {
     compose = true
   }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+  }
 }
 
 dependencies {
   implementation libs.zipline
+  implementation libs.coil.compose
+  implementation libs.kotlinx.coroutines.android
   implementation projects.emojiSearch.presenters
-  implementation libs.google.material
+  implementation projects.emojiSearch.schema.compose.protocol
+  implementation projects.emojiSearch.schema.widget.protocol
   implementation libs.androidx.activity.compose
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
-  implementation libs.coil.compose
   implementation libs.androidx.compose.material
   implementation libs.androidx.compose.ui
   implementation libs.androidx.compose.ui.tooling.preview

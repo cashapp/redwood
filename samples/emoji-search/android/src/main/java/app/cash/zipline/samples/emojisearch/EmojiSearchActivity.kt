@@ -16,9 +16,10 @@
 package app.cash.zipline.samples.emojisearch
 
 import android.os.Bundle
+import android.util.Log
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,10 +37,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.cash.redwood.compose.AndroidUiDispatcher
+import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
+import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import coil.compose.AsyncImage
+import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
+import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,18 +56,39 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
-  private val scope = MainScope()
+  private val scope = CoroutineScope(Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val composition = ProtocolRedwoodComposition(
+      scope = scope,
+      factory = DiffProducingEmojiSearchWidgetFactory(),
+      widgetVersion = 1U,
+      onDiff = { Log.d("RedwoodDiff", it.toString()) },
+      onEvent = { Log.d("RedwoodEvent", it.toString()) },
+    )
+
+    val root = ComposeUiColumn()
+    val composeView = ComposeView(this).apply {
+      layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+      setContent(root.value)
+    }
+    setContentView(composeView)
+
+    val factory = DiffConsumingEmojiSearchWidgetFactory(AndroidEmojiSearchWidgetFactory)
+    val display = ProtocolDisplay(
+      root = factory.wrap(root),
+      factory = factory,
+      eventSink = composition,
+    )
+    composition.start(display)
+
     val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
     val models = MutableStateFlow(initialViewModel)
+    EmojiSearchZipline().produceModelsIn(scope, events, models)
 
-    val emojiSearchZipline = EmojiSearchZipline()
-    emojiSearchZipline.produceModelsIn(scope, events, models)
-
-    setContent {
+    composition.setContent {
       val modelsState = models.collectAsState()
       EmojiSearchTheme {
         EmojiSearch(modelsState.value) { event ->
@@ -90,47 +120,6 @@ fun EmojiSearch(
     ) {
       SearchField(model.searchTerm, events)
       SearchResults(model.images)
-    }
-  }
-}
-
-@Composable
-fun SearchField(
-  searchTerm: String,
-  events: (EmojiSearchEvent) -> Unit
-) {
-  val searchFieldValue = remember {
-    mutableStateOf(TextFieldValue(text = searchTerm))
-  }
-
-  TextField(
-    value = searchFieldValue.value,
-    onValueChange = {
-      events(EmojiSearchEvent.SearchTermEvent(it.text))
-      searchFieldValue.value = it
-    },
-    maxLines = 2,
-    textStyle = Typography.h3,
-    modifier = Modifier
-      .padding(16.dp)
-      .fillMaxWidth(),
-  )
-}
-
-@Composable
-private fun SearchResults(emojiImages: List<EmojiImage>) {
-  LazyColumn(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier.fillMaxWidth(),
-  ) {
-    items(emojiImages) { emojiImage ->
-      AsyncImage(
-        model = emojiImage.url,
-        contentDescription = null,
-        modifier = Modifier
-          .size(64.dp)
-          .padding(8.dp)
-      )
     }
   }
 }
