@@ -15,7 +15,6 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import java.io.IOException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -23,6 +22,7 @@ import okhttp3.Headers.Companion.toHeaders
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okio.IOException
 
 class RealHostApi(
   private val client: OkHttpClient,

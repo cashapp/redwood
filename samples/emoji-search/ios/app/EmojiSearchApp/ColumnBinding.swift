@@ -15,10 +15,21 @@
  */
 
 import UIKit
+import shared
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class ColumnBinding: WidgetColumn {
+    private let root: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        return view
+    }()
 
-    var window: UIWindow?
+    init() {}
 
+    lazy var children: Redwood_widgetWidgetChildren = ChildrenBinding { [unowned self] views in
+        self.root.subviews.forEach { $0.removeFromSuperview() }
+        views.forEach { self.root.addArrangedSubview($0) }
+    }
+    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
+    var value: Any { root }
 }

@@ -1,14 +1,14 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'com.android.library'
 apply plugin: 'app.cash.zipline'
+apply plugin: 'app.cash.redwood'
 
 kotlin {
   iosArm64()
   iosX64()
   iosSimulatorArm64()
 
-  android()
+  jvm()
 
   js {
     browser()
@@ -18,27 +18,19 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api libs.zipline
+        api projects.redwoodTreehouse
       }
     }
 
-    hostMain {
-      dependsOn(commonMain)
+    jsMain {
       dependencies {
-        implementation libs.zipline.loader
-        api libs.okio
-      }
-    }
-
-    androidMain {
-      dependsOn(hostMain)
-      dependencies {
-        implementation libs.okHttp
+        api projects.samples.emojiSearch.schema.compose
+        implementation projects.samples.emojiSearch.schema.compose.protocol
       }
     }
 
     iosMain {
-      dependsOn(hostMain)
+      dependsOn(commonMain)
     }
     targets.all { target ->
       // Some Kotlin targets do not have this property, but native ones always will.
@@ -47,10 +39,6 @@ kotlin {
       }
     }
   }
-}
-
-android {
-  namespace = "app.cash.zipline.samples.emojisearch.presenters"
 }
 
 zipline {

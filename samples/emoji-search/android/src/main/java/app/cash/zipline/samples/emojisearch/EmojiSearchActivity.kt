@@ -17,129 +17,75 @@ package app.cash.zipline.samples.emojisearch
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import kotlinx.coroutines.MainScope
+import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseLauncher
+import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.ViewBinder
+import app.cash.redwood.treehouse.ZiplineTreehouseUi
+import app.cash.redwood.treehouse.composeui.TreehouseComposeView
+import app.cash.zipline.loader.ManifestVerifier
+import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
 
 @NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
-  private val scope = MainScope()
+  private val scope: CoroutineScope = CoroutineScope(Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
-    val models = MutableStateFlow(initialViewModel)
+    val treehouseApp = createTreehouseApp()
 
-    val emojiSearchZipline = EmojiSearchZipline()
-    emojiSearchZipline.produceModelsIn(scope, events, models)
-
-    setContent {
-      val modelsState = models.collectAsState()
-      EmojiSearchTheme {
-        EmojiSearch(modelsState.value) { event ->
-          events.tryEmit(event)
-        }
+    val view = TreehouseComposeView<EmojiSearchPresenter>(
+      context = this,
+      treehouseApp = treehouseApp,
+      widgetFactory = AndroidEmojiSearchWidgetFactory,
+    )
+    view.setContent(object : TreehouseView.Content<EmojiSearchPresenter> {
+      override fun get(app: EmojiSearchPresenter): ZiplineTreehouseUi {
+        return app.launch()
       }
-    }
+    })
+
+    setContentView(view)
+  }
+
+  private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+    val httpClient = OkHttpClient()
+
+    val treehouseLauncher = TreehouseLauncher(
+      context = applicationContext,
+      httpClient = httpClient,
+      manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+    )
+
+    return treehouseLauncher.launch(
+      scope = scope,
+      spec = EmojiSearchAppSpec(
+        manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
+        hostApi = RealHostApi(httpClient),
+        viewBinder = object : ViewBinder {
+          override fun widgetFactory(
+            view: TreehouseView<*>,
+            json: Json,
+          ): DiffConsumingWidget.Factory<*> = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
+            delegate = (view as TreehouseComposeView<*>).widgetFactory as AndroidEmojiSearchWidgetFactory,
+            json = json,
+          )
+        },
+      ),
+    )
   }
 
   override fun onDestroy() {
     scope.cancel()
     super.onDestroy()
-  }
-}
-
-@Composable
-fun EmojiSearch(
-  model: EmojiSearchViewModel,
-  events: (EmojiSearchEvent) -> Unit
-) {
-  Surface(
-    color = MaterialTheme.colors.background,
-    modifier = Modifier
-      .fillMaxWidth()
-      .fillMaxHeight(),
-  ) {
-    Column(
-      modifier = Modifier.fillMaxWidth(),
-    ) {
-      SearchField(model.searchTerm, events)
-      SearchResults(model.images)
-    }
-  }
-}
-
-@Composable
-fun SearchField(
-  searchTerm: String,
-  events: (EmojiSearchEvent) -> Unit
-) {
-  val searchFieldValue = remember {
-    mutableStateOf(TextFieldValue(text = searchTerm))
-  }
-
-  TextField(
-    value = searchFieldValue.value,
-    onValueChange = {
-      events(EmojiSearchEvent.SearchTermEvent(it.text))
-      searchFieldValue.value = it
-    },
-    maxLines = 2,
-    textStyle = Typography.h3,
-    modifier = Modifier
-      .padding(16.dp)
-      .fillMaxWidth(),
-  )
-}
-
-@Composable
-private fun SearchResults(emojiImages: List<EmojiImage>) {
-  LazyColumn(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier.fillMaxWidth(),
-  ) {
-    items(emojiImages) { emojiImage ->
-      AsyncImage(
-        model = emojiImage.url,
-        contentDescription = null,
-        modifier = Modifier
-          .size(64.dp)
-          .padding(8.dp)
-      )
-    }
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-  val events = fun(_: EmojiSearchEvent) = Unit
-  EmojiSearchTheme {
-    EmojiSearch(sampleViewModel, events)
   }
 }

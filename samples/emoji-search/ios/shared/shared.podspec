@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
     spec.summary                  = 'Redwood Sample Emoji Search'
 
     spec.vendored_frameworks      = "build/cocoapods/framework/shared.framework"
-    spec.libraries                = "c++"
+    spec.libraries                = "c++", "sqlite3"
     spec.module_name              = "#{spec.name}_umbrella"
 
     # Redwood is supported on iOS versions back to at least 9.0

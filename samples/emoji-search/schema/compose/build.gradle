@@ -4,11 +4,9 @@ apply plugin: 'app.cash.redwood.generator.compose'
 archivesBaseName = 'schema-compose'
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  jvm()
+  js {
+    browser()
+  }
 
   sourceSets {
     commonMain {

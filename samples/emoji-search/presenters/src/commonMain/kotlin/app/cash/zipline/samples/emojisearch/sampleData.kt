@@ -15,7 +15,7 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-val sampleImages = listOf<EmojiImage>(
+val sampleImages = listOf(
   EmojiImage(
     "bolivia",
     "https://github.githubassets.com/images/icons/emoji/unicode/1f1e7-1f1f4.png?v8",

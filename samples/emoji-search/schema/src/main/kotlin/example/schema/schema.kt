@@ -22,32 +22,44 @@ import app.cash.redwood.schema.Widget
 
 @Schema(
   [
+    Row::class,
     Column::class,
     ScrollableColumn::class,
     TextInput::class,
+    Text::class,
     Image::class,
   ],
 )
 interface EmojiSearch
 
 @Widget(1)
-data class Column(
+data class Row(
   @Children(1) val children: () -> Unit,
 )
 
 @Widget(2)
-data class ScrollableColumn(
+data class Column(
   @Children(1) val children: () -> Unit,
 )
 
 @Widget(3)
+data class ScrollableColumn(
+  @Children(1) val children: () -> Unit,
+)
+
+@Widget(4)
 data class TextInput(
   @Property(1) val hint: String,
   @Property(2) val text: String,
   @Property(3) val onTextChanged: (String) -> Unit,
 )
 
-@Widget(4)
+@Widget(5)
+data class Text(
+  @Property(1) val text: String,
+)
+
+@Widget(6)
 data class Image(
   @Property(1) val url: String,
 )

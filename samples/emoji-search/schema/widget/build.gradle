@@ -8,6 +8,10 @@ kotlin {
   iosX64()
   iosSimulatorArm64()
 
+  js {
+    browser()
+  }
+
   jvm()
 }
 
