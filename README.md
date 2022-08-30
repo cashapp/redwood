@@ -117,13 +117,13 @@ We start by expressing our design system as a set of Kotlin data classes. Redwoo
 classes to generate type-safe APIs for the displays and composable functions.
 
 ```kotlin
-@Node(1)
+@Widget(1)
 data class SunspotText(
   @Property(1) val text: String?,
   @Property(2) @Default("\"black\"") val color: String,
 )
 
-@Node(2)
+@Widget(2)
 data class SunspotButton(
   @Property(1) val text: String?,
   @Property(2) @Default("true") val enabled: Boolean,
