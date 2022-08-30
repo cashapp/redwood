@@ -14,13 +14,14 @@ import example.schema.widget.Image
 
 class ComposeUiImage : Image<@Composable () -> Unit> {
   private var url by mutableStateOf("")
+  private var label by mutableStateOf("")
 
-  override var layoutModifiers = LayoutModifier
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
     AsyncImage(
       model = url,
-      contentDescription = null,
+      contentDescription = label,
       modifier = Modifier
         .size(64.dp)
         .padding(8.dp),
@@ -29,5 +30,9 @@ class ComposeUiImage : Image<@Composable () -> Unit> {
 
   override fun url(url: String) {
     this.url = url
+  }
+
+  override fun label(label: String) {
+    this.label = label
   }
 }

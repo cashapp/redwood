@@ -18,7 +18,7 @@ class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
   private var text by mutableStateOf("")
   private var onTextChanged: ((String) -> Unit)? = null
 
-  override var layoutModifiers = LayoutModifier
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
     TextField(

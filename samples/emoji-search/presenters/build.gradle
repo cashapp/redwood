@@ -19,6 +19,7 @@ kotlin {
     commonMain {
       dependencies {
         api libs.zipline
+        api projects.emojiSearch.schema.compose
       }
     }
 

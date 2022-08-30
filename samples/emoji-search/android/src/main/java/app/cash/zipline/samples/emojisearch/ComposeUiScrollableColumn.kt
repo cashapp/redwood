@@ -11,7 +11,7 @@ import app.cash.redwood.LayoutModifier
 import example.schema.widget.ScrollableColumn
 
 class ComposeUiScrollableColumn : ScrollableColumn<@Composable () -> Unit> {
-  override var layoutModifiers = LayoutModifier
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val children = ComposeUiWidgetChildren()
 

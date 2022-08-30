@@ -6,7 +6,7 @@ import app.cash.redwood.LayoutModifier
 import example.schema.widget.Column
 
 class ComposeUiColumn : Column<@Composable () -> Unit> {
-  override var layoutModifiers = LayoutModifier
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val children = ComposeUiWidgetChildren()
 

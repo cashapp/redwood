@@ -19,6 +19,7 @@ android {
 dependencies {
   implementation libs.zipline
   implementation libs.coil.compose
+  implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.emojiSearch.presenters
   implementation projects.emojiSearch.schema.compose.protocol

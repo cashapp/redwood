@@ -20,15 +20,10 @@ import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
@@ -76,12 +71,8 @@ class EmojiSearchActivity : ComponentActivity() {
     EmojiSearchZipline().produceModelsIn(scope, events, models)
 
     composition.setContent {
-      val modelsState = models.collectAsState()
-      EmojiSearchTheme {
-        EmojiSearch(modelsState.value) { event ->
-          events.tryEmit(event)
-        }
-      }
+      val model by models.collectAsState()
+      EmojiSearchUi(model, events::tryEmit)
     }
   }
 
@@ -91,31 +82,11 @@ class EmojiSearchActivity : ComponentActivity() {
   }
 }
 
-@Composable
-fun EmojiSearch(
-  model: EmojiSearchViewModel,
-  events: (EmojiSearchEvent) -> Unit
-) {
-  Surface(
-    color = MaterialTheme.colors.background,
-    modifier = Modifier
-      .fillMaxWidth()
-      .fillMaxHeight(),
-  ) {
-    Column(
-      modifier = Modifier.fillMaxWidth(),
-    ) {
-      SearchField(model.searchTerm, events)
-      SearchResults(model.images)
-    }
-  }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
   val events = fun(_: EmojiSearchEvent) = Unit
   EmojiSearchTheme {
-    EmojiSearch(sampleViewModel, events)
+    EmojiSearchUi(sampleViewModel, events)
   }
 }

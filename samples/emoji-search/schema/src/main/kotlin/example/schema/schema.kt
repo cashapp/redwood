@@ -50,4 +50,5 @@ data class TextInput(
 @Widget(4)
 data class Image(
   @Property(1) val url: String,
+  @Property(2) val label: String,
 )

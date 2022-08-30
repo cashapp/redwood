@@ -8,7 +8,7 @@ dependencies {
   implementation projects.todoList.presenters
   implementation libs.kotlinx.coroutines.android
   implementation libs.androidx.appCompat
-  implementation libs.materialDesign
+  implementation libs.google.material
 }
 
 android {
