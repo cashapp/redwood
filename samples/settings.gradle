@@ -10,6 +10,7 @@ include ':counter:sunspot:widget:protocol'
 
 include ':emoji-search:android'
 include ':emoji-search:ios:shared'
+include ':emoji-search:launcher'
 include ':emoji-search:presenters'
 include ':emoji-search:schema'
 include ':emoji-search:schema:compose'
@@ -43,6 +44,7 @@ includeBuild('..') {
     substitute module('app.cash.redwood:redwood-protocol-widget') using project(':redwood-protocol-widget')
     substitute module('app.cash.redwood:redwood-runtime') using project(':redwood-runtime')
     substitute module('app.cash.redwood:redwood-schema-annotations') using project(':redwood-schema-annotations')
+    substitute module('app.cash.redwood:redwood-treehouse') using project(':redwood-treehouse')
     substitute module('app.cash.redwood:redwood-widget') using project(':redwood-widget')
   }
 }

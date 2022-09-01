@@ -16,29 +16,38 @@
 package app.cash.zipline.samples.emojisearch
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.Column
 import example.schema.compose.Image
 import example.schema.compose.ScrollableColumn
 import example.schema.compose.TextInput
+import kotlinx.coroutines.flow.Flow
 
-@Composable
-fun EmojiSearch(
-  viewModel: EmojiSearchViewModel,
-  onEvent: (EmojiSearchEvent) -> Unit,
-) {
-  Column {
-    TextInput(
-      text = viewModel.searchTerm,
-      hint = "Search",
-      onTextChanged = { onEvent(SearchTermEvent(it)) },
-    )
-    ScrollableColumn {
-      for (image in viewModel.images) {
-        Image(
-          url = image.url,
-          label = image.label,
-        )
+class EmojiSearchTreehouseUi(
+  private val initialViewModel: EmojiSearchViewModel,
+  private val viewModels: Flow<EmojiSearchViewModel>,
+  private val onEvent: (EmojiSearchEvent) -> Unit,
+) : TreehouseUi {
+
+  @Composable
+  override fun Show() {
+    val viewModel = viewModels.collectAsState(initialViewModel).value
+
+    Column {
+      TextInput(
+        text = viewModel.searchTerm,
+        hint = "Search",
+        onTextChanged = { onEvent(SearchTermEvent(it)) },
+      )
+      ScrollableColumn {
+        for (image in viewModel.images) {
+          Image(
+            url = image.url,
+            label = image.label,
+          )
+        }
       }
     }
   }

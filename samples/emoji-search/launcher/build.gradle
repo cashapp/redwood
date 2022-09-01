@@ -1,0 +1,30 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.zipline'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  android()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.zipline
+        api 'app.cash.redwood:redwood-treehouse'
+//        api 'app.cash.redwood:redwood-protocol-widget'
+//        implementation projects.emojiSearch.schema.compose.protocol
+        implementation projects.emojiSearch.presenters
+        implementation libs.zipline.loader
+        api libs.okio
+      }
+    }
+  }
+}
+
+android {
+  namespace 'com.example.zipline.emojisearch.launcher'
+}

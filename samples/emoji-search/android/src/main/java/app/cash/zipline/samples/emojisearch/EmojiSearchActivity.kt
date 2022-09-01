@@ -15,78 +15,75 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.LinearLayout
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+
+import android.os.Bundle
+import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.NoLiveLiterals
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.tooling.preview.Preview
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolDisplay
-import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
+import app.cash.redwood.protocol.widget.*
+import app.cash.redwood.treehouse.*
+import app.cash.zipline.*
+import app.cash.zipline.loader.*
 import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.json.*
+import okhttp3.OkHttpClient
 
 @NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
-  private val scope = CoroutineScope(Main)
+  private val scope: CoroutineScope = CoroutineScope(Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = ProtocolRedwoodComposition(
+    val treehouseApp = createTreehouseApp()
+
+    val view = TreehouseComposeView<EmojiSearchPresenter>(
+      context = this,
+      treehouseApp = treehouseApp,
+      widgetFactory = AndroidEmojiSearchWidgetFactory,
+    )
+    view.setContent(object : TreehouseView.Content<EmojiSearchPresenter> {
+      override fun get(app: EmojiSearchPresenter): ZiplineTreehouseUi {
+        return app.launch()
+      }
+    })
+
+    setContentView(view)
+  }
+
+  private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+    val httpClient = OkHttpClient()
+
+    val treehouseLauncher = app.cash.redwood.treehouse.TreehouseLauncher(
+      context = applicationContext,
+      httpClient = httpClient,
+      manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+    )
+
+    return treehouseLauncher.launch(
       scope = scope,
-      factory = DiffProducingEmojiSearchWidgetFactory(),
-      widgetVersion = 1U,
-      onDiff = { Log.d("RedwoodDiff", it.toString()) },
-      onEvent = { Log.d("RedwoodEvent", it.toString()) },
+      spec = EmojiSearchAppSpec(
+        manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
+        hostApi = RealHostApi(httpClient),
+        viewBinderAdapter = object : ViewBinder.Adapter {
+          override fun widgetFactory(
+            view: TreehouseView<*>,
+            json: Json,
+          ): DiffConsumingWidget.Factory<*> = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
+            delegate = (view as TreehouseComposeView<*>).widgetFactory as AndroidEmojiSearchWidgetFactory,
+            json = json,
+          )
+        },
+      ),
     )
-
-    val root = ComposeUiColumn()
-    val composeView = ComposeView(this).apply {
-      layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-      setContent(root.value)
-    }
-    setContentView(composeView)
-
-    val factory = DiffConsumingEmojiSearchWidgetFactory(AndroidEmojiSearchWidgetFactory)
-    val display = ProtocolDisplay(
-      root = factory.wrap(root),
-      factory = factory,
-      eventSink = composition,
-    )
-    composition.start(display)
-
-    val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
-    val models = MutableStateFlow(initialViewModel)
-    EmojiSearchZipline().produceModelsIn(scope, events, models)
-
-    composition.setContent {
-      val model by models.collectAsState()
-      EmojiSearch(model, events::tryEmit)
-    }
   }
 
   override fun onDestroy() {
     scope.cancel()
     super.onDestroy()
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-  val events = fun(_: EmojiSearchEvent) = Unit
-  EmojiSearchTheme {
-    EmojiSearch(sampleViewModel, events)
   }
 }

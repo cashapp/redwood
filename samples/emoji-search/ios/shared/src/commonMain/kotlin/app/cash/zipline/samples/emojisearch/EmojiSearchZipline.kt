@@ -53,7 +53,7 @@ class EmojiSearchZipline(
   fun setUp(resultsNotifier: (EmojiSearchViewModel) -> Unit = {}) {
     coroutineScope.launch(dispatcher) {
       val zipline = ziplineLoader.loadOnce("emojiSearch", manifestUrl) {
-        it.bind<HostApi>("hostApi", hostApi)
+        it.bind<HostApi>("HostApi", hostApi)
       }.zipline
       this@EmojiSearchZipline.zipline = zipline
 

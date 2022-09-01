@@ -16,10 +16,7 @@
 package app.cash.zipline.samples.emojisearch
 
 import app.cash.zipline.ZiplineService
-import kotlinx.coroutines.flow.Flow
 
 interface EmojiSearchPresenter : ZiplineService {
-  fun produceModels(
-    events: Flow<EmojiSearchEvent>,
-  ): Flow<EmojiSearchViewModel>
+  fun launch(): app.cash.redwood.treehouse.ZiplineTreehouseUi
 }

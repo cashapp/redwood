@@ -21,6 +21,7 @@ dependencies {
   implementation libs.coil.compose
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
+  implementation projects.emojiSearch.launcher
   implementation projects.emojiSearch.presenters
   implementation projects.emojiSearch.schema.compose.protocol
   implementation projects.emojiSearch.schema.widget.protocol
@@ -30,5 +31,6 @@ dependencies {
   implementation libs.androidx.compose.material
   implementation libs.androidx.compose.ui
   implementation libs.androidx.compose.ui.tooling.preview
+  implementation 'app.cash.redwood:redwood-treehouse'
   debugImplementation libs.androidx.compose.ui.tooling
 }
