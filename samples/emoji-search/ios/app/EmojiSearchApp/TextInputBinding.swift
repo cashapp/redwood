@@ -10,7 +10,12 @@ import shared
 import UIKit
 
 class TextInputBinding: WidgetTextInput {
-    private let root = UITextField()
+    private let root: UITextField = {
+        let view = UITextField()
+        view.borderStyle = .roundedRect
+        view.autocapitalizationType = .none
+        return view
+    }()
 
     func hint(hint: String) {
         root.placeholder = hint

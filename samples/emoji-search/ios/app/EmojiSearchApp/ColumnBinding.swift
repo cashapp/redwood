@@ -10,7 +10,11 @@ import UIKit
 import shared
 
 class ColumnBinding: WidgetColumn {
-    private let root = UIStackView()
+    private let root: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        return view
+    }()
 
     init() {}
 

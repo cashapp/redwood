@@ -33,9 +33,29 @@ extension ScrollableColumnBinding: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = TableViewCell(view: views[indexPath.row])
         /// This probably won't work correctly
-        cell.contentView.addSubview(views[indexPath.row])
+//        cell.contentView.addSubview(views[indexPath.row])
         return cell
+    }
+}
+
+private class TableViewCell: UITableViewCell {
+    private let view: UIView
+    
+    init(view: UIView) {
+        self.view = view
+        super.init(style: .default, reuseIdentifier: nil)
+        
+        addSubview(view)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        view.frame = bounds
     }
 }

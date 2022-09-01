@@ -10,12 +10,24 @@ class EmojiSearchViewController : UIViewController {
 
     // MARK: - UIViewController
 
-    override func loadView() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .white
+
         let emojiSearchZipline = EmojiSearchZipline(nsurlSession: urlSession, hostApi: IosHostApi(), widgetFactory: IosEmojiSearchWidgetFactory())
         let treehouseApp = emojiSearchZipline.createTreehouseApp()
         let treehouseView = Redwood_treehouseTreehouseUIKitView<PresentersEmojiSearchPresenter>(content: EmojiSearchContent())
         treehouseView.register(treehouseApp: treehouseApp)
-        view = treehouseView.view
+        
+        
+        let newView = treehouseView.view
+        view.addSubview(newView)
+        newView.translatesAutoresizingMaskIntoConstraints = false
+        newView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        newView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
+        newView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        newView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
     }
 }
 

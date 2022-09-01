@@ -15,7 +15,11 @@ class ImageBinding: WidgetImage {
         // do nothing.
     }
     
-    private let root = UIImageView()
+    private let root: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
     private let imageLoader: RemoteImageLoader
     private var lastURL: URL?
 
