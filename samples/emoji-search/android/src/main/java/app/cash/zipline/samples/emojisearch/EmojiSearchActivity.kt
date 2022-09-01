@@ -70,6 +70,10 @@ class EmojiSearchActivity : ComponentActivity() {
         manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
         hostApi = RealHostApi(httpClient),
         viewBinderAdapter = object : ViewBinder.Adapter {
+          override fun beforeUpdatedCode(view: TreehouseView<*>) {
+            view.protocolDisplayRoot.children(0)!!.clear()
+          }
+
           override fun widgetFactory(
             view: TreehouseView<*>,
             json: Json,

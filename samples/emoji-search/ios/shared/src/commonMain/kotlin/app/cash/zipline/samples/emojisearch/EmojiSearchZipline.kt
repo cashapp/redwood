@@ -48,6 +48,10 @@ class EmojiSearchZipline(
         manifestUrlString = manifestUrl,
         hostApi = hostApi,
         viewBinderAdapter = object : ViewBinder.Adapter {
+          override fun beforeUpdatedCode(view: TreehouseView<*>) {
+            view.protocolDisplayRoot.children(0)!!.clear()
+          }
+
           override fun widgetFactory(
             view: TreehouseView<*>,
             json: Json,
