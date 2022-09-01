@@ -11,6 +11,10 @@ import shared
 import UIKit
 
 class ImageBinding: WidgetImage {
+    func label(label: String) {
+        // do nothing.
+    }
+    
     private let root = UIImageView()
     private let imageLoader: RemoteImageLoader
     private var lastURL: URL?

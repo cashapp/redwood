@@ -25,6 +25,7 @@ fun exposedTypes(
     emojiSearchZipline: EmojiSearchZipline,
     emojiSearchEvent: EmojiSearchEvent,
     emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
+    treehouseUIKitView: app.cash.redwood.treehouse.TreehouseUIKitView<*>,
 ) {
   throw AssertionError()
 }

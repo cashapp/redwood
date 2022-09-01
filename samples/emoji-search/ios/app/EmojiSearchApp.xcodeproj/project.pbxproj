@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */; };
 		635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635661D421F12B7E00DD7240 /* AppDelegate.swift */; };
 		635661DA21F12B7E00DD7240 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635661D821F12B7E00DD7240 /* Main.storyboard */; };
 		635661DC21F12B8000DD7240 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 635661DB21F12B8000DD7240 /* Assets.xcassets */; };
@@ -21,12 +22,12 @@
 		C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */; };
 		CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */; };
 		CB85EE5426648F6900A4B218 /* Pods_EmojiSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */; };
-		CB9F7654280F4BFB008CF457 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F7653280F4BFB008CF457 /* HTTPClient.swift */; };
 		CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F76552810A8A8008CF457 /* IosHostApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmojiSearchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosEmojiSearchWidgetFactory.swift; sourceTree = "<group>"; };
 		4B9986777126F871E922EFF8 /* Pods-EmojiSearchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.release.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.release.xcconfig"; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		635661D421F12B7E00DD7240 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		C2F7FB9F28BEB42D00A66A69 /* ScrollableColumnBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableColumnBinding.swift; sourceTree = "<group>"; };
 		C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputBinding.swift; sourceTree = "<group>"; };
 		CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSearchViewController.swift; sourceTree = "<group>"; };
-		CB9F7653280F4BFB008CF457 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		CB9F76552810A8A8008CF457 /* IosHostApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosHostApi.swift; sourceTree = "<group>"; };
 		FE5DC566933F8A25E4B4D71D /* Pods-EmojiSearchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.debug.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,8 +97,8 @@
 				635661DB21F12B8000DD7240 /* Assets.xcassets */,
 				635661DD21F12B8000DD7240 /* LaunchScreen.storyboard */,
 				635661E021F12B8000DD7240 /* Info.plist */,
-				CB9F7653280F4BFB008CF457 /* HTTPClient.swift */,
 				CB9F76552810A8A8008CF457 /* IosHostApi.swift */,
+				10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */,
 			);
 			path = EmojiSearchApp;
 			sourceTree = "<group>";
@@ -218,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */,
 				CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */,
 				C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */,
 				C2F7CE6A28BEAF0500A66A69 /* EmojiSearchWidgetFactoryBinding.swift in Sources */,
@@ -228,7 +229,6 @@
 				AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */,
 				CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */,
 				C2F7CE6C28BEAF5500A66A69 /* ColumnBinding.swift in Sources */,
-				CB9F7654280F4BFB008CF457 /* HTTPClient.swift in Sources */,
 				C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

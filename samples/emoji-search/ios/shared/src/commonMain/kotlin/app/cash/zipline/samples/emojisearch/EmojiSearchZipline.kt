@@ -15,59 +15,48 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.zipline.Zipline
-import app.cash.zipline.loader.ManifestVerifier.Companion.NO_SIGNATURE_CHECKS
-import app.cash.zipline.loader.ZiplineHttpClient
-import app.cash.zipline.loader.ZiplineLoader
+import app.cash.zipline.loader.ManifestVerifier
+import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
+import example.schema.widget.EmojiSearchWidgetFactory
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import platform.Foundation.NSDate
-import platform.Foundation.timeIntervalSince1970
+import kotlinx.serialization.json.Json
+import platform.Foundation.NSURLSession
+import platform.UIKit.UIView
+import app.cash.redwood.treehouse.*
+import app.cash.redwood.protocol.widget.*
+import app.cash.redwood.treehouse.TreehouseApp
 
 class EmojiSearchZipline(
-  httpClient: ZiplineHttpClient,
+  private val nsurlSession: NSURLSession,
   private val hostApi: HostApi,
+  private val widgetFactory: EmojiSearchWidgetFactory<UIView>,
 ) {
   private val coroutineScope: CoroutineScope = MainScope()
-  private val dispatcher = Dispatchers.Main
-  private val eventFlow: MutableStateFlow<EmojiSearchEvent> = MutableStateFlow(
-    value = EmojiSearchEvent.SearchTermEvent(searchTerm = ""),
-  )
-  private var modelFlow: Flow<EmojiSearchViewModel>? = null
-
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
 
-  private val ziplineLoader = ZiplineLoader(
-    dispatcher = dispatcher,
-    manifestVerifier = NO_SIGNATURE_CHECKS,
-    httpClient = httpClient,
-    nowEpochMs = { NSDate().timeIntervalSince1970().toLong() * 1000 },
-  )
+  public fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+    val treehouseLauncher = app.cash.redwood.treehouse.TreehouseLauncher(
+      httpClient = URLSessionZiplineHttpClient(nsurlSession),
+      manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+    )
 
-  private var zipline: Zipline? = null
-
-  fun setUp(resultsNotifier: (EmojiSearchViewModel) -> Unit = {}) {
-    coroutineScope.launch(dispatcher) {
-      val zipline = ziplineLoader.loadOnce("emojiSearch", manifestUrl) {
-        it.bind<HostApi>("HostApi", hostApi)
-      }.zipline
-      this@EmojiSearchZipline.zipline = zipline
-
-      val presenter = zipline.take<EmojiSearchPresenter>("emojiSearchPresenter")
-      modelFlow = presenter.produceModels(eventFlow)
-      modelFlow!!.collect {
-        resultsNotifier(it)
-      }
-    }
-  }
-
-  fun updateSearchTerm(searchTerm: String) {
-    coroutineScope.launch(dispatcher) {
-      eventFlow.value = EmojiSearchEvent.SearchTermEvent(searchTerm = searchTerm)
-    }
+    return treehouseLauncher.launch(
+      scope = coroutineScope,
+      spec = EmojiSearchAppSpec(
+        manifestUrlString = manifestUrl,
+        hostApi = hostApi,
+        viewBinderAdapter = object : ViewBinder.Adapter {
+          override fun widgetFactory(
+            view: TreehouseView<*>,
+            json: Json,
+          ): DiffConsumingWidget.Factory<*> = DiffConsumingEmojiSearchWidgetFactory<UIView>(
+            delegate = widgetFactory,
+            json = json,
+          )
+        },
+      ),
+    )
   }
 }

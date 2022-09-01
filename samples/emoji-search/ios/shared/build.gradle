@@ -13,9 +13,12 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        implementation projects.emojiSearch.launcher
+        implementation projects.emojiSearch.presenters
         implementation projects.emojiSearch.schema.compose.protocol
         implementation projects.emojiSearch.schema.widget.protocol
-        implementation projects.emojiSearch.presenters
+        implementation 'app.cash.redwood:redwood-treehouse'
+        implementation libs.zipline.loader
       }
     }
   }
