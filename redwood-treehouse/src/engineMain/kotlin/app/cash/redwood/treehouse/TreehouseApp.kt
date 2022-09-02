@@ -78,7 +78,7 @@ public class TreehouseApp<T : Any>(
         scope = cancelableScope,
         zipline = zipline,
         context = context,
-        isInitialLaunch = previous != null,
+        isInitialLaunch = previous == null,
       )
 
       previous?.cancel()
