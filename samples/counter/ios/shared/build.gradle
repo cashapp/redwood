@@ -24,7 +24,7 @@ kotlin {
   iosSimulatorArm64()
 
   sourceSets {
-    iosMain {
+    commonMain {
       dependencies {
         implementation projects.counter.sunspot.compose.protocol
         implementation projects.counter.sunspot.widget.protocol

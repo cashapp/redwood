@@ -24,7 +24,7 @@ import example.schema.widget.EmojiSearchWidgetFactory
 fun exposedTypes(
   emojiSearchZipline: EmojiSearchZipline,
   emojiSearchEvent: EmojiSearchEvent,
-  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>
+  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
 ) {
   throw AssertionError()
 }
