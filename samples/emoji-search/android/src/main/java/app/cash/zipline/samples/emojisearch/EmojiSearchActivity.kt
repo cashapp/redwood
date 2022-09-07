@@ -39,7 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -124,8 +124,8 @@ private fun SearchResults(emojiImages: List<EmojiImage>) {
     modifier = Modifier.fillMaxWidth(),
   ) {
     items(emojiImages) { emojiImage ->
-      Image(
-        painter = rememberImagePainter(emojiImage.url),
+      AsyncImage(
+        model = emojiImage.url,
         contentDescription = null,
         modifier = Modifier
           .size(64.dp)
