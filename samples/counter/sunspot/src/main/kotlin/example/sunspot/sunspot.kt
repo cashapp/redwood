@@ -32,7 +32,7 @@ interface Sunspot
 
 @Widget(1)
 data class SunspotBox(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )
 
 @Widget(2)

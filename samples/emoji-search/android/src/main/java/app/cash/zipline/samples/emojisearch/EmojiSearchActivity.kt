@@ -18,7 +18,6 @@ package app.cash.zipline.samples.emojisearch
 import androidx.compose.runtime.Composable
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.NoLiveLiterals
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
@@ -89,5 +88,75 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onDestroy() {
     scope.cancel()
     super.onDestroy()
+  }
+}
+
+@Composable
+fun EmojiSearch(
+  model: EmojiSearchViewModel,
+  events: (EmojiSearchEvent) -> Unit
+) {
+  Surface(
+    color = MaterialTheme.colors.background,
+    modifier = Modifier
+      .fillMaxWidth()
+      .fillMaxHeight(),
+  ) {
+    Column(
+      modifier = Modifier.fillMaxWidth(),
+    ) {
+      SearchField(model.searchTerm, events)
+      SearchResults(model.images)
+    }
+  }
+}
+
+@Composable
+fun SearchField(
+  searchTerm: String,
+  events: (EmojiSearchEvent) -> Unit
+) {
+  val searchFieldValue = remember {
+    mutableStateOf(TextFieldValue(text = searchTerm))
+  }
+
+  TextField(
+    value = searchFieldValue.value,
+    onValueChange = {
+      events(EmojiSearchEvent.SearchTermEvent(it.text))
+      searchFieldValue.value = it
+    },
+    maxLines = 2,
+    textStyle = Typography.h3,
+    modifier = Modifier
+      .padding(16.dp)
+      .fillMaxWidth(),
+  )
+}
+
+@Composable
+private fun SearchResults(emojiImages: List<EmojiImage>) {
+  LazyColumn(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier.fillMaxWidth(),
+  ) {
+    items(emojiImages) { emojiImage ->
+      AsyncImage(
+        model = emojiImage.url,
+        contentDescription = null,
+        modifier = Modifier
+          .size(64.dp)
+          .padding(8.dp)
+      )
+    }
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+  val events = fun(_: EmojiSearchEvent) = Unit
+  EmojiSearchTheme {
+    EmojiSearch(sampleViewModel, events)
   }
 }

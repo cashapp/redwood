@@ -22,10 +22,10 @@ import platform.Foundation.NSData
 
 @Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
 fun exposedTypes(
-    emojiSearchZipline: EmojiSearchZipline,
-    emojiSearchEvent: EmojiSearchEvent,
-    emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-    treehouseUIKitView: app.cash.redwood.treehouse.TreehouseUIKitView<*>,
+  emojiSearchZipline: EmojiSearchZipline,
+  emojiSearchEvent: EmojiSearchEvent,
+  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
+  treehouseUIKitView: app.cash.redwood.treehouse.TreehouseUIKitView<*>,
 ) {
   throw AssertionError()
 }
