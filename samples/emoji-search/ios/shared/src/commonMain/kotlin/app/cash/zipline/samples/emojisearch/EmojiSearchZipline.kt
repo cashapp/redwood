@@ -15,6 +15,7 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.zipline.loader.ManifestVerifier
 import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
@@ -24,9 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import platform.Foundation.NSURLSession
 import platform.UIKit.UIView
-import app.cash.redwood.treehouse.*
-import app.cash.redwood.protocol.widget.*
-import app.cash.redwood.treehouse.TreehouseApp
 
 class EmojiSearchZipline(
   private val nsurlSession: NSURLSession,

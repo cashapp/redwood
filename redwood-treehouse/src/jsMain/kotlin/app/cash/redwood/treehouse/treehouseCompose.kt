@@ -20,6 +20,7 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,6 +72,7 @@ private fun ProtocolRedwoodComposition.asZiplineTreehouseUi(
   }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 private val scope: CoroutineScope = GlobalScope
 private val frameClock: BroadcastFrameClock by lazy { newFrameClock(scope) }
 
