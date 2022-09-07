@@ -7,20 +7,21 @@ import android.widget.FrameLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.LayoutModifier
 import androidx.compose.ui.platform.ComposeView
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.treehouse.*
+import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
 @SuppressLint("ViewConstructor")
-public class TreehouseComposeView<T : Any>(
+class TreehouseComposeView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
-  public val widgetFactory: Widget.Factory<@Composable () -> Unit>,
+  val widgetFactory: Widget.Factory<@Composable () -> Unit>,
 ) :  FrameLayout(context), TreehouseView<T> {
-  public val composeView: ComposeView = ComposeView(context)
+  val composeView: ComposeView = ComposeView(context)
   init {
     addView(composeView)
   }
@@ -39,7 +40,7 @@ public class TreehouseComposeView<T : Any>(
 
   override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
 
-  public fun setContent(content: TreehouseView.Content<T>) {
+  fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkMain()
     this.content = content
     treehouseApp.onContentChanged(this)
@@ -57,8 +58,6 @@ public class TreehouseComposeView<T : Any>(
 
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
-
-
 }
 
 class ProtocolDisplayRoot(
@@ -75,7 +74,7 @@ class ProtocolDisplayRoot(
     }
   }
 
-  override var layoutModifiers: app.cash.redwood.LayoutModifier = app.cash.redwood.LayoutModifier
+  override var layoutModifiers: LayoutModifier = LayoutModifier
   private val children = ComposeUiWidgetChildren()
 
   override val value: @Composable () -> Unit

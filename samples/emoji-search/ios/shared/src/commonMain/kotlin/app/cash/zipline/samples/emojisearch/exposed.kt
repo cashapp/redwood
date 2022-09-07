@@ -15,19 +15,15 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import app.cash.redwood.treehouse.TreehouseUIKitView
 import example.schema.widget.EmojiSearchWidgetFactory
-import okio.ByteString
-import okio.toByteString
-import platform.Foundation.NSData
 
 @Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchZipline: EmojiSearchZipline,
   emojiSearchEvent: EmojiSearchEvent,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  treehouseUIKitView: app.cash.redwood.treehouse.TreehouseUIKitView<*>,
+  treehouseUIKitView: TreehouseUIKitView<*>,
 ) {
   throw AssertionError()
 }
-
-fun byteStringOf(data: NSData): ByteString = data.toByteString()
