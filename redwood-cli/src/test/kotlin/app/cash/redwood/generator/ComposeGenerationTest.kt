@@ -33,8 +33,8 @@ class ComposeGenerationTest {
 
   @Widget(1)
   data class Row(
-    @Children(1, RowScope::class) val scoped: List<Any>,
-    @Children(2) val unscoped: List<Any>,
+    @Children(1, RowScope::class) val scoped: () -> Unit,
+    @Children(2) val unscoped: () -> Unit,
   )
 
   @Test fun functionTargetMarker() {

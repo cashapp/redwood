@@ -30,5 +30,5 @@ interface Counter
 
 @Widget(1)
 data class CounterBox(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )

@@ -37,7 +37,7 @@ data class Toolbar(
 
 @Widget(2)
 data class ScrollableColumn(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )
 
 @Widget(3)
@@ -48,5 +48,5 @@ data class Item(
 
 @Widget(4)
 data class Column(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )

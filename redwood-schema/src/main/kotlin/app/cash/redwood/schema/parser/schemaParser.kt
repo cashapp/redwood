@@ -22,17 +22,13 @@ import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
 import kotlin.reflect.KClass
-import kotlin.reflect.KTypeProjection.Companion.invariant
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
 
-private val childrenType = List::class.createType(
-  arguments = listOf(invariant(Any::class.createType())),
-)
+private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
@@ -131,8 +127,12 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
           Widget.Property(property.tag, it.name!!, it.type, defaultExpression)
         }
       } else if (children != null) {
-        require(it.type == childrenType) {
-          "@Children ${memberType.qualifiedName}#${it.name} must be of type 'List<Any>'"
+        require(it.type.isSubtypeOf(childrenType)) {
+          "@Children ${memberType.qualifiedName}#${it.name} must be of type '() -> Unit'"
+        }
+        val arguments = it.type.arguments.dropLast(1) // Drop return type.
+        require(arguments.isEmpty()) {
+          "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
         Widget.Children(children.tag, it.name!!, children.scope.takeIf { it != Unit::class })
       } else {
