@@ -46,7 +46,7 @@ public annotation class Schema(val members: Array<KClass<*>>)
  * @Widget(1)
  * data class Box(
  *   @Property(1) val orientation: Orientation,
- *   @Children val children: List<Any>,
+ *   @Children val children: () -> Unit,
  * )
  * ```
  */
@@ -69,12 +69,12 @@ public annotation class Property(val tag: Int)
 /**
  * Annotates a [Widget] property as representing child widgets which are contained within the
  * enclosing widget. Children in a [Widget] class must have a unique [tag] among all
- * [@Children][Children] annotations in the class. The type of the property must be `List<Any>`.
+ * [@Children][Children] annotations in the class. The type of the property must be `() -> Unit`.
  *
  * ```
  * @Widget(1)
  * data class Box(
- *   @Children(1) val children: List<Any>,
+ *   @Children(1) val children: () -> Unit,
  * )
  * ```
  */

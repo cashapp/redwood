@@ -32,12 +32,12 @@ interface EmojiSearch
 
 @Widget(1)
 data class Column(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )
 
 @Widget(2)
 data class ScrollableColumn(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )
 
 @Widget(3)

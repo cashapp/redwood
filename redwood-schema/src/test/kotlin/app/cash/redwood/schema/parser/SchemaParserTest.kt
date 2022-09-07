@@ -207,9 +207,9 @@ class SchemaParserTest {
 
   @Widget(1)
   data class DuplicateChildrenTagWidget(
-    @Children(1) val childrenA: List<Any>,
+    @Children(1) val childrenA: () -> Unit,
     @Property(1) val name: String,
-    @Children(1) val childrenB: List<Any>,
+    @Children(1) val childrenB: () -> Unit,
   )
 
   @Test fun duplicateChildrenTagThrows() {
@@ -234,7 +234,7 @@ class SchemaParserTest {
   @Widget(1)
   data class UnannotatedPrimaryParameterWidget(
     @Property(1) val name: String,
-    @Children(1) val children: List<Any>,
+    @Children(1) val children: () -> Unit,
     val unannotated: String,
   )
 
@@ -275,14 +275,35 @@ class SchemaParserTest {
 
   @Widget(1)
   data class InvalidChildrenTypeWidget(
-    @Children(1) val children: List<String>,
+    @Children(1) val children: String,
   )
 
   @Test fun invalidChildrenTypeThrows() {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type 'List<Any>'",
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
+    )
+  }
+
+  @Schema(
+    [
+      ChildrenArgumentsInvalidWidget::class,
+    ],
+  )
+  interface ChildrenArgumentsInvalidSchema
+
+  @Widget(1)
+  data class ChildrenArgumentsInvalidWidget(
+    @Children(1) val children: (String) -> Unit,
+  )
+
+  @Test fun childrenArgumentsInvalid() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ChildrenArgumentsInvalidSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
+        "Found: [kotlin.String]",
     )
   }
 

@@ -42,14 +42,14 @@ public interface ExampleSchema
 
 @Widget(1)
 public data class Row(
-  @Children(1) val children: List<Any>,
+  @Children(1) val children: () -> Unit,
 )
 
 public object RowScope
 
 @Widget(2)
 public data class ScopedRow(
-  @Children(1, RowScope::class) val children: List<Any>,
+  @Children(1, RowScope::class) val children: () -> Unit,
 )
 
 @Widget(3)
