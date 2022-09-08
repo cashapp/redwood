@@ -30,6 +30,7 @@ import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.serialization.json.JsonArray
 
 @SuppressLint("ViewConstructor")
@@ -93,7 +94,7 @@ internal class ProtocolDisplayRoot(
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
-  private val children = ComposeUiWidgetChildren()
+  private val children = ComposeWidgetChildren()
 
   override val value: @Composable () -> Unit
     get() {

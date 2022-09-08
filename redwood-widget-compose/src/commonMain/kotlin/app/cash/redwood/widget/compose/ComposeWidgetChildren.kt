@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package example.android.composeui
+package app.cash.redwood.widget.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import app.cash.redwood.widget.Widget
 
-class ComposeUiWidgetChildren : Widget.Children<@Composable () -> Unit> {
+public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
   private val children = mutableStateListOf<@Composable () -> Unit>()
 
   @Composable
-  fun render() {
+  public fun render() {
     for (child in children) {
       child()
     }

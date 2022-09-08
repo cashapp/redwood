@@ -12,6 +12,7 @@ include ':redwood-schema-annotations'
 include ':redwood-treehouse'
 include ':redwood-treehouse-composeui'
 include ':redwood-widget'
+include ':redwood-widget-compose'
 
 include ':test-schema'
 include ':test-schema:compose'

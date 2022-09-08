@@ -9,6 +9,7 @@ dependencies {
   implementation libs.kotlinx.serialization.json
   implementation projects.redwoodProtocolWidget
   implementation projects.redwoodRuntime
+  implementation projects.redwoodWidgetCompose
 }
 
 android {
