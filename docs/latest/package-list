@@ -1,13 +1,8 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
-module:redwood-cli
-app.cash.redwood.cli
-app.cash.redwood.lint
 module:redwood-compose
 app.cash.redwood.compose
-module:redwood-gradle-plugin
-app.cash.redwood.gradle
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
@@ -16,8 +11,6 @@ module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
-module:redwood-schema
-app.cash.redwood.schema.parser
 module:redwood-schema-annotations
 app.cash.redwood.schema
 module:redwood-treehouse
