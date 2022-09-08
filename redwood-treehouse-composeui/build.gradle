@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+dependencies {
+  api projects.redwoodTreehouse
+  api projects.redwoodWidget
+  implementation libs.androidx.compose.ui
+  implementation libs.kotlinx.serialization.json
+  implementation projects.redwoodProtocolWidget
+  implementation projects.redwoodRuntime
+}
+
+android {
+  namespace 'app.cash.treehouse.composeui'
+}
