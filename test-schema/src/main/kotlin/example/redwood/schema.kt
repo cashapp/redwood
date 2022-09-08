@@ -49,7 +49,7 @@ public object RowScope
 
 @Widget(2)
 public data class ScopedRow(
-  @Children(1, RowScope::class) val children: () -> Unit,
+  @Children(1) val children: RowScope.() -> Unit,
 )
 
 @Widget(3)
