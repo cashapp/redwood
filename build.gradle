@@ -97,13 +97,15 @@ allprojects {
     }
   }
 
-  plugins.withId('com.vanniktech.maven.publish') {
-    mavenPublish {
-      targets {
-        installArchives {
-          def url = file("${rootProject.buildDir}/localMaven").toURI().toString()
-          releaseRepositoryUrl = url
-          snapshotRepositoryUrl = url
+  plugins.withId('com.vanniktech.maven.publish.base') {
+    group = project.property("GROUP") as String
+    version = project.property("VERSION_NAME") as String
+
+    publishing {
+      repositories {
+        maven {
+          name = "LocalMaven"
+          url = file("${rootProject.buildDir}/localMaven").toURI().toString()
         }
       }
     }

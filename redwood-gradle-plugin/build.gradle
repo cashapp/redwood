@@ -62,16 +62,16 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':redwood-cli:installArchives')
-  dependsOn(':redwood-compose:installArchives')
-  dependsOn(':redwood-gradle-plugin:installArchives')
-  dependsOn(':redwood-protocol:installArchives')
-  dependsOn(':redwood-protocol-compose:installArchives')
-  dependsOn(':redwood-protocol-widget:installArchives')
-  dependsOn(':redwood-runtime:installArchives')
-  dependsOn(':redwood-schema:installArchives')
-  dependsOn(':redwood-schema-annotations:installArchives')
-  dependsOn(':redwood-widget:installArchives')
+  dependsOn(':redwood-cli:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-protocol:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-protocol-compose:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-protocol-widget:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-runtime:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-schema:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-schema-annotations:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-widget:publishAllPublicationsToLocalMavenRepository')
 
   inputs.dir(project.file('src/test/fixture'))
 }
