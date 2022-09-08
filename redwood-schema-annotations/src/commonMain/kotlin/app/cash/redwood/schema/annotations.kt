@@ -77,10 +77,19 @@ public annotation class Property(val tag: Int)
  *   @Children(1) val children: () -> Unit,
  * )
  * ```
+ *
+ * A class may be used as the lambda receiver to denote a scope. The receiver class will be
+ * propagated to the generated code and must be included in the [schema][Schema].
+ *
+ * ```
+ * @Widget(1)
+ * data class Box(
+ *   @Children(1) val children: BoxScope.() -> Unit,
+ * )
+ * ```
  */
 public annotation class Children(
   val tag: Int,
-  val scope: KClass<*> = Unit::class,
 )
 
 /**

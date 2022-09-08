@@ -130,11 +130,21 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
         require(it.type.isSubtypeOf(childrenType)) {
           "@Children ${memberType.qualifiedName}#${it.name} must be of type '() -> Unit'"
         }
-        val arguments = it.type.arguments.dropLast(1) // Drop return type.
+        var scope: KClass<*>? = null
+        var arguments = it.type.arguments.dropLast(1) // Drop return type.
+        if (it.type.annotations.any(ExtensionFunctionType::class::isInstance)) {
+          val receiverType = it.type.arguments.first().type
+          val receiverClassifier = receiverType?.classifier
+          require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty()) {
+            "@Children ${memberType.qualifiedName}#${it.name} lambda receiver can only be a class. Found: $receiverType"
+          }
+          scope = receiverClassifier
+          arguments = arguments.drop(1)
+        }
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        Widget.Children(children.tag, it.name!!, children.scope.takeIf { it != Unit::class })
+        Widget.Children(children.tag, it.name!!, scope)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }

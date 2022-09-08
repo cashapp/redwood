@@ -33,7 +33,7 @@ class ComposeGenerationTest {
 
   @Widget(1)
   data class Row(
-    @Children(1, RowScope::class) val scoped: () -> Unit,
+    @Children(1) val scoped: RowScope.() -> Unit,
     @Children(2) val unscoped: () -> Unit,
   )
 

@@ -309,6 +309,69 @@ class SchemaParserTest {
 
   @Schema(
     [
+      ScopedChildrenArgumentsInvalidWidget::class,
+    ],
+  )
+  interface ScopedChildrenArgumentsInvalidSchema
+
+  @Widget(1)
+  data class ScopedChildrenArgumentsInvalidWidget(
+    @Children(1) val children: String.(Int) -> Unit,
+  )
+
+  @Test fun scopedChildrenArgumentsInvalid() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ScopedChildrenArgumentsInvalidSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
+        "Found: [kotlin.Int]",
+    )
+  }
+
+  @Schema(
+    [
+      ScopedChildrenInvalidWidget::class,
+    ],
+  )
+  interface ScopedChildrenInvalidSchema
+
+  @Widget(1)
+  data class ScopedChildrenInvalidWidget(
+    @Children(1) val children: List<Int>.() -> Unit,
+  )
+
+  @Test fun scopedChildrenInvalid() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ScopedChildrenInvalidSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
+        "Found: kotlin.collections.List<kotlin.Int>",
+    )
+  }
+
+  @Schema(
+    [
+      ScopedChildrenTypeParameterInvalidWidget::class,
+    ],
+  )
+  interface ScopedChildrenTypeParameterInvalidSchema
+
+  @Widget(1)
+  data class ScopedChildrenTypeParameterInvalidWidget<T>(
+    @Children(1) val children: T.() -> Unit,
+  )
+
+  @Test fun scopedChildrenTypeParameterInvalid() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ScopedChildrenTypeParameterInvalidSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a class. " +
+        "Found: T",
+    )
+  }
+
+  @Schema(
+    [
       EventTypeWidget::class,
     ],
   )
