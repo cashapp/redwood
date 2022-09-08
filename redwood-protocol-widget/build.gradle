@@ -15,13 +15,9 @@ kotlin {
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
-      }
-    }
-    jvmTest { // TODO all targets!
-      dependencies {
         implementation projects.testSchema.compose
         implementation projects.testSchema.widget.protocol
+        implementation libs.kotlin.test
       }
     }
   }
