@@ -17,12 +17,23 @@ package app.cash.redwood.widget
 
 import kotlin.jvm.JvmOverloads
 
+/**
+ * A [MutableList] that is also a [Widget.Children].
+ *
+ * @param list Optional existing [MutableList] instance to wrap.
+ * @param onUpdate Optional callback invoked when contents change via the [Widget.Children] API.
+ */
 public class MutableListChildren<T : Any>
 @JvmOverloads constructor(
-  public val list: MutableList<T> = mutableListOf(),
-) : Widget.Children<T>, Iterable<T> {
+  private val list: MutableList<T> = mutableListOf(),
+  private val onUpdate: (List<T>) -> Unit = {},
+) : Widget.Children<T>, MutableList<T> by list {
+  /** @param onUpdate Callback invoked when contents change via the [Widget.Children] API. */
+  public constructor(onUpdate: (List<T>) -> Unit) : this(mutableListOf(), onUpdate = onUpdate)
+
   override fun insert(index: Int, widget: T) {
     list.add(index, widget)
+    onUpdate(list)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -58,6 +69,8 @@ public class MutableListChildren<T : Any>
       subView.clear()
       list.addAll(dest, subCopy)
     }
+
+    onUpdate(list)
   }
 
   override fun remove(index: Int, count: Int) {
@@ -81,11 +94,12 @@ public class MutableListChildren<T : Any>
     } else {
       list.subList(index, index + count).clear()
     }
+
+    onUpdate(list)
   }
 
   override fun clear() {
     list.clear()
+    onUpdate(list)
   }
-
-  override fun iterator(): Iterator<T> = list.iterator()
 }
