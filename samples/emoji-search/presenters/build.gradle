@@ -57,4 +57,4 @@ zipline {
   mainFunction = 'app.cash.zipline.samples.emojisearch.preparePresenters'
 }
 
-apply from: "${rootDir}/../dependOnAndroidSourceSets.gradle"
+apply from: "${rootDir}/../dependOnAndroidTestSourceSets.gradle"

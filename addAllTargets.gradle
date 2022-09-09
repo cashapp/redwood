@@ -4,7 +4,7 @@ plugins.withId('org.jetbrains.kotlin.multiplatform') {
       android {
         publishLibraryVariants('release')
       }
-      apply from: "${rootDir}/dependOnAndroidSourceSets.gradle"
+      apply from: "${rootDir}/dependOnAndroidTestSourceSets.gradle"
     }
 
     iosArm64()
