@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.widget.ProtocolDisplay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 
 /** Displays Redwood widgets to a [TreehouseView]. */
 public class RealViewBinder(
@@ -76,7 +77,7 @@ public class RealViewBinder(
         scope.launch(dispatchers.main) {
           if (firstDiff) {
             firstDiff = false
-            view.protocolDisplayRoot.children(0)!!.clear()
+            view.protocolDisplayRoot.children(RootChildrenTag)!!.clear()
 
             when {
               isInitialCode -> adapter.beforeInitialCode(view)
