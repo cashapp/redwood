@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
@@ -76,6 +77,7 @@ public class RealViewBinder(
         scope.launch(dispatchers.main) {
           if (firstDiff) {
             firstDiff = false
+            view.protocolDisplayRoot.children(RootChildrenTag)!!.clear()
 
             when {
               isInitialCode -> adapter.beforeInitialCode(view)
