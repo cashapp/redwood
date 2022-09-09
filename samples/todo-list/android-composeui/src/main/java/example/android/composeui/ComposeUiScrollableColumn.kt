@@ -22,11 +22,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import example.schema.widget.ScrollableColumn
 
 class ComposeUiScrollableColumn : ScrollableColumn<@Composable () -> Unit> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
-  override val children = ComposeUiWidgetChildren()
+  override val children = ComposeWidgetChildren()
   override val value = @Composable {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
       children.render()
