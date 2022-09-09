@@ -134,6 +134,7 @@ allprojects {
   }
 
   // Work-around: https://youtrack.jetbrains.com/issue/KT-48436
+  // TODO Remove when bumping to Kotlin 1.7.20.
   afterEvaluate {
     def ext = project.extensions.findByType(org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)
     if (ext != null)  {
