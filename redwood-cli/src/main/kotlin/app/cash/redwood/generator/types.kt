@@ -42,6 +42,7 @@ internal val WidgetProtocolMismatchHandler = ClassName("app.cash.redwood.protoco
 
 internal val LayoutModifier = ClassName("app.cash.redwood", "LayoutModifier")
 internal val LayoutModifierElement = LayoutModifier.nestedClass("Element")
+internal val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
 
 internal val widgetType = ClassName("app.cash.redwood.widget", "Widget")
 internal val widgetChildren = widgetType.nestedClass("Children")
