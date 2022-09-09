@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
@@ -22,7 +23,6 @@ import app.cash.redwood.protocol.widget.ProtocolDisplay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 
 /** Displays Redwood widgets to a [TreehouseView]. */
 public class RealViewBinder(
