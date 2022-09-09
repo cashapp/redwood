@@ -62,4 +62,16 @@ class ComposeGenerationTest {
       contains("unscoped()")
     }
   }
+
+  @Test fun scopeIsAnnotatedWithLayoutScopeMarker() {
+    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+
+    val fileSpec = generateScopeAndScopedModifiers(schema, RowScope::class)
+    assertThat(fileSpec.toString()).contains(
+      """
+      |@LayoutScopeMarker
+      |public object RowScope
+      """.trimMargin(),
+    )
+  }
 }
