@@ -4,6 +4,16 @@ plugins.withId('org.jetbrains.kotlin.multiplatform') {
       android {
         publishLibraryVariants('release')
       }
+      sourceSets {
+        // Work-around: https://youtrack.jetbrains.com/issue/KT-48436
+        // TODO Remove when bumping to Kotlin 1.7.20.
+        androidTest {
+          dependsOn(androidAndroidTestRelease)
+          dependsOn(androidTestFixtures)
+          dependsOn(androidTestFixturesDebug)
+          dependsOn(androidTestFixturesRelease)
+        }
+      }
     }
 
     iosArm64()
