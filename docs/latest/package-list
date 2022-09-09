@@ -17,3 +17,5 @@ module:redwood-treehouse
 app.cash.redwood.treehouse
 module:redwood-widget
 app.cash.redwood.widget
+module:redwood-widget-compose
+app.cash.redwood.widget.compose
