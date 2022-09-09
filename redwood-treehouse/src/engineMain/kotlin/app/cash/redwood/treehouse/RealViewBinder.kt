@@ -76,6 +76,7 @@ public class RealViewBinder(
         scope.launch(dispatchers.main) {
           if (firstDiff) {
             firstDiff = false
+            view.protocolDisplayRoot.children(0)!!.clear()
 
             when {
               isInitialCode -> adapter.beforeInitialCode(view)
