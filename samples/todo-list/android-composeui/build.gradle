@@ -6,6 +6,7 @@ dependencies {
   implementation projects.todoList.schema.compose.protocol
   implementation projects.todoList.schema.widget.protocol
   implementation projects.todoList.presenters
+  implementation 'app.cash.redwood:redwood-widget-compose'
   implementation libs.kotlinx.coroutines.android
   implementation libs.androidx.compose.material
   implementation libs.androidx.activity

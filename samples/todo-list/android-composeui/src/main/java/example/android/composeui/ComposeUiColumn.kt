@@ -19,11 +19,12 @@ package example.android.composeui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import example.schema.widget.Column
 
 class ComposeUiColumn : Column<@Composable () -> Unit> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
-  override val children = ComposeUiWidgetChildren()
+  override val children = ComposeWidgetChildren()
   override val value = @Composable {
     Column {
       children.render()
