@@ -224,6 +224,7 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
   return FileSpec.builder(schema.composePackage, scopeName)
     .apply {
       val scopeObject = TypeSpec.objectBuilder(scopeName)
+        .addAnnotation(LayoutScopeMarker)
 
       for (layoutModifier in schema.layoutModifiers) {
         if (scope !in layoutModifier.scopes) {
