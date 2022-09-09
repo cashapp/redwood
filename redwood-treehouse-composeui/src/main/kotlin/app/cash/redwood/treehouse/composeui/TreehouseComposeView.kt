@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
@@ -107,5 +108,8 @@ internal class ProtocolDisplayRoot(
     error("unexpected update on view root: $diff")
   }
 
-  override fun children(tag: Int) = children
+  override fun children(tag: Int) = when (tag) {
+    RootChildrenTag -> children
+    else -> error("unexpected tag: $tag")
+  }
 }
