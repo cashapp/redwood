@@ -19,14 +19,41 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
-  override val children = MutableListChildren<String>()
+  private var updateCount = Int.MIN_VALUE
+  override val children = MutableListChildren<String> { updateCount++ }
   override fun widget(name: String) = name
-  override fun names() = children.list
+  override fun names() = children.toList()
 
-  @Test fun iterableIteratesChildren() {
-    assertEquals(emptyList(), children.toList())
+  @Test fun insertCallsUpdate() {
+    updateCount = 0
+    children.insert(0, "one")
+    assertEquals(1, updateCount)
+  }
 
-    children.insert(0, widget("one"))
-    assertEquals(listOf("one"), children.toList())
+  @Test fun moveCallsUpdate() {
+    children.insert(0, "one")
+    children.insert(1, "two")
+
+    updateCount = 0
+    children.move(0, 1, 1)
+    assertEquals(1, updateCount)
+  }
+
+  @Test fun removeCallsUpdate() {
+    children.insert(0, "one")
+    children.insert(1, "two")
+
+    updateCount = 0
+    children.remove(0, 1)
+    assertEquals(1, updateCount)
+  }
+
+  @Test fun clearCallsUpdate() {
+    children.insert(0, "one")
+    children.insert(1, "two")
+
+    updateCount = 0
+    children.clear()
+    assertEquals(1, updateCount)
   }
 }

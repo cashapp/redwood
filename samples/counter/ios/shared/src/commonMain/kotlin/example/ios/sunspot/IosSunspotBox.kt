@@ -16,11 +16,14 @@
 package example.ios.sunspot
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.MutableListChildren
 import example.sunspot.widget.SunspotBox
 import platform.UIKit.UILayoutConstraintAxisHorizontal
 import platform.UIKit.UIStackView
 import platform.UIKit.UIStackViewDistributionFillEqually
 import platform.UIKit.UIView
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.subviews
 
 class IosSunspotBox(
   override val value: UIStackView = UIStackView().apply {
@@ -30,5 +33,9 @@ class IosSunspotBox(
 ) : SunspotBox<UIView> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override val children = UIStackViewChildren(value)
+  override val children = MutableListChildren { newViews ->
+    @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
+    (value.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
+    newViews.forEach(value::addArrangedSubview)
+  }
 }

@@ -20,7 +20,7 @@ import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.widget.UIViewChildren
+import app.cash.redwood.widget.MutableListChildren
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
@@ -34,6 +34,9 @@ import platform.Foundation.NSLog
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSThread
 import platform.UIKit.UIView
+import platform.UIKit.addSubview
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.subviews
 
 public fun TreehouseLauncher(
   httpClient: ZiplineHttpClient,
@@ -94,7 +97,11 @@ internal class IosTreehouseDispatchers : TreehouseDispatchers {
 internal class ProtocolDisplayRoot(
   override val value: UIView,
 ) : DiffConsumingWidget<UIView> {
-  private val children = UIViewChildren(value)
+  private val children = MutableListChildren { newViews ->
+    @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
+    (value.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
+    newViews.forEach(value::addSubview)
+  }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
