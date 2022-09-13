@@ -74,7 +74,7 @@ public class TreehouseLauncher internal constructor(
     val treehouseApp = TreehouseApp<T>(
       scope = scope,
       dispatchers = dispatchers,
-      viewBinder = RealViewBinder(dispatchers, spec.viewBinderAdapter),
+      viewBinder = spec.viewBinder,
     )
 
     scope.launch(dispatchers.zipline) {
