@@ -16,10 +16,8 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
-import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIView
 import platform.UIKit.setFrame
@@ -28,7 +26,7 @@ import platform.UIKit.subviews
 public class TreehouseUIKitView<T : Any>(
   private val content: TreehouseView.Content<T>,
 ) : TreehouseView<T> {
-  public val view: UIView = RootUiView(frame = cValue { CGRectZero })
+  public val view: UIView = RootUiView()
   private var treehouseApp: TreehouseApp<T>? = null
 
   // TODO(jwilson): track when this view is detached from screen
@@ -43,7 +41,7 @@ public class TreehouseUIKitView<T : Any>(
   }
 }
 
-private class RootUiView(frame: CValue<CGRect>) : UIView(frame) {
+private class RootUiView() : UIView(cValue { CGRectZero }) {
   @ObjCAction fun layoutSubviews() {
     subviews.forEach {
       (it as UIView).setFrame(bounds)
