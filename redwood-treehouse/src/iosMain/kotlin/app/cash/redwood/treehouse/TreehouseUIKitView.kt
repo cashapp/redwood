@@ -16,37 +16,53 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
-import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIView
 import platform.UIKit.setFrame
 import platform.UIKit.subviews
+import platform.UIKit.superview
 
 public class TreehouseUIKitView<T : Any>(
-  private val content: TreehouseView.Content<T>,
+  private val treehouseApp: TreehouseApp<T>,
 ) : TreehouseView<T> {
-  public val view: UIView = RootUiView(frame = cValue { CGRectZero })
-  private var treehouseApp: TreehouseApp<T>? = null
+  public val view: UIView = RootUiView(this)
+  private var content: TreehouseView.Content<T>? = null
 
-  // TODO(jwilson): track when this view is detached from screen
-  override val boundContent: TreehouseView.Content<T>? = content
+  override val boundContent: TreehouseView.Content<T>?
+    get() {
+      return when {
+        view.superview != null -> content
+        else -> null
+      }
+    }
 
   override val protocolDisplayRoot: DiffConsumingWidget<*> =
     ProtocolDisplayRoot(view)
 
-  public fun register(treehouseApp: TreehouseApp<T>?) {
-    this.treehouseApp = treehouseApp
-    treehouseApp?.onContentChanged(this)
+  public fun setContent(content: TreehouseView.Content<T>) {
+    treehouseApp.dispatchers.checkMain()
+    this.content = content
+    treehouseApp.onContentChanged(this)
+  }
+
+  internal fun superviewChanged() {
+    treehouseApp.onContentChanged(this)
   }
 }
 
-private class RootUiView(frame: CValue<CGRect>) : UIView(frame) {
+@Suppress("unused") // cinterop erroneously exposes these as extension functions.
+private class RootUiView(
+  private val treehouseView: TreehouseUIKitView<*>,
+) : UIView(cValue { CGRectZero }) {
   @ObjCAction fun layoutSubviews() {
     subviews.forEach {
       (it as UIView).setFrame(bounds)
     }
+  }
+
+  @ObjCAction fun didMoveToSuperview() {
+    treehouseView.superviewChanged()
   }
 }
