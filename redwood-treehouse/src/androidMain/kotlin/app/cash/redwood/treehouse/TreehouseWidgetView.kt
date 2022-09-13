@@ -29,10 +29,8 @@ public class TreehouseWidgetView<T : Any>(
   private val treehouseApp: TreehouseApp<T>,
   public val widgetFactory: Widget.Factory<View>,
 ) : FrameLayout(context), TreehouseView<T> {
-  /** This is always the user-supplied content. */
   private var content: TreehouseView.Content<T>? = null
 
-  /** This is the actual content, or null if not attached to the screen. */
   override val boundContent: TreehouseView.Content<T>?
     get() {
       return when {

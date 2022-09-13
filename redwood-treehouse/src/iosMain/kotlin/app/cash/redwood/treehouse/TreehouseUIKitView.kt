@@ -24,10 +24,10 @@ import platform.UIKit.setFrame
 import platform.UIKit.subviews
 
 public class TreehouseUIKitView<T : Any>(
-  private val content: TreehouseView.Content<T>,
+  private val treehouseApp: TreehouseApp<T>,
 ) : TreehouseView<T> {
   public val view: UIView = RootUiView()
-  private var treehouseApp: TreehouseApp<T>? = null
+  private var content: TreehouseView.Content<T>? = null
 
   // TODO(jwilson): track when this view is detached from screen
   override val boundContent: TreehouseView.Content<T>? = content
@@ -35,9 +35,10 @@ public class TreehouseUIKitView<T : Any>(
   override val protocolDisplayRoot: DiffConsumingWidget<*> =
     ProtocolDisplayRoot(view)
 
-  public fun register(treehouseApp: TreehouseApp<T>?) {
-    this.treehouseApp = treehouseApp
-    treehouseApp?.onContentChanged(this)
+  public fun setContent(content: TreehouseView.Content<T>) {
+    treehouseApp.dispatchers.checkMain()
+    this.content = content
+    treehouseApp.onContentChanged(this)
   }
 }
 

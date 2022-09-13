@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 
 public interface TreehouseView<T : Any> {
+  /** This is the actual content, or null if not attached to the screen. */
   public val boundContent: Content<T>?
   public val protocolDisplayRoot: DiffConsumingWidget<*>
 
