@@ -59,9 +59,9 @@ public class TreehouseApp<T : Any>(
   public val zipline: Zipline?
     get() = ziplineSession?.zipline
 
-  /** This function may only be invoked on [TreehouseDispatchers.main]. */
+  /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   public fun onContentChanged(view: TreehouseView<T>) {
-    dispatchers.checkMain()
+    dispatchers.checkUi()
     scope.launch(dispatchers.zipline) {
       bind(view)
     }
@@ -116,7 +116,7 @@ public class TreehouseApp<T : Any>(
       ziplineSession.bind(view, content)
     } else {
       // If we're waiting for code to load, show a loading indicator until it's ready.
-      withContext(dispatchers.main) {
+      withContext(dispatchers.ui) {
         viewBinder.codeLoading(view)
       }
     }
@@ -181,8 +181,8 @@ public class TreehouseApp<T : Any>(
         private var firstDiff = true
 
         override fun sendDiff(diff: Diff) {
-          // Receive UI updates on the main dispatcher.
-          scope.launch(dispatchers.main) {
+          // Receive UI updates on the UI dispatcher.
+          scope.launch(dispatchers.ui) {
             if (firstDiff) {
               firstDiff = false
               view.protocolDisplayRoot.children(ChildrenDiff.RootChildrenTag)!!.clear()

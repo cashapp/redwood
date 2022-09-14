@@ -20,24 +20,24 @@ import kotlinx.coroutines.CoroutineDispatcher
 /**
  * One of the trickiest things Treehouse needs to do is balance its two dispatchers:
  *
- *  * [main] is the [CoroutineDispatcher] that runs on the platform's main thread.
+ *  * [ui] is the [CoroutineDispatcher] that runs on the platform's UI thread.
  *  * [zipline] is where downloaded code executes.
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
 public interface TreehouseDispatchers {
-  public val main: CoroutineDispatcher
+  public val ui: CoroutineDispatcher
   public val zipline: CoroutineDispatcher
 
   /**
-   * Confirm that this is being called on the main thread or main dispatcher.
+   * Confirm that this is being called on the UI thread.
    *
-   * @throws IllegalStateException if invoked on non-main thread.
+   * @throws IllegalStateException if invoked on non-UI thread.
    */
-  public fun checkMain()
+  public fun checkUi()
 
   /**
-   * Confirm that this is being called on the zipline thread or zipline dispatcher.
+   * Confirm that this is being called on the zipline thread.
    *
    * @throws IllegalStateException if invoked on non-zipline thread.
    */

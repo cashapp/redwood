@@ -42,7 +42,7 @@ public class TreehouseUIKitView<T : Any>(
     ProtocolDisplayRoot(view)
 
   public fun setContent(content: TreehouseView.Content<T>) {
-    treehouseApp.dispatchers.checkMain()
+    treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)
   }

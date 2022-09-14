@@ -80,17 +80,17 @@ internal class IosTreehousePlatform : TreehousePlatform {
   )
 }
 
-// TODO(jwilson): we're currently doing everything on the main thread on iOS.
+// TODO(jwilson): we're currently doing everything on the UI thread on iOS.
 internal class IosTreehouseDispatchers : TreehouseDispatchers {
-  override val main: CoroutineDispatcher = Dispatchers.Main
-  override val zipline: CoroutineDispatcher = Dispatchers.Main
+  override val ui: CoroutineDispatcher get() = Dispatchers.Main
+  override val zipline: CoroutineDispatcher get() = Dispatchers.Main
 
-  override fun checkMain() {
+  override fun checkUi() {
     check(NSThread.isMainThread)
   }
 
   override fun checkZipline() {
-    checkMain()
+    checkUi()
   }
 }
 
