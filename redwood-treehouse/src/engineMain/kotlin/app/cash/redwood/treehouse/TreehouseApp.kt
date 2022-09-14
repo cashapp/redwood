@@ -15,7 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.DiffConsumingWidget.Factory
+import app.cash.redwood.protocol.widget.ProtocolDisplay
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -129,8 +136,8 @@ public class TreehouseApp<T : Any>(
     val zipline: Zipline,
     val isInitialLaunch: Boolean,
   ) {
-    /** Keep track of which views are bound to Treehouse. */
-    val bindings = mutableMapOf<TreehouseView<T>, ViewBinding>()
+    /** Map of views to the zipline service whose content drives those views. */
+    val bindings = mutableMapOf<TreehouseView<T>, ZiplineService>()
 
     fun bind(
       view: TreehouseView<T>,
@@ -139,13 +146,59 @@ public class TreehouseApp<T : Any>(
       dispatchers.checkZipline()
 
       val previous = bindings.remove(view)
-      previous?.cancel()
+      previous?.close()
 
       if (content == null) return
 
       val ziplineTreehouseUi = content.get(context)
-      val binding = viewBinder.bind(scope, ziplineTreehouseUi, view, zipline.json, isInitialLaunch)
-      bindings[view] = binding
+      bindSinks(ziplineTreehouseUi, view, isInitialLaunch)
+
+      bindings[view] = ziplineTreehouseUi
+    }
+
+    private fun bindSinks(
+      content: ZiplineTreehouseUi,
+      view: TreehouseView<T>,
+      isInitialLaunch: Boolean,
+    ) {
+      val eventSink = EventSink { event ->
+        // Send UI events on the zipline dispatcher.
+        scope.launch(dispatchers.zipline) {
+          content.sendEvent(event)
+        }
+      }
+
+      val widgetFactory = viewBinder.widgetFactory(view, zipline.json)
+
+      @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
+      val display = ProtocolDisplay(
+        root = view.protocolDisplayRoot as DiffConsumingWidget<Any>,
+        factory = widgetFactory as Factory<Any>,
+        eventSink = eventSink,
+      )
+
+      val diffSinkService = object : DiffSinkService {
+        private var firstDiff = true
+
+        override fun sendDiff(diff: Diff) {
+          // Receive UI updates on the main dispatcher.
+          scope.launch(dispatchers.main) {
+            if (firstDiff) {
+              firstDiff = false
+              view.protocolDisplayRoot.children(ChildrenDiff.RootChildrenTag)!!.clear()
+
+              when {
+                isInitialLaunch -> viewBinder.beforeInitialCode(view)
+                else -> viewBinder.beforeUpdatedCode(view)
+              }
+            }
+
+            display.sendDiff(diff)
+          }
+        }
+      }
+
+      content.start(diffSinkService)
     }
 
     fun cancel() {
@@ -167,7 +220,7 @@ public class TreehouseApp<T : Any>(
     public open val freshCodePolicy: FreshCodePolicy
       get() = FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY
 
-    public abstract val viewBinderAdapter: ViewBinder.Adapter
+    public abstract val viewBinder: ViewBinder
 
     public abstract fun bindServices(zipline: Zipline)
     public abstract fun create(zipline: Zipline): T
