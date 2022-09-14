@@ -34,6 +34,7 @@ public interface RedwoodComposition {
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
+@Suppress("UNUSED_PARAMETER")
 @Deprecated("Not implemented yet", level = ERROR)
 public fun <T : Any> RedwoodComposition(
   scope: CoroutineScope,
