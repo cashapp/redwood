@@ -42,7 +42,7 @@ public class TreehouseWidgetView<T : Any>(
   override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
 
   public fun setContent(content: TreehouseView.Content<T>) {
-    treehouseApp.dispatchers.checkMain()
+    treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)
   }

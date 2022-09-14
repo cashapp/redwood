@@ -90,10 +90,10 @@ internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
       .also { ziplineThread = it }
   }
 
-  override val main: CoroutineDispatcher = Dispatchers.Main
+  override val ui: CoroutineDispatcher get() = Dispatchers.Main
   override val zipline: CoroutineDispatcher = executorService.asCoroutineDispatcher()
 
-  override fun checkMain() {
+  override fun checkUi() {
     check(Looper.myLooper() == Looper.getMainLooper())
   }
 
