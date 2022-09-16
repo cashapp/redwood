@@ -16,13 +16,15 @@
 package app.cash.redwood
 
 internal class ObservableMutableList<T>(
-  private val delegate: MutableList<T> = mutableListOf(),
-  private val onChange: () -> Unit = {},
-  // Delegate to List-only so new mutable methods have to be implemented manually.
-) : MutableList<T>, List<T> by delegate {
+  private val onChange: () -> Unit = {}
+) : AbstractMutableList<T>() {
 
-  override fun add(element: T): Boolean {
-    return delegate.add(element).also { onChange() }
+  private val delegate = mutableListOf<T>()
+
+  override val size: Int get() = delegate.size
+
+  override fun get(index: Int): T {
+    return delegate[index]
   }
 
   override fun add(index: Int, element: T) {
@@ -33,39 +35,7 @@ internal class ObservableMutableList<T>(
     return delegate.set(index, element).also { onChange() }
   }
 
-  override fun addAll(elements: Collection<T>): Boolean {
-    return delegate.addAll(elements).also { onChange() }
-  }
-
-  override fun addAll(index: Int, elements: Collection<T>): Boolean {
-    return delegate.addAll(index, elements).also { onChange() }
-  }
-
-  override fun remove(element: T): Boolean {
-    return delegate.remove(element).also { onChange() }
-  }
-
   override fun removeAt(index: Int): T {
     return delegate.removeAt(index).also { onChange() }
   }
-
-  override fun removeAll(elements: Collection<T>): Boolean {
-    return delegate.removeAll(elements).also { onChange() }
-  }
-
-  override fun retainAll(elements: Collection<T>): Boolean {
-    return delegate.retainAll(elements).also { onChange() }
-  }
-
-  override fun clear() {
-    delegate.clear().also { onChange() }
-  }
-
-  override fun iterator() = delegate.iterator()
-
-  override fun listIterator() = delegate.listIterator()
-
-  override fun listIterator(index: Int) = delegate.listIterator(index)
-
-  override fun subList(fromIndex: Int, toIndex: Int) = delegate.subList(fromIndex, toIndex)
 }
