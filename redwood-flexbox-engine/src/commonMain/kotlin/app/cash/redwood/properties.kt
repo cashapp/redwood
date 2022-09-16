@@ -268,6 +268,12 @@ public data class Spacing(
   val top: Int = 0,
   val bottom: Int = 0,
 ) {
+  init {
+    require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
+      "invalid Spacing: [$start, $end, $top, $bottom]"
+    }
+  }
+
   public companion object {
     public val Zero: Spacing = Spacing()
   }
@@ -281,6 +287,8 @@ public data class Size(
   val height: Int,
 ) {
   init {
-    require(width >= 0 && height >= 0) { "invalid size: [$width, $height]" }
+    require(width >= 0 && height >= 0) {
+      "invalid Size: [$width, $height]"
+    }
   }
 }
