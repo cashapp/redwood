@@ -156,7 +156,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     fromIndex: Int,
     toIndex: Int,
   ): List<Line> {
-    val isMainHorizontal = isMainAxisDirectionHorizontal()
+    val isMainHorizontal = flexDirection.isMainAxisHorizontal
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<Line>()
@@ -329,7 +329,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           getFlexItemMarginEndCross(child, isMainHorizontal),
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
-      // Expand along the cross axis depending on the mAlignContent property if needed
+      // Expand along the cross axis depending on the alignContent property if needed
       // later
       flexLine.crossSize = max(flexLine.crossSize, largestSizeInCross)
       if (isMainHorizontal) {
@@ -1413,7 +1413,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     if (node.alignSelf != AlignSelf.Auto) {
       // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
       // Assigning the alignSelf value as alignItems should work.
-      alignItems = AlignItems.valueOf(node.alignSelf.ordinal)
+      alignItems = AlignItems(node.alignSelf.ordinal)
     }
     val crossSize = flexLine.crossSize
     when (alignItems) {
@@ -1499,9 +1499,9 @@ internal class RealFlexboxEngine : FlexboxEngine {
   ) {
     var alignItems = alignItems
     if (node.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and mAlignSelf match except for ALIGN_SELF_AUTO.
-      // Assigning the mAlignSelf value as alignItems should work.
-      alignItems = AlignItems.valueOf(node.alignSelf.ordinal)
+      // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
+      // Assigning the alignSelf value as alignItems should work.
+      alignItems = AlignItems(node.alignSelf.ordinal)
     }
     val crossSize = flexLine.crossSize
     when (alignItems) {

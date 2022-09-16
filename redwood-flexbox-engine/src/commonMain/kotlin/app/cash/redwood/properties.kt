@@ -24,7 +24,10 @@ import kotlin.math.abs
  * This attribute controls the alignment of the flex lines in the flex container.
  */
 @JvmInline
-public value class AlignContent private constructor(public val ordinal: Int) {
+public value class AlignContent(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..5) { "unknown AlignContent: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -33,7 +36,7 @@ public value class AlignContent private constructor(public val ordinal: Int) {
     3 -> "SpaceBetween"
     4 -> "SpaceAround"
     5 -> "Stretch"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -43,11 +46,6 @@ public value class AlignContent private constructor(public val ordinal: Int) {
     public val SpaceBetween: AlignContent = AlignContent(3)
     public val SpaceAround: AlignContent = AlignContent(4)
     public val Stretch: AlignContent = AlignContent(5)
-
-    public fun valueOf(ordinal: Int): AlignContent {
-      require(ordinal in 0..5) { "unknown AlignContent: $ordinal" }
-      return AlignContent(ordinal)
-    }
   }
 }
 
@@ -55,7 +53,10 @@ public value class AlignContent private constructor(public val ordinal: Int) {
  * This attribute controls the alignment along the cross axis.
  */
 @JvmInline
-public value class AlignItems private constructor(public val ordinal: Int) {
+public value class AlignItems(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..4) { "unknown AlignItems: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -63,7 +64,7 @@ public value class AlignItems private constructor(public val ordinal: Int) {
     2 -> "Center"
     3 -> "Baseline"
     4 -> "Stretch"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -72,11 +73,6 @@ public value class AlignItems private constructor(public val ordinal: Int) {
     public val Center: AlignItems = AlignItems(2)
     public val Baseline: AlignItems = AlignItems(3)
     public val Stretch: AlignItems = AlignItems(4)
-
-    public fun valueOf(ordinal: Int): AlignItems {
-      require(ordinal in 0..4) { "unknown AlignItems: $ordinal" }
-      return AlignItems(ordinal)
-    }
   }
 }
 
@@ -88,7 +84,10 @@ public value class AlignItems private constructor(public val ordinal: Int) {
  * overridden for this child.
  */
 @JvmInline
-public value class AlignSelf private constructor(public val ordinal: Int) {
+public value class AlignSelf(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..5) { "unknown AlignSelf: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -97,7 +96,7 @@ public value class AlignSelf private constructor(public val ordinal: Int) {
     3 -> "Baseline"
     4 -> "Stretch"
     5 -> "Auto"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -107,11 +106,6 @@ public value class AlignSelf private constructor(public val ordinal: Int) {
     public val Baseline: AlignSelf = AlignSelf(3)
     public val Stretch: AlignSelf = AlignSelf(4)
     public val Auto: AlignSelf = AlignSelf(5)
-
-    public fun valueOf(ordinal: Int): AlignSelf {
-      require(ordinal in 0..5) { "unknown AlignSelf: $ordinal" }
-      return AlignSelf(ordinal)
-    }
   }
 }
 
@@ -120,14 +114,17 @@ public value class AlignSelf private constructor(public val ordinal: Int) {
  * direction of the main axis (and the cross axis, perpendicular to the main axis).
  */
 @JvmInline
-public value class FlexDirection private constructor(public val ordinal: Int) {
+public value class FlexDirection(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..3) { "unknown FlexDirection: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "Row"
     1 -> "RowReverse"
     2 -> "Column"
     3 -> "ColumnReverse"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -135,11 +132,6 @@ public value class FlexDirection private constructor(public val ordinal: Int) {
     public val RowReverse: FlexDirection = FlexDirection(1)
     public val Column: FlexDirection = FlexDirection(2)
     public val ColumnReverse: FlexDirection = FlexDirection(3)
-
-    public fun valueOf(ordinal: Int): FlexDirection {
-      require(ordinal in 0..3) { "unknown FlexDirection: $ordinal" }
-      return FlexDirection(ordinal)
-    }
   }
 }
 
@@ -148,24 +140,22 @@ public value class FlexDirection private constructor(public val ordinal: Int) {
  * and the direction of the cross axis.
  */
 @JvmInline
-public value class FlexWrap private constructor(public val ordinal: Int) {
+public value class FlexWrap(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..2) { "unknown FlexWrap: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "NoWrap"
     1 -> "Wrap"
     2 -> "WrapReverse"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
     public val NoWrap: FlexWrap = FlexWrap(0)
     public val Wrap: FlexWrap = FlexWrap(1)
     public val WrapReverse: FlexWrap = FlexWrap(2)
-
-    public fun valueOf(ordinal: Int): FlexWrap {
-      require(ordinal in 0..2) { "unknown FlexWrap: $ordinal" }
-      return FlexWrap(ordinal)
-    }
   }
 }
 
@@ -173,7 +163,10 @@ public value class FlexWrap private constructor(public val ordinal: Int) {
  * This attribute controls the alignment along the main axis.
  */
 @JvmInline
-public value class JustifyContent private constructor(public val ordinal: Int) {
+public value class JustifyContent(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..5) { "unknown JustifyContent: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -182,7 +175,7 @@ public value class JustifyContent private constructor(public val ordinal: Int) {
     3 -> "SpaceBetween"
     4 -> "SpaceAround"
     5 -> "SpaceEvenly"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -192,11 +185,6 @@ public value class JustifyContent private constructor(public val ordinal: Int) {
     public val SpaceBetween: JustifyContent = JustifyContent(3)
     public val SpaceAround: JustifyContent = JustifyContent(4)
     public val SpaceEvenly: JustifyContent = JustifyContent(5)
-
-    public fun valueOf(ordinal: Int): JustifyContent {
-      require(ordinal in 0..5) { "unknown JustifyContent: $ordinal" }
-      return JustifyContent(ordinal)
-    }
   }
 }
 
@@ -209,7 +197,7 @@ public value class JustifyContent private constructor(public val ordinal: Int) {
 public value class MeasureSpec internal constructor(internal val value: Int) {
 
   public val size: Int get() = value and 0x3FFF
-  public val mode: MeasureSpecMode get() = MeasureSpecMode.valueOf(abs(value shr 30))
+  public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))
 
   public companion object {
     public const val MaxSize: Int = Int.MAX_VALUE and 0x00FFFFFF
@@ -226,13 +214,16 @@ public value class MeasureSpec internal constructor(internal val value: Int) {
  * Denotes how the [MeasureSpec.size] constraint should be interpreted.
  */
 @JvmInline
-public value class MeasureSpecMode private constructor(public val ordinal: Int) {
+public value class MeasureSpecMode(public val ordinal: Int) {
+  init {
+    require(ordinal in 0..2) { "unknown MeasureSpecMode: $ordinal" }
+  }
 
   override fun toString(): String = when (ordinal) {
     0 -> "Unspecified"
     1 -> "Exactly"
     2 -> "AtMost"
-    else -> "Unknown: $ordinal"
+    else -> throw AssertionError()
   }
 
   public companion object {
@@ -251,11 +242,6 @@ public value class MeasureSpecMode private constructor(public val ordinal: Int) 
      * The child can be as large as it wants up to the specified size.
      */
     public val AtMost: MeasureSpecMode = MeasureSpecMode(2)
-
-    public fun valueOf(ordinal: Int): MeasureSpecMode {
-      require(ordinal in 0..2) { "unknown MeasureSpecMode: $ordinal" }
-      return MeasureSpecMode(ordinal)
-    }
   }
 }
 

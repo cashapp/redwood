@@ -21,7 +21,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 internal fun packLong(lower: Int, higher: Int): Long {
-  return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFF)
+  return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
 }
 
 internal fun unpackLower(value: Long): Int {
@@ -40,9 +40,8 @@ internal val Line.itemCountVisible get() = itemCount - invisibleItemCount
 /**
  * Returns true if the main axis is horizontal, false otherwise.
  */
-internal fun FlexboxEngine.isMainAxisDirectionHorizontal(): Boolean {
-  return flexDirection == FlexDirection.Row || flexDirection == FlexDirection.RowReverse
-}
+internal val FlexDirection.isMainAxisHorizontal: Boolean
+  get() = this == FlexDirection.Row || this == FlexDirection.RowReverse
 
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
