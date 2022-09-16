@@ -16,7 +16,7 @@
 package app.cash.redwood
 
 internal class ObservableMutableList<T>(
-  private val onChange: () -> Unit = {}
+  private val onChange: () -> Unit = {},
 ) : AbstractMutableList<T>() {
 
   private val delegate = mutableListOf<T>()

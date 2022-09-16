@@ -35,7 +35,8 @@ internal fun unpackHigher(value: Long): Int {
 /**
  * The count of the views whose visibilities are not gone in this flex line.
  */
-internal val Line.itemCountVisible get() = itemCount - invisibleItemCount
+internal val Line.itemCountVisible: Int
+  get() = itemCount - invisibleItemCount
 
 /**
  * Returns true if the main axis is horizontal, false otherwise.
