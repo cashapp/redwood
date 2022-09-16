@@ -393,9 +393,3 @@ class FlexboxEngineTest {
     assertTrue(engine.flexLines[2].anyItemsHaveFlexGrow)
   }
 }
-
-private fun assertAlmostEquals(expected: Int, actual: Int, tolerance: Int = 1) {
-  val start = expected - tolerance
-  val end = expected + tolerance
-  assertTrue(actual in start..end, message = "$actual is not in the range [$start, $end]")
-}

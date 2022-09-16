@@ -26,7 +26,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * A class that measures and positions its children according to flexbox properties.
+ * A class that measures and positions its children according to its flexbox properties.
  */
 public class FlexboxEngine {
 
