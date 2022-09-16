@@ -8,9 +8,12 @@ buildscript {
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
-    classpath 'app.cash.redwood:redwood-gradle-plugin'
+    classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
   }
   repositories {
+    maven {
+      url = file("$rootDir/../build/localMaven").toURI()
+    }
     mavenCentral()
     google()
   }
@@ -28,6 +31,9 @@ allprojects {
   }
 
   repositories {
+    maven {
+      url = file("$rootDir/../build/localMaven").toURI()
+    }
     mavenCentral()
     google()
   }

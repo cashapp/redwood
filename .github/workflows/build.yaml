@@ -26,6 +26,9 @@ jobs:
 
       - run: ./gradlew build dokkaHtmlMultiModule --parallel
 
+      - name: Publish Locally
+        run: ./gradlew publishAllPublicationsToLocalMavenRepository -PVERSION_NAME=1.0-local
+
       - name: Build samples
         run: ./gradlew -p samples build --parallel
 

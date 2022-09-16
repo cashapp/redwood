@@ -1,5 +1,7 @@
-apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
   api projects.redwoodTreehouse
@@ -22,4 +24,9 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
   }
+}
+
+// TODO(jwilson): adjust dependencies so this doesn't crash, then re-enable it.
+tasks.withType(com.android.build.gradle.tasks.JavaDocGenerationTask).configureEach {
+  it.onlyIf { false }
 }
