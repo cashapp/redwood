@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood
 
 import app.cash.redwood.Node.Companion.MatchParent
@@ -50,7 +49,7 @@ internal fun FlexboxEngine.isMainAxisDirectionHorizontal(): Boolean {
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
   padding: Int,
-  childDimension: Int
+  childDimension: Int,
 ): MeasureSpec {
   val size = max(0, spec.size - padding)
   var resultSize = 0

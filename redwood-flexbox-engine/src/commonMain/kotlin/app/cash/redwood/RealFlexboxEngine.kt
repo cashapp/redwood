@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood
 
 import app.cash.redwood.Node.Companion.DefaultFlexBasisPercent
@@ -110,7 +109,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     crossMeasureSpec = heightMeasureSpec,
     needsCalcAmount = Int.MAX_VALUE,
     fromIndex = 0,
-    toIndex = Undefined
+    toIndex = Undefined,
   )
 
   /**
@@ -125,7 +124,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     crossMeasureSpec = widthMeasureSpec,
     needsCalcAmount = Int.MAX_VALUE,
     fromIndex = 0,
-    toIndex = Undefined
+    toIndex = Undefined,
   )
 
   /**
@@ -155,7 +154,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     crossMeasureSpec: MeasureSpec,
     needsCalcAmount: Int,
     fromIndex: Int,
-    toIndex: Int
+    toIndex: Int,
   ): List<Line> {
     val isMainHorizontal = isMainAxisDirectionHorizontal()
     val mainMode = mainMeasureSpec.mode
@@ -210,14 +209,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
           padding = mainPaddingStart + mainPaddingEnd +
             getFlexItemMarginStartMain(child, true) +
             getFlexItemMarginEndMain(child, true),
-          childDimension = childMainSize
+          childDimension = childMainSize,
         )
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
           padding = crossPaddingStart + crossPaddingEnd +
             getFlexItemMarginStartCross(child, true) +
             getFlexItemMarginEndCross(child, true) + sumCrossSize,
-          childDimension = getFlexItemSizeCross(child, true)
+          childDimension = getFlexItemSizeCross(child, true),
         )
         child.measure(childMainMeasureSpec, childCrossMeasureSpec)
         updateMeasureCache(i, childMainMeasureSpec, childCrossMeasureSpec, child)
@@ -227,14 +226,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
           padding = crossPaddingStart + crossPaddingEnd +
             getFlexItemMarginStartCross(child, false) +
             getFlexItemMarginEndCross(child, false) + sumCrossSize,
-          childDimension = getFlexItemSizeCross(child, false)
+          childDimension = getFlexItemSizeCross(child, false),
         )
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
           padding = mainPaddingStart + mainPaddingEnd +
             getFlexItemMarginStartMain(child, false) +
             getFlexItemMarginEndMain(child, false),
-          childDimension = childMainSize
+          childDimension = childMainSize,
         )
         child.measure(childCrossMeasureSpec, childMainMeasureSpec)
         updateMeasureCache(i, childCrossMeasureSpec, childMainMeasureSpec, child)
@@ -255,7 +254,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
             getFlexItemMarginStartMain(child, isMainHorizontal) +
             getFlexItemMarginEndMain(child, isMainHorizontal),
           flexItem = child,
-          flexLinesSize = flexLines.size
+          flexLinesSize = flexLines.size,
         )
       ) {
         if (flexLine.itemCountVisible > 0) {
@@ -275,7 +274,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               spec = crossMeasureSpec,
               padding = padding.top + padding.bottom + child.margin.top +
                 child.margin.bottom + sumCrossSize,
-              childDimension = child.height
+              childDimension = child.height,
             )
             child.measure(childMainMeasureSpec, childCrossMeasureSpec)
             checkSizeConstraints(child, i)
@@ -293,7 +292,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               spec = crossMeasureSpec,
               padding = padding.start + padding.end + child.margin.start +
                 child.margin.end + sumCrossSize,
-              childDimension = child.width
+              childDimension = child.width,
             )
             child.measure(childCrossMeasureSpec, childMainMeasureSpec)
             checkSizeConstraints(child, i)
@@ -316,16 +315,18 @@ internal class RealFlexboxEngine : FlexboxEngine {
       if (indexToFlexLine != null) {
         indexToFlexLine!![i] = flexLines.size
       }
-      flexLine.mainSize += (getViewMeasuredSizeMain(child, isMainHorizontal) +
-        getFlexItemMarginStartMain(child, isMainHorizontal) +
-        getFlexItemMarginEndMain(child, isMainHorizontal))
+      flexLine.mainSize += (
+        getViewMeasuredSizeMain(child, isMainHorizontal) +
+          getFlexItemMarginStartMain(child, isMainHorizontal) +
+          getFlexItemMarginEndMain(child, isMainHorizontal)
+        )
       flexLine.totalFlexGrow += child.flexGrow
       flexLine.totalFlexShrink += child.flexShrink
       largestSizeInCross = max(
         largestSizeInCross,
         getViewMeasuredSizeCross(child, isMainHorizontal) +
           getFlexItemMarginStartCross(child, isMainHorizontal) +
-          getFlexItemMarginEndCross(child, isMainHorizontal)
+          getFlexItemMarginEndCross(child, isMainHorizontal),
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
       // Expand along the cross axis depending on the mAlignContent property if needed
@@ -335,7 +336,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = max(
             flexLine.maxBaseline,
-            child.baseline + child.margin.top
+            child.baseline + child.margin.top,
           )
         } else {
           // if the flex wrap property is WRAP_REVERSE, calculate the
@@ -343,7 +344,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           // since the cross size calculation is based on the distance from the cross end
           flexLine.maxBaseline = max(
             flexLine.maxBaseline,
-            child.measuredHeight - child.baseline + child.margin.bottom
+            child.measuredHeight - child.baseline + child.margin.bottom,
           )
         }
       }
@@ -523,7 +524,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     currentLength: Int,
     childLength: Int,
     flexItem: Node,
-    flexLinesSize: Int
+    flexLinesSize: Int,
   ): Boolean {
     if (flexWrap == FlexWrap.NoWrap) {
       return false
@@ -545,14 +546,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
   private fun isLastFlexItem(
     childIndex: Int,
     childCount: Int,
-    flexLine: Line
+    flexLine: Line,
   ) = childIndex == childCount - 1 && flexLine.itemCountVisible > 0
 
   private fun addFlexLine(
     flexLines: MutableList<Line>,
     flexLine: Line,
     viewIndex: Int,
-    usedCrossSizeSoFar: Int
+    usedCrossSizeSoFar: Int,
   ) {
     flexLine.sumCrossSizeBefore = usedCrossSizeSoFar
     flexLine.lastIndex = viewIndex
@@ -591,6 +592,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
       updateMeasureCache(index, widthSpec, heightSpec, node)
     }
   }
+
   /**
    * Determine the main size by expanding (shrinking if negative remaining free space is given)
    * an individual child in each flex line if any children's flexGrow (or flexShrink if remaining
@@ -602,7 +604,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
   fun determineMainSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    fromIndex: Int = 0
+    fromIndex: Int = 0,
   ) {
     ensureChildrenFrozen(nodes.size)
     if (fromIndex >= nodes.size) {
@@ -649,7 +651,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           flexLine = flexLine,
           maxMainSize = mainSize,
           paddingAlongMainAxis = paddingAlongMainAxis,
-          calledRecursively = false
+          calledRecursively = false,
         )
       } else if (flexLine.mainSize > mainSize && flexLine.anyItemsHaveFlexShrink) {
         shrinkFlexItems(
@@ -658,7 +660,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           flexLine = flexLine,
           maxMainSize = mainSize,
           paddingAlongMainAxis = paddingAlongMainAxis,
-          calledRecursively = false
+          calledRecursively = false,
         )
       }
       i++
@@ -692,7 +694,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     flexLine: Line,
     maxMainSize: Int,
     paddingAlongMainAxis: Int,
-    calledRecursively: Boolean
+    calledRecursively: Boolean,
   ) {
     if (flexLine.totalFlexGrow <= 0 || maxMainSize < flexLine.mainSize) {
       return
@@ -767,7 +769,9 @@ internal class RealFlexboxEngine : FlexboxEngine {
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec, child, flexLine.sumCrossSizeBefore
+            heightMeasureSpec,
+            child,
+            flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -776,7 +780,8 @@ internal class RealFlexboxEngine : FlexboxEngine {
           updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = max(
-          largestCrossSize, childMeasuredHeight + child.margin.top + child.margin.bottom
+          largestCrossSize,
+          childMeasuredHeight + child.margin.top + child.margin.bottom,
         )
         flexLine.mainSize += (childMeasuredWidth + child.margin.start + child.margin.end)
       } else {
@@ -824,7 +829,9 @@ internal class RealFlexboxEngine : FlexboxEngine {
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec, child, flexLine.sumCrossSizeBefore
+            widthMeasureSpec,
+            child,
+            flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -833,7 +840,8 @@ internal class RealFlexboxEngine : FlexboxEngine {
           updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = max(
-          largestCrossSize, childMeasuredWidth + child.margin.start + child.margin.end
+          largestCrossSize,
+          childMeasuredWidth + child.margin.start + child.margin.end,
         )
         flexLine.mainSize += (childMeasuredHeight + child.margin.top + child.margin.bottom)
       }
@@ -848,7 +856,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
         flexLine = flexLine,
         maxMainSize = maxMainSize,
         paddingAlongMainAxis = paddingAlongMainAxis,
-        calledRecursively = true
+        calledRecursively = true,
       )
     }
   }
@@ -944,7 +952,9 @@ internal class RealFlexboxEngine : FlexboxEngine {
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec, child, flexLine.sumCrossSizeBefore
+            heightMeasureSpec,
+            child,
+            flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -953,7 +963,8 @@ internal class RealFlexboxEngine : FlexboxEngine {
           updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = max(
-          largestCrossSize, childMeasuredHeight + child.margin.top + child.margin.bottom
+          largestCrossSize,
+          childMeasuredHeight + child.margin.top + child.margin.bottom,
         )
         flexLine.mainSize += (childMeasuredWidth + child.margin.start + child.margin.end)
       } else {
@@ -973,8 +984,10 @@ internal class RealFlexboxEngine : FlexboxEngine {
           childMeasuredWidth = unpackLower(measuredSizeCache!![index])
         }
         if (!childrenFrozen!![index] && child.flexShrink > 0f) {
-          var rawCalculatedHeight = (childMeasuredHeight
-            - unitShrink * child.flexShrink)
+          var rawCalculatedHeight = (
+            childMeasuredHeight -
+              unitShrink * child.flexShrink
+            )
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0f
@@ -997,7 +1010,9 @@ internal class RealFlexboxEngine : FlexboxEngine {
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec, child, flexLine.sumCrossSizeBefore
+            widthMeasureSpec,
+            child,
+            flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -1006,7 +1021,8 @@ internal class RealFlexboxEngine : FlexboxEngine {
           updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = max(
-          largestCrossSize, childMeasuredWidth + child.margin.start + child.margin.end
+          largestCrossSize,
+          childMeasuredWidth + child.margin.start + child.margin.end,
         )
         flexLine.mainSize += (childMeasuredHeight + child.margin.top + child.margin.bottom)
       }
@@ -1021,7 +1037,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
         flexLine = flexLine,
         maxMainSize = maxMainSize,
         paddingAlongMainAxis = paddingAlongMainAxis,
-        calledRecursively = true
+        calledRecursively = true,
       )
     }
   }
@@ -1029,13 +1045,13 @@ internal class RealFlexboxEngine : FlexboxEngine {
   private fun getChildWidthMeasureSpecInternal(
     widthMeasureSpec: MeasureSpec,
     flexItem: Node,
-    padding: Int
+    padding: Int,
   ): MeasureSpec {
     var childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
       spec = widthMeasureSpec,
       padding = this.padding.start + this.padding.end + flexItem.margin.start +
         flexItem.margin.end + padding,
-      childDimension = flexItem.width
+      childDimension = flexItem.width,
     )
     val childWidth = childWidthMeasureSpec.size
     if (childWidth > flexItem.maxWidth) {
@@ -1055,7 +1071,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
       spec = heightMeasureSpec,
       padding = this.padding.top + this.padding.bottom + flexItem.margin.top +
         flexItem.margin.bottom + padding,
-      childDimension = flexItem.height
+      childDimension = flexItem.height,
     )
     val childHeight = childHeightMeasureSpec.size
     if (childHeight > flexItem.maxHeight) {
@@ -1078,7 +1094,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
   fun determineCrossSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    paddingAlongCrossAxis: Int
+    paddingAlongCrossAxis: Int,
   ) {
     val mode: MeasureSpecMode // The MeasureSpec mode along the cross axis
     val size: Int // The MeasureSpec size along the cross axis
@@ -1135,7 +1151,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               flexLines = constructFlexLinesForAlignContentCenter(
                 flexLines = flexLines,
                 size = size,
-                totalCrossSize = totalCrossSize
+                totalCrossSize = totalCrossSize,
               )
               return@switch
             }
@@ -1199,7 +1215,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
             flexLines = constructFlexLinesForAlignContentCenter(
               flexLines = flexLines,
               size = size,
-              totalCrossSize = totalCrossSize
+              totalCrossSize = totalCrossSize,
             )
           }
           AlignContent.FlexEnd -> {
@@ -1279,12 +1295,12 @@ internal class RealFlexboxEngine : FlexboxEngine {
             FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
               node = node,
               crossSize = flexLine.crossSize,
-              index = viewIndex
+              index = viewIndex,
             )
             FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
               node = node,
               crossSize = flexLine.crossSize,
-              index = viewIndex
+              index = viewIndex,
             )
             else -> error("Invalid FlexDirection: $flexDirection")
           }
@@ -1300,12 +1316,12 @@ internal class RealFlexboxEngine : FlexboxEngine {
             FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
               node = view,
               crossSize = flexLine.crossSize,
-              index = index
+              index = index,
             )
             FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
               node = view,
               crossSize = flexLine.crossSize,
-              index = index
+              index = index,
             )
             else -> throw IllegalArgumentException("Invalid flex direction: $flexDirection")
           }
@@ -1418,7 +1434,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           left = left,
           top = top + crossSize - node.measuredHeight - node.margin.bottom,
           right = right,
-          bottom = top + crossSize - node.margin.bottom
+          bottom = top + crossSize - node.margin.bottom,
         )
       } else {
         // If the flexWrap == WRAP_REVERSE, the direction of the
@@ -1427,7 +1443,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           left = left,
           top = top - crossSize + node.measuredHeight + node.margin.top,
           right = right,
-          bottom = bottom - crossSize + node.measuredHeight + node.margin.top
+          bottom = bottom - crossSize + node.measuredHeight + node.margin.top,
         )
       }
       AlignItems.Center -> {
@@ -1437,14 +1453,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
             left = left,
             top = top + topFromCrossAxis,
             right = right,
-            bottom = top + topFromCrossAxis + node.measuredHeight
+            bottom = top + topFromCrossAxis + node.measuredHeight,
           )
         } else {
           node.layout(
             left = left,
             top = top - topFromCrossAxis,
             right = right,
-            bottom = top - topFromCrossAxis + node.measuredHeight
+            bottom = top - topFromCrossAxis + node.measuredHeight,
           )
         }
       }
@@ -1494,14 +1510,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
           left = left + node.margin.start,
           top = top,
           right = right + node.margin.start,
-          bottom = bottom
+          bottom = bottom,
         )
       } else {
         node.layout(
           left = left - node.margin.end,
           top = top,
           right = right - node.margin.end,
-          bottom = bottom
+          bottom = bottom,
         )
       }
       AlignItems.FlexEnd -> if (!isRtl) {
@@ -1509,7 +1525,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           left = left + crossSize - node.measuredWidth - node.margin.end,
           top = top,
           right = right + crossSize - node.measuredWidth - node.margin.end,
-          bottom = bottom
+          bottom = bottom,
         )
       } else {
         // If the flexWrap == WRAP_REVERSE, the direction of the
@@ -1518,7 +1534,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
           left = left - crossSize + node.measuredWidth + node.margin.start,
           top = top,
           right = right - crossSize + node.measuredWidth + node.margin.start,
-          bottom = bottom
+          bottom = bottom,
         )
       }
       AlignItems.Center -> {
@@ -1536,7 +1552,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     index: Int,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    node: Node
+    node: Node,
   ) {
     if (measureSpecCache != null) {
       measureSpecCache!![index] = packLong(widthMeasureSpec.value, heightMeasureSpec.value)
@@ -1572,7 +1588,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    */
   private fun measureHorizontal(
     widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec
+    heightMeasureSpec: MeasureSpec,
   ): Size {
     val flexLines = calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
     determineMainSize(widthMeasureSpec, heightMeasureSpec)
@@ -1591,8 +1607,11 @@ internal class RealFlexboxEngine : FlexboxEngine {
             val marginTop = max(flexLine.maxBaseline - child.baseline, child.margin.top)
             child.measuredHeight + marginTop + child.margin.bottom
           } else {
-            val marginBottom = max(flexLine.maxBaseline - child.measuredHeight +
-              child.baseline, child.margin.bottom)
+            val marginBottom = max(
+              flexLine.maxBaseline - child.measuredHeight +
+                child.baseline,
+              child.margin.bottom,
+            )
             child.measuredHeight + child.margin.top + marginBottom
           }.coerceAtLeast(largestHeightInLine)
         }
@@ -1602,7 +1621,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     determineCrossSize(
       widthMeasureSpec = widthMeasureSpec,
       heightMeasureSpec = heightMeasureSpec,
-      paddingAlongCrossAxis = padding.top + padding.bottom
+      paddingAlongCrossAxis = padding.top + padding.bottom,
     )
     // Now cross size for each flex line is determined.
     // Expand the views if alignItems (or alignSelf in each child view) is set to stretch
@@ -1623,14 +1642,14 @@ internal class RealFlexboxEngine : FlexboxEngine {
    */
   private fun measureVertical(
     widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec
+    heightMeasureSpec: MeasureSpec,
   ): Size {
     calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
     determineMainSize(widthMeasureSpec, heightMeasureSpec)
     determineCrossSize(
       widthMeasureSpec = widthMeasureSpec,
       heightMeasureSpec = heightMeasureSpec,
-      paddingAlongCrossAxis = padding.start + padding.end
+      paddingAlongCrossAxis = padding.start + padding.end,
     )
     // Now cross size for each flex line is determined.
     // Expand the views if alignItems (or alignSelf in each child view) is set to stretch
@@ -1732,7 +1751,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     left: Int,
     top: Int,
     right: Int,
-    bottom: Int
+    bottom: Int,
   ) {
     val paddingLeft = padding.start
     val paddingRight = padding.end
@@ -1810,7 +1829,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childRight.roundToInt() - child.measuredWidth,
               top = childBottom - child.measuredHeight,
               right = childRight.roundToInt(),
-              bottom = childBottom
+              bottom = childBottom,
             )
           } else {
             layoutSingleChildHorizontal(
@@ -1819,7 +1838,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childLeft.roundToInt(),
               top = childBottom - child.measuredHeight,
               right = childLeft.roundToInt() + child.measuredWidth,
-              bottom = childBottom
+              bottom = childBottom,
             )
           }
         } else {
@@ -1830,7 +1849,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childRight.roundToInt() - child.measuredWidth,
               top = childTop,
               right = childRight.roundToInt(),
-              bottom = childTop + child.measuredHeight
+              bottom = childTop + child.measuredHeight,
             )
           } else {
             layoutSingleChildHorizontal(
@@ -1839,7 +1858,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childLeft.roundToInt(),
               top = childTop,
               right = childLeft.roundToInt() + child.measuredWidth,
-              bottom = childTop + child.measuredHeight
+              bottom = childTop + child.measuredHeight,
             )
           }
         }
@@ -1869,7 +1888,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     left: Int,
     top: Int,
     right: Int,
-    bottom: Int
+    bottom: Int,
   ) {
     val paddingTop = padding.top
     val paddingBottom = padding.bottom
@@ -1948,7 +1967,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childRight - child.measuredWidth,
               top = childBottom.roundToInt() - child.measuredHeight,
               right = childRight,
-              bottom = childBottom.roundToInt()
+              bottom = childBottom.roundToInt(),
             )
           } else {
             layoutSingleChildVertical(
@@ -1958,7 +1977,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childRight - child.measuredWidth,
               top = childTop.roundToInt(),
               right = childRight,
-              bottom = childTop.roundToInt() + child.measuredHeight
+              bottom = childTop.roundToInt() + child.measuredHeight,
             )
           }
         } else {
@@ -1970,7 +1989,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childLeft,
               top = childBottom.roundToInt() - child.measuredHeight,
               right = childLeft + child.measuredWidth,
-              bottom = childBottom.roundToInt()
+              bottom = childBottom.roundToInt(),
             )
           } else {
             layoutSingleChildVertical(
@@ -1980,7 +1999,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
               left = childLeft,
               top = childTop.roundToInt(),
               right = childLeft + child.measuredWidth,
-              bottom = childTop.roundToInt() + child.measuredHeight
+              bottom = childTop.roundToInt() + child.measuredHeight,
             )
           }
         }

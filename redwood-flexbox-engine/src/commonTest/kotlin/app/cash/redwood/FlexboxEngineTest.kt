@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood
 
 import kotlin.test.BeforeTest
@@ -400,4 +399,3 @@ private fun assertAlmostEquals(expected: Int, actual: Int, tolerance: Int = 1) {
   val end = expected + tolerance
   assertTrue(actual in start..end, message = "$actual is not in the range [$start, $end]")
 }
-

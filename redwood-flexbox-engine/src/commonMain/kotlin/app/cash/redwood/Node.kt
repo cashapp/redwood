@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood
 
 /**
@@ -174,6 +173,7 @@ public interface Node {
      * big as its parent.
      */
     public const val MatchParent: Int = -1
+
     /**
      * A special constant for [width] or [height] that the node wants to be just large enough
      * to fit its own internal content, taking its own padding into account.
@@ -182,12 +182,16 @@ public interface Node {
 
     /** The default value for the order attribute */
     public const val DefaultOrder: Int = 1
+
     /** The default value for the flex grow attribute */
     public const val DefaultFlexGrow: Float = 0f
+
     /** The default value for the flex shrink attribute */
     public const val DefaultFlexShrink: Float = 1f
+
     /** The value representing the flex shrink attribute is not set */
     public const val UndefinedFlexShrink: Float = 0f
+
     /** The default value for the flex basis percent attribute */
     public const val DefaultFlexBasisPercent: Float = -1f
   }
