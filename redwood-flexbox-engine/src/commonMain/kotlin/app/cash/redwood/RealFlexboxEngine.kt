@@ -31,7 +31,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
   override var alignItems = AlignItems.FlexStart
   override var alignContent = AlignContent.FlexStart
   override var padding = Spacing.Zero
-  override var maxLines = Undefined
+  override var maxLines = -1
 
   override val nodes = mutableListOf<Node>()
   internal var flexLines = listOf<Line>()
@@ -109,7 +109,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     crossMeasureSpec = heightMeasureSpec,
     needsCalcAmount = Int.MAX_VALUE,
     fromIndex = 0,
-    toIndex = Undefined,
+    toIndex = -1,
   )
 
   /**
@@ -124,7 +124,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     crossMeasureSpec = widthMeasureSpec,
     needsCalcAmount = Int.MAX_VALUE,
     fromIndex = 0,
-    toIndex = Undefined,
+    toIndex = -1,
   )
 
   /**
@@ -160,7 +160,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<Line>()
-    var reachedToIndex = toIndex == Undefined
+    var reachedToIndex = toIndex == -1
     val mainPaddingStart = getPaddingStartMain(isMainHorizontal)
     val mainPaddingEnd = getPaddingEndMain(isMainHorizontal)
     val crossPaddingStart = getPaddingStartCross(isMainHorizontal)
@@ -352,7 +352,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
         addFlexLine(flexLines, flexLine, i, sumCrossSize)
         sumCrossSize += flexLine.crossSize
       }
-      if (toIndex != Undefined && flexLines.size > 0 &&
+      if (toIndex != -1 && flexLines.size > 0 &&
         flexLines[flexLines.size - 1].lastIndex >= toIndex &&
         i >= toIndex && !reachedToIndex
       ) {
@@ -537,7 +537,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     }
     // Judge the condition by adding 1 to the current flexLinesSize because the flex line
     // being computed isn't added to the flexLinesSize.
-    if (maxLines != Undefined && maxLines <= flexLinesSize + 1) {
+    if (maxLines != -1 && maxLines <= flexLinesSize + 1) {
       return false
     }
     return maxSize < currentLength + childLength

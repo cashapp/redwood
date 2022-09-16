@@ -20,8 +20,6 @@ import app.cash.redwood.Node.Companion.WrapContent
 import kotlin.math.max
 import kotlin.math.min
 
-internal const val Undefined = -1
-
 internal fun packLong(lower: Int, higher: Int): Long {
   return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFF)
 }

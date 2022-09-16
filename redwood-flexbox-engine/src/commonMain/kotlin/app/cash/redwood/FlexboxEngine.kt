@@ -60,7 +60,7 @@ public interface FlexboxEngine {
 
   /**
    * The current value of the maximum number of flex lines.
-   * If not set, [Undefined] is returned.
+   * If not set, -1 is returned.
    */
   public var maxLines: Int
 

@@ -69,7 +69,7 @@ public interface Node {
 
   /**
    * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
-   * If not specified, [Undefined] is set as a default value.
+   * If not specified, -1 is set as a default value.
    */
   public val baseline: Int
 
