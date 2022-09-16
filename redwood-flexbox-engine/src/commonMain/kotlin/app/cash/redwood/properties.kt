@@ -223,7 +223,7 @@ public value class MeasureSpec internal constructor(internal val value: Int) {
 }
 
 /**
- * A [MeasureSpec] mode.
+ * Denotes how the [MeasureSpec.size] constraint should be interpreted.
  */
 @JvmInline
 public value class MeasureSpecMode private constructor(public val ordinal: Int) {
