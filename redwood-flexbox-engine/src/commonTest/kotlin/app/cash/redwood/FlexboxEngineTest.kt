@@ -24,11 +24,11 @@ import kotlin.test.assertTrue
 
 class FlexboxEngineTest {
 
-  private lateinit var engine: RealFlexboxEngine
+  private lateinit var engine: FlexboxEngine
 
   @BeforeTest
   fun before() {
-    engine = RealFlexboxEngine().apply {
+    engine = FlexboxEngine().apply {
       flexWrap = FlexWrap.Wrap
       alignItems = AlignItems.Stretch
       alignContent = AlignContent.Stretch

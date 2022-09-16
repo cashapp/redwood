@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 /**
  * A class that measures and positions its children according to flexbox properties.
  */
-public class RealFlexboxEngine {
+public class FlexboxEngine {
 
   /**
    * The flex direction attribute of the flexbox.
