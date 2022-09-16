@@ -67,22 +67,7 @@ public interface FlexboxEngine {
   /**
    * Returns the nodes contained in the flexbox.
    */
-  public val nodes: List<Node>
-
-  /**
-   * Adds the node to the specified index of the flexbox.
-   */
-  public fun addNode(node: Node, index: Int = nodes.size)
-
-  /**
-   * Removes the node at the specified index.
-   */
-  public fun removeNode(index: Int)
-
-  /**
-   * Removes all the nodes contained in the flexbox.
-   */
-  public fun removeAllNodes()
+  public val nodes: MutableList<Node>
 
   /**
    * This is called to find out how big the flexbox should be.

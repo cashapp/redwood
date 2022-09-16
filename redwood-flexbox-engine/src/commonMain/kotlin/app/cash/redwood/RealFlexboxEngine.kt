@@ -33,23 +33,10 @@ internal class RealFlexboxEngine : FlexboxEngine {
   override var padding = Spacing.Zero
   override var maxLines = -1
 
-  override val nodes = mutableListOf<Node>()
+  override val nodes = ObservableMutableList<Node>(
+    onChange = { indexToReorderedIndex = null },
+  )
   internal var flexLines = listOf<Line>()
-
-  override fun addNode(node: Node, index: Int) {
-    nodes.add(index, node)
-    indexToReorderedIndex = null
-  }
-
-  override fun removeNode(index: Int) {
-    nodes.removeAt(index)
-    indexToReorderedIndex = null
-  }
-
-  override fun removeAllNodes() {
-    nodes.clear()
-    indexToReorderedIndex = null
-  }
 
   /**
    * Holds the reordered indices after [Node.order] has been taken into account.

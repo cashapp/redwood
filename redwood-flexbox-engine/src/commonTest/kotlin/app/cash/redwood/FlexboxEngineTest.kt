@@ -41,10 +41,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(200, 100)
     val view3 = FakeNode(300, 100)
     val view4 = FakeNode(400, 100)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -83,10 +83,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(100, 200)
     val view3 = FakeNode(100, 300)
     val view4 = FakeNode(100, 400)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexWrap = FlexWrap.Wrap
     engine.flexDirection = FlexDirection.Column
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -126,10 +126,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(200, 100, flexGrow = 1.0f)
     val view3 = FakeNode(300, 100)
     val view4 = FakeNode(400, 100, flexGrow = 2.0f)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
@@ -155,10 +155,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(100, 200, flexGrow = 1.0f)
     val view3 = FakeNode(100, 300)
     val view4 = FakeNode(100, 400, flexGrow = 2.0f)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -184,10 +184,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(200, 100)
     val view3 = FakeNode(200, 100)
     val view4 = FakeNode(200, 100)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
@@ -213,10 +213,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(100, 200)
     val view3 = FakeNode(100, 200)
     val view4 = FakeNode(100, 200)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -240,8 +240,8 @@ class FlexboxEngineTest {
   fun testDetermineMainSize_directionRow_fixedSizeViewAndShrinkable_doNotExceedMaxMainSize() {
     val view1 = FakeNode(100, 100, flexShrink = 0f)
     val view2 = FakeNode(2000, 2000) // simulate a very long text view
-    engine.addNode(view1)
-    engine.addNode(view2)
+    engine.nodes += view1
+    engine.nodes += view2
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -259,9 +259,9 @@ class FlexboxEngineTest {
     val view1 = FakeNode(100, 100, flexShrink = 0f)
     val view2 = FakeNode(2000, 2000) // simulate a very long text view
     val view3 = FakeNode(100, 100, flexShrink = 0f)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -281,10 +281,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(200, 100)
     val view3 = FakeNode(300, 100)
     val view4 = FakeNode(400, 100)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.Wrap
     engine.alignContent = AlignContent.Stretch
@@ -310,10 +310,10 @@ class FlexboxEngineTest {
     val view2 = FakeNode(100, 200)
     val view3 = FakeNode(100, 300)
     val view4 = FakeNode(100, 400)
-    engine.addNode(view1)
-    engine.addNode(view2)
-    engine.addNode(view3)
-    engine.addNode(view4)
+    engine.nodes += view1
+    engine.nodes += view2
+    engine.nodes += view3
+    engine.nodes += view4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.Wrap
     engine.alignContent = AlignContent.Stretch
@@ -376,10 +376,10 @@ class FlexboxEngineTest {
     val view3 = FakeNode(100, 300)
     val view4 = FakeNode(100, 400, flexGrow = 2.0f)
     engine.apply {
-      addNode(view1)
-      addNode(view2)
-      addNode(view3)
-      addNode(view4)
+      nodes += view1
+      nodes += view2
+      nodes += view3
+      nodes += view4
       flexDirection = FlexDirection.Column
       flexWrap = FlexWrap.Wrap
       alignContent = AlignContent.Stretch
