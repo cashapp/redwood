@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package app.cash.redwood
 
 import app.cash.redwood.Node.Companion.DefaultFlexBasisPercent
@@ -23,19 +25,56 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-internal class RealFlexboxEngine : FlexboxEngine {
+/**
+ * A class that measures and positions its children according to flexbox properties.
+ */
+public class RealFlexboxEngine {
 
-  override var flexDirection = FlexDirection.Row
-  override var flexWrap = FlexWrap.NoWrap
-  override var justifyContent = JustifyContent.FlexStart
-  override var alignItems = AlignItems.FlexStart
-  override var alignContent = AlignContent.FlexStart
-  override var padding = Spacing.Zero
-  override var maxLines = -1
+  /**
+   * The flex direction attribute of the flexbox.
+   */
+  public var flexDirection: FlexDirection = FlexDirection.Row
 
-  override val nodes = ObservableMutableList<Node>(
+  /**
+   * The flex wrap attribute of the flexbox.
+   */
+  public var flexWrap: FlexWrap = FlexWrap.NoWrap
+
+  /**
+   * The justify content attribute of the flexbox.
+   */
+  public var justifyContent: JustifyContent = JustifyContent.FlexStart
+
+  /**
+   * The align content attribute of the flexbox.
+   */
+  public var alignItems: AlignItems = AlignItems.FlexStart
+
+  /**
+   * The align items attribute of the flexbox.
+   */
+  public var alignContent: AlignContent = AlignContent.FlexStart
+
+  /**
+   * The padding of the flexbox.
+   */
+  public var padding: Spacing = Spacing.Zero
+
+  /**
+   * The current value of the maximum number of flex lines. If not set, -1 is returned.
+   */
+  public var maxLines: Int = -1
+
+  /**
+   * Returns the nodes contained in the flexbox.
+   */
+  public val nodes: MutableList<Node> = ObservableMutableList(
     onChange = { indexToReorderedIndex = null },
   )
+
+  /**
+   * The computed flex lines after calling [measure].
+   */
   internal var flexLines = listOf<Line>()
 
   /**
@@ -88,7 +127,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    * Calculate how many flex lines are needed in the flex container.
    * This method should calculate all the flex lines from the existing flex items.
    */
-  fun calculateHorizontalFlexLines(
+  internal fun calculateHorizontalFlexLines(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ) = calculateFlexLines(
@@ -103,7 +142,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    * Calculate how many flex lines are needed in the flex container.
    * This method should calculate all the flex lines from the existing flex items.
    */
-  fun calculateVerticalFlexLines(
+  internal fun calculateVerticalFlexLines(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ) = calculateFlexLines(
@@ -588,7 +627,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
-  fun determineMainSize(
+  internal fun determineMainSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     fromIndex: Int = 0,
@@ -1078,7 +1117,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    * @param paddingAlongCrossAxis the padding value for the FlexboxLayout along the cross axis
    */
-  fun determineCrossSize(
+  internal fun determineCrossSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     paddingAlongCrossAxis: Int,
@@ -1248,7 +1287,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
    *
    * @param fromIndex the index from which value, stretch is calculated
    */
-  fun stretchViews(fromIndex: Int = 0) {
+  internal fun stretchViews(fromIndex: Int = 0) {
     if (fromIndex >= nodes.size) {
       return
     }
@@ -1549,7 +1588,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     }
   }
 
-  fun ensureIndexToFlexLine(size: Int) {
+  internal fun ensureIndexToFlexLine(size: Int) {
     if (indexToFlexLine == null) {
       indexToFlexLine = IntArray(max(size, 10))
     } else if (indexToFlexLine!!.size < size) {
@@ -1558,7 +1597,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     }
   }
 
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     return when (flexDirection) {
       FlexDirection.Row, FlexDirection.RowReverse -> measureHorizontal(widthSpec, heightSpec)
       FlexDirection.Column, FlexDirection.ColumnReverse -> measureVertical(widthSpec, heightSpec)
@@ -1703,7 +1742,7 @@ internal class RealFlexboxEngine : FlexboxEngine {
     return Size(width, height)
   }
 
-  override fun layout(left: Int, top: Int, right: Int, bottom: Int) {
+  public fun layout(left: Int, top: Int, right: Int, bottom: Int) {
     when (flexDirection) {
       FlexDirection.Row -> {
         layoutHorizontal(false, left, top, right, bottom)
