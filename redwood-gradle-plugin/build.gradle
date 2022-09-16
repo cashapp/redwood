@@ -65,6 +65,7 @@ test {
   dependsOn(':redwood-cli:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-layout:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol-widget:publishAllPublicationsToLocalMavenRepository')
