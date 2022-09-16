@@ -274,18 +274,13 @@ public data class Spacing(
 }
 
 /**
- * Create a new [Size] instance.
- */
-public fun Size(width: Int, height: Int): Size {
-  require(width >= 0 && height >= 0) { "invalid size: [$width, $height]" }
-  return Size(packLong(width, height))
-}
-
-/**
  * A two-dimensional size composed of two [Int]s.
  */
-@JvmInline
-public value class Size internal constructor(private val value: Long) {
-  public val width: Int get() = unpackLower(value)
-  public val height: Int get() = unpackHigher(value)
+public data class Size(
+  val width: Int,
+  val height: Int,
+) {
+  init {
+    require(width >= 0 && height >= 0) { "invalid size: [$width, $height]" }
+  }
 }
