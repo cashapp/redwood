@@ -76,16 +76,16 @@ allprojects {
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
     project.android {
-      compileSdkVersion 32
+      compileSdk 32
       compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
       }
       defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 21
+        targetSdk 30
       }
-      lintOptions {
+      lint {
         checkDependencies true
         checkReleaseBuilds false // Full lint runs as part of 'build' task.
       }
