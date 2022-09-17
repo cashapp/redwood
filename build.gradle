@@ -74,20 +74,21 @@ allprojects {
     }
   }
 
-  plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
-    def android = plugin.extension
-    android.compileSdkVersion 32
-    android.compileOptions {
-      sourceCompatibility JavaVersion.VERSION_1_8
-      targetCompatibility JavaVersion.VERSION_1_8
-    }
-    android.defaultConfig {
-      minSdkVersion 21
-      targetSdkVersion 30
-    }
-    android.lintOptions {
-      checkDependencies true
-      checkReleaseBuilds false // Full lint runs as part of 'build' task.
+  plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
+    project.android {
+      compileSdkVersion 32
+      compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+      }
+      defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+      }
+      lintOptions {
+        checkDependencies true
+        checkReleaseBuilds false // Full lint runs as part of 'build' task.
+      }
     }
   }
 
