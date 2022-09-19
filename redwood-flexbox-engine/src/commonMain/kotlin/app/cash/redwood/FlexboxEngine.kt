@@ -182,15 +182,12 @@ public class FlexboxEngine {
     fromIndex: Int,
     toIndex: Int,
   ): List<Line> {
-    val isMainHorizontal = flexDirection.isMainAxisHorizontal
+    val isMainAxisHorizontal = flexDirection.isMainAxisHorizontal
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<Line>()
     var reachedToIndex = toIndex == -1
-    val mainPaddingStart = getPaddingStartMain(isMainHorizontal)
-    val mainPaddingEnd = getPaddingEndMain(isMainHorizontal)
-    val crossPaddingStart = getPaddingStartCross(isMainHorizontal)
-    val crossPaddingEnd = getPaddingEndCross(isMainHorizontal)
+    val (mainPaddingStart, mainPaddingEnd, crossPaddingStart, crossPaddingEnd) = getPadding(isMainAxisHorizontal)
     var largestSizeInCross = Int.MIN_VALUE
 
     // The amount of cross size calculated in this method call.
@@ -220,7 +217,7 @@ public class FlexboxEngine {
       if (child.alignSelf == AlignSelf.Stretch) {
         flexLine.indicesAlignSelfStretch += i
       }
-      var childMainSize = getFlexItemSizeMain(child, isMainHorizontal)
+      var childMainSize = getFlexItemSizeMain(child, isMainAxisHorizontal)
       if (child.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
         childMainSize = (mainSize * child.flexBasisPercent).roundToInt()
         // Use the dimension from the layout if the mainMode is not
@@ -229,7 +226,7 @@ public class FlexboxEngine {
       }
       var childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (isMainHorizontal) {
+      if (isMainAxisHorizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
           padding = mainPaddingStart + mainPaddingEnd +
@@ -276,9 +273,9 @@ public class FlexboxEngine {
           mode = mainMode,
           maxSize = mainSize,
           currentLength = flexLine.mainSize,
-          childLength = getViewMeasuredSizeMain(child, isMainHorizontal) +
-            getFlexItemMarginStartMain(child, isMainHorizontal) +
-            getFlexItemMarginEndMain(child, isMainHorizontal),
+          childLength = getViewMeasuredSizeMain(child, isMainAxisHorizontal) +
+            getFlexItemMarginStartMain(child, isMainAxisHorizontal) +
+            getFlexItemMarginEndMain(child, isMainAxisHorizontal),
           flexItem = child,
           flexLinesSize = flexLines.size,
         )
@@ -287,7 +284,7 @@ public class FlexboxEngine {
           addFlexLine(flexLines, flexLine, if (i > 0) i - 1 else 0, sumCrossSize)
           sumCrossSize += flexLine.crossSize
         }
-        if (isMainHorizontal) {
+        if (isMainAxisHorizontal) {
           if (child.height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
             // child is affected by the just added flex line.
@@ -342,23 +339,23 @@ public class FlexboxEngine {
         indexToFlexLine!![i] = flexLines.size
       }
       flexLine.mainSize += (
-        getViewMeasuredSizeMain(child, isMainHorizontal) +
-          getFlexItemMarginStartMain(child, isMainHorizontal) +
-          getFlexItemMarginEndMain(child, isMainHorizontal)
+        getViewMeasuredSizeMain(child, isMainAxisHorizontal) +
+          getFlexItemMarginStartMain(child, isMainAxisHorizontal) +
+          getFlexItemMarginEndMain(child, isMainAxisHorizontal)
         )
       flexLine.totalFlexGrow += child.flexGrow
       flexLine.totalFlexShrink += child.flexShrink
       largestSizeInCross = max(
         largestSizeInCross,
-        getViewMeasuredSizeCross(child, isMainHorizontal) +
-          getFlexItemMarginStartCross(child, isMainHorizontal) +
-          getFlexItemMarginEndCross(child, isMainHorizontal),
+        getViewMeasuredSizeCross(child, isMainAxisHorizontal) +
+          getFlexItemMarginStartCross(child, isMainAxisHorizontal) +
+          getFlexItemMarginEndCross(child, isMainAxisHorizontal),
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
       // Expand along the cross axis depending on the alignContent property if needed
       // later
       flexLine.crossSize = max(flexLine.crossSize, largestSizeInCross)
-      if (isMainHorizontal) {
+      if (isMainAxisHorizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = max(
             flexLine.maxBaseline,
@@ -405,43 +402,14 @@ public class FlexboxEngine {
   }
 
   /**
-   * Returns the container's start padding in the main axis. Either start or top.
-   *
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the start padding in the main axis
+   * Returns an array with container's padding in the format: [mainStart, mainEnd, crossStart, crossEnd].
    */
-  private fun getPaddingStartMain(isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) padding.start else padding.top
-  }
-
-  /**
-   * Returns the container's end padding in the main axis. Either end or bottom.
-   *
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the end padding in the main axis
-   */
-  private fun getPaddingEndMain(isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) padding.end else padding.bottom
-  }
-
-  /**
-   * Returns the container's start padding in the cross axis. Either start or top.
-   *
-   * @param isMainHorizontal is the main axis horizontal.
-   * @return the start padding in the cross axis
-   */
-  private fun getPaddingStartCross(isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) padding.top else padding.start
-  }
-
-  /**
-   * Returns the container's end padding in the cross axis. Either end or bottom.
-   *
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the end padding in the cross axis
-   */
-  private fun getPaddingEndCross(isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) padding.bottom else padding.end
+  private fun getPadding(isMainAxisHorizontal: Boolean): IntArray {
+    return if (isMainAxisHorizontal) {
+      intArrayOf(padding.start, padding.end, padding.top, padding.bottom)
+    } else {
+      intArrayOf(padding.top, padding.bottom, padding.start, padding.end)
+    }
   }
 
   /**
