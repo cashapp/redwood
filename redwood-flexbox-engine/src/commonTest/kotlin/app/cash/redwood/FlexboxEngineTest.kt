@@ -15,7 +15,6 @@
  */
 package app.cash.redwood
 
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -25,10 +24,9 @@ import kotlin.test.assertTrue
 class FlexboxEngineTest {
 
   private val engine = FlexboxEngine().apply {
-      flexWrap = FlexWrap.Wrap
-      alignItems = AlignItems.Stretch
-      alignContent = AlignContent.Stretch
-    }
+    flexWrap = FlexWrap.Wrap
+    alignItems = AlignItems.Stretch
+    alignContent = AlignContent.Stretch
   }
 
   @Test
