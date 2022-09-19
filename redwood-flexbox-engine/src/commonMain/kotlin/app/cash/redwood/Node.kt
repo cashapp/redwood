@@ -158,7 +158,8 @@ public interface Node {
   public val measuredHeight: Int
 
   /**
-   * This is called to find out how big this node should be.
+   * Measure this node according to the [widthSpec] and [heightSpec] constraints and update
+   * [measuredWidth] and [measuredHeight] with the result.
    */
   public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec)
 
