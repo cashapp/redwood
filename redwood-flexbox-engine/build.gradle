@@ -21,6 +21,7 @@ spotless {
       "src/commonMain/kotlin/app/cash/redwood/FlexboxEngine.kt",
       "src/commonMain/kotlin/app/cash/redwood/Line.kt",
       "src/commonMain/kotlin/app/cash/redwood/Node.kt",
+      "src/commonTest/kotlin/app/cash/redwood/FlexboxEngineTest.kt",
     )
   }
 }

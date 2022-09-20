@@ -17,8 +17,6 @@ package app.cash.redwood
 
 import app.cash.redwood.Node.Companion.MatchParent
 import app.cash.redwood.Node.Companion.WrapContent
-import kotlin.math.max
-import kotlin.math.min
 
 internal fun packLong(lower: Int, higher: Int): Long {
   return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
@@ -35,24 +33,18 @@ internal fun unpackHigher(value: Long): Int {
 /**
  * The count of the views whose visibilities are not gone in this flex line.
  */
-internal val Line.itemCountVisible: Int
+internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
-
-/**
- * Returns true if the main axis is horizontal, false otherwise.
- */
-internal val FlexDirection.isMainAxisHorizontal: Boolean
-  get() = this == FlexDirection.Row || this == FlexDirection.RowReverse
 
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
   padding: Int,
   childDimension: Int,
 ): MeasureSpec {
-  val size = max(0, spec.size - padding)
+  val size = maxOf(0, spec.size - padding)
   var resultSize = 0
   var resultMode = MeasureSpecMode.Unspecified
-  when (val mode = spec.mode) {
+  when (spec.mode) {
     MeasureSpecMode.Exactly -> if (childDimension >= 0) {
       resultSize = childDimension
       resultMode = MeasureSpecMode.Exactly
@@ -66,7 +58,7 @@ internal fun MeasureSpec.Companion.getChildMeasureSpec(
       resultMode = MeasureSpecMode.AtMost
     }
     MeasureSpecMode.AtMost -> if (childDimension >= 0) {
-      // Child wants a specific size... so be it
+      // Child wants a specific size... so be it.
       resultSize = childDimension
       resultMode = MeasureSpecMode.Exactly
     } else if (childDimension == MatchParent) {
@@ -80,28 +72,28 @@ internal fun MeasureSpec.Companion.getChildMeasureSpec(
       resultMode = MeasureSpecMode.AtMost
     }
     MeasureSpecMode.Unspecified -> if (childDimension >= 0) {
-      // Child wants a specific size... let them have it
+      // Child wants a specific size... let them have it.
       resultSize = childDimension
       resultMode = MeasureSpecMode.Exactly
     } else if (childDimension == MatchParent) {
-      // Child wants to be our size... find out how big it should be
+      // Child wants to be our size... find out how big it should be.
       resultSize = size
       resultMode = MeasureSpecMode.Unspecified
     } else if (childDimension == WrapContent) {
-      // Child wants to determine its own size.... find out how big it should be
+      // Child wants to determine its own size... find out how big it should be.
       resultSize = size
       resultMode = MeasureSpecMode.Unspecified
     }
-    else -> error("unknown MeasureSpecMode: $mode")
+    else -> throw AssertionError()
   }
   return from(resultSize, resultMode)
 }
 
 internal fun MeasureSpec.Companion.resolveSize(size: Int, measureSpec: MeasureSpec): Int {
-  return when (val mode = measureSpec.mode) {
-    MeasureSpecMode.AtMost -> min(measureSpec.size, size)
+  return when (measureSpec.mode) {
+    MeasureSpecMode.AtMost -> minOf(measureSpec.size, size)
     MeasureSpecMode.Exactly -> measureSpec.size
     MeasureSpecMode.Unspecified -> size
-    else -> error("unknown MeasureSpecMode: $mode")
+    else -> throw AssertionError()
   }
 }

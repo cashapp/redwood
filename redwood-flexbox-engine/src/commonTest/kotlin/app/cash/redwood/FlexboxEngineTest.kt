@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -292,10 +292,10 @@ class FlexboxEngineTest {
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining height in this case)
-    assertAlmostEquals(333, view1.measuredHeight)
-    assertAlmostEquals(333, view2.measuredHeight)
-    assertAlmostEquals(333, view3.measuredHeight)
-    assertAlmostEquals(333, view4.measuredHeight)
+    assertEquals(333, view1.measuredHeight)
+    assertEquals(333, view2.measuredHeight)
+    assertEquals(333, view3.measuredHeight)
+    assertEquals(334, view4.measuredHeight)
   }
 
   @Test
@@ -321,10 +321,10 @@ class FlexboxEngineTest {
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining width in this case)
-    assertAlmostEquals(333, view1.measuredWidth)
-    assertAlmostEquals(333, view2.measuredWidth)
-    assertAlmostEquals(333, view3.measuredWidth)
-    assertAlmostEquals(333, view4.measuredWidth)
+    assertEquals(333, view1.measuredWidth)
+    assertEquals(333, view2.measuredWidth)
+    assertEquals(333, view3.measuredWidth)
+    assertEquals(334, view4.measuredWidth)
   }
 
   @Test
