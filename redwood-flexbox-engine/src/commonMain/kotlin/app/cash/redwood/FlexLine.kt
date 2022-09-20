@@ -81,13 +81,13 @@ internal class FlexLine {
 
   /**
    * Set to true if any [Node]s in this line have [Node.flexGrow] attributes set
-   * (i.e. have a value other than [Node.DefaultFlexGrow])
+   * (i.e. have a value other than [Node.DefaultFlexGrow]).
    */
   @JvmField var anyItemsHaveFlexGrow = false
 
   /**
    * Set to true if any [Node]s in this line have [Node.flexShrink] attributes set
-   * (i.e. have a value other than [Node.UndefinedFlexShrink])
+   * (i.e. have a value other than [Node.UndefinedFlexShrink]).
    */
   @JvmField var anyItemsHaveFlexShrink = false
 }
