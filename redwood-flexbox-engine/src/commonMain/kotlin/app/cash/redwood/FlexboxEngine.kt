@@ -180,6 +180,7 @@ public class FlexboxEngine {
     fromIndex: Int,
     toIndex: Int,
   ): List<FlexLine> {
+    val direction = flexDirection.toDirection()
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<FlexLine>()
@@ -193,7 +194,7 @@ public class FlexboxEngine {
     var indexInFlexLine = 0
     var flexLine = FlexLine()
     flexLine.firstIndex = fromIndex
-    flexLine.mainSize = mainPaddingStart + mainPaddingEnd
+    flexLine.mainSize = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding)
     val childCount = nodes.size
     for (i in fromIndex until childCount) {
       val child = getReorderedChildAt(i)
@@ -213,7 +214,7 @@ public class FlexboxEngine {
       if (child.alignSelf == AlignSelf.Stretch) {
         flexLine.indicesAlignSelfStretch += i
       }
-      var childMainSize = getFlexItemSizeMain(child, isMainAxisHorizontal)
+      var childMainSize = direction.mainSize(child)
       if (child.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
         childMainSize = (mainSize * child.flexBasisPercent).roundToInt()
         // Use the dimension from the layout if the mainMode is not
@@ -222,36 +223,32 @@ public class FlexboxEngine {
       }
       var childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (isMainAxisHorizontal) {
+      if (direction == Direction.Horizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
-          padding = mainPaddingStart + mainPaddingEnd +
-            getFlexItemMarginStartMain(child, true) +
-            getFlexItemMarginEndMain(child, true),
+          padding = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding) +
+            direction.mainMarginStart(child) + direction.mainMarginEnd(child),
           childDimension = childMainSize,
         )
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
-          padding = crossPaddingStart + crossPaddingEnd +
-            getFlexItemMarginStartCross(child, true) +
-            getFlexItemMarginEndCross(child, true) + sumCrossSize,
-          childDimension = getFlexItemSizeCross(child, true),
+          padding = direction.crossPaddingStart(padding) + direction.crossPaddingEnd(padding) +
+            direction.crossMarginStart(child) + direction.crossMarginEnd(child) + sumCrossSize,
+          childDimension = direction.crossSize(child),
         )
         child.measure(childMainMeasureSpec, childCrossMeasureSpec)
         updateMeasureCache(i, childMainMeasureSpec, childCrossMeasureSpec, child)
       } else {
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
-          padding = crossPaddingStart + crossPaddingEnd +
-            getFlexItemMarginStartCross(child, false) +
-            getFlexItemMarginEndCross(child, false) + sumCrossSize,
-          childDimension = getFlexItemSizeCross(child, false),
+          padding = direction.crossPaddingStart(padding) + direction.crossPaddingEnd(padding) +
+            direction.crossMarginStart(child) + direction.crossMarginEnd(child) + sumCrossSize,
+          childDimension = direction.crossSize(child),
         )
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
-          padding = mainPaddingStart + mainPaddingEnd +
-            getFlexItemMarginStartMain(child, false) +
-            getFlexItemMarginEndMain(child, false),
+          padding = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding) +
+            direction.mainMarginStart(child) + direction.mainMarginEnd(child),
           childDimension = childMainSize,
         )
         child.measure(childCrossMeasureSpec, childMainMeasureSpec)
@@ -267,9 +264,7 @@ public class FlexboxEngine {
           mode = mainMode,
           maxSize = mainSize,
           currentLength = flexLine.mainSize,
-          childLength = getViewMeasuredSizeMain(child, isMainAxisHorizontal) +
-            getFlexItemMarginStartMain(child, isMainAxisHorizontal) +
-            getFlexItemMarginEndMain(child, isMainAxisHorizontal),
+          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child),
           flexItem = child,
           flexLinesSize = flexLines.size,
         )
@@ -278,7 +273,7 @@ public class FlexboxEngine {
           addFlexLine(flexLines, flexLine, if (i > 0) i - 1 else 0, sumCrossSize)
           sumCrossSize += flexLine.crossSize
         }
-        if (isMainAxisHorizontal) {
+        if (direction == Direction.Horizontal) {
           if (child.height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
             // child is affected by the just added flex line.
@@ -289,8 +284,7 @@ public class FlexboxEngine {
             // because it doesn't change the size along the main axis.
             childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
               spec = crossMeasureSpec,
-              padding = padding.top + padding.bottom + child.margin.top +
-                child.margin.bottom + sumCrossSize,
+              padding = padding.top + padding.bottom + child.margin.top + child.margin.bottom + sumCrossSize,
               childDimension = child.height,
             )
             child.measure(childMainMeasureSpec, childCrossMeasureSpec)
@@ -307,8 +301,7 @@ public class FlexboxEngine {
             // because it doesn't change the size along the main axis.
             childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
               spec = crossMeasureSpec,
-              padding = padding.start + padding.end + child.margin.start +
-                child.margin.end + sumCrossSize,
+              padding = padding.start + padding.end + child.margin.start + child.margin.end + sumCrossSize,
               childDimension = child.width,
             )
             child.measure(childCrossMeasureSpec, childMainMeasureSpec)
@@ -317,7 +310,7 @@ public class FlexboxEngine {
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
-        flexLine.mainSize = mainPaddingStart + mainPaddingEnd
+        flexLine.mainSize = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding)
         flexLine.firstIndex = i
         indexInFlexLine = 0
         largestSizeInCross = Int.MIN_VALUE
@@ -325,29 +318,23 @@ public class FlexboxEngine {
         flexLine.itemCount++
         indexInFlexLine++
       }
-      flexLine.anyItemsHaveFlexGrow = flexLine.anyItemsHaveFlexGrow ||
-        (child.flexGrow != DefaultFlexGrow)
-      flexLine.anyItemsHaveFlexShrink = flexLine.anyItemsHaveFlexShrink ||
-        (child.flexShrink != UndefinedFlexShrink)
+      flexLine.anyItemsHaveFlexGrow = flexLine.anyItemsHaveFlexGrow || (child.flexGrow != DefaultFlexGrow)
+      flexLine.anyItemsHaveFlexShrink = flexLine.anyItemsHaveFlexShrink || (child.flexShrink != UndefinedFlexShrink)
       if (indexToFlexLine != null) {
         indexToFlexLine!![i] = flexLines.size
       }
-      flexLine.mainSize += getViewMeasuredSizeMain(child, isMainAxisHorizontal) +
-        getFlexItemMarginStartMain(child, isMainAxisHorizontal) +
-        getFlexItemMarginEndMain(child, isMainAxisHorizontal)
+      flexLine.mainSize += direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child)
       flexLine.totalFlexGrow += child.flexGrow
       flexLine.totalFlexShrink += child.flexShrink
       largestSizeInCross = maxOf(
         largestSizeInCross,
-        getViewMeasuredSizeCross(child, isMainAxisHorizontal) +
-          getFlexItemMarginStartCross(child, isMainAxisHorizontal) +
-          getFlexItemMarginEndCross(child, isMainAxisHorizontal),
+        direction.crossMeasuredSize(child) + direction.crossMarginStart(child) + direction.crossMarginEnd(child)
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
       // Expand along the cross axis depending on the alignContent property if needed
       // later
       flexLine.crossSize = maxOf(flexLine.crossSize, largestSizeInCross)
-      if (isMainAxisHorizontal) {
+      if (direction == Direction.Horizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = maxOf(
             flexLine.maxBaseline,
@@ -391,95 +378,6 @@ public class FlexboxEngine {
       }
     }
     return flexLines
-  }
-
-  /**
-   * Returns the view's measured size in the main axis. Either width or height.
-   *
-   * @param node the view
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the view's measured size in the main axis
-   */
-  private fun getViewMeasuredSizeMain(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.measuredWidth else node.measuredHeight
-  }
-
-  /**
-   * Returns the view's measured size in the cross axis. Either width or height.
-   *
-   * @param node the view
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the view's measured size in the cross axis
-   */
-  private fun getViewMeasuredSizeCross(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.measuredHeight else node.measuredWidth
-  }
-
-  /**
-   * Returns the flexItem's size in the main axis. Either width or height.
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's size in the main axis
-   */
-  private fun getFlexItemSizeMain(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.width else node.height
-  }
-
-  /**
-   * Returns the flexItem's size in the cross axis. Either width or height.
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's size in the cross axis
-   */
-  private fun getFlexItemSizeCross(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.height else node.width
-  }
-
-  /**
-   * Returns the flexItem's start margin in the main axis. Either start or top.
-   *
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's start margin in the main axis
-   */
-  private fun getFlexItemMarginStartMain(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.margin.start else node.margin.top
-  }
-
-  /**
-   * Returns the flexItem's end margin in the main axis. Either end or bottom.
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's end margin in the main axis
-   */
-  private fun getFlexItemMarginEndMain(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.margin.end else node.margin.bottom
-  }
-
-  /**
-   * Returns the flexItem's start margin in the cross axis. Either start or top.
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's start margin in the cross axis
-   */
-  private fun getFlexItemMarginStartCross(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.margin.top else node.margin.start
-  }
-
-  /**
-   * Returns the flexItem's end margin in the cross axis. Either end or bottom.
-   *
-   * @param node the flexItem
-   * @param isMainHorizontal is the main axis horizontal
-   * @return the flexItem's end margin in the cross axis
-   */
-  private fun getFlexItemMarginEndCross(node: Node, isMainHorizontal: Boolean): Int {
-    return if (isMainHorizontal) node.margin.bottom else node.margin.end
   }
 
   /**
@@ -1312,9 +1210,7 @@ public class FlexboxEngine {
    * @param index the index of the view
    */
   private fun stretchViewVertically(node: Node, crossSize: Int, index: Int) {
-    var newHeight = crossSize - node.margin.top - node.margin.bottom
-    newHeight = maxOf(newHeight, node.minHeight)
-    newHeight = minOf(newHeight, node.maxHeight)
+    val newHeight = (crossSize - node.margin.top - node.margin.bottom).coerceIn(node.minHeight, node.maxHeight)
     val measuredWidth = if (measuredSizeCache != null) {
       // Retrieve the measured height from the cache because there
       // are some cases that the view is re-created from the last measure, thus
@@ -1339,9 +1235,7 @@ public class FlexboxEngine {
    * @param index     the index of the view
    */
   private fun stretchViewHorizontally(node: Node, crossSize: Int, index: Int) {
-    var newWidth = crossSize - node.margin.start - node.margin.end
-    newWidth = maxOf(newWidth, node.minWidth)
-    newWidth = minOf(newWidth, node.maxWidth)
+    val newWidth = (crossSize - node.margin.start - node.margin.end).coerceIn(node.minWidth, node.maxWidth)
     val measuredHeight = if (measuredSizeCache != null) {
       // Retrieve the measured height from the cache because there
       // are some cases that the view is re-created from the last measure, thus
@@ -2016,19 +1910,4 @@ public class FlexboxEngine {
     }
     return indexToReorderedIndex?.getOrNull(index)?.let(nodes::getOrNull)
   }
-
-  private val isMainAxisHorizontal: Boolean
-    get() = flexDirection == FlexDirection.Row || flexDirection == FlexDirection.RowReverse
-
-  private val mainPaddingStart: Int
-    get() = if (isMainAxisHorizontal) padding.start else padding.top
-
-  private val mainPaddingEnd: Int
-    get() = if (isMainAxisHorizontal) padding.end else padding.bottom
-
-  private val crossPaddingStart: Int
-    get() = if (isMainAxisHorizontal) padding.top else padding.start
-
-  private val crossPaddingEnd: Int
-    get() = if (isMainAxisHorizontal) padding.bottom else padding.end
 }
