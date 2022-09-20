@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.zipline'
 
 android {
+  namespace "app.cash.zipline.samples.emojisearch"
   defaultConfig {
     applicationId = "com.example.zipline.emojisearch"
   }
