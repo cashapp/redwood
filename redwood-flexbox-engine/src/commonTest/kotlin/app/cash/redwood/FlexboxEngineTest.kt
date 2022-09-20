@@ -287,7 +287,7 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
     engine.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    engine.stretchViews()
+    engine.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
@@ -316,7 +316,7 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
     engine.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    engine.stretchViews()
+    engine.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis

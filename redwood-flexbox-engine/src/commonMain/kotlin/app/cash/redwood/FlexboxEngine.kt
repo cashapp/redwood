@@ -155,7 +155,7 @@ public class FlexboxEngine {
    * Calculates how many flex lines are needed in the flex container layout by measuring each
    * child.
    * Expanding or shrinking the flex items depending on the flex grow and flex shrink
-   * attributes are done in a later procedure, so the views' measured width and measured
+   * attributes are done in a later procedure, so the nodes' measured width and measured
    * height may be changed in a later process.
    *
    * @param mainMeasureSpec the main axis measure spec imposed by the flex container,
@@ -727,7 +727,7 @@ public class FlexboxEngine {
             // attribute.
             // To adjust the flex line length to the size of maxMainSize, remaining
             // positive free space needs to be re-distributed to other flex items
-            // (children views). In that case, invoke this method again with the same
+            // (children nodes). In that case, invoke this method again with the same
             // fromIndex.
             needsReexpand = true
             newWidth = child.maxWidth
@@ -787,7 +787,7 @@ public class FlexboxEngine {
             // attribute.
             // To adjust the flex line length to the size of maxMainSize, remaining
             // positive free space needs to be re-distributed to other flex items
-            // (children views). In that case, invoke this method again with the same
+            // (children nodes). In that case, invoke this method again with the same
             // fromIndex.
             needsReexpand = true
             newHeight = child.maxHeight
@@ -910,7 +910,7 @@ public class FlexboxEngine {
             // free space. To adjust the flex line length down to the maxMainSize,
             // remaining
             // negative free space needs to be re-distributed to other flex items
-            // (children views). In that case, invoke this method again with the same
+            // (children nodes). In that case, invoke this method again with the same
             // fromIndex.
             needsReshrink = true
             newWidth = child.minWidth
@@ -1005,7 +1005,7 @@ public class FlexboxEngine {
     }
     if (needsReshrink && sizeBeforeShrink != flexLine.mainSize) {
       // Re-invoke the method with the same fromIndex to distribute the negative free space
-      // that wasn't fully distributed (because some views length were not enough)
+      // that wasn't fully distributed (because some nodes length were not enough)
       shrinkFlexItems(
         widthMeasureSpec = widthMeasureSpec,
         heightMeasureSpec = heightMeasureSpec,
@@ -1166,8 +1166,7 @@ public class FlexboxEngine {
                 if (i == flexLines.size - 2) {
                   // The last dummy space block in the flex container.
                   // Adjust the cross size by the accumulated error.
-                  dummySpaceFlexLine.crossSize =
-                    (spaceBetweenFlexLine + accumulatedError).roundToInt()
+                  dummySpaceFlexLine.crossSize = (spaceBetweenFlexLine + accumulatedError).roundToInt()
                   accumulatedError = 0f
                 } else {
                   dummySpaceFlexLine.crossSize = spaceBetweenFlexLine.roundToInt()
@@ -1236,7 +1235,7 @@ public class FlexboxEngine {
    *
    * @param fromIndex the index from which value, stretch is calculated
    */
-  internal fun stretchViews(fromIndex: Int = 0) {
+  internal fun stretchChildren(fromIndex: Int = 0) {
     if (fromIndex >= nodes.size) {
       return
     }
@@ -1599,8 +1598,8 @@ public class FlexboxEngine {
       paddingAlongCrossAxis = padding.top + padding.bottom,
     )
     // Now cross size for each flex line is determined.
-    // Expand the views if alignItems (or alignSelf in each child view) is set to stretch
-    stretchViews()
+    // Expand the nodes if alignItems (or alignSelf in each child view) is set to stretch
+    stretchChildren()
     return setMeasuredDimensionForFlex(
       flexDirection = flexDirection,
       widthMeasureSpec = widthMeasureSpec,
@@ -1627,8 +1626,8 @@ public class FlexboxEngine {
       paddingAlongCrossAxis = padding.start + padding.end,
     )
     // Now cross size for each flex line is determined.
-    // Expand the views if alignItems (or alignSelf in each child view) is set to stretch
-    stretchViews()
+    // Expand the nodes if alignItems (or alignSelf in each child view) is set to stretch
+    stretchChildren()
     return setMeasuredDimensionForFlex(
       flexDirection = flexDirection,
       widthMeasureSpec = widthMeasureSpec,
@@ -1734,7 +1733,7 @@ public class FlexboxEngine {
     val height = bottom - top
     val width = right - left
     // childBottom is used if the flexWrap is WRAP_REVERSE otherwise
-    // childTop is used to align the vertical position of the children views.
+    // childTop is used to align the vertical position of the children nodes.
     var childBottom = height - padding.bottom
     var childTop = padding.top
 
@@ -1869,12 +1868,12 @@ public class FlexboxEngine {
     var childLeft = padding.start
     val width = right - left
     val height = bottom - top
-    // childRight is used if the flexWrap is WRAP_REVERSE otherwise
-    // childLeft is used to align the horizontal position of the children views.
+    // childRight is used if the flexWrap is WrapReverse otherwise
+    // childLeft is used to align the horizontal position of the children nodes.
     var childRight = width - paddingRight
 
     // Use float to reduce the round error that may happen in when justifyContent ==
-    // SPACE_BETWEEN or SPACE_AROUND
+    // SpaceBetween or SpaceAround.
     var childTop: Float
 
     // Used only for if the direction is from bottom to top
@@ -2004,7 +2003,7 @@ public class FlexboxEngine {
    *
    * @param index the index of the view
    * @return the reordered view, which [Node.order] is taken into account.
-   * If the index is negative or out of bounds of the number of contained views, returns `null`.
+   * If the index is negative or out of bounds of the number of contained nodes, returns `null`.
    */
   private fun getReorderedChildAt(index: Int): Node? {
     if (indexToReorderedIndex == null) {
