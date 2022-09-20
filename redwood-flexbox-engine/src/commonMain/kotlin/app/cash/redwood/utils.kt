@@ -31,7 +31,7 @@ internal fun unpackHigher(value: Long): Int {
 }
 
 /**
- * The count of the views whose visibilities are not gone in this flex line.
+ * The number of children who are not invisible in this flex line.
  */
 internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
