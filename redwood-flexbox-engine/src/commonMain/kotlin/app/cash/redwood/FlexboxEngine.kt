@@ -341,7 +341,7 @@ public class FlexboxEngine {
             child.baseline + child.margin.top,
           )
         } else {
-          // if the flex wrap property is WRAP_REVERSE, calculate the
+          // if the flex wrap property is WrapReverse, calculate the
           // baseline as the distance from the cross end and the baseline
           // since the cross size calculation is based on the distance from the cross end
           flexLine.maxBaseline = maxOf(
@@ -1305,7 +1305,7 @@ public class FlexboxEngine {
           bottom = top + crossSize - node.margin.bottom,
         )
       } else {
-        // If the flexWrap == WRAP_REVERSE, the direction of the
+        // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from top to bottom).
         node.layout(
           left = left,
@@ -1396,7 +1396,7 @@ public class FlexboxEngine {
           bottom = bottom,
         )
       } else {
-        // If the flexWrap == WRAP_REVERSE, the direction of the
+        // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from left to right).
         node.layout(
           left = left - crossSize + node.measuredWidth + node.margin.start,
@@ -1622,18 +1622,18 @@ public class FlexboxEngine {
     val paddingLeft = padding.start
     val paddingRight = padding.end
     // Use float to reduce the round error that may happen in when justifyContent ==
-    // SPACE_BETWEEN or SPACE_AROUND
+    // SpaceBetween or SpaceAround
     var childLeft: Float
     val height = bottom - top
     val width = right - left
-    // childBottom is used if the flexWrap is WRAP_REVERSE otherwise
+    // childBottom is used if the flexWrap is WrapReverse otherwise
     // childTop is used to align the vertical position of the children nodes.
     var childBottom = height - padding.bottom
     var childTop = padding.top
 
     // Used only for RTL layout
     // Use float to reduce the round error that may happen in when justifyContent ==
-    // SPACE_BETWEEN or SPACE_AROUND
+    // SpaceBetween or SpaceAround
     var childRight: Float
     var i = 0
     val size = flexLines.size
