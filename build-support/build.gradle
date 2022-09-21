@@ -9,6 +9,13 @@ buildscript {
   }
 }
 
+allprojects {
+  repositories {
+    mavenCentral()
+    google()
+  }
+}
+
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.github.gmazzo.buildconfig'
@@ -16,10 +23,6 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
-}
-
-repositories {
-  mavenCentral()
 }
 
 gradlePlugin {

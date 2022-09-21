@@ -12,12 +12,12 @@ Pod::Spec.new do |spec|
     spec.module_name              = "#{spec.name}_umbrella"
 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':counter:ios:shared',
+        'KOTLIN_PROJECT_PATH' => ':samples:counter:ios:shared',
         'PRODUCT_MODULE_NAME' => 'shared',
     }
 
     spec.prepare_command = <<-SCRIPT
-        ../../../../gradlew :counter:ios:shared:generateDummyFramework
+        ../../../../gradlew :samples:counter:ios:shared:generateDummyFramework
     SCRIPT
 
     spec.script_phases = [

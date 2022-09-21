@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.counter.sunspot.compose
+        api projects.samples.counter.sunspot.compose
       }
     }
   }

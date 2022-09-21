@@ -2,8 +2,8 @@ rootProject.name = 'redwood'
 
 include ':redwood-cli'
 include ':redwood-compose'
-include ':redwood-gradle-plugin'
 include ':redwood-flexbox-engine'
+include ':redwood-gradle-plugin'
 include ':redwood-protocol'
 include ':redwood-protocol-compose'
 include ':redwood-protocol-widget'
@@ -22,10 +22,39 @@ include ':test-schema:layout-modifiers'
 include ':test-schema:widget'
 include ':test-schema:widget:protocol'
 
+include ':samples:counter:android'
+include ':samples:counter:browser'
+include ':samples:counter:ios:shared'
+include ':samples:counter:presenter'
+include ':samples:counter:sunspot'
+include ':samples:counter:sunspot:compose'
+include ':samples:counter:sunspot:compose:protocol'
+include ':samples:counter:sunspot:widget'
+include ':samples:counter:sunspot:widget:protocol'
+
+include ':samples:emoji-search:android'
+include ':samples:emoji-search:ios:shared'
+include ':samples:emoji-search:presenters'
+include ':samples:emoji-search:schema'
+include ':samples:emoji-search:schema:compose'
+include ':samples:emoji-search:schema:compose:protocol'
+include ':samples:emoji-search:schema:widget'
+include ':samples:emoji-search:schema:widget:protocol'
+
+include ':samples:todo-list:android-composeui'
+include ':samples:todo-list:android-views'
+include ':samples:todo-list:presenters'
+include ':samples:todo-list:schema'
+include ':samples:todo-list:schema:compose'
+include ':samples:todo-list:schema:compose:protocol'
+include ':samples:todo-list:schema:widget'
+include ':samples:todo-list:schema:widget:protocol'
+
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
 includeBuild('build-support') {
   dependencySubstitution {
     substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
+    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
   }
 }

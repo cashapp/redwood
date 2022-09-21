@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.todoList.schema.compose
+        api projects.samples.todoList.schema.compose
       }
     }
   }

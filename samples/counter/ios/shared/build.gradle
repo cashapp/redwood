@@ -26,9 +26,9 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.counter.sunspot.compose.protocol
-        implementation projects.counter.sunspot.widget.protocol
-        implementation projects.counter.presenter
+        implementation projects.samples.counter.sunspot.compose.protocol
+        implementation projects.samples.counter.sunspot.widget.protocol
+        implementation projects.samples.counter.presenter
 
         // We aren't multithreading, but we need Dispatchers.Main to refer to the actual UI thread
         // instead of being an alias for Dispatchers.Default.
