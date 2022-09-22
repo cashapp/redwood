@@ -490,7 +490,7 @@ public class FlexboxEngine {
         } else {
           minOf(largestMainSize, widthSize)
         }
-        paddingAlongMainAxis = (padding.start + padding.end)
+        paddingAlongMainAxis = padding.start + padding.end
       }
       FlexDirection.Column, FlexDirection.ColumnReverse -> {
         val heightMode = heightMeasureSpec.mode
@@ -500,7 +500,7 @@ public class FlexboxEngine {
         } else {
           getLargestMainSize()
         }
-        paddingAlongMainAxis = (padding.top + padding.bottom)
+        paddingAlongMainAxis = padding.top + padding.bottom
       }
       else -> throw AssertionError()
     }
