@@ -25,7 +25,7 @@ internal fun FlexDirection.toDirection(): Direction {
 }
 
 /**
- * An interface to get the main/cross axis padding/margin/size without knowledge
+ * An interface to perform operations along the main/cross axis without knowledge
  * of the underlying [FlexDirection].
  */
 internal sealed interface Direction {
