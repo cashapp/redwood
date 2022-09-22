@@ -258,7 +258,7 @@ public class FlexboxEngine {
       // width/height from violating the size constraints imposed by the Node.minWidth,
       // Node.minHeight, Node.maxWidth, Node.maxHeight attributes. E.g. When the child's width is
       // WrapContent the measured width may be less than the min width after the first measurement.
-      checkSizeConstraints(child, i)
+      measureWithConstraints(child, i)
       if (
         isWrapRequired(
           mode = mainMode,
@@ -288,7 +288,7 @@ public class FlexboxEngine {
               childDimension = child.height,
             )
             child.measure(childMainMeasureSpec, childCrossMeasureSpec)
-            checkSizeConstraints(child, i)
+            measureWithConstraints(child, i)
           }
         } else {
           if (child.width == MatchParent) {
@@ -305,7 +305,7 @@ public class FlexboxEngine {
               childDimension = child.width,
             )
             child.measure(childCrossMeasureSpec, childMainMeasureSpec)
-            checkSizeConstraints(child, i)
+            measureWithConstraints(child, i)
           }
         }
         flexLine = FlexLine()
@@ -432,10 +432,10 @@ public class FlexboxEngine {
   }
 
   /**
-   * Checks that the node's width/height doesn't violate the minimum/maximum size constraints imposed
-   * by the [Node.minWidth], [Node.minHeight], [Node.maxWidth] and [Node.maxHeight] attributes.
+   * Remeasures the node if its [Node.measuredWidth] or [Node.measuredHeight] violate the
+   * minimum/maximum size constraints imposed by its min/max attributes.
    */
-  private fun checkSizeConstraints(node: Node, index: Int) {
+  private fun measureWithConstraints(node: Node, index: Int) {
     var needsMeasure = false
     var childWidth = node.measuredWidth
     var childHeight = node.measuredHeight
