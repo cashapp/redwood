@@ -19,7 +19,7 @@ spotless {
     targetExclude(
       // Apache 2-licensed files from Google.
       "src/commonMain/kotlin/app/cash/redwood/FlexboxEngine.kt",
-      "src/commonMain/kotlin/app/cash/redwood/Line.kt",
+      "src/commonMain/kotlin/app/cash/redwood/FlexLine.kt",
       "src/commonMain/kotlin/app/cash/redwood/Node.kt",
       "src/commonTest/kotlin/app/cash/redwood/FlexboxEngineTest.kt",
     )
