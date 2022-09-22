@@ -81,16 +81,16 @@ public class FlexboxEngine {
   private var indexToReorderedIndex: IntArray? = null
 
   /**
-   * Holds the 'frozen' state of children during measure. If a view is frozen it will no longer
+   * Holds the 'frozen' state of children during measure. If a node is frozen it will no longer
    * expand or shrink regardless of flex grow/flex shrink attributes.
    */
   private var childrenFrozen: BooleanArray? = null
 
   /**
-   * Map the view index to the flex line which contains the view represented by the index to
-   * look for a flex line from a given view index in a constant time.
-   * Key: index of the view
-   * Value: index of the flex line that contains the given view
+   * Map the node index to the flex line which contains the node represented by the index to
+   * look for a flex line from a given node index in a constant time.
+   * Key: index of the node
+   * Value: index of the flex line that contains the given node
    *
    * E.g. if we have following flex lines,
    *
@@ -115,7 +115,7 @@ public class FlexboxEngine {
   /**
    * Cache a flex item's measured width and height. The first 32 bit represents the height, the
    * last 32 bit represents the width of each flex item.
-   * E.g. an entry is created like `(long) view.measuredHeight << 32 | view.measuredWidth`
+   * E.g. an entry is created like `(long) node.measuredHeight << 32 | node.measuredWidth`
    *
    * To retrieve a width value, call [unpackLower] or [unpackHigher] for a height value.
    */
@@ -152,8 +152,7 @@ public class FlexboxEngine {
   )
 
   /**
-   * Calculates how many flex lines are needed in the flex container layout by measuring each
-   * child.
+   * Calculates how many flex lines are needed in the flex container layout by measuring each child.
    * Expanding or shrinking the flex items depending on the flex grow and flex shrink
    * attributes are done in a later procedure, so the nodes' measured width and measured
    * height may be changed in a later process.
@@ -190,7 +189,7 @@ public class FlexboxEngine {
     // The amount of cross size calculated in this method call.
     var sumCrossSize = 0
 
-    // The index of the view in the flex line.
+    // The index of the node in the flex line.
     var indexInFlexLine = 0
     var flexLine = FlexLine()
     flexLine.firstIndex = fromIndex
@@ -260,11 +259,12 @@ public class FlexboxEngine {
       // Node.minHeight, Node.maxWidth, Node.maxHeight attributes. E.g. When the child's width is
       // WrapContent the measured width may be less than the min width after the first measurement.
       checkSizeConstraints(child, i)
-      if (isWrapRequired(
+      if (
+        isWrapRequired(
           mode = mainMode,
           maxSize = mainSize,
           currentLength = flexLine.mainSize,
-          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child),
+          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child, ),
           flexItem = child,
           flexLinesSize = flexLines.size,
         )
@@ -358,18 +358,16 @@ public class FlexboxEngine {
         flexLines[flexLines.size - 1].lastIndex >= toIndex &&
         i >= toIndex && !reachedToIndex
       ) {
-        // Calculated to include a flex line which includes the flex item having the
-        // toIndex.
+        // Calculated to include a flex line which includes the flex item having the toIndex.
         // Let the sumCrossSize start from the negative value of the last flex line's
         // cross size because otherwise flex lines aren't calculated enough to fill the
         // visible area.
-        sumCrossSize = -flexLine.crossSize
+        sumCrossSize -= flexLine.crossSize
         reachedToIndex = true
       }
       if (sumCrossSize > needsCalcAmount && reachedToIndex) {
         // Stop the calculation if the sum of cross size calculated reached to the point
-        // beyond the needsCalcAmount value to avoid unneeded calculation in a
-        // RecyclerView.
+        // beyond the needsCalcAmount value to avoid unneeded calculation in a RecyclerView.
         // To be precise, the decoration length may be added to the sumCrossSize,
         // but we omit adding the decoration length because even without the decorator
         // length, it's guaranteed that calculation is done at least beyond the
@@ -386,9 +384,9 @@ public class FlexboxEngine {
    * @param mode the width or height mode along the main axis direction
    * @param maxSize the max size along the main axis direction
    * @param currentLength the accumulated current length
-   * @param childLength the length of a child view which is to be collected to the flex line
+   * @param childLength the length of a child which is to be collected to the flex line
    * @param flexItem the LayoutParams for the view being determined whether a new flex line is needed
-   * @param flexLinesSize the number of the existing flexlines size
+   * @param flexLinesSize the number of the existing flexlines
    * @return `true` if a wrap is required, `false` otherwise
    */
   private fun isWrapRequired(
@@ -425,20 +423,17 @@ public class FlexboxEngine {
   private fun addFlexLine(
     flexLines: MutableList<FlexLine>,
     flexLine: FlexLine,
-    viewIndex: Int,
+    nodeIndex: Int,
     usedCrossSizeSoFar: Int,
   ) {
     flexLine.sumCrossSizeBefore = usedCrossSizeSoFar
-    flexLine.lastIndex = viewIndex
+    flexLine.lastIndex = nodeIndex
     flexLines.add(flexLine)
   }
 
   /**
-   * Checks if the view's width/height don't violate the minimum/maximum size constraints imposed
+   * Checks that the node's width/height doesn't violate the minimum/maximum size constraints imposed
    * by the [Node.minWidth], [Node.minHeight], [Node.maxWidth] and [Node.maxHeight] attributes.
-   *
-   * @param node the view to be checked
-   * @param index index of the view
    */
   private fun checkSizeConstraints(node: Node, index: Int) {
     var needsMeasure = false
@@ -702,9 +697,9 @@ public class FlexboxEngine {
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec,
-            child,
-            flexLine.sumCrossSizeBefore,
+            widthMeasureSpec = widthMeasureSpec,
+            flexItem = child,
+            padding = flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -883,9 +878,9 @@ public class FlexboxEngine {
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec,
-            child,
-            flexLine.sumCrossSizeBefore,
+            widthMeasureSpec = widthMeasureSpec,
+            flexItem = child,
+            padding = flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
           child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
@@ -922,8 +917,7 @@ public class FlexboxEngine {
   ): MeasureSpec {
     var childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
       spec = widthMeasureSpec,
-      padding = this.padding.start + this.padding.end + flexItem.margin.start +
-        flexItem.margin.end + padding,
+      padding = this.padding.start + this.padding.end + flexItem.margin.start + flexItem.margin.end + padding,
       childDimension = flexItem.width,
     )
     val childWidth = childWidthMeasureSpec.size
@@ -942,8 +936,7 @@ public class FlexboxEngine {
   ): MeasureSpec {
     var childHeightMeasureSpec = MeasureSpec.getChildMeasureSpec(
       spec = heightMeasureSpec,
-      padding = this.padding.top + this.padding.bottom + flexItem.margin.top +
-        flexItem.margin.bottom + padding,
+      padding = this.padding.top + this.padding.bottom + flexItem.margin.top + flexItem.margin.bottom + padding,
       childDimension = flexItem.height,
     )
     val childHeight = childHeightMeasureSpec.size
@@ -962,7 +955,7 @@ public class FlexboxEngine {
    *
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
-   * @param paddingAlongCrossAxis the padding value for the FlexboxLayout along the cross axis
+   * @param paddingAlongCrossAxis the padding value for the flexbox along the cross axis
    */
   internal fun determineCrossSize(
     widthMeasureSpec: MeasureSpec,
@@ -1128,7 +1121,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Expand the view if the [FlexboxEngine.alignItems] attribute is set to
+   * Expand the node if the [FlexboxEngine.alignItems] attribute is set to
    * [AlignItems.Stretch] or [Node.alignSelf] is set as [AlignItems.Stretch].
    *
    * @param fromIndex the index from which value, stretch is calculated
@@ -1149,12 +1142,12 @@ public class FlexboxEngine {
         var j = 0
         val itemCount = flexLine.itemCount
         while (j < itemCount) {
-          val viewIndex = flexLine.firstIndex + j
+          val nodeIndex = flexLine.firstIndex + j
           if (j >= nodes.size) {
             j++
             continue
           }
-          val node = getReorderedChildAt(viewIndex)
+          val node = getReorderedChildAt(nodeIndex)
           if (node == null || !node.visible) {
             j++
             continue
@@ -1167,12 +1160,12 @@ public class FlexboxEngine {
             FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
               node = node,
               crossSize = flexLine.crossSize,
-              index = viewIndex,
+              index = nodeIndex,
             )
             FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
               node = node,
               crossSize = flexLine.crossSize,
-              index = viewIndex,
+              index = nodeIndex,
             )
             else -> throw AssertionError()
           }
@@ -1183,15 +1176,15 @@ public class FlexboxEngine {
     } else {
       for (flexLine in flexLines) {
         for (index in flexLine.indicesAlignSelfStretch) {
-          val view = getReorderedChildAt(index)!!
+          val node = getReorderedChildAt(index)!!
           when (flexDirection) {
             FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
-              node = view,
+              node = node,
               crossSize = flexLine.crossSize,
               index = index,
             )
             FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
-              node = view,
+              node = node,
               crossSize = flexLine.crossSize,
               index = index,
             )
@@ -1203,11 +1196,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Expand the view vertically to the size of the [crossSize] (considering the view margins)
-   *
-   * @param node the View to be stretched
-   * @param crossSize the cross size
-   * @param index the index of the view
+   * Expand the node vertically to the size of the [crossSize] (considering [node]'s margins).
    */
   private fun stretchViewVertically(node: Node, crossSize: Int, index: Int) {
     val newHeight = (crossSize - node.margin.top - node.margin.bottom).coerceIn(node.minHeight, node.maxHeight)
@@ -1228,11 +1217,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Expand the view horizontally to the size of the crossSize (considering the view margins)
-   *
-   * @param node      the View to be stretched
-   * @param crossSize the cross size
-   * @param index     the index of the view
+   * Expand the node horizontally to the size of the crossSize (considering [node]'s margins).
    */
   private fun stretchViewHorizontally(node: Node, crossSize: Int, index: Int) {
     val newWidth = (crossSize - node.margin.start - node.margin.end).coerceIn(node.minWidth, node.maxWidth)
@@ -1254,20 +1239,7 @@ public class FlexboxEngine {
 
   /**
    * Place a single View when the layout direction is horizontal
-   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Row] or
-   * [FlexDirection.RowReverse]).
-   *
-   * @param node the View to be placed
-   * @param flexLine the [FlexLine] where the View belongs to
-   * @param left the left position of the View, which the View's margin is already taken
-   * into account
-   * @param top the top position of the flex line where the View belongs to. The actual
-   * View's top position is shifted depending on the flexWrap and alignItems attributes
-   * @param right the right position of the View, which the View's margin is already taken
-   * into account
-   * @param bottom the bottom position of the flex line where the View belongs to. The actual
-   * View's bottom position is shifted depending on the flexWrap and alignItems attributes
-   * @see Node.alignSelf
+   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
     node: Node,
@@ -1337,24 +1309,7 @@ public class FlexboxEngine {
 
   /**
    * Place a single View when the layout direction is vertical
-   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Column] or
-   * [FlexDirection.ColumnReverse]).
-   *
-   * @param node     the View to be placed
-   * @param flexLine the [FlexLine] where the View belongs to
-   * @param isRtl    `true` if the layout direction is right to left, `false`
-   * otherwise
-   * @param left     the left position of the flex line where the View belongs to. The actual
-   * View's left position is shifted depending on the isLayoutRtl and alignItems
-   * attributes
-   * @param top      the top position of the View, which the View's margin is already taken
-   * into account
-   * @param right    the right position of the flex line where the View belongs to. The actual
-   * View's right position is shifted depending on the isLayoutRtl and alignItems
-   * attributes
-   * @param bottom   the bottom position of the View, which the View's margin is already taken
-   * into account
-   * @see Node.alignSelf
+   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
     node: Node,
@@ -1422,11 +1377,11 @@ public class FlexboxEngine {
     heightMeasureSpec: MeasureSpec,
     node: Node,
   ) {
-    if (measureSpecCache != null) {
-      measureSpecCache!![index] = packLong(widthMeasureSpec.value, heightMeasureSpec.value)
+    measureSpecCache?.let { cache ->
+      cache[index] = packLong(widthMeasureSpec.value, heightMeasureSpec.value)
     }
-    if (measuredSizeCache != null) {
-      measuredSizeCache!![index] = packLong(node.measuredWidth, node.measuredHeight)
+    measuredSizeCache?.let { cache ->
+      cache[index] = packLong(node.measuredWidth, node.measuredHeight)
     }
   }
 
@@ -1466,8 +1421,8 @@ public class FlexboxEngine {
         // The largest height value that also take the baseline shift into account
         var largestHeightInLine = Int.MIN_VALUE
         for (i in 0 until flexLine.itemCount) {
-          val viewIndex = flexLine.firstIndex + i
-          val child = getReorderedChildAt(viewIndex)
+          val nodeIndex = flexLine.firstIndex + i
+          val child = getReorderedChildAt(nodeIndex)
           if (child == null || !child.visible) {
             continue
           }
@@ -1492,7 +1447,7 @@ public class FlexboxEngine {
       paddingAlongCrossAxis = padding.top + padding.bottom,
     )
     // Now cross size for each flex line is determined.
-    // Expand the nodes if alignItems (or alignSelf in each child view) is set to stretch
+    // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
     return setMeasuredDimensionForFlex(
       flexDirection = flexDirection,
@@ -1520,7 +1475,7 @@ public class FlexboxEngine {
       paddingAlongCrossAxis = padding.start + padding.end,
     )
     // Now cross size for each flex line is determined.
-    // Expand the nodes if alignItems (or alignSelf in each child view) is set to stretch
+    // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
     return setMeasuredDimensionForFlex(
       flexDirection = flexDirection,
@@ -1530,7 +1485,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Set this FlexboxLayouts' width and height depending on the calculated size of main axis and
+   * Set this flexbox's width and height depending on the calculated size of main axis and
    * cross axis.
    *
    * @param flexDirection the value of the flex direction
@@ -1607,10 +1562,6 @@ public class FlexboxEngine {
    * [FlexDirection.Row] or [FlexDirection.RowReverse].
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise.
-   * @param left the left position of this View
-   * @param top the top position of this View
-   * @param right the right position of this View
-   * @param bottom the bottom position of this View
    */
   private fun layoutHorizontal(
     isRtl: Boolean,
@@ -1743,10 +1694,6 @@ public class FlexboxEngine {
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise
    * @param fromBottomToTop `true` if the layout direction is bottom to top, `false` otherwise
-   * @param left the left position of this View
-   * @param top the top position of this View
-   * @param right the right position of this View
-   * @param bottom the bottom position of this View
    */
   private fun layoutVertical(
     isRtl: Boolean,
@@ -1879,25 +1826,21 @@ public class FlexboxEngine {
   }
 
   /**
-   * The largest main size of all flex lines including decorator lengths.
+   * The largest main size of all flex lines.
    */
   private fun getLargestMainSize(): Int {
     return if (flexLines.isEmpty()) Int.MIN_VALUE else flexLines.maxOf { it.mainSize }
   }
 
   /**
-   * The sum of the cross sizes of all flex lines including decorator lengths.
+   * The sum of the cross sizes of all flex lines.
    */
   private fun getSumOfCrossSize(): Int {
     return flexLines.sumOf { it.crossSize }
   }
 
   /**
-   * Returns a View, which is reordered by taking [Node.order] parameters into account.
-   *
-   * @param index the index of the view
-   * @return the reordered view, which [Node.order] is taken into account.
-   * If the index is negative or out of bounds of the number of contained nodes, returns `null`.
+   * Returns a node, which is reordered by taking into account [Node.order].
    */
   private fun getReorderedChildAt(index: Int): Node? {
     if (indexToReorderedIndex == null) {

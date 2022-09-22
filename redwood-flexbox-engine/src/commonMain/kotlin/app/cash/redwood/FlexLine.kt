@@ -33,12 +33,12 @@ internal class FlexLine {
   @JvmField var crossSize = 0
 
   /**
-   * The count of the views contained in this flex line.
+   * The count of the nodes contained in this flex line.
    */
   @JvmField var itemCount = 0
 
   /**
-   * Holds the count of the views whose visibilities are gone.
+   * Holds the count of the nodes whose are invisible.
    */
   @JvmField var invisibleItemCount = 0
 
@@ -63,19 +63,19 @@ internal class FlexLine {
   @JvmField var sumCrossSizeBefore = 0
 
   /**
-   * Store the indices of the children views whose alignSelf property is stretch.
+   * Store the indices of the children whose alignSelf property is stretch.
    * The stored indices are the absolute indices including all children in the Flexbox,
    * not the relative indices in this flex line.
    */
   @JvmField var indicesAlignSelfStretch = listOf<Int>()
 
   /**
-   * The first view's index included in this flex line.
+   * The first child's index included in this flex line.
    */
   @JvmField var firstIndex = 0
 
   /**
-   * The last view's index included in this flex line.
+   * The last child's index included in this flex line.
    */
   @JvmField var lastIndex = 0
 
