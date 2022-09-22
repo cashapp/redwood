@@ -29,7 +29,7 @@ kotlin {
       }
     }
 
-    engineMain {
+    hostMain {
       dependsOn(commonMain)
       dependencies {
         api libs.zipline.loader
@@ -40,26 +40,26 @@ kotlin {
       }
     }
     nativeMain {
-      dependsOn(engineMain)
+      dependsOn(hostMain)
     }
     androidMain {
-      dependsOn(engineMain)
+      dependsOn(hostMain)
       dependencies {
         api libs.okHttp
       }
     }
 
-    engineTest {
+    hostTest {
       dependencies {
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
       }
     }
     nativeTest {
-      dependsOn(engineTest)
+      dependsOn(hostTest)
     }
     androidTest {
-      dependsOn(engineTest)
+      dependsOn(hostTest)
     }
   }
 }
