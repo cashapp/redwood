@@ -17,12 +17,12 @@ Pod::Spec.new do |spec|
     spec.ios.deployment_target  = '14.0'
 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':emoji-search:ios:shared',
+        'KOTLIN_PROJECT_PATH' => ':samples:emoji-search:ios:shared',
         'PRODUCT_MODULE_NAME' => 'shared',
     }
 
     spec.prepare_command = <<-SCRIPT
-        ../../../../gradlew :emoji-search:ios:shared:generateDummyFramework
+        ../../../../gradlew :samples:emoji-search:ios:shared:generateDummyFramework
     SCRIPT
 
     spec.script_phases = [

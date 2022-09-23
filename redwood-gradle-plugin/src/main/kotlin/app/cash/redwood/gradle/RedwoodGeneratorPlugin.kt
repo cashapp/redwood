@@ -45,14 +45,14 @@ public abstract class RedwoodGeneratorPlugin(
 ) : Plugin<Project> {
   public enum class Strategy(
     internal val generatorFlag: String,
-    internal val dependencyCoordinate: String,
+    internal val dependencyArtifactId: String,
   ) {
     // TODO This should only rely on redwood-compose and not redwood-protocol-compose.
-    Compose("--compose", "app.cash.redwood:redwood-protocol-compose:$redwoodVersion"),
-    ComposeProtocol("--compose-protocol", "app.cash.redwood:redwood-protocol-compose:$redwoodVersion"),
-    LayoutModifiers("--layout-modifiers", "app.cash.redwood:redwood-runtime:$redwoodVersion"),
-    Widget("--widget", "app.cash.redwood:redwood-widget:$redwoodVersion"),
-    WidgetProtocol("--widget-protocol", "app.cash.redwood:redwood-protocol-widget:$redwoodVersion"),
+    Compose("--compose", "redwood-protocol-compose"),
+    ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
+    LayoutModifiers("--layout-modifiers", "redwood-runtime"),
+    Widget("--widget", "redwood-widget"),
+    WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),
   }
 
   override fun apply(project: Project) {
@@ -69,10 +69,7 @@ public abstract class RedwoodGeneratorPlugin(
     )
 
     val cliConfiguration = project.configurations.create("redwoodCli")
-    project.dependencies.add(
-      cliConfiguration.name,
-      "app.cash.redwood:redwood-cli:$redwoodVersion",
-    )
+    project.dependencies.add(cliConfiguration.name, project.redwoodDependency("redwood-cli"))
 
     val schemaConfiguration = project.configurations.create("redwoodSchema")
     val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
@@ -98,7 +95,7 @@ public abstract class RedwoodGeneratorPlugin(
       kotlin.sourceSets.getByName("commonMain") { sourceSet ->
         sourceSet.kotlin.srcDir(generate.map { it.outputDir })
         sourceSet.dependencies {
-          api(strategy.dependencyCoordinate)
+          api(project.redwoodDependency(strategy.dependencyArtifactId))
         }
       }
     }

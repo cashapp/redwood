@@ -13,11 +13,10 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.emojiSearch.schema.compose.protocol
-        implementation projects.emojiSearch.schema.widget.protocol
-        implementation projects.emojiSearch.presenters
+        implementation projects.samples.emojiSearch.schema.compose.protocol
+        implementation projects.samples.emojiSearch.schema.widget.protocol
+        implementation projects.samples.emojiSearch.presenters
       }
     }
   }
 }
-

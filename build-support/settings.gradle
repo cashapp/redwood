@@ -1,3 +1,8 @@
+rootProject.name = 'build-support'
+
+include(':redwood-gradle-plugin')
+project(':redwood-gradle-plugin').projectDir = new File('../redwood-gradle-plugin')
+
 dependencyResolutionManagement {
   versionCatalogs {
     libs {

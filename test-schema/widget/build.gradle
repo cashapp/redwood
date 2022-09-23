@@ -1,23 +1,11 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-
-def generatedDir = 'build/generated/redwood'
+apply plugin: 'app.cash.redwood.generator.widget'
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
 
   // Ensure our codegen correctly works in explicit API mode.
   explicitApi()
-
-  sourceSets {
-    commonMain {
-      kotlin {
-        srcDir generatedDir
-      }
-      dependencies {
-        api projects.redwoodWidget
-      }
-    }
-  }
 
   targets.all {
     compilations.all {
@@ -35,47 +23,7 @@ kotlin {
   }
 }
 
-configurations {
-  generator
-  schema
-}
-
-dependencies {
-  generator projects.redwoodCli
-  schema projects.testSchema
-}
-
-def generate = tasks.register('redwoodGenerate', JavaExec) {
-  def schemaFiles = configurations.schema
-    .incoming
-    .artifactView {
-      it.attributes {
-        it.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.class, Usage.JAVA_RUNTIME))
-      }
-    }
-    .artifacts
-    .artifactFiles
-  it.inputs.files(schemaFiles)
-
-  it.classpath(configurations.generator)
-  it.main('app.cash.redwood.cli.Main')
-  it.args(
-    'generate',
-    '--widget',
-    '--out', generatedDir,
-    'example.redwood.ExampleSchema',
-    '-cp',
-  )
-
-  it.doFirst {
-    it.args += schemaFiles.files.join(File.pathSeparator)
-
-    file(generatedDir).deleteDir()
-  }
-}
-
-kotlin.targets.all { target ->
-  target.compilations.all { compilation ->
-    compilation.compileKotlinTask.dependsOn(generate.get())
-  }
+redwoodSchema {
+  source = projects.testSchema
+  type = 'example.redwood.ExampleSchema'
 }

@@ -1,6 +1,8 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.widget'
 
+archivesBaseName = 'sunspot-widget'
+
 kotlin {
   iosArm64()
   iosX64()
@@ -13,6 +15,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.counter.sunspot
+  source = projects.samples.counter.sunspot
   type = 'example.sunspot.Sunspot'
 }

@@ -199,10 +199,7 @@ private fun Project.createRedwoodLintTask(
   classpath: () -> Configuration,
 ): TaskProvider<out Task> {
   val configuration = configurations.maybeCreate("redwood")
-  dependencies.add(
-    configuration.name,
-    "app.cash.redwood:redwood-cli:$redwoodVersion",
-  )
+  dependencies.add(configuration.name, project.redwoodDependency("redwood-cli"))
 
   return tasks.register(name, RedwoodLintTask::class.java) { task ->
     task.group = VERIFICATION_GROUP
