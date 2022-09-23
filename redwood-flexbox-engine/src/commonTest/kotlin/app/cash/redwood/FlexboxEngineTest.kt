@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ class FlexboxEngineTest {
 
   @Test
   fun testCalculateHorizontalFlexLines() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(200, 100)
-    val view3 = FakeNode(300, 100)
-    val view4 = FakeNode(400, 100)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(200, 100)
+    val node3 = FakeNode(300, 100)
+    val node4 = FakeNode(400, 100)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -73,14 +73,14 @@ class FlexboxEngineTest {
 
   @Test
   fun testCalculateVerticalFlexLines() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(100, 200)
-    val view3 = FakeNode(100, 300)
-    val view4 = FakeNode(100, 400)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(100, 200)
+    val node3 = FakeNode(100, 300)
+    val node4 = FakeNode(100, 400)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexWrap = FlexWrap.Wrap
     engine.flexDirection = FlexDirection.Column
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -116,14 +116,14 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_direction_row_flexGrowSet() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(200, 100, flexGrow = 1.0f)
-    val view3 = FakeNode(300, 100)
-    val view4 = FakeNode(400, 100, flexGrow = 2.0f)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(200, 100, flexGrow = 1.0f)
+    val node3 = FakeNode(300, 100)
+    val node4 = FakeNode(400, 100, flexGrow = 2.0f)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
@@ -131,28 +131,28 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100, view1.measuredWidth)
-    assertEquals(100, view1.measuredHeight)
-    // view2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400, view2.measuredWidth)
-    assertEquals(100, view2.measuredHeight)
-    assertEquals(300, view3.measuredWidth)
-    assertEquals(100, view3.measuredHeight)
-    // view4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500, view4.measuredWidth)
-    assertEquals(100, view4.measuredHeight)
+    assertEquals(100, node1.measuredWidth)
+    assertEquals(100, node1.measuredHeight)
+    // node2 will expand to fill the left space in the first flex line since flex grow is set
+    assertEquals(400, node2.measuredWidth)
+    assertEquals(100, node2.measuredHeight)
+    assertEquals(300, node3.measuredWidth)
+    assertEquals(100, node3.measuredHeight)
+    // node4 will expand to fill the left space in the first flex line since flex grow is set
+    assertEquals(500, node4.measuredWidth)
+    assertEquals(100, node4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_column_flexGrowSet() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(100, 200, flexGrow = 1.0f)
-    val view3 = FakeNode(100, 300)
-    val view4 = FakeNode(100, 400, flexGrow = 2.0f)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(100, 200, flexGrow = 1.0f)
+    val node3 = FakeNode(100, 300)
+    val node4 = FakeNode(100, 400, flexGrow = 2.0f)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -160,28 +160,28 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100, view1.measuredWidth)
-    assertEquals(100, view1.measuredHeight)
-    assertEquals(100, view2.measuredWidth)
-    // view2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400, view2.measuredHeight)
-    assertEquals(100, view3.measuredWidth)
-    assertEquals(300, view3.measuredHeight)
-    assertEquals(100, view4.measuredWidth)
-    // view4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500, view4.measuredHeight)
+    assertEquals(100, node1.measuredWidth)
+    assertEquals(100, node1.measuredHeight)
+    assertEquals(100, node2.measuredWidth)
+    // node2 will expand to fill the left space in the first flex line since flex grow is set
+    assertEquals(400, node2.measuredHeight)
+    assertEquals(100, node3.measuredWidth)
+    assertEquals(300, node3.measuredHeight)
+    assertEquals(100, node4.measuredWidth)
+    // node4 will expand to fill the left space in the first flex line since flex grow is set
+    assertEquals(500, node4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_row_flexShrinkSet() {
-    val view1 = FakeNode(200, 100)
-    val view2 = FakeNode(200, 100)
-    val view3 = FakeNode(200, 100)
-    val view4 = FakeNode(200, 100)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(200, 100)
+    val node2 = FakeNode(200, 100)
+    val node3 = FakeNode(200, 100)
+    val node4 = FakeNode(200, 100)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
@@ -191,26 +191,26 @@ class FlexboxEngineTest {
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrank equally for the amount overflown the width
-    assertEquals(125, view1.measuredWidth)
-    assertEquals(100, view1.measuredHeight)
-    assertEquals(125, view2.measuredWidth)
-    assertEquals(100, view2.measuredHeight)
-    assertEquals(125, view3.measuredWidth)
-    assertEquals(100, view3.measuredHeight)
-    assertEquals(125, view4.measuredWidth)
-    assertEquals(100, view4.measuredHeight)
+    assertEquals(125, node1.measuredWidth)
+    assertEquals(100, node1.measuredHeight)
+    assertEquals(125, node2.measuredWidth)
+    assertEquals(100, node2.measuredHeight)
+    assertEquals(125, node3.measuredWidth)
+    assertEquals(100, node3.measuredHeight)
+    assertEquals(125, node4.measuredWidth)
+    assertEquals(100, node4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_column_flexShrinkSet() {
-    val view1 = FakeNode(100, 200)
-    val view2 = FakeNode(100, 200)
-    val view3 = FakeNode(100, 200)
-    val view4 = FakeNode(100, 200)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 200)
+    val node2 = FakeNode(100, 200)
+    val node3 = FakeNode(100, 200)
+    val node4 = FakeNode(100, 200)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -220,22 +220,22 @@ class FlexboxEngineTest {
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrank equally for the amount overflown the height
-    assertEquals(100, view1.measuredWidth)
-    assertEquals(125, view1.measuredHeight)
-    assertEquals(100, view2.measuredWidth)
-    assertEquals(125, view2.measuredHeight)
-    assertEquals(100, view3.measuredWidth)
-    assertEquals(125, view3.measuredHeight)
-    assertEquals(100, view4.measuredWidth)
-    assertEquals(125, view4.measuredHeight)
+    assertEquals(100, node1.measuredWidth)
+    assertEquals(125, node1.measuredHeight)
+    assertEquals(100, node2.measuredWidth)
+    assertEquals(125, node2.measuredHeight)
+    assertEquals(100, node3.measuredWidth)
+    assertEquals(125, node3.measuredHeight)
+    assertEquals(100, node4.measuredWidth)
+    assertEquals(125, node4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_directionRow_fixedSizeViewAndShrinkable_doNotExceedMaxMainSize() {
-    val view1 = FakeNode(100, 100, flexShrink = 0f)
-    val view2 = FakeNode(2000, 2000) // simulate a very long text view
-    engine.nodes += view1
-    engine.nodes += view2
+    val node1 = FakeNode(100, 100, flexShrink = 0f)
+    val node2 = FakeNode(2000, 2000) // simulate a very long text view
+    engine.nodes += node1
+    engine.nodes += node2
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -244,18 +244,18 @@ class FlexboxEngineTest {
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100, view1.measuredWidth)
-    assertEquals(400, view2.measuredWidth)
+    assertEquals(100, node1.measuredWidth)
+    assertEquals(400, node2.measuredWidth)
   }
 
   @Test
   fun testDetermineMainSize_directionRow_twoFixedSizeViewsAndShrinkable_doNotExceedMaxMainSize() {
-    val view1 = FakeNode(100, 100, flexShrink = 0f)
-    val view2 = FakeNode(2000, 2000) // simulate a very long text view
-    val view3 = FakeNode(100, 100, flexShrink = 0f)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
+    val node1 = FakeNode(100, 100, flexShrink = 0f)
+    val node2 = FakeNode(2000, 2000) // simulate a very long text view
+    val node3 = FakeNode(100, 100, flexShrink = 0f)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
     engine.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
@@ -264,21 +264,21 @@ class FlexboxEngineTest {
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100, view1.measuredWidth)
-    assertEquals(300, view2.measuredWidth)
-    assertEquals(100, view3.measuredWidth)
+    assertEquals(100, node1.measuredWidth)
+    assertEquals(300, node2.measuredWidth)
+    assertEquals(100, node3.measuredWidth)
   }
 
   @Test
   fun testDetermineCrossSize_direction_row_alignContent_stretch() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(200, 100)
-    val view3 = FakeNode(300, 100)
-    val view4 = FakeNode(400, 100)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(200, 100)
+    val node3 = FakeNode(300, 100)
+    val node4 = FakeNode(400, 100)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Row
     engine.flexWrap = FlexWrap.Wrap
     engine.alignContent = AlignContent.Stretch
@@ -287,27 +287,27 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
     engine.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    engine.stretchViews()
+    engine.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining height in this case)
-    assertAlmostEquals(333, view1.measuredHeight)
-    assertAlmostEquals(333, view2.measuredHeight)
-    assertAlmostEquals(333, view3.measuredHeight)
-    assertAlmostEquals(333, view4.measuredHeight)
+    assertEquals(333, node1.measuredHeight)
+    assertEquals(333, node2.measuredHeight)
+    assertEquals(333, node3.measuredHeight)
+    assertEquals(334, node4.measuredHeight)
   }
 
   @Test
   fun testDetermineCrossSize_direction_column_alignContent_stretch() {
-    val view1 = FakeNode(100, 100)
-    val view2 = FakeNode(100, 200)
-    val view3 = FakeNode(100, 300)
-    val view4 = FakeNode(100, 400)
-    engine.nodes += view1
-    engine.nodes += view2
-    engine.nodes += view3
-    engine.nodes += view4
+    val node1 = FakeNode(100, 100)
+    val node2 = FakeNode(100, 200)
+    val node3 = FakeNode(100, 300)
+    val node4 = FakeNode(100, 400)
+    engine.nodes += node1
+    engine.nodes += node2
+    engine.nodes += node3
+    engine.nodes += node4
     engine.flexDirection = FlexDirection.Column
     engine.flexWrap = FlexWrap.Wrap
     engine.alignContent = AlignContent.Stretch
@@ -316,15 +316,15 @@ class FlexboxEngineTest {
     engine.flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
     engine.determineMainSize(widthMeasureSpec, heightMeasureSpec)
     engine.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    engine.stretchViews()
+    engine.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining width in this case)
-    assertAlmostEquals(333, view1.measuredWidth)
-    assertAlmostEquals(333, view2.measuredWidth)
-    assertAlmostEquals(333, view3.measuredWidth)
-    assertAlmostEquals(333, view4.measuredWidth)
+    assertEquals(333, node1.measuredWidth)
+    assertEquals(333, node2.measuredWidth)
+    assertEquals(333, node3.measuredWidth)
+    assertEquals(334, node4.measuredWidth)
   }
 
   @Test
@@ -365,15 +365,15 @@ class FlexboxEngineTest {
 
   @Test
   fun testFlexLine_anyItemsHaveFlexGrow() {
-    val view1 = FakeNode(100, 100, flexGrow = 1.0f)
-    val view2 = FakeNode(100, 200)
-    val view3 = FakeNode(100, 300)
-    val view4 = FakeNode(100, 400, flexGrow = 2.0f)
+    val node1 = FakeNode(100, 100, flexGrow = 1.0f)
+    val node2 = FakeNode(100, 200)
+    val node3 = FakeNode(100, 300)
+    val node4 = FakeNode(100, 400, flexGrow = 2.0f)
     engine.apply {
-      nodes += view1
-      nodes += view2
-      nodes += view3
-      nodes += view4
+      nodes += node1
+      nodes += node2
+      nodes += node3
+      nodes += node4
       flexDirection = FlexDirection.Column
       flexWrap = FlexWrap.Wrap
       alignContent = AlignContent.Stretch
