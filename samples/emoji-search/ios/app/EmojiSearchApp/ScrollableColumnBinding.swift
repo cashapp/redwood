@@ -42,8 +42,6 @@ extension ScrollableColumnBinding: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = TableViewCell(view: views[indexPath.row])
-        /// This probably won't work correctly
-//        cell.contentView.addSubview(views[indexPath.row])
         return cell
     }
 }

@@ -31,8 +31,8 @@ class EmojiSearchViewController : UIViewController {
 
         view.backgroundColor = .white
 
-        let emojiSearchZipline = EmojiSearchZipline(nsurlSession: urlSession, hostApi: IosHostApi(), widgetFactory: IosEmojiSearchWidgetFactory())
-        let treehouseApp = emojiSearchZipline.createTreehouseApp()
+        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi(), widgetFactory: IosEmojiSearchWidgetFactory())
+        let treehouseApp = emojiSearchLauncher.createTreehouseApp()
         let treehouseView = Redwood_treehouseTreehouseUIKitView<PresentersEmojiSearchPresenter>(treehouseApp: treehouseApp)
         treehouseView.setContent(content: EmojiSearchContent())
 

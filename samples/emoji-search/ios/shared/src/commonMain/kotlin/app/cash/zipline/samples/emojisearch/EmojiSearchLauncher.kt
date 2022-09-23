@@ -30,7 +30,7 @@ import kotlinx.serialization.json.Json
 import platform.Foundation.NSURLSession
 import platform.UIKit.UIView
 
-class EmojiSearchZipline(
+class EmojiSearchLauncher(
   private val nsurlSession: NSURLSession,
   private val hostApi: HostApi,
   private val widgetFactory: EmojiSearchWidgetFactory<UIView>,

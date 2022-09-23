@@ -24,7 +24,7 @@ import platform.Foundation.NSData
 
 @Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
 fun exposedTypes(
-  emojiSearchZipline: EmojiSearchZipline,
+  emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchEvent: EmojiSearchEvent,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   treehouseUIKitView: TreehouseUIKitView<*>,
