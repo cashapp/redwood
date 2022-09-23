@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
+import Foundation
+import shared
 import UIKit
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class TextBinding: WidgetText {
+    private let root: UILabel = {
+        let view = UILabel()
+        return view
+    }()
 
-    var window: UIWindow?
+    init() {
+        self.layoutModifiers = ExposedKt.layoutModifier()
+    }
 
+    var layoutModifiers: Redwood_runtimeLayoutModifier
+    var value: Any { root }
+
+    func text(text: String) {
+        root.text = text
+    }
 }

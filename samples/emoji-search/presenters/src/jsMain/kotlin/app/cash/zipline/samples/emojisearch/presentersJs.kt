@@ -23,11 +23,11 @@ private val zipline by lazy { Zipline.get() }
 @JsExport
 fun preparePresenters() {
   val hostApi = zipline.take<HostApi>(
-    name = "hostApi",
+    name = "HostApi",
   )
 
   zipline.bind<EmojiSearchPresenter>(
-    name = "emojiSearchPresenter",
+    name = "EmojiSearchPresenter",
     instance = RealEmojiSearchPresenter(hostApi),
   )
 }

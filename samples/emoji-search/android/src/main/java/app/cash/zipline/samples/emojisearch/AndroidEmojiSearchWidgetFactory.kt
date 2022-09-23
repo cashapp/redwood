@@ -15,23 +15,14 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.TreehouseUIKitView
+import androidx.compose.runtime.Composable
 import example.schema.widget.EmojiSearchWidgetFactory
-import okio.ByteString
-import okio.toByteString
-import platform.Foundation.NSData
 
-@Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
-fun exposedTypes(
-  emojiSearchLauncher: EmojiSearchLauncher,
-  emojiSearchEvent: EmojiSearchEvent,
-  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  treehouseUIKitView: TreehouseUIKitView<*>,
-) {
-  throw AssertionError()
+object AndroidEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<@Composable () -> Unit> {
+  override fun Row() = ComposeUiRow()
+  override fun Column() = ComposeUiColumn()
+  override fun ScrollableColumn() = ComposeUiScrollableColumn()
+  override fun TextInput() = ComposeUiTextInput()
+  override fun Text() = ComposeUiText()
+  override fun Image() = ComposeUiImage()
 }
-
-fun byteStringOf(data: NSData): ByteString = data.toByteString()
-
-fun layoutModifier(): LayoutModifier = LayoutModifier

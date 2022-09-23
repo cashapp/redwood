@@ -15,23 +15,23 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.TreehouseUIKitView
-import example.schema.widget.EmojiSearchWidgetFactory
-import okio.ByteString
-import okio.toByteString
-import platform.Foundation.NSData
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import example.schema.widget.Column
 
-@Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
-fun exposedTypes(
-  emojiSearchLauncher: EmojiSearchLauncher,
-  emojiSearchEvent: EmojiSearchEvent,
-  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  treehouseUIKitView: TreehouseUIKitView<*>,
-) {
-  throw AssertionError()
+class ComposeUiColumn : Column<@Composable () -> Unit> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override val children = ComposeWidgetChildren()
+
+  override val value = @Composable {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      children.render()
+    }
+  }
 }
-
-fun byteStringOf(data: NSData): ByteString = data.toByteString()
-
-fun layoutModifier(): LayoutModifier = LayoutModifier

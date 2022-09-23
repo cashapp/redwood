@@ -34,6 +34,7 @@ include ':samples:counter:sunspot:widget:protocol'
 
 include ':samples:emoji-search:android'
 include ':samples:emoji-search:ios:shared'
+include ':samples:emoji-search:launcher'
 include ':samples:emoji-search:presenters'
 include ':samples:emoji-search:schema'
 include ':samples:emoji-search:schema:compose'

@@ -1,22 +1,24 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.zipline'
 
 kotlin {
   iosArm64()
   iosX64()
   iosSimulatorArm64()
 
-  cocoapods {
-    noPodspec()
-  }
+  android()
 
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.emojiSearch.launcher
         implementation projects.samples.emojiSearch.presenters
-        implementation projects.samples.emojiSearch.schema.widget.protocol
+        api projects.redwoodTreehouse
       }
     }
   }
+}
+
+android {
+  namespace 'com.example.zipline.emojisearch.launcher'
 }
