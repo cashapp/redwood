@@ -362,7 +362,7 @@ public class FlexboxEngine {
         // Let the sumCrossSize start from the negative value of the last flex line's
         // cross size because otherwise flex lines aren't calculated enough to fill the
         // visible area.
-        sumCrossSize -= flexLine.crossSize
+        sumCrossSize = -flexLine.crossSize
         reachedToIndex = true
       }
       if (sumCrossSize > needsCalcAmount && reachedToIndex) {
