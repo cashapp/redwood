@@ -246,7 +246,7 @@ public value class MeasureSpecMode(public val ordinal: Int) {
 }
 
 /**
- * A generic spacing container that can be used for padding or margin.
+ * Describes the padding/margin to apply to a node/flexbox.
  */
 public data class Spacing(
   val start: Int = 0,
