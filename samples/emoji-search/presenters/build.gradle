@@ -19,6 +19,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodTreehouse
+        api projects.samples.emojiSearch.values
       }
     }
 

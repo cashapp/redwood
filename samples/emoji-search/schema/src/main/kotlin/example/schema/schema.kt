@@ -20,9 +20,11 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
+import example.values.LazyListIntervalContent
 
 @Schema(
   members = [
+    LazyColumn::class,
     TextInput::class,
     Text::class,
     Image::class,
@@ -48,4 +50,9 @@ data class Text(
 @Widget(3)
 data class Image(
   @Property(1) val url: String,
+)
+
+@Widget(4)
+data class LazyColumn(
+  @Property(1) val intervals: List<LazyListIntervalContent>,
 )
