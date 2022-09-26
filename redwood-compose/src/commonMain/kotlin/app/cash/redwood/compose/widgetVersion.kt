@@ -20,8 +20,14 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 
-/** @suppress */
-public val WidgetVersionValue: ProvidableCompositionLocal<UInt> = compositionLocalOf {
+/**
+ * Provide the version of widgets in use.
+ * This value will be bound automatically when a protocol-based display is used.
+ * Custom values should only be provided into a composition for testing purposes!
+ *
+ * @see WidgetVersion
+ */
+public val LocalWidgetVersion: ProvidableCompositionLocal<UInt> = compositionLocalOf {
   // A real value is always provided to a protocol-based composition.
   // When connected directly (i.e., without the protocol indirection) always assume latest.
   UInt.MAX_VALUE
@@ -44,4 +50,4 @@ public val WidgetVersionValue: ProvidableCompositionLocal<UInt> = compositionLoc
 public val WidgetVersion: UInt
   @Composable
   @ReadOnlyComposable
-  get() = WidgetVersionValue.current
+  get() = LocalWidgetVersion.current

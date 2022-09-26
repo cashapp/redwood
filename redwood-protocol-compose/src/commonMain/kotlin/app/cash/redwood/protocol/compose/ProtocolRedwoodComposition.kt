@@ -23,7 +23,7 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
-import app.cash.redwood.compose.WidgetVersionValue
+import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -127,7 +127,7 @@ private class DiffProducingRedwoodComposition(
     //    %24 = call %struct.ObjHeader* @"kfun:kotlin.collections#copyInto__at__kotlin.Array<out|0:0>(kotlin.Array<0:0>;kotlin.Int;kotlin.Int;kotlin.Int){0\C2\A7<kotlin.Any?>}kotlin.Array<0:0>"(%struct.ObjHeader* %21, %struct.ObjHeader* %22, i32 %23, i32 0, i32 %20, %struct.ObjHeader** %13)
     //  inlinable function call in a function with debug info must have a !dbg location
     //    call void @"kfun:androidx.compose.runtime#CompositionLocalProvider(kotlin.Array<out|androidx.compose.runtime.ProvidedValue<*>>...;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}"(%struct.ObjHeader* %27, %struct.ObjHeader* %1, %struct.ObjHeader* %3, i32 %28)
-    val providers = arrayOf(WidgetVersionValue provides widgetVersion)
+    val providers = arrayOf(LocalWidgetVersion provides widgetVersion)
     composition.setContent {
       currentComposer.startProviders(providers)
       content()
