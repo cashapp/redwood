@@ -31,7 +31,7 @@ class StringWidget(
 
   // TODO: fix the Node API to not conflate layout parameters with measurements.
   fun toNode(
-    flexBasisPercent: Float = Node.DefaultFlexBasisPercent
+    flexBasisPercent: Float = Node.DefaultFlexBasisPercent,
   ): Node {
     return Node(
       minWidth = words.maxOf { it.length } + 2,
