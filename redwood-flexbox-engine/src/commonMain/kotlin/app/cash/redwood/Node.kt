@@ -16,89 +16,86 @@
 package app.cash.redwood
 
 /**
- * An interface that has the common behavior as a node contained in a flexbox.
+ * A node with properties that can be measured and laid out inside a flexbox.
  */
-public interface Node {
+public class Node(
 
   /**
-   * The width attribute of the node.
+   * The requested width of the node.
    *
    * The attribute is about how wide the view wants to be. Can be one of the
    * constants [MatchParent] or [WrapContent], or an exact size.
    */
-  public val width: Int
+  public val width: Int = WrapContent,
 
   /**
-   * The height attribute of the node.
+   * The requested height of the node.
    *
    * The attribute is about how wide the view wants to be. Can be one of the
    * constants [MatchParent] or [WrapContent], or an exact size.
    */
-  public val height: Int
+  public val height: Int = WrapContent,
 
   /**
    * The minimum width attribute of the node.
    *
    * The attribute determines the minimum width the child can shrink to.
    */
-  public val minWidth: Int
+  public val minWidth: Int = 0,
 
   /**
    * The minimum height attribute of the node.
    *
    * The attribute determines the minimum height the child can shrink to.
    */
-  public val minHeight: Int
+  public val minHeight: Int = 0,
 
   /**
    * The maximum width attribute of the node.
    *
    * The attribute determines the maximum width the child can expand to.
    */
-  public val maxWidth: Int
+  public val maxWidth: Int = Int.MAX_VALUE,
 
   /**
    * The maximum height attribute of the node.
    */
-  public val maxHeight: Int
+  public val maxHeight: Int = Int.MAX_VALUE,
 
   /**
    * True if this item is visible and should be laid out.
    */
-  public val visible: Boolean
+  public val visible: Boolean = true,
 
   /**
    * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
-   * If not specified, -1 is set as a default value.
    */
-  public val baseline: Int
+  public val baseline: Int = -1,
 
   /**
    * The order attribute of the node.
    *
    * The attribute can change the order in which the children are laid out.
    * By default, children are displayed and laid out in the same order as they added to the
-   * [FlexboxEngine]. If not specified, [DefaultOrder] is set as a default value.
+   * [FlexboxEngine].
    */
-  public val order: Int
+  public val order: Int = DefaultOrder,
 
   /**
    * The flex grow attribute of the node.
    *
    * The attribute determines how much this child will grow if positive free space is
    * distributed relative to the rest of other nodes included in the same flex line.
-   * If not specified, [DefaultFlexGrow] is set as a default value.
    */
-  public val flexGrow: Float
+  public val flexGrow: Float = DefaultFlexGrow,
 
   /**
    * The flex shrink attribute of the node.
    *
    * The attribute determines how much this child will shrink if negative free space is
    * distributed relative to the rest of other nodes included in the same flex line.
-   * If not specified, [DefaultFlexShrink] is set as a default value.
    */
-  public val flexShrink: Float
+  public val flexShrink: Float = DefaultFlexShrink,
 
   /**
    * The flexBasisPercent attribute of the node.
@@ -112,7 +109,7 @@ public interface Node {
    * This attribute is only effective when the parent's MeasureSpec mode is
    * MeasureSpec.EXACTLY. The default value is -1, which means not set.
    */
-  public val flexBasisPercent: Float
+  public val flexBasisPercent: Float = DefaultFlexBasisPercent,
 
   /**
    * The align self attribute of the node.
@@ -124,9 +121,8 @@ public interface Node {
    * The value needs to be one of the values in ([AlignSelf.Auto],
    * [AlignItems.Stretch], [AlignItems.FlexStart], [AlignItems.FlexEnd],
    * [AlignItems.Center], or [AlignItems.Baseline]).
-   * If not specified, [AlignSelf.Auto] is set as a default value.
    */
-  public val alignSelf: AlignSelf
+  public val alignSelf: AlignSelf = AlignSelf.Auto,
 
   /**
    * The wrapBefore attribute of the node.
@@ -140,33 +136,42 @@ public interface Node {
    * the layouts when building a grid like layout or for a situation where developers want
    * to put a new flex line to make a semantic difference from the previous one, etc.
    */
-  public val wrapBefore: Boolean
+  public val wrapBefore: Boolean = false,
 
   /**
    * The margin of the node.
    */
-  public val margin: Spacing
+  public val margin: Spacing = Spacing.Zero,
+) {
 
   /**
    * The measured width after invoking [measure].
+   *
+   * TODO: Remove this mutable attribute and use the returned [Size] from [measure].
    */
-  public val measuredWidth: Int
+  public var measuredWidth: Int = -1
 
   /**
    * The measured height after invoking [measure].
+   *
+   * TODO: Remove this mutable attribute and use the returned [Size] from [measure].
    */
-  public val measuredHeight: Int
+  public var measuredHeight: Int = -1
 
   /**
-   * Measure this node according to the [widthSpec] and [heightSpec] constraints and update
-   * [measuredWidth] and [measuredHeight] with the result.
+   * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints
+   * and update [measuredWidth] and [measuredHeight] with the result.
    */
-  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec)
+  public var measure: (widthSpec: MeasureSpec, heightSpec: MeasureSpec) -> Size = { widthSpec, heightSpec ->
+    measuredWidth = MeasureSpec.resolveSize(width, widthSpec)
+    measuredHeight = MeasureSpec.resolveSize(height, heightSpec)
+    Size(measuredWidth, measuredHeight)
+  }
 
   /**
-   * Place the node inside the given bounding box.
+   * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
    */
-  public fun layout(left: Int, top: Int, right: Int, bottom: Int)
+  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
 
   public companion object {
     /**
