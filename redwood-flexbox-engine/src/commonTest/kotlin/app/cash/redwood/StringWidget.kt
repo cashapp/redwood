@@ -20,12 +20,68 @@ package app.cash.redwood
  * and not a fixed-size box because it works more like real widgets.
  */
 class StringWidget(
-  internal val text: String,
+  private val text: String,
 ) {
-  internal val words = text.split(" ")
+  private val words = text.split(" ")
+
+  private var left = -1
+  private var top = -1
+  private var right = -1
+  private var bottom = -1
+
+  // TODO: fix the Node API to not conflate layout parameters with measurements.
+  fun toNode(
+    flexBasisPercent: Float = Node.DefaultFlexBasisPercent
+  ): Node {
+    return Node(
+      minWidth = words.maxOf { it.length } + 2,
+      minHeight = 2,
+      flexBasisPercent = flexBasisPercent,
+    ).apply {
+      measure = this@StringWidget::measure
+      layout = this@StringWidget::layout
+    }
+  }
+
+  private fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+    val widthSpecMode = widthSpec.mode
+    val width = widthSpec.size
+    val heightSpecMode = heightSpec.mode
+    val height = heightSpec.size
+
+    val lines = when (widthSpecMode) {
+      MeasureSpecMode.Exactly -> lines(maxWidth = width - 2)
+      MeasureSpecMode.AtMost -> lines(maxWidth = width - 2)
+      else -> listOf(listOf(text))
+    }
+
+    val measuredWidth = when (widthSpecMode) {
+      MeasureSpecMode.Exactly -> width
+      MeasureSpecMode.AtMost -> minOf(
+        width,
+        (lines.maxOfOrNull { line -> line.sumOf { word -> word.length + 1 } - 1 } ?: 0) + 2,
+      )
+      else -> text.length + 2
+    }
+
+    val measuredHeight = when (heightSpecMode) {
+      MeasureSpecMode.Exactly -> height
+      MeasureSpecMode.AtMost -> minOf(height, lines.size + 2)
+      else -> lines.size + 2
+    }
+
+    return Size(measuredWidth, measuredHeight)
+  }
+
+  private fun layout(left: Int, top: Int, right: Int, bottom: Int) {
+    this.left = left
+    this.top = top
+    this.right = right
+    this.bottom = bottom
+  }
 
   /** Returns a list of rows, each containing the words of that row. */
-  internal fun lines(maxWidth: Int): List<List<String>> {
+  private fun lines(maxWidth: Int): List<List<String>> {
     var i = 0
     val result = mutableListOf<List<String>>()
 
@@ -55,11 +111,7 @@ class StringWidget(
     return result
   }
 
-  fun draw(canvas: StringCanvas, node: Node<StringWidget>) {
-    val left = node.left
-    val top = node.top
-    val right = node.right
-    val bottom = node.bottom
+  fun draw(canvas: StringCanvas) {
     val lines = lines(maxWidth = right - left - 2)
 
     var y = top

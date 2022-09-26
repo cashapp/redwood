@@ -22,17 +22,18 @@ import kotlin.test.assertEquals
 
 class FlexboxTest {
   private val imdbTop4 = listOf(
-    StringWidget("The Shawshank Redemption"),
-    StringWidget("The Godfather"),
-    StringWidget("The Dark Knight"),
-    StringWidget("The Godfather Part II"),
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Dark Knight",
+    "The Godfather Part II",
   )
 
   @Test
   fun column() {
-    val engine = FlexboxEngine(StringFlexboxAdapter).apply {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
       flexDirection = FlexDirection.Column
-      nodes += imdbTop4.map { Node(it) }
+      nodes += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -58,15 +59,16 @@ class FlexboxTest {
       ··············
       ··············
       """.trimIndent(),
-      engine.layout(14, 20),
+      engine.layout(14, 20, widgets),
     )
   }
 
   @Test
   fun row() {
-    val engine = FlexboxEngine(StringFlexboxAdapter).apply {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += imdbTop4.map { Node(it) }
+      nodes += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -80,15 +82,16 @@ class FlexboxTest {
       ····························································
       ····························································
       """.trimIndent(),
-      engine.layout(60, 8),
+      engine.layout(60, 8, widgets),
     )
   }
 
   @Test
   fun rowCrossAxisCentered() {
-    val engine = FlexboxEngine(StringFlexboxAdapter).apply {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += imdbTop4.map { Node(it) }
+      nodes += widgets.map { it.toNode() }
       alignItems = AlignItems.Center
     }
 
@@ -103,15 +106,16 @@ class FlexboxTest {
       ··········································
       ··········································
       """.trimIndent(),
-      engine.layout(42, 8),
+      engine.layout(42, 8, widgets),
     )
   }
 
   @Test
   fun rowMainAxisCentered() {
-    val engine = FlexboxEngine(StringFlexboxAdapter).apply {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += imdbTop4.map { Node(it, flexBasisPercent = 0f) }
+      nodes += widgets.map { it.toNode(flexBasisPercent = 0f) }
       justifyContent = JustifyContent.Center
     }
 
@@ -124,13 +128,14 @@ class FlexboxTest {
       ·········└──────────┘···········└──────┘|         │·········
       ········································└─────────┘·········
       """.trimIndent(),
-      engine.layout(60, 6),
+      engine.layout(60, 6, widgets),
     )
   }
 
-  private fun FlexboxEngine<StringWidget>.layout(
+  private fun FlexboxEngine.layout(
     width: Int,
     height: Int,
+    widgets: List<StringWidget>,
   ): String {
     val canvas = StringCanvas(width, height)
     val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
@@ -144,8 +149,8 @@ class FlexboxTest {
     measure(widthSpec, heightSpec)
     layout(0, 0, width, height)
 
-    for (node in nodes) {
-      node.widget.draw(canvas, node)
+    for (widget in widgets) {
+      widget.draw(canvas)
     }
 
     return canvas.toString()
