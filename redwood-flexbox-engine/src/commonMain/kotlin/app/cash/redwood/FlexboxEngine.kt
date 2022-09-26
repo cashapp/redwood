@@ -264,7 +264,7 @@ public class FlexboxEngine {
           mode = mainMode,
           maxSize = mainSize,
           currentLength = flexLine.mainSize,
-          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child, ),
+          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child),
           flexItem = child,
           flexLinesSize = flexLines.size,
         )

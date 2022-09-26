@@ -207,6 +207,16 @@ public value class MeasureSpec private constructor(internal val value: Int) {
       // Use the top 2 bits for the mode and use the bottom 30 bits for the size.
       return MeasureSpec((mode.ordinal shl 30) or (size and 0x3FFF))
     }
+
+    /** A convenience function to constrain [size] inside a given [measureSpec]. */
+    public fun resolveSize(size: Int, measureSpec: MeasureSpec): Int {
+      return when (measureSpec.mode) {
+        MeasureSpecMode.AtMost -> minOf(measureSpec.size, size)
+        MeasureSpecMode.Exactly -> measureSpec.size
+        MeasureSpecMode.Unspecified -> size
+        else -> throw AssertionError()
+      }
+    }
   }
 }
 
@@ -276,5 +286,9 @@ public data class Size(
     require(width >= 0 && height >= 0) {
       "invalid Size: [$width, $height]"
     }
+  }
+
+  public companion object {
+    public val Zero: Size = Size(0, 0)
   }
 }

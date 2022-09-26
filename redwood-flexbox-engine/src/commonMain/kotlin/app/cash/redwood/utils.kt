@@ -30,6 +30,12 @@ internal fun unpackHigher(value: Long): Int {
   return (value shr 32).toInt()
 }
 
+/** Convenience function to use named arguments. */
+@Suppress("EXTENSION_FUNCTION_SHADOWED_BY_MEMBER_PROPERTY_WITH_INVOKE")
+internal inline fun Node.layout(left: Int, top: Int, right: Int, bottom: Int) {
+  layout(left, top, right, bottom)
+}
+
 /**
  * The number of children who are not invisible in this flex line.
  */
@@ -87,13 +93,4 @@ internal fun MeasureSpec.Companion.getChildMeasureSpec(
     else -> throw AssertionError()
   }
   return from(resultSize, resultMode)
-}
-
-internal fun MeasureSpec.Companion.resolveSize(size: Int, measureSpec: MeasureSpec): Int {
-  return when (measureSpec.mode) {
-    MeasureSpecMode.AtMost -> minOf(measureSpec.size, size)
-    MeasureSpecMode.Exactly -> measureSpec.size
-    MeasureSpecMode.Unspecified -> size
-    else -> throw AssertionError()
-  }
 }
