@@ -18,7 +18,8 @@ package app.cash.redwood
 /**
  * A node with properties that can be measured and laid out inside a flexbox.
  */
-public class Node(
+public class Node<T>(
+  public val widget: T,
 
   /**
    * The requested width of the node.
@@ -35,20 +36,6 @@ public class Node(
    * constants [MatchParent] or [WrapContent], or an exact size.
    */
   public val height: Int = WrapContent,
-
-  /**
-   * The minimum width attribute of the node.
-   *
-   * The attribute determines the minimum width the child can shrink to.
-   */
-  public val minWidth: Int = 0,
-
-  /**
-   * The minimum height attribute of the node.
-   *
-   * The attribute determines the minimum height the child can shrink to.
-   */
-  public val minHeight: Int = 0,
 
   /**
    * The maximum width attribute of the node.
@@ -129,7 +116,7 @@ public class Node(
    *
    * The attribute forces a flex line wrapping. i.e. if this is set to `true` for a
    * node, the item will become the first item of the new flex line. (A wrapping happens
-   * regardless of the nodes being processed in the the previous flex line)
+   * regardless of the nodes being processed in the previous flex line)
    * This attribute is ignored if the flex_wrap attribute is set as nowrap.
    * The equivalent attribute isn't defined in the original CSS Flexible Box Module
    * specification, but having this attribute is useful for Android developers to flatten
@@ -158,20 +145,20 @@ public class Node(
    */
   public var measuredHeight: Int = -1
 
-  /**
-   * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints
-   * and update [measuredWidth] and [measuredHeight] with the result.
-   */
-  public var measure: (widthSpec: MeasureSpec, heightSpec: MeasureSpec) -> Size = { widthSpec, heightSpec ->
-    measuredWidth = MeasureSpec.resolveSize(width, widthSpec)
-    measuredHeight = MeasureSpec.resolveSize(height, heightSpec)
-    Size(measuredWidth, measuredHeight)
-  }
+  public var left: Int = -1
+  public var top: Int = -1
+  public var right: Int = -1
+  public var bottom: Int = -1
 
   /**
-   * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
+   * Assign the node's position.
    */
-  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
+  public fun layout(left: Int, top: Int, right: Int, bottom: Int) {
+    this.left = left
+    this.top = top
+    this.right = right
+    this.bottom = bottom
+  }
 
   public companion object {
     /**

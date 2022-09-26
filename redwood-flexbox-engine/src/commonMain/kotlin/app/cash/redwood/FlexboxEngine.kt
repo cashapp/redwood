@@ -26,7 +26,9 @@ import kotlin.math.roundToInt
 /**
  * A class that measures and positions its children according to its flexbox properties.
  */
-public class FlexboxEngine {
+public class FlexboxEngine<T>(
+  public val adapter: Adapter<T>,
+) {
 
   /**
    * The flex direction attribute of the flexbox.
@@ -66,7 +68,7 @@ public class FlexboxEngine {
   /**
    * Returns the nodes contained in the flexbox.
    */
-  public val nodes: MutableList<Node> = ObservableMutableList(
+  public val nodes: MutableList<Node<T>> = ObservableMutableList(
     onChange = { indexToReorderedIndex = null },
   )
 
@@ -394,7 +396,7 @@ public class FlexboxEngine {
     maxSize: Int,
     currentLength: Int,
     childLength: Int,
-    flexItem: Node,
+    flexItem: Node<T>,
     flexLinesSize: Int,
   ): Boolean {
     if (flexWrap == FlexWrap.NoWrap) {
@@ -435,7 +437,7 @@ public class FlexboxEngine {
    * Remeasures the node if its [Node.measuredWidth] or [Node.measuredHeight] violate the
    * minimum/maximum size constraints imposed by its min/max attributes.
    */
-  private fun measureWithConstraints(node: Node, index: Int) {
+  private fun measureWithConstraints(node: Node<T>, index: Int) {
     var needsMeasure = false
     var childWidth = node.measuredWidth
     var childHeight = node.measuredHeight
@@ -912,7 +914,7 @@ public class FlexboxEngine {
 
   private fun getChildWidthMeasureSpecInternal(
     widthMeasureSpec: MeasureSpec,
-    flexItem: Node,
+    flexItem: Node<T>,
     padding: Int,
   ): MeasureSpec {
     var childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
@@ -931,7 +933,7 @@ public class FlexboxEngine {
 
   private fun getChildHeightMeasureSpecInternal(
     heightMeasureSpec: MeasureSpec,
-    flexItem: Node,
+    flexItem: Node<T>,
     padding: Int,
   ): MeasureSpec {
     var childHeightMeasureSpec = MeasureSpec.getChildMeasureSpec(
@@ -1198,7 +1200,7 @@ public class FlexboxEngine {
   /**
    * Expand the node vertically to the size of the [crossSize] (considering [node]'s margins).
    */
-  private fun stretchViewVertically(node: Node, crossSize: Int, index: Int) {
+  private fun stretchViewVertically(node: Node<T>, crossSize: Int, index: Int) {
     val newHeight = (crossSize - node.margin.top - node.margin.bottom).coerceIn(node.minHeight, node.maxHeight)
     val measuredWidth = if (measuredSizeCache != null) {
       // Retrieve the measured height from the cache because there
@@ -1219,7 +1221,7 @@ public class FlexboxEngine {
   /**
    * Expand the node horizontally to the size of the crossSize (considering [node]'s margins).
    */
-  private fun stretchViewHorizontally(node: Node, crossSize: Int, index: Int) {
+  private fun stretchViewHorizontally(node: Node<T>, crossSize: Int, index: Int) {
     val newWidth = (crossSize - node.margin.start - node.margin.end).coerceIn(node.minWidth, node.maxWidth)
     val measuredHeight = if (measuredSizeCache != null) {
       // Retrieve the measured height from the cache because there
@@ -1242,7 +1244,7 @@ public class FlexboxEngine {
    * ([FlexboxEngine.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
-    node: Node,
+    node: Node<T>,
     flexLine: FlexLine,
     left: Int,
     top: Int,
@@ -1312,7 +1314,7 @@ public class FlexboxEngine {
    * ([FlexboxEngine.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
-    node: Node,
+    node: Node<T>,
     flexLine: FlexLine,
     isRtl: Boolean,
     left: Int,
@@ -1375,7 +1377,7 @@ public class FlexboxEngine {
     index: Int,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    node: Node,
+    node: Node<T>,
   ) {
     measureSpecCache?.let { cache ->
       cache[index] = packLong(widthMeasureSpec.value, heightMeasureSpec.value)
@@ -1842,7 +1844,7 @@ public class FlexboxEngine {
   /**
    * Returns a node, which is reordered by taking into account [Node.order].
    */
-  private fun getReorderedChildAt(index: Int): Node? {
+  private fun getReorderedChildAt(index: Int): Node<T>? {
     if (indexToReorderedIndex == null) {
       val sorted = nodes.withIndex().sortedWith(compareBy({ -it.value.order }, { it.index }))
       val indexes = IntArray(sorted.size)
@@ -1852,5 +1854,58 @@ public class FlexboxEngine {
       indexToReorderedIndex = indexes
     }
     return indexToReorderedIndex?.getOrNull(index)?.let(nodes::getOrNull)
+  }
+
+  private val Node<T>.minWidth: Int
+    get() = adapter.minWidth(this)
+
+  private val Node<T>.minHeight: Int
+    get() = adapter.minHeight(this)
+
+  private fun Node<T>.measure(
+    widthSpec: MeasureSpec,
+    heightSpec: MeasureSpec,
+  ) {
+    val measurement = adapter.measure(
+      node = this,
+      widthSpecMode = widthSpec.mode,
+      width = widthSpec.size,
+      heightSpecMode = heightSpec.mode,
+      height = heightSpec.size,
+    )
+    measuredWidth = measurement.width
+    measuredHeight = measurement.height
+  }
+
+  public abstract class Adapter<T> {
+    /**
+     * The minimum width attribute of the node.
+     *
+     * The attribute determines the minimum width the child can shrink to.
+     */
+    public open fun minWidth(node: Node<T>): Int = 0
+
+    /**
+     * The minimum height attribute of the node.
+     *
+     * The attribute determines the minimum height the child can shrink to.
+     */
+    public open fun minHeight(node: Node<T>): Int = 0
+
+    /**
+     * Measure [node] according to the constraints.
+     */
+    public open fun measure(
+      node: Node<T>,
+      widthSpecMode: MeasureSpecMode,
+      width: Int,
+      heightSpecMode: MeasureSpecMode,
+      height: Int,
+    ): Size {
+      return Size(
+        MeasureSpec.resolveSize(width, MeasureSpec.from(width, widthSpecMode)),
+        MeasureSpec.resolveSize(height, MeasureSpec.from(height, heightSpecMode)),
+      )
+    }
   }
 }
