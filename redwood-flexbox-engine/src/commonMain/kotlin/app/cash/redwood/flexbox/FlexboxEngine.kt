@@ -179,7 +179,7 @@ public class FlexboxEngine {
     fromIndex: Int,
     toIndex: Int,
   ): List<FlexLine> {
-    val direction = flexDirection.toOrientation()
+    val orientation = flexDirection.toOrientation()
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<FlexLine>()
@@ -193,7 +193,7 @@ public class FlexboxEngine {
     var indexInFlexLine = 0
     var flexLine = FlexLine()
     flexLine.firstIndex = fromIndex
-    flexLine.mainSize = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding)
+    flexLine.mainSize = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding)
     val childCount = nodes.size
     for (i in fromIndex until childCount) {
       val child = getReorderedChildAt(i)
@@ -213,7 +213,7 @@ public class FlexboxEngine {
       if (child.alignSelf == AlignSelf.Stretch) {
         flexLine.indicesAlignSelfStretch += i
       }
-      var childMainSize = direction.mainSize(child)
+      var childMainSize = orientation.mainSize(child)
       if (child.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
         childMainSize = (mainSize * child.flexBasisPercent).roundToInt()
         // Use the dimension from the layout if the mainMode is not
@@ -222,32 +222,32 @@ public class FlexboxEngine {
       }
       var childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (direction == Orientation.Horizontal) {
+      if (orientation == Orientation.Horizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
-          padding = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding) +
-            direction.mainMarginStart(child) + direction.mainMarginEnd(child),
+          padding = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding) +
+            orientation.mainMarginStart(child) + orientation.mainMarginEnd(child),
           childDimension = childMainSize,
         )
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
-          padding = direction.crossPaddingStart(padding) + direction.crossPaddingEnd(padding) +
-            direction.crossMarginStart(child) + direction.crossMarginEnd(child) + sumCrossSize,
-          childDimension = direction.crossSize(child),
+          padding = orientation.crossPaddingStart(padding) + orientation.crossPaddingEnd(padding) +
+            orientation.crossMarginStart(child) + orientation.crossMarginEnd(child) + sumCrossSize,
+          childDimension = orientation.crossSize(child),
         )
         child.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
         updateMeasureCache(i, childMainMeasureSpec, childCrossMeasureSpec, child)
       } else {
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
-          padding = direction.crossPaddingStart(padding) + direction.crossPaddingEnd(padding) +
-            direction.crossMarginStart(child) + direction.crossMarginEnd(child) + sumCrossSize,
-          childDimension = direction.crossSize(child),
+          padding = orientation.crossPaddingStart(padding) + orientation.crossPaddingEnd(padding) +
+            orientation.crossMarginStart(child) + orientation.crossMarginEnd(child) + sumCrossSize,
+          childDimension = orientation.crossSize(child),
         )
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
-          padding = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding) +
-            direction.mainMarginStart(child) + direction.mainMarginEnd(child),
+          padding = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding) +
+            orientation.mainMarginStart(child) + orientation.mainMarginEnd(child),
           childDimension = childMainSize,
         )
         child.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
@@ -264,7 +264,7 @@ public class FlexboxEngine {
           mode = mainMode,
           maxSize = mainSize,
           currentLength = flexLine.mainSize,
-          childLength = direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child),
+          childLength = orientation.mainMeasuredSize(child) + orientation.mainMarginStart(child) + orientation.mainMarginEnd(child),
           flexItem = child,
           flexLinesSize = flexLines.size,
         )
@@ -274,7 +274,7 @@ public class FlexboxEngine {
           sumCrossSize += flexLine.crossSize
         }
         val measurable = child.measurable
-        if (direction == Orientation.Horizontal) {
+        if (orientation == Orientation.Horizontal) {
           val height = measurable.height
           if (height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
@@ -313,7 +313,7 @@ public class FlexboxEngine {
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
-        flexLine.mainSize = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding)
+        flexLine.mainSize = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding)
         flexLine.firstIndex = i
         indexInFlexLine = 0
         largestSizeInCross = Int.MIN_VALUE
@@ -326,18 +326,18 @@ public class FlexboxEngine {
       if (indexToFlexLine != null) {
         indexToFlexLine!![i] = flexLines.size
       }
-      flexLine.mainSize += direction.mainMeasuredSize(child) + direction.mainMarginStart(child) + direction.mainMarginEnd(child)
+      flexLine.mainSize += orientation.mainMeasuredSize(child) + orientation.mainMarginStart(child) + orientation.mainMarginEnd(child)
       flexLine.totalFlexGrow += child.flexGrow
       flexLine.totalFlexShrink += child.flexShrink
       largestSizeInCross = maxOf(
         largestSizeInCross,
-        direction.crossMeasuredSize(child) + direction.crossMarginStart(child) + direction.crossMarginEnd(child)
+        orientation.crossMeasuredSize(child) + orientation.crossMarginStart(child) + orientation.crossMarginEnd(child)
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
       // Expand along the cross axis depending on the alignContent property if needed
       // later
       flexLine.crossSize = maxOf(flexLine.crossSize, largestSizeInCross)
-      if (direction == Orientation.Horizontal) {
+      if (orientation == Orientation.Horizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = maxOf(
             flexLine.maxBaseline,
