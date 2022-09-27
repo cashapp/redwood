@@ -15,8 +15,8 @@
  */
 package app.cash.redwood
 
-import app.cash.redwood.Node.Companion.MatchParent
-import app.cash.redwood.Node.Companion.WrapContent
+import app.cash.redwood.Measurable.Companion.MatchParent
+import app.cash.redwood.Measurable.Companion.WrapContent
 
 internal fun packLong(lower: Int, higher: Int): Long {
   return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
