@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All rights reserved.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package app.cash.redwood
+package app.cash.redwood.flexbox
 
-import app.cash.redwood.Measurable.Companion.MatchParent
-import app.cash.redwood.Node.Companion.DefaultFlexBasisPercent
-import app.cash.redwood.Node.Companion.DefaultFlexGrow
-import app.cash.redwood.Node.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
+import app.cash.redwood.flexbox.Node.Companion.DefaultFlexBasisPercent
+import app.cash.redwood.flexbox.Node.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.Node.Companion.UndefinedFlexShrink
 import kotlin.math.roundToInt
 
 /**

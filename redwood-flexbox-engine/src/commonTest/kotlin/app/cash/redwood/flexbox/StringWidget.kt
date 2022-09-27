@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood
+package app.cash.redwood.flexbox
 
 /**
  * A string that wraps on space characters, and is wrapped with an ASCII-art box. We use a string
