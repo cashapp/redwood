@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.flexbox
 
+import app.cash.redwood.flexbox.FlexDirection.Companion.Column
 import app.cash.redwood.flexbox.FlexDirection.Companion.Row
 import app.cash.redwood.flexbox.FlexDirection.Companion.RowReverse
 import kotlin.test.Test
@@ -32,7 +33,7 @@ class FlexboxTest {
   fun column() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
-      flexDirection = FlexDirection.Column
+      flexDirection = Column
       nodes += widgets.map { it.toNode() }
     }
 
@@ -60,6 +61,118 @@ class FlexboxTest {
       ··············
       """.trimIndent(),
       engine.layout(14, 20, widgets),
+    )
+  }
+
+  @Test
+  fun columnCrossAxisCentered() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
+      flexDirection = Column
+      justifyContent = JustifyContent.Center
+      nodes += widgets.map { it.toNode() }
+    }
+
+    assertEquals(
+      """
+      ····················
+      ····················
+      ····················
+      ····················
+      ┌─────────────┐·····
+      |The Shawshank│·····
+      |Redemption   │·····
+      └─────────────┘·····
+      ┌─────────────┐·····
+      |The Godfather│·····
+      └─────────────┘·····
+      ┌───────────────┐···
+      |The Dark Knight│···
+      └───────────────┘···
+      ┌──────────────────┐
+      |The Godfather Part│
+      |II                │
+      └──────────────────┘
+      ····················
+      ····················
+      ····················
+      ····················
+      """.trimIndent(),
+      engine.layout(20, 22, widgets),
+    )
+  }
+
+  @Test
+  fun columnMainAxisCentered() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
+      flexDirection = Column
+      alignItems = AlignItems.Center
+      nodes += widgets.map { it.toNode() }
+    }
+
+    assertEquals(
+      """
+      ··┌─────────────┐···
+      ··|The Shawshank│···
+      ··|Redemption   │···
+      ··└─────────────┘···
+      ··┌─────────────┐···
+      ··|The Godfather│···
+      ··└─────────────┘···
+      ·┌───────────────┐··
+      ·|The Dark Knight│··
+      ·└───────────────┘··
+      ┌──────────────────┐
+      |The Godfather Part│
+      |II                │
+      └──────────────────┘
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      """.trimIndent(),
+      engine.layout(20, 20, widgets),
+    )
+  }
+
+  @Test
+  fun columnCrossAxisStretched() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
+      flexDirection = Column
+      alignItems = AlignItems.Stretch
+      nodes += widgets.map { it.toNode() }
+    }
+
+    assertEquals(
+      """
+      ┌──────────────────┐
+      |The Shawshank     │
+      |Redemption        │
+      └──────────────────┘
+      ┌──────────────────┐
+      |The Godfather     │
+      └──────────────────┘
+      ┌──────────────────┐
+      |The Dark Knight   │
+      └──────────────────┘
+      ┌──────────────────┐
+      |The Godfather Part│
+      |II                │
+      └──────────────────┘
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      ····················
+      """.trimIndent(),
+      engine.layout(20, 22, widgets),
     )
   }
 
@@ -129,6 +242,30 @@ class FlexboxTest {
       ········································└─────────┘·········
       """.trimIndent(),
       engine.layout(60, 6, widgets),
+    )
+  }
+
+  @Test
+  fun rowCrossAxisStretched() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
+      flexDirection = Row
+      alignItems = AlignItems.Stretch
+      nodes += widgets.map { it.toNode() }
+    }
+
+    assertEquals(
+      """
+      ┌────────────────────────┐┌─────────────┐┌───────────────┐┌─────────────────────┐···················
+      |The Shawshank Redemption│|The Godfather│|The Dark Knight│|The Godfather Part II│···················
+      |                        │|             │|               │|                     │···················
+      |                        │|             │|               │|                     │···················
+      |                        │|             │|               │|                     │···················
+      |                        │|             │|               │|                     │···················
+      |                        │|             │|               │|                     │···················
+      └────────────────────────┘└─────────────┘└───────────────┘└─────────────────────┘···················
+      """.trimIndent(),
+      engine.layout(100, 8, widgets),
     )
   }
 
