@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.flexbox
 
-import app.cash.redwood.FlexDirection.Companion.Row
-import app.cash.redwood.FlexDirection.Companion.RowReverse
+import app.cash.redwood.flexbox.FlexDirection.Companion.Row
+import app.cash.redwood.flexbox.FlexDirection.Companion.RowReverse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
