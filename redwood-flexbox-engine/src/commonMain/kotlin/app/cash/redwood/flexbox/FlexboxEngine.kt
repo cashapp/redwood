@@ -179,7 +179,7 @@ public class FlexboxEngine {
     fromIndex: Int,
     toIndex: Int,
   ): List<FlexLine> {
-    val direction = flexDirection.toDirection()
+    val direction = flexDirection.toOrientation()
     val mainMode = mainMeasureSpec.mode
     val mainSize = mainMeasureSpec.size
     val flexLines = mutableListOf<FlexLine>()
@@ -222,7 +222,7 @@ public class FlexboxEngine {
       }
       var childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (direction == Direction.Horizontal) {
+      if (direction == Orientation.Horizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
           padding = direction.mainPaddingStart(padding) + direction.mainPaddingEnd(padding) +
@@ -274,7 +274,7 @@ public class FlexboxEngine {
           sumCrossSize += flexLine.crossSize
         }
         val measurable = child.measurable
-        if (direction == Direction.Horizontal) {
+        if (direction == Orientation.Horizontal) {
           val height = measurable.height
           if (height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
@@ -337,7 +337,7 @@ public class FlexboxEngine {
       // Expand along the cross axis depending on the alignContent property if needed
       // later
       flexLine.crossSize = maxOf(flexLine.crossSize, largestSizeInCross)
-      if (direction == Direction.Horizontal) {
+      if (direction == Orientation.Horizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = maxOf(
             flexLine.maxBaseline,

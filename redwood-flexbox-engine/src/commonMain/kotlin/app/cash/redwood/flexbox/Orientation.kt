@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.flexbox
 
-internal fun FlexDirection.toDirection(): Direction {
+internal fun FlexDirection.toOrientation(): Orientation {
   if (this == FlexDirection.Row || this == FlexDirection.RowReverse) {
-    return Direction.Horizontal
+    return Orientation.Horizontal
   } else {
-    return Direction.Vertical
+    return Orientation.Vertical
   }
 }
 
@@ -27,7 +27,7 @@ internal fun FlexDirection.toDirection(): Direction {
  * An interface to perform operations along the main/cross axis without knowledge
  * of the underlying [FlexDirection].
  */
-internal sealed interface Direction {
+internal sealed interface Orientation {
   fun mainPaddingStart(padding: Spacing): Int
   fun mainPaddingEnd(padding: Spacing): Int
   fun crossPaddingStart(padding: Spacing): Int
@@ -43,7 +43,7 @@ internal sealed interface Direction {
   fun crossMarginStart(node: Node): Int
   fun crossMarginEnd(node: Node): Int
 
-  object Horizontal : Direction {
+  object Horizontal : Orientation {
     override fun mainPaddingStart(padding: Spacing) = padding.start
     override fun mainPaddingEnd(padding: Spacing) = padding.end
     override fun crossPaddingStart(padding: Spacing) = padding.top
@@ -58,7 +58,7 @@ internal sealed interface Direction {
     override fun crossMarginEnd(node: Node) = node.margin.bottom
   }
 
-  object Vertical : Direction {
+  object Vertical : Orientation {
     override fun mainPaddingStart(padding: Spacing) = padding.top
     override fun mainPaddingEnd(padding: Spacing) = padding.bottom
     override fun crossPaddingStart(padding: Spacing) = padding.start
