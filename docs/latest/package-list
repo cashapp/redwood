@@ -4,7 +4,7 @@ $dokka.linkExtension:html
 module:redwood-compose
 app.cash.redwood.compose
 module:redwood-flexbox-engine
-app.cash.redwood
+app.cash.redwood.flexbox
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
