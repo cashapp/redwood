@@ -17,11 +17,16 @@ package app.cash.redwood.treehouse
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView<T : Any>(
@@ -41,6 +46,12 @@ public class TreehouseWidgetView<T : Any>(
 
   override val children: Widget.Children<*> = ViewGroupChildren(this)
 
+  private val mutableHostConfiguration =
+    MutableStateFlow(computeHostConfiguration(context.resources.configuration))
+
+  override val hostConfiguration: StateFlow<HostConfiguration>
+    get() = mutableHostConfiguration
+
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content
@@ -57,6 +68,19 @@ public class TreehouseWidgetView<T : Any>(
     treehouseApp.onContentChanged(this)
   }
 
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    mutableHostConfiguration.value = computeHostConfiguration(newConfig)
+  }
+
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
+}
+
+private fun computeHostConfiguration(
+  config: Configuration,
+): HostConfiguration {
+  return HostConfiguration(
+    darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
+  )
 }
