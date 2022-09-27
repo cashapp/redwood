@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood
+package app.cash.redwood.flexbox
 
 /**
  * A 2D grid of characters. Attempts to draw beyond the bounds are silently ignored.
