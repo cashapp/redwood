@@ -48,8 +48,8 @@ internal sealed interface Direction {
     override fun mainPaddingEnd(padding: Spacing) = padding.end
     override fun crossPaddingStart(padding: Spacing) = padding.top
     override fun crossPaddingEnd(padding: Spacing) = padding.bottom
-    override fun mainSize(node: Node) = node.width
-    override fun crossSize(node: Node) = node.height
+    override fun mainSize(node: Node) = node.measurable.width
+    override fun crossSize(node: Node) = node.measurable.height
     override fun mainMeasuredSize(node: Node) = node.measuredWidth
     override fun crossMeasuredSize(node: Node) = node.measuredHeight
     override fun mainMarginStart(node: Node) = node.margin.start
@@ -63,8 +63,8 @@ internal sealed interface Direction {
     override fun mainPaddingEnd(padding: Spacing) = padding.bottom
     override fun crossPaddingStart(padding: Spacing) = padding.start
     override fun crossPaddingEnd(padding: Spacing) = padding.end
-    override fun mainSize(node: Node) = node.height
-    override fun crossSize(node: Node) = node.width
+    override fun mainSize(node: Node) = node.measurable.height
+    override fun crossSize(node: Node) = node.measurable.width
     override fun mainMeasuredSize(node: Node) = node.measuredHeight
     override fun crossMeasuredSize(node: Node) = node.measuredWidth
     override fun mainMarginStart(node: Node) = node.margin.top

@@ -21,7 +21,7 @@ package app.cash.redwood
  */
 class StringWidget(
   private val text: String,
-) {
+) : Measurable() {
   private val words = text.split(" ")
 
   private var left = -1
@@ -29,21 +29,12 @@ class StringWidget(
   private var right = -1
   private var bottom = -1
 
-  // TODO: fix the Node API to not conflate layout parameters with measurements.
-  fun toNode(
-    flexBasisPercent: Float = Node.DefaultFlexBasisPercent,
-  ): Node {
-    return Node(
-      minWidth = words.maxOf { it.length } + 2,
-      minHeight = 2,
-      flexBasisPercent = flexBasisPercent,
-    ).apply {
-      measure = this@StringWidget::measure
-      layout = this@StringWidget::layout
-    }
-  }
+  override val minWidth
+    get() = words.maxOf { it.length } + 2
+  override val minHeight
+    get() = 2
 
-  private fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     val widthSpecMode = widthSpec.mode
     val width = widthSpec.size
     val heightSpecMode = heightSpec.mode
@@ -73,7 +64,7 @@ class StringWidget(
     return Size(measuredWidth, measuredHeight)
   }
 
-  private fun layout(left: Int, top: Int, right: Int, bottom: Int) {
+  internal fun layout(left: Int, top: Int, right: Int, bottom: Int) {
     this.left = left
     this.top = top
     this.right = right

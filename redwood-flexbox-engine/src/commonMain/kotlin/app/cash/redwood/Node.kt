@@ -21,48 +21,6 @@ package app.cash.redwood
 public class Node(
 
   /**
-   * The requested width of the node.
-   *
-   * The attribute is about how wide the view wants to be. Can be one of the
-   * constants [MatchParent] or [WrapContent], or an exact size.
-   */
-  public val width: Int = WrapContent,
-
-  /**
-   * The requested height of the node.
-   *
-   * The attribute is about how wide the view wants to be. Can be one of the
-   * constants [MatchParent] or [WrapContent], or an exact size.
-   */
-  public val height: Int = WrapContent,
-
-  /**
-   * The minimum width attribute of the node.
-   *
-   * The attribute determines the minimum width the child can shrink to.
-   */
-  public val minWidth: Int = 0,
-
-  /**
-   * The minimum height attribute of the node.
-   *
-   * The attribute determines the minimum height the child can shrink to.
-   */
-  public val minHeight: Int = 0,
-
-  /**
-   * The maximum width attribute of the node.
-   *
-   * The attribute determines the maximum width the child can expand to.
-   */
-  public val maxWidth: Int = Int.MAX_VALUE,
-
-  /**
-   * The maximum height attribute of the node.
-   */
-  public val maxHeight: Int = Int.MAX_VALUE,
-
-  /**
    * True if this item is visible and should be laid out.
    */
   public val visible: Boolean = true,
@@ -142,31 +100,25 @@ public class Node(
    * The margin of the node.
    */
   public val margin: Spacing = Spacing.Zero,
-) {
-
-  /**
-   * The measured width after invoking [measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [measure].
-   */
-  public var measuredWidth: Int = -1
-
-  /**
-   * The measured height after invoking [measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [measure].
-   */
-  public var measuredHeight: Int = -1
 
   /**
    * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints.
    */
-  public var measure: (widthSpec: MeasureSpec, heightSpec: MeasureSpec) -> Size = { widthSpec, heightSpec ->
-    Size(
-      width = MeasureSpec.resolveSize(width, widthSpec),
-      height = MeasureSpec.resolveSize(height, heightSpec),
-    )
-  }
+  public var measurable: Measurable = Measurable()
+) {
+  /**
+   * The measured width after invoking [Measurable.measure].
+   *
+   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
+   */
+  public var measuredWidth: Int = -1
+
+  /**
+   * The measured height after invoking [Measurable.measure].
+   *
+   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
+   */
+  public var measuredHeight: Int = -1
 
   /**
    * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
@@ -174,18 +126,6 @@ public class Node(
   public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
 
   public companion object {
-    /**
-     * A special constant for [width] or [height] that means that the node wants to be as
-     * big as its parent.
-     */
-    public const val MatchParent: Int = -1
-
-    /**
-     * A special constant for [width] or [height] that the node wants to be just large enough
-     * to fit its own internal content, taking its own padding into account.
-     */
-    public const val WrapContent: Int = -2
-
     /** The default value for the order attribute */
     public const val DefaultOrder: Int = 1
 
