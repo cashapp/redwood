@@ -159,13 +159,13 @@ public class Node(
   public var measuredHeight: Int = -1
 
   /**
-   * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints
-   * and update [measuredWidth] and [measuredHeight] with the result.
+   * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints.
    */
   public var measure: (widthSpec: MeasureSpec, heightSpec: MeasureSpec) -> Size = { widthSpec, heightSpec ->
-    measuredWidth = MeasureSpec.resolveSize(width, widthSpec)
-    measuredHeight = MeasureSpec.resolveSize(height, heightSpec)
-    Size(measuredWidth, measuredHeight)
+    Size(
+      width = MeasureSpec.resolveSize(width, widthSpec),
+      height = MeasureSpec.resolveSize(height, heightSpec),
+    )
   }
 
   /**
