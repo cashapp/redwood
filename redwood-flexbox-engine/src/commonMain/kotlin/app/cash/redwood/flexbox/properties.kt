@@ -136,6 +136,12 @@ public value class FlexDirection(public val ordinal: Int) {
 }
 
 /**
+ * Returns `true` if this direction's main axis is horizontal.
+ */
+public val FlexDirection.isHorizontal: Boolean
+  get() = this == FlexDirection.Row || this == FlexDirection.RowReverse
+
+/**
  * This attribute controls whether the flex container is single-line or multi-line,
  * and the direction of the cross axis.
  */

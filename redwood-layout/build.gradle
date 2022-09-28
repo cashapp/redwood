@@ -1,0 +1,31 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build.compose'
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation projects.redwoodFlexboxEngine
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+        api libs.kotlinx.serialization.core
+      }
+    }
+    androidMain {
+      dependencies {
+        implementation libs.androidx.core
+        implementation libs.androidx.compose.foundation
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.compose'
+}
