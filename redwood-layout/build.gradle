@@ -14,6 +14,7 @@ kotlin {
         implementation projects.redwoodFlexboxEngine
         api projects.redwoodRuntime
         api projects.redwoodWidget
+        api libs.jetbrains.compose.runtime
         api libs.kotlinx.serialization.core
       }
     }
