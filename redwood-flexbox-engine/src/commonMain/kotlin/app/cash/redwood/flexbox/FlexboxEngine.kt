@@ -59,9 +59,9 @@ public class FlexboxEngine {
   public var padding: Spacing = Spacing.Zero
 
   /**
-   * The current value of the maximum number of flex lines. If not set, -1 is returned.
+   * The current value of the maximum number of flex lines.
    */
-  public var maxLines: Int = -1
+  public var maxLines: Int = Int.MAX_VALUE
 
   /**
    * Returns the nodes contained in the flexbox.
@@ -411,7 +411,7 @@ public class FlexboxEngine {
     }
     // Judge the condition by adding 1 to the current flexLinesSize because the flex line
     // being computed isn't added to the flexLinesSize.
-    if (maxLines != -1 && maxLines <= flexLinesSize + 1) {
+    if (maxLines <= flexLinesSize + 1) {
       return false
     }
     return maxSize < currentLength + childLength
