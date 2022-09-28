@@ -21,7 +21,6 @@ import kotlin.jvm.JvmField
  * Holds properties related to a single flex line.
  */
 internal class FlexLine {
-
   /**
    * The size of the flex line in pixels along the main axis of the flex container.
    */

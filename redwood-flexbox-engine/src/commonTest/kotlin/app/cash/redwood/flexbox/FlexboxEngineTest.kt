@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.flexbox
 
+import app.cash.redwood.flexbox.FlexNode.Properties
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -117,9 +118,15 @@ class FlexboxEngineTest {
   @Test
   fun testDetermineMainSize_direction_row_flexGrowSet() {
     val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
-    val node2 = FlexNode(measurable = BoxMeasurable(200, 100), flexGrow = 1.0f)
+    val node2 = FlexNode(
+      measurable = BoxMeasurable(200, 100),
+      properties = Properties(flexGrow = 1.0f),
+    )
     val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
-    val node4 = FlexNode(measurable = BoxMeasurable(400, 100), flexGrow = 2.0f)
+    val node4 = FlexNode(
+      measurable = BoxMeasurable(400, 100),
+      properties = Properties(flexGrow = 2.0f),
+    )
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -146,9 +153,15 @@ class FlexboxEngineTest {
   @Test
   fun testDetermineMainSize_direction_column_flexGrowSet() {
     val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
-    val node2 = FlexNode(measurable = BoxMeasurable(100, 200), flexGrow = 1.0f)
+    val node2 = FlexNode(
+      measurable = BoxMeasurable(100, 200),
+      properties = Properties(flexGrow = 1.0f),
+    )
     val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
-    val node4 = FlexNode(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
+    val node4 = FlexNode(
+      measurable = BoxMeasurable(100, 400),
+      properties = Properties(flexGrow = 2.0f),
+    )
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3

@@ -19,92 +19,20 @@ package app.cash.redwood.flexbox
  * A node with properties that can be measured and laid out inside a flexbox.
  */
 public class FlexNode(
-
-  /**
-   * True if this item is visible and should be laid out.
-   */
-  public val visible: Boolean = true,
-
-  /**
-   * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
-   */
-  public val baseline: Int = -1,
-
-  /**
-   * The order attribute of the node.
-   *
-   * The attribute can change the order in which the children are laid out.
-   * By default, children are displayed and laid out in the same order as they added to the
-   * [FlexboxEngine].
-   */
-  public val order: Int = DefaultOrder,
-
-  /**
-   * The flex grow attribute of the node.
-   *
-   * The attribute determines how much this child will grow if positive free space is
-   * distributed relative to the rest of other nodes included in the same flex line.
-   */
-  public val flexGrow: Float = DefaultFlexGrow,
-
-  /**
-   * The flex shrink attribute of the node.
-   *
-   * The attribute determines how much this child will shrink if negative free space is
-   * distributed relative to the rest of other nodes included in the same flex line.
-   */
-  public val flexShrink: Float = DefaultFlexShrink,
-
-  /**
-   * The flexBasisPercent attribute of the node.
-   *
-   * The attribute determines the initial node length in a fraction format relative to its
-   * parent.
-   * The initial main size of this child View is trying to be expanded as the specified
-   * fraction against the parent main size.
-   * If this value is set, the length specified from layout_width
-   * (or layout_height) is overridden by the calculated value from this attribute.
-   * This attribute is only effective when the parent's MeasureSpec mode is
-   * MeasureSpec.EXACTLY. The default value is -1, which means not set.
-   */
-  public val flexBasisPercent: Float = DefaultFlexBasisPercent,
-
-  /**
-   * The align self attribute of the node.
-   *
-   * The attribute determines the alignment along the cross axis (perpendicular to the
-   * main axis). The alignment in the same direction can be determined by the
-   * align items attribute in the parent, but if this is set to other than
-   * [AlignSelf.Auto], the cross axis alignment is overridden for this child.
-   * The value needs to be one of the values in ([AlignSelf.Auto],
-   * [AlignItems.Stretch], [AlignItems.FlexStart], [AlignItems.FlexEnd],
-   * [AlignItems.Center], or [AlignItems.Baseline]).
-   */
-  public val alignSelf: AlignSelf = AlignSelf.Auto,
-
-  /**
-   * The wrapBefore attribute of the node.
-   *
-   * The attribute forces a flex line wrapping. i.e. if this is set to `true` for a
-   * node, the item will become the first item of the new flex line. (A wrapping happens
-   * regardless of the nodes being processed in the the previous flex line)
-   * This attribute is ignored if the flex_wrap attribute is set as nowrap.
-   * The equivalent attribute isn't defined in the original CSS Flexible Box Module
-   * specification, but having this attribute is useful for Android developers to flatten
-   * the layouts when building a grid like layout or for a situation where developers want
-   * to put a new flex line to make a semantic difference from the previous one, etc.
-   */
-  public val wrapBefore: Boolean = false,
-
-  /**
-   * The margin of the node.
-   */
-  public val margin: Spacing = Spacing.Zero,
-
   /**
    * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints.
    */
-  public var measurable: Measurable = Measurable()
+  public var measurable: Measurable = Measurable(),
+
+  /**
+   * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
+   */
+  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> },
+
+  /**
+   * A set of flexbox properties that change how this node is laid out.
+   */
+  public var properties: Properties = Properties(),
 ) {
   /**
    * The measured width after invoking [Measurable.measure].
@@ -121,24 +49,172 @@ public class FlexNode(
   public var measuredHeight: Int = -1
 
   /**
-   * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
+   * A set of flexbox properties that change how a node is laid out.
    */
-  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
+  public class Properties(
+    /**
+     * True if this item is visible and should be laid out.
+     */
+    public val visible: Boolean = true,
 
-  public companion object {
-    /** The default value for the order attribute */
-    public const val DefaultOrder: Int = 1
+    /**
+     * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
+     */
+    public val baseline: Int = DefaultBaseline,
 
-    /** The default value for the flex grow attribute */
-    public const val DefaultFlexGrow: Float = 0f
+    /**
+     * The order attribute of the node.
+     *
+     * The attribute can change the order in which the children are laid out.
+     * By default, children are displayed and laid out in the same order as they added to the
+     * [FlexboxEngine].
+     */
+    public val order: Int = DefaultOrder,
 
-    /** The default value for the flex shrink attribute */
-    public const val DefaultFlexShrink: Float = 1f
+    /**
+     * The flex grow attribute of the node.
+     *
+     * The attribute determines how much this child will grow if positive free space is
+     * distributed relative to the rest of other nodes included in the same flex line.
+     */
+    public val flexGrow: Float = DefaultFlexGrow,
 
-    /** The value representing the flex shrink attribute is not set */
-    public const val UndefinedFlexShrink: Float = 0f
+    /**
+     * The flex shrink attribute of the node.
+     *
+     * The attribute determines how much this child will shrink if negative free space is
+     * distributed relative to the rest of other nodes included in the same flex line.
+     */
+    public val flexShrink: Float = DefaultFlexShrink,
 
-    /** The default value for the flex basis percent attribute */
-    public const val DefaultFlexBasisPercent: Float = -1f
+    /**
+     * The flexBasisPercent attribute of the node.
+     *
+     * The attribute determines the initial node length in a fraction format relative to its
+     * parent.
+     * The initial main size of this child View is trying to be expanded as the specified
+     * fraction against the parent main size.
+     * If this value is set, the length specified from layout_width
+     * (or layout_height) is overridden by the calculated value from this attribute.
+     * This attribute is only effective when the parent's MeasureSpec mode is
+     * MeasureSpec.EXACTLY. The default value is -1, which means not set.
+     */
+    public val flexBasisPercent: Float = DefaultFlexBasisPercent,
+
+    /**
+     * The align self attribute of the node.
+     *
+     * The attribute determines the alignment along the cross axis (perpendicular to the
+     * main axis). The alignment in the same direction can be determined by the
+     * align items attribute in the parent, but if this is set to other than
+     * [AlignSelf.Auto], the cross axis alignment is overridden for this child.
+     * The value needs to be one of the values in ([AlignSelf.Auto],
+     * [AlignItems.Stretch], [AlignItems.FlexStart], [AlignItems.FlexEnd],
+     * [AlignItems.Center], or [AlignItems.Baseline]).
+     */
+    public val alignSelf: AlignSelf = AlignSelf.Auto,
+
+    /**
+     * The wrapBefore attribute of the node.
+     *
+     * The attribute forces a flex line wrapping. i.e. if this is set to `true` for a
+     * node, the item will become the first item of the new flex line. (A wrapping happens
+     * regardless of the nodes being processed in the the previous flex line)
+     * This attribute is ignored if the flex_wrap attribute is set as nowrap.
+     * The equivalent attribute isn't defined in the original CSS Flexible Box Module
+     * specification, but having this attribute is useful for Android developers to flatten
+     * the layouts when building a grid like layout or for a situation where developers want
+     * to put a new flex line to make a semantic difference from the previous one, etc.
+     */
+    public val wrapBefore: Boolean = false,
+
+    /**
+     * The extra space around the node.
+     */
+    public val margin: Spacing = Spacing.Zero,
+  ) {
+
+    public fun copy(
+      visible: Boolean = this.visible,
+      baseline: Int = this.baseline,
+      order: Int = this.order,
+      flexGrow: Float = this.flexGrow,
+      flexShrink: Float = this.flexShrink,
+      flexBasisPercent: Float = this.flexBasisPercent,
+      alignSelf: AlignSelf = this.alignSelf,
+      wrapBefore: Boolean = this.wrapBefore,
+      margin: Spacing = this.margin,
+    ): Properties = Properties(
+      visible = visible,
+      baseline = baseline,
+      order = order,
+      flexGrow = flexGrow,
+      flexShrink = flexShrink,
+      flexBasisPercent = flexBasisPercent,
+      alignSelf = alignSelf,
+      wrapBefore = wrapBefore,
+      margin = margin
+    )
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      return other is Properties &&
+        visible == other.visible &&
+        baseline == other.baseline &&
+        order == other.order &&
+        flexGrow == other.flexGrow &&
+        flexShrink == other.flexShrink &&
+        flexBasisPercent == other.flexBasisPercent &&
+        alignSelf == other.alignSelf &&
+        wrapBefore == other.wrapBefore &&
+        margin == other.margin
+    }
+
+    override fun hashCode(): Int {
+      var result = visible.hashCode()
+      result = 31 * result + baseline
+      result = 31 * result + order
+      result = 31 * result + flexGrow.hashCode()
+      result = 31 * result + flexShrink.hashCode()
+      result = 31 * result + flexBasisPercent.hashCode()
+      result = 31 * result + alignSelf.hashCode()
+      result = 31 * result + wrapBefore.hashCode()
+      result = 31 * result + margin.hashCode()
+      return result
+    }
+
+    override fun toString(): String {
+      return "Properties(" +
+        "visible=$visible, " +
+        "baseline=$baseline, " +
+        "order=$order, " +
+        "flexGrow=$flexGrow, " +
+        "flexShrink=$flexShrink, " +
+        "flexBasisPercent=$flexBasisPercent, " +
+        "alignSelf=$alignSelf, " +
+        "wrapBefore=$wrapBefore, " +
+        "margin=$margin" +
+        ")"
+    }
+
+    public companion object {
+      /** The default value for the baseline attribute */
+      public const val DefaultBaseline: Int = -1
+
+      /** The default value for the order attribute */
+      public const val DefaultOrder: Int = 1
+
+      /** The default value for the flex grow attribute */
+      public const val DefaultFlexGrow: Float = 0f
+
+      /** The default value for the flex shrink attribute */
+      public const val DefaultFlexShrink: Float = 1f
+
+      /** The value representing the flex shrink attribute is not set */
+      public const val UndefinedFlexShrink: Float = 0f
+
+      /** The default value for the flex basis percent attribute */
+      public const val DefaultFlexBasisPercent: Float = -1f
+    }
   }
 }

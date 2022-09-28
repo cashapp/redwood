@@ -17,9 +17,9 @@
 
 package app.cash.redwood.flexbox
 
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexBasisPercent
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexbox.FlexNode.Properties.Companion.DefaultFlexBasisPercent
+import app.cash.redwood.flexbox.FlexNode.Properties.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.FlexNode.Properties.Companion.UndefinedFlexShrink
 import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
@@ -27,7 +27,6 @@ import kotlin.math.roundToInt
  * A class that measures and positions its children according to its flexbox properties.
  */
 public class FlexboxEngine {
-
   /**
    * The flex direction attribute of the flexbox.
    */
@@ -1281,7 +1280,7 @@ public class FlexboxEngine {
   ) {
     var alignItems = alignItems
     if (node.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
+      // Expecting the values for alignItems and alignSelf match except for AlignSelfAuto.
       // Assigning the alignSelf value as alignItems should work.
       alignItems = AlignItems(node.alignSelf.ordinal)
     }
@@ -1461,8 +1460,7 @@ public class FlexboxEngine {
             child.measuredHeight + marginTop + child.margin.bottom
           } else {
             val marginBottom = maxOf(
-              flexLine.maxBaseline - child.measuredHeight +
-                child.baseline,
+              flexLine.maxBaseline - child.measuredHeight + child.baseline,
               child.margin.bottom,
             )
             child.measuredHeight + child.margin.top + marginBottom

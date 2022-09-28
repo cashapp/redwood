@@ -52,10 +52,10 @@ internal sealed interface Orientation {
     override fun crossSize(node: FlexNode) = node.measurable.height
     override fun mainMeasuredSize(node: FlexNode) = node.measuredWidth
     override fun crossMeasuredSize(node: FlexNode) = node.measuredHeight
-    override fun mainMarginStart(node: FlexNode) = node.margin.start
-    override fun mainMarginEnd(node: FlexNode) = node.margin.end
-    override fun crossMarginStart(node: FlexNode) = node.margin.top
-    override fun crossMarginEnd(node: FlexNode) = node.margin.bottom
+    override fun mainMarginStart(node: FlexNode) = node.properties.margin.start
+    override fun mainMarginEnd(node: FlexNode) = node.properties.margin.end
+    override fun crossMarginStart(node: FlexNode) = node.properties.margin.top
+    override fun crossMarginEnd(node: FlexNode) = node.properties.margin.bottom
   }
 
   object Vertical : Orientation {
@@ -67,9 +67,9 @@ internal sealed interface Orientation {
     override fun crossSize(node: FlexNode) = node.measurable.width
     override fun mainMeasuredSize(node: FlexNode) = node.measuredHeight
     override fun crossMeasuredSize(node: FlexNode) = node.measuredWidth
-    override fun mainMarginStart(node: FlexNode) = node.margin.top
-    override fun mainMarginEnd(node: FlexNode) = node.margin.bottom
-    override fun crossMarginStart(node: FlexNode) = node.margin.start
-    override fun crossMarginEnd(node: FlexNode) = node.margin.end
+    override fun mainMarginStart(node: FlexNode) = node.properties.margin.top
+    override fun mainMarginEnd(node: FlexNode) = node.properties.margin.bottom
+    override fun crossMarginStart(node: FlexNode) = node.properties.margin.start
+    override fun crossMarginEnd(node: FlexNode) = node.properties.margin.end
   }
 }
