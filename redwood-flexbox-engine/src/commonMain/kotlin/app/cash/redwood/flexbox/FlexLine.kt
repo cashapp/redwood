@@ -80,14 +80,14 @@ internal class FlexLine {
   @JvmField var lastIndex = 0
 
   /**
-   * Set to true if any [Node]s in this line have [Node.flexGrow] attributes set
-   * (i.e. have a value other than [Node.DefaultFlexGrow]).
+   * Set to true if any [FlexNode]s in this line have [FlexNode.flexGrow] attributes set
+   * (i.e. have a value other than [FlexNode.DefaultFlexGrow]).
    */
   @JvmField var anyItemsHaveFlexGrow = false
 
   /**
-   * Set to true if any [Node]s in this line have [Node.flexShrink] attributes set
-   * (i.e. have a value other than [Node.UndefinedFlexShrink]).
+   * Set to true if any [FlexNode]s in this line have [FlexNode.flexShrink] attributes set
+   * (i.e. have a value other than [FlexNode.UndefinedFlexShrink]).
    */
   @JvmField var anyItemsHaveFlexShrink = false
 }

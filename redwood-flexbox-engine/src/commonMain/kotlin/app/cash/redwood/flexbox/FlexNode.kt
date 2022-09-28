@@ -18,7 +18,7 @@ package app.cash.redwood.flexbox
 /**
  * A node with properties that can be measured and laid out inside a flexbox.
  */
-public class Node(
+public class FlexNode(
 
   /**
    * True if this item is visible and should be laid out.

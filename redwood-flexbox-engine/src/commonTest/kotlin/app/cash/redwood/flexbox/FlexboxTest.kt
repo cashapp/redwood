@@ -115,7 +115,7 @@ class FlexboxTest {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode(Node(flexBasisPercent = 0f)) }
+      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
       justifyContent = JustifyContent.Center
     }
 
@@ -156,7 +156,7 @@ class FlexboxTest {
     return canvas.toString()
   }
 
-  private fun StringWidget.toNode(node: Node = Node()): Node {
+  private fun StringWidget.toNode(node: FlexNode = FlexNode()): FlexNode {
     return node.apply {
       this.measurable = this@toNode
       this.layout = this@toNode::layout

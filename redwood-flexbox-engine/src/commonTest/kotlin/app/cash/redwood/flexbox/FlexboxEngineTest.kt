@@ -31,10 +31,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testCalculateHorizontalFlexLines() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(200, 100))
-    val node3 = Node(measurable = BoxMeasurable(300, 100))
-    val node4 = Node(measurable = BoxMeasurable(400, 100))
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
+    val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
+    val node4 = FlexNode(measurable = BoxMeasurable(400, 100))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -73,10 +73,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testCalculateVerticalFlexLines() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(100, 200))
-    val node3 = Node(measurable = BoxMeasurable(100, 300))
-    val node4 = Node(measurable = BoxMeasurable(100, 400))
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
+    val node4 = FlexNode(measurable = BoxMeasurable(100, 400))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -116,10 +116,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_direction_row_flexGrowSet() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(200, 100), flexGrow = 1.0f)
-    val node3 = Node(measurable = BoxMeasurable(300, 100))
-    val node4 = Node(measurable = BoxMeasurable(400, 100), flexGrow = 2.0f)
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(200, 100), flexGrow = 1.0f)
+    val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
+    val node4 = FlexNode(measurable = BoxMeasurable(400, 100), flexGrow = 2.0f)
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -145,10 +145,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_direction_column_flexGrowSet() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(100, 200), flexGrow = 1.0f)
-    val node3 = Node(measurable = BoxMeasurable(100, 300))
-    val node4 = Node(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(100, 200), flexGrow = 1.0f)
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
+    val node4 = FlexNode(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -174,10 +174,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_direction_row_flexShrinkSet() {
-    val node1 = Node(measurable = BoxMeasurable(200, 100))
-    val node2 = Node(measurable = BoxMeasurable(200, 100))
-    val node3 = Node(measurable = BoxMeasurable(200, 100))
-    val node4 = Node(measurable = BoxMeasurable(200, 100))
+    val node1 = FlexNode(measurable = BoxMeasurable(200, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
+    val node3 = FlexNode(measurable = BoxMeasurable(200, 100))
+    val node4 = FlexNode(measurable = BoxMeasurable(200, 100))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -203,10 +203,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_direction_column_flexShrinkSet() {
-    val node1 = Node(measurable = BoxMeasurable(100, 200))
-    val node2 = Node(measurable = BoxMeasurable(100, 200))
-    val node3 = Node(measurable = BoxMeasurable(100, 200))
-    val node4 = Node(measurable = BoxMeasurable(100, 200))
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node4 = FlexNode(measurable = BoxMeasurable(100, 200))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -232,8 +232,8 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_directionRow_fixedSizeViewAndShrinkable_doNotExceedMaxMainSize() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
-    val node2 = Node(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
+    val node2 = FlexNode(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
     engine.nodes += node1
     engine.nodes += node2
     engine.flexWrap = FlexWrap.NoWrap
@@ -250,9 +250,9 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineMainSize_directionRow_twoFixedSizeViewsAndShrinkable_doNotExceedMaxMainSize() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
-    val node2 = Node(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
-    val node3 = Node(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
+    val node2 = FlexNode(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -271,10 +271,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineCrossSize_direction_row_alignContent_stretch() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(200, 100))
-    val node3 = Node(measurable = BoxMeasurable(300, 100))
-    val node4 = Node(measurable = BoxMeasurable(400, 100))
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
+    val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
+    val node4 = FlexNode(measurable = BoxMeasurable(400, 100))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -300,10 +300,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testDetermineCrossSize_direction_column_alignContent_stretch() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100))
-    val node2 = Node(measurable = BoxMeasurable(100, 200))
-    val node3 = Node(measurable = BoxMeasurable(100, 300))
-    val node4 = Node(measurable = BoxMeasurable(100, 400))
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100))
+    val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
+    val node4 = FlexNode(measurable = BoxMeasurable(100, 400))
     engine.nodes += node1
     engine.nodes += node2
     engine.nodes += node3
@@ -365,10 +365,10 @@ class FlexboxEngineTest {
 
   @Test
   fun testFlexLine_anyItemsHaveFlexGrow() {
-    val node1 = Node(measurable = BoxMeasurable(100, 100), flexGrow = 1.0f)
-    val node2 = Node(measurable = BoxMeasurable(100, 200))
-    val node3 = Node(measurable = BoxMeasurable(100, 300))
-    val node4 = Node(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
+    val node1 = FlexNode(measurable = BoxMeasurable(100, 100), flexGrow = 1.0f)
+    val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
+    val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
+    val node4 = FlexNode(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
     engine.apply {
       nodes += node1
       nodes += node2
