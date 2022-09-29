@@ -1,5 +1,4 @@
-Redwood Layout
-=======
+# Redwood Layout
 
 This artifact includes `Row` and `Column` widget implementations for Android Views, Android Compose UI, and iOS UIKit.
 
