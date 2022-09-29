@@ -3,7 +3,7 @@ Redwood Layout
 
 This artifact includes `Row` and `Column` widget implementations for Android Views, Android Compose UI, and iOS UIKit.
 
-To being, add the follow entries to your `schema.kt`:
+To begin, add the follow entries to your `schema.kt`:
 
 ```kotlin
 @Widget(1)
