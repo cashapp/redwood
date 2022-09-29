@@ -11,7 +11,7 @@ data class Row(
   @Property(2) @Default("Overflow.Clip") val overflow: Overflow,
   @Property(3) @Default("MainAxisAlignment.Start") val horizontalAlignment: MainAxisAlignment,
   @Property(4) @Default("CrossAxisAlignment.Start") val verticalAlignment: CrossAxisAlignment,
-  @Children(5) val children: RowScope.() -> Unit,
+  @Children(1) val children: RowScope.() -> Unit,
 )
 
 object RowScope {
