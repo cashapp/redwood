@@ -37,7 +37,7 @@ data class Column(
   @Property(2) @Default("Overflow.Clip") val overflow: Overflow,
   @Property(3) @Default("CrossAxisAlignment.Start") val horizontalAlignment: CrossAxisAlignment,
   @Property(4) @Default("MainAxisAlignment.Start") val verticalAlignment: MainAxisAlignment,
-  @Children(5) val children: ColumnScope.() -> Unit,
+  @Children(1) val children: ColumnScope.() -> Unit,
 )
 
 object ColumnScope {
