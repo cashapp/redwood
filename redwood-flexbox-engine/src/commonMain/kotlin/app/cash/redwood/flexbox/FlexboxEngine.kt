@@ -1061,7 +1061,7 @@ public class FlexboxEngine {
       }
     } else {
       for (flexLine in lines) {
-        for (index in flexLine.firstIndex .. flexLine.lastIndex) {
+        for (index in flexLine.firstIndex..flexLine.lastIndex) {
           val node = reorderedNodes[index]
           if (node.alignSelf == AlignSelf.Stretch) {
             if (flexDirection.isHorizontal) {
@@ -1182,7 +1182,7 @@ public class FlexboxEngine {
   ) {
     var alignItems = alignItems
     if (node.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for AlignSelfAuto.
+      // Expecting the values for alignItems and alignSelf match except for Auto.
       // Assigning the alignSelf value as alignItems should work.
       alignItems = AlignItems(node.alignSelf.ordinal)
     }
@@ -1257,23 +1257,19 @@ public class FlexboxEngine {
       for (flexLine in flexLines) {
         // The largest height value that also take the baseline shift into account
         var largestHeightInLine = Int.MIN_VALUE
-        for (i in 0 until flexLine.itemCount) {
-          val nodeIndex = flexLine.firstIndex + i
-          val child = reorderedNodes.getOrNull(nodeIndex)
+        for (i in flexLine.firstIndex..flexLine.lastIndex) {
+          val child = reorderedNodes.getOrNull(i)
           if (child == null || !child.visible) {
             continue
           }
-          largestHeightInLine = if (flexWrap != FlexWrap.WrapReverse) {
+          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
             val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
             child.measuredHeight + marginTop + child.margin.bottom
           } else {
-            val marginBottom = maxOf(
-              flexLine.maxBaseline - child.measuredHeight +
-                child.baseline,
-              child.margin.bottom,
-            )
+            val marginBottom = maxOf(flexLine.maxBaseline - child.measuredHeight + child.baseline, child.margin.bottom)
             child.measuredHeight + child.margin.top + marginBottom
-          }.coerceAtLeast(largestHeightInLine)
+          }
+          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
         }
         flexLine.crossSize = largestHeightInLine
       }
@@ -1286,11 +1282,7 @@ public class FlexboxEngine {
     // Now cross size for each flex line is determined.
     // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
-    return setMeasuredDimensionForFlex(
-      flexDirection = flexDirection,
-      widthMeasureSpec = widthMeasureSpec,
-      heightMeasureSpec = heightMeasureSpec,
-    )
+    return setMeasuredDimensionForFlex(widthMeasureSpec, heightMeasureSpec)
   }
 
   private fun measureVertical(
@@ -1307,23 +1299,17 @@ public class FlexboxEngine {
     // Now cross size for each flex line is determined.
     // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
-    return setMeasuredDimensionForFlex(
-      flexDirection = flexDirection,
-      widthMeasureSpec = widthMeasureSpec,
-      heightMeasureSpec = heightMeasureSpec,
-    )
+    return setMeasuredDimensionForFlex(widthMeasureSpec, heightMeasureSpec)
   }
 
   /**
    * Set this flexbox's width and height depending on the calculated size of main axis and
    * cross axis.
    *
-   * @param flexDirection the value of the flex direction
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
   private fun setMeasuredDimensionForFlex(
-    flexDirection: FlexDirection,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
@@ -1574,14 +1560,14 @@ public class FlexboxEngine {
         JustifyContent.SpaceBetween -> {
           childTop = paddingTop.toFloat()
           val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) (visibleCount - 1).toFloat() else 1f
+          val denominator = if (visibleCount != 1) visibleCount - 1f else 1f
           spaceBetweenItem = (height - flexLine.mainSize) / denominator
           childBottom = (height - paddingBottom).toFloat()
         }
         JustifyContent.SpaceEvenly -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1).toFloat())
+            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1f))
           }
           childTop = paddingTop + spaceBetweenItem
           childBottom = height - paddingBottom - spaceBetweenItem
