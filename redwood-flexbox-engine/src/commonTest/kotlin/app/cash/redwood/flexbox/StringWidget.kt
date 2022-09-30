@@ -24,15 +24,12 @@ class StringWidget(
 ) : Measurable() {
   private val words = text.split(" ")
 
-  private var left = -1
-  private var top = -1
-  private var right = -1
-  private var bottom = -1
-
   override val minWidth
     get() = words.maxOf { it.length } + 2
   override val minHeight
     get() = 2
+
+  val node = FlexNode(measurable = this)
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     val widthSpecMode = widthSpec.mode
@@ -62,13 +59,6 @@ class StringWidget(
     }
 
     return Size(measuredWidth, measuredHeight)
-  }
-
-  internal fun layout(left: Int, top: Int, right: Int, bottom: Int) {
-    this.left = left
-    this.top = top
-    this.right = right
-    this.bottom = bottom
   }
 
   /** Returns a list of rows, each containing the words of that row. */

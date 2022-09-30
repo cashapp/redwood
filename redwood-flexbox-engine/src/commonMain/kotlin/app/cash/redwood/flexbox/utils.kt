@@ -48,9 +48,22 @@ private val MaxUShort = UShort.MAX_VALUE.toInt() // 65_535
 
 private fun isUShort(value: Int): Boolean = value in 0..MaxUShort
 
-/** The number of children who are not invisible in this flex line. */
+/**
+ * The number of children who are not invisible in this flex line.
+ */
 internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
+
+/**
+ * Call [Measurable.measure] and update [FlexNode.measuredWidth] and [FlexNode.measuredHeight]
+ * with the result.
+ */
+internal fun FlexNode.measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
+  measuredSize = measurable.measure(widthSpec, heightSpec)
+}
+
+internal val FlexNode.measuredWidth: Int get() = measuredSize.width
+internal val FlexNode.measuredHeight: Int get() = measuredSize.height
 
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,

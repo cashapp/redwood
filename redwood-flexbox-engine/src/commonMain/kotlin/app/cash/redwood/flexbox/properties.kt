@@ -312,7 +312,12 @@ public fun Bounds(
   top: Int,
   right: Int,
   bottom: Int,
-): Bounds = Bounds(packLong(left, top, right, bottom))
+): Bounds {
+  require(right >= left && bottom >= top) {
+    "Invalid Box: [$left, $top, $right, $bottom]"
+  }
+  return Bounds(packLong(left, top, right, bottom))
+}
 
 @JvmInline
 public value class Bounds internal constructor(private val value: Long) {
@@ -320,6 +325,10 @@ public value class Bounds internal constructor(private val value: Long) {
   public val top: Int get() = value.second
   public val right: Int get() = value.third
   public val bottom: Int get() = value.fourth
+
+  public companion object {
+    public val Empty: Bounds = Bounds(0, 0, 0, 0)
+  }
 }
 
 public val Bounds.width: Int get() = right - left

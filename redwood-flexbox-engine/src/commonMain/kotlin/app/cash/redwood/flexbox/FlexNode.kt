@@ -103,21 +103,19 @@ public class FlexNode(
   /**
    * A callback to to measure this node according to a set of measurement constraints.
    */
-  public var measurable: Measurable = Measurable(),
+  public val measurable: Measurable = Measurable(),
 ) {
   /**
-   * The measured width after invoking [Measurable.measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
+   * Valid after invoking [FlexboxEngine.measure].
    */
-  public var measuredWidth: Int = -1
+  public var measuredSize: Size = Size.Zero
+    internal set
 
   /**
-   * The measured height after invoking [Measurable.measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
+   * Valid after invoking [FlexboxEngine.layout].
    */
-  public var measuredHeight: Int = -1
+  public var bounds: Bounds = Bounds.Empty
+    internal set
 
   public companion object {
     /** The default value for the baseline attribute */

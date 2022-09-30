@@ -204,7 +204,7 @@ class FlexboxTest {
     val engine = FlexboxEngine().apply {
       flexDirection = Row
       justifyContent = JustifyContent.Center
-      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
+      nodes += widgets.map { it.node.apply { flexBasisPercent = 0f } }
     }
 
     assertEquals(
@@ -226,7 +226,7 @@ class FlexboxTest {
     val engine = FlexboxEngine().apply {
       flexDirection = Row
       alignItems = AlignItems.Center
-      nodes += widgets.map { it.toNode() }
+      nodes += widgets.map { it.node }
     }
 
     assertEquals(
@@ -277,12 +277,6 @@ class FlexboxTest {
     val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
     val heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly)
 
-    flexLines = if (flexDirection.isHorizontal) {
-      calculateHorizontalFlexLines(widthSpec, heightSpec)
-    } else {
-      calculateVerticalFlexLines(widthSpec, heightSpec)
-    }
-
     measure(widthSpec, heightSpec)
     layout(Bounds(0, 0, width, height))
 
@@ -291,9 +285,5 @@ class FlexboxTest {
     }
 
     return canvas.toString()
-  }
-
-  private fun StringWidget.toNode(node: FlexNode = FlexNode()): FlexNode {
-    return node.apply { measurable = this@toNode }
   }
 }
