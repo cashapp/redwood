@@ -199,7 +199,7 @@ public class FlexboxEngine {
             orientation.crossMarginStart(child) + orientation.crossMarginEnd(child) + sumCrossSize,
           childDimension = orientation.crossSize(child),
         )
-        child.measurable.measure(childMainMeasureSpec, childCrossMeasureSpec)
+        child.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
       } else {
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
@@ -213,7 +213,7 @@ public class FlexboxEngine {
             orientation.mainMarginStart(child) + orientation.mainMarginEnd(child),
           childDimension = childMainSize,
         )
-        child.measurable.measure(childCrossMeasureSpec, childMainMeasureSpec)
+        child.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
       }
 
       // Check the size constraint after the first measurement for the child to prevent the child's
@@ -251,7 +251,7 @@ public class FlexboxEngine {
               padding = padding.top + padding.bottom + child.margin.top + child.margin.bottom + sumCrossSize,
               childDimension = height,
             )
-            child.measurable.measure(childMainMeasureSpec, childCrossMeasureSpec)
+            child.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
             measureWithConstraints(child)
           }
         } else {
@@ -269,7 +269,7 @@ public class FlexboxEngine {
               padding = padding.start + padding.end + child.margin.start + child.margin.end + sumCrossSize,
               childDimension = width,
             )
-            child.measurable.measure(childCrossMeasureSpec, childMainMeasureSpec)
+            child.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
             measureWithConstraints(child)
           }
         }
@@ -575,7 +575,7 @@ public class FlexboxEngine {
             flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
-          child.measurable.measure(childWidthMeasureSpec, childHeightMeasureSpec)
+          child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
@@ -623,7 +623,7 @@ public class FlexboxEngine {
             padding = flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
-          child.measurable.measure(childWidthMeasureSpec, childHeightMeasureSpec)
+          child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
@@ -737,7 +737,7 @@ public class FlexboxEngine {
             flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
-          child.measurable.measure(childWidthMeasureSpec, childHeightMeasureSpec)
+          child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
@@ -783,7 +783,7 @@ public class FlexboxEngine {
             padding = flexLine.sumCrossSizeBefore,
           )
           val childHeightMeasureSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
-          child.measurable.measure(childWidthMeasureSpec, childHeightMeasureSpec)
+          child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
@@ -1083,7 +1083,7 @@ public class FlexboxEngine {
       .coerceIn(node.measurable.minHeight, node.measurable.maxHeight)
     val childWidthSpec = MeasureSpec.from(node.measuredWidth, MeasureSpecMode.Exactly)
     val childHeightSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
-    node.measurable.measure(childWidthSpec, childHeightSpec)
+    node.applyMeasure(childWidthSpec, childHeightSpec)
   }
 
   /**
@@ -1094,7 +1094,7 @@ public class FlexboxEngine {
       .coerceIn(node.measurable.minWidth, node.measurable.maxWidth)
     val childHeightSpec = MeasureSpec.from(node.measuredHeight, MeasureSpecMode.Exactly)
     val childWidthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
-    node.measurable.measure(childWidthSpec, childHeightSpec)
+    node.applyMeasure(childWidthSpec, childHeightSpec)
   }
 
   /**
@@ -1649,5 +1649,15 @@ public class FlexboxEngine {
    */
   private fun getSumOfCrossSize(): Int {
     return flexLines.sumOf { it.crossSize }
+  }
+
+  /**
+   * Call [Measurable.measure] and update [FlexNode.measuredWidth] and [FlexNode.measuredHeight]
+   * with the result.
+   */
+  private fun FlexNode.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
+    val size = measurable.measure(widthSpec, heightSpec)
+    this.measuredWidth = size.width
+    this.measuredHeight = size.height
   }
 }
