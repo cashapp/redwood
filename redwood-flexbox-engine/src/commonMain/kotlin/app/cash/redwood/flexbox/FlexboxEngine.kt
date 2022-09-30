@@ -184,7 +184,7 @@ public class FlexboxEngine {
         // Use the dimension from the layout if the mainMode is not MeasureSpecMode.Exactly even
         // if any fraction value is set to flexBasisPercent.
       }
-      var childMainMeasureSpec: MeasureSpec
+      val childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
       if (flexDirection.isHorizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(

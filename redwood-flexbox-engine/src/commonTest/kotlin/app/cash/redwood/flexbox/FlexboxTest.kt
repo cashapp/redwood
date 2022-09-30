@@ -203,8 +203,8 @@ class FlexboxTest {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
       justifyContent = JustifyContent.Center
+      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
     }
 
     assertEquals(
@@ -225,8 +225,8 @@ class FlexboxTest {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode() }
       alignItems = AlignItems.Center
+      nodes += widgets.map { it.toNode() }
     }
 
     assertEquals(
