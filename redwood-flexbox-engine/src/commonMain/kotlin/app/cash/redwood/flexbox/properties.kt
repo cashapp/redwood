@@ -206,7 +206,7 @@ public value class JustifyContent(public val ordinal: Int) {
  * A MeasureSpec is comprised of a size and a mode.
  */
 @JvmInline
-public value class MeasureSpec private constructor(internal val value: Int) {
+public value class MeasureSpec private constructor(private val value: Int) {
 
   public val size: Int get() = value and 0x3FFF
   public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))
@@ -215,7 +215,7 @@ public value class MeasureSpec private constructor(internal val value: Int) {
     public const val MaxSize: Int = Int.MAX_VALUE and 0x00FFFFFF
 
     public fun from(size: Int, mode: MeasureSpecMode): MeasureSpec {
-      require(size in 0..MaxSize) { "invalid size: $size" }
+      require(size in 0..MaxSize) { "Invalid size: $size" }
       // Use the top 2 bits for the mode and use the bottom 30 bits for the size.
       return MeasureSpec((mode.ordinal shl 30) or (size and 0x3FFF))
     }
@@ -267,40 +267,60 @@ public value class MeasureSpecMode(public val ordinal: Int) {
   }
 }
 
+public fun Spacing(
+  start: Int = 0,
+  end: Int = 0,
+  top: Int = 0,
+  bottom: Int = 0,
+): Spacing = Spacing(packLong(start, end, top, bottom))
+
 /**
  * Describes the padding/margin to apply to a node/flexbox.
  */
-public data class Spacing(
-  val start: Int = 0,
-  val end: Int = 0,
-  val top: Int = 0,
-  val bottom: Int = 0,
-) {
-  init {
-    require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
-      "invalid Spacing: [$start, $end, $top, $bottom]"
-    }
-  }
+@JvmInline
+public value class Spacing internal constructor(private val value: Long) {
+  public val start: Int get() = value.first
+  public val end: Int get() = value.second
+  public val top: Int get() = value.third
+  public val bottom: Int get() = value.fourth
 
   public companion object {
     public val Zero: Spacing = Spacing()
   }
 }
 
+public fun Size(
+  width: Int,
+  height: Int,
+): Size = Size(packInt(width, height))
+
 /**
- * A two-dimensional size composed of two [Int]s.
+ * Describes a two-dimensional size.
  */
-public data class Size(
-  val width: Int,
-  val height: Int,
-) {
-  init {
-    require(width >= 0 && height >= 0) {
-      "invalid Size: [$width, $height]"
-    }
-  }
+@JvmInline
+public value class Size internal constructor(private val value: Int) {
+  public val width: Int get() = value.first
+  public val height: Int get() = value.second
 
   public companion object {
     public val Zero: Size = Size(0, 0)
   }
 }
+
+public fun Bounds(
+  left: Int,
+  top: Int,
+  right: Int,
+  bottom: Int,
+): Bounds = Bounds(packLong(left, top, right, bottom))
+
+@JvmInline
+public value class Bounds internal constructor(private val value: Long) {
+  public val left: Int get() = value.first
+  public val top: Int get() = value.second
+  public val right: Int get() = value.third
+  public val bottom: Int get() = value.fourth
+}
+
+public val Bounds.width: Int get() = right - left
+public val Bounds.height: Int get() = bottom - top

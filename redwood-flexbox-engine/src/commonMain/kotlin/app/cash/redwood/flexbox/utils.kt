@@ -18,23 +18,35 @@ package app.cash.redwood.flexbox
 import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
 import app.cash.redwood.flexbox.Measurable.Companion.WrapContent
 
-internal fun packLong(lower: Int, higher: Int): Long {
-  return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
+internal fun packInt(first: Int, second: Int): Int {
+  require(isUShort(first) && isUShort(second)) {
+    "Invalid value: [$first, $second]"
+  }
+  return ((first.toUInt().toInt() and 0x3FFF) shl 16) or
+    (second.toUInt().toInt() and 0x3FFF)
 }
 
-internal fun unpackLower(value: Long): Int {
-  return value.toInt()
+internal val Int.first: Int get() = (this shr 16) and 0x3FFF
+internal val Int.second: Int get() = this and 0x3FFF
+
+internal fun packLong(first: Int, second: Int, third: Int, fourth: Int): Long {
+  require(isUShort(first) && isUShort(second) && isUShort(third) && isUShort(fourth)) {
+    "Invalid value: [$first, $second, $third, $fourth]"
+  }
+  return ((first.toUInt().toLong() and 0x3FFF) shl 48) or
+    ((second.toUInt().toLong() and 0x3FFF) shl 32) or
+    ((third.toUInt().toLong() and 0x3FFF) shl 16) or
+    (fourth.toUInt().toLong() and 0x3FFF)
 }
 
-internal fun unpackHigher(value: Long): Int {
-  return (value shr 32).toInt()
-}
+internal val Long.first: Int get() = ((this shr 48) and 0x3FFF).toInt()
+internal val Long.second: Int get() = ((this shr 32) and 0x3FFF).toInt()
+internal val Long.third: Int get() = ((this shr 16) and 0x3FFF).toInt()
+internal val Long.fourth: Int get() = (this and 0x3FFF).toInt()
 
-/** Convenience function to use named arguments. */
-@Suppress("EXTENSION_FUNCTION_SHADOWED_BY_MEMBER_PROPERTY_WITH_INVOKE", "NOTHING_TO_INLINE")
-internal inline fun FlexNode.layout(left: Int, top: Int, right: Int, bottom: Int) {
-  layout(left, top, right, bottom)
-}
+private val MaxUShort = UShort.MAX_VALUE.toInt() // 65_535
+
+private fun isUShort(value: Int): Boolean = value in 0..MaxUShort
 
 /** The number of children who are not invisible in this flex line. */
 internal val FlexLine.itemCountVisible: Int

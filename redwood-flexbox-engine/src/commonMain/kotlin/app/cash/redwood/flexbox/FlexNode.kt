@@ -119,11 +119,6 @@ public class FlexNode(
    */
   public var measuredHeight: Int = -1
 
-  /**
-   * A callback to place the node inside a given set of coordinates.
-   */
-  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
-
   public companion object {
     /** The default value for the baseline attribute */
     public const val DefaultBaseline: Int = -1

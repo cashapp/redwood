@@ -284,7 +284,7 @@ class FlexboxTest {
     }
 
     measure(widthSpec, heightSpec)
-    layout(0, 0, width, height)
+    layout(Bounds(0, 0, width, height))
 
     for (widget in widgets) {
       widget.draw(canvas)
@@ -294,9 +294,6 @@ class FlexboxTest {
   }
 
   private fun StringWidget.toNode(node: FlexNode = FlexNode()): FlexNode {
-    return node.apply {
-      this.measurable = this@toNode
-      this.layout = this@toNode::layout
-    }
+    return node.apply { measurable = this@toNode }
   }
 }

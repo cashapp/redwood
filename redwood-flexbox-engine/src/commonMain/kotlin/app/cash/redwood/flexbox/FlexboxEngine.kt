@@ -1090,10 +1090,11 @@ public class FlexboxEngine {
   }
 
   /**
-   * Place a single View when the layout direction is horizontal
+   * Place a single node when the layout direction is horizontal
    * ([FlexboxEngine.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
+    boundsList: MutableList<Bounds>,
     node: FlexNode,
     flexLine: FlexLine,
     left: Int,
@@ -1110,19 +1111,39 @@ public class FlexboxEngine {
     val crossSize = flexLine.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch -> if (flexWrap != FlexWrap.WrapReverse) {
-        node.layout(left, top + node.margin.top, right, bottom + node.margin.top)
+        boundsList += Bounds(
+          left = left,
+          top = top + node.margin.top,
+          right = right,
+          bottom = bottom + node.margin.top
+        )
       } else {
-        node.layout(left, top - node.margin.bottom, right, bottom - node.margin.bottom)
+        boundsList += Bounds(
+          left = left,
+          top = top - node.margin.bottom,
+          right = right,
+          bottom = bottom - node.margin.bottom
+        )
       }
       AlignItems.Baseline -> if (flexWrap != FlexWrap.WrapReverse) {
         val marginTop = maxOf(flexLine.maxBaseline - node.baseline, node.margin.top)
-        node.layout(left, top + marginTop, right, bottom + marginTop)
+        boundsList += Bounds(
+          left = left,
+          top = top + marginTop,
+          right = right,
+          bottom = bottom + marginTop
+        )
       } else {
         val marginBottom = maxOf(flexLine.maxBaseline - node.measuredHeight + node.baseline, node.margin.bottom)
-        node.layout(left, top - marginBottom, right, bottom - marginBottom)
+        boundsList += Bounds(
+          left = left,
+          top = top - marginBottom,
+          right = right,
+          bottom = bottom - marginBottom
+        )
       }
       AlignItems.FlexEnd -> if (flexWrap != FlexWrap.WrapReverse) {
-        node.layout(
+        boundsList += Bounds(
           left = left,
           top = top + crossSize - node.measuredHeight - node.margin.bottom,
           right = right,
@@ -1131,7 +1152,7 @@ public class FlexboxEngine {
       } else {
         // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from top to bottom).
-        node.layout(
+        boundsList += Bounds(
           left = left,
           top = top - crossSize + node.measuredHeight + node.margin.top,
           right = right,
@@ -1141,14 +1162,14 @@ public class FlexboxEngine {
       AlignItems.Center -> {
         val topFromCrossAxis = (crossSize - node.measuredHeight + node.margin.top - node.margin.bottom) / 2
         if (flexWrap != FlexWrap.WrapReverse) {
-          node.layout(
+          boundsList += Bounds(
             left = left,
             top = top + topFromCrossAxis,
             right = right,
             bottom = top + topFromCrossAxis + node.measuredHeight,
           )
         } else {
-          node.layout(
+          boundsList += Bounds(
             left = left,
             top = top - topFromCrossAxis,
             right = right,
@@ -1160,10 +1181,11 @@ public class FlexboxEngine {
   }
 
   /**
-   * Place a single View when the layout direction is vertical
+   * Place a single node when the layout direction is vertical
    * ([FlexboxEngine.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
+    boundsList: MutableList<Bounds>,
     node: FlexNode,
     flexLine: FlexLine,
     isRtl: Boolean,
@@ -1181,14 +1203,14 @@ public class FlexboxEngine {
     val crossSize = flexLine.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!isRtl) {
-        node.layout(
+        boundsList += Bounds(
           left = left + node.margin.start,
           top = top,
           right = right + node.margin.start,
           bottom = bottom,
         )
       } else {
-        node.layout(
+        boundsList += Bounds(
           left = left - node.margin.end,
           top = top,
           right = right - node.margin.end,
@@ -1196,7 +1218,7 @@ public class FlexboxEngine {
         )
       }
       AlignItems.FlexEnd -> if (!isRtl) {
-        node.layout(
+        boundsList += Bounds(
           left = left + crossSize - node.measuredWidth - node.margin.end,
           top = top,
           right = right + crossSize - node.measuredWidth - node.margin.end,
@@ -1205,7 +1227,7 @@ public class FlexboxEngine {
       } else {
         // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from left to right).
-        node.layout(
+        boundsList += Bounds(
           left = left - crossSize + node.measuredWidth + node.margin.start,
           top = top,
           right = right - crossSize + node.measuredWidth + node.margin.start,
@@ -1215,9 +1237,19 @@ public class FlexboxEngine {
       AlignItems.Center -> {
         val leftFromCrossAxis = (crossSize - node.measuredWidth + node.margin.start - node.margin.end) / 2
         if (!isRtl) {
-          node.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
+          boundsList += Bounds(
+            left = left + leftFromCrossAxis,
+            top = top,
+            right = right + leftFromCrossAxis,
+            bottom = bottom
+          )
         } else {
-          node.layout(left - leftFromCrossAxis, top, right - leftFromCrossAxis, bottom)
+          boundsList += Bounds(
+            left = left - leftFromCrossAxis,
+            top = top,
+            right = right - leftFromCrossAxis,
+            bottom = bottom
+          )
         }
       }
     }
@@ -1341,21 +1373,19 @@ public class FlexboxEngine {
     return Size(width, height)
   }
 
-  public fun layout(left: Int, top: Int, right: Int, bottom: Int) {
-    when (flexDirection) {
+  public fun layout(bounds: Bounds): List<Bounds> {
+    return when (flexDirection) {
       FlexDirection.Row -> {
-        layoutHorizontal(false, left, top, right, bottom)
+        layoutHorizontal(bounds, false)
       }
       FlexDirection.RowReverse -> {
-        layoutHorizontal(true, left, top, right, bottom)
+        layoutHorizontal(bounds, true)
       }
       FlexDirection.Column -> {
-        val isRtl = flexWrap == FlexWrap.WrapReverse
-        layoutVertical(isRtl, false, left, top, right, bottom)
+        layoutVertical(bounds, flexWrap == FlexWrap.WrapReverse, false)
       }
       FlexDirection.ColumnReverse -> {
-        val isRtl = flexWrap != FlexWrap.WrapReverse
-        layoutVertical(isRtl, true, left, top, right, bottom)
+        layoutVertical(bounds, flexWrap != FlexWrap.WrapReverse, true)
       }
       else -> throw AssertionError()
     }
@@ -1367,20 +1397,15 @@ public class FlexboxEngine {
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise.
    */
-  private fun layoutHorizontal(
-    isRtl: Boolean,
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int,
-  ) {
+  private fun layoutHorizontal(bounds: Bounds, isRtl: Boolean): List<Bounds> {
+    val boundsList = ArrayList<Bounds>(nodes.size)
     val paddingLeft = padding.start
     val paddingRight = padding.end
     // Use float to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround
     var childLeft: Float
-    val height = bottom - top
-    val width = right - left
+    val height = bounds.height
+    val width = bounds.width
     // childBottom is used if the flexWrap is WrapReverse otherwise
     // childTop is used to align the vertical position of the children nodes.
     var childBottom = height - padding.bottom
@@ -1445,6 +1470,7 @@ public class FlexboxEngine {
         if (flexWrap == FlexWrap.WrapReverse) {
           if (isRtl) {
             layoutSingleChildHorizontal(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               left = childRight.roundToInt() - child.measuredWidth,
@@ -1454,6 +1480,7 @@ public class FlexboxEngine {
             )
           } else {
             layoutSingleChildHorizontal(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               left = childLeft.roundToInt(),
@@ -1465,6 +1492,7 @@ public class FlexboxEngine {
         } else {
           if (isRtl) {
             layoutSingleChildHorizontal(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               left = childRight.roundToInt() - child.measuredWidth,
@@ -1474,6 +1502,7 @@ public class FlexboxEngine {
             )
           } else {
             layoutSingleChildHorizontal(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               left = childLeft.roundToInt(),
@@ -1490,6 +1519,7 @@ public class FlexboxEngine {
       childBottom -= flexLine.crossSize
       i++
     }
+    return boundsList
   }
 
   /**
@@ -1499,20 +1529,14 @@ public class FlexboxEngine {
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise
    * @param fromBottomToTop `true` if the layout direction is bottom to top, `false` otherwise
    */
-  private fun layoutVertical(
-    isRtl: Boolean,
-    fromBottomToTop: Boolean,
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int,
-  ) {
+  private fun layoutVertical(bounds: Bounds, isRtl: Boolean, fromBottomToTop: Boolean): List<Bounds> {
+    val boundsList = ArrayList<Bounds>(nodes.size)
     val paddingTop = padding.top
     val paddingBottom = padding.bottom
     val paddingRight = padding.end
     var childLeft = padding.start
-    val width = right - left
-    val height = bottom - top
+    val width = bounds.width
+    val height = bounds.height
     // childRight is used if the flexWrap is WrapReverse otherwise
     // childLeft is used to align the horizontal position of the children nodes.
     var childRight = width - paddingRight
@@ -1578,6 +1602,7 @@ public class FlexboxEngine {
         if (isRtl) {
           if (fromBottomToTop) {
             layoutSingleChildVertical(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               isRtl = true,
@@ -1588,6 +1613,7 @@ public class FlexboxEngine {
             )
           } else {
             layoutSingleChildVertical(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               isRtl = true,
@@ -1600,6 +1626,7 @@ public class FlexboxEngine {
         } else {
           if (fromBottomToTop) {
             layoutSingleChildVertical(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               isRtl = false,
@@ -1610,6 +1637,7 @@ public class FlexboxEngine {
             )
           } else {
             layoutSingleChildVertical(
+              boundsList = boundsList,
               node = child,
               flexLine = flexLine,
               isRtl = false,
@@ -1627,6 +1655,7 @@ public class FlexboxEngine {
       childRight -= flexLine.crossSize
       i++
     }
+    return boundsList
   }
 
   /**
