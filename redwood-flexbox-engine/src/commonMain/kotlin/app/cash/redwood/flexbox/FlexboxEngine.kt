@@ -186,7 +186,7 @@ public class FlexboxEngine {
       }
       var childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (orientation == Orientation.Horizontal) {
+      if (flexDirection.isHorizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
           padding = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding) +
@@ -236,7 +236,7 @@ public class FlexboxEngine {
           sumCrossSize += flexLine.crossSize
         }
         val measurable = child.measurable
-        if (orientation == Orientation.Horizontal) {
+        if (flexDirection.isHorizontal) {
           val height = measurable.height
           if (height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
@@ -295,7 +295,7 @@ public class FlexboxEngine {
       // Temporarily set the cross axis length as the largest child in the flexLine
       // Expand along the cross axis depending on the alignContent property if needed later
       flexLine.crossSize = maxOf(flexLine.crossSize, largestSizeInCross)
-      if (orientation == Orientation.Horizontal) {
+      if (flexDirection.isHorizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = maxOf(
             flexLine.maxBaseline,
