@@ -5,6 +5,8 @@ module:redwood-compose
 app.cash.redwood.compose
 module:redwood-flexbox-engine
 app.cash.redwood.flexbox
+module:redwood-layout
+app.cash.redwood.layout
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
