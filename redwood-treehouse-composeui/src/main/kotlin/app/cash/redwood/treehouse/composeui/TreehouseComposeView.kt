@@ -23,16 +23,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.PropertyDiff
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
-import kotlinx.serialization.json.JsonArray
 
 @SuppressLint("ViewConstructor")
 public class TreehouseComposeView<T : Any>(
@@ -40,9 +34,19 @@ public class TreehouseComposeView<T : Any>(
   private val treehouseApp: TreehouseApp<T>,
   public val widgetFactory: Widget.Factory<@Composable () -> Unit>,
 ) : FrameLayout(context), TreehouseView<T> {
-  public val composeView: ComposeView = ComposeView(context)
+  private val _children = ComposeWidgetChildren()
+  override val children: Widget.Children<*> get() = _children
 
   init {
+    val composeView = ComposeView(context)
+    composeView.setContent {
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        _children.render()
+      }
+    }
+
     addView(composeView)
   }
 
@@ -57,8 +61,6 @@ public class TreehouseComposeView<T : Any>(
         else -> null
       }
     }
-
-  override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
 
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()
@@ -78,39 +80,4 @@ public class TreehouseComposeView<T : Any>(
 
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
-}
-
-internal class ProtocolDisplayRoot(
-  private val treehouseComposeView: TreehouseComposeView<*>,
-) : DiffConsumingWidget<@Composable () -> Unit> {
-
-  init {
-    treehouseComposeView.composeView.setContent {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        children.render()
-      }
-    }
-  }
-
-  override var layoutModifiers: LayoutModifier = LayoutModifier
-  private val children = ComposeWidgetChildren()
-
-  override val value: @Composable () -> Unit
-    get() {
-      error("unexpected call")
-    }
-
-  override fun updateLayoutModifier(value: JsonArray) {
-  }
-
-  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    error("unexpected update on view root: $diff")
-  }
-
-  override fun children(tag: Int) = when (tag) {
-    RootChildrenTag -> children
-    else -> error("unexpected tag: $tag")
-  }
 }

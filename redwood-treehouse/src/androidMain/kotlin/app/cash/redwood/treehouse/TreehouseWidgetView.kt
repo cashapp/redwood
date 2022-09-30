@@ -20,7 +20,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 
 @SuppressLint("ViewConstructor")
@@ -39,7 +39,7 @@ public class TreehouseWidgetView<T : Any>(
       }
     }
 
-  override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
+  override val children: Widget.Children<*> = ViewGroupChildren(this)
 
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()

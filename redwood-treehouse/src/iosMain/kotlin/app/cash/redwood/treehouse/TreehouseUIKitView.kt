@@ -15,11 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIView
+import platform.UIKit.addSubview
+import platform.UIKit.removeFromSuperview
 import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
@@ -38,8 +41,12 @@ public class TreehouseUIKitView<T : Any>(
       }
     }
 
-  override val protocolDisplayRoot: DiffConsumingWidget<*> =
-    ProtocolDisplayRoot(view)
+  override val children: Widget.Children<*> =
+    MutableListChildren { newViews ->
+      @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
+      (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
+      newViews.forEach(view::addSubview)
+    }
 
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()

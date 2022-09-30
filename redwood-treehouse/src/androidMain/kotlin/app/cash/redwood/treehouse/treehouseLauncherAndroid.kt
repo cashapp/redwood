@@ -18,13 +18,6 @@ package app.cash.redwood.treehouse
 import android.content.Context
 import android.os.Looper
 import android.util.Log
-import android.view.View
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.PropertyDiff
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
-import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.asZiplineHttpClient
@@ -32,7 +25,6 @@ import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.serialization.json.JsonArray
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
@@ -99,25 +91,5 @@ internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
 
   override fun checkZipline() {
     check(Thread.currentThread() == ziplineThread)
-  }
-}
-
-internal class ProtocolDisplayRoot(
-  override val value: TreehouseWidgetView<*>,
-) : DiffConsumingWidget<View> {
-  private val children = ViewGroupChildren(value)
-
-  override var layoutModifiers: LayoutModifier = LayoutModifier
-
-  override fun updateLayoutModifier(value: JsonArray) {
-  }
-
-  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    error("unexpected update on view root: $diff")
-  }
-
-  override fun children(tag: Int) = when (tag) {
-    RootChildrenTag -> children
-    else -> error("unexpected tag: $tag")
   }
 }

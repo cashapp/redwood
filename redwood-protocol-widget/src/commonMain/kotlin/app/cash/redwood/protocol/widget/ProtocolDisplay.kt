@@ -15,25 +15,23 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.widget.Widget
+import kotlinx.serialization.json.JsonArray
 
 public class ProtocolDisplay<T : Any>(
-  private val root: DiffConsumingWidget<T>,
+  container: Widget.Children<T>,
   private val factory: DiffConsumingWidget.Factory<T>,
   private val eventSink: EventSink,
 ) : DiffSink {
-  init {
-    // Check that the root widget has a group of children with the shared root tag.
-    requireNotNull(root.children(RootChildrenTag)) {
-      "Root widget does not support children with tag $RootChildrenTag"
-    }
-  }
-
+  private val root: DiffConsumingWidget<T> = ProtocolDisplayRoot(container)
   private val widgets = mutableMapOf(RootId to root)
 
   override fun sendDiff(diff: Diff) {
@@ -80,4 +78,27 @@ public class ProtocolDisplay<T : Any>(
       widget.apply(propertyDiff, eventSink)
     }
   }
+}
+
+private class ProtocolDisplayRoot<T : Any>(
+  private val children: Widget.Children<T>,
+) : DiffConsumingWidget<T> {
+  override var layoutModifiers: LayoutModifier
+    get() = throw AssertionError()
+    set(value) = throw AssertionError("unexpected: $value")
+
+  override fun updateLayoutModifier(value: JsonArray) {
+    throw AssertionError("unexpected: $value")
+  }
+
+  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
+    throw AssertionError("unexpected: $diff")
+  }
+
+  override fun children(tag: Int) = when (tag) {
+    RootChildrenTag -> children
+    else -> throw AssertionError("unexpected: $tag")
+  }
+
+  override val value: T get() = throw AssertionError()
 }
