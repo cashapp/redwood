@@ -76,6 +76,7 @@ public class FlexboxEngine {
   private var reorderedNodes: List<FlexNode> = listOf()
     get() {
       if (field.size != nodes.size) {
+        // Lazily sort the list of nodes by their order descending.
         field = nodes.withIndex()
           .sortedWith(compareBy({ -it.value.order }, { it.index }))
           .map { it.value }
@@ -176,9 +177,6 @@ public class FlexboxEngine {
           addFlexLine(flexLines, flexLine, i, sumCrossSize)
         }
         continue
-      }
-      if (child.alignSelf == AlignSelf.Stretch) {
-        flexLine.indicesAlignSelfStretch += i
       }
       var childMainSize = orientation.mainSize(child)
       if (child.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
@@ -1029,12 +1027,8 @@ public class FlexboxEngine {
   /**
    * Expand the node if the [FlexboxEngine.alignItems] attribute is set to
    * [AlignItems.Stretch] or [FlexNode.alignSelf] is set as [AlignItems.Stretch].
-   *
-   * @param fromIndex the index from which value, stretch is calculated
    */
-  internal fun stretchChildren(fromIndex: Int = 0) {
-    if (fromIndex >= nodes.size) return
-
+  internal fun stretchChildren() {
     if (alignItems == AlignItems.Stretch) {
       var i = 0
       val size = lines.size
@@ -1067,11 +1061,14 @@ public class FlexboxEngine {
       }
     } else {
       for (flexLine in lines) {
-        for (index in flexLine.indicesAlignSelfStretch) {
-          if (flexDirection.isHorizontal) {
-            stretchViewVertically(reorderedNodes[index], flexLine.crossSize)
-          } else {
-            stretchViewHorizontally(reorderedNodes[index], flexLine.crossSize)
+        for (index in flexLine.firstIndex .. flexLine.lastIndex) {
+          val node = reorderedNodes[index]
+          if (node.alignSelf == AlignSelf.Stretch) {
+            if (flexDirection.isHorizontal) {
+              stretchViewVertically(node, flexLine.crossSize)
+            } else {
+              stretchViewHorizontally(node, flexLine.crossSize)
+            }
           }
         }
       }
@@ -1121,19 +1118,19 @@ public class FlexboxEngine {
     val crossSize = flexLine.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch -> if (flexWrap != FlexWrap.WrapReverse) {
-        node.layoutable.layout(left, top + node.margin.top, right, bottom + node.margin.top)
+        node.layout(left, top + node.margin.top, right, bottom + node.margin.top)
       } else {
-        node.layoutable.layout(left, top - node.margin.bottom, right, bottom - node.margin.bottom)
+        node.layout(left, top - node.margin.bottom, right, bottom - node.margin.bottom)
       }
       AlignItems.Baseline -> if (flexWrap != FlexWrap.WrapReverse) {
         val marginTop = maxOf(flexLine.maxBaseline - node.baseline, node.margin.top)
-        node.layoutable.layout(left, top + marginTop, right, bottom + marginTop)
+        node.layout(left, top + marginTop, right, bottom + marginTop)
       } else {
         val marginBottom = maxOf(flexLine.maxBaseline - node.measuredHeight + node.baseline, node.margin.bottom)
-        node.layoutable.layout(left, top - marginBottom, right, bottom - marginBottom)
+        node.layout(left, top - marginBottom, right, bottom - marginBottom)
       }
       AlignItems.FlexEnd -> if (flexWrap != FlexWrap.WrapReverse) {
-        node.layoutable.layout(
+        node.layout(
           left = left,
           top = top + crossSize - node.measuredHeight - node.margin.bottom,
           right = right,
@@ -1142,7 +1139,7 @@ public class FlexboxEngine {
       } else {
         // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from top to bottom).
-        node.layoutable.layout(
+        node.layout(
           left = left,
           top = top - crossSize + node.measuredHeight + node.margin.top,
           right = right,
@@ -1152,14 +1149,14 @@ public class FlexboxEngine {
       AlignItems.Center -> {
         val topFromCrossAxis = (crossSize - node.measuredHeight + node.margin.top - node.margin.bottom) / 2
         if (flexWrap != FlexWrap.WrapReverse) {
-          node.layoutable.layout(
+          node.layout(
             left = left,
             top = top + topFromCrossAxis,
             right = right,
             bottom = top + topFromCrossAxis + node.measuredHeight,
           )
         } else {
-          node.layoutable.layout(
+          node.layout(
             left = left,
             top = top - topFromCrossAxis,
             right = right,
@@ -1185,21 +1182,21 @@ public class FlexboxEngine {
   ) {
     var alignItems = alignItems
     if (node.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
+      // Expecting the values for alignItems and alignSelf match except for AlignSelfAuto.
       // Assigning the alignSelf value as alignItems should work.
       alignItems = AlignItems(node.alignSelf.ordinal)
     }
     val crossSize = flexLine.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!isRtl) {
-        node.layoutable.layout(
+        node.layout(
           left = left + node.margin.start,
           top = top,
           right = right + node.margin.start,
           bottom = bottom,
         )
       } else {
-        node.layoutable.layout(
+        node.layout(
           left = left - node.margin.end,
           top = top,
           right = right - node.margin.end,
@@ -1207,7 +1204,7 @@ public class FlexboxEngine {
         )
       }
       AlignItems.FlexEnd -> if (!isRtl) {
-        node.layoutable.layout(
+        node.layout(
           left = left + crossSize - node.measuredWidth - node.margin.end,
           top = top,
           right = right + crossSize - node.measuredWidth - node.margin.end,
@@ -1216,7 +1213,7 @@ public class FlexboxEngine {
       } else {
         // If the flexWrap == WrapReverse, the direction of the
         // flexEnd is flipped (from left to right).
-        node.layoutable.layout(
+        node.layout(
           left = left - crossSize + node.measuredWidth + node.margin.start,
           top = top,
           right = right - crossSize + node.measuredWidth + node.margin.start,
@@ -1226,9 +1223,9 @@ public class FlexboxEngine {
       AlignItems.Center -> {
         val leftFromCrossAxis = (crossSize - node.measuredWidth + node.margin.start - node.margin.end) / 2
         if (!isRtl) {
-          node.layoutable.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
+          node.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
         } else {
-          node.layoutable.layout(left - leftFromCrossAxis, top, right - leftFromCrossAxis, bottom)
+          node.layout(left - leftFromCrossAxis, top, right - leftFromCrossAxis, bottom)
         }
       }
     }

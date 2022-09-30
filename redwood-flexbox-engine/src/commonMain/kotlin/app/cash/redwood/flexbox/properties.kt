@@ -206,7 +206,7 @@ public value class JustifyContent(public val ordinal: Int) {
  * A MeasureSpec is comprised of a size and a mode.
  */
 @JvmInline
-public value class MeasureSpec private constructor(private val value: Int) {
+public value class MeasureSpec private constructor(internal val value: Int) {
 
   public val size: Int get() = value and 0x3FFF
   public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))

@@ -83,9 +83,4 @@ internal class FlexLine {
    * (i.e. have a value other than [UndefinedFlexShrink]).
    */
   var anyItemsHaveFlexShrink = false
-
-  /**
-   * Store the indices of the children whose alignSelf property is [AlignSelf.Stretch].
-   */
-  val indicesAlignSelfStretch = mutableListOf<Int>()
 }

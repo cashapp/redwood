@@ -27,7 +27,7 @@ public class FlexNode(
   /**
    * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
    */
-  public val baseline: Int = -1,
+  public val baseline: Int = DefaultBaseline,
 
   /**
    * The order attribute of the node.
@@ -108,7 +108,7 @@ public class FlexNode(
   /**
    * A callback to place the node inside a given set of coordinates.
    */
-  public var layoutable: Layoutable = Layoutable(),
+  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> },
 ) {
   /**
    * The measured width after invoking [Measurable.measure].
@@ -125,6 +125,9 @@ public class FlexNode(
   public var measuredHeight: Int = -1
 
   public companion object {
+    /** The default value for the baseline attribute */
+    public const val DefaultBaseline: Int = -1
+
     /** The default value for the order attribute */
     public const val DefaultOrder: Int = 1
 
