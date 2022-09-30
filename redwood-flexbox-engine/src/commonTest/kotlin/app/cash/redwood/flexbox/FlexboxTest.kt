@@ -277,7 +277,7 @@ class FlexboxTest {
     val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
     val heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly)
 
-    flexLines = if (flexDirection.isHorizontal) {
+    lines = if (flexDirection.isHorizontal) {
       calculateHorizontalFlexLines(widthSpec, heightSpec)
     } else {
       calculateVerticalFlexLines(widthSpec, heightSpec)

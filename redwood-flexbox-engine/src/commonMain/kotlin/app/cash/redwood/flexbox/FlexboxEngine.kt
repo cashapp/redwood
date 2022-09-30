@@ -86,7 +86,7 @@ public class FlexboxEngine {
   /**
    * The computed flex lines after calling [measure].
    */
-  internal var flexLines = listOf<FlexLine>()
+  internal var lines: List<FlexLine> = listOf()
 
   /**
    * Calculate how many flex lines are needed in the flex container.
@@ -465,7 +465,7 @@ public class FlexboxEngine {
       }
       paddingAlongMainAxis = padding.top + padding.bottom
     }
-    for (flexLine in flexLines) {
+    for (flexLine in lines) {
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
         expandFlexItems(
           childrenFrozen = childrenFrozen,
@@ -883,23 +883,23 @@ public class FlexboxEngine {
     }
     if (mode == MeasureSpecMode.Exactly) {
       val totalCrossSize = getSumOfCrossSize() + paddingAlongCrossAxis
-      if (flexLines.size == 1) {
-        flexLines[0].crossSize = size - paddingAlongCrossAxis
+      if (lines.size == 1) {
+        lines[0].crossSize = size - paddingAlongCrossAxis
         // alignContent property is valid only if the Flexbox has at least two lines
-      } else if (flexLines.size >= 2) {
+      } else if (lines.size >= 2) {
         when (alignContent) {
           AlignContent.Stretch -> run switch@{
             if (totalCrossSize >= size) {
               return@switch
             }
-            val freeSpaceUnit = (size - totalCrossSize) / flexLines.size.toFloat()
+            val freeSpaceUnit = (size - totalCrossSize) / lines.size.toFloat()
             var accumulatedError = 0f
             var i = 0
-            val flexLinesSize = flexLines.size
+            val flexLinesSize = lines.size
             while (i < flexLinesSize) {
-              val flexLine = flexLines[i]
+              val flexLine = lines[i]
               var newCrossSizeAsFloat = flexLine.crossSize + freeSpaceUnit
-              if (i == flexLines.size - 1) {
+              if (i == lines.size - 1) {
                 newCrossSizeAsFloat += accumulatedError
                 accumulatedError = 0f
               }
@@ -920,8 +920,8 @@ public class FlexboxEngine {
             if (totalCrossSize >= size) {
               // If the size of the content is larger than the flex container, the
               // Flex lines should be aligned center like ALIGN_CONTENT_CENTER
-              flexLines = constructFlexLinesForAlignContentCenter(
-                flexLines = flexLines,
+              lines = constructFlexLinesForAlignContentCenter(
+                flexLines = lines,
                 size = size,
                 totalCrossSize = totalCrossSize,
               )
@@ -931,17 +931,17 @@ public class FlexboxEngine {
             // and below the bottom of each flex line.
             var spaceTopAndBottom = size - totalCrossSize
             // The number of spaces along the cross axis
-            val numberOfSpaces = flexLines.size * 2
+            val numberOfSpaces = lines.size * 2
             spaceTopAndBottom /= numberOfSpaces
             val newFlexLines = ArrayList<FlexLine>()
             val dummySpaceFlexLine = FlexLine()
             dummySpaceFlexLine.crossSize = spaceTopAndBottom
-            for (flexLine in flexLines) {
+            for (flexLine in lines) {
               newFlexLines.add(dummySpaceFlexLine)
               newFlexLines.add(flexLine)
               newFlexLines.add(dummySpaceFlexLine)
             }
-            flexLines = newFlexLines
+            lines = newFlexLines
           }
           AlignContent.SpaceBetween -> run switch@{
             if (totalCrossSize >= size) {
@@ -949,18 +949,18 @@ public class FlexboxEngine {
             }
             // The value of free space along the cross axis between each flex line.
             var spaceBetweenFlexLine = (size - totalCrossSize).toFloat()
-            val numberOfSpaces = flexLines.size - 1
+            val numberOfSpaces = lines.size - 1
             spaceBetweenFlexLine /= numberOfSpaces.toFloat()
             var accumulatedError = 0f
             val newFlexLines = ArrayList<FlexLine>()
             var i = 0
-            val flexLineSize = flexLines.size
+            val flexLineSize = lines.size
             while (i < flexLineSize) {
-              val flexLine = flexLines[i]
+              val flexLine = lines[i]
               newFlexLines.add(flexLine)
-              if (i != flexLines.size - 1) {
+              if (i != lines.size - 1) {
                 val dummySpaceFlexLine = FlexLine()
-                if (i == flexLines.size - 2) {
+                if (i == lines.size - 2) {
                   // The last dummy space block in the flex container.
                   // Adjust the cross size by the accumulated error.
                   dummySpaceFlexLine.crossSize = (spaceBetweenFlexLine + accumulatedError).roundToInt()
@@ -980,11 +980,11 @@ public class FlexboxEngine {
               }
               i++
             }
-            flexLines = newFlexLines
+            lines = newFlexLines
           }
           AlignContent.Center -> {
-            flexLines = constructFlexLinesForAlignContentCenter(
-              flexLines = flexLines,
+            lines = constructFlexLinesForAlignContentCenter(
+              flexLines = lines,
               size = size,
               totalCrossSize = totalCrossSize,
             )
@@ -993,7 +993,7 @@ public class FlexboxEngine {
             val spaceTop = size - totalCrossSize
             val dummySpaceFlexLine = FlexLine()
             dummySpaceFlexLine.crossSize = spaceTop
-            flexLines = flexLines.toMutableList().apply { add(0, dummySpaceFlexLine) }
+            lines = lines.toMutableList().apply { add(0, dummySpaceFlexLine) }
           }
         }
       }
@@ -1037,9 +1037,9 @@ public class FlexboxEngine {
 
     if (alignItems == AlignItems.Stretch) {
       var i = 0
-      val size = flexLines.size
+      val size = lines.size
       while (i < size) {
-        val flexLine = flexLines[i]
+        val flexLine = lines[i]
         var j = 0
         while (j < flexLine.itemCount) {
           val nodeIndex = flexLine.firstIndex + j
@@ -1066,7 +1066,7 @@ public class FlexboxEngine {
         i++
       }
     } else {
-      for (flexLine in flexLines) {
+      for (flexLine in lines) {
         for (index in flexLine.indicesAlignSelfStretch) {
           if (flexDirection.isHorizontal) {
             stretchViewVertically(reorderedNodes[index], flexLine.crossSize)
@@ -1416,9 +1416,9 @@ public class FlexboxEngine {
     // SpaceBetween or SpaceAround
     var childRight: Float
     var i = 0
-    val size = flexLines.size
+    val size = lines.size
     while (i < size) {
-      val flexLine = flexLines[i]
+      val flexLine = lines[i]
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1549,9 +1549,9 @@ public class FlexboxEngine {
     // Used only for if the direction is from bottom to top
     var childBottom: Float
     var i = 0
-    val size = flexLines.size
+    val size = lines.size
     while (i < size) {
-      val flexLine = flexLines[i]
+      val flexLine = lines[i]
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1658,13 +1658,13 @@ public class FlexboxEngine {
    * The largest main size of all flex lines.
    */
   private fun getLargestMainSize(): Int {
-    return if (flexLines.isEmpty()) Int.MIN_VALUE else flexLines.maxOf { it.mainSize }
+    return if (lines.isEmpty()) Int.MIN_VALUE else lines.maxOf { it.mainSize }
   }
 
   /**
    * The sum of the cross sizes of all flex lines.
    */
   private fun getSumOfCrossSize(): Int {
-    return flexLines.sumOf { it.crossSize }
+    return lines.sumOf { it.crossSize }
   }
 }
