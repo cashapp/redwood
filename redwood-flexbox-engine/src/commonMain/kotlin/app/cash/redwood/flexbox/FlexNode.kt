@@ -104,11 +104,6 @@ public class FlexNode(
    * A callback to to measure this node according to a set of measurement constraints.
    */
   public var measurable: Measurable = Measurable(),
-
-  /**
-   * A callback to place the node inside a given set of coordinates.
-   */
-  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> },
 ) {
   /**
    * The measured width after invoking [Measurable.measure].
@@ -123,6 +118,11 @@ public class FlexNode(
    * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
    */
   public var measuredHeight: Int = -1
+
+  /**
+   * A callback to place the node inside a given set of coordinates.
+   */
+  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
 
   public companion object {
     /** The default value for the baseline attribute */
