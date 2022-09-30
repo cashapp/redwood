@@ -426,7 +426,7 @@ public class FlexboxEngine {
     if (needsMeasure) {
       val widthSpec = MeasureSpec.from(childWidth, MeasureSpecMode.Exactly)
       val heightSpec = MeasureSpec.from(childHeight, MeasureSpecMode.Exactly)
-      node.measurable.measure(widthSpec, heightSpec)
+      node.applyMeasure(widthSpec, heightSpec)
     }
   }
 
