@@ -4,8 +4,7 @@ Emoji Search
 This is a mobile app demo of Zipline. It has two modules:
 
  * **presenters** is a Kotlin/Multiplatform library that searches a set of emoji images.
- * **android** is an Android application that downloads the presenters JavaScript and displays
-   it.
+ * **android** is an Android application that downloads the presenters JavaScript and displays it.
  * **ios** is an iOS application that downloads the presenters JavaScript and displays it.
 
 Prerequisites
