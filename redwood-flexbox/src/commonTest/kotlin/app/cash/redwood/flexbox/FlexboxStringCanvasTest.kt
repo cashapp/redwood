@@ -32,7 +32,7 @@ class FlexboxStringCanvasTest {
   @Test
   fun column() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Column
       nodes += widgets.map { it.toNode() }
     }
@@ -60,14 +60,14 @@ class FlexboxStringCanvasTest {
       ··············
       ··············
       """.trimIndent(),
-      engine.layout(14, 20, widgets),
+      flexbox.layout(14, 20, widgets),
     )
   }
 
   @Test
   fun columnCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Column
       justifyContent = JustifyContent.Center
       nodes += widgets.map { it.toNode() }
@@ -98,14 +98,14 @@ class FlexboxStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 22, widgets),
+      flexbox.layout(20, 22, widgets),
     )
   }
 
   @Test
   fun columnMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Column
       alignItems = AlignItems.Center
       nodes += widgets.map { it.toNode() }
@@ -134,14 +134,14 @@ class FlexboxStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 20, widgets),
+      flexbox.layout(20, 20, widgets),
     )
   }
 
   @Test
   fun columnCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Column
       alignItems = AlignItems.Stretch
       nodes += widgets.map { it.toNode() }
@@ -172,14 +172,14 @@ class FlexboxStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 22, widgets),
+      flexbox.layout(20, 22, widgets),
     )
   }
 
   @Test
   fun row() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode() }
     }
@@ -195,14 +195,14 @@ class FlexboxStringCanvasTest {
       ····························································
       ····························································
       """.trimIndent(),
-      engine.layout(60, 8, widgets),
+      flexbox.layout(60, 8, widgets),
     )
   }
 
   @Test
   fun rowCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode() }
       alignItems = AlignItems.Center
@@ -219,14 +219,14 @@ class FlexboxStringCanvasTest {
       ··········································
       ··········································
       """.trimIndent(),
-      engine.layout(42, 8, widgets),
+      flexbox.layout(42, 8, widgets),
     )
   }
 
   @Test
   fun rowMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
       justifyContent = JustifyContent.Center
@@ -241,14 +241,14 @@ class FlexboxStringCanvasTest {
       ·········└──────────┘···········└──────┘|         │·········
       ········································└─────────┘·········
       """.trimIndent(),
-      engine.layout(60, 6, widgets),
+      flexbox.layout(60, 6, widgets),
     )
   }
 
   @Test
   fun rowCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = Flexbox().apply {
+    val flexbox = Flexbox().apply {
       flexDirection = Row
       alignItems = AlignItems.Stretch
       nodes += widgets.map { it.toNode() }
@@ -265,7 +265,7 @@ class FlexboxStringCanvasTest {
       |                        │|             │|               │|                     │···················
       └────────────────────────┘└─────────────┘└───────────────┘└─────────────────────┘···················
       """.trimIndent(),
-      engine.layout(100, 8, widgets),
+      flexbox.layout(100, 8, widgets),
     )
   }
 
