@@ -695,12 +695,12 @@ public class FlexboxEngine {
         continue
       }
       val measurable = child.measurable
-      if (flexDirection == FlexDirection.Row || flexDirection == FlexDirection.RowReverse) {
+      if (flexDirection.isHorizontal) {
         // The direction of main axis is horizontal
         var childMeasuredWidth = child.measuredWidth
         var childMeasuredHeight = child.measuredHeight
         if (!childrenFrozen[index] && child.flexShrink > 0f) {
-          var rawCalculatedWidth = (childMeasuredWidth - unitShrink * child.flexShrink)
+          var rawCalculatedWidth = childMeasuredWidth - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0f
@@ -709,11 +709,9 @@ public class FlexboxEngine {
           val minWidth = measurable.minWidth
           if (newWidth < minWidth) {
             // This means the child doesn't have enough space to distribute the negative
-            // free space. To adjust the flex line length down to the maxMainSize,
-            // remaining
-            // negative free space needs to be re-distributed to other flex items
-            // (children nodes). In that case, invoke this method again with the same
-            // fromIndex.
+            // free space. To adjust the flex line length down to the maxMainSize, remaining
+            // negative free space needs to be re-distributed to other flex items (children
+            // nodes). In that case, invoke this method again with the same fromIndex.
             needsReshrink = true
             newWidth = minWidth
             childrenFrozen[index] = true
@@ -748,10 +746,7 @@ public class FlexboxEngine {
         var childMeasuredHeight = child.measuredHeight
         var childMeasuredWidth = child.measuredWidth
         if (!childrenFrozen[index] && child.flexShrink > 0f) {
-          var rawCalculatedHeight = (
-            childMeasuredHeight -
-              unitShrink * child.flexShrink
-            )
+          var rawCalculatedHeight = childMeasuredHeight - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0f
