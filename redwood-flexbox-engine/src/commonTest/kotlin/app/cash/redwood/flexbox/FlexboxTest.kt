@@ -64,7 +64,7 @@ class FlexboxTest {
   }
 
   @Test
-  fun columnCrossAxisCentered() {
+  fun columnMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
       flexDirection = Column
@@ -102,7 +102,7 @@ class FlexboxTest {
   }
 
   @Test
-  fun columnMainAxisCentered() {
+  fun columnCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
       flexDirection = Column
@@ -199,6 +199,28 @@ class FlexboxTest {
   }
 
   @Test
+  fun rowMainAxisCentered() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val engine = FlexboxEngine().apply {
+      flexDirection = Row
+      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
+      justifyContent = JustifyContent.Center
+    }
+
+    assertEquals(
+      """
+      ·········┌──────────┐┌─────────┐┌──────┐┌─────────┐·········
+      ·········|The       │|The      │|The   │|The      │·········
+      ·········|Shawshank │|Godfather│|Dark  │|Godfather│·········
+      ·········|Redemption│└─────────┘|Knight│|Part II  │·········
+      ·········└──────────┘···········└──────┘|         │·········
+      ········································└─────────┘·········
+      """.trimIndent(),
+      engine.layout(60, 6, widgets),
+    )
+  }
+
+  @Test
   fun rowCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val engine = FlexboxEngine().apply {
@@ -219,28 +241,6 @@ class FlexboxTest {
       ··········································
       """.trimIndent(),
       engine.layout(42, 8, widgets),
-    )
-  }
-
-  @Test
-  fun rowMainAxisCentered() {
-    val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
-      flexDirection = Row
-      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
-      justifyContent = JustifyContent.Center
-    }
-
-    assertEquals(
-      """
-      ·········┌──────────┐┌─────────┐┌──────┐┌─────────┐·········
-      ·········|The       │|The      │|The   │|The      │·········
-      ·········|Shawshank │|Godfather│|Dark  │|Godfather│·········
-      ·········|Redemption│└─────────┘|Knight│|Part II  │·········
-      ·········└──────────┘···········└──────┘|         │·········
-      ········································└─────────┘·········
-      """.trimIndent(),
-      engine.layout(60, 6, widgets),
     )
   }
 

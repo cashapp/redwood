@@ -438,10 +438,7 @@ public class FlexboxEngine {
   internal fun determineMainSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    fromIndex: Int = 0,
   ) {
-    if (fromIndex >= nodes.size) return
-
     // Holds the 'frozen' state of children during measure. If a node is frozen it will no longer
     // expand or shrink regardless of flex grow/flex shrink attributes.
     val childrenFrozen = BooleanArray(nodes.size)
