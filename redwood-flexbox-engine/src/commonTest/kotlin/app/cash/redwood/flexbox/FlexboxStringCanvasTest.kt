@@ -21,7 +21,7 @@ import app.cash.redwood.flexbox.FlexDirection.Companion.RowReverse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FlexboxTest {
+class FlexboxStringCanvasTest {
   private val imdbTop4 = listOf(
     "The Shawshank Redemption",
     "The Godfather",
@@ -32,7 +32,7 @@ class FlexboxTest {
   @Test
   fun column() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Column
       nodes += widgets.map { it.toNode() }
     }
@@ -67,7 +67,7 @@ class FlexboxTest {
   @Test
   fun columnCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Column
       justifyContent = JustifyContent.Center
       nodes += widgets.map { it.toNode() }
@@ -105,7 +105,7 @@ class FlexboxTest {
   @Test
   fun columnMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Column
       alignItems = AlignItems.Center
       nodes += widgets.map { it.toNode() }
@@ -141,7 +141,7 @@ class FlexboxTest {
   @Test
   fun columnCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Column
       alignItems = AlignItems.Stretch
       nodes += widgets.map { it.toNode() }
@@ -179,7 +179,7 @@ class FlexboxTest {
   @Test
   fun row() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode() }
     }
@@ -202,7 +202,7 @@ class FlexboxTest {
   @Test
   fun rowCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode() }
       alignItems = AlignItems.Center
@@ -226,7 +226,7 @@ class FlexboxTest {
   @Test
   fun rowMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Row
       nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
       justifyContent = JustifyContent.Center
@@ -248,7 +248,7 @@ class FlexboxTest {
   @Test
   fun rowCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val engine = Flexbox().apply {
       flexDirection = Row
       alignItems = AlignItems.Stretch
       nodes += widgets.map { it.toNode() }
@@ -269,7 +269,7 @@ class FlexboxTest {
     )
   }
 
-  private fun FlexboxEngine.layout(
+  private fun Flexbox.layout(
     width: Int,
     height: Int,
     widgets: List<StringWidget>,

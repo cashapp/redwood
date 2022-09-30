@@ -35,7 +35,7 @@ public class FlexNode(
    *
    * The attribute can change the order in which the children are laid out.
    * By default, children are displayed and laid out in the same order as they added to the
-   * [FlexboxEngine].
+   * [Flexbox].
    */
   public val order: Int = DefaultOrder,
 

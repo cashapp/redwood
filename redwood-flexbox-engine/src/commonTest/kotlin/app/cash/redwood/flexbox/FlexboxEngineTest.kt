@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
 
 class FlexboxEngineTest {
 
-  private val engine = FlexboxEngine().apply {
+  private val engine = Flexbox().apply {
     flexWrap = FlexWrap.Wrap
     alignItems = AlignItems.Stretch
     alignContent = AlignContent.Stretch

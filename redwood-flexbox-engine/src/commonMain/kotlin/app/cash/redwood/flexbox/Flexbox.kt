@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 /**
  * A class that measures and positions its children according to its flexbox properties.
  */
-public class FlexboxEngine {
+public class Flexbox {
 
   /**
    * The flex direction attribute of the flexbox.
@@ -1147,7 +1147,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Expand the node if the [FlexboxEngine.alignItems] attribute is set to
+   * Expand the node if the [Flexbox.alignItems] attribute is set to
    * [AlignItems.Stretch] or [FlexNode.alignSelf] is set as [AlignItems.Stretch].
    *
    * @param fromIndex the index from which value, stretch is calculated
@@ -1269,7 +1269,7 @@ public class FlexboxEngine {
 
   /**
    * Place a single View when the layout direction is horizontal
-   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
+   * ([Flexbox.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
     node: FlexNode,
@@ -1339,7 +1339,7 @@ public class FlexboxEngine {
 
   /**
    * Place a single View when the layout direction is vertical
-   * ([FlexboxEngine.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
+   * ([Flexbox.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
     node: FlexNode,
@@ -1588,7 +1588,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Sub method for `onLayout` when the [FlexboxEngine.flexDirection] is either
+   * Sub method for `onLayout` when the [Flexbox.flexDirection] is either
    * [FlexDirection.Row] or [FlexDirection.RowReverse].
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise.
@@ -1719,7 +1719,7 @@ public class FlexboxEngine {
   }
 
   /**
-   * Sub method for `onLayout` when the [FlexboxEngine.flexDirection] is either
+   * Sub method for `onLayout` when the [Flexbox.flexDirection] is either
    * [FlexDirection.Column] or [FlexDirection.ColumnReverse].
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise
