@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.layout
 
 import android.annotation.SuppressLint
@@ -30,7 +29,7 @@ class ViewLayoutTest {
   @get:Rule
   val paparazzi = Paparazzi(
     deviceConfig = PIXEL_6,
-    theme = "android:Theme.Material.Light.NoActionBar"
+    theme = "android:Theme.Material.Light.NoActionBar",
   )
 
   private val textViews by lazy {
@@ -54,7 +53,7 @@ class ViewLayoutTest {
         background = ColorDrawable(Color.CYAN)
         textSize = 18f
         text = "TextView 4"
-      }
+      },
     )
   }
 
