@@ -42,25 +42,25 @@ class ViewLayoutTest {
     }
 
     var textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 1"
     }
     column.children.insert(0, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 2"
     }
     column.children.insert(1, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 3"
     }
     column.children.insert(2, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 4"
     }
@@ -78,25 +78,25 @@ class ViewLayoutTest {
     }
 
     var textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 1"
     }
     row.children.insert(0, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 2"
     }
     row.children.insert(1, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 3"
     }
     row.children.insert(2, textView)
     textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.BLUE)
+      background = ColorDrawable(Color.CYAN)
       textSize = 18f
       text = "TextView 4"
     }

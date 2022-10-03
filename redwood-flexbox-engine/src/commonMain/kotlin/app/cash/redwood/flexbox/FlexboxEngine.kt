@@ -1443,7 +1443,7 @@ public class FlexboxEngine {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
-    val flexLines = calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    flexLines = calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
     determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     if (alignItems == AlignItems.Baseline) {
@@ -1497,7 +1497,7 @@ public class FlexboxEngine {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
-    calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    flexLines = calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
     determineMainSize(widthMeasureSpec, heightMeasureSpec)
     determineCrossSize(
       widthMeasureSpec = widthMeasureSpec,
