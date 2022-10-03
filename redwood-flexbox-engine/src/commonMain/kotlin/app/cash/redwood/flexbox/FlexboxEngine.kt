@@ -67,59 +67,27 @@ public class FlexboxEngine {
    * Returns the nodes contained in the flexbox.
    */
   public val nodes: MutableList<FlexNode> = ObservableMutableList(
-    onChange = { indexToReorderedIndex = null },
+    onChange = { reorderedNodes = listOf() },
   )
 
   /**
-   * The computed flex lines after calling [applyMeasure].
+   * Holds the list of [nodes] after [FlexNode.order] has been taken into account.
    */
-  internal var flexLines = listOf<FlexLine>()
+  private var reorderedNodes: List<FlexNode> = listOf()
+    get() {
+      if (field.size != nodes.size) {
+        // Lazily sort the list of nodes by their order descending.
+        field = nodes.withIndex()
+          .sortedWith(compareBy({ -it.value.order }, { it.index }))
+          .map { it.value }
+      }
+      return field
+    }
 
   /**
-   * Holds the reordered indices after [FlexNode.order] has been taken into account.
+   * The computed flex lines after calling [measure].
    */
-  private var indexToReorderedIndex: IntArray? = null
-
-  /**
-   * Holds the 'frozen' state of children during measure. If a node is frozen it will no longer
-   * expand or shrink regardless of flex grow/flex shrink attributes.
-   */
-  private var childrenFrozen: BooleanArray? = null
-
-  /**
-   * Map the node index to the flex line which contains the node represented by the index to
-   * look for a flex line from a given node index in a constant time.
-   * Key: index of the node
-   * Value: index of the flex line that contains the given node
-   *
-   * E.g. if we have following flex lines,
-   *
-   * FlexLine(0): itemCount 3
-   * FlexLine(1): itemCount 2
-   *
-   * this instance should have following entries
-   *
-   * [0, 0, 0, 1, 1, ...]
-   */
-  internal var indexToFlexLine: IntArray? = null
-
-  /**
-   * Cache the measured spec. The first 32 bit represents the height measure spec, the last
-   * 32 bit represents the width measure spec of each flex item.
-   * E.g. an entry is created like `(long) heightMeasureSpec << 32 | widthMeasureSpec`
-   *
-   * To retrieve a widthMeasureSpec, call [unpackLower] or [unpackHigher] for a heightMeasureSpec.
-   */
-  private var measureSpecCache: LongArray? = null
-
-  /**
-   * Cache a flex item's measured width and height. The first 32 bit represents the height, the
-   * last 32 bit represents the width of each flex item.
-   * E.g. an entry is created like `(long) node.measuredHeight << 32 | node.measuredWidth`
-   *
-   * To retrieve a width value, call [unpackLower] or [unpackHigher] for a height value.
-   */
-  private var measuredSizeCache: LongArray? = null
+  internal var flexLines: List<FlexLine> = listOf()
 
   /**
    * Calculate how many flex lines are needed in the flex container.
@@ -196,7 +164,7 @@ public class FlexboxEngine {
     flexLine.mainSize = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding)
     val childCount = nodes.size
     for (i in fromIndex until childCount) {
-      val child = getReorderedChildAt(i)
+      val child = reorderedNodes.getOrNull(i)
       if (child == null) {
         if (isLastFlexItem(i, childCount, flexLine)) {
           addFlexLine(flexLines, flexLine, i, sumCrossSize)
@@ -210,19 +178,15 @@ public class FlexboxEngine {
         }
         continue
       }
-      if (child.alignSelf == AlignSelf.Stretch) {
-        flexLine.indicesAlignSelfStretch += i
-      }
       var childMainSize = orientation.mainSize(child)
       if (child.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
         childMainSize = (mainSize * child.flexBasisPercent).roundToInt()
-        // Use the dimension from the layout if the mainMode is not
-        // MeasureSpecMode.Exactly even if any fraction value is set to
-        // layout_flexBasisPercent.
+        // Use the dimension from the layout if the mainMode is not MeasureSpecMode.Exactly even
+        // if any fraction value is set to flexBasisPercent.
       }
-      var childMainMeasureSpec: MeasureSpec
+      val childMainMeasureSpec: MeasureSpec
       var childCrossMeasureSpec: MeasureSpec
-      if (orientation == Orientation.Horizontal) {
+      if (flexDirection.isHorizontal) {
         childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = mainMeasureSpec,
           padding = orientation.mainPaddingStart(padding) + orientation.mainPaddingEnd(padding) +
@@ -236,7 +200,6 @@ public class FlexboxEngine {
           childDimension = orientation.crossSize(child),
         )
         child.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
-        updateMeasureCache(i, childMainMeasureSpec, childCrossMeasureSpec, child)
       } else {
         childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
           spec = crossMeasureSpec,
@@ -251,14 +214,13 @@ public class FlexboxEngine {
           childDimension = childMainSize,
         )
         child.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
-        updateMeasureCache(i, childCrossMeasureSpec, childMainMeasureSpec, child)
       }
 
       // Check the size constraint after the first measurement for the child to prevent the child's
       // width/height from violating the size constraints imposed by the Node.minWidth,
       // Node.minHeight, Node.maxWidth, Node.maxHeight attributes. E.g. When the child's width is
       // WrapContent the measured width may be less than the min width after the first measurement.
-      measureWithConstraints(child, i)
+      measureWithConstraints(child)
       if (
         isWrapRequired(
           mode = mainMode,
@@ -274,7 +236,7 @@ public class FlexboxEngine {
           sumCrossSize += flexLine.crossSize
         }
         val measurable = child.measurable
-        if (orientation == Orientation.Horizontal) {
+        if (flexDirection.isHorizontal) {
           val height = measurable.height
           if (height == MatchParent) {
             // This case takes care of the corner case where the cross size of the
@@ -290,7 +252,7 @@ public class FlexboxEngine {
               childDimension = height,
             )
             child.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
-            measureWithConstraints(child, i)
+            measureWithConstraints(child)
           }
         } else {
           val width = measurable.width
@@ -308,7 +270,7 @@ public class FlexboxEngine {
               childDimension = width,
             )
             child.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
-            measureWithConstraints(child, i)
+            measureWithConstraints(child)
           }
         }
         flexLine = FlexLine()
@@ -323,9 +285,6 @@ public class FlexboxEngine {
       }
       flexLine.anyItemsHaveFlexGrow = flexLine.anyItemsHaveFlexGrow || (child.flexGrow != DefaultFlexGrow)
       flexLine.anyItemsHaveFlexShrink = flexLine.anyItemsHaveFlexShrink || (child.flexShrink != UndefinedFlexShrink)
-      if (indexToFlexLine != null) {
-        indexToFlexLine!![i] = flexLines.size
-      }
       flexLine.mainSize += orientation.mainMeasuredSize(child) + orientation.mainMarginStart(child) + orientation.mainMarginEnd(child)
       flexLine.totalFlexGrow += child.flexGrow
       flexLine.totalFlexShrink += child.flexShrink
@@ -334,10 +293,9 @@ public class FlexboxEngine {
         orientation.crossMeasuredSize(child) + orientation.crossMarginStart(child) + orientation.crossMarginEnd(child)
       )
       // Temporarily set the cross axis length as the largest child in the flexLine
-      // Expand along the cross axis depending on the alignContent property if needed
-      // later
+      // Expand along the cross axis depending on the alignContent property if needed later
       flexLine.crossSize = maxOf(flexLine.crossSize, largestSizeInCross)
-      if (orientation == Orientation.Horizontal) {
+      if (flexDirection.isHorizontal) {
         if (flexWrap != FlexWrap.WrapReverse) {
           flexLine.maxBaseline = maxOf(
             flexLine.maxBaseline,
@@ -438,7 +396,7 @@ public class FlexboxEngine {
    * Remeasures the node if its [FlexNode.measuredWidth] or [FlexNode.measuredHeight] violate the
    * minimum/maximum size constraints imposed by its min/max attributes.
    */
-  private fun measureWithConstraints(node: FlexNode, index: Int) {
+  private fun measureWithConstraints(node: FlexNode) {
     var needsMeasure = false
     var childWidth = node.measuredWidth
     var childHeight = node.measuredHeight
@@ -469,7 +427,6 @@ public class FlexboxEngine {
       val widthSpec = MeasureSpec.from(childWidth, MeasureSpecMode.Exactly)
       val heightSpec = MeasureSpec.from(childHeight, MeasureSpecMode.Exactly)
       node.applyMeasure(widthSpec, heightSpec)
-      updateMeasureCache(index, widthSpec, heightSpec, node)
     }
   }
 
@@ -477,55 +434,36 @@ public class FlexboxEngine {
    * Determine the main size by expanding (shrinking if negative remaining free space is given)
    * an individual child in each flex line if any children's flexGrow (or flexShrink if remaining
    * space is negative) properties are set to non-zero.
-   *
-   * @param widthMeasureSpec horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
   internal fun determineMainSize(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
-    fromIndex: Int = 0,
   ) {
-    ensureChildrenFrozen(nodes.size)
-    if (fromIndex >= nodes.size) {
-      return
-    }
+    // Holds the 'frozen' state of children during measure. If a node is frozen it will no longer
+    // expand or shrink regardless of flex grow/flex shrink attributes.
+    val childrenFrozen = BooleanArray(nodes.size)
+
     val mainSize: Int
     val paddingAlongMainAxis: Int
-    when (flexDirection) {
-      FlexDirection.Row, FlexDirection.RowReverse -> {
-        val widthMode = widthMeasureSpec.mode
-        val widthSize = widthMeasureSpec.size
-        val largestMainSize = getLargestMainSize()
-        mainSize = if (widthMode == MeasureSpecMode.Exactly) {
-          widthSize
-        } else {
-          minOf(largestMainSize, widthSize)
-        }
-        paddingAlongMainAxis = padding.start + padding.end
+    if (flexDirection.isHorizontal) {
+      mainSize = if (widthMeasureSpec.mode == MeasureSpecMode.Exactly) {
+        widthMeasureSpec.size
+      } else {
+        minOf(getLargestMainSize(), widthMeasureSpec.size)
       }
-      FlexDirection.Column, FlexDirection.ColumnReverse -> {
-        val heightMode = heightMeasureSpec.mode
-        val heightSize = heightMeasureSpec.size
-        mainSize = if (heightMode == MeasureSpecMode.Exactly) {
-          heightSize
-        } else {
-          getLargestMainSize()
-        }
-        paddingAlongMainAxis = padding.top + padding.bottom
+      paddingAlongMainAxis = padding.start + padding.end
+    } else {
+      mainSize = if (heightMeasureSpec.mode == MeasureSpecMode.Exactly) {
+        heightMeasureSpec.size
+      } else {
+        getLargestMainSize()
       }
-      else -> throw AssertionError()
+      paddingAlongMainAxis = padding.top + padding.bottom
     }
-    var flexLineIndex = 0
-    if (indexToFlexLine != null) {
-      flexLineIndex = indexToFlexLine!![fromIndex]
-    }
-    var i = flexLineIndex
-    val size = flexLines.size
-    while (i < size) {
-      val flexLine = flexLines[i]
+    for (flexLine in flexLines) {
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
         expandFlexItems(
+          childrenFrozen = childrenFrozen,
           widthMeasureSpec = widthMeasureSpec,
           heightMeasureSpec = heightMeasureSpec,
           flexLine = flexLine,
@@ -535,6 +473,7 @@ public class FlexboxEngine {
         )
       } else if (flexLine.mainSize > mainSize && flexLine.anyItemsHaveFlexShrink) {
         shrinkFlexItems(
+          childrenFrozen = childrenFrozen,
           widthMeasureSpec = widthMeasureSpec,
           heightMeasureSpec = heightMeasureSpec,
           flexLine = flexLine,
@@ -543,18 +482,6 @@ public class FlexboxEngine {
           calledRecursively = false,
         )
       }
-      i++
-    }
-  }
-
-  private fun ensureChildrenFrozen(size: Int) {
-    if (childrenFrozen == null) {
-      childrenFrozen = BooleanArray(maxOf(size, 10))
-    } else if (childrenFrozen!!.size < size) {
-      val newCapacity = childrenFrozen!!.size * 2
-      childrenFrozen = BooleanArray(maxOf(newCapacity, size))
-    } else {
-      childrenFrozen!!.fill(false)
     }
   }
 
@@ -569,6 +496,7 @@ public class FlexboxEngine {
    * @param calledRecursively true if this method is called recursively, false otherwise
    */
   private fun expandFlexItems(
+    childrenFrozen: BooleanArray,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
@@ -600,7 +528,7 @@ public class FlexboxEngine {
     var accumulatedRoundError = 0f
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
-      val child = getReorderedChildAt(index)
+      val child = reorderedNodes.getOrNull(index)
       if (child == null || !child.visible) {
         continue
       }
@@ -608,20 +536,8 @@ public class FlexboxEngine {
       if (flexDirection == FlexDirection.Row || flexDirection == FlexDirection.RowReverse) {
         // The direction of the main axis is horizontal
         var childMeasuredWidth = child.measuredWidth
-        if (measuredSizeCache != null) {
-          // Retrieve the measured width from the cache because there
-          // are some cases that the view is re-created from the last measure, thus
-          // View#getMeasuredWidth returns 0.
-          // E.g. if the flex container is FlexboxLayoutManager, the case happens
-          // frequently
-          childMeasuredWidth = unpackLower(measuredSizeCache!![index])
-        }
         var childMeasuredHeight = child.measuredHeight
-        if (measuredSizeCache != null) {
-          // Extract the measured height from the cache
-          childMeasuredHeight = unpackHigher(measuredSizeCache!![index])
-        }
-        if (!childrenFrozen!![index] && child.flexGrow > 0f) {
+        if (!childrenFrozen[index] && child.flexGrow > 0f) {
           var rawCalculatedWidth = (childMeasuredWidth + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
@@ -638,7 +554,7 @@ public class FlexboxEngine {
             // fromIndex.
             needsReexpand = true
             newWidth = maxWidth
-            childrenFrozen!![index] = true
+            childrenFrozen[index] = true
             flexLine.totalFlexGrow -= child.flexGrow
           } else {
             accumulatedRoundError += rawCalculatedWidth - newWidth
@@ -659,7 +575,6 @@ public class FlexboxEngine {
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
-          updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = maxOf(
           largestCrossSize,
@@ -669,20 +584,8 @@ public class FlexboxEngine {
       } else {
         // The direction of the main axis is vertical
         var childMeasuredHeight = child.measuredHeight
-        if (measuredSizeCache != null) {
-          // Retrieve the measured height from the cache because there
-          // are some cases that the view is re-created from the last measure, thus
-          // View#getMeasuredHeight returns 0.
-          // E.g. if the flex container is FlexboxLayoutManager, that case happens
-          // frequently
-          childMeasuredHeight = unpackHigher(measuredSizeCache!![index])
-        }
         var childMeasuredWidth = child.measuredWidth
-        if (measuredSizeCache != null) {
-          // Extract the measured width from the cache
-          childMeasuredWidth = unpackLower(measuredSizeCache!![index])
-        }
-        if (!childrenFrozen!![index] && child.flexGrow > 0f) {
+        if (!childrenFrozen[index] && child.flexGrow > 0f) {
           var rawCalculatedHeight = (childMeasuredHeight + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
@@ -699,7 +602,7 @@ public class FlexboxEngine {
             // fromIndex.
             needsReexpand = true
             newHeight = maxHeight
-            childrenFrozen!![index] = true
+            childrenFrozen[index] = true
             flexLine.totalFlexGrow -= child.flexGrow
           } else {
             accumulatedRoundError += rawCalculatedHeight - newHeight
@@ -720,7 +623,6 @@ public class FlexboxEngine {
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
-          updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = maxOf(
           largestCrossSize,
@@ -734,6 +636,7 @@ public class FlexboxEngine {
       // Re-invoke the method with the same flex line to distribute the positive free space
       // that wasn't fully distributed (because of maximum length constraint)
       expandFlexItems(
+        childrenFrozen = childrenFrozen,
         widthMeasureSpec = widthMeasureSpec,
         heightMeasureSpec = heightMeasureSpec,
         flexLine = flexLine,
@@ -755,6 +658,7 @@ public class FlexboxEngine {
    * @param calledRecursively true if this method is called recursively, false otherwise
    */
   private fun shrinkFlexItems(
+    childrenFrozen: BooleanArray,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
@@ -786,29 +690,17 @@ public class FlexboxEngine {
     }
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
-      val child = getReorderedChildAt(index)
+      val child = reorderedNodes.getOrNull(index)
       if (child == null || !child.visible) {
         continue
       }
       val measurable = child.measurable
-      if (flexDirection == FlexDirection.Row || flexDirection == FlexDirection.RowReverse) {
+      if (flexDirection.isHorizontal) {
         // The direction of main axis is horizontal
         var childMeasuredWidth = child.measuredWidth
-        if (measuredSizeCache != null) {
-          // Retrieve the measured width from the cache because there
-          // are some cases that the view is re-created from the last measure, thus
-          // View#getMeasuredWidth returns 0.
-          // E.g. if the flex container is FlexboxLayoutManager, the case happens
-          // frequently
-          childMeasuredWidth = unpackLower(measuredSizeCache!![index])
-        }
         var childMeasuredHeight = child.measuredHeight
-        if (measuredSizeCache != null) {
-          // Extract the measured height from the cache
-          childMeasuredHeight = unpackHigher(measuredSizeCache!![index])
-        }
-        if (!childrenFrozen!![index] && child.flexShrink > 0f) {
-          var rawCalculatedWidth = (childMeasuredWidth - unitShrink * child.flexShrink)
+        if (!childrenFrozen[index] && child.flexShrink > 0f) {
+          var rawCalculatedWidth = childMeasuredWidth - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0f
@@ -817,14 +709,12 @@ public class FlexboxEngine {
           val minWidth = measurable.minWidth
           if (newWidth < minWidth) {
             // This means the child doesn't have enough space to distribute the negative
-            // free space. To adjust the flex line length down to the maxMainSize,
-            // remaining
-            // negative free space needs to be re-distributed to other flex items
-            // (children nodes). In that case, invoke this method again with the same
-            // fromIndex.
+            // free space. To adjust the flex line length down to the maxMainSize, remaining
+            // negative free space needs to be re-distributed to other flex items (children
+            // nodes). In that case, invoke this method again with the same fromIndex.
             needsReshrink = true
             newWidth = minWidth
-            childrenFrozen!![index] = true
+            childrenFrozen[index] = true
             flexLine.totalFlexShrink -= child.flexShrink
           } else {
             accumulatedRoundError += rawCalculatedWidth - newWidth
@@ -845,7 +735,6 @@ public class FlexboxEngine {
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
-          updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = maxOf(
           largestCrossSize,
@@ -855,24 +744,9 @@ public class FlexboxEngine {
       } else {
         // The direction of main axis is vertical
         var childMeasuredHeight = child.measuredHeight
-        if (measuredSizeCache != null) {
-          // Retrieve the measured height from the cache because there
-          // are some cases that the view is re-created from the last measure, thus
-          // View#getMeasuredHeight returns 0.
-          // E.g. if the flex container is FlexboxLayoutManager, that case happens
-          // frequently
-          childMeasuredHeight = unpackHigher(measuredSizeCache!![index])
-        }
         var childMeasuredWidth = child.measuredWidth
-        if (measuredSizeCache != null) {
-          // Extract the measured width from the cache
-          childMeasuredWidth = unpackLower(measuredSizeCache!![index])
-        }
-        if (!childrenFrozen!![index] && child.flexShrink > 0f) {
-          var rawCalculatedHeight = (
-            childMeasuredHeight -
-              unitShrink * child.flexShrink
-            )
+        if (!childrenFrozen[index] && child.flexShrink > 0f) {
+          var rawCalculatedHeight = childMeasuredHeight - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0f
@@ -883,7 +757,7 @@ public class FlexboxEngine {
             // Need to invoke this method again like the case flex direction is vertical
             needsReshrink = true
             newHeight = minHeight
-            childrenFrozen!![index] = true
+            childrenFrozen[index] = true
             flexLine.totalFlexShrink -= child.flexShrink
           } else {
             accumulatedRoundError += rawCalculatedHeight - newHeight
@@ -904,7 +778,6 @@ public class FlexboxEngine {
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
-          updateMeasureCache(index, childWidthMeasureSpec, childHeightMeasureSpec, child)
         }
         largestCrossSize = maxOf(
           largestCrossSize,
@@ -918,6 +791,7 @@ public class FlexboxEngine {
       // Re-invoke the method with the same fromIndex to distribute the negative free space
       // that wasn't fully distributed (because some nodes length were not enough)
       shrinkFlexItems(
+        childrenFrozen = childrenFrozen,
         widthMeasureSpec = widthMeasureSpec,
         heightMeasureSpec = heightMeasureSpec,
         flexLine = flexLine,
@@ -990,16 +864,12 @@ public class FlexboxEngine {
   ) {
     val mode: MeasureSpecMode // The MeasureSpec mode along the cross axis
     val size: Int // The MeasureSpec size along the cross axis
-    when (flexDirection) {
-      FlexDirection.Row, FlexDirection.RowReverse -> {
-        mode = heightMeasureSpec.mode
-        size = heightMeasureSpec.size
-      }
-      FlexDirection.Column, FlexDirection.ColumnReverse -> {
-        mode = widthMeasureSpec.mode
-        size = widthMeasureSpec.size
-      }
-      else -> throw AssertionError()
+    if (flexDirection.isHorizontal) {
+      mode = heightMeasureSpec.mode
+      size = heightMeasureSpec.size
+    } else {
+      mode = widthMeasureSpec.mode
+      size = widthMeasureSpec.size
     }
     if (mode == MeasureSpecMode.Exactly) {
       val totalCrossSize = getSumOfCrossSize() + paddingAlongCrossAxis
@@ -1125,14 +995,11 @@ public class FlexboxEngine {
     size: Int,
     totalCrossSize: Int,
   ): List<FlexLine> {
-    var spaceAboveAndBottom = size - totalCrossSize
-    spaceAboveAndBottom /= 2
+    val spaceAboveAndBottom = (size - totalCrossSize) / 2
     val newFlexLines = ArrayList<FlexLine>()
     val dummySpaceFlexLine = FlexLine()
     dummySpaceFlexLine.crossSize = spaceAboveAndBottom
-    var i = 0
-    val flexLineSize = flexLines.size
-    while (i < flexLineSize) {
+    for (i in flexLines.indices) {
       if (i == 0) {
         newFlexLines.add(dummySpaceFlexLine)
       }
@@ -1141,7 +1008,6 @@ public class FlexboxEngine {
       if (i == flexLines.size - 1) {
         newFlexLines.add(dummySpaceFlexLine)
       }
-      i++
     }
     return newFlexLines
   }
@@ -1149,72 +1015,39 @@ public class FlexboxEngine {
   /**
    * Expand the node if the [FlexboxEngine.alignItems] attribute is set to
    * [AlignItems.Stretch] or [FlexNode.alignSelf] is set as [AlignItems.Stretch].
-   *
-   * @param fromIndex the index from which value, stretch is calculated
    */
-  internal fun stretchChildren(fromIndex: Int = 0) {
-    if (fromIndex >= nodes.size) {
-      return
-    }
+  internal fun stretchChildren() {
     if (alignItems == AlignItems.Stretch) {
-      var flexLineIndex = 0
-      if (indexToFlexLine != null) {
-        flexLineIndex = indexToFlexLine!![fromIndex]
-      }
-      var i = flexLineIndex
-      val size = flexLines.size
-      while (i < size) {
-        val flexLine = flexLines[i]
-        var j = 0
-        val itemCount = flexLine.itemCount
-        while (j < itemCount) {
-          val nodeIndex = flexLine.firstIndex + j
-          if (j >= nodes.size) {
-            j++
+      for (flexLine in flexLines) {
+        for (i in 0 until flexLine.itemCount) {
+          val nodeIndex = flexLine.firstIndex + i
+          if (i >= nodes.size) {
             continue
           }
-          val node = getReorderedChildAt(nodeIndex)
+          val node = reorderedNodes.getOrNull(nodeIndex)
           if (node == null || !node.visible) {
-            j++
             continue
           }
           if (node.alignSelf != AlignSelf.Auto && node.alignSelf != AlignSelf.Stretch) {
-            j++
             continue
           }
-          when (flexDirection) {
-            FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
-              node = node,
-              crossSize = flexLine.crossSize,
-              index = nodeIndex,
-            )
-            FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
-              node = node,
-              crossSize = flexLine.crossSize,
-              index = nodeIndex,
-            )
-            else -> throw AssertionError()
+          if (flexDirection.isHorizontal) {
+            stretchViewVertically(node, flexLine.crossSize)
+          } else {
+            stretchViewHorizontally(node, flexLine.crossSize)
           }
-          j++
         }
-        i++
       }
     } else {
       for (flexLine in flexLines) {
-        for (index in flexLine.indicesAlignSelfStretch) {
-          val node = getReorderedChildAt(index)!!
-          when (flexDirection) {
-            FlexDirection.Row, FlexDirection.RowReverse -> stretchViewVertically(
-              node = node,
-              crossSize = flexLine.crossSize,
-              index = index,
-            )
-            FlexDirection.Column, FlexDirection.ColumnReverse -> stretchViewHorizontally(
-              node = node,
-              crossSize = flexLine.crossSize,
-              index = index,
-            )
-            else -> throw AssertionError()
+        for (index in flexLine.firstIndex..flexLine.lastIndex) {
+          val node = reorderedNodes[index]
+          if (node.alignSelf == AlignSelf.Stretch) {
+            if (flexDirection.isHorizontal) {
+              stretchViewVertically(node, flexLine.crossSize)
+            } else {
+              stretchViewHorizontally(node, flexLine.crossSize)
+            }
           }
         }
       }
@@ -1224,47 +1057,23 @@ public class FlexboxEngine {
   /**
    * Expand the node vertically to the size of the [crossSize] (considering [node]'s margins).
    */
-  private fun stretchViewVertically(node: FlexNode, crossSize: Int, index: Int) {
-    val measurable = node.measurable
+  private fun stretchViewVertically(node: FlexNode, crossSize: Int) {
     val newHeight = (crossSize - node.margin.top - node.margin.bottom)
-      .coerceIn(measurable.minHeight, measurable.maxHeight)
-    val measuredWidth = if (measuredSizeCache != null) {
-      // Retrieve the measured height from the cache because there
-      // are some cases that the view is re-created from the last measure, thus
-      // View#getMeasuredHeight returns 0.
-      // E.g. if the flex container is FlexboxLayoutManager, that case happens
-      // frequently
-      unpackLower(measuredSizeCache!![index])
-    } else {
-      node.measuredWidth
-    }
-    val childWidthSpec = MeasureSpec.from(measuredWidth, MeasureSpecMode.Exactly)
+      .coerceIn(node.measurable.minHeight, node.measurable.maxHeight)
+    val childWidthSpec = MeasureSpec.from(node.measuredWidth, MeasureSpecMode.Exactly)
     val childHeightSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
     node.applyMeasure(childWidthSpec, childHeightSpec)
-    updateMeasureCache(index, childWidthSpec, childHeightSpec, node)
   }
 
   /**
    * Expand the node horizontally to the size of the crossSize (considering [node]'s margins).
    */
-  private fun stretchViewHorizontally(node: FlexNode, crossSize: Int, index: Int) {
-    val measurable = node.measurable
+  private fun stretchViewHorizontally(node: FlexNode, crossSize: Int) {
     val newWidth = (crossSize - node.margin.start - node.margin.end)
-      .coerceIn(measurable.minWidth, measurable.maxWidth)
-    val measuredHeight = if (measuredSizeCache != null) {
-      // Retrieve the measured height from the cache because there
-      // are some cases that the view is re-created from the last measure, thus
-      // View#getMeasuredHeight returns 0.
-      // E.g. if the flex container is FlexboxLayoutManager, that case happens
-      // frequently
-      unpackHigher(measuredSizeCache!![index])
-    } else {
-      node.measuredHeight
-    }
-    val childHeightSpec = MeasureSpec.from(measuredHeight, MeasureSpecMode.Exactly)
+      .coerceIn(node.measurable.minWidth, node.measurable.maxWidth)
+    val childHeightSpec = MeasureSpec.from(node.measuredHeight, MeasureSpecMode.Exactly)
     val childWidthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
     node.applyMeasure(childWidthSpec, childHeightSpec)
-    updateMeasureCache(index, childWidthSpec, childHeightSpec, node)
   }
 
   /**
@@ -1352,7 +1161,7 @@ public class FlexboxEngine {
   ) {
     var alignItems = alignItems
     if (node.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
+      // Expecting the values for alignItems and alignSelf match except for Auto.
       // Assigning the alignSelf value as alignItems should work.
       alignItems = AlignItems(node.alignSelf.ordinal)
     }
@@ -1401,44 +1210,21 @@ public class FlexboxEngine {
     }
   }
 
-  private fun updateMeasureCache(
-    index: Int,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
-    node: FlexNode,
-  ) {
-    measureSpecCache?.let { cache ->
-      cache[index] = packLong(widthMeasureSpec.value, heightMeasureSpec.value)
-    }
-    measuredSizeCache?.let { cache ->
-      cache[index] = packLong(node.measuredWidth, node.measuredHeight)
-    }
-  }
-
-  internal fun ensureIndexToFlexLine(size: Int) {
-    if (indexToFlexLine == null) {
-      indexToFlexLine = IntArray(maxOf(size, 10))
-    } else if (indexToFlexLine!!.size < size) {
-      val newCapacity = maxOf(indexToFlexLine!!.size * 2, size)
-      indexToFlexLine = indexToFlexLine!!.copyOf(newCapacity)
-    }
-  }
-
-  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    return when (flexDirection) {
-      FlexDirection.Row, FlexDirection.RowReverse -> measureHorizontal(widthSpec, heightSpec)
-      FlexDirection.Column, FlexDirection.ColumnReverse -> measureVertical(widthSpec, heightSpec)
-      else -> throw AssertionError()
-    }
-  }
-
   /**
-   * Sub method for `onMeasure`, when the main axis direction is horizontal
-   * (either left to right or right to left).
+   * Measures the flexbox's nodes according to the parent's [widthSpec] and [heightSpec] and returns
+   * the expected size of the flexbox.
    *
-   * @param widthMeasureSpec horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec vertical space requirements as imposed by the parent
+   * @param widthSpec horizontal space requirements as imposed by the parent.
+   * @param heightSpec vertical space requirements as imposed by the parent.
    */
+  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+    if (flexDirection.isHorizontal) {
+      return measureHorizontal(widthSpec, heightSpec)
+    } else {
+      return measureVertical(widthSpec, heightSpec)
+    }
+  }
+
   private fun measureHorizontal(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -1450,23 +1236,19 @@ public class FlexboxEngine {
       for (flexLine in flexLines) {
         // The largest height value that also take the baseline shift into account
         var largestHeightInLine = Int.MIN_VALUE
-        for (i in 0 until flexLine.itemCount) {
-          val nodeIndex = flexLine.firstIndex + i
-          val child = getReorderedChildAt(nodeIndex)
+        for (i in flexLine.firstIndex..flexLine.lastIndex) {
+          val child = reorderedNodes.getOrNull(i)
           if (child == null || !child.visible) {
             continue
           }
-          largestHeightInLine = if (flexWrap != FlexWrap.WrapReverse) {
+          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
             val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
             child.measuredHeight + marginTop + child.margin.bottom
           } else {
-            val marginBottom = maxOf(
-              flexLine.maxBaseline - child.measuredHeight +
-                child.baseline,
-              child.margin.bottom,
-            )
+            val marginBottom = maxOf(flexLine.maxBaseline - child.measuredHeight + child.baseline, child.margin.bottom)
             child.measuredHeight + child.margin.top + marginBottom
-          }.coerceAtLeast(largestHeightInLine)
+          }
+          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
         }
         flexLine.crossSize = largestHeightInLine
       }
@@ -1479,20 +1261,9 @@ public class FlexboxEngine {
     // Now cross size for each flex line is determined.
     // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
-    return setMeasuredDimensionForFlex(
-      flexDirection = flexDirection,
-      widthMeasureSpec = widthMeasureSpec,
-      heightMeasureSpec = heightMeasureSpec,
-    )
+    return setMeasuredDimensionForFlex(widthMeasureSpec, heightMeasureSpec)
   }
 
-  /**
-   * Sub method for `onMeasure` when the main axis direction is vertical
-   * (either from top to bottom or bottom to top).
-   *
-   * @param widthMeasureSpec horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec vertical space requirements as imposed by the parent
-   */
   private fun measureVertical(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -1507,38 +1278,28 @@ public class FlexboxEngine {
     // Now cross size for each flex line is determined.
     // Expand the nodes if alignItems (or alignSelf in each child) is set to stretch
     stretchChildren()
-    return setMeasuredDimensionForFlex(
-      flexDirection = flexDirection,
-      widthMeasureSpec = widthMeasureSpec,
-      heightMeasureSpec = heightMeasureSpec,
-    )
+    return setMeasuredDimensionForFlex(widthMeasureSpec, heightMeasureSpec)
   }
 
   /**
    * Set this flexbox's width and height depending on the calculated size of main axis and
    * cross axis.
    *
-   * @param flexDirection the value of the flex direction
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
   private fun setMeasuredDimensionForFlex(
-    flexDirection: FlexDirection,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
     val calculatedMaxHeight: Int
     val calculatedMaxWidth: Int
-    when (flexDirection) {
-      FlexDirection.Row, FlexDirection.RowReverse -> {
-        calculatedMaxHeight = getSumOfCrossSize() + padding.top + padding.bottom
-        calculatedMaxWidth = getLargestMainSize()
-      }
-      FlexDirection.Column, FlexDirection.ColumnReverse -> {
-        calculatedMaxHeight = getLargestMainSize()
-        calculatedMaxWidth = getSumOfCrossSize() + padding.start + padding.end
-      }
-      else -> throw AssertionError()
+    if (flexDirection.isHorizontal) {
+      calculatedMaxHeight = getSumOfCrossSize() + padding.top + padding.bottom
+      calculatedMaxWidth = getLargestMainSize()
+    } else {
+      calculatedMaxHeight = getLargestMainSize()
+      calculatedMaxWidth = getSumOfCrossSize() + padding.start + padding.end
     }
     val width = when (widthMeasureSpec.mode) {
       MeasureSpecMode.Exactly -> {
@@ -1616,10 +1377,7 @@ public class FlexboxEngine {
     // Use float to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround
     var childRight: Float
-    var i = 0
-    val size = flexLines.size
-    while (i < size) {
-      val flexLine = flexLines[i]
+    for (flexLine in flexLines) {
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1660,9 +1418,9 @@ public class FlexboxEngine {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
-      for (j in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + j
-        val child = getReorderedChildAt(index)
+      for (i in 0 until flexLine.itemCount) {
+        val index = flexLine.firstIndex + i
+        val child = reorderedNodes.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
@@ -1714,7 +1472,6 @@ public class FlexboxEngine {
       }
       childTop += flexLine.crossSize
       childBottom -= flexLine.crossSize
-      i++
     }
   }
 
@@ -1749,10 +1506,7 @@ public class FlexboxEngine {
 
     // Used only for if the direction is from bottom to top
     var childBottom: Float
-    var i = 0
-    val size = flexLines.size
-    while (i < size) {
-      val flexLine = flexLines[i]
+    for (flexLine in flexLines) {
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1778,14 +1532,14 @@ public class FlexboxEngine {
         JustifyContent.SpaceBetween -> {
           childTop = paddingTop.toFloat()
           val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) (visibleCount - 1).toFloat() else 1f
+          val denominator = if (visibleCount != 1) visibleCount - 1f else 1f
           spaceBetweenItem = (height - flexLine.mainSize) / denominator
           childBottom = (height - paddingBottom).toFloat()
         }
         JustifyContent.SpaceEvenly -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1).toFloat())
+            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1f))
           }
           childTop = paddingTop + spaceBetweenItem
           childBottom = height - paddingBottom - spaceBetweenItem
@@ -1793,9 +1547,9 @@ public class FlexboxEngine {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
-      for (j in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + j
-        val child = getReorderedChildAt(index)
+      for (i in 0 until flexLine.itemCount) {
+        val index = flexLine.firstIndex + i
+        val child = reorderedNodes.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
@@ -1851,7 +1605,6 @@ public class FlexboxEngine {
       }
       childLeft += flexLine.crossSize
       childRight -= flexLine.crossSize
-      i++
     }
   }
 
@@ -1870,23 +1623,8 @@ public class FlexboxEngine {
   }
 
   /**
-   * Returns a node, which is reordered by taking into account [FlexNode.order].
-   */
-  private fun getReorderedChildAt(index: Int): FlexNode? {
-    if (indexToReorderedIndex == null) {
-      val sorted = nodes.withIndex().sortedWith(compareBy({ -it.value.order }, { it.index }))
-      val indexes = IntArray(sorted.size)
-      sorted.forEachIndexed { i, value ->
-        indexes[value.index] = i
-      }
-      indexToReorderedIndex = indexes
-    }
-    return indexToReorderedIndex?.getOrNull(index)?.let(nodes::getOrNull)
-  }
-
-  /**
-   * Call [Measurable.measure] and update [FlexNode.measuredWidth] and [FlexNode.measuredHeight] with the
-   * result.
+   * Call [Measurable.measure] and update [FlexNode.measuredWidth] and [FlexNode.measuredHeight]
+   * with the result.
    */
   private fun FlexNode.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
     val size = measurable.measure(widthSpec, heightSpec)

@@ -16,11 +16,7 @@
 package app.cash.redwood.flexbox
 
 internal fun FlexDirection.toOrientation(): Orientation {
-  if (this == FlexDirection.Row || this == FlexDirection.RowReverse) {
-    return Orientation.Horizontal
-  } else {
-    return Orientation.Vertical
-  }
+  return if (isHorizontal) Orientation.Horizontal else Orientation.Vertical
 }
 
 /**

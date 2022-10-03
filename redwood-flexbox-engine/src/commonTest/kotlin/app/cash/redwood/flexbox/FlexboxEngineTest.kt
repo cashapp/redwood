@@ -18,7 +18,6 @@ package app.cash.redwood.flexbox
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class FlexboxEngineTest {
@@ -43,7 +42,6 @@ class FlexboxEngineTest {
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
 
-    engine.ensureIndexToFlexLine(engine.nodes.size)
     val flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, flexLines.size)
@@ -53,12 +51,6 @@ class FlexboxEngineTest {
     assertEquals(100, flexLines[0].crossSize)
     assertEquals(100, flexLines[1].crossSize)
     assertEquals(100, flexLines[2].crossSize)
-
-    assertNotNull(engine.indexToFlexLine)
-    assertEquals(0, engine.indexToFlexLine!![0])
-    assertEquals(0, engine.indexToFlexLine!![1])
-    assertEquals(1, engine.indexToFlexLine!![2])
-    assertEquals(2, engine.indexToFlexLine!![3])
 
     val firstLine = flexLines[0]
     assertEquals(0, firstLine.firstIndex)
@@ -86,7 +78,6 @@ class FlexboxEngineTest {
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
 
-    engine.ensureIndexToFlexLine(engine.nodes.size)
     val flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, flexLines.size)
@@ -96,12 +87,6 @@ class FlexboxEngineTest {
     assertEquals(100, flexLines[0].crossSize)
     assertEquals(100, flexLines[1].crossSize)
     assertEquals(100, flexLines[2].crossSize)
-
-    assertNotNull(engine.indexToFlexLine)
-    assertEquals(0, engine.indexToFlexLine!![0])
-    assertEquals(0, engine.indexToFlexLine!![1])
-    assertEquals(1, engine.indexToFlexLine!![2])
-    assertEquals(2, engine.indexToFlexLine!![3])
 
     val firstLine = flexLines[0]
     assertEquals(0, firstLine.firstIndex)
