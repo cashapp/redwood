@@ -28,7 +28,9 @@ public class ViewColumn(context: Context) : ColumnWidget<View> {
 
   override val value: View = layout.view
 
-  override var layoutModifiers: LayoutModifier = layout.layoutModifiers
+  override var layoutModifiers: LayoutModifier
+    get() = layout.layoutModifiers
+    set(value) { layout.layoutModifiers = value }
 
   override fun padding(padding: Padding) {
     layout.padding(padding)
