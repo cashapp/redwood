@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout
 
-import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
@@ -25,6 +24,7 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.FlexboxEngine
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 
