@@ -162,6 +162,4 @@ fun Counter(value: Int = 0) {
 [contour]: https://github.com/cashapp/contour
 [kmm]: https://kotlinlang.org/lp/mobile/
 [react_js]: https://reactjs.org/
-[react_native]: https://reactnative.dev/
-[react_native_airbnb]: https://medium.com/airbnb-engineering/react-native-at-airbnb-f95aa460be1c
 [webassembly]: https://webassembly.org/
