@@ -51,6 +51,8 @@ internal fun View.asNode() = FlexNode().apply {
 }
 
 private class ViewMeasurable(val view: View) : Measurable() {
+  override val width get() = view.layoutParams.width
+  override val height get() = view.layoutParams.height
   override val minWidth get() = view.minimumWidth
   override val minHeight get() = view.minimumHeight
 
