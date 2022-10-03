@@ -44,7 +44,6 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
         engine.nodes += it.asNode()
         _view.addView(it)
       }
-      invalidate()
     },
   )
 
