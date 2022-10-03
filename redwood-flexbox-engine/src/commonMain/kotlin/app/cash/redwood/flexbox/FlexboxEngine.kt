@@ -995,14 +995,11 @@ public class FlexboxEngine {
     size: Int,
     totalCrossSize: Int,
   ): List<FlexLine> {
-    var spaceAboveAndBottom = size - totalCrossSize
-    spaceAboveAndBottom /= 2
+    val spaceAboveAndBottom = (size - totalCrossSize) / 2
     val newFlexLines = ArrayList<FlexLine>()
     val dummySpaceFlexLine = FlexLine()
     dummySpaceFlexLine.crossSize = spaceAboveAndBottom
-    var i = 0
-    val flexLineSize = flexLines.size
-    while (i < flexLineSize) {
+    for (i in flexLines.indices) {
       if (i == 0) {
         newFlexLines.add(dummySpaceFlexLine)
       }
@@ -1011,7 +1008,6 @@ public class FlexboxEngine {
       if (i == flexLines.size - 1) {
         newFlexLines.add(dummySpaceFlexLine)
       }
-      i++
     }
     return newFlexLines
   }
@@ -1022,24 +1018,17 @@ public class FlexboxEngine {
    */
   internal fun stretchChildren() {
     if (alignItems == AlignItems.Stretch) {
-      var i = 0
-      val size = flexLines.size
-      while (i < size) {
-        val flexLine = flexLines[i]
-        var j = 0
-        while (j < flexLine.itemCount) {
-          val nodeIndex = flexLine.firstIndex + j
-          if (j >= nodes.size) {
-            j++
+      for (flexLine in flexLines) {
+        for (i in 0 until flexLine.itemCount) {
+          val nodeIndex = flexLine.firstIndex + i
+          if (i >= nodes.size) {
             continue
           }
           val node = reorderedNodes.getOrNull(nodeIndex)
           if (node == null || !node.visible) {
-            j++
             continue
           }
           if (node.alignSelf != AlignSelf.Auto && node.alignSelf != AlignSelf.Stretch) {
-            j++
             continue
           }
           if (flexDirection.isHorizontal) {
@@ -1047,9 +1036,7 @@ public class FlexboxEngine {
           } else {
             stretchViewHorizontally(node, flexLine.crossSize)
           }
-          j++
         }
-        i++
       }
     } else {
       for (flexLine in flexLines) {
@@ -1390,10 +1377,7 @@ public class FlexboxEngine {
     // Use float to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround
     var childRight: Float
-    var i = 0
-    val size = flexLines.size
-    while (i < size) {
-      val flexLine = flexLines[i]
+    for (flexLine in flexLines) {
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1434,8 +1418,8 @@ public class FlexboxEngine {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
-      for (j in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + j
+      for (i in 0 until flexLine.itemCount) {
+        val index = flexLine.firstIndex + i
         val child = reorderedNodes.getOrNull(index)
         if (child == null || !child.visible) {
           continue
@@ -1488,7 +1472,6 @@ public class FlexboxEngine {
       }
       childTop += flexLine.crossSize
       childBottom -= flexLine.crossSize
-      i++
     }
   }
 
@@ -1523,10 +1506,7 @@ public class FlexboxEngine {
 
     // Used only for if the direction is from bottom to top
     var childBottom: Float
-    var i = 0
-    val size = flexLines.size
-    while (i < size) {
-      val flexLine = flexLines[i]
+    for (flexLine in flexLines) {
       var spaceBetweenItem = 0f
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1567,8 +1547,8 @@ public class FlexboxEngine {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
-      for (j in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + j
+      for (i in 0 until flexLine.itemCount) {
+        val index = flexLine.firstIndex + i
         val child = reorderedNodes.getOrNull(index)
         if (child == null || !child.visible) {
           continue
@@ -1625,7 +1605,6 @@ public class FlexboxEngine {
       }
       childLeft += flexLine.crossSize
       childRight -= flexLine.crossSize
-      i++
     }
   }
 
