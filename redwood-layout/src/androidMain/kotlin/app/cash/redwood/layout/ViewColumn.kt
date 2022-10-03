@@ -26,7 +26,7 @@ public class ViewColumn(context: Context) : ColumnWidget<View> {
 
   override val children: Widget.Children<View> get() = layout.children
 
-  override val value: View = layout.view
+  override val value: View get() = layout.view
 
   override var layoutModifiers: LayoutModifier
     get() = layout.layoutModifiers
