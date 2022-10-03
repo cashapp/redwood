@@ -23,7 +23,7 @@ import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.widget.Widget
 
 public class ViewRow(context: Context) : RowWidget<View> {
-  private val layout = ViewLayout(context, FlexDirection.Column)
+  private val layout = ViewLayout(context, FlexDirection.Row)
 
   override val children: Widget.Children<View> get() = layout.children
 

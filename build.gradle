@@ -8,6 +8,7 @@ buildscript {
     classpath libs.spotlessPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
+    classpath libs.paparazzi.gradlePlugin
     classpath 'app.cash.redwood.build:gradle-plugin'
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }
@@ -15,6 +16,14 @@ buildscript {
     mavenCentral()
     google()
     gradlePluginPortal()
+
+    // Remove once Paparazzi 1.1.0 is released with support for the multiplatform plugin.
+    maven {
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
+      content {
+        includeGroup "app.cash.paparazzi"
+      }
+    }
   }
 }
 
@@ -24,6 +33,14 @@ allprojects {
   repositories {
     mavenCentral()
     google()
+
+    // Remove once Paparazzi 1.1.0 is released with support for the multiplatform plugin.
+    maven {
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
+      content {
+        includeGroup "app.cash.paparazzi"
+      }
+    }
   }
 
   tasks.withType(Test).configureEach {

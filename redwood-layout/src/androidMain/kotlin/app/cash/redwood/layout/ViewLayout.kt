@@ -17,9 +17,11 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.widget.ScrollView
+import android.view.ViewGroup
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.FlexboxEngine
@@ -38,21 +40,28 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
   val children: Widget.Children<View> = MutableListChildren(
     onUpdate = { views ->
       engine.nodes.clear()
-      views.forEach { engine.nodes += it.asNode() }
+      _view.removeAllViews()
+      views.forEach {
+        engine.nodes += it.asNode()
+        _view.addView(it)
+      }
       invalidate()
     },
   )
+
+  var layoutModifiers: LayoutModifier = LayoutModifier
 
   fun padding(padding: Padding) {
     engine.padding = padding.toSpacing()
     invalidate()
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   fun overflow(overflow: Overflow) {
     if (overflow == Overflow.Scroll) {
-      _view.setOnTouchListener { _, _ -> true }
-    } else {
       _view.setOnTouchListener(null)
+    } else {
+      _view.setOnTouchListener { _, _ -> true }
     }
     invalidate()
   }
@@ -72,7 +81,7 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
     _view.requestLayout()
   }
 
-  private inner class HostView(context: Context) : ScrollView(context) {
+  private inner class HostView(context: Context) : ViewGroup(context) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)

@@ -25,11 +25,11 @@ import app.cash.redwood.widget.Widget
 public class ViewColumn(context: Context) : ColumnWidget<View> {
   private val layout = ViewLayout(context, FlexDirection.Column)
 
-  override val children: Widget.Children<View> get() = layout.children
+  override val children: Widget.Children<View> = layout.children
 
-  override val value: View get() = layout.view
+  override val value: View = layout.view
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var layoutModifiers: LayoutModifier = layout.layoutModifiers
 
   override fun padding(padding: Padding) {
     layout.padding(padding)

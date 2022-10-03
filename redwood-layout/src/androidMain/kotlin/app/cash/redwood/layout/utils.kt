@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:JvmName("view_utils")
 
 package app.cash.redwood.layout
 
@@ -50,8 +51,6 @@ internal fun View.asNode() = FlexNode().apply {
 }
 
 private class ViewMeasurable(val view: View) : Measurable() {
-  override val width get() = view.width
-  override val height get() = view.height
   override val minWidth get() = view.minimumWidth
   override val minHeight get() = view.minimumHeight
 
