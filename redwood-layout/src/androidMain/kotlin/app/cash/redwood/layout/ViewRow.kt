@@ -28,7 +28,9 @@ public class ViewRow(context: Context) : RowWidget<View> {
 
   override val value: View get() = layout.view
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var layoutModifiers: LayoutModifier
+    get() = layout.layoutModifiers
+    set(value) { layout.layoutModifiers = value }
 
   override fun padding(padding: Padding) {
     layout.padding(padding)
