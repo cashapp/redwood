@@ -43,16 +43,16 @@ public class DiffConsumingSunspotWidgetFactory<T : Any>(
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : DiffConsumingWidget.Factory<T> {
   public override fun create(kind: Int): DiffConsumingWidget<T>? = when (kind) {
-    1 -> wrap(delegate.SunspotBox())
-    2 -> wrap(delegate.SunspotText())
-    3 -> wrap(delegate.SunspotButton())
+    1 -> SunspotBox()
+    2 -> SunspotText()
+    3 -> SunspotButton()
     else -> {
       mismatchHandler.onUnknownWidget(kind)
       null
     }
   }
 
-  public fun wrap(value: SunspotBox<T>): DiffConsumingWidget<T> {
+  private fun SunspotBox(): ProtocolSunspotBox<T> {
     return ProtocolSunspotBox(delegate.SunspotBox(), json, mismatchHandler)
   }
   etc.
@@ -104,7 +104,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .beginControlFlow("return when (kind)")
             .apply {
               for (widget in schema.widgets.sortedBy { it.tag }) {
-                addStatement("%L -> wrap(delegate.%N())", widget.tag, widget.flatName)
+                addStatement("%L -> %N()", widget.tag, widget.flatName)
               }
             }
             .beginControlFlow("else ->")
@@ -116,11 +116,16 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
         )
         .apply {
           for (widget in schema.widgets.sortedBy { it.flatName }) {
+            val diffConsumingWidgetType = schema.diffConsumingWidgetType(widget)
             addFunction(
-              FunSpec.builder("wrap")
-                .addParameter("value", schema.widgetType(widget).parameterizedBy(typeVariableT))
-                .returns(DiffConsumingWidget.parameterizedBy(typeVariableT))
-                .addStatement("return %T(value, json, mismatchHandler)", schema.diffConsumingWidgetType(widget))
+              FunSpec.builder(widget.flatName)
+                .addModifiers(PRIVATE)
+                .returns(diffConsumingWidgetType.parameterizedBy(typeVariableT))
+                .addStatement(
+                  "return %T(delegate.%N(), json, mismatchHandler)",
+                  diffConsumingWidgetType,
+                  widget.flatName,
+                )
                 .build(),
             )
           }

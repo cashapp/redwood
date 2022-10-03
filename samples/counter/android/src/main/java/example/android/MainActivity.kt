@@ -25,7 +25,7 @@ import android.widget.LinearLayout.VERTICAL
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
-import example.android.sunspot.AndroidSunspotBox
+import app.cash.redwood.widget.ViewGroupChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
 import example.sunspot.compose.DiffProducingSunspotWidgetFactory
@@ -55,7 +55,7 @@ class MainActivity : Activity() {
 
     val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory(this))
     val display = ProtocolDisplay(
-      root = factory.wrap(AndroidSunspotBox(root)),
+      container = ViewGroupChildren(root),
       factory = factory,
       eventSink = composition,
     )
