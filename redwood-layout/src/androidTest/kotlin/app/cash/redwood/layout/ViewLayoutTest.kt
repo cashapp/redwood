@@ -38,7 +38,7 @@ class ViewLayoutTest {
     val column = ViewColumn(paparazzi.context).apply {
       horizontalAlignment(CrossAxisAlignment.Center)
       verticalAlignment(MainAxisAlignment.Center)
-      value.background = ColorDrawable(Color.RED)
+      value.background = ColorDrawable(Color.LTGRAY)
     }
 
     var textView = TextView(paparazzi.context).apply {
@@ -74,7 +74,7 @@ class ViewLayoutTest {
     val row = ViewRow(paparazzi.context).apply {
       horizontalAlignment(MainAxisAlignment.Center)
       verticalAlignment(CrossAxisAlignment.Center)
-      value.background = ColorDrawable(Color.RED)
+      value.background = ColorDrawable(Color.LTGRAY)
     }
 
     var textView = TextView(paparazzi.context).apply {
