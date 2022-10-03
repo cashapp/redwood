@@ -3,7 +3,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
-apply plugin: 'app.cash.redwood.build.compose'
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
@@ -11,7 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.redwoodFlexboxEngine
+        api projects.redwoodFlexboxEngine
         api projects.redwoodRuntime
         api projects.redwoodWidget
         api libs.jetbrains.compose.runtime
@@ -27,5 +26,5 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.compose'
+  namespace 'app.cash.redwood.layout'
 }
