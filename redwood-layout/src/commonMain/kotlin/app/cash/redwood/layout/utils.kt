@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:JvmName("common_utils")
+
 package app.cash.redwood.layout
 
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Spacing
+import kotlin.jvm.JvmName
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart

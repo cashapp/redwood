@@ -25,10 +25,7 @@ import kotlinx.serialization.Serializable
 /** Equivalent to `justify-content`. */
 @JvmInline
 @Serializable
-public value class MainAxisAlignment(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..5) { "Unknown MainAxisAlignment: $ordinal" }
-  }
+public value class MainAxisAlignment private constructor(public val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Start"
@@ -53,10 +50,7 @@ public value class MainAxisAlignment(public val ordinal: Int) {
 /** Equivalent to `align-items`. */
 @JvmInline
 @Serializable
-public value class CrossAxisAlignment(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..3) { "Unknown CrossAxisAlignment: $ordinal" }
-  }
+public value class CrossAxisAlignment private constructor(public val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Start"
@@ -77,10 +71,7 @@ public value class CrossAxisAlignment(public val ordinal: Int) {
 /** Equivalent to `overflow-x`/`overflow-y`. */
 @JvmInline
 @Serializable
-public value class Overflow(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..1) { "Unknown Overflow: $ordinal" }
-  }
+public value class Overflow private constructor(public val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Clip"
