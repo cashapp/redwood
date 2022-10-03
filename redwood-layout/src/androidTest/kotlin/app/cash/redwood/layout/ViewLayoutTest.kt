@@ -33,75 +33,112 @@ class ViewLayoutTest {
     theme = "android:Theme.Material.Light.NoActionBar"
   )
 
+  private val textViews by lazy {
+    listOf(
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.CYAN)
+        textSize = 18f
+        text = "TextView 1"
+      },
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.CYAN)
+        textSize = 18f
+        text = "TextView 2"
+      },
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.CYAN)
+        textSize = 18f
+        text = "TextView 3"
+      },
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.CYAN)
+        textSize = 18f
+        text = "TextView 4"
+      }
+    )
+  }
+
   @Test
-  fun column() {
+  fun columnStart() {
+    val column = ViewColumn(paparazzi.context).apply {
+      horizontalAlignment(CrossAxisAlignment.Center)
+      verticalAlignment(MainAxisAlignment.Start)
+      value.background = ColorDrawable(Color.LTGRAY)
+    }
+
+    textViews.forEachIndexed { index, textView ->
+      column.children.insert(index, textView)
+    }
+    paparazzi.snapshot(column.value)
+  }
+
+  @Test
+  fun columnCenter() {
     val column = ViewColumn(paparazzi.context).apply {
       horizontalAlignment(CrossAxisAlignment.Center)
       verticalAlignment(MainAxisAlignment.Center)
       value.background = ColorDrawable(Color.LTGRAY)
     }
 
-    var textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 1"
+    textViews.forEachIndexed { index, textView ->
+      column.children.insert(index, textView)
     }
-    column.children.insert(0, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 2"
-    }
-    column.children.insert(1, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 3"
-    }
-    column.children.insert(2, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 4"
-    }
-    column.children.insert(3, textView)
-
     paparazzi.snapshot(column.value)
   }
 
   @Test
-  fun row() {
+  fun columnEnd() {
+    val column = ViewColumn(paparazzi.context).apply {
+      horizontalAlignment(CrossAxisAlignment.Center)
+      verticalAlignment(MainAxisAlignment.End)
+      value.background = ColorDrawable(Color.LTGRAY)
+    }
+
+    textViews.forEachIndexed { index, textView ->
+      column.children.insert(index, textView)
+    }
+    paparazzi.snapshot(column.value)
+  }
+
+  @Test
+  fun rowStart() {
+    val row = ViewRow(paparazzi.context).apply {
+      horizontalAlignment(MainAxisAlignment.Start)
+      verticalAlignment(CrossAxisAlignment.Center)
+      value.background = ColorDrawable(Color.LTGRAY)
+    }
+
+    textViews.forEachIndexed { index, textView ->
+      row.children.insert(index, textView)
+    }
+    paparazzi.snapshot(row.value)
+  }
+
+  @Test
+  fun rowCenter() {
     val row = ViewRow(paparazzi.context).apply {
       horizontalAlignment(MainAxisAlignment.Center)
       verticalAlignment(CrossAxisAlignment.Center)
       value.background = ColorDrawable(Color.LTGRAY)
     }
 
-    var textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 1"
+    textViews.forEachIndexed { index, textView ->
+      row.children.insert(index, textView)
     }
-    row.children.insert(0, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 2"
-    }
-    row.children.insert(1, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 3"
-    }
-    row.children.insert(2, textView)
-    textView = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.CYAN)
-      textSize = 18f
-      text = "TextView 4"
-    }
-    row.children.insert(3, textView)
+    paparazzi.snapshot(row.value)
+  }
 
+  @Test
+  fun rowEnd() {
+    val row = ViewRow(paparazzi.context).apply {
+      horizontalAlignment(MainAxisAlignment.End)
+      verticalAlignment(CrossAxisAlignment.Center)
+      value.background = ColorDrawable(Color.LTGRAY)
+    }
+
+    textViews.forEachIndexed { index, textView ->
+      row.children.insert(index, textView)
+    }
     paparazzi.snapshot(row.value)
   }
 }
