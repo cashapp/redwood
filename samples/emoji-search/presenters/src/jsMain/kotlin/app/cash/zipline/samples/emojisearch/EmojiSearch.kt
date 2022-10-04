@@ -21,7 +21,9 @@ import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.Column
 import example.schema.compose.Image
+import example.schema.compose.Row
 import example.schema.compose.ScrollableColumn
+import example.schema.compose.Text
 import example.schema.compose.TextInput
 import kotlinx.coroutines.flow.Flow
 
@@ -43,9 +45,10 @@ class EmojiSearchTreehouseUi(
       )
       ScrollableColumn {
         for (image in viewModel.images) {
-          Image(
-            url = image.url,
-          )
+          Row {
+            Image(url = image.url)
+            Text(text = image.label)
+          }
         }
       }
     }
