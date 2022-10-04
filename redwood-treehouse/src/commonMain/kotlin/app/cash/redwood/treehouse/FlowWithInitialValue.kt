@@ -15,18 +15,16 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.Event
-import app.cash.zipline.ZiplineService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 
-/**
- * Adapt TreehouseComposition to conform the limitations of Zipline interfaces.
- *
- * Most callers shouldn't use this directly; instead use `TreehouseUi`.
- */
-public interface ZiplineTreehouseUi : ZiplineService {
-  public fun start(
-    diffSink: DiffSinkService,
-    hostConfigurations: FlowWithInitialValue<HostConfiguration>,
-  )
-  public fun sendEvent(event: Event)
-}
+@Serializable
+public data class FlowWithInitialValue<T>(
+  val initial: T,
+  @Contextual val flow: Flow<T>,
+)
+
+public fun <T> StateFlow<T>.toFlowWithInitialValue(): FlowWithInitialValue<T> =
+  FlowWithInitialValue(value, this)
