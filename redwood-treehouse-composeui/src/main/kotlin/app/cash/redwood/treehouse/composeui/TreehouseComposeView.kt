@@ -21,11 +21,10 @@ import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.AbstractComposeView
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
@@ -39,22 +38,9 @@ public class TreehouseComposeView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
   public val widgetFactory: Widget.Factory<@Composable () -> Unit>,
-) : FrameLayout(context), TreehouseView<T> {
+) : AbstractComposeView(context), TreehouseView<T> {
   private val _children = ComposeWidgetChildren()
   override val children: Widget.Children<*> get() = _children
-
-  init {
-    val composeView = ComposeView(context)
-    composeView.setContent {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        _children.render()
-      }
-    }
-
-    addView(composeView)
-  }
 
   /** This is always the user-supplied content. */
   private var content: TreehouseView.Content<T>? = null
@@ -78,6 +64,15 @@ public class TreehouseComposeView<T : Any>(
     treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)
+  }
+
+  @Composable
+  override fun Content() {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+      _children.render()
+    }
   }
 
   override fun onAttachedToWindow() {
