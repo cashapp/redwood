@@ -21,9 +21,7 @@ import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.AbstractComposeView
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
@@ -68,11 +66,7 @@ public class TreehouseComposeView<T : Any>(
 
   @Composable
   override fun Content() {
-    Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-      _children.render()
-    }
+    _children.render()
   }
 
   override fun onAttachedToWindow() {
