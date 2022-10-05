@@ -17,6 +17,7 @@ package app.cash.zipline.samples.emojisearch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.Column
@@ -35,7 +36,7 @@ class EmojiSearchTreehouseUi(
 
   @Composable
   override fun Show() {
-    val viewModel = viewModels.collectAsState(initialViewModel).value
+    val viewModel by viewModels.collectAsState(initialViewModel)
 
     Column {
       TextInput(
