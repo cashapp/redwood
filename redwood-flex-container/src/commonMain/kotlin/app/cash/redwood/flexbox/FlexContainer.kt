@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 /**
  * A class that measures and positions its children according to its flexbox properties.
  */
-public class Flexbox {
+public class FlexContainer {
 
   /**
    * The flex direction attribute of the flexbox.
@@ -1013,7 +1013,7 @@ public class Flexbox {
   }
 
   /**
-   * Expand the node if the [Flexbox.alignItems] attribute is set to
+   * Expand the node if the [FlexContainer.alignItems] attribute is set to
    * [AlignItems.Stretch] or [FlexNode.alignSelf] is set as [AlignItems.Stretch].
    */
   internal fun stretchChildren() {
@@ -1078,7 +1078,7 @@ public class Flexbox {
 
   /**
    * Place a single View when the layout direction is horizontal
-   * ([Flexbox.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
+   * ([FlexContainer.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
     node: FlexNode,
@@ -1148,7 +1148,7 @@ public class Flexbox {
 
   /**
    * Place a single View when the layout direction is vertical
-   * ([Flexbox.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
+   * ([FlexContainer.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
     node: FlexNode,
@@ -1349,7 +1349,7 @@ public class Flexbox {
   }
 
   /**
-   * Sub method for `onLayout` when the [Flexbox.flexDirection] is either
+   * Sub method for `onLayout` when the [FlexContainer.flexDirection] is either
    * [FlexDirection.Row] or [FlexDirection.RowReverse].
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise.
@@ -1476,7 +1476,7 @@ public class Flexbox {
   }
 
   /**
-   * Sub method for `onLayout` when the [Flexbox.flexDirection] is either
+   * Sub method for `onLayout` when the [FlexContainer.flexDirection] is either
    * [FlexDirection.Column] or [FlexDirection.ColumnReverse].
    *
    * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise

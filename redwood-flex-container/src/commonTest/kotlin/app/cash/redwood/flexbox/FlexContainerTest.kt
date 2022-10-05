@@ -20,9 +20,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class FlexboxTest {
+class FlexContainerTest {
 
-  private val flexbox = Flexbox().apply {
+  private val flexbox = FlexContainer().apply {
     flexWrap = FlexWrap.Wrap
     alignItems = AlignItems.Stretch
     alignContent = AlignContent.Stretch
