@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.widget.ViewGroupChildren
@@ -32,7 +31,6 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseWidgetView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
-  public val widgetFactory: Widget.Factory<View>,
 ) : FrameLayout(context), TreehouseView<T> {
   private var content: TreehouseView.Content<T>? = null
 

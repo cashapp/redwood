@@ -167,12 +167,10 @@ public class TreehouseApp<T : Any>(
         }
       }
 
-      val widgetFactory = viewBinder.widgetFactory(view, zipline.json)
-
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       val display = ProtocolDisplay(
         container = view.children as Widget.Children<Any>,
-        factory = widgetFactory as Factory<Any>,
+        factory = viewBinder.widgetFactory(zipline.json) as Factory<Any>,
         eventSink = eventSink,
       )
 
