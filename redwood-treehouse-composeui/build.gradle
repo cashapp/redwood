@@ -5,7 +5,6 @@ dependencies {
   api projects.redwoodTreehouse
   api projects.redwoodWidget
   implementation libs.androidx.compose.ui
-  implementation libs.androidx.compose.foundation.layout
   implementation libs.kotlinx.serialization.json
   implementation projects.redwoodProtocolWidget
   implementation projects.redwoodRuntime
