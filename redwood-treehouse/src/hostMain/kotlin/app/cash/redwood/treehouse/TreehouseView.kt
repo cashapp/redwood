@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.widget.Widget
+import kotlinx.coroutines.flow.StateFlow
 
 public interface TreehouseView<T : Any> {
   /** This is the actual content, or null if not attached to the screen. */
   public val boundContent: Content<T>?
-  public val protocolDisplayRoot: DiffConsumingWidget<*>
+  public val children: Widget.Children<*>
+  public val hostConfiguration: StateFlow<HostConfiguration>
 
   public interface Content<T : Any> {
     public fun get(app: T): ZiplineTreehouseUi

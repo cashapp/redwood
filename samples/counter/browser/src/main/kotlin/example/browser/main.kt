@@ -18,7 +18,7 @@ package example.browser
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
-import example.browser.sunspot.HtmlSunspotBox
+import app.cash.redwood.widget.HTMLElementChildren
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
 import example.sunspot.compose.DiffProducingSunspotWidgetFactory
@@ -40,7 +40,7 @@ fun main() {
   val content = document.getElementById("content")!! as HTMLElement
   val factory = DiffConsumingSunspotWidgetFactory(HtmlSunspotNodeFactory(document))
   val display = ProtocolDisplay(
-    root = factory.wrap(HtmlSunspotBox(content)),
+    container = HTMLElementChildren(content),
     factory = factory,
     eventSink = composition,
   )

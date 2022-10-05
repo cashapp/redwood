@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.widget.ViewGroupChildren
 import example.presenters.TodoPresenter
 import example.schema.compose.DiffProducingTodoWidgetFactory
 import example.schema.widget.DiffConsumingTodoWidgetFactory
@@ -53,7 +54,7 @@ class TodoActivity : AppCompatActivity() {
 
     val factory = DiffConsumingTodoWidgetFactory(ViewWidgetFactory(this))
     val display = ProtocolDisplay(
-      root = factory.wrap(ViewColumn(root)),
+      container = ViewGroupChildren(root),
       factory = factory,
       eventSink = composition,
     )

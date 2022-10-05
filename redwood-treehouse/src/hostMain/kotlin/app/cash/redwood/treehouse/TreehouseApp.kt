@@ -15,12 +15,11 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.protocol.widget.DiffConsumingWidget.Factory
 import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
 import kotlinx.coroutines.CoroutineScope
@@ -172,7 +171,7 @@ public class TreehouseApp<T : Any>(
 
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       val display = ProtocolDisplay(
-        root = view.protocolDisplayRoot as DiffConsumingWidget<Any>,
+        container = view.children as Widget.Children<Any>,
         factory = widgetFactory as Factory<Any>,
         eventSink = eventSink,
       )
@@ -185,7 +184,7 @@ public class TreehouseApp<T : Any>(
           scope.launch(dispatchers.ui) {
             if (firstDiff) {
               firstDiff = false
-              view.protocolDisplayRoot.children(ChildrenDiff.RootChildrenTag)!!.clear()
+              view.children.clear()
 
               when {
                 isInitialLaunch -> viewBinder.beforeInitialCode(view)
@@ -198,7 +197,7 @@ public class TreehouseApp<T : Any>(
         }
       }
 
-      content.start(diffSinkService)
+      content.start(diffSinkService, view.hostConfiguration.toFlowWithInitialValue())
     }
 
     fun cancel() {

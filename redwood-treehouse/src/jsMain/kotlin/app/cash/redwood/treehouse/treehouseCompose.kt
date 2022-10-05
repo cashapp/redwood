@@ -16,6 +16,9 @@
 package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
@@ -37,37 +40,39 @@ public fun TreehouseUi.asZiplineTreehouseUi(
     factory = factory,
     widgetVersion = widgetVersion,
   )
-
-  return composition.asZiplineTreehouseUi {
-    composition.setContent {
-      Show()
-    }
-  }
+  return RedwoodZiplineTreehouseUi(composition, this)
 }
 
-private fun ProtocolRedwoodComposition.asZiplineTreehouseUi(
-  startSignal: () -> Unit = {},
-): ZiplineTreehouseUi {
-  val delegate = this
+private class RedwoodZiplineTreehouseUi(
+  private val composition: ProtocolRedwoodComposition,
+  private val treehouseUi: TreehouseUi,
+) : ZiplineTreehouseUi {
+  private var diffSinkToClose: DiffSinkService? = null
 
-  return object : ZiplineTreehouseUi {
-    var diffSinkToClose: DiffSinkService? = null
+  override fun sendEvent(event: Event) {
+    composition.sendEvent(event)
+  }
 
-    override fun sendEvent(event: Event) {
-      delegate.sendEvent(event)
+  override fun start(
+    diffSink: DiffSinkService,
+    hostConfigurations: FlowWithInitialValue<HostConfiguration>,
+  ) {
+    check(diffSinkToClose == null)
+    diffSinkToClose = diffSink
+    composition.start(diffSink)
+
+    val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
+    composition.setContent {
+      val hostConfiguration by hostConfigurationFlow.collectAsState(initialHostConfiguration)
+      CompositionLocalProvider(LocalHostConfiguration provides hostConfiguration) {
+        treehouseUi.Show()
+      }
     }
+  }
 
-    override fun start(diffSink: DiffSinkService) {
-      check(diffSinkToClose == null)
-      diffSinkToClose = diffSink
-      delegate.start(diffSink)
-      startSignal()
-    }
-
-    override fun close() {
-      delegate.cancel()
-      diffSinkToClose?.close()
-    }
+  override fun close() {
+    composition.cancel()
+    diffSinkToClose?.close()
   }
 }
 

@@ -15,79 +15,72 @@
  */
 package app.cash.redwood.flexbox
 
-import kotlin.jvm.JvmField
+import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.FlexNode.Companion.UndefinedFlexShrink
 
 /**
  * Holds properties related to a single flex line.
  */
 internal class FlexLine {
+  /**
+   * The size of the flex line along the main axis of the flex container.
+   */
+  var mainSize = 0
 
   /**
-   * The size of the flex line in pixels along the main axis of the flex container.
+   * The size of the flex line along the cross axis of the flex container.
    */
-  @JvmField var mainSize = 0
+  var crossSize = 0
 
   /**
-   * The size of the flex line in pixels along the cross axis of the flex container.
+   * The number of nodes contained in this flex line.
    */
-  @JvmField var crossSize = 0
+  var itemCount = 0
 
   /**
-   * The count of the nodes contained in this flex line.
+   * The number of nodes who are invisible (i.e. aren't included in measure or layout).
    */
-  @JvmField var itemCount = 0
-
-  /**
-   * Holds the count of the nodes whose are invisible.
-   */
-  @JvmField var invisibleItemCount = 0
+  var invisibleItemCount = 0
 
   /**
    * The sum of the flexGrow properties of the children included in this flex line.
    */
-  @JvmField var totalFlexGrow = 0f
+  var totalFlexGrow = 0f
 
   /**
    * The sum of the flexShrink properties of the children included in this flex line.
    */
-  @JvmField var totalFlexShrink = 0f
+  var totalFlexShrink = 0f
 
   /**
    * The largest value of the individual child's baseline.
    */
-  @JvmField var maxBaseline = 0
+  var maxBaseline = 0
 
   /**
    * The sum of the cross size used before this flex line.
    */
-  @JvmField var sumCrossSizeBefore = 0
+  var sumCrossSizeBefore = 0
 
   /**
-   * Store the indices of the children whose alignSelf property is stretch.
-   * The stored indices are the absolute indices including all children in the Flexbox,
-   * not the relative indices in this flex line.
+   * The index of the first child included in this flex line (inclusive).
    */
-  @JvmField var indicesAlignSelfStretch = listOf<Int>()
+  var firstIndex = 0
 
   /**
-   * The first child's index included in this flex line.
+   * The index of the last child included in this flex line (inclusive).
    */
-  @JvmField var firstIndex = 0
+  var lastIndex = 0
 
   /**
-   * The last child's index included in this flex line.
+   * True if any [FlexNode]s in this line have [FlexNode.flexGrow] attributes set
+   * (i.e. have a value other than [DefaultFlexGrow]).
    */
-  @JvmField var lastIndex = 0
+  var anyItemsHaveFlexGrow = false
 
   /**
-   * Set to true if any [FlexNode]s in this line have [FlexNode.flexGrow] attributes set
-   * (i.e. have a value other than [FlexNode.DefaultFlexGrow]).
+   * True if any [FlexNode]s in this line have [FlexNode.flexShrink] attributes set
+   * (i.e. have a value other than [UndefinedFlexShrink]).
    */
-  @JvmField var anyItemsHaveFlexGrow = false
-
-  /**
-   * Set to true if any [FlexNode]s in this line have [FlexNode.flexShrink] attributes set
-   * (i.e. have a value other than [FlexNode.UndefinedFlexShrink]).
-   */
-  @JvmField var anyItemsHaveFlexShrink = false
+  var anyItemsHaveFlexShrink = false
 }

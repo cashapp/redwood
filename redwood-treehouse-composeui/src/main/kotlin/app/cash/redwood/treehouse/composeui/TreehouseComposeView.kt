@@ -17,34 +17,28 @@ package app.cash.redwood.treehouse.composeui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.ComposeView
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.PropertyDiff
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import androidx.compose.ui.platform.AbstractComposeView
+import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
-import kotlinx.serialization.json.JsonArray
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
 public class TreehouseComposeView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
   public val widgetFactory: Widget.Factory<@Composable () -> Unit>,
-) : FrameLayout(context), TreehouseView<T> {
-  public val composeView: ComposeView = ComposeView(context)
-
-  init {
-    addView(composeView)
-  }
+) : AbstractComposeView(context), TreehouseView<T> {
+  private val _children = ComposeWidgetChildren()
+  override val children: Widget.Children<*> get() = _children
 
   /** This is always the user-supplied content. */
   private var content: TreehouseView.Content<T>? = null
@@ -58,12 +52,21 @@ public class TreehouseComposeView<T : Any>(
       }
     }
 
-  override val protocolDisplayRoot: DiffConsumingWidget<*> = ProtocolDisplayRoot(this)
+  private val mutableHostConfiguration =
+    MutableStateFlow(computeHostConfiguration(context.resources.configuration))
+
+  override val hostConfiguration: StateFlow<HostConfiguration>
+    get() = mutableHostConfiguration
 
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)
+  }
+
+  @Composable
+  override fun Content() {
+    _children.render()
   }
 
   override fun onAttachedToWindow() {
@@ -76,41 +79,19 @@ public class TreehouseComposeView<T : Any>(
     treehouseApp.onContentChanged(this)
   }
 
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    mutableHostConfiguration.value = computeHostConfiguration(newConfig)
+  }
+
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
 }
 
-internal class ProtocolDisplayRoot(
-  private val treehouseComposeView: TreehouseComposeView<*>,
-) : DiffConsumingWidget<@Composable () -> Unit> {
-
-  init {
-    treehouseComposeView.composeView.setContent {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        children.render()
-      }
-    }
-  }
-
-  override var layoutModifiers: LayoutModifier = LayoutModifier
-  private val children = ComposeWidgetChildren()
-
-  override val value: @Composable () -> Unit
-    get() {
-      error("unexpected call")
-    }
-
-  override fun updateLayoutModifier(value: JsonArray) {
-  }
-
-  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    error("unexpected update on view root: $diff")
-  }
-
-  override fun children(tag: Int) = when (tag) {
-    RootChildrenTag -> children
-    else -> error("unexpected tag: $tag")
-  }
+private fun computeHostConfiguration(
+  config: Configuration,
+): HostConfiguration {
+  return HostConfiguration(
+    darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
+  )
 }

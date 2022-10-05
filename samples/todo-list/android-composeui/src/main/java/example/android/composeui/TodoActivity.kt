@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import example.presenters.TodoPresenter
 import example.schema.compose.DiffProducingTodoWidgetFactory
 import example.schema.widget.DiffConsumingTodoWidgetFactory
@@ -45,16 +46,18 @@ class TodoActivity : ComponentActivity() {
       onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
-    val root = ComposeUiColumn()
+    val container = ComposeWidgetChildren()
     val composeView = ComposeView(this).apply {
       layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-      setContent(root.value)
+      setContent {
+        container.render()
+      }
     }
     setContentView(composeView)
 
     val factory = DiffConsumingTodoWidgetFactory(ComposeUiWidgetFactory)
     val display = ProtocolDisplay(
-      root = factory.wrap(root),
+      container = container,
       factory = factory,
       eventSink = composition,
     )

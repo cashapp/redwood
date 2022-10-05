@@ -100,11 +100,6 @@ them in a JavaScript VM. We may even be able to use [WebAssembly][webassembly] t
 with little performance penalty.
 
 
-### Why Not React Native?
-
-React Native is compelling. But we've read about [difficulties integrating it][react_native_airbnb]
-into an existing application and team.
-
 **Redwood is a library, not a framework.** It is designed to be adopted incrementally, and to
 be low-risk to integrate in an existing Android project. Using Redwood in an iOS or web
 application is riskier! We've had good experiences with [Kotlin Multiplatform Mobile][kmm], and
@@ -167,6 +162,4 @@ fun Counter(value: Int = 0) {
 [contour]: https://github.com/cashapp/contour
 [kmm]: https://kotlinlang.org/lp/mobile/
 [react_js]: https://reactjs.org/
-[react_native]: https://reactnative.dev/
-[react_native_airbnb]: https://medium.com/airbnb-engineering/react-native-at-airbnb-f95aa460be1c
 [webassembly]: https://webassembly.org/

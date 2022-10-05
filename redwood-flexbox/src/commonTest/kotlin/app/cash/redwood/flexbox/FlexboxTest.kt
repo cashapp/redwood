@@ -18,7 +18,6 @@ package app.cash.redwood.flexbox
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class FlexboxTest {
@@ -43,8 +42,7 @@ class FlexboxTest {
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
 
-    flexbox.ensureIndexToFlexLine(flexbox.nodes.size)
-    val lines = flexbox.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300, lines[0].mainSize)
@@ -54,13 +52,7 @@ class FlexboxTest {
     assertEquals(100, lines[1].crossSize)
     assertEquals(100, lines[2].crossSize)
 
-    assertNotNull(flexbox.indexToFlexLine)
-    assertEquals(0, flexbox.indexToFlexLine!![0])
-    assertEquals(0, flexbox.indexToFlexLine!![1])
-    assertEquals(1, flexbox.indexToFlexLine!![2])
-    assertEquals(2, flexbox.indexToFlexLine!![3])
-
-    val firstLine = lines[0]
+    val firstLine = flexLines[0]
     assertEquals(0, firstLine.firstIndex)
     assertEquals(1, firstLine.lastIndex)
     val secondLine = lines[1]
@@ -86,8 +78,7 @@ class FlexboxTest {
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
 
-    flexbox.ensureIndexToFlexLine(flexbox.nodes.size)
-    val lines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300, lines[0].mainSize)
@@ -97,13 +88,7 @@ class FlexboxTest {
     assertEquals(100, lines[1].crossSize)
     assertEquals(100, lines[2].crossSize)
 
-    assertNotNull(flexbox.indexToFlexLine)
-    assertEquals(0, flexbox.indexToFlexLine!![0])
-    assertEquals(0, flexbox.indexToFlexLine!![1])
-    assertEquals(1, flexbox.indexToFlexLine!![2])
-    assertEquals(2, flexbox.indexToFlexLine!![3])
-
-    val firstLine = lines[0]
+    val firstLine = flexLines[0]
     assertEquals(0, firstLine.firstIndex)
     assertEquals(1, firstLine.lastIndex)
     val secondLine = lines[1]

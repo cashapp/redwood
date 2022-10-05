@@ -17,7 +17,6 @@ package app.cash.redwood.flexbox
 
 import app.cash.redwood.flexbox.FlexDirection.Companion.Column
 import app.cash.redwood.flexbox.FlexDirection.Companion.Row
-import app.cash.redwood.flexbox.FlexDirection.Companion.RowReverse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -65,7 +64,7 @@ class FlexboxStringCanvasTest {
   }
 
   @Test
-  fun columnCrossAxisCentered() {
+  fun columnMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val flexbox = Flexbox().apply {
       flexDirection = Column
@@ -103,7 +102,7 @@ class FlexboxStringCanvasTest {
   }
 
   @Test
-  fun columnMainAxisCentered() {
+  fun columnCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val flexbox = Flexbox().apply {
       flexDirection = Column
@@ -200,12 +199,34 @@ class FlexboxStringCanvasTest {
   }
 
   @Test
+  fun rowMainAxisCentered() {
+    val widgets = imdbTop4.map { StringWidget(it) }
+    val flexbox = Flexbox().apply {
+      flexDirection = Row
+      justifyContent = JustifyContent.Center
+      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
+    }
+
+    assertEquals(
+      """
+      ·········┌──────────┐┌─────────┐┌──────┐┌─────────┐·········
+      ·········|The       │|The      │|The   │|The      │·········
+      ·········|Shawshank │|Godfather│|Dark  │|Godfather│·········
+      ·········|Redemption│└─────────┘|Knight│|Part II  │·········
+      ·········└──────────┘···········└──────┘|         │·········
+      ········································└─────────┘·········
+      """.trimIndent(),
+      flexbox.layout(60, 6, widgets),
+    )
+  }
+
+  @Test
   fun rowCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
     val flexbox = Flexbox().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode() }
       alignItems = AlignItems.Center
+      nodes += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -220,28 +241,6 @@ class FlexboxStringCanvasTest {
       ··········································
       """.trimIndent(),
       flexbox.layout(42, 8, widgets),
-    )
-  }
-
-  @Test
-  fun rowMainAxisCentered() {
-    val widgets = imdbTop4.map { StringWidget(it) }
-    val flexbox = Flexbox().apply {
-      flexDirection = Row
-      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
-      justifyContent = JustifyContent.Center
-    }
-
-    assertEquals(
-      """
-      ·········┌──────────┐┌─────────┐┌──────┐┌─────────┐·········
-      ·········|The       │|The      │|The   │|The      │·········
-      ·········|Shawshank │|Godfather│|Dark  │|Godfather│·········
-      ·········|Redemption│└─────────┘|Knight│|Part II  │·········
-      ·········└──────────┘···········└──────┘|         │·········
-      ········································└─────────┘·········
-      """.trimIndent(),
-      flexbox.layout(60, 6, widgets),
     )
   }
 
@@ -278,9 +277,10 @@ class FlexboxStringCanvasTest {
     val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
     val heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly)
 
-    flexLines = when (flexDirection) {
-      Row, RowReverse -> calculateHorizontalFlexLines(widthSpec, heightSpec)
-      else -> calculateVerticalFlexLines(widthSpec, heightSpec)
+    flexLines = if (flexDirection.isHorizontal) {
+      calculateHorizontalFlexLines(widthSpec, heightSpec)
+    } else {
+      calculateVerticalFlexLines(widthSpec, heightSpec)
     }
 
     measure(widthSpec, heightSpec)

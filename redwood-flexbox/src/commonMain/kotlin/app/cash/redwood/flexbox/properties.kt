@@ -142,6 +142,12 @@ public val FlexDirection.isHorizontal: Boolean
   get() = this == FlexDirection.Row || this == FlexDirection.RowReverse
 
 /**
+ * Returns `true` if this direction's main axis is vertical.
+ */
+public val FlexDirection.isVertical: Boolean
+  get() = this == FlexDirection.Column || this == FlexDirection.ColumnReverse
+
+/**
  * This attribute controls whether the flex container is single-line or multi-line,
  * and the direction of the cross axis.
  */
@@ -204,6 +210,10 @@ public value class MeasureSpec private constructor(internal val value: Int) {
 
   public val size: Int get() = value and 0x3FFF
   public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))
+
+  override fun toString(): String {
+    return "MeasureSpec(size=$size, mode=$mode)"
+  }
 
   public companion object {
     public const val MaxSize: Int = Int.MAX_VALUE and 0x00FFFFFF

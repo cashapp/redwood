@@ -19,7 +19,6 @@ package app.cash.redwood.flexbox
  * A node with properties that can be measured and laid out inside a flexbox.
  */
 public class FlexNode(
-
   /**
    * True if this item is visible and should be laid out.
    */
@@ -28,7 +27,7 @@ public class FlexNode(
   /**
    * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
    */
-  public val baseline: Int = -1,
+  public val baseline: Int = DefaultBaseline,
 
   /**
    * The order attribute of the node.
@@ -102,9 +101,9 @@ public class FlexNode(
   public val margin: Spacing = Spacing.Zero,
 
   /**
-   * A callback to to measure this node according to the `widthSpec` and `heightSpec` constraints.
+   * A callback to to measure this node according to a set of measurement constraints.
    */
-  public var measurable: Measurable = Measurable()
+  public var measurable: Measurable = Measurable(),
 ) {
   /**
    * The measured width after invoking [Measurable.measure].
@@ -121,11 +120,14 @@ public class FlexNode(
   public var measuredHeight: Int = -1
 
   /**
-   * A callback to place the node inside the given `left`, `top`, `right`, and `bottom` coordinates.
+   * A callback to place the node inside a given set of coordinates.
    */
   public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
 
   public companion object {
+    /** The default value for the baseline attribute */
+    public const val DefaultBaseline: Int = -1
+
     /** The default value for the order attribute */
     public const val DefaultOrder: Int = 1
 
