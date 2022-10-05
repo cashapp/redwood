@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseComposeView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
-  public val widgetFactory: Widget.Factory<@Composable () -> Unit>,
 ) : AbstractComposeView(context), TreehouseView<T> {
   private val _children = ComposeWidgetChildren()
   override val children: Widget.Children<*> get() = _children
