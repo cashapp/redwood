@@ -1,0 +1,290 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>FlexItem</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>redwood</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="redwood-flex-container::app.cash.redwood.flexcontainer/FlexItem///PointingToDeclaration//1877322999">
+  <div class="breadcrumbs"><a href="../../index.html">redwood-flex-container</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.flexcontainer</a><span class="delimiter">/</span><a href="index.html">FlexItem</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Flex</span><wbr><span><span>Item</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">FlexItem</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>visible<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>baseline<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultBaseline<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>order<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultOrder<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>flexGrow<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexGrow<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>flexShrink<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexShrink<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>flexBasisPercent<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexBasisPercent<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>alignSelf<span class="token operator">: </span><a href="../-align-self/index.html">AlignSelf</a><span class="token operator"> = </span>AlignSelf.Auto<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>wrapBefore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>margin<span class="token operator">: </span><a href="../-spacing/index.html">Spacing</a><span class="token operator"> = </span>Spacing.Zero<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">var </span>measurable<span class="token operator">: </span><a href="../-measurable/index.html">Measurable</a><span class="token operator"> = </span>Measurable()</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">An item with properties that can be measured and laid out inside a <a href="../-flex-container/index.html">FlexContainer</a>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="1191490548%2FConstructors%2F1877322999" anchor-label="FlexItem" id="1191490548%2FConstructors%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-flex-item.html"><span>Flex</span><wbr><span><span>Item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1191490548%2FConstructors%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-flex-item.html"><span class="token function">FlexItem</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;visible<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;baseline<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultBaseline<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;order<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultOrder<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;flexGrow<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexGrow<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;flexShrink<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexShrink<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;flexBasisPercent<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>DefaultFlexBasisPercent<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;alignSelf<span class="token operator">: </span><a href="../-align-self/index.html">AlignSelf</a><span class="token operator"> = </span>AlignSelf.Auto<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;wrapBefore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;margin<span class="token operator">: </span><a href="../-spacing/index.html">Spacing</a><span class="token operator"> = </span>Spacing.Zero<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;measurable<span class="token operator">: </span><a href="../-measurable/index.html">Measurable</a><span class="token operator"> = </span>Measurable()</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="1219062146%2FClasslikes%2F1877322999" anchor-label="Companion" id="1219062146%2FClasslikes%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1219062146%2FClasslikes%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-502863510%2FProperties%2F1877322999" anchor-label="alignSelf" id="-502863510%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="align-self.html"><span>align</span><wbr><span><span>Self</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-502863510%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-502863510%2FProperties%2F1877322999" anchor-label="alignSelf" id="-502863510%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="align-self.html">alignSelf</a><span class="token operator">: </span><a href="../-align-self/index.html">AlignSelf</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-502863510%2FProperties%2F1877322999" anchor-label="alignSelf" id="-502863510%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The align self attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1517917990%2FProperties%2F1877322999" anchor-label="baseline" id="-1517917990%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="baseline.html"><span><span>baseline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1517917990%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-1517917990%2FProperties%2F1877322999" anchor-label="baseline" id="-1517917990%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="baseline.html">baseline</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1517917990%2FProperties%2F1877322999" anchor-label="baseline" id="-1517917990%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The baseline used for <a href="../-align-items/-companion/-baseline.html">AlignItems.Baseline</a> and <a href="../-align-self/-companion/-baseline.html">AlignSelf.Baseline</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-349343553%2FProperties%2F1877322999" anchor-label="flexBasisPercent" id="-349343553%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="flex-basis-percent.html"><span>flex</span><wbr><span>Basis</span><wbr><span><span>Percent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-349343553%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-349343553%2FProperties%2F1877322999" anchor-label="flexBasisPercent" id="-349343553%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="flex-basis-percent.html">flexBasisPercent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-349343553%2FProperties%2F1877322999" anchor-label="flexBasisPercent" id="-349343553%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The flexBasisPercent attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="947127635%2FProperties%2F1877322999" anchor-label="flexGrow" id="947127635%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="flex-grow.html"><span>flex</span><wbr><span><span>Grow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="947127635%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="947127635%2FProperties%2F1877322999" anchor-label="flexGrow" id="947127635%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="flex-grow.html">flexGrow</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="947127635%2FProperties%2F1877322999" anchor-label="flexGrow" id="947127635%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The flex grow attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1372004899%2FProperties%2F1877322999" anchor-label="flexShrink" id="-1372004899%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="flex-shrink.html"><span>flex</span><wbr><span><span>Shrink</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1372004899%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-1372004899%2FProperties%2F1877322999" anchor-label="flexShrink" id="-1372004899%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="flex-shrink.html">flexShrink</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1372004899%2FProperties%2F1877322999" anchor-label="flexShrink" id="-1372004899%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The flex shrink attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="296892437%2FProperties%2F1877322999" anchor-label="layout" id="296892437%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="layout.html"><span><span>layout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="296892437%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="296892437%2FProperties%2F1877322999" anchor-label="layout" id="296892437%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="layout.html">layout</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>left<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>top<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>right<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>bottom<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="296892437%2FProperties%2F1877322999" anchor-label="layout" id="296892437%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">A callback to place the item inside a given set of coordinates.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1006712303%2FProperties%2F1877322999" anchor-label="margin" id="-1006712303%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="margin.html"><span><span>margin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1006712303%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-1006712303%2FProperties%2F1877322999" anchor-label="margin" id="-1006712303%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="margin.html">margin</a><span class="token operator">: </span><a href="../-spacing/index.html">Spacing</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1006712303%2FProperties%2F1877322999" anchor-label="margin" id="-1006712303%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The margin of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="769747038%2FProperties%2F1877322999" anchor-label="measurable" id="769747038%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="measurable.html"><span><span>measurable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="769747038%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="769747038%2FProperties%2F1877322999" anchor-label="measurable" id="769747038%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="measurable.html">measurable</a><span class="token operator">: </span><a href="../-measurable/index.html">Measurable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="769747038%2FProperties%2F1877322999" anchor-label="measurable" id="769747038%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">A callback to to measure this item according to a set of measurement constraints.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-528048366%2FProperties%2F1877322999" anchor-label="measuredHeight" id="-528048366%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="measured-height.html"><span>measured</span><wbr><span><span>Height</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-528048366%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-528048366%2FProperties%2F1877322999" anchor-label="measuredHeight" id="-528048366%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="measured-height.html">measuredHeight</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-528048366%2FProperties%2F1877322999" anchor-label="measuredHeight" id="-528048366%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The measured height after invoking <a href="../-measurable/measure.html">Measurable.measure</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="853858971%2FProperties%2F1877322999" anchor-label="measuredWidth" id="853858971%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="measured-width.html"><span>measured</span><wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="853858971%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="853858971%2FProperties%2F1877322999" anchor-label="measuredWidth" id="853858971%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="measured-width.html">measuredWidth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="853858971%2FProperties%2F1877322999" anchor-label="measuredWidth" id="853858971%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The measured width after invoking <a href="../-measurable/measure.html">Measurable.measure</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-482200659%2FProperties%2F1877322999" anchor-label="order" id="-482200659%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="order.html"><span><span>order</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-482200659%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-482200659%2FProperties%2F1877322999" anchor-label="order" id="-482200659%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="order.html">order</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-482200659%2FProperties%2F1877322999" anchor-label="order" id="-482200659%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The order attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1153518711%2FProperties%2F1877322999" anchor-label="visible" id="-1153518711%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="visible.html"><span><span>visible</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1153518711%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-1153518711%2FProperties%2F1877322999" anchor-label="visible" id="-1153518711%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="visible.html">visible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1153518711%2FProperties%2F1877322999" anchor-label="visible" id="-1153518711%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">True if this item is visible and should be laid out.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-497829194%2FProperties%2F1877322999" anchor-label="wrapBefore" id="-497829194%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-flex-container:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="wrap-before.html"><span>wrap</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-497829194%2FProperties%2F1877322999"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flex-container:dokkaHtmlPartial/commonMain"><a data-name="-497829194%2FProperties%2F1877322999" anchor-label="wrapBefore" id="-497829194%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="wrap-before.html">wrapBefore</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-497829194%2FProperties%2F1877322999" anchor-label="wrapBefore" id="-497829194%2FProperties%2F1877322999" data-filterable-set=":redwood-flex-container:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The wrapBefore attribute of the item.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
