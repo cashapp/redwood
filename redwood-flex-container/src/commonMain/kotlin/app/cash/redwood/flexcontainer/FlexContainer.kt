@@ -453,19 +453,16 @@ public class FlexContainer {
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec,
-            child,
-            flexLine.sumCrossSizeBefore,
+            heightMeasureSpec = heightMeasureSpec,
+            flexItem = child,
+            padding = flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
-        largestCrossSize = maxOf(
-          largestCrossSize,
-          childMeasuredHeight + child.margin.top + child.margin.bottom,
-        )
+        largestCrossSize = maxOf(largestCrossSize, childMeasuredHeight + child.margin.top + child.margin.bottom)
         flexLine.mainSize += (childMeasuredWidth + child.margin.start + child.margin.end)
       } else {
         // The direction of the main axis is vertical
@@ -510,10 +507,7 @@ public class FlexContainer {
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
-        largestCrossSize = maxOf(
-          largestCrossSize,
-          childMeasuredWidth + child.margin.start + child.margin.end,
-        )
+        largestCrossSize = maxOf(largestCrossSize, childMeasuredWidth + child.margin.start + child.margin.end)
         flexLine.mainSize += (childMeasuredHeight + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
