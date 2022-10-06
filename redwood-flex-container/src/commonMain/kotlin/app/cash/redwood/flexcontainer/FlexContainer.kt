@@ -17,9 +17,9 @@
 
 package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexBasisPercent
-import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexcontainer.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexBasisPercent
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexItem.Companion.UndefinedFlexShrink
 import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
@@ -66,14 +66,14 @@ public class FlexContainer {
   /**
    * Returns the nodes contained in the flexbox.
    */
-  public val nodes: MutableList<FlexNode> = ObservableMutableList(
+  public val nodes: MutableList<FlexItem> = ObservableMutableList(
     onChange = { reorderedNodes = listOf() },
   )
 
   /**
-   * Holds the list of [nodes] after [FlexNode.order] has been taken into account.
+   * Holds the list of [nodes] after [FlexItem.order] has been taken into account.
    */
-  private var reorderedNodes: List<FlexNode> = listOf()
+  private var reorderedNodes: List<FlexItem> = listOf()
     get() {
       if (field.size != nodes.size) {
         // Lazily sort the list of nodes by their order descending.
@@ -355,7 +355,7 @@ public class FlexContainer {
     maxSize: Int,
     currentLength: Int,
     childLength: Int,
-    flexItem: FlexNode,
+    flexItem: FlexItem,
     flexLinesSize: Int,
   ): Boolean {
     if (flexWrap == FlexWrap.NoWrap) {
@@ -393,10 +393,10 @@ public class FlexContainer {
   }
 
   /**
-   * Remeasures the node if its [FlexNode.measuredWidth] or [FlexNode.measuredHeight] violate the
+   * Remeasures the node if its [FlexItem.measuredWidth] or [FlexItem.measuredHeight] violate the
    * minimum/maximum size constraints imposed by its min/max attributes.
    */
-  private fun measureWithConstraints(node: FlexNode) {
+  private fun measureWithConstraints(node: FlexItem) {
     var needsMeasure = false
     var childWidth = node.measuredWidth
     var childHeight = node.measuredHeight
@@ -486,7 +486,7 @@ public class FlexContainer {
   }
 
   /**
-   * Expand the flex items along the main axis based on the individual [FlexNode.flexGrow] attribute.
+   * Expand the flex items along the main axis based on the individual [FlexItem.flexGrow] attribute.
    *
    * @param widthMeasureSpec the horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec the vertical space requirements as imposed by the parent
@@ -648,7 +648,7 @@ public class FlexContainer {
   }
 
   /**
-   * Shrink the flex items along the main axis based on the individual [FlexNode.flexShrink] attribute.
+   * Shrink the flex items along the main axis based on the individual [FlexItem.flexShrink] attribute.
    *
    * @param widthMeasureSpec the horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec the vertical space requirements as imposed by the parent
@@ -804,7 +804,7 @@ public class FlexContainer {
 
   private fun getChildWidthMeasureSpecInternal(
     widthMeasureSpec: MeasureSpec,
-    flexItem: FlexNode,
+    flexItem: FlexItem,
     padding: Int,
   ): MeasureSpec {
     val measurable = flexItem.measurable
@@ -827,7 +827,7 @@ public class FlexContainer {
 
   private fun getChildHeightMeasureSpecInternal(
     heightMeasureSpec: MeasureSpec,
-    flexItem: FlexNode,
+    flexItem: FlexItem,
     padding: Int,
   ): MeasureSpec {
     val measurable = flexItem.measurable
@@ -1014,7 +1014,7 @@ public class FlexContainer {
 
   /**
    * Expand the node if the [FlexContainer.alignItems] attribute is set to
-   * [AlignItems.Stretch] or [FlexNode.alignSelf] is set as [AlignItems.Stretch].
+   * [AlignItems.Stretch] or [FlexItem.alignSelf] is set as [AlignItems.Stretch].
    */
   internal fun stretchChildren() {
     if (alignItems == AlignItems.Stretch) {
@@ -1057,7 +1057,7 @@ public class FlexContainer {
   /**
    * Expand the node vertically to the size of the [crossSize] (considering [node]'s margins).
    */
-  private fun stretchViewVertically(node: FlexNode, crossSize: Int) {
+  private fun stretchViewVertically(node: FlexItem, crossSize: Int) {
     val newHeight = (crossSize - node.margin.top - node.margin.bottom)
       .coerceIn(node.measurable.minHeight, node.measurable.maxHeight)
     val childWidthSpec = MeasureSpec.from(node.measuredWidth, MeasureSpecMode.Exactly)
@@ -1068,7 +1068,7 @@ public class FlexContainer {
   /**
    * Expand the node horizontally to the size of the crossSize (considering [node]'s margins).
    */
-  private fun stretchViewHorizontally(node: FlexNode, crossSize: Int) {
+  private fun stretchViewHorizontally(node: FlexItem, crossSize: Int) {
     val newWidth = (crossSize - node.margin.start - node.margin.end)
       .coerceIn(node.measurable.minWidth, node.measurable.maxWidth)
     val childHeightSpec = MeasureSpec.from(node.measuredHeight, MeasureSpecMode.Exactly)
@@ -1081,7 +1081,7 @@ public class FlexContainer {
    * ([FlexContainer.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
    */
   private fun layoutSingleChildHorizontal(
-    node: FlexNode,
+    node: FlexItem,
     flexLine: FlexLine,
     left: Int,
     top: Int,
@@ -1151,7 +1151,7 @@ public class FlexContainer {
    * ([FlexContainer.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
    */
   private fun layoutSingleChildVertical(
-    node: FlexNode,
+    node: FlexItem,
     flexLine: FlexLine,
     isRtl: Boolean,
     left: Int,
@@ -1623,10 +1623,10 @@ public class FlexContainer {
   }
 
   /**
-   * Call [Measurable.measure] and update [FlexNode.measuredWidth] and [FlexNode.measuredHeight]
+   * Call [Measurable.measure] and update [FlexItem.measuredWidth] and [FlexItem.measuredHeight]
    * with the result.
    */
-  private fun FlexNode.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
+  private fun FlexItem.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
     val size = measurable.measure(widthSpec, heightSpec)
     this.measuredWidth = size.width
     this.measuredHeight = size.height

@@ -16,9 +16,9 @@
 package app.cash.redwood.flexcontainer
 
 /**
- * A node with properties that can be measured and laid out inside a flexbox.
+ * An item with properties that can be measured and laid out inside a [FlexContainer].
  */
-public class FlexNode(
+public class FlexItem(
   /**
    * True if this item is visible and should be laid out.
    */
@@ -34,7 +34,7 @@ public class FlexNode(
    *
    * The attribute can change the order in which the children are laid out.
    * By default, children are displayed and laid out in the same order as they added to the
-   * [Flexbox].
+   * [FlexContainer].
    */
   public val order: Int = DefaultOrder,
 

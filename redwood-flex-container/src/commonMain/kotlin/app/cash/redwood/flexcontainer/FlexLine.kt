@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexcontainer.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexItem.Companion.UndefinedFlexShrink
 
 /**
- * Holds properties related to a single flex line.
+ * Holds properties related to a single line of [FlexItem]s.
  */
 internal class FlexLine {
   /**
@@ -73,13 +73,13 @@ internal class FlexLine {
   var lastIndex = 0
 
   /**
-   * True if any [FlexNode]s in this line have [FlexNode.flexGrow] attributes set
+   * True if any [FlexItem]s in this line have [FlexItem.flexGrow] attributes set
    * (i.e. have a value other than [DefaultFlexGrow]).
    */
   var anyItemsHaveFlexGrow = false
 
   /**
-   * True if any [FlexNode]s in this line have [FlexNode.flexShrink] attributes set
+   * True if any [FlexItem]s in this line have [FlexItem.flexShrink] attributes set
    * (i.e. have a value other than [UndefinedFlexShrink]).
    */
   var anyItemsHaveFlexShrink = false
