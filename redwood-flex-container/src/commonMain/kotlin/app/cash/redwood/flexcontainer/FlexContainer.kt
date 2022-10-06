@@ -184,12 +184,6 @@ public class FlexContainer {
         item.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
       }
 
-      // Check the size constraint after the first measurement for the child to prevent the child's
-      // width/height from violating the size constraints imposed by the Node.minWidth,
-      // Node.minHeight, Node.maxWidth, Node.maxHeight attributes. E.g. When the child's width is
-      // WrapContent the measured width may be less than the min width after the first measurement.
-      measureWithConstraints(item)
-
       if (
         isWrapRequired(
           mode = mainMode,
@@ -219,7 +213,6 @@ public class FlexContainer {
             childDimension = crossSize,
           )
           item.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
-          measureWithConstraints(item)
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
@@ -321,31 +314,6 @@ public class FlexContainer {
     flexLine.sumCrossSizeBefore = usedCrossSizeSoFar
     flexLine.lastIndex = itemIndex
     flexLines.add(flexLine)
-  }
-
-  /**
-   * Remeasures the item if its [FlexItem.measuredWidth] or [FlexItem.measuredHeight] violate the
-   * minimum/maximum size constraints imposed by its min/max attributes.
-   */
-  private fun measureWithConstraints(item: FlexItem) {
-    val measurable = item.measurable
-    var needsMeasure = false
-
-    var childWidth = item.measuredWidth
-    if (childWidth !in measurable.minWidth..measurable.maxWidth) {
-      needsMeasure = true
-      childWidth = childWidth.coerceIn(measurable.minWidth, measurable.maxWidth)
-    }
-    var childHeight = item.measuredHeight
-    if (childHeight !in measurable.minHeight..measurable.maxHeight) {
-      needsMeasure = true
-      childHeight = childHeight.coerceIn(measurable.minHeight, measurable.maxHeight)
-    }
-    if (needsMeasure) {
-      val widthSpec = MeasureSpec.from(childWidth, MeasureSpecMode.Exactly)
-      val heightSpec = MeasureSpec.from(childHeight, MeasureSpecMode.Exactly)
-      item.applyMeasure(widthSpec, heightSpec)
-    }
   }
 
   /**
@@ -645,20 +613,17 @@ public class FlexContainer {
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec,
-            child,
-            flexLine.sumCrossSizeBefore,
+            heightMeasureSpec = heightMeasureSpec,
+            flexItem = child,
+            padding = flexLine.sumCrossSizeBefore,
           )
           val childWidthMeasureSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
           child.applyMeasure(childWidthMeasureSpec, childHeightMeasureSpec)
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
-        largestCrossSize = maxOf(
-          largestCrossSize,
-          childMeasuredHeight + child.margin.top + child.margin.bottom,
-        )
-        flexLine.mainSize += (childMeasuredWidth + child.margin.start + child.margin.end)
+        largestCrossSize = maxOf(largestCrossSize, childMeasuredHeight + child.margin.top + child.margin.bottom)
+        flexLine.mainSize += childMeasuredWidth + child.margin.start + child.margin.end
       } else {
         // The direction of main axis is vertical
         var childMeasuredHeight = child.measuredHeight
@@ -978,9 +943,8 @@ public class FlexContainer {
   private fun stretchViewVertically(item: FlexItem, crossSize: Int) {
     val newHeight = (crossSize - item.margin.top - item.margin.bottom)
       .coerceIn(item.measurable.minHeight, item.measurable.maxHeight)
-    val childWidthSpec = MeasureSpec.from(item.measuredWidth, MeasureSpecMode.Exactly)
-    val childHeightSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly)
-    item.applyMeasure(childWidthSpec, childHeightSpec)
+    item.measuredWidth = item.measuredWidth
+    item.measuredHeight = newHeight
   }
 
   /**
@@ -989,9 +953,8 @@ public class FlexContainer {
   private fun stretchViewHorizontally(item: FlexItem, crossSize: Int) {
     val newWidth = (crossSize - item.margin.start - item.margin.end)
       .coerceIn(item.measurable.minWidth, item.measurable.maxWidth)
-    val childHeightSpec = MeasureSpec.from(item.measuredHeight, MeasureSpecMode.Exactly)
-    val childWidthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly)
-    item.applyMeasure(childWidthSpec, childHeightSpec)
+    item.measuredWidth = newWidth
+    item.measuredHeight = item.measuredHeight
   }
 
   /**
@@ -1545,8 +1508,8 @@ public class FlexContainer {
    * with the result.
    */
   private fun FlexItem.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
-    val size = measurable.measure(widthSpec, heightSpec)
-    this.measuredWidth = size.width
-    this.measuredHeight = size.height
+    val (width, height) = measurable.measure(widthSpec, heightSpec)
+    this.measuredWidth = width.coerceIn(measurable.minWidth, measurable.maxWidth)
+    this.measuredHeight = height.coerceIn(measurable.minHeight, measurable.maxHeight)
   }
 }
