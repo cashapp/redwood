@@ -215,7 +215,7 @@ private fun parseLayoutModifier(
     emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'",
+      "@LayoutModifier ${memberType.qualifiedName} must be 'data' class or 'object'",
     )
   }
 
