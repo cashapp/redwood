@@ -38,10 +38,10 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
 
   val children: Widget.Children<View> = MutableListChildren(
     onUpdate = { views ->
-      container.nodes.clear()
+      container.items.clear()
       _view.removeAllViews()
       views.forEach {
-        container.nodes += it.asItem()
+        container.items += it.asItem()
         _view.addView(it)
       }
     },
