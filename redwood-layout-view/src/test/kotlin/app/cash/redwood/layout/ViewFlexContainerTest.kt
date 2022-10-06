@@ -15,131 +15,116 @@
  */
 package app.cash.redwood.layout
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_6
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.FlexDirection
+import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.layout.api.Padding
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-@SuppressLint("SetTextI18n")
-class ViewFlexContainerTest {
+@RunWith(Parameterized::class)
+class ViewFlexContainerTest(
+  private val parameters: Parameters,
+) {
+  companion object {
+    @JvmStatic
+    @Parameterized.Parameters(name = "{0}")
+    fun parameters() = cartesianProduct(
+      listOf(
+        FlexDirection.Row,
+        FlexDirection.Column,
+      ),
+      listOf(
+        AlignItems.FlexStart,
+        AlignItems.FlexEnd,
+        AlignItems.Center,
+        AlignItems.Stretch,
+      ),
+      listOf(
+        JustifyContent.FlexStart,
+        JustifyContent.FlexEnd,
+        JustifyContent.Center,
+        JustifyContent.SpaceBetween,
+        JustifyContent.SpaceAround,
+        JustifyContent.SpaceEvenly,
+      ),
+      listOf(
+        Padding.Zero,
+        Padding(100),
+      ),
+    ).map {
+      // https://github.com/junit-team/junit5/issues/2703
+      arrayOf(
+        Parameters(
+          flexDirection = it[0] as FlexDirection,
+          alignItems = it[1] as AlignItems,
+          justifyContent = it[2] as JustifyContent,
+          padding = it[3] as Padding,
+        ),
+      )
+    }
+
+    class Parameters(
+      val flexDirection: FlexDirection,
+      val alignItems: AlignItems,
+      val justifyContent: JustifyContent,
+      val padding: Padding,
+    ) {
+      override fun toString() = "" +
+        "FlexDirection.$flexDirection, " +
+        "AlignItems.$alignItems, " +
+        "JustifyContent.$justifyContent, " +
+        "$padding"
+    }
+  }
+
   @get:Rule
   val paparazzi = Paparazzi(
     deviceConfig = PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
   )
 
-  private val textViews by lazy {
-    listOf(
-      TextView(paparazzi.context).apply {
-        background = ColorDrawable(Color.CYAN)
-        textSize = 18f
-        text = "TextView 1"
-      },
-      TextView(paparazzi.context).apply {
-        background = ColorDrawable(Color.CYAN)
-        textSize = 18f
-        text = "TextView 2"
-      },
-      TextView(paparazzi.context).apply {
-        background = ColorDrawable(Color.CYAN)
-        textSize = 18f
-        text = "TextView 3"
-      },
-      TextView(paparazzi.context).apply {
-        background = ColorDrawable(Color.CYAN)
-        textSize = 18f
-        text = "TextView 4"
-      },
+  @Test
+  fun `render - `() {
+    val items = listOf(
+      "The Good, the Bad and the Ugly",
+      "Forrest Gump",
+      "Fight Club",
+      "Inception",
+      "The Lord of the Rings: The Two Towers",
     )
-  }
+    val textViews = items.map { title ->
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.GREEN)
+        textSize = 18f
+        setTextColor(Color.BLACK)
+        text = title
+      }
+    }
 
-  @Test
-  fun columnStart() {
-    val column = ViewColumn(paparazzi.context).apply {
-      horizontalAlignment(CrossAxisAlignment.Center)
-      verticalAlignment(MainAxisAlignment.Start)
-      value.background = ColorDrawable(Color.LTGRAY)
+    val container = ViewFlexContainer(paparazzi.context, parameters.flexDirection).apply {
+      view.background = ColorDrawable(Color.LTGRAY)
+      padding(parameters.padding)
+      alignItems(parameters.alignItems)
+      justifyContent(parameters.justifyContent)
     }
 
     textViews.forEachIndexed { index, textView ->
-      column.children.insert(index, textView)
+      container.children.insert(index, textView)
     }
-    paparazzi.snapshot(column.value)
+    paparazzi.snapshot(container.view)
   }
+}
 
-  @Test
-  fun columnCenter() {
-    val column = ViewColumn(paparazzi.context).apply {
-      horizontalAlignment(CrossAxisAlignment.Center)
-      verticalAlignment(MainAxisAlignment.Center)
-      value.background = ColorDrawable(Color.LTGRAY)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      column.children.insert(index, textView)
-    }
-    paparazzi.snapshot(column.value)
-  }
-
-  @Test
-  fun columnEnd() {
-    val column = ViewColumn(paparazzi.context).apply {
-      horizontalAlignment(CrossAxisAlignment.Center)
-      verticalAlignment(MainAxisAlignment.End)
-      value.background = ColorDrawable(Color.LTGRAY)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      column.children.insert(index, textView)
-    }
-    paparazzi.snapshot(column.value)
-  }
-
-  @Test
-  fun rowStart() {
-    val row = ViewRow(paparazzi.context).apply {
-      horizontalAlignment(MainAxisAlignment.Start)
-      verticalAlignment(CrossAxisAlignment.Center)
-      value.background = ColorDrawable(Color.LTGRAY)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      row.children.insert(index, textView)
-    }
-    paparazzi.snapshot(row.value)
-  }
-
-  @Test
-  fun rowCenter() {
-    val row = ViewRow(paparazzi.context).apply {
-      horizontalAlignment(MainAxisAlignment.Center)
-      verticalAlignment(CrossAxisAlignment.Center)
-      value.background = ColorDrawable(Color.LTGRAY)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      row.children.insert(index, textView)
-    }
-    paparazzi.snapshot(row.value)
-  }
-
-  @Test
-  fun rowEnd() {
-    val row = ViewRow(paparazzi.context).apply {
-      horizontalAlignment(MainAxisAlignment.End)
-      verticalAlignment(CrossAxisAlignment.Center)
-      value.background = ColorDrawable(Color.LTGRAY)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      row.children.insert(index, textView)
-    }
-    paparazzi.snapshot(row.value)
+private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Array<T>> {
+  return lists.fold(listOf(emptyArray())) { partials, list ->
+    partials.flatMap { partial -> list.map { element -> partial + element } }
   }
 }
