@@ -112,5 +112,5 @@ public fun Padding(
 
 @Stable
 public fun Padding(
-  value: Int = 0,
-): Padding = Padding(value, value, value, value)
+  all: Int = 0,
+): Padding = Padding(all, all, all, all)
