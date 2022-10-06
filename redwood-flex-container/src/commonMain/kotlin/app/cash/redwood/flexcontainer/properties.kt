@@ -24,10 +24,7 @@ import kotlin.math.abs
  * This attribute controls the alignment of the flex lines in the flex container.
  */
 @JvmInline
-public value class AlignContent(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..5) { "unknown AlignContent: $ordinal" }
-  }
+public value class AlignContent private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -53,10 +50,7 @@ public value class AlignContent(public val ordinal: Int) {
  * This attribute controls the alignment along the cross axis.
  */
 @JvmInline
-public value class AlignItems(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..4) { "unknown AlignItems: $ordinal" }
-  }
+public value class AlignItems private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -84,10 +78,7 @@ public value class AlignItems(public val ordinal: Int) {
  * overridden for this child.
  */
 @JvmInline
-public value class AlignSelf(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..5) { "unknown AlignSelf: $ordinal" }
-  }
+public value class AlignSelf private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -114,10 +105,7 @@ public value class AlignSelf(public val ordinal: Int) {
  * direction of the main axis (and the cross axis, perpendicular to the main axis).
  */
 @JvmInline
-public value class FlexDirection(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..3) { "unknown FlexDirection: $ordinal" }
-  }
+public value class FlexDirection private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Row"
@@ -152,10 +140,7 @@ public val FlexDirection.isVertical: Boolean
  * and the direction of the cross axis.
  */
 @JvmInline
-public value class FlexWrap(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..2) { "unknown FlexWrap: $ordinal" }
-  }
+public value class FlexWrap private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "NoWrap"
@@ -175,10 +160,7 @@ public value class FlexWrap(public val ordinal: Int) {
  * This attribute controls the alignment along the main axis.
  */
 @JvmInline
-public value class JustifyContent(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..5) { "unknown JustifyContent: $ordinal" }
-  }
+public value class JustifyContent private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "FlexStart"
@@ -206,7 +188,7 @@ public value class JustifyContent(public val ordinal: Int) {
  * A MeasureSpec is comprised of a size and a mode.
  */
 @JvmInline
-public value class MeasureSpec private constructor(internal val value: Int) {
+public value class MeasureSpec private constructor(private val value: Int) {
 
   public val size: Int get() = value and 0x3FFF
   public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))
@@ -240,10 +222,7 @@ public value class MeasureSpec private constructor(internal val value: Int) {
  * Denotes how the [MeasureSpec.size] constraint should be interpreted.
  */
 @JvmInline
-public value class MeasureSpecMode(public val ordinal: Int) {
-  init {
-    require(ordinal in 0..2) { "unknown MeasureSpecMode: $ordinal" }
-  }
+public value class MeasureSpecMode internal constructor(internal val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Unspecified"
@@ -282,7 +261,7 @@ public data class Spacing(
 ) {
   init {
     require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
-      "invalid Spacing: [$start, $end, $top, $bottom]"
+      "Invalid Spacing: [$start, $end, $top, $bottom]"
     }
   }
 
@@ -300,7 +279,7 @@ public data class Size(
 ) {
   init {
     require(width >= 0 && height >= 0) {
-      "invalid Size: [$width, $height]"
+      "Invalid Size: [$width, $height]"
     }
   }
 

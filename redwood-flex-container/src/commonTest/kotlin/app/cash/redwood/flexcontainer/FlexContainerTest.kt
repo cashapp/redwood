@@ -313,27 +313,6 @@ class FlexContainerTest {
   }
 
   @Test
-  fun testMakeCombinedLong() {
-    var higher = -1
-    var lower = 10
-    var combined = packLong(lower, higher)
-    assertEquals(higher, unpackHigher(combined))
-    assertEquals(lower, unpackLower(combined))
-
-    higher = Int.MAX_VALUE
-    lower = Int.MIN_VALUE
-    combined = packLong(lower, higher)
-    assertEquals(higher, unpackHigher(combined))
-    assertEquals(lower, unpackLower(combined))
-
-    higher = MeasureSpec.from(500, MeasureSpecMode.Exactly).value
-    lower = MeasureSpec.from(300, MeasureSpecMode.Unspecified).value
-    combined = packLong(lower, higher)
-    assertEquals(higher, unpackHigher(combined))
-    assertEquals(lower, unpackLower(combined))
-  }
-
-  @Test
   fun testMakeMeasureSpec() {
     var spec = MeasureSpec.from(100, MeasureSpecMode.AtMost)
     assertEquals(100, spec.size)
