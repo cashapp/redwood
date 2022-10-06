@@ -38,11 +38,11 @@ class SchemaParserTest {
 
   @Schema(
     [
-      NonAnnotatedWidget::class,
+      NonAnnotatedMember::class,
     ],
   )
   interface NonAnnotatedWidgetSchema
-  data class NonAnnotatedWidget(
+  data class NonAnnotatedMember(
     @Property(1) val name: String,
   )
 
@@ -50,7 +50,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
+      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @LayoutModifier",
     )
   }
 
@@ -251,18 +251,38 @@ class SchemaParserTest {
       NonDataClassWidget::class,
     ],
   )
-  interface NonDataClassSchema
+  interface NonDataClassWidgetSchema
 
   @Widget(1)
   class NonDataClassWidget(
     @Property(1) val name: String,
   )
 
-  @Test fun nonDataClassThrows() {
+  @Test fun nonDataClassWidgetThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(NonDataClassSchema::class)
+      parseSchema(NonDataClassWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
       "@Widget app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
+    )
+  }
+
+  @Schema(
+    [
+      NonDataClassLayoutModifier::class,
+    ],
+  )
+  interface NonDataClassLayoutModifierSchema
+
+  @LayoutModifier(1)
+  class NonDataClassLayoutModifier(
+    @Property(1) val name: String,
+  )
+
+  @Test fun nonDataClassLayoutModifierThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(NonDataClassLayoutModifierSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassLayoutModifier must be 'data' class or 'object'",
     )
   }
 
