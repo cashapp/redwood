@@ -47,7 +47,7 @@ google-material = { module = "com.google.android.material:material", version = "
 
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jbComposeRuntime" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.2.2" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.3.0" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.11.0" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "3.1.0" }
 junit = { module = "junit:junit", version = "4.13.1" }
