@@ -36,7 +36,7 @@ internal inline fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int
   layout(left, top, right, bottom)
 }
 
-/** The number of children who are not invisible in this flex line. */
+/** The number of items who are not invisible in this flex line. */
 internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
 

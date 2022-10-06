@@ -33,12 +33,12 @@ internal class FlexLine {
   var crossSize = 0
 
   /**
-   * The number of nodes contained in this flex line.
+   * The number of items contained in this flex line.
    */
   var itemCount = 0
 
   /**
-   * The number of nodes who are invisible (i.e. aren't included in measure or layout).
+   * The number of items who are invisible (i.e. aren't included in measure or layout).
    */
   var invisibleItemCount = 0
 

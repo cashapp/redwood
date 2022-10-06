@@ -33,7 +33,7 @@ class FlexContainerStringCanvasTest {
     val widgets = imdbTop4.map { StringWidget(it) }
     val container = FlexContainer().apply {
       flexDirection = Column
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -69,7 +69,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Column
       justifyContent = JustifyContent.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -107,7 +107,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Column
       alignItems = AlignItems.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -143,7 +143,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Column
       alignItems = AlignItems.Stretch
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -180,7 +180,7 @@ class FlexContainerStringCanvasTest {
     val widgets = imdbTop4.map { StringWidget(it) }
     val container = FlexContainer().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -204,7 +204,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Row
       justifyContent = JustifyContent.Center
-      nodes += widgets.map { it.toNode(FlexItem(flexBasisPercent = 0f)) }
+      items += widgets.map { it.toNode(FlexItem(flexBasisPercent = 0f)) }
     }
 
     assertEquals(
@@ -226,7 +226,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Row
       alignItems = AlignItems.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -250,7 +250,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Row
       alignItems = AlignItems.Stretch
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -293,8 +293,8 @@ class FlexContainerStringCanvasTest {
     return canvas.toString()
   }
 
-  private fun StringWidget.toNode(node: FlexItem = FlexItem()): FlexItem {
-    return node.apply {
+  private fun StringWidget.toNode(item: FlexItem = FlexItem()): FlexItem {
+    return item.apply {
       this.measurable = this@toNode
       this.layout = this@toNode::layout
     }
