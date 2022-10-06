@@ -25,7 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @SuppressLint("SetTextI18n")
-class ViewLayoutTest {
+class ViewFlexContainerTest {
   @get:Rule
   val paparazzi = Paparazzi(
     deviceConfig = PIXEL_6,

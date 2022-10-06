@@ -15,7 +15,7 @@
  */
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
 import kotlin.jvm.JvmInline
 import kotlin.math.abs

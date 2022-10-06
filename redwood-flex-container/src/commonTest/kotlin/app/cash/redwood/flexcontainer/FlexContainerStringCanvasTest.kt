@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.FlexDirection.Companion.Column
-import app.cash.redwood.flexbox.FlexDirection.Companion.Row
+import app.cash.redwood.flexcontainer.FlexDirection.Companion.Column
+import app.cash.redwood.flexcontainer.FlexDirection.Companion.Row
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FlexboxTest {
+class FlexContainerStringCanvasTest {
   private val imdbTop4 = listOf(
     "The Shawshank Redemption",
     "The Godfather",
@@ -31,9 +31,9 @@ class FlexboxTest {
   @Test
   fun column() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Column
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -59,17 +59,17 @@ class FlexboxTest {
       ··············
       ··············
       """.trimIndent(),
-      engine.layout(14, 20, widgets),
+      container.layout(14, 20, widgets),
     )
   }
 
   @Test
   fun columnMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Column
       justifyContent = JustifyContent.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -97,17 +97,17 @@ class FlexboxTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 22, widgets),
+      container.layout(20, 22, widgets),
     )
   }
 
   @Test
   fun columnCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Column
       alignItems = AlignItems.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -133,17 +133,17 @@ class FlexboxTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 20, widgets),
+      container.layout(20, 20, widgets),
     )
   }
 
   @Test
   fun columnCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Column
       alignItems = AlignItems.Stretch
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -171,16 +171,16 @@ class FlexboxTest {
       ····················
       ····················
       """.trimIndent(),
-      engine.layout(20, 22, widgets),
+      container.layout(20, 22, widgets),
     )
   }
 
   @Test
   fun row() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Row
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -194,17 +194,17 @@ class FlexboxTest {
       ····························································
       ····························································
       """.trimIndent(),
-      engine.layout(60, 8, widgets),
+      container.layout(60, 8, widgets),
     )
   }
 
   @Test
   fun rowMainAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Row
       justifyContent = JustifyContent.Center
-      nodes += widgets.map { it.toNode(FlexNode(flexBasisPercent = 0f)) }
+      items += widgets.map { it.toNode(FlexItem(flexBasisPercent = 0f)) }
     }
 
     assertEquals(
@@ -216,17 +216,17 @@ class FlexboxTest {
       ·········└──────────┘···········└──────┘|         │·········
       ········································└─────────┘·········
       """.trimIndent(),
-      engine.layout(60, 6, widgets),
+      container.layout(60, 6, widgets),
     )
   }
 
   @Test
   fun rowCrossAxisCentered() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Row
       alignItems = AlignItems.Center
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -240,17 +240,17 @@ class FlexboxTest {
       ··········································
       ··········································
       """.trimIndent(),
-      engine.layout(42, 8, widgets),
+      container.layout(42, 8, widgets),
     )
   }
 
   @Test
   fun rowCrossAxisStretched() {
     val widgets = imdbTop4.map { StringWidget(it) }
-    val engine = FlexboxEngine().apply {
+    val container = FlexContainer().apply {
       flexDirection = Row
       alignItems = AlignItems.Stretch
-      nodes += widgets.map { it.toNode() }
+      items += widgets.map { it.toNode() }
     }
 
     assertEquals(
@@ -264,11 +264,11 @@ class FlexboxTest {
       |                        │|             │|               │|                     │···················
       └────────────────────────┘└─────────────┘└───────────────┘└─────────────────────┘···················
       """.trimIndent(),
-      engine.layout(100, 8, widgets),
+      container.layout(100, 8, widgets),
     )
   }
 
-  private fun FlexboxEngine.layout(
+  private fun FlexContainer.layout(
     width: Int,
     height: Int,
     widgets: List<StringWidget>,
@@ -293,8 +293,8 @@ class FlexboxTest {
     return canvas.toString()
   }
 
-  private fun StringWidget.toNode(node: FlexNode = FlexNode()): FlexNode {
-    return node.apply {
+  private fun StringWidget.toNode(item: FlexItem = FlexItem()): FlexItem {
+    return item.apply {
       this.measurable = this@toNode
       this.layout = this@toNode::layout
     }

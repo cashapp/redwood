@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexItem.Companion.UndefinedFlexShrink
 
 /**
- * Holds properties related to a single flex line.
+ * Holds properties related to a single line of [FlexItem]s.
  */
 internal class FlexLine {
   /**
@@ -33,12 +33,12 @@ internal class FlexLine {
   var crossSize = 0
 
   /**
-   * The number of nodes contained in this flex line.
+   * The number of items contained in this flex line.
    */
   var itemCount = 0
 
   /**
-   * The number of nodes who are invisible (i.e. aren't included in measure or layout).
+   * The number of items who are invisible (i.e. aren't included in measure or layout).
    */
   var invisibleItemCount = 0
 
@@ -73,13 +73,13 @@ internal class FlexLine {
   var lastIndex = 0
 
   /**
-   * True if any [FlexNode]s in this line have [FlexNode.flexGrow] attributes set
+   * True if any [FlexItem]s in this line have [FlexItem.flexGrow] attributes set
    * (i.e. have a value other than [DefaultFlexGrow]).
    */
   var anyItemsHaveFlexGrow = false
 
   /**
-   * True if any [FlexNode]s in this line have [FlexNode.flexShrink] attributes set
+   * True if any [FlexItem]s in this line have [FlexItem.flexShrink] attributes set
    * (i.e. have a value other than [UndefinedFlexShrink]).
    */
   var anyItemsHaveFlexShrink = false

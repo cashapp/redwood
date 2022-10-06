@@ -20,16 +20,16 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexboxEngine
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
+import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.FlexContainer
+import app.cash.redwood.flexcontainer.FlexDirection
+import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 
-internal class ViewLayout(context: Context, direction: FlexDirection) {
-  private val engine = FlexboxEngine().apply {
+internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
+  private val container = FlexContainer().apply {
     flexDirection = direction
   }
 
@@ -38,10 +38,10 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
 
   val children: Widget.Children<View> = MutableListChildren(
     onUpdate = { views ->
-      engine.nodes.clear()
+      container.items.clear()
       _view.removeAllViews()
       views.forEach {
-        engine.nodes += it.asNode()
+        container.items += it.asItem()
         _view.addView(it)
       }
     },
@@ -50,7 +50,7 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
   var layoutModifiers: LayoutModifier = LayoutModifier
 
   fun padding(padding: Padding) {
-    engine.padding = padding.toSpacing()
+    container.padding = padding.toSpacing()
     invalidate()
   }
 
@@ -65,12 +65,12 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
   }
 
   fun alignItems(alignItems: AlignItems) {
-    engine.alignItems = alignItems
+    container.alignItems = alignItems
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    engine.justifyContent = justifyContent
+    container.justifyContent = justifyContent
     invalidate()
   }
 
@@ -84,12 +84,12 @@ internal class ViewLayout(context: Context, direction: FlexDirection) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
       val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      val (width, height) = engine.measure(widthSpec, heightSpec)
+      val (width, height) = container.measure(widthSpec, heightSpec)
       setMeasuredDimension(width, height)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      engine.layout(left, top, right, bottom)
+      container.layout(left, top, right, bottom)
     }
   }
 }

@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.redwoodFlexboxEngine
+        implementation projects.redwoodFlexContainer
         api projects.redwoodRuntime
         api projects.redwoodWidget
         api libs.jetbrains.compose.runtime

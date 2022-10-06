@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
 /**
- * A node with properties that can be measured and laid out inside a flexbox.
+ * An item with properties that can be measured and laid out inside a [FlexContainer].
  */
-public class FlexNode(
+public class FlexItem(
   /**
    * True if this item is visible and should be laid out.
    */
@@ -30,36 +30,36 @@ public class FlexNode(
   public val baseline: Int = DefaultBaseline,
 
   /**
-   * The order attribute of the node.
+   * The order attribute of the item.
    *
    * The attribute can change the order in which the children are laid out.
    * By default, children are displayed and laid out in the same order as they added to the
-   * [FlexboxEngine].
+   * [FlexContainer].
    */
   public val order: Int = DefaultOrder,
 
   /**
-   * The flex grow attribute of the node.
+   * The flex grow attribute of the item.
    *
    * The attribute determines how much this child will grow if positive free space is
-   * distributed relative to the rest of other nodes included in the same flex line.
+   * distributed relative to the rest of other items included in the same flex line.
    */
   public val flexGrow: Float = DefaultFlexGrow,
 
   /**
-   * The flex shrink attribute of the node.
+   * The flex shrink attribute of the item.
    *
    * The attribute determines how much this child will shrink if negative free space is
-   * distributed relative to the rest of other nodes included in the same flex line.
+   * distributed relative to the rest of other items included in the same flex line.
    */
   public val flexShrink: Float = DefaultFlexShrink,
 
   /**
-   * The flexBasisPercent attribute of the node.
+   * The flexBasisPercent attribute of the item.
    *
-   * The attribute determines the initial node length in a fraction format relative to its
+   * The attribute determines the initial item length in a fraction format relative to its
    * parent.
-   * The initial main size of this child View is trying to be expanded as the specified
+   * The initial main size of this child is trying to be expanded as the specified
    * fraction against the parent main size.
    * If this value is set, the length specified from layout_width
    * (or layout_height) is overridden by the calculated value from this attribute.
@@ -69,7 +69,7 @@ public class FlexNode(
   public val flexBasisPercent: Float = DefaultFlexBasisPercent,
 
   /**
-   * The align self attribute of the node.
+   * The align self attribute of the item.
    *
    * The attribute determines the alignment along the cross axis (perpendicular to the
    * main axis). The alignment in the same direction can be determined by the
@@ -82,11 +82,11 @@ public class FlexNode(
   public val alignSelf: AlignSelf = AlignSelf.Auto,
 
   /**
-   * The wrapBefore attribute of the node.
+   * The wrapBefore attribute of the item.
    *
    * The attribute forces a flex line wrapping. i.e. if this is set to `true` for a
-   * node, the item will become the first item of the new flex line. (A wrapping happens
-   * regardless of the nodes being processed in the the previous flex line)
+   * item, the item will become the first item of the new flex line. (A wrapping happens
+   * regardless of the items being processed in the the previous flex line)
    * This attribute is ignored if the flex_wrap attribute is set as nowrap.
    * The equivalent attribute isn't defined in the original CSS Flexible Box Module
    * specification, but having this attribute is useful for Android developers to flatten
@@ -96,12 +96,12 @@ public class FlexNode(
   public val wrapBefore: Boolean = false,
 
   /**
-   * The margin of the node.
+   * The margin of the item.
    */
   public val margin: Spacing = Spacing.Zero,
 
   /**
-   * A callback to to measure this node according to a set of measurement constraints.
+   * A callback to to measure this item according to a set of measurement constraints.
    */
   public var measurable: Measurable = Measurable(),
 ) {
@@ -120,7 +120,7 @@ public class FlexNode(
   public var measuredHeight: Int = -1
 
   /**
-   * A callback to place the node inside a given set of coordinates.
+   * A callback to place the item inside a given set of coordinates.
    */
   public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
 

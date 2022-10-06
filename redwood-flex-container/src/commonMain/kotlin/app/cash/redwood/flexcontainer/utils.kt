@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
-import app.cash.redwood.flexbox.Measurable.Companion.WrapContent
+import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
+import app.cash.redwood.flexcontainer.Measurable.Companion.WrapContent
 
 internal fun packLong(lower: Int, higher: Int): Long {
   return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
@@ -32,11 +32,11 @@ internal fun unpackHigher(value: Long): Int {
 
 /** Convenience function to use named arguments. */
 @Suppress("EXTENSION_FUNCTION_SHADOWED_BY_MEMBER_PROPERTY_WITH_INVOKE", "NOTHING_TO_INLINE")
-internal inline fun FlexNode.layout(left: Int, top: Int, right: Int, bottom: Int) {
+internal inline fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int) {
   layout(left, top, right, bottom)
 }
 
-/** The number of children who are not invisible in this flex line. */
+/** The number of items who are not invisible in this flex line. */
 internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
 
