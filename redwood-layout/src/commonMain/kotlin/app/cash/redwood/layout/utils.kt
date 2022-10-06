@@ -17,9 +17,9 @@
 
 package app.cash.redwood.layout
 
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Spacing
+import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.Spacing
 import kotlin.jvm.JvmName
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {

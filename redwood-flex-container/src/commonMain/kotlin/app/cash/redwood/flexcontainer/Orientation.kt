@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
 internal fun FlexDirection.toOrientation(): Orientation {
   return if (isHorizontal) Orientation.Horizontal else Orientation.Vertical

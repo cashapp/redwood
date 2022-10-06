@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexNode.Companion.UndefinedFlexShrink
 
 /**
  * Holds properties related to a single flex line.

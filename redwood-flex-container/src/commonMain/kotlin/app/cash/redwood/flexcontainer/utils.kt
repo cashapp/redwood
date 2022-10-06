@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
-import app.cash.redwood.flexbox.Measurable.Companion.WrapContent
+import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
+import app.cash.redwood.flexcontainer.Measurable.Companion.WrapContent
 
 internal fun packLong(lower: Int, higher: Int): Long {
   return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)

@@ -15,12 +15,12 @@
  */
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexBasisPercent
-import app.cash.redwood.flexbox.FlexNode.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexNode.Companion.UndefinedFlexShrink
-import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
+import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexBasisPercent
+import app.cash.redwood.flexcontainer.FlexNode.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexNode.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
 /**

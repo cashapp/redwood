@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexbox
+package app.cash.redwood.flexcontainer
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
 
 class FlexContainerTest {
 
-  private val flexbox = FlexContainer().apply {
+  private val container = FlexContainer().apply {
     flexWrap = FlexWrap.Wrap
     alignItems = AlignItems.Stretch
     alignContent = AlignContent.Stretch
@@ -34,15 +34,15 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
     val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
     val node4 = FlexNode(measurable = BoxMeasurable(400, 100))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexWrap = FlexWrap.Wrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
 
-    val flexLines = engine.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val lines = container.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300, lines[0].mainSize)
@@ -52,7 +52,7 @@ class FlexContainerTest {
     assertEquals(100, lines[1].crossSize)
     assertEquals(100, lines[2].crossSize)
 
-    val firstLine = flexLines[0]
+    val firstLine = lines[0]
     assertEquals(0, firstLine.firstIndex)
     assertEquals(1, firstLine.lastIndex)
     val secondLine = lines[1]
@@ -69,16 +69,16 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
     val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
     val node4 = FlexNode(measurable = BoxMeasurable(100, 400))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexWrap = FlexWrap.Wrap
-    flexbox.flexDirection = FlexDirection.Column
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexWrap = FlexWrap.Wrap
+    container.flexDirection = FlexDirection.Column
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
 
-    val flexLines = engine.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val lines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300, lines[0].mainSize)
@@ -88,7 +88,7 @@ class FlexContainerTest {
     assertEquals(100, lines[1].crossSize)
     assertEquals(100, lines[2].crossSize)
 
-    val firstLine = flexLines[0]
+    val firstLine = lines[0]
     assertEquals(0, firstLine.firstIndex)
     assertEquals(1, firstLine.lastIndex)
     val secondLine = lines[1]
@@ -105,16 +105,16 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(200, 100), flexGrow = 1.0f)
     val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
     val node4 = FlexNode(measurable = BoxMeasurable(400, 100), flexGrow = 2.0f)
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Row
-    flexbox.flexWrap = FlexWrap.Wrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Row
+    container.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    flexbox.flexLines = flexbox.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(100, node1.measuredWidth)
     assertEquals(100, node1.measuredHeight)
@@ -134,16 +134,16 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(100, 200), flexGrow = 1.0f)
     val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
     val node4 = FlexNode(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Column
-    flexbox.flexWrap = FlexWrap.Wrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Column
+    container.flexWrap = FlexWrap.Wrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    flexbox.flexLines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(100, node1.measuredWidth)
     assertEquals(100, node1.measuredHeight)
@@ -163,16 +163,16 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
     val node3 = FlexNode(measurable = BoxMeasurable(200, 100))
     val node4 = FlexNode(measurable = BoxMeasurable(200, 100))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Row
-    flexbox.flexWrap = FlexWrap.NoWrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Row
+    container.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    flexbox.flexLines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrank equally for the amount overflown the width
@@ -192,16 +192,16 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
     val node3 = FlexNode(measurable = BoxMeasurable(100, 200))
     val node4 = FlexNode(measurable = BoxMeasurable(100, 200))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Column
-    flexbox.flexWrap = FlexWrap.NoWrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Column
+    container.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    flexbox.flexLines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrank equally for the amount overflown the height
@@ -219,13 +219,13 @@ class FlexContainerTest {
   fun testDetermineMainSize_directionRow_fixedSizeViewAndShrinkable_doNotExceedMaxMainSize() {
     val node1 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
     val node2 = FlexNode(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.flexWrap = FlexWrap.NoWrap
+    container.nodes += node1
+    container.nodes += node2
+    container.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    flexbox.flexLines = flexbox.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
@@ -238,14 +238,14 @@ class FlexContainerTest {
     val node1 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
     val node2 = FlexNode(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
     val node3 = FlexNode(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.flexWrap = FlexWrap.NoWrap
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.flexWrap = FlexWrap.NoWrap
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    flexbox.flexLines = flexbox.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.flexLines = container.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
@@ -260,19 +260,19 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(200, 100))
     val node3 = FlexNode(measurable = BoxMeasurable(300, 100))
     val node4 = FlexNode(measurable = BoxMeasurable(400, 100))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Row
-    flexbox.flexWrap = FlexWrap.Wrap
-    flexbox.alignContent = AlignContent.Stretch
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Row
+    container.flexWrap = FlexWrap.Wrap
+    container.alignContent = AlignContent.Stretch
     val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
-    flexbox.flexLines = flexbox.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    flexbox.stretchChildren()
+    container.flexLines = container.calculateHorizontalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
+    container.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
@@ -289,19 +289,19 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
     val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
     val node4 = FlexNode(measurable = BoxMeasurable(100, 400))
-    flexbox.nodes += node1
-    flexbox.nodes += node2
-    flexbox.nodes += node3
-    flexbox.nodes += node4
-    flexbox.flexDirection = FlexDirection.Column
-    flexbox.flexWrap = FlexWrap.Wrap
-    flexbox.alignContent = AlignContent.Stretch
+    container.nodes += node1
+    container.nodes += node2
+    container.nodes += node3
+    container.nodes += node4
+    container.flexDirection = FlexDirection.Column
+    container.flexWrap = FlexWrap.Wrap
+    container.alignContent = AlignContent.Stretch
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    flexbox.flexLines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineMainSize(widthMeasureSpec, heightMeasureSpec)
-    flexbox.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
-    flexbox.stretchChildren()
+    container.flexLines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    container.determineMainSize(widthMeasureSpec, heightMeasureSpec)
+    container.determineCrossSize(widthMeasureSpec, heightMeasureSpec, 0)
+    container.stretchChildren()
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
@@ -354,7 +354,7 @@ class FlexContainerTest {
     val node2 = FlexNode(measurable = BoxMeasurable(100, 200))
     val node3 = FlexNode(measurable = BoxMeasurable(100, 300))
     val node4 = FlexNode(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
-    flexbox.apply {
+    container.apply {
       nodes += node1
       nodes += node2
       nodes += node3
@@ -365,11 +365,11 @@ class FlexContainerTest {
     }
     val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    flexbox.flexLines = flexbox.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
-    assertEquals(3, flexbox.flexLines.size)
-    assertTrue(flexbox.flexLines[0].anyItemsHaveFlexGrow)
-    assertFalse(flexbox.flexLines[1].anyItemsHaveFlexGrow)
-    assertTrue(flexbox.flexLines[2].anyItemsHaveFlexGrow)
+    container.flexLines = container.calculateVerticalFlexLines(widthMeasureSpec, heightMeasureSpec)
+    assertEquals(3, container.flexLines.size)
+    assertTrue(container.flexLines[0].anyItemsHaveFlexGrow)
+    assertFalse(container.flexLines[1].anyItemsHaveFlexGrow)
+    assertTrue(container.flexLines[2].anyItemsHaveFlexGrow)
   }
 
   class BoxMeasurable(

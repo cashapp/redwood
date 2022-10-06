@@ -18,11 +18,11 @@
 package app.cash.redwood.layout
 
 import android.view.View
-import app.cash.redwood.flexbox.FlexNode
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.MeasureSpec
-import app.cash.redwood.flexbox.MeasureSpecMode
-import app.cash.redwood.flexbox.Size
+import app.cash.redwood.flexcontainer.FlexNode
+import app.cash.redwood.flexcontainer.Measurable
+import app.cash.redwood.flexcontainer.MeasureSpec
+import app.cash.redwood.flexcontainer.MeasureSpecMode
+import app.cash.redwood.flexcontainer.Size
 
 internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
   size = View.MeasureSpec.getSize(measureSpec),

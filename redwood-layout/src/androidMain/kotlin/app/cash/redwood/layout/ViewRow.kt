@@ -18,7 +18,7 @@ package app.cash.redwood.layout
 import android.content.Context
 import android.view.View
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.widget.Widget
 
 public class ViewRow(context: Context) : RowWidget<View> {
