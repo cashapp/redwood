@@ -1090,7 +1090,7 @@ public class FlexContainer {
     if (item.alignSelf != AlignSelf.Auto) {
       // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
       // Assigning the alignSelf value as alignItems should work.
-      alignItems = AlignItems(item.alignSelf.ordinal)
+      alignItems = item.alignSelf.toAlignItems()
     }
     val crossSize = flexLine.crossSize
     when (alignItems) {
@@ -1161,7 +1161,7 @@ public class FlexContainer {
     if (item.alignSelf != AlignSelf.Auto) {
       // Expecting the values for alignItems and alignSelf match except for Auto.
       // Assigning the alignSelf value as alignItems should work.
-      alignItems = AlignItems(item.alignSelf.ordinal)
+      alignItems = item.alignSelf.toAlignItems()
     }
     val crossSize = flexLine.crossSize
     when (alignItems) {

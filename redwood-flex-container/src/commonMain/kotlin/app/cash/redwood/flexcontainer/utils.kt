@@ -18,16 +18,13 @@ package app.cash.redwood.flexcontainer
 import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
 import app.cash.redwood.flexcontainer.Measurable.Companion.WrapContent
 
-internal fun packLong(lower: Int, higher: Int): Long {
-  return (higher.toLong() shl 32) or (lower.toLong() and 0xFFFFFFFFL)
-}
-
-internal fun unpackLower(value: Long): Int {
-  return value.toInt()
-}
-
-internal fun unpackHigher(value: Long): Int {
-  return (value shr 32).toInt()
+internal fun AlignSelf.toAlignItems() = when (this) {
+  AlignSelf.FlexStart -> AlignItems.FlexStart
+  AlignSelf.FlexEnd -> AlignItems.FlexEnd
+  AlignSelf.Center -> AlignItems.Center
+  AlignSelf.Baseline -> AlignItems.Baseline
+  AlignSelf.Stretch -> AlignItems.Stretch
+  else -> throw AssertionError()
 }
 
 /** Convenience function to use named arguments. */
