@@ -4,9 +4,7 @@ on:
   pull_request: {}
   push:
     branches:
-      - '**'
-    tags-ignore:
-      - '**'
+      - trunk
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
