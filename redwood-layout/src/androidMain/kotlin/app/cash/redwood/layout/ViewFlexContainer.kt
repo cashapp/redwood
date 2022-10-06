@@ -28,7 +28,7 @@ import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 
-internal class ViewLayout(context: Context, direction: FlexDirection) {
+internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
   private val container = FlexContainer().apply {
     flexDirection = direction
   }

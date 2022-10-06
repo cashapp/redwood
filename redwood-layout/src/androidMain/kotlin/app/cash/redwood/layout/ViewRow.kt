@@ -22,29 +22,29 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.widget.Widget
 
 public class ViewRow(context: Context) : RowWidget<View> {
-  private val layout = ViewLayout(context, FlexDirection.Row)
+  private val container = ViewFlexContainer(context, FlexDirection.Row)
 
-  override val children: Widget.Children<View> get() = layout.children
+  override val children: Widget.Children<View> get() = container.children
 
-  override val value: View get() = layout.view
+  override val value: View get() = container.view
 
   override var layoutModifiers: LayoutModifier
-    get() = layout.layoutModifiers
-    set(value) { layout.layoutModifiers = value }
+    get() = container.layoutModifiers
+    set(value) { container.layoutModifiers = value }
 
   override fun padding(padding: Padding) {
-    layout.padding(padding)
+    container.padding(padding)
   }
 
   override fun overflow(overflow: Overflow) {
-    layout.overflow(overflow)
+    container.overflow(overflow)
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    layout.justifyContent(horizontalAlignment.toJustifyContent())
+    container.justifyContent(horizontalAlignment.toJustifyContent())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    layout.alignItems(verticalAlignment.toAlignItems())
+    container.alignItems(verticalAlignment.toAlignItems())
   }
 }
