@@ -55,6 +55,8 @@ public open class Measurable {
 
   /**
    * The maximum height attribute of the item.
+   *
+   * The attribute determines the maximum height the child can expand to.
    */
   public open val maxHeight: Int = Int.MAX_VALUE
 
