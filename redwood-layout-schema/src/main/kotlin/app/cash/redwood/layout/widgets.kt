@@ -24,7 +24,7 @@ import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
 
-@Widget(1_000_001)
+@Widget(1)
 public data class Row(
   @Property(1) @Default("Padding.Zero")
   val padding: Padding,
@@ -39,7 +39,7 @@ public data class Row(
 
 public object RowScope
 
-@Widget(1_000_002)
+@Widget(2)
 public data class Column(
   @Property(1) @Default("Padding.Zero")
   val padding: Padding,

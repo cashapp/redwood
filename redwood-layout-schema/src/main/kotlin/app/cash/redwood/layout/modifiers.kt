@@ -19,25 +19,25 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.schema.LayoutModifier
 
 /** Grow the node relative to [value] along the main axis. */
-@LayoutModifier(1_000_001)
+@LayoutModifier(1)
 public data class GrowLayoutModifier(
   val value: Int,
 )
 
 /** Shrink the node relative to [value] along the main axis. */
-@LayoutModifier(1_000_002)
+@LayoutModifier(2)
 public data class ShrinkLayoutModifier(
   val value: Int,
 )
 
 /** Set the alignment for a node along the horizontal axis. */
-@LayoutModifier(1_000_003)
+@LayoutModifier(3)
 public data class HorizontalAlignmentLayoutModifier(
   val alignment: CrossAxisAlignment,
 )
 
 /** Set the alignment for a node along the vertical axis. */
-@LayoutModifier(1_000_004)
+@LayoutModifier(4)
 public data class VerticalAlignmentLayoutModifier(
   val alignment: CrossAxisAlignment,
 )

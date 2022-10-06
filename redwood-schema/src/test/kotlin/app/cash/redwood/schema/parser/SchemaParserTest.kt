@@ -452,4 +452,84 @@ class SchemaParserTest {
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
   }
+
+  @Schema(
+    [
+      OneMillionWidget::class,
+    ],
+  )
+  interface OneMillionWidgetSchema
+
+  @Widget(1_000_000)
+  object OneMillionWidget
+
+  @Test fun widgetTagOneMillionThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(OneMillionWidgetSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.OneMillionWidget " +
+        "tag must be in range [1, 1000000): 1000000",
+    )
+  }
+
+  @Schema(
+    [
+      ZeroWidget::class,
+    ],
+  )
+  interface ZeroWidgetSchema
+
+  @Widget(0)
+  object ZeroWidget
+
+  @Test fun widgetTagZeroThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ZeroWidgetSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.ZeroWidget " +
+        "tag must be in range [1, 1000000): 0",
+    )
+  }
+
+  @Schema(
+    [
+      OneMillionLayoutModifier::class,
+    ],
+  )
+  interface OneMillionLayoutModifierSchema
+
+  @LayoutModifier(1_000_000)
+  data class OneMillionLayoutModifier(
+    val value: Int,
+  )
+
+  @Test fun layoutModifierTagOneMillionThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(OneMillionLayoutModifierSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.OneMillionLayoutModifier " +
+        "tag must be in range [1, 1000000): 1000000",
+    )
+  }
+
+  @Schema(
+    [
+      ZeroLayoutModifier::class,
+    ],
+  )
+  interface ZeroLayoutModifierSchema
+
+  @LayoutModifier(0)
+  data class ZeroLayoutModifier(
+    val value: Int,
+  )
+
+  @Test fun layoutModifierTagZeroThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(ZeroLayoutModifierSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.ZeroLayoutModifier " +
+        "tag must be in range [1, 1000000): 0",
+    )
+  }
 }
