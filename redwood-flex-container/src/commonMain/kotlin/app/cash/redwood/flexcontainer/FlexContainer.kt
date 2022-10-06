@@ -23,36 +23,36 @@ import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
 /**
- * A class that measures and positions its children according to its flexbox properties.
+ * A class that measures and positions its children according to its flex properties.
  */
 public class FlexContainer {
   /**
-   * The flex direction attribute of the flexbox.
+   * The flex direction attribute of the container.
    */
   public var flexDirection: FlexDirection = FlexDirection.Row
 
   /**
-   * The flex wrap attribute of the flexbox.
+   * The flex wrap attribute of the container.
    */
   public var flexWrap: FlexWrap = FlexWrap.NoWrap
 
   /**
-   * The justify content attribute of the flexbox.
+   * The justify content attribute of the container.
    */
   public var justifyContent: JustifyContent = JustifyContent.FlexStart
 
   /**
-   * The align content attribute of the flexbox.
+   * The align content attribute of the container.
    */
   public var alignItems: AlignItems = AlignItems.FlexStart
 
   /**
-   * The align items attribute of the flexbox.
+   * The align items attribute of the container.
    */
   public var alignContent: AlignContent = AlignContent.FlexStart
 
   /**
-   * The padding of the flexbox.
+   * The padding of the container.
    */
   public var padding: Spacing = Spacing.Zero
 
@@ -62,7 +62,7 @@ public class FlexContainer {
   public var maxLines: Int = Int.MAX_VALUE
 
   /**
-   * Returns the nodes contained in the flexbox.
+   * Returns the items held in the container.
    */
   public val items: MutableList<FlexItem> = ObservableMutableList(
     onChange = { reorderedItems = listOf() },
