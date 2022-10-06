@@ -66,7 +66,7 @@ class ViewFlexContainerTest(
           alignItems = it[1] as AlignItems,
           justifyContent = it[2] as JustifyContent,
           padding = it[3] as Padding,
-        )
+        ),
       )
     }
 
