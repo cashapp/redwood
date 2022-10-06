@@ -10,3 +10,7 @@ dependencies {
   api projects.redwoodLayoutSchema.widget
   implementation libs.androidx.core
 }
+
+android {
+  namespace 'app.cash.redwood.layout.view'
+}
