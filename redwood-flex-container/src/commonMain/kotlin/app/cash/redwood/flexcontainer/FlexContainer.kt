@@ -656,10 +656,7 @@ public class FlexContainer {
           childMeasuredWidth = child.measuredWidth
           childMeasuredHeight = child.measuredHeight
         }
-        largestCrossSize = maxOf(
-          largestCrossSize,
-          childMeasuredWidth + child.margin.start + child.margin.end,
-        )
+        largestCrossSize = maxOf(largestCrossSize, childMeasuredWidth + child.margin.start + child.margin.end)
         flexLine.mainSize += (childMeasuredHeight + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
