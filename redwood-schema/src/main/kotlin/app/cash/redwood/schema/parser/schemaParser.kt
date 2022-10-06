@@ -32,6 +32,8 @@ private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
+private const val maxSchemaTag = 1_000_000
+
 public fun parseSchema(schemaType: KClass<*>): Schema {
   val memberTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
     "Schema ${schemaType.qualifiedName} missing @Schema annotation"
@@ -110,6 +112,11 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
 }
 
 private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Widget {
+  val tag = annotation.tag
+  require(tag in 1 until maxSchemaTag) {
+    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxSchemaTag): $tag"
+  }
+
   val traits = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
       val property = it.findAnnotation<PropertyAnnotation>()
@@ -187,13 +194,18 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
     )
   }
 
-  return Widget(annotation.tag, memberType, traits)
+  return Widget(tag, memberType, traits)
 }
 
 private fun parseLayoutModifier(
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): LayoutModifier {
+  val tag = annotation.tag
+  require(tag in 1 until maxSchemaTag) {
+    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxSchemaTag): $tag"
+  }
+
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
@@ -208,7 +220,7 @@ private fun parseLayoutModifier(
   }
 
   return LayoutModifier(
-    annotation.tag,
+    tag,
     annotation.scopes.toList(),
     memberType,
     properties,

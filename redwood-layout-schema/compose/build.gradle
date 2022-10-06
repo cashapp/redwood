@@ -1,0 +1,21 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.compose'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutSchema.widget
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.redwoodLayoutSchema
+  type = 'app.cash.redwood.layout.RedwoodLayout'
+}
