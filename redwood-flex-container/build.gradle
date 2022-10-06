@@ -18,10 +18,10 @@ spotless {
   kotlin {
     targetExclude(
       // Apache 2-licensed files from Google.
-      "src/commonMain/kotlin/app/cash/redwood/flexbox/FlexContainer.kt",
-      "src/commonMain/kotlin/app/cash/redwood/flexbox/FlexItem.kt",
-      "src/commonMain/kotlin/app/cash/redwood/flexbox/FlexLine.kt",
-      "src/commonTest/kotlin/app/cash/redwood/flexbox/FlexContainerTest.kt",
+      "src/commonMain/kotlin/app/cash/redwood/flexcontainer/FlexContainer.kt",
+      "src/commonMain/kotlin/app/cash/redwood/flexcontainer/FlexItem.kt",
+      "src/commonMain/kotlin/app/cash/redwood/flexcontainer/FlexLine.kt",
+      "src/commonTest/kotlin/app/cash/redwood/flexcontainer/FlexContainerTest.kt",
     )
   }
 }
