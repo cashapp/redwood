@@ -32,31 +32,21 @@ public open class Measurable {
    */
   public open val height: Int = WrapContent
 
-  /**
-   * The minimum width attribute of the item.
-   *
-   * The attribute determines the minimum width the child can shrink to.
-   */
-  public open val minWidth: Int = 0
+  public open fun minIntrinsicWidth(height: Int): Int {
+    return 0
+  }
 
-  /**
-   * The minimum height attribute of the item.
-   *
-   * The attribute determines the minimum height the child can shrink to.
-   */
-  public open val minHeight: Int = 0
+  public open fun minIntrinsicHeight(width: Int): Int {
+    return 0
+  }
 
-  /**
-   * The maximum width attribute of the item.
-   *
-   * The attribute determines the maximum width the child can expand to.
-   */
-  public open val maxWidth: Int = Int.MAX_VALUE
+  public open fun maxIntrinsicWidth(height: Int): Int {
+    return Int.MAX_VALUE
+  }
 
-  /**
-   * The maximum height attribute of the item.
-   */
-  public open val maxHeight: Int = Int.MAX_VALUE
+  public open fun maxIntrinsicHeight(width: Int): Int {
+    return Int.MAX_VALUE
+  }
 
   public open fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     return Size(
@@ -79,3 +69,23 @@ public open class Measurable {
     public const val WrapContent: Int = -2
   }
 }
+
+/**
+ * Returns the absolute minimum width an item can be displayed at.
+ */
+public val Measurable.minWidth: Int get() = minIntrinsicWidth(0)
+
+/**
+ * Returns the absolute minimum height an item can be displayed at.
+ */
+public val Measurable.minHeight: Int get() = minIntrinsicHeight(0)
+
+/**
+ * Returns the absolute maximum width an item can be displayed at.
+ */
+public val Measurable.maxWidth: Int get() = maxIntrinsicWidth(Int.MAX_VALUE)
+
+/**
+ * Returns the absolute maximum height an item can be displayed at.
+ */
+public val Measurable.maxHeight: Int get() = maxIntrinsicHeight(Int.MAX_VALUE)
