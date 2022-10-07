@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.loader.LoadedZipline
+import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
@@ -80,8 +80,15 @@ public class TreehouseLauncher internal constructor(
     scope.launch(dispatchers.zipline) {
       val ziplineFileFlow = ziplineFlow(spec)
       ziplineFileFlow.collect {
-        val app = spec.create(it.zipline)
-        treehouseApp.onCodeChanged(it.zipline, app)
+        when (it) {
+          is LoadResult.Success -> {
+            val app = spec.create(it.zipline)
+            treehouseApp.onCodeChanged(it.zipline, app)
+          }
+          is LoadResult.Failure -> {
+            // TODO
+          }
+        }
       }
     }
 
@@ -89,10 +96,10 @@ public class TreehouseLauncher internal constructor(
   }
 
   /**
-   * Continuously polls for updated code, and emits a new [LoadedZipline] instance when new code is
+   * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  private fun ziplineFlow(spec: TreehouseApp.Spec<*>): Flow<LoadedZipline> {
+  private fun ziplineFlow(spec: TreehouseApp.Spec<*>): Flow<LoadResult> {
     val ziplineLoaderForLoad = when (spec.freshCodePolicy) {
       FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> ziplineLoaderNetworkOnly
       else -> ziplineLoaderNetworkCacheEmbedded
