@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyDiff
@@ -284,6 +285,10 @@ class DiffConsumingWidgetFactoryTest {
   }
 
   open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
+    override val RedwoodLayout = object : RedwoodLayoutWidgetFactory<Nothing> {
+      override fun Column() = TODO("Not yet implemented")
+      override fun Row() = TODO("Not yet implemented")
+    }
     override fun Row(): Row<Nothing> = TODO()
     override fun ScopedRow(): ScopedRow<Nothing> = TODO()
     override fun Text(): Text<Nothing> = TODO()

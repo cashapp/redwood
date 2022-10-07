@@ -35,6 +35,8 @@ interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
   fun SunspotText(): SunspotText<T>
   /** {tag=2} */
   fun SunspotButton(): SunspotButton<T>
+
+  val RedwoodLayout: RedwoodLayoutWidgetFactory<T>
 }
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
@@ -52,6 +54,12 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
                 .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
                 .addKdoc("{tag=${node.tag}}")
                 .build(),
+            )
+          }
+          for (dependency in schema.dependencies) {
+            addProperty(
+              dependency.name,
+              dependency.getWidgetFactoryType().parameterizedBy(typeVariableT),
             )
           }
         }
@@ -72,7 +80,7 @@ interface SunspotButton<T: Any> : Widget<T> {
 }
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
-  return FileSpec.builder(schema.widgetPackage, widget.flatName)
+  return FileSpec.builder(schema.widgetPackage(), widget.flatName)
     .addType(
       TypeSpec.interfaceBuilder(widget.flatName)
         .addModifiers(PUBLIC)

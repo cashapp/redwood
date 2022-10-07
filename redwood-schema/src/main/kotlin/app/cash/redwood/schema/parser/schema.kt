@@ -24,6 +24,7 @@ public data class Schema(
   val scopes: List<KClass<*>>,
   val widgets: List<Widget>,
   val layoutModifiers: List<LayoutModifier>,
+  val dependencies: List<Schema>,
 )
 
 public data class Widget(

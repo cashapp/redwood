@@ -19,6 +19,7 @@ import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
+import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.schema.parser.Widget.Event
 import com.google.common.truth.Truth.assertThat
@@ -579,15 +580,24 @@ class SchemaParserTest {
     assertThat(layoutModifier.tag).isEqualTo(1)
   }
 
-  @Test fun schemaTagOffsetsMemberTags() {
-    val schema = parseSchema(SchemaTag::class, tag = 4)
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(4, SchemaTag::class),
+    ],
+  )
+  object SchemaDependencyTagOffsetsMemberTags
 
-    val widget = schema.widgets.single()
+  @Test fun schemaTagOffsetsMemberTags() {
+    val schema = parseSchema(SchemaDependencyTagOffsetsMemberTags::class)
+    val dependency = schema.dependencies.single()
+
+    val widget = dependency.widgets.single()
     assertThat(widget.tag).isEqualTo(4_000_001)
     assertThat(widget.traits[0].tag).isEqualTo(1)
     assertThat(widget.traits[1].tag).isEqualTo(1)
 
-    val layoutModifier = schema.layoutModifiers.single()
+    val layoutModifier = dependency.layoutModifiers.single()
     assertThat(layoutModifier.tag).isEqualTo(4_000_001)
   }
 
@@ -599,5 +609,166 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaTag::class, tag = -1)
     }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: -1")
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(2001, SchemaTag::class),
+    ],
+  )
+  object SchemaDependencyTagTooHigh
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(0, SchemaTag::class),
+    ],
+  )
+  object SchemaDependencyTagTooLow
+
+  @Test fun dependencyTagOutOfRangeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaDependencyTagTooHigh::class)
+    }.hasMessageThat().isEqualTo(
+      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 2001",
+    )
+
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaDependencyTagTooLow::class)
+    }.hasMessageThat().isEqualTo(
+      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 0",
+    )
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(1, SchemaDuplicateDependencyTagA::class),
+      Dependency(1, SchemaDuplicateDependencyTagB::class),
+    ],
+  )
+  object SchemaDuplicateDependencyTag
+
+  @Schema(members = [])
+  object SchemaDuplicateDependencyTagA
+
+  @Schema(members = [])
+  object SchemaDuplicateDependencyTagB
+
+  @Test fun schemaDuplicateDependencyTagThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaDuplicateDependencyTag::class)
+    }.hasMessageThat().isEqualTo(
+      """
+      |Schema dependency tags must be unique
+      |
+      |- Dependency tag 1: app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTagA, app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTagB
+      """.trimMargin(),
+    )
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(1, SchemaDuplicateDependencyTypeOther::class),
+      Dependency(2, SchemaDuplicateDependencyTypeOther::class),
+    ],
+  )
+  object SchemaDuplicateDependencyType
+
+  @Schema(members = [])
+  object SchemaDuplicateDependencyTypeOther
+
+  @Test fun schemaDuplicateDependencyTypeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaDuplicateDependencyType::class)
+    }.hasMessageThat().isEqualTo(
+      """
+      |Schema contains repeated dependency
+      |
+      |- app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTypeOther
+      """.trimMargin(),
+    )
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(1, SchemaDependencyHasDependencyA::class),
+    ],
+  )
+  object SchemaDependencyHasDependency
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(2, SchemaDependencyHasDependencyB::class),
+    ],
+  )
+  object SchemaDependencyHasDependencyA
+
+  @Schema(members = [])
+  object SchemaDependencyHasDependencyB
+
+  @Test fun schemaDependencyHasDependencyThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaDependencyHasDependency::class)
+    }.hasMessageThat().isEqualTo(
+      "Schema dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaDependencyHasDependencyA also has its own dependencies. " +
+        "For now, only a single level of dependencies is supported.",
+    )
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
+      Dependency(2, SchemaWidgetDuplicateAcrossDependenciesB::class),
+    ],
+  )
+  object SchemaWidgetDuplicateAcrossDependencies
+
+  @Widget(1)
+  object WidgetDuplicateAcrossDependencies
+
+  @Schema([WidgetDuplicateAcrossDependencies::class])
+  object SchemaWidgetDuplicateAcrossDependenciesA
+
+  @Schema([WidgetDuplicateAcrossDependencies::class])
+  object SchemaWidgetDuplicateAcrossDependenciesB
+
+  @Test fun schemaWidgetDuplicateAcrossDependenciesThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaWidgetDuplicateAcrossDependencies::class)
+    }.hasMessageThat().isEqualTo(
+      """
+      |Schema dependency tree contains duplicated widgets
+      |
+      |- app.cash.redwood.schema.parser.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesB
+      """.trimMargin(),
+    )
+  }
+
+  @Schema(
+    members = [
+      WidgetDuplicateAcrossDependencies::class,
+    ],
+    dependencies = [
+      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
+    ],
+  )
+  object SchemaWidgetDuplicateInDependency
+
+  @Test fun schemaWidgetDuplicateInDependencyThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaWidgetDuplicateInDependency::class)
+    }.hasMessageThat().isEqualTo(
+      """
+      |Schema dependency tree contains duplicated widgets
+      |
+      |- app.cash.redwood.schema.parser.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.schema.parser.SchemaWidgetDuplicateInDependency, app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesA
+      """.trimMargin(),
+    )
   }
 }

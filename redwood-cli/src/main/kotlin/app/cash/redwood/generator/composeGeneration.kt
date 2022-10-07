@@ -52,7 +52,7 @@ public annotation class SunspotComposable
  */
 internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
   val name = schema.composeTargetMarker
-  return FileSpec.builder(schema.composePackage, name.simpleName)
+  return FileSpec.builder(schema.composePackage(), name.simpleName)
     .addType(
       TypeSpec.annotationBuilder(name)
         .addAnnotation(
@@ -94,11 +94,15 @@ fun SunspotButton(
   )
 }
 */
-internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
+internal fun generateComposable(
+  schema: Schema,
+  widget: Widget,
+  host: Schema = schema,
+): FileSpec {
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
-  val widgetFactoryType = schema.getWidgetFactoryType().parameterizedBy(STAR)
-  val composeTargetMarker = schema.composeTargetMarker
-  return FileSpec.builder(schema.composePackage, widget.flatName)
+  val widgetFactoryType = host.getWidgetFactoryType().parameterizedBy(STAR)
+  val composeTargetMarker = host.composeTargetMarker
+  return FileSpec.builder(schema.composePackage(), widget.flatName)
     .addFunction(
       FunSpec.builder(widget.flatName)
         .addModifiers(PUBLIC)
@@ -141,7 +145,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                     .build()
                 }
                 is Children -> {
-                  val scope = trait.scope?.let { ClassName(schema.composePackage, it.simpleName!!) }
+                  val scope = trait.scope?.let { ClassName(schema.composePackage(), it.simpleName!!) }
                   ParameterSpec.builder(trait.name, composableLambda(scope, composeTargetMarker))
                     .build()
                 }
@@ -152,9 +156,11 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
 
           val arguments = mutableListOf<CodeBlock>()
 
-          arguments += CodeBlock.builder()
-            .add("factory = %T::%N", widgetFactoryType, widget.flatName)
-            .build()
+          arguments += if (schema === host) {
+            CodeBlock.of("factory = %T::%N", widgetFactoryType, widget.flatName)
+          } else {
+            CodeBlock.of("factory = { it.%N.%N() }", schema.name, widget.flatName)
+          }
 
           val updateLambda = CodeBlock.builder()
             .add("set(layoutModifier) { layoutModifiers = layoutModifier }\n")
@@ -171,7 +177,7 @@ internal fun generateComposable(schema: Schema, widget: Widget): FileSpec {
                   add("%M(%L) {\n", syntheticChildren, trait.tag)
                   indent()
                   trait.scope?.let { scope ->
-                    add("%T.", ClassName(schema.composePackage, scope.simpleName!!))
+                    add("%T.", ClassName(schema.composePackage(), scope.simpleName!!))
                   }
                   add("%N()\n", trait.name)
                   unindent()
@@ -221,7 +227,7 @@ private data class SomethingImpl(...) : Something
 */
 internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): FileSpec {
   val scopeName = scope.simpleName!!
-  return FileSpec.builder(schema.composePackage, scopeName)
+  return FileSpec.builder(schema.composePackage(), scopeName)
     .apply {
       val scopeObject = TypeSpec.objectBuilder(scopeName)
         .addAnnotation(LayoutScopeMarker)
@@ -245,7 +251,7 @@ internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
   val unscopedLayoutModifiers = schema.layoutModifiers.filter { it.scopes.isEmpty() }
   if (unscopedLayoutModifiers.isEmpty()) return null
 
-  return FileSpec.builder(schema.composePackage, "unscopedLayoutModifiers")
+  return FileSpec.builder(schema.composePackage(), "unscopedLayoutModifiers")
     .apply {
       for (layoutModifier in unscopedLayoutModifiers) {
         val (function, type) = generateLayoutModifier(schema, layoutModifier)
@@ -261,7 +267,7 @@ private fun generateLayoutModifier(
   layoutModifier: LayoutModifier,
 ): Pair<FunSpec, TypeSpec> {
   val simpleName = layoutModifier.type.simpleName!!
-  val typeName = ClassName(schema.composePackage, simpleName + "Impl")
+  val typeName = ClassName(schema.composePackage(), simpleName + "Impl")
 
   val function = FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
     .receiver(LayoutModifier)

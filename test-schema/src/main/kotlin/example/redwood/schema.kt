@@ -15,16 +15,18 @@
  */
 package example.redwood
 
+import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
+import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 import kotlin.time.Duration
 
 @Schema(
-  [
+  members = [
     Row::class,
     ScopedRow::class,
     RowVerticalAlignment::class,
@@ -36,6 +38,9 @@ import kotlin.time.Duration
     TextInput::class,
     SomeMarker::class,
     Space::class,
+  ],
+  dependencies = [
+    Dependency(1, RedwoodLayout::class),
   ],
 )
 public interface ExampleSchema

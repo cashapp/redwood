@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
@@ -51,43 +52,58 @@ internal val Event.lambdaType: TypeName
 
 private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
 
-internal val Schema.composePackage get() = "$`package`.compose"
-
-internal val Schema.composeTargetMarker get() = ClassName(composePackage, "${name}Composable")
-
-internal fun Schema.diffProducingWidgetFactoryType(): ClassName {
-  return ClassName(composePackage, "DiffProducing${name}WidgetFactory")
+internal fun Schema.composePackage(host: Schema = this): String {
+  return if (this === host) {
+    "$`package`.compose"
+  } else {
+    "${host.`package`}.compose.${name.lowercase()}"
+  }
 }
 
-internal fun Schema.diffProducingWidgetType(widget: Widget): ClassName {
-  return ClassName(composePackage, "DiffProducing${widget.flatName}")
+internal val Schema.composeTargetMarker get() = ClassName(composePackage(this), "${name}Composable")
+
+internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
+  return ClassName(composePackage(host), "DiffProducing${name}WidgetFactory")
 }
 
-internal fun Schema.diffConsumingWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage, "DiffConsuming${name}WidgetFactory")
+internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): ClassName {
+  return ClassName(composePackage(host), "DiffProducing${widget.flatName}")
 }
 
-internal fun Schema.diffConsumingWidgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage, "DiffConsuming${widget.flatName}")
+internal fun Schema.diffConsumingWidgetFactoryType(host: Schema): ClassName {
+  return ClassName(widgetPackage(host), "DiffConsuming${name}WidgetFactory")
+}
+
+internal fun Schema.diffConsumingWidgetType(widget: Widget, host: Schema): ClassName {
+  return ClassName(widgetPackage(host), "DiffConsuming${widget.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage, widget.flatName)
+  return ClassName(widgetPackage(this), widget.flatName)
 }
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage, "${name}WidgetFactory")
+  return ClassName(widgetPackage(this), "${name}WidgetFactory")
 }
 
-internal val Schema.widgetPackage get() = "$`package`.widget"
+internal fun Schema.widgetPackage(host: Schema = this): String {
+  return if (this === host) {
+    "$`package`.widget"
+  } else {
+    "${host.`package`}.widget.${name.lowercase()}"
+  }
+}
 
 internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
   return ClassName(`package`, layoutModifier.type.simpleName!!) // TODO flat name
 }
 
-internal fun Schema.layoutModifierSurrogate(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(composePackage, layoutModifier.type.simpleName!! + "Surrogate") // TODO flat name
+internal fun Schema.layoutModifierSurrogate(layoutModifier: LayoutModifier, host: Schema): ClassName {
+  return ClassName(composePackage(host), layoutModifier.type.simpleName!! + "Surrogate") // TODO flat name
 }
+
+internal val Schema.toLayoutModifier: MemberName get() =
+  MemberName(widgetPackage(this), "toLayoutModifier")
 
 internal fun layoutModifierEquals(schema: Schema, layoutModifier: LayoutModifier): FunSpec {
   val interfaceType = schema.layoutModifierType(layoutModifier)

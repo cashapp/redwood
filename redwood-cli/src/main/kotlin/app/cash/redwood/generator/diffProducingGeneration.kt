@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
+import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -40,16 +41,18 @@ class DiffProducingSunspotWidgetFactory(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : SunspotWidgetFactory<Nothing>, DiffProducingWidget.Factory {
+  override val RedwoodLayout = DiffProducingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, json, mismatchHandler)
   override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(json, mismatchHandler)
   override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(json, mismatchHandler)
   override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(json, mismatchHandler)
 }
 */
-internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
-  val type = schema.diffProducingWidgetFactoryType()
+internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
+  val type = schema.diffProducingWidgetFactoryType(host)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
+        .addModifiers(if (schema === host) PUBLIC else INTERNAL)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
         .addSuperinterface(diffProducingWidgetFactory)
         .primaryConstructor(
@@ -77,6 +80,17 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
             .build(),
         )
         .apply {
+          if (schema === host) {
+            for (dependency in schema.dependencies) {
+              addProperty(
+                PropertySpec.builder(dependency.name, dependency.getWidgetFactoryType().parameterizedBy(NOTHING))
+                  .addModifiers(OVERRIDE)
+                  .initializer("%T(json, mismatchHandler)", dependency.diffProducingWidgetFactoryType(host))
+                  .build(),
+              )
+            }
+          }
+
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.flatName)
@@ -84,7 +98,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema): FileSpec {
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
                   "return %T(json, mismatchHandler)",
-                  schema.diffProducingWidgetType(widget),
+                  schema.diffProducingWidgetType(widget, host),
                 )
                 .build(),
             )
@@ -134,8 +148,8 @@ internal class DiffProducingSunspotButton(
   }
 }
 */
-internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSpec {
-  val type = schema.diffProducingWidgetType(widget)
+internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
+  val type = schema.diffProducingWidgetType(widget, host)
   val widgetName = schema.widgetType(widget)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
@@ -274,8 +288,8 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget): FileSp
     .build()
 }
 
-internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
-  return FileSpec.builder(schema.composePackage, "layoutModifierSerialization")
+internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = schema): FileSpec {
+  return FileSpec.builder(schema.composePackage(host), "layoutModifierSerialization")
     .addFunction(
       FunSpec.builder("toJsonElement")
         .addModifiers(INTERNAL)
@@ -294,7 +308,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
 
           for (layoutModifier in schema.layoutModifiers) {
             val modifierType = schema.layoutModifierType(layoutModifier)
-            val surrogate = schema.layoutModifierSurrogate(layoutModifier)
+            val surrogate = schema.layoutModifierSurrogate(layoutModifier, host)
             if (layoutModifier.properties.isEmpty()) {
               addStatement("is %T -> %T.encode()", modifierType, surrogate)
             } else {
@@ -308,7 +322,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema): FileSpec {
     )
     .apply {
       for (layoutModifier in schema.layoutModifiers) {
-        val surrogateName = schema.layoutModifierSurrogate(layoutModifier)
+        val surrogateName = schema.layoutModifierSurrogate(layoutModifier, host)
         val modifierType = schema.layoutModifierType(layoutModifier)
 
         addType(

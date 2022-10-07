@@ -29,6 +29,7 @@ import com.squareup.kotlinpoet.KModifier.DATA
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
+import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -42,10 +43,14 @@ public class DiffConsumingSunspotWidgetFactory<T : Any>(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : DiffConsumingWidget.Factory<T> {
-  public override fun create(kind: Int): DiffConsumingWidget<T>? = when (kind) {
+  override val RedwoodLayout = DiffConsumingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, json, mismatchHandler)
+
+  override fun create(kind: Int): DiffConsumingWidget<T>? = when (kind) {
     1 -> SunspotBox()
     2 -> SunspotText()
     3 -> SunspotButton()
+    1_000_001 -> RedwoodLayout.Row()
+    1_000_002 -> RedwoodLayout.Column()
     else -> {
       mismatchHandler.onUnknownWidget(kind)
       null
@@ -58,14 +63,14 @@ public class DiffConsumingSunspotWidgetFactory<T : Any>(
   etc.
 }
 */
-internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
+internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
   val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableT)
-  val type = schema.diffConsumingWidgetFactoryType()
+  val type = schema.diffConsumingWidgetFactoryType(host)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
+        .addModifiers(if (schema === host) PUBLIC else INTERNAL)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(DiffConsumingWidgetFactory.parameterizedBy(typeVariableT))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetFactory)
@@ -96,30 +101,55 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema): FileSpec {
             .initializer("mismatchHandler")
             .build(),
         )
-        .addFunction(
-          FunSpec.builder("create")
-            .addModifiers(OVERRIDE)
-            .addParameter("kind", INT)
-            .returns(DiffConsumingWidget.parameterizedBy(typeVariableT).copy(nullable = true))
-            .beginControlFlow("return when (kind)")
-            .apply {
-              for (widget in schema.widgets.sortedBy { it.tag }) {
-                addStatement("%L -> %N()", widget.tag, widget.flatName)
-              }
-            }
-            .beginControlFlow("else ->")
-            .addStatement("mismatchHandler.onUnknownWidget(kind)")
-            .addStatement("null")
-            .endControlFlow()
-            .endControlFlow()
-            .build(),
-        )
         .apply {
+          if (schema === host) {
+            // Only conform to entrypoint interface if we are the host. If we are not the host,
+            // the host will handle the entire transitive dependency set of tags itself.
+            addSuperinterface(DiffConsumingWidgetFactory.parameterizedBy(typeVariableT))
+            addFunction(
+              FunSpec.builder("create")
+                .addModifiers(OVERRIDE)
+                .addParameter("kind", INT)
+                .returns(DiffConsumingWidget.parameterizedBy(typeVariableT).copy(nullable = true))
+                .beginControlFlow("return when (kind)")
+                .apply {
+                  for (widget in schema.widgets.sortedBy { it.tag }) {
+                    addStatement("%L -> %N()", widget.tag, widget.flatName)
+                  }
+                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                    for (widget in dependency.widgets.sortedBy { it.tag }) {
+                      addStatement("%L -> %N.%N()", widget.tag, dependency.name, widget.flatName)
+                    }
+                  }
+                }
+                .beginControlFlow("else ->")
+                .addStatement("mismatchHandler.onUnknownWidget(kind)")
+                .addStatement("null")
+                .endControlFlow()
+                .endControlFlow()
+                .build(),
+            )
+
+            for (dependency in schema.dependencies.sortedBy { it.name }) {
+              val dependencyType = dependency.diffConsumingWidgetFactoryType(host)
+              addProperty(
+                PropertySpec.builder(dependency.name, dependencyType.parameterizedBy(typeVariableT))
+                  .addModifiers(PRIVATE)
+                  .initializer(
+                    "%T(delegate.%N, json, mismatchHandler)",
+                    dependencyType,
+                    dependency.name,
+                  )
+                  .build(),
+              )
+            }
+          }
+
           for (widget in schema.widgets.sortedBy { it.flatName }) {
-            val diffConsumingWidgetType = schema.diffConsumingWidgetType(widget)
+            val diffConsumingWidgetType = schema.diffConsumingWidgetType(widget, host)
             addFunction(
               FunSpec.builder(widget.flatName)
-                .addModifiers(PRIVATE)
+                .addModifiers(if (schema === host) PRIVATE else INTERNAL)
                 .returns(diffConsumingWidgetType.parameterizedBy(typeVariableT))
                 .addStatement(
                   "return %T(delegate.%N(), json, mismatchHandler)",
@@ -167,13 +197,14 @@ internal class DiffConsumingSunspotButton<T : Any>(
   }
 }
 */
-internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSpec {
-  val type = schema.diffConsumingWidgetType(widget)
+internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
+  val type = schema.diffConsumingWidgetType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableT)
   val protocolType = DiffConsumingWidget.parameterizedBy(typeVariableT)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
+        .addModifiers(if (schema === host) PUBLIC else INTERNAL)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(protocolType)
         .primaryConstructor(
@@ -328,11 +359,12 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
             .addStatement(
               """
               |layoutModifiers = value.fold<%1T, %2T>(%2T) { modifier, element ->
-              |  modifier then element.toLayoutModifier(json, mismatchHandler)
+              |  modifier then element.%3M(json, mismatchHandler)
               |}
               """.trimMargin(),
               JsonElement,
               LayoutModifier,
+              host.toLayoutModifier,
             )
             .build(),
         )
@@ -341,49 +373,53 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget): FileSp
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
-  return FileSpec.builder(schema.widgetPackage, "layoutModifierSerialization")
-    .addFunction(
-      FunSpec.builder("toLayoutModifier")
-        .addModifiers(INTERNAL)
-        .receiver(JsonElement)
-        .addParameter("json", Json)
-        .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
-        .returns(LayoutModifier)
-        .addStatement("val array = %M", jsonArray)
-        .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
-        .addStatement("")
-        .beginControlFlow("val serializer = when (val tag = array[0].%M.%M)", jsonPrimitive, jsonInt)
-        .apply {
-          if (schema.layoutModifiers.isEmpty()) {
-            addAnnotation(
-              AnnotationSpec.builder(Suppress::class)
-                .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
-                .build(),
-            )
-          }
-          for (layoutModifier in schema.layoutModifiers) {
-            val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
-            if (layoutModifier.properties.isEmpty()) {
-              addStatement("%L -> return %T", layoutModifier.tag, typeName)
-            } else {
-              addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
-            }
-          }
-        }
-        .beginControlFlow("else ->")
-        .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
-        .addStatement("return %T", LayoutModifier)
-        .endControlFlow()
-        .endControlFlow()
-        .addStatement("")
-        .addStatement("val value = array[1].%M", jsonObject)
-        .addStatement("return json.decodeFromJsonElement(serializer, value)")
-        .build(),
-    )
+internal fun generateDiffConsumingLayoutModifier(schema: Schema, host: Schema = schema): FileSpec {
+  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierSerialization")
     .apply {
+      if (schema === host) {
+        addFunction(
+          FunSpec.builder("toLayoutModifier")
+            .addModifiers(INTERNAL)
+            .receiver(JsonElement)
+            .addParameter("json", Json)
+            .addParameter("mismatchHandler", WidgetProtocolMismatchHandler)
+            .returns(LayoutModifier)
+            .addStatement("val array = %M", jsonArray)
+            .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
+            .addStatement("")
+            .beginControlFlow("val serializer = when (val tag = array[0].%M.%M)", jsonPrimitive, jsonInt)
+            .apply {
+              if (schema.layoutModifiers.isEmpty()) {
+                addAnnotation(
+                  AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
+                    .build(),
+                )
+              }
+              for (layoutModifier in schema.layoutModifiers) {
+                val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
+                if (layoutModifier.properties.isEmpty()) {
+                  addStatement("%L -> return %T", layoutModifier.tag, typeName)
+                } else {
+                  addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
+                }
+              }
+            }
+            .beginControlFlow("else ->")
+            .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
+            .addStatement("return %T", LayoutModifier)
+            .endControlFlow()
+            .endControlFlow()
+            .addStatement("")
+            .addStatement("val value = array[1].%M", jsonObject)
+            .addStatement("return json.decodeFromJsonElement(serializer, value)")
+            .build(),
+        )
+      }
+
       for (layoutModifier in schema.layoutModifiers) {
-        val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
+        val typeName =
+          ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
         val typeBuilder = if (layoutModifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
         } else {
@@ -416,7 +452,7 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
         }
         addType(
           typeBuilder
-            .addModifiers(PRIVATE)
+            .addModifiers(if (schema === host) PRIVATE else INTERNAL)
             .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))
