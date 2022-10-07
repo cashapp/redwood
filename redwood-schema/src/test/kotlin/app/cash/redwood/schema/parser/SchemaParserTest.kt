@@ -532,4 +532,52 @@ class SchemaParserTest {
         "tag must be in range [1, 1000000): 0",
     )
   }
+
+  @Schema([SomeWidget::class, SomeLayoutModifier::class])
+  interface SchemaTag
+
+  @Widget(1)
+  data class SomeWidget(
+    @Property(1) val value: Int,
+    @Children(1) val children: () -> Unit,
+  )
+
+  @LayoutModifier(1)
+  data class SomeLayoutModifier(
+    val value: Int,
+  )
+
+  @Test fun schemaTagDefault() {
+    val schema = parseSchema(SchemaTag::class)
+
+    val widget = schema.widgets.single()
+    assertThat(widget.tag).isEqualTo(1)
+    assertThat(widget.traits[0].tag).isEqualTo(1)
+    assertThat(widget.traits[1].tag).isEqualTo(1)
+
+    val layoutModifier = schema.layoutModifiers.single()
+    assertThat(layoutModifier.tag).isEqualTo(1)
+  }
+
+  @Test fun schemaTagOffsetsMemberTags() {
+    val schema = parseSchema(SchemaTag::class, tag = 4)
+
+    val widget = schema.widgets.single()
+    assertThat(widget.tag).isEqualTo(4_000_001)
+    assertThat(widget.traits[0].tag).isEqualTo(1)
+    assertThat(widget.traits[1].tag).isEqualTo(1)
+
+    val layoutModifier = schema.layoutModifiers.single()
+    assertThat(layoutModifier.tag).isEqualTo(4_000_001)
+  }
+
+  @Test fun schemaTagOutOfRangeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaTag::class, tag = 2001)
+    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: 2001")
+
+    assertThrows<IllegalArgumentException> {
+      parseSchema(SchemaTag::class, tag = -1)
+    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: -1")
+  }
 }
