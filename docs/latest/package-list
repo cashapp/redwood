@@ -5,7 +5,11 @@ module:redwood-compose
 app.cash.redwood.compose
 module:redwood-flex-container
 app.cash.redwood.flexcontainer
-module:redwood-layout
+module:redwood-layout-api
+app.cash.redwood.layout.api
+module:redwood-layout-schema
+app.cash.redwood.layout
+module:redwood-layout-view
 app.cash.redwood.layout
 module:redwood-protocol
 app.cash.redwood.protocol
