@@ -32,12 +32,18 @@ private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
-private const val maxSchemaTag = 1_000_000
+private const val maxSchemaTag = 2_000
+private const val maxMemberTag = 1_000_000
 
-public fun parseSchema(schemaType: KClass<*>): Schema {
-  val memberTypes = requireNotNull(schemaType.findAnnotation<SchemaAnnotation>()) {
-    "Schema ${schemaType.qualifiedName} missing @Schema annotation"
-  }.members
+private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
+  return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
+}
+
+public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
+  val schemaAnnotation = schemaType.schemaAnnotation
+  require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
+
+  val memberTypes = schemaAnnotation.members
 
   val duplicatedMembers = memberTypes.groupBy { it }.filterValues { it.size > 1 }.keys
   if (duplicatedMembers.isNotEmpty()) {
@@ -63,9 +69,9 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
         "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier",
       )
     } else if (widgetAnnotation != null) {
-      widgets += parseWidget(memberType, widgetAnnotation)
+      widgets += parseWidget(tag, memberType, widgetAnnotation)
     } else if (layoutModifierAnnotation != null) {
-      layoutModifiers += parseLayoutModifier(memberType, layoutModifierAnnotation)
+      layoutModifiers += parseLayoutModifier(tag, memberType, layoutModifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -111,11 +117,15 @@ public fun parseSchema(schemaType: KClass<*>): Schema {
   )
 }
 
-private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Widget {
-  val tag = annotation.tag
-  require(tag in 1 until maxSchemaTag) {
-    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxSchemaTag): $tag"
+private fun parseWidget(
+  schemaTag: Int,
+  memberType: KClass<*>,
+  annotation: WidgetAnnotation,
+): Widget {
+  require(annotation.tag in 1 until maxMemberTag) {
+    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
+  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
@@ -198,13 +208,14 @@ private fun parseWidget(memberType: KClass<*>, annotation: WidgetAnnotation): Wi
 }
 
 private fun parseLayoutModifier(
+  schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): LayoutModifier {
-  val tag = annotation.tag
-  require(tag in 1 until maxSchemaTag) {
-    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxSchemaTag): $tag"
+  require(annotation.tag in 1 until maxMemberTag) {
+    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
+  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
