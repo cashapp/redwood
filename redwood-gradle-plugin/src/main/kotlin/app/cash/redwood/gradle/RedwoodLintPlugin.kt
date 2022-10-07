@@ -163,7 +163,7 @@ private fun configureKotlinJsProject(
 ): TaskProvider<out Task> {
   val kotlin = project.extensions.getByType(KotlinJsProjectExtension::class.java)
   // Cast to supertype avoids deprecation on subtype of related mutable DSL API.
-  val target = (kotlin as KotlinSingleTargetExtension).target
+  val target = (kotlin as KotlinSingleTargetExtension<*>).target
   return createKotlinTargetRedwoodLintTask(project, target, baseTaskName)
 }
 
