@@ -353,32 +353,32 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema): FileSpec {
         .addStatement("val array = %M", jsonArray)
         .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
         .addStatement("")
-        .addStatement("val tag = array[0].%M.%M", jsonPrimitive, jsonInt)
-        .addStatement("val value = array[1].%M", jsonObject)
-        .addStatement("")
-        .beginControlFlow("return when (tag)")
+        .beginControlFlow("val serializer = when (val tag = array[0].%M.%M)", jsonPrimitive, jsonInt)
         .apply {
           if (schema.layoutModifiers.isEmpty()) {
             addAnnotation(
               AnnotationSpec.builder(Suppress::class)
-                .addMember("%S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE")
+                .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
                 .build(),
             )
           }
           for (layoutModifier in schema.layoutModifiers) {
             val typeName = ClassName(schema.widgetPackage, layoutModifier.type.simpleName!! + "Impl")
             if (layoutModifier.properties.isEmpty()) {
-              addStatement("%L -> %T", layoutModifier.tag, typeName)
+              addStatement("%L -> return %T", layoutModifier.tag, typeName)
             } else {
-              addStatement("%L -> json.decodeFromJsonElement(%T.serializer(), value)", layoutModifier.tag, typeName)
+              addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
             }
           }
         }
         .beginControlFlow("else ->")
         .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
-        .addStatement("%T", LayoutModifier)
+        .addStatement("return %T", LayoutModifier)
         .endControlFlow()
         .endControlFlow()
+        .addStatement("")
+        .addStatement("val value = array[1].%M", jsonObject)
+        .addStatement("return json.decodeFromJsonElement(serializer, value)")
         .build(),
     )
     .apply {
