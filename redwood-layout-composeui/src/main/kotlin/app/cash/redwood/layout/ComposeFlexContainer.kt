@@ -77,11 +77,10 @@ internal class ComposeFlexContainer(direction: FlexDirection) {
   }
 
   val composable: @Composable () -> Unit = {
-    // Observe this value so we can manually trigger recomposition.
-    recomposeTick
-
     Layout(
       content = {
+        // Observe this so we can manually trigger recomposition.
+        recomposeTick
         _children.render()
       },
       modifier = if (overflow == Overflow.Scroll) {
@@ -100,8 +99,7 @@ internal class ComposeFlexContainer(direction: FlexDirection) {
   ): MeasureResult = with(scope) {
     container.items.clear()
     measurables.forEach { measurable ->
-      val item = FlexItem(measurable = ComposeMeasurable(measurable))
-      container.items += item
+      container.items += FlexItem(measurable = ComposeMeasurable(measurable))
     }
 
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
@@ -110,33 +108,30 @@ internal class ComposeFlexContainer(direction: FlexDirection) {
       container.layout(result, result.containerSize)
 
       for (item in container.items) {
-        (item.measurable as ComposeMeasurable).placeable?.placeRelative(item.left, item.top)
+        (item.measurable as ComposeMeasurable).placeable.placeRelative(item.left, item.top)
       }
 
       // Clear any references to the compose measurable.
       container.items.forEach { node ->
-        node.measurable = RedwoodMeasurable()
+        node.measurable = defaultMeasurable
       }
     }
   }
 }
 
-private class ComposeMeasurable(val measurable: Measurable) : RedwoodMeasurable() {
-  override val minWidth: Int
-    get() = measurable.minIntrinsicWidth(0)
-  override val minHeight: Int
-    get() = measurable.minIntrinsicHeight(0)
-  override val maxWidth: Int
-    get() = measurable.maxIntrinsicWidth(Int.MAX_VALUE)
-  override val maxHeight: Int
-    get() = measurable.maxIntrinsicHeight(Int.MAX_VALUE)
+private class ComposeMeasurable(private val measurable: Measurable) : RedwoodMeasurable() {
+//  override val minWidth get() = measurable.minIntrinsicWidth(0)
+//  override val minHeight get() = measurable.minIntrinsicHeight(0)
+//  override val maxWidth get() = measurable.maxIntrinsicWidth(Int.MAX_VALUE)
+//  override val maxHeight get() = measurable.maxIntrinsicHeight(Int.MAX_VALUE)
 
-  var placeable: Placeable? = null
+  lateinit var placeable: Placeable
     private set
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    val placeable = measurable.measure(Pair(widthSpec, heightSpec).toConstraints())
-    this.placeable = placeable
+    this.placeable = measurable.measure(Pair(widthSpec, heightSpec).toConstraints())
     return Size(placeable.width, placeable.height)
   }
 }
+
+private val defaultMeasurable = RedwoodMeasurable()

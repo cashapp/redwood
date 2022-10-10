@@ -124,6 +124,7 @@ class ComposeFlexContainerTest(
     texts.forEachIndexed { index, text ->
       container.children.insert(index, text)
     }
+
     paparazzi.snapshot {
       container.composable()
     }
