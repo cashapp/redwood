@@ -176,7 +176,7 @@ class FlexContainerTest {
     container.determineMainSize(flexLines, widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
-    // They should be shrank equally for the amount overflown the width
+    // They should be shrunk equally for the amount overflown the width
     assertEquals(125, item1.measuredWidth)
     assertEquals(100, item1.measuredHeight)
     assertEquals(125, item2.measuredWidth)
@@ -205,7 +205,7 @@ class FlexContainerTest {
     container.determineMainSize(flexLines, widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
-    // They should be shrank equally for the amount overflown the height
+    // They should be shrunk equally for the amount overflown the height
     assertEquals(100, item1.measuredWidth)
     assertEquals(125, item1.measuredHeight)
     assertEquals(100, item2.measuredWidth)

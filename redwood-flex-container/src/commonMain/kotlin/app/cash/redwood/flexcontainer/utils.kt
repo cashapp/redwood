@@ -27,10 +27,11 @@ internal fun AlignSelf.toAlignItems() = when (this) {
   else -> throw AssertionError()
 }
 
-/** Convenience function to use named arguments. */
-@Suppress("EXTENSION_FUNCTION_SHADOWED_BY_MEMBER_PROPERTY_WITH_INVOKE", "NOTHING_TO_INLINE")
-internal inline fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int) {
-  layout(left, top, right, bottom)
+internal fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int) {
+  this.left = left
+  this.top = top
+  this.right = right
+  this.bottom = bottom
 }
 
 /** The number of items who are not invisible in this flex line. */
