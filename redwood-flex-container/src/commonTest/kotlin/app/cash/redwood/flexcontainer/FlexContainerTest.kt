@@ -353,7 +353,7 @@ class FlexContainerTest {
   }
 
   class BoxMeasurable(
-    override val width: Int,
-    override val height: Int,
+    override val requestedWidth: Int,
+    override val requestedHeight: Int,
   ) : Measurable()
 }

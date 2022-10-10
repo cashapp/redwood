@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:JvmName("view_utils")
+
 package app.cash.redwood.layout
 
 import android.view.View
@@ -72,8 +74,8 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
 internal fun View.asItem() = FlexItem(measurable = ViewMeasurable(this@asItem))
 
 private class ViewMeasurable(private val view: View) : Measurable() {
-  override val width get() = view.layoutParams.width
-  override val height get() = view.layoutParams.height
+  override val requestedWidth get() = view.layoutParams.width
+  override val requestedHeight get() = view.layoutParams.height
   override val minWidth get() = view.minimumWidth
   override val minHeight get() = view.minimumHeight
 
