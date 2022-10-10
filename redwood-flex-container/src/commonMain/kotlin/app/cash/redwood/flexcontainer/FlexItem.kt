@@ -103,7 +103,7 @@ public class FlexItem(
   /**
    * A callback to measure this item according to a set of measurement constraints.
    */
-  public val measurable: Measurable = Measurable(),
+  public var measurable: Measurable = Measurable(),
 ) {
 
   /** The item's size after invoking [FlexContainer.measure]. */
