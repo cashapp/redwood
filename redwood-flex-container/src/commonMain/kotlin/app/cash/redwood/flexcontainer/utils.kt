@@ -37,6 +37,16 @@ internal inline fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int
 internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
 
+/** The largest main size of all flex lines. */
+internal fun List<FlexLine>.getLargestMainSize(): Int {
+  return if (isEmpty()) Int.MIN_VALUE else maxOf { it.mainSize }
+}
+
+/** The sum of the cross sizes of all flex lines. */
+internal fun List<FlexLine>.getSumOfCrossSize(): Int {
+  return sumOf { it.crossSize }
+}
+
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
   padding: Int,
