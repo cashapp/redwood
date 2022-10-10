@@ -17,11 +17,11 @@
 
 package app.cash.redwood.layout
 
-import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.MeasureSpecMode
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.MeasureSpec
+import app.cash.redwood.flexcontainer.MeasureSpecMode
 import app.cash.redwood.flexcontainer.Spacing
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
