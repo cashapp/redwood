@@ -35,14 +35,16 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.FlexItem
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
+import androidx.compose.foundation.horizontalScroll
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.Size
+import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
-internal class ComposeFlexContainer(direction: FlexDirection) {
+internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private val container = FlexContainer().apply {
     flexDirection = direction
   }
@@ -84,7 +86,11 @@ internal class ComposeFlexContainer(direction: FlexDirection) {
         _children.render()
       },
       modifier = if (overflow == Overflow.Scroll) {
-        modifier.verticalScroll(rememberScrollState())
+        if (direction.isHorizontal) {
+          modifier.horizontalScroll(rememberScrollState())
+        } else {
+          modifier.verticalScroll(rememberScrollState())
+        }
       } else {
         modifier
       },
