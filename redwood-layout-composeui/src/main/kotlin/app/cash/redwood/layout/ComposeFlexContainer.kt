@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -35,7 +36,6 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.FlexItem
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
-import androidx.compose.foundation.horizontalScroll
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
