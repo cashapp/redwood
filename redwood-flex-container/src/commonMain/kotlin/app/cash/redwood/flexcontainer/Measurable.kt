@@ -60,8 +60,14 @@ public open class Measurable {
    */
   public open val maxHeight: Int = Int.MAX_VALUE
 
+  /**
+   * Return the item's width given a fixed [height].
+   */
   public open fun width(height: Int): Int = 0
 
+  /**
+   * Return the item's height given a fixed [width].
+   */
   public open fun height(width: Int): Int = 0
 
   public open fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
