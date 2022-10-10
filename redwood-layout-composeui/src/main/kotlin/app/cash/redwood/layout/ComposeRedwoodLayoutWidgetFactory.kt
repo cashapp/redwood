@@ -20,7 +20,7 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 
-class ComposeLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
+public class ComposeRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
   public override fun Column(): Column<@Composable () -> Unit> = ComposeColumn()
   public override fun Row(): Row<@Composable () -> Unit> = ComposeRow()
 }
