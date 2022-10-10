@@ -120,13 +120,17 @@ internal class ComposeFlexContainer(direction: FlexDirection) {
 }
 
 private class ComposeMeasurable(private val measurable: Measurable) : RedwoodMeasurable() {
-//  override val minWidth get() = measurable.minIntrinsicWidth(0)
-//  override val minHeight get() = measurable.minIntrinsicHeight(0)
-//  override val maxWidth get() = measurable.maxIntrinsicWidth(Int.MAX_VALUE)
-//  override val maxHeight get() = measurable.maxIntrinsicHeight(Int.MAX_VALUE)
 
   lateinit var placeable: Placeable
     private set
+
+  override fun width(height: Int): Int {
+    return measurable.minIntrinsicWidth(height)
+  }
+
+  override fun height(width: Int): Int {
+    return measurable.minIntrinsicHeight(width)
+  }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     this.placeable = measurable.measure(Pair(widthSpec, heightSpec).toConstraints())

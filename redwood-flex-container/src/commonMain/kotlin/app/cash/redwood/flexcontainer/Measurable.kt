@@ -22,7 +22,7 @@ public open class Measurable {
    * The attribute is about how wide the view wants to be. Can be one of the
    * constants [MatchParent] or [WrapContent], or an exact size.
    */
-  public open val width: Int = WrapContent
+  public open val requestedWidth: Int = WrapContent
 
   /**
    * The requested height of the item.
@@ -30,7 +30,7 @@ public open class Measurable {
    * The attribute is about how wide the view wants to be. Can be one of the
    * constants [MatchParent] or [WrapContent], or an exact size.
    */
-  public open val height: Int = WrapContent
+  public open val requestedHeight: Int = WrapContent
 
   /**
    * The minimum width attribute of the item.
@@ -60,22 +60,26 @@ public open class Measurable {
    */
   public open val maxHeight: Int = Int.MAX_VALUE
 
+  public open fun width(height: Int): Int = 0
+
+  public open fun height(width: Int): Int = 0
+
   public open fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     return Size(
-      width = MeasureSpec.resolveSize(width, widthSpec),
-      height = MeasureSpec.resolveSize(height, heightSpec),
+      width = MeasureSpec.resolveSize(requestedWidth, widthSpec),
+      height = MeasureSpec.resolveSize(requestedHeight, heightSpec),
     )
   }
 
   public companion object {
     /**
-     * A special constant for [width] or [height] that means that the item wants to be as big as its
+     * A special constant for [requestedWidth] or [requestedHeight] that means that the item wants to be as big as its
      * parent.
      */
     public const val MatchParent: Int = -1
 
     /**
-     * A special constant for [width] or [height] that the item wants to be just large enough to fit
+     * A special constant for [requestedWidth] or [requestedHeight] that the item wants to be just large enough to fit
      * its own internal content, taking its own padding into account.
      */
     public const val WrapContent: Int = -2

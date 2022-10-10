@@ -46,8 +46,8 @@ internal sealed interface Orientation {
     override fun crossPadding(padding: Spacing) = padding.top + padding.bottom
     override fun mainMargin(item: FlexItem) = item.margin.start + item.margin.end
     override fun crossMargin(item: FlexItem) = item.margin.top + item.margin.bottom
-    override fun mainSize(item: FlexItem) = item.measurable.width
-    override fun crossSize(item: FlexItem) = item.measurable.height
+    override fun mainSize(item: FlexItem) = item.measurable.requestedWidth
+    override fun crossSize(item: FlexItem) = item.measurable.requestedHeight
     override fun mainMeasuredSize(item: FlexItem) = item.measuredWidth
     override fun crossMeasuredSize(item: FlexItem) = item.measuredHeight
   }
@@ -57,8 +57,8 @@ internal sealed interface Orientation {
     override fun crossPadding(padding: Spacing) = padding.start + padding.end
     override fun mainMargin(item: FlexItem) = item.margin.top + item.margin.bottom
     override fun crossMargin(item: FlexItem) = item.margin.start + item.margin.end
-    override fun mainSize(item: FlexItem) = item.measurable.height
-    override fun crossSize(item: FlexItem) = item.measurable.width
+    override fun mainSize(item: FlexItem) = item.measurable.requestedHeight
+    override fun crossSize(item: FlexItem) = item.measurable.requestedWidth
     override fun mainMeasuredSize(item: FlexItem) = item.measuredHeight
     override fun crossMeasuredSize(item: FlexItem) = item.measuredWidth
   }
