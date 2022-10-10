@@ -24,10 +24,7 @@ class StringWidget(
 ) : Measurable() {
   private val words = text.split(" ")
 
-  private var left = -1
-  private var top = -1
-  private var right = -1
-  private var bottom = -1
+  var flexItem = FlexItem(measurable = this)
 
   override val minWidth
     get() = words.maxOf { it.length } + 2
@@ -64,13 +61,6 @@ class StringWidget(
     return Size(measuredWidth, measuredHeight)
   }
 
-  internal fun layout(left: Int, top: Int, right: Int, bottom: Int) {
-    this.left = left
-    this.top = top
-    this.right = right
-    this.bottom = bottom
-  }
-
   /** Returns a list of rows, each containing the words of that row. */
   private fun lines(maxWidth: Int): List<List<String>> {
     var i = 0
@@ -103,6 +93,10 @@ class StringWidget(
   }
 
   fun draw(canvas: StringCanvas) {
+    val left = flexItem.left
+    val top = flexItem.top
+    val right = flexItem.right
+    val bottom = flexItem.bottom
     val lines = lines(maxWidth = right - left - 2)
 
     var y = top

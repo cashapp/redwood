@@ -69,12 +69,9 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun View.asItem() = FlexItem().apply {
-  measurable = ViewMeasurable(this@asItem)
-  layout = ::layout
-}
+internal fun View.asItem() = FlexItem(measurable = ViewMeasurable(this@asItem))
 
-private class ViewMeasurable(val view: View) : Measurable() {
+private class ViewMeasurable(private val view: View) : Measurable() {
   override val width get() = view.layoutParams.width
   override val height get() = view.layoutParams.height
   override val minWidth get() = view.minimumWidth

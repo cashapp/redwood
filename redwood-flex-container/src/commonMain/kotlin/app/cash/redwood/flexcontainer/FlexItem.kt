@@ -84,9 +84,9 @@ public class FlexItem(
   /**
    * The wrapBefore attribute of the item.
    *
-   * The attribute forces a flex line wrapping. i.e. if this is set to `true` for a
+   * The attribute forces a flex line wrapping. i.e. if this is set to `true` for an
    * item, the item will become the first item of the new flex line. (A wrapping happens
-   * regardless of the items being processed in the the previous flex line)
+   * regardless of the items being processed in the previous flex line)
    * This attribute is ignored if the flex_wrap attribute is set as nowrap.
    * The equivalent attribute isn't defined in the original CSS Flexible Box Module
    * specification, but having this attribute is useful for Android developers to flatten
@@ -103,26 +103,18 @@ public class FlexItem(
   /**
    * A callback to measure this item according to a set of measurement constraints.
    */
-  public var measurable: Measurable = Measurable(),
+  public val measurable: Measurable = Measurable(),
 ) {
-  /**
-   * The measured width after invoking [Measurable.measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
-   */
-  public var measuredWidth: Int = -1
 
-  /**
-   * The measured height after invoking [Measurable.measure].
-   *
-   * TODO: Remove this mutable attribute and use the returned [Size] from [Measurable.measure].
-   */
+  /** The item's size after invoking [FlexContainer.measure]. */
+  public var measuredWidth: Int = -1
   public var measuredHeight: Int = -1
 
-  /**
-   * A callback to place the item inside a given set of coordinates.
-   */
-  public var layout: (left: Int, top: Int, right: Int, bottom: Int) -> Unit = { _, _, _, _ -> }
+  /** The item's bounds after invoking [FlexContainer.layout]. */
+  public var left: Int = -1
+  public var top: Int = -1
+  public var right: Int = -1
+  public var bottom: Int = -1
 
   public companion object {
     /** The default value for the baseline attribute */
