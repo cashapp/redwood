@@ -7,6 +7,8 @@ module:redwood-flex-container
 app.cash.redwood.flexcontainer
 module:redwood-layout-api
 app.cash.redwood.layout.api
+module:redwood-layout-composeui
+app.cash.redwood.layout
 module:redwood-layout-schema
 app.cash.redwood.layout
 module:redwood-layout-view
