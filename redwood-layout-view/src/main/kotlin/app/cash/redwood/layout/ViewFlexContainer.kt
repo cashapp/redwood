@@ -24,7 +24,9 @@ import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
+import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.MutableListChildren
@@ -83,15 +85,17 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
 
   private inner class HostView(context: Context) : ViewGroup(context) {
 
+    private lateinit var measureResult: MeasureResult
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
       val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      val (width, height) = container.measure(widthSpec, heightSpec)
-      setMeasuredDimension(width, height)
+      measureResult = container.measure(widthSpec, heightSpec)
+      setMeasuredDimension(measureResult.containerSize.width, measureResult.containerSize.height)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      container.layout(left, top, right, bottom)
+      container.layout(measureResult, Size(right - left, bottom - top))
     }
   }
 }

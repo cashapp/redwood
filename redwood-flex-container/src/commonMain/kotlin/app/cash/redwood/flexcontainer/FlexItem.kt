@@ -101,7 +101,7 @@ public class FlexItem(
   public val margin: Spacing = Spacing.Zero,
 
   /**
-   * A callback to to measure this item according to a set of measurement constraints.
+   * A callback to measure this item according to a set of measurement constraints.
    */
   public var measurable: Measurable = Measurable(),
 ) {

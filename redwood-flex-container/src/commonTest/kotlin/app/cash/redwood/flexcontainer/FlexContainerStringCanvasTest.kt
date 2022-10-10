@@ -277,14 +277,8 @@ class FlexContainerStringCanvasTest {
     val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
     val heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly)
 
-    flexLines = if (flexDirection.isHorizontal) {
-      calculateHorizontalFlexLines(widthSpec, heightSpec)
-    } else {
-      calculateVerticalFlexLines(widthSpec, heightSpec)
-    }
-
-    measure(widthSpec, heightSpec)
-    layout(0, 0, width, height)
+    val result = measure(widthSpec, heightSpec)
+    layout(result, Size(width, height))
 
     for (widget in widgets) {
       widget.draw(canvas)
