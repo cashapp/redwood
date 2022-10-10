@@ -63,12 +63,18 @@ public open class Measurable {
   /**
    * Return the item's width given a fixed [height].
    */
-  public open fun width(height: Int): Int = 0
+  public open fun width(height: Int): Int = measure(
+    widthSpec = MeasureSpec.from(0, MeasureSpecMode.Unspecified),
+    heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly),
+  ).width
 
   /**
    * Return the item's height given a fixed [width].
    */
-  public open fun height(width: Int): Int = 0
+  public open fun height(width: Int): Int = measure(
+    widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly),
+    heightSpec = MeasureSpec.from(0, MeasureSpecMode.Unspecified),
+  ).height
 
   public open fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     return Size(

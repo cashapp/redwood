@@ -79,16 +79,6 @@ private class ViewMeasurable(private val view: View) : Measurable() {
   override val minWidth get() = view.minimumWidth
   override val minHeight get() = view.minimumHeight
 
-  override fun width(height: Int) = measure(
-    widthSpec = MeasureSpec.from(0, MeasureSpecMode.Unspecified),
-    heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly),
-  ).width
-
-  override fun height(width: Int) = measure(
-    widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly),
-    heightSpec = MeasureSpec.from(0, MeasureSpecMode.Unspecified),
-  ).height
-
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     view.measure(widthSpec.toAndroid(), heightSpec.toAndroid())
     return Size(view.measuredWidth, view.measuredHeight)
