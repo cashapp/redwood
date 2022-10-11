@@ -6,8 +6,8 @@ apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
-  implementation projects.redwoodFlexContainer
   api projects.redwoodLayoutSchema.widget
+  implementation projects.redwoodFlexContainer
   implementation libs.androidx.core
 }
 
