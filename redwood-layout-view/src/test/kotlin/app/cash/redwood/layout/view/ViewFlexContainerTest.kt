@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.layout.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_6
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.flexcontainer.AlignItems
@@ -34,7 +30,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class ComposeFlexContainerTest(
+class ViewFlexContainerTest(
   private val parameters: Parameters,
 ) {
   companion object {
@@ -104,30 +100,26 @@ class ComposeFlexContainerTest(
       "Inception",
       "The Lord of the Rings: The Two Towers",
     )
-    val texts: List<@Composable () -> Unit> = items.map { title ->
-      @Composable {
-        BasicText(
-          text = title,
-          style = TextStyle(fontSize = 30.sp, color = Color.Black),
-          modifier = Modifier.background(Color.Green),
-        )
+    val textViews = items.map { title ->
+      TextView(paparazzi.context).apply {
+        background = ColorDrawable(Color.GREEN)
+        textSize = 18f
+        setTextColor(Color.BLACK)
+        text = title
       }
     }
 
-    val container = ComposeFlexContainer(parameters.flexDirection).apply {
-      modifier = Modifier.background(Color.LightGray)
+    val container = ViewFlexContainer(paparazzi.context, parameters.flexDirection).apply {
+      view.background = ColorDrawable(Color.LTGRAY)
       padding(parameters.padding)
       alignItems(parameters.alignItems)
       justifyContent(parameters.justifyContent)
     }
 
-    texts.forEachIndexed { index, text ->
-      container.children.insert(index, text)
+    textViews.forEachIndexed { index, textView ->
+      container.children.insert(index, textView)
     }
-
-    paparazzi.snapshot {
-      container.composable()
-    }
+    paparazzi.snapshot(container.view)
   }
 }
 
