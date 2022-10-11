@@ -59,18 +59,25 @@ allprojects {
     }
   }
 
-  plugins.withId('org.jetbrains.kotlin.jvm') {
-    kotlin {
-      if (project.path.startsWith(':redwood-')) {
+  if (project.path.startsWith(':redwood-')) {
+    plugins.withId('org.jetbrains.kotlin.jvm') {
+      kotlin {
         explicitApi()
       }
     }
-  }
 
-  plugins.withId('org.jetbrains.kotlin.multiplatform') {
-    kotlin {
-      if (project.path.startsWith(':redwood-')) {
+    plugins.withId('org.jetbrains.kotlin.multiplatform') {
+      kotlin {
         explicitApi()
+      }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->
+      // Only enable strict mode for non-test sources.
+      if (!task.name.toLowerCase().contains('test')) {
+        task.kotlinOptions {
+          freeCompilerArgs += '-Xexplicit-api=strict'
+        }
       }
     }
   }
@@ -83,7 +90,7 @@ allprojects {
     }
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->
     task.kotlinOptions {
       jvmTarget = '1.8'
       freeCompilerArgs += [
