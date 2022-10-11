@@ -28,7 +28,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun <T : Any> TreehouseContent(
+public fun <T : Any> TreehouseContent(
   treehouseApp: TreehouseApp<T>,
   content: TreehouseView.Content<T>,
 ) {
