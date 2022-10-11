@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutModifier

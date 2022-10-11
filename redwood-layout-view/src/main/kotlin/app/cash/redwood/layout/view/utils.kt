@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:JvmName("compose_utils")
+package app.cash.redwood.layout.view
 
-package app.cash.redwood.layout
-
-import androidx.compose.ui.unit.Constraints
+import android.view.View
 import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.FlexItem
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.Measurable
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.MeasureSpecMode
+import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.Spacing
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -47,55 +48,37 @@ internal fun CrossAxisAlignment.toAlignItems() = when (this) {
 
 internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
 
-internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
-  val widthSpec = when {
-    hasFixedWidth -> MeasureSpec.from(maxWidth, MeasureSpecMode.Exactly)
-    hasBoundedWidth -> MeasureSpec.from(maxWidth, MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minWidth, MeasureSpecMode.Unspecified)
-  }
-  val heightSpec = when {
-    hasFixedHeight -> MeasureSpec.from(maxHeight, MeasureSpecMode.Exactly)
-    hasBoundedHeight -> MeasureSpec.from(maxHeight, MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minHeight, MeasureSpecMode.Unspecified)
-  }
-  return widthSpec to heightSpec
+internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
+  size = View.MeasureSpec.getSize(measureSpec),
+  mode = MeasureSpecMode.fromAndroid(View.MeasureSpec.getMode(measureSpec)),
+)
+
+internal fun MeasureSpec.toAndroid(): Int = View.MeasureSpec.makeMeasureSpec(size, mode.toAndroid())
+
+internal fun MeasureSpecMode.Companion.fromAndroid(mode: Int): MeasureSpecMode = when (mode) {
+  View.MeasureSpec.UNSPECIFIED -> Unspecified
+  View.MeasureSpec.EXACTLY -> Exactly
+  View.MeasureSpec.AT_MOST -> AtMost
+  else -> throw AssertionError()
 }
 
-internal fun Pair<MeasureSpec, MeasureSpec>.toConstraints(): Constraints {
-  val (widthSpec, heightSpec) = this
-  val minWidth: Int
-  val maxWidth: Int
-  when (widthSpec.mode) {
-    MeasureSpecMode.Exactly -> {
-      minWidth = widthSpec.size
-      maxWidth = widthSpec.size
-    }
-    MeasureSpecMode.AtMost -> {
-      minWidth = 0
-      maxWidth = widthSpec.size
-    }
-    MeasureSpecMode.Unspecified -> {
-      minWidth = 0
-      maxWidth = Constraints.Infinity
-    }
-    else -> throw AssertionError()
+internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
+  MeasureSpecMode.Unspecified -> View.MeasureSpec.UNSPECIFIED
+  MeasureSpecMode.Exactly -> View.MeasureSpec.EXACTLY
+  MeasureSpecMode.AtMost -> View.MeasureSpec.AT_MOST
+  else -> throw AssertionError()
+}
+
+internal fun View.asItem() = FlexItem(measurable = ViewMeasurable(this@asItem))
+
+private class ViewMeasurable(private val view: View) : Measurable() {
+  override val requestedWidth get() = view.layoutParams.width
+  override val requestedHeight get() = view.layoutParams.height
+  override val minWidth get() = view.minimumWidth
+  override val minHeight get() = view.minimumHeight
+
+  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+    view.measure(widthSpec.toAndroid(), heightSpec.toAndroid())
+    return Size(view.measuredWidth, view.measuredHeight)
   }
-  val minHeight: Int
-  val maxHeight: Int
-  when (heightSpec.mode) {
-    MeasureSpecMode.Exactly -> {
-      minHeight = heightSpec.size
-      maxHeight = heightSpec.size
-    }
-    MeasureSpecMode.AtMost -> {
-      minHeight = 0
-      maxHeight = heightSpec.size
-    }
-    MeasureSpecMode.Unspecified -> {
-      minHeight = 0
-      maxHeight = Constraints.Infinity
-    }
-    else -> throw AssertionError()
-  }
-  return Constraints(minWidth, maxWidth, minHeight, maxHeight)
 }

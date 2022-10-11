@@ -24,6 +24,7 @@ import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.view.ViewFlexContainer
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

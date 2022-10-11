@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.layout.view
 
 import android.annotation.SuppressLint
 import android.content.Context

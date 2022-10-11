@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
@@ -23,11 +23,11 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.Widget
 
-internal class ViewColumn(context: Context) : Column<View> {
-  private val container = ViewFlexContainer(context, FlexDirection.Column)
+internal class ViewRow(context: Context) : Row<View> {
+  private val container = ViewFlexContainer(context, FlexDirection.Row)
 
   override val children: Widget.Children<View> get() = container.children
 
@@ -45,11 +45,11 @@ internal class ViewColumn(context: Context) : Column<View> {
     container.overflow(overflow)
   }
 
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    container.alignItems(horizontalAlignment.toAlignItems())
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    container.justifyContent(horizontalAlignment.toJustifyContent())
   }
 
-  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    container.justifyContent(verticalAlignment.toJustifyContent())
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    container.alignItems(verticalAlignment.toAlignItems())
   }
 }
