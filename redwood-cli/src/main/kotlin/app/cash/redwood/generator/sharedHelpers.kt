@@ -33,13 +33,14 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
+import kotlin.reflect.KClass
 
 /**
  * Returns a single string that is likely to be unique within a schema, like `MapEntry` or
  * `NavigationBarButton`.
  */
-internal val Widget.flatName: String
-  get() = type.asClassName().simpleNames.joinToString(separator = "")
+internal val KClass<*>.flatName: String
+  get() = asClassName().simpleNames.joinToString(separator = "")
 
 internal val Event.lambdaType: TypeName
   get() {
@@ -67,7 +68,7 @@ internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
 }
 
 internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(composePackage(host), "DiffProducing${widget.flatName}")
+  return ClassName(composePackage(host), "DiffProducing${widget.type.flatName}")
 }
 
 internal fun Schema.diffConsumingWidgetFactoryType(host: Schema): ClassName {
@@ -75,11 +76,11 @@ internal fun Schema.diffConsumingWidgetFactoryType(host: Schema): ClassName {
 }
 
 internal fun Schema.diffConsumingWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${widget.flatName}")
+  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), widget.flatName)
+  return ClassName(widgetPackage(this), widget.type.flatName)
 }
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
@@ -95,11 +96,11 @@ internal fun Schema.widgetPackage(host: Schema = this): String {
 }
 
 internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(`package`, layoutModifier.type.simpleName!!) // TODO flat name
+  return ClassName(`package`, layoutModifier.type.flatName)
 }
 
 internal fun Schema.layoutModifierSurrogate(layoutModifier: LayoutModifier, host: Schema): ClassName {
-  return ClassName(composePackage(host), layoutModifier.type.simpleName!! + "Surrogate") // TODO flat name
+  return ClassName(composePackage(host), layoutModifier.type.flatName + "Surrogate")
 }
 
 internal val Schema.toLayoutModifier: MemberName get() =

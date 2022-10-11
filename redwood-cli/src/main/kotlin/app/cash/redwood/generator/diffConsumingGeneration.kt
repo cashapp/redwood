@@ -114,11 +114,11 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
                 .beginControlFlow("return when (kind)")
                 .apply {
                   for (widget in schema.widgets.sortedBy { it.tag }) {
-                    addStatement("%L -> %N()", widget.tag, widget.flatName)
+                    addStatement("%L -> %N()", widget.tag, widget.type.flatName)
                   }
                   for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                     for (widget in dependency.widgets.sortedBy { it.tag }) {
-                      addStatement("%L -> %N.%N()", widget.tag, dependency.name, widget.flatName)
+                      addStatement("%L -> %N.%N()", widget.tag, dependency.name, widget.type.flatName)
                     }
                   }
                 }
@@ -145,16 +145,16 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             }
           }
 
-          for (widget in schema.widgets.sortedBy { it.flatName }) {
+          for (widget in schema.widgets.sortedBy { it.type.flatName }) {
             val diffConsumingWidgetType = schema.diffConsumingWidgetType(widget, host)
             addFunction(
-              FunSpec.builder(widget.flatName)
+              FunSpec.builder(widget.type.flatName)
                 .addModifiers(if (schema === host) PRIVATE else INTERNAL)
                 .returns(diffConsumingWidgetType.parameterizedBy(typeVariableT))
                 .addStatement(
                   "return %T(delegate.%N(), json, mismatchHandler)",
                   diffConsumingWidgetType,
-                  widget.flatName,
+                  widget.type.flatName,
                 )
                 .build(),
             )
