@@ -71,6 +71,15 @@ allprojects {
         explicitApi()
       }
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->
+      // Only enable strict mode for non-test sources.
+      if (!task.name.toLowerCase().contains('test')) {
+        task.kotlinOptions {
+          freeCompilerArgs += '-Xexplicit-api=strict'
+        }
+      }
+    }
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
@@ -87,10 +96,6 @@ allprojects {
       freeCompilerArgs += [
         '-Xjvm-default=all',
       ]
-      // Only enable strict mode for Redwood non-test sources.
-      if (project.path.startsWith(':redwood-') && !task.name.toLowerCase().contains('test')) {
-        freeCompilerArgs += '-Xexplicit-api=strict'
-      }
     }
   }
 
