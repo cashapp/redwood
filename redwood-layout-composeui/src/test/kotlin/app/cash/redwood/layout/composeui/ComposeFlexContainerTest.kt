@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.layout.composeui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicText
@@ -28,7 +28,6 @@ import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.layout.composeui.ComposeFlexContainer
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
