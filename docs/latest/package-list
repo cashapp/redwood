@@ -8,11 +8,11 @@ app.cash.redwood.flexcontainer
 module:redwood-layout-api
 app.cash.redwood.layout.api
 module:redwood-layout-composeui
-app.cash.redwood.layout
+app.cash.redwood.layout.composeui
 module:redwood-layout-schema
 app.cash.redwood.layout
 module:redwood-layout-view
-app.cash.redwood.layout
+app.cash.redwood.layout.view
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-compose
