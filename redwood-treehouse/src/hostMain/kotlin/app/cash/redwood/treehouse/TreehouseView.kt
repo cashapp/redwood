@@ -24,7 +24,7 @@ public interface TreehouseView<T : Any> {
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
 
-  public interface Content<T : Any> {
+  public fun interface Content<T : Any> {
     public fun get(app: T): ZiplineTreehouseUi
   }
 }

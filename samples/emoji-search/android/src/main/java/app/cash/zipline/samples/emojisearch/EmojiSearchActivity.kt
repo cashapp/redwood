@@ -19,14 +19,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
+import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.ViewBinder
-import app.cash.redwood.treehouse.ZiplineTreehouseUi
-import app.cash.redwood.treehouse.composeui.TreehouseComposeView
+import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.zipline.loader.ManifestVerifier
 import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
 import kotlinx.coroutines.CoroutineScope
@@ -42,17 +42,12 @@ class EmojiSearchActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 
     val treehouseApp = createTreehouseApp()
+    val treehouseContent = TreehouseView.Content(EmojiSearchPresenter::launch)
 
-    val view = TreehouseComposeView<EmojiSearchPresenter>(
-      context = this,
-      treehouseApp = treehouseApp,
-    )
-    view.setContent(object : TreehouseView.Content<EmojiSearchPresenter> {
-      override fun get(app: EmojiSearchPresenter): ZiplineTreehouseUi {
-        return app.launch()
-      }
-    })
-
+    val view = ComposeView(this)
+    view.setContent {
+      TreehouseContent(treehouseApp, treehouseContent)
+    }
     setContentView(view)
   }
 
