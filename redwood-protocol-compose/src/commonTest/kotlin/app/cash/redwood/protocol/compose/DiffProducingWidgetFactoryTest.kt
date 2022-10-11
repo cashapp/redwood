@@ -47,7 +47,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = textInput as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1L
+    diffProducingWidget.id = 1U
     diffProducingWidget._diffAppender = diffAppender
 
     textInput.customType(10.seconds)
@@ -55,7 +55,7 @@ class DiffProducingWidgetFactoryTest {
 
     val expected = Diff(
       propertyDiffs = listOf(
-        PropertyDiff(1L, 2, JsonPrimitive("PT10S")),
+        PropertyDiff(1U, 2, JsonPrimitive("PT10S")),
       ),
     )
     assertEquals(expected, diffSink.diffs.single())
@@ -73,7 +73,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = button as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1L
+    diffProducingWidget.id = 1U
     diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = LayoutModifier.customType(10.seconds)
@@ -82,7 +82,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          1L,
+          1U,
           buildJsonArray {
             add(
               buildJsonArray {
@@ -113,7 +113,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = button as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1L
+    diffProducingWidget.id = 1U
     diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = LayoutModifier.customTypeWithDefault(10.seconds, "sup")
@@ -122,7 +122,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          1L,
+          1U,
           buildJsonArray {
             add(
               buildJsonArray {
@@ -158,7 +158,7 @@ class DiffProducingWidgetFactoryTest {
       argument = it
     }
 
-    diffProducingWidget.sendEvent(Event(1L, 4, JsonPrimitive("PT10S")))
+    diffProducingWidget.sendEvent(Event(1U, 4, JsonPrimitive("PT10S")))
 
     assertEquals(10.seconds, argument)
   }
@@ -167,7 +167,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory()
     val button = factory.Button() as AbstractDiffProducingWidget
 
-    val event = Event(1L, 3456543)
+    val event = Event(1U, 3456543)
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(event)
     }
@@ -180,7 +180,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(mismatchHandler = handler)
     val button = factory.Button() as AbstractDiffProducingWidget
 
-    button.sendEvent(Event(1L, 3456543))
+    button.sendEvent(Event(1U, 3456543))
 
     assertEquals("Unknown event 3456543 for 4", handler.events.single())
   }
