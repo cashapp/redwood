@@ -34,7 +34,15 @@ import kotlin.reflect.KClass
  * @see Widget
  * @see LayoutModifier
  */
-public annotation class Schema(val members: Array<KClass<*>>)
+public annotation class Schema(
+  val members: Array<KClass<*>>,
+  val dependencies: Array<Dependency> = [],
+) {
+  public annotation class Dependency(
+    val tag: Int,
+    val schema: KClass<*>,
+  )
+}
 
 /**
  * Annotates a data class which represents a widget in a UI tree. Each widget in a [Schema] must

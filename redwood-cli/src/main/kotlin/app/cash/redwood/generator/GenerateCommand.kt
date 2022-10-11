@@ -78,12 +78,28 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
         }
+        for (dependency in schema.dependencies) {
+          generateUnscopedModifiers(dependency)?.writeTo(out)
+          for (scope in dependency.scopes) {
+            generateScopeAndScopedModifiers(dependency, scope).writeTo(out)
+          }
+          for (widget in dependency.widgets) {
+            generateComposable(dependency, widget, host = schema).writeTo(out)
+          }
+        }
       }
       ComposeProtocol -> {
         generateDiffProducingWidgetFactory(schema).writeTo(out)
         generateDiffProducingLayoutModifier(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateDiffProducingWidget(schema, widget).writeTo(out)
+        }
+        for (dependency in schema.dependencies) {
+          generateDiffProducingWidgetFactory(dependency, host = schema).writeTo(out)
+          generateDiffProducingLayoutModifier(dependency, host = schema).writeTo(out)
+          for (widget in dependency.widgets) {
+            generateDiffProducingWidget(dependency, widget, host = schema).writeTo(out)
+          }
         }
       }
       LayoutModifiers -> {
@@ -102,6 +118,13 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         generateDiffConsumingLayoutModifier(schema).writeTo(out)
         for (widget in schema.widgets) {
           generateDiffConsumingWidget(schema, widget).writeTo(out)
+        }
+        for (dependency in schema.dependencies) {
+          generateDiffConsumingWidgetFactory(dependency, host = schema).writeTo(out)
+          generateDiffConsumingLayoutModifier(dependency, host = schema).writeTo(out)
+          for (widget in dependency.widgets) {
+            generateDiffConsumingWidget(dependency, widget, host = schema).writeTo(out)
+          }
         }
       }
     }

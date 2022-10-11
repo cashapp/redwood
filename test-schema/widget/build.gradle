@@ -4,6 +4,14 @@ apply plugin: 'app.cash.redwood.generator.widget'
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
 
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutSchema.widget
+      }
+    }
+  }
+
   // Ensure our codegen correctly works in explicit API mode.
   explicitApi()
 

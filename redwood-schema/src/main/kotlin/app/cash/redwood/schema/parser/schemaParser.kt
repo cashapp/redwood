@@ -108,13 +108,75 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
     .filterIsInstance<Widget.Children>()
     .mapNotNullTo(mutableSetOf()) { it.scope }
 
-  return Schema(
+  val badDependencyTags = schemaAnnotation.dependencies
+    .groupBy { it.tag }
+    .filterValues { it.size > 1 }
+  if (badDependencyTags.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema dependency tags must be unique")
+        for ((tag, group) in badDependencyTags) {
+          append("\n- Dependency tag $tag: ")
+          group.joinTo(this) { it.schema.qualifiedName!! }
+        }
+      },
+    )
+  }
+
+  val badDependencyTypes = schemaAnnotation.dependencies
+    .groupBy { it.schema }
+    .filterValues { it.size > 1 }
+    .keys
+  if (badDependencyTypes.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema contains repeated ")
+        append(if (badDependencyTypes.size > 1) "dependencies" else "dependency")
+        badDependencyTypes.joinTo(this, prefix = "\n\n- ", separator = "\n- ") { it.qualifiedName!! }
+      },
+    )
+  }
+
+  val dependencies = schemaAnnotation.dependencies
+    .map {
+      require(it.tag in 1..maxSchemaTag) {
+        "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
+      }
+      val schema = parseSchema(it.schema, it.tag)
+      require(schema.dependencies.isEmpty()) {
+        "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
+          "For now, only a single level of dependencies is supported."
+      }
+      schema
+    }
+
+  val schema = Schema(
     schemaType.simpleName!!,
     schemaType.java.packageName,
     scopes.toList(),
     widgets,
     layoutModifiers,
+    dependencies,
   )
+
+  val duplicatedWidgets = (listOf(schema) + dependencies)
+    .flatMap { it.widgets.map { widget -> widget to it } }
+    .groupBy { it.first.type }
+    .filterValues { it.size > 1 }
+    .mapValues { it.value.map(Pair<*, Schema>::second) }
+  if (duplicatedWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema dependency tree contains duplicated widgets")
+        for ((widget, schemas) in duplicatedWidgets) {
+          append("\n- ${widget.qualifiedName}: ")
+          schemas.joinTo(this) { "${it.`package`}.${it.name}" }
+        }
+      },
+    )
+  }
+
+  return schema
 }
 
 private fun parseWidget(
