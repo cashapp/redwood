@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+
 buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
@@ -96,6 +99,25 @@ allprojects {
       freeCompilerArgs += [
         '-Xjvm-default=all',
       ]
+    }
+  }
+
+  // Disable the release linking tasks because we never need it for iOS sample applications.
+  // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
+  plugins.withId('org.jetbrains.kotlin.multiplatform') {
+    kotlin {
+      targets.withType(KotlinNativeTarget) {
+        binaries.all {
+          if (it.buildType == NativeBuildType.RELEASE) {
+            it.linkTask.enabled = false
+          }
+        }
+      }
+    }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask).configureEach {
+      if (it.name.contains("Release")) {
+        it.enabled = false
+      }
     }
   }
 
