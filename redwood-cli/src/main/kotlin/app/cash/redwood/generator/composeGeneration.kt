@@ -219,6 +219,7 @@ internal fun generateComposable(
 
 /*
 object RowScope {
+  @Stable
   fun LayoutModifier.something(...): LayoutModifier {
     return then(Something(...))
   }
@@ -248,6 +249,12 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
     .build()
 }
 
+/*
+@Stable
+fun LayoutModifier.something(...): LayoutModifier {
+  return then(Something(...))
+}
+*/
 internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
   val unscopedLayoutModifiers = schema.layoutModifiers.filter { it.scopes.isEmpty() }
   if (unscopedLayoutModifiers.isEmpty()) return null
@@ -271,6 +278,7 @@ private fun generateLayoutModifier(
   val typeName = ClassName(schema.composePackage(), simpleName + "Impl")
 
   val function = FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
+    .addAnnotation(stable)
     .receiver(LayoutModifier)
     .returns(LayoutModifier)
     .apply {
