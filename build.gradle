@@ -120,6 +120,17 @@ allprojects {
     }
   }
 
+  // Disable the release build type because we never need it for sample applications.
+  plugins.withId('com.android.application') {
+    project.android {
+      variantFilter { variant ->
+        if (variant.buildType.name == 'release') {
+          variant.ignore = true
+        }
+      }
+    }
+  }
+
   plugins.withId('com.vanniktech.maven.publish.base') {
     group = project.property("GROUP") as String
     version = project.property("VERSION_NAME") as String
