@@ -32,7 +32,7 @@ public fun interface DiffSink {
 @Serializable
 public data class Event(
   /** Identifier for the widget from which this event originated. */
-  val id: Long,
+  val id: ULong,
   /** Identifies which event occurred on the widget with [id]. */
   val tag: Int,
   val value: JsonElement = JsonNull,
@@ -48,7 +48,7 @@ public data class Diff(
 @Serializable
 public data class PropertyDiff(
   /** Identifier for the widget whose property has changed. */
-  val id: Long,
+  val id: ULong,
   /** Identifies which property changed on the widget with [id]. */
   val tag: Int,
   val value: JsonElement = JsonNull,
@@ -57,7 +57,7 @@ public data class PropertyDiff(
 @Serializable
 public data class LayoutModifiers(
   /** Identifier for the widget whose layout modifier has changed. */
-  val id: Long,
+  val id: ULong,
   /**
    * Array of layout modifiers. Each element of this array is itself a two-element array of the
    * layout modifier tag and then serialized value.
@@ -68,7 +68,7 @@ public data class LayoutModifiers(
 @Serializable
 public sealed class ChildrenDiff {
   /** Identifier for the widget whose children have changed. */
-  public abstract val id: Long
+  public abstract val id: ULong
 
   /** Identifies which group of children changed on the widget with [id]. */
   public abstract val tag: Int
@@ -76,16 +76,16 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("clear")
   public object Clear : ChildrenDiff() {
-    override val id: Long get() = RootId
+    override val id: ULong get() = RootId
     override val tag: Int get() = RootChildrenTag
   }
 
   @Serializable
   @SerialName("insert")
   public data class Insert(
-    override val id: Long,
+    override val id: ULong,
     override val tag: Int,
-    val childId: Long,
+    val childId: ULong,
     val kind: Int,
     val index: Int,
   ) : ChildrenDiff()
@@ -93,7 +93,7 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("move")
   public data class Move(
-    override val id: Long,
+    override val id: ULong,
     override val tag: Int,
     val fromIndex: Int,
     val toIndex: Int,
@@ -103,11 +103,11 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("remove")
   public data class Remove(
-    override val id: Long,
+    override val id: ULong,
     override val tag: Int,
     val index: Int,
     val count: Int,
-    val removedIds: List<Long>,
+    val removedIds: List<ULong>,
   ) : ChildrenDiff() {
     init {
       require(count == removedIds.size) {
@@ -117,7 +117,7 @@ public sealed class ChildrenDiff {
   }
 
   public companion object {
-    public const val RootId: Long = 0L
+    public const val RootId: ULong = 0UL
     public const val RootChildrenTag: Int = 1
   }
 }

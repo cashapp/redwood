@@ -84,20 +84,20 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 1 /* row */, 0),
-          ChildrenDiff.Insert(1L, 1, 2L, 3 /* text */, 0),
-          ChildrenDiff.Insert(1L, 1, 3L, 1 /* row */, 1),
-          ChildrenDiff.Insert(3L, 1, 4L, 3 /* text */, 0),
+          ChildrenDiff.Insert(RootId, RootChildrenTag, 1U, 1 /* row */, 0),
+          ChildrenDiff.Insert(1U, 1, 2U, 3 /* text */, 0),
+          ChildrenDiff.Insert(1U, 1, 3U, 1 /* row */, 1),
+          ChildrenDiff.Insert(3U, 1, 4U, 3 /* text */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(1L, JsonArray(listOf())),
-          LayoutModifiers(2L, JsonArray(listOf())),
-          LayoutModifiers(3L, JsonArray(listOf())),
-          LayoutModifiers(4L, JsonArray(listOf())),
+          LayoutModifiers(1U, JsonArray(listOf())),
+          LayoutModifiers(2U, JsonArray(listOf())),
+          LayoutModifiers(3U, JsonArray(listOf())),
+          LayoutModifiers(4U, JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(2L, 1 /* text */, JsonPrimitive("hey")),
-          PropertyDiff(4L, 1 /* text */, JsonPrimitive("hello")),
+          PropertyDiff(2U, 1 /* text */, JsonPrimitive("hey")),
+          PropertyDiff(4U, 1 /* text */, JsonPrimitive("hello")),
         ),
       ),
       diffs.removeFirst(),
@@ -134,43 +134,43 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1L, 4 /* button */, 0),
+          ChildrenDiff.Insert(RootId, RootChildrenTag, 1U, 4 /* button */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(1L, JsonArray(listOf())),
+          LayoutModifiers(1U, JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 0")),
-          PropertyDiff(1L, 2 /* onClick */, JsonPrimitive(true)),
+          PropertyDiff(1U, 1 /* text */, JsonPrimitive("state: 0")),
+          PropertyDiff(1U, 2 /* onClick */, JsonPrimitive(true)),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    composition.sendEvent(Event(1L, 2))
+    composition.sendEvent(Event(1U, 2))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 1")),
+          PropertyDiff(1U, 1 /* text */, JsonPrimitive("state: 1")),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    composition.sendEvent(Event(1L, 2))
+    composition.sendEvent(Event(1U, 2))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 2")),
-          PropertyDiff(1L, 2 /* text */, JsonPrimitive(false)),
+          PropertyDiff(1U, 1 /* text */, JsonPrimitive("state: 2")),
+          PropertyDiff(1U, 2 /* text */, JsonPrimitive(false)),
         ),
       ),
       diffs.removeFirst(),
@@ -184,7 +184,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1L, 1 /* text */, JsonPrimitive("state: 3")),
+          PropertyDiff(1U, 1 /* text */, JsonPrimitive("state: 3")),
         ),
       ),
       diffs.removeFirst(),

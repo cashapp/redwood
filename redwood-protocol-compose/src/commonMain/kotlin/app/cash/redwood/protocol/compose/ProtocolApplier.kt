@@ -90,7 +90,7 @@ public abstract class AbstractDiffProducingWidget(
   override val value: Nothing
     get() = throw AssertionError()
 
-  public var id: Long = -1
+  public var id: ULong = ULong.MAX_VALUE
     internal set
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
@@ -149,7 +149,7 @@ internal class ProtocolApplier(
   private val diffAppender: DiffAppender,
 ) : AbstractApplier<AbstractDiffProducingWidget>(DiffProducingChildrenWidget.Root()),
   RedwoodApplier<DiffProducingWidget.Factory> {
-  private var nextId = RootId + 1
+  private var nextId = RootId + 1U
   internal val nodes = mutableMapOf(root.id to root)
 
   override fun onEndChanges() {
@@ -190,7 +190,7 @@ internal class ProtocolApplier(
     // TODO We should not have to track this and send it as part of the protocol.
     //  Ideally this would be entirely encapsulated on the display-side with additional bookkeeping.
     //  For now, we track it here and send it in the protocol as a simple solution.
-    val removedIds = ArrayList<Long>(count)
+    val removedIds = ArrayList<ULong>(count)
     for (i in index until index + count) {
       removedIds.add(children[i].id)
     }
