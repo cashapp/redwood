@@ -102,9 +102,10 @@ internal fun generateComposable(
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
   val widgetFactoryType = host.getWidgetFactoryType().parameterizedBy(STAR)
   val composeTargetMarker = host.composeTargetMarker
-  return FileSpec.builder(schema.composePackage(), widget.flatName)
+  val flatName = widget.type.flatName
+  return FileSpec.builder(schema.composePackage(), flatName)
     .addFunction(
-      FunSpec.builder(widget.flatName)
+      FunSpec.builder(flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(composable)
         .addAnnotation(composeTargetMarker)
@@ -157,9 +158,9 @@ internal fun generateComposable(
           val arguments = mutableListOf<CodeBlock>()
 
           arguments += if (schema === host) {
-            CodeBlock.of("factory = %T::%N", widgetFactoryType, widget.flatName)
+            CodeBlock.of("factory = %T::%N", widgetFactoryType, flatName)
           } else {
-            CodeBlock.of("factory = { it.%N.%N() }", schema.name, widget.flatName)
+            CodeBlock.of("factory = { it.%N.%N() }", schema.name, flatName)
           }
 
           val updateLambda = CodeBlock.builder()

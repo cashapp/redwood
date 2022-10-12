@@ -63,7 +63,7 @@ class WidgetGenerationTest {
 
   @Test fun tagInWidgetKdoc() {
     val schema = parseSchema(SimpleNameCollisionSchema::class)
-    val button = schema.widgets.single { it.flatName == "WidgetGenerationTestButton" }
+    val button = schema.widgets.single { it.type == Button::class }
 
     val fileSpec = generateWidget(schema, button)
     assertThat(fileSpec.toString()).apply {

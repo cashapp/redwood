@@ -93,7 +93,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
 
           for (widget in schema.widgets) {
             addFunction(
-              FunSpec.builder(widget.flatName)
+              FunSpec.builder(widget.type.flatName)
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(

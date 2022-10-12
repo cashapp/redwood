@@ -49,7 +49,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
         .apply {
           for (node in schema.widgets) {
             addFunction(
-              FunSpec.builder(node.flatName)
+              FunSpec.builder(node.type.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
                 .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
                 .addKdoc("{tag=${node.tag}}")
@@ -80,9 +80,10 @@ interface SunspotButton<T: Any> : Widget<T> {
 }
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
-  return FileSpec.builder(schema.widgetPackage(), widget.flatName)
+  val flatName = widget.type.flatName
+  return FileSpec.builder(schema.widgetPackage(), flatName)
     .addType(
-      TypeSpec.interfaceBuilder(widget.flatName)
+      TypeSpec.interfaceBuilder(flatName)
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(widgetType.parameterizedBy(typeVariableT))
