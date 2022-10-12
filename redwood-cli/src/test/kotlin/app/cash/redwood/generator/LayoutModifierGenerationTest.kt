@@ -48,4 +48,42 @@ class LayoutModifierGenerationTest {
     val nestedTypeSpec = generateLayoutModifierInterface(schema, nestedType)
     assertThat(nestedTypeSpec.toString()).contains("interface LayoutModifierGenerationTestNavigationBarContentDescription")
   }
+
+  @Schema(
+    [
+      ScopedLayoutModifier::class,
+      UnscopedLayoutModifier::class,
+    ],
+  )
+  interface ScopedAndUnscopedSchema
+
+  object LayoutModifierScope
+
+  @LayoutModifier(1, LayoutModifierScope::class)
+  object ScopedLayoutModifier
+
+  @LayoutModifier(2)
+  object UnscopedLayoutModifier
+
+  @Test fun `layout modifier functions are stable`() {
+    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+
+    val scopedModifier = schema.layoutModifiers.single { it.type == ScopedLayoutModifier::class }
+    val scope = scopedModifier.scopes.single { it == LayoutModifierScope::class }
+    val scopeSpec = generateScopeAndScopedModifiers(schema, scope)
+    assertThat(scopeSpec.toString()).contains(
+      """
+      |  @Stable
+      |  public fun LayoutModifier.scopedLayoutModifier(): LayoutModifier
+      """.trimMargin(),
+    )
+
+    val unscopedModifierSpec = generateUnscopedModifiers(schema)
+    assertThat(unscopedModifierSpec.toString()).contains(
+      """
+      |@Stable
+      |public fun LayoutModifier.unscopedLayoutModifier(): LayoutModifier
+      """.trimMargin(),
+    )
+  }
 }

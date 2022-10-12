@@ -52,6 +52,7 @@ internal val redwoodComposeNode = MemberName("app.cash.redwood.compose", "Redwoo
 
 internal val composable = ClassName("androidx.compose.runtime", "Composable")
 internal val composableTargetMarker = ClassName("androidx.compose.runtime", "ComposableTargetMarker")
+internal val stable = ClassName("androidx.compose.runtime", "Stable")
 
 internal fun composableLambda(
   receiver: TypeName?,
