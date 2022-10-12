@@ -53,7 +53,7 @@ class LayoutModifierGenerationTest {
     [
       ScopedLayoutModifier::class,
       UnscopedLayoutModifier::class,
-    ]
+    ],
   )
   interface ScopedAndUnscopedSchema
 
