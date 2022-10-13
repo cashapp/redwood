@@ -27,9 +27,11 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.DATA
+import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
+import com.squareup.kotlinpoet.KModifier.SEALED
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -178,7 +180,7 @@ internal fun generateComposable(
                   add("%M(%L) {\n", syntheticChildren, trait.tag)
                   indent()
                   trait.scope?.let { scope ->
-                    add("%T.", ClassName(schema.composePackage(), scope.simpleName!!))
+                    add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))
                   }
                   add("%N()\n", trait.name)
                   unindent()
@@ -218,21 +220,25 @@ internal fun generateComposable(
 }
 
 /*
-object RowScope {
+sealed interface RowScope {
   @Stable
   fun LayoutModifier.something(...): LayoutModifier {
     return then(Something(...))
   }
 }
 
+internal object RowScopeImpl : RowScope
+
 private data class SomethingImpl(...) : Something
 */
 internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): FileSpec {
   val scopeName = scope.simpleName!!
-  return FileSpec.builder(schema.composePackage(), scopeName)
+  val scopeType = ClassName(schema.composePackage(), scopeName)
+  return FileSpec.builder(scopeType.packageName, scopeType.simpleName)
     .apply {
-      val scopeObject = TypeSpec.objectBuilder(scopeName)
+      val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(LayoutScopeMarker)
+        .addModifiers(SEALED)
 
       for (layoutModifier in schema.layoutModifiers) {
         if (scope !in layoutModifier.scopes) {
@@ -240,11 +246,17 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
         }
 
         val (function, type) = generateLayoutModifier(schema, layoutModifier)
-        scopeObject.addFunction(function)
+        scopeBuilder.addFunction(function)
         addType(type)
       }
 
-      addType(scopeObject.build())
+      addType(scopeBuilder.build())
+      addType(
+        TypeSpec.objectBuilder(scopeName + "Impl")
+          .addModifiers(INTERNAL)
+          .addSuperinterface(scopeType)
+          .build(),
+      )
     }
     .build()
 }
