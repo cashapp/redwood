@@ -19,6 +19,11 @@ import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
+import example.redwood.compose.customType
+import example.redwood.compose.customTypeStateless
+import example.redwood.compose.customTypeWithDefault
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
 
 class LayoutModifierGenerationTest {
@@ -85,5 +90,17 @@ class LayoutModifierGenerationTest {
       |public fun LayoutModifier.unscopedLayoutModifier(): LayoutModifier
       """.trimMargin(),
     )
+  }
+
+  @Test
+  fun `layout modifier implements toString`() {
+    var type = app.cash.redwood.LayoutModifier.customType(20.seconds)
+    assertThat(type.toString()).isEqualTo("CustomType(customType=20s)")
+
+    type = app.cash.redwood.LayoutModifier.customTypeStateless()
+    assertThat(type.toString()).isEqualTo("CustomTypeStateless")
+
+    type = app.cash.redwood.LayoutModifier.customTypeWithDefault(40.minutes, "hello")
+    assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
   }
 }

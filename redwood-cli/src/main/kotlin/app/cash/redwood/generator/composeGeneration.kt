@@ -331,6 +331,7 @@ private fun generateLayoutModifier(
     .addSuperinterface(interfaceType)
     .addFunction(layoutModifierEquals(schema, layoutModifier))
     .addFunction(layoutModifierHashCode(layoutModifier))
+    .addFunction(layoutModifierToString(layoutModifier))
     .build()
 
   return function to type

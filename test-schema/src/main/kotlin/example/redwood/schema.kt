@@ -32,11 +32,11 @@ import kotlin.time.Duration
     RowVerticalAlignment::class,
     AccessibilityDescription::class,
     CustomType::class,
+    CustomTypeStateless::class,
     CustomTypeWithDefault::class,
     Text::class,
     Button::class,
     TextInput::class,
-    SomeMarker::class,
     Space::class,
   ],
   dependencies = [
@@ -95,11 +95,11 @@ public data class CustomType(
   val customType: Duration,
 )
 
+@LayoutModifier(4)
+public object CustomTypeStateless
+
 @LayoutModifier(5)
 public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
-
-@LayoutModifier(4)
-public object SomeMarker
