@@ -150,12 +150,13 @@ internal fun layoutModifierToString(layoutModifier: LayoutModifier): FunSpec {
       if (layoutModifier.properties.isEmpty()) {
         addStatement("return %S", simpleName)
       } else {
-        addStatement("val builder = StringBuilder()")
+        val statement = StringBuilder().append(simpleName).append("(")
+        val lastIndex = layoutModifier.properties.lastIndex
         for ((index, property) in layoutModifier.properties.withIndex()) {
-          val prefix = if (index == 0) "$simpleName(" else ", "
-          addStatement("builder.append(\"%L%L=\").append(%N)", prefix, property.name, property.name)
+          val suffix = if (index != lastIndex) ", " else ")"
+          statement.append(property.name).append("=$").append(property.name).append(suffix)
         }
-        addStatement("return builder.append(\")\").toString()")
+        addStatement("return %P", statement.toString())
       }
     }
     .build()
