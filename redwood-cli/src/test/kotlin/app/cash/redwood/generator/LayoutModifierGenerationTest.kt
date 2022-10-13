@@ -97,10 +97,10 @@ class LayoutModifierGenerationTest {
     var type = app.cash.redwood.LayoutModifier.customType(20.seconds)
     assertThat(type.toString()).isEqualTo("CustomType(customType=20s)")
 
-    type = app.cash.redwood.LayoutModifier.customTypeWithDefault(40.minutes, "hello")
-    assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
-
     type = app.cash.redwood.LayoutModifier.customTypeStateless()
     assertThat(type.toString()).isEqualTo("CustomTypeStateless")
+
+    type = app.cash.redwood.LayoutModifier.customTypeWithDefault(40.minutes, "hello")
+    assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
   }
 }

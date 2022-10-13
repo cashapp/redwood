@@ -126,7 +126,7 @@ class DiffProducingWidgetFactoryTest {
           buildJsonArray {
             add(
               buildJsonArray {
-                add(JsonPrimitive(4))
+                add(JsonPrimitive(5))
                 add(
                   buildJsonObject {
                     put("customType", JsonPrimitive("PT10S"))

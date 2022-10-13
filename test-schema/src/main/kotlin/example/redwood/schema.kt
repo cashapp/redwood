@@ -32,8 +32,8 @@ import kotlin.time.Duration
     RowVerticalAlignment::class,
     AccessibilityDescription::class,
     CustomType::class,
-    CustomTypeWithDefault::class,
     CustomTypeStateless::class,
+    CustomTypeWithDefault::class,
     Text::class,
     Button::class,
     TextInput::class,
@@ -96,10 +96,10 @@ public data class CustomType(
 )
 
 @LayoutModifier(4)
+public object CustomTypeStateless
+
+@LayoutModifier(5)
 public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
-
-@LayoutModifier(5)
-public object CustomTypeStateless

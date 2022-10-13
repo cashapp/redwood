@@ -113,13 +113,13 @@ class DiffConsumingWidgetFactoryTest {
       },
       json = json,
     )
-    val textInput = factory.create(4)!!
+    val textInput = factory.create(5)!!
 
     textInput.updateLayoutModifier(
       buildJsonArray {
         add(
           buildJsonArray {
-            add(JsonPrimitive(4))
+            add(JsonPrimitive(5))
             add(
               buildJsonObject {
                 put("customType", JsonPrimitive("PT10S"))
