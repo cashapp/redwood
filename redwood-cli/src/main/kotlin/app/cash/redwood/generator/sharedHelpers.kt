@@ -28,6 +28,7 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
@@ -135,6 +136,26 @@ internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
           addStatement("hash = 31 * hash + %N.hashCode()", property.name)
         }
         addStatement("return hash")
+      }
+    }
+    .build()
+}
+
+internal fun layoutModifierToString(layoutModifier: LayoutModifier): FunSpec {
+  val simpleName = layoutModifier.type.simpleName!!
+  return FunSpec.builder("toString")
+    .addModifiers(KModifier.OVERRIDE)
+    .returns(STRING)
+    .apply {
+      if (layoutModifier.properties.isEmpty()) {
+        addStatement("return %S", simpleName)
+      } else {
+        addStatement("val builder = StringBuilder()")
+        for ((index, property) in layoutModifier.properties.withIndex()) {
+          val prefix = if (index == 0) "$simpleName(" else ", "
+          addStatement("builder.append(\"%L%L=\").append(%N)", prefix, property.name, property.name)
+        }
+        addStatement("return builder.append(\")\").toString()")
       }
     }
     .build()

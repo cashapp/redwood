@@ -456,6 +456,7 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema, host: Schema = 
             .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))
+            .addFunction(layoutModifierToString(layoutModifier))
             .build(),
         )
       }

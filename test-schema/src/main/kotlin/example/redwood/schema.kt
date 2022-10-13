@@ -33,10 +33,10 @@ import kotlin.time.Duration
     AccessibilityDescription::class,
     CustomType::class,
     CustomTypeWithDefault::class,
+    CustomTypeStateless::class,
     Text::class,
     Button::class,
     TextInput::class,
-    SomeMarker::class,
     Space::class,
   ],
   dependencies = [
@@ -95,11 +95,11 @@ public data class CustomType(
   val customType: Duration,
 )
 
-@LayoutModifier(5)
+@LayoutModifier(4)
 public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
 
-@LayoutModifier(4)
-public object SomeMarker
+@LayoutModifier(5)
+public object CustomTypeStateless
