@@ -56,10 +56,7 @@ class ComposeGenerationTest {
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
       contains("scoped: @Composable @ScopedAndUnscopedSchemaComposable RowScope.() -> Unit")
-      contains("RowScope.scoped()")
-
       contains("unscoped: @Composable @ScopedAndUnscopedSchemaComposable () -> Unit")
-      contains("unscoped()")
     }
   }
 
@@ -70,7 +67,7 @@ class ComposeGenerationTest {
     assertThat(fileSpec.toString()).contains(
       """
       |@LayoutScopeMarker
-      |public object RowScope
+      |public sealed interface RowScope
       """.trimMargin(),
     )
   }
