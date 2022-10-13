@@ -270,7 +270,7 @@ internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
     .build()
 }
 
-internal fun generateLayoutModifier(
+private fun generateLayoutModifier(
   schema: Schema,
   layoutModifier: LayoutModifier,
 ): Pair<FunSpec, TypeSpec> {
