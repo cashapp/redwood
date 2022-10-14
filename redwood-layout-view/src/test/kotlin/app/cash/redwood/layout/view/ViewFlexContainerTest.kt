@@ -122,12 +122,6 @@ class ViewFlexContainerTest(
   }
 }
 
-private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Array<T>> {
-  return lists.fold(listOf(emptyArray())) { partials, list ->
-    partials.flatMap { partial -> list.map { element -> partial + element } }
-  }
-}
-
 private val movies = listOf(
   "The Shawshank Redemption",
   "The Godfather",
@@ -150,3 +144,9 @@ private val movies = listOf(
   "Se7en",
   "Seven Samurai",
 )
+
+private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Array<T>> {
+  return lists.fold(listOf(emptyArray())) { partials, list ->
+    partials.flatMap { partial -> list.map { element -> partial + element } }
+  }
+}
