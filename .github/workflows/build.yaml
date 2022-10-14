@@ -24,7 +24,7 @@ jobs:
           java-version: 18
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew build dokkaHtmlMultiModule --parallel
+      - run: ./gradlew build dokkaHtmlMultiModule verifyPaparazziDebug --parallel
 
       - name: Build Counter iOS sample
         run: |

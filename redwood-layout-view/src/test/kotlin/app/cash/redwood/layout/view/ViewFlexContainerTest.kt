@@ -103,9 +103,9 @@ class ViewFlexContainerTest(
   fun `render - `() {
     val container = ViewFlexContainer(paparazzi.context, parameters.flexDirection).apply {
       view.background = ColorDrawable(Color.LTGRAY)
-      padding(parameters.padding)
       alignItems(parameters.alignItems)
       justifyContent(parameters.justifyContent)
+      padding(parameters.padding)
     }
 
     parameters.items.forEachIndexed { index, item ->

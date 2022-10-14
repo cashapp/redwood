@@ -96,6 +96,9 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
       container.layout(measureResult, Size(right - left, bottom - top))
+      container.items.forEachIndexed { index, item ->
+        getChildAt(index).layout(item.left, item.top, item.right, item.bottom)
+      }
     }
   }
 }
