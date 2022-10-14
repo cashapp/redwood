@@ -42,6 +42,10 @@ class ViewFlexContainerTest(
         FlexDirection.Column,
       ),
       listOf(
+        movies.take(5),
+        movies,
+      ),
+      listOf(
         AlignItems.FlexStart,
         AlignItems.FlexEnd,
         AlignItems.Center,
@@ -61,27 +65,31 @@ class ViewFlexContainerTest(
       ),
     ).map {
       // https://github.com/junit-team/junit5/issues/2703
+      @Suppress("UNCHECKED_CAST")
       arrayOf(
         Parameters(
           flexDirection = it[0] as FlexDirection,
-          alignItems = it[1] as AlignItems,
-          justifyContent = it[2] as JustifyContent,
-          padding = it[3] as Padding,
+          items = it[1] as List<String>,
+          alignItems = it[2] as AlignItems,
+          justifyContent = it[3] as JustifyContent,
+          padding = it[4] as Padding,
         ),
       )
     }
 
     class Parameters(
       val flexDirection: FlexDirection,
+      val items: List<String>,
       val alignItems: AlignItems,
       val justifyContent: JustifyContent,
       val padding: Padding,
     ) {
       override fun toString() = "" +
         "FlexDirection.$flexDirection, " +
+        "Items(${items.size}), " +
         "AlignItems.$alignItems, " +
         "JustifyContent.$justifyContent, " +
-        "$padding"
+        "Padding(${padding.start})"
     }
   }
 
@@ -93,35 +101,49 @@ class ViewFlexContainerTest(
 
   @Test
   fun `render - `() {
-    val items = listOf(
-      "The Good, the Bad and the Ugly",
-      "Forrest Gump",
-      "Fight Club",
-      "Inception",
-      "The Lord of the Rings: The Two Towers",
-    )
-    val textViews = items.map { title ->
-      TextView(paparazzi.context).apply {
+    val container = ViewFlexContainer(paparazzi.context, parameters.flexDirection).apply {
+      view.background = ColorDrawable(Color.LTGRAY)
+      alignItems(parameters.alignItems)
+      justifyContent(parameters.justifyContent)
+      padding(parameters.padding)
+    }
+
+    parameters.items.forEachIndexed { index, item ->
+      val view = TextView(paparazzi.context).apply {
         background = ColorDrawable(Color.GREEN)
         textSize = 18f
         setTextColor(Color.BLACK)
-        text = title
+        text = item
       }
+      container.children.insert(index, view)
     }
 
-    val container = ViewFlexContainer(paparazzi.context, parameters.flexDirection).apply {
-      view.background = ColorDrawable(Color.LTGRAY)
-      padding(parameters.padding)
-      alignItems(parameters.alignItems)
-      justifyContent(parameters.justifyContent)
-    }
-
-    textViews.forEachIndexed { index, textView ->
-      container.children.insert(index, textView)
-    }
     paparazzi.snapshot(container.view)
   }
 }
+
+private val movies = listOf(
+  "The Shawshank Redemption",
+  "The Godfather",
+  "The Dark Knight",
+  "The Godfather Part II",
+  "12 Angry Men",
+  "Schindler's List",
+  "The Lord of the Rings: The Return of the King",
+  "Pulp Fiction",
+  "The Lord of the Rings: The Fellowship of the Ring",
+  "The Good, the Bad and the Ugly",
+  "Forrest Gump",
+  "Fight Club",
+  "Inception",
+  "The Lord of the Rings: The Two Towers",
+  "Star Wars: Episode V - The Empire Strikes Back",
+  "The Matrix",
+  "Goodfellas",
+  "One Flew Over the Cuckoo's Nest",
+  "Se7en",
+  "Seven Samurai",
+)
 
 private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Array<T>> {
   return lists.fold(listOf(emptyArray())) { partials, list ->
