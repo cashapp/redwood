@@ -21,10 +21,11 @@ import app.cash.redwood.schema.Schema
   [
     Column::class,
     Row::class,
-    GrowLayoutModifier::class,
-    ShrinkLayoutModifier::class,
-    HorizontalAlignmentLayoutModifier::class,
-    VerticalAlignmentLayoutModifier::class,
+    Grow::class,
+    Shrink::class,
+    Padding::class,
+    HorizontalAlignment::class,
+    VerticalAlignment::class,
   ],
 )
 public interface RedwoodLayout

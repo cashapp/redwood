@@ -104,6 +104,10 @@ internal fun Schema.layoutModifierSurrogate(layoutModifier: LayoutModifier, host
   return ClassName(composePackage(host), layoutModifier.type.flatName + "Surrogate")
 }
 
+internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassName {
+  return ClassName(composePackage(), layoutModifier.type.simpleName!! + "Impl")
+}
+
 internal val Schema.toLayoutModifier: MemberName get() =
   MemberName(widgetPackage(this), "toLayoutModifier")
 

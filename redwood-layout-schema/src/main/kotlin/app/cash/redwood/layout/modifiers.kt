@@ -16,28 +16,35 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.schema.LayoutModifier
 
-/** Grow the node relative to [value] along the main axis. */
-@LayoutModifier(1)
-public data class GrowLayoutModifier(
+/** Grow the item relative to [value] along the main axis. */
+@LayoutModifier(1, scopes = [RowScope::class, ColumnScope::class])
+public data class Grow(
   val value: Int,
 )
 
-/** Shrink the node relative to [value] along the main axis. */
-@LayoutModifier(2)
-public data class ShrinkLayoutModifier(
+/** Shrink the item relative to [value] along the main axis. */
+@LayoutModifier(2, scopes = [RowScope::class, ColumnScope::class])
+public data class Shrink(
   val value: Int,
 )
 
-/** Set the alignment for a node along the horizontal axis. */
-@LayoutModifier(3)
-public data class HorizontalAlignmentLayoutModifier(
+/** Add additional space around the item. */
+@LayoutModifier(3, scopes = [RowScope::class, ColumnScope::class])
+public data class Padding(
+  val padding: Padding,
+)
+
+/** Set the alignment for an item along the horizontal axis. */
+@LayoutModifier(4, scopes = [ColumnScope::class])
+public data class HorizontalAlignment(
   val alignment: CrossAxisAlignment,
 )
 
-/** Set the alignment for a node along the vertical axis. */
-@LayoutModifier(4)
-public data class VerticalAlignmentLayoutModifier(
+/** Set the alignment for an item along the vertical axis. */
+@LayoutModifier(5, scopes = [RowScope::class])
+public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,
 )

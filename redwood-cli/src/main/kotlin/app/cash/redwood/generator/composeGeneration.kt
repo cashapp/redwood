@@ -26,10 +26,8 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier.DATA
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
-import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.KModifier.SEALED
 import com.squareup.kotlinpoet.ParameterSpec
@@ -51,7 +49,7 @@ import kotlin.reflect.KClass
   AnnotationTarget.TYPE_PARAMETER,
 )
 public annotation class SunspotComposable
- */
+*/
 internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
   val name = schema.composeTargetMarker
   return FileSpec.builder(schema.composePackage(), name.simpleName)
@@ -223,13 +221,11 @@ internal fun generateComposable(
 sealed interface RowScope {
   @Stable
   fun LayoutModifier.something(...): LayoutModifier {
-    return then(Something(...))
+    return then(SomethingImpl(...))
   }
 }
 
 internal object RowScopeImpl : RowScope
-
-private data class SomethingImpl(...) : Something
 */
 internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): FileSpec {
   val scopeName = scope.simpleName!!
@@ -245,9 +241,7 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
           continue
         }
 
-        val (function, type) = generateLayoutModifier(schema, layoutModifier)
-        scopeBuilder.addFunction(function)
-        addType(type)
+        scopeBuilder.addFunction(generateLayoutModifierFunction(schema, layoutModifier))
       }
 
       addType(scopeBuilder.build())
@@ -264,32 +258,47 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
 /*
 @Stable
 fun LayoutModifier.something(...): LayoutModifier {
-  return then(Something(...))
+  return then(SomethingImpl(...))
 }
 */
-internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
+internal fun generateUnscopedModifierFunctions(schema: Schema): FileSpec? {
   val unscopedLayoutModifiers = schema.layoutModifiers.filter { it.scopes.isEmpty() }
   if (unscopedLayoutModifiers.isEmpty()) return null
 
   return FileSpec.builder(schema.composePackage(), "unscopedLayoutModifiers")
     .apply {
       for (layoutModifier in unscopedLayoutModifiers) {
-        val (function, type) = generateLayoutModifier(schema, layoutModifier)
-        addFunction(function)
-        addType(type)
+        addFunction(generateLayoutModifierFunction(schema, layoutModifier))
       }
     }
     .build()
 }
 
-private fun generateLayoutModifier(
+/*
+internal class SomethingImpl(...): Something {
+  public override fun equals(other: Any?): Boolean = ...
+  public override fun hashCode(): Int = ...
+  public override fun toString(): String = ...
+}
+*/
+internal fun generateModifierImpls(schema: Schema): FileSpec? {
+  if (schema.layoutModifiers.isEmpty()) return null
+
+  return FileSpec.builder(schema.composePackage(), "layoutModifiers")
+    .apply {
+      for (layoutModifier in schema.layoutModifiers) {
+        addType(generateLayoutModifierImpl(schema, layoutModifier))
+      }
+    }
+    .build()
+}
+
+private fun generateLayoutModifierFunction(
   schema: Schema,
   layoutModifier: LayoutModifier,
-): Pair<FunSpec, TypeSpec> {
+): FunSpec {
   val simpleName = layoutModifier.type.simpleName!!
-  val typeName = ClassName(schema.composePackage(), simpleName + "Impl")
-
-  val function = FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
+  return FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
     .addAnnotation(stable)
     .receiver(LayoutModifier)
     .returns(LayoutModifier)
@@ -307,6 +316,7 @@ private fun generateLayoutModifier(
         )
       }
 
+      val typeName = schema.layoutModifierImpl(layoutModifier)
       if (arguments.isEmpty()) {
         addStatement("return then(%T)", typeName)
       } else {
@@ -314,14 +324,17 @@ private fun generateLayoutModifier(
       }
     }
     .build()
+}
 
-  val interfaceType = schema.layoutModifierType(layoutModifier)
-
+private fun generateLayoutModifierImpl(
+  schema: Schema,
+  layoutModifier: LayoutModifier,
+): TypeSpec {
+  val typeName = schema.layoutModifierImpl(layoutModifier)
   val typeBuilder = if (layoutModifier.properties.isEmpty()) {
     TypeSpec.objectBuilder(typeName)
   } else {
     TypeSpec.classBuilder(typeName)
-      .addModifiers(DATA)
       .apply {
         val primaryConstructor = FunSpec.constructorBuilder()
         for (property in layoutModifier.properties) {
@@ -338,13 +351,11 @@ private fun generateLayoutModifier(
       }
   }
 
-  val type = typeBuilder
-    .addModifiers(PRIVATE)
-    .addSuperinterface(interfaceType)
+  return typeBuilder
+    .addModifiers(INTERNAL)
+    .addSuperinterface(schema.layoutModifierType(layoutModifier))
     .addFunction(layoutModifierEquals(schema, layoutModifier))
     .addFunction(layoutModifierHashCode(layoutModifier))
     .addFunction(layoutModifierToString(layoutModifier))
     .build()
-
-  return function to type
 }
