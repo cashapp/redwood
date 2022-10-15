@@ -34,6 +34,7 @@ import kotlin.time.Duration
     CustomType::class,
     CustomTypeStateless::class,
     CustomTypeWithDefault::class,
+    CustomTypeWithMultipleScopes::class,
     Text::class,
     Button::class,
     TextInput::class,
@@ -103,3 +104,9 @@ public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
+
+public object TestScopeOne
+public object TestScopeTwo
+
+@LayoutModifier(6, scopes = [TestScopeOne::class, TestScopeTwo::class])
+public object CustomTypeWithMultipleScopes

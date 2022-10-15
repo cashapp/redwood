@@ -34,6 +34,7 @@ class LayoutModifierGenerationTest {
     ],
   )
   interface SimpleNameCollisionSchema
+
   interface NavigationBar {
     @LayoutModifier(1)
     data class ContentDescription(val text: String)
@@ -83,7 +84,7 @@ class LayoutModifierGenerationTest {
       """.trimMargin(),
     )
 
-    val unscopedModifierSpec = generateUnscopedModifiers(schema)
+    val unscopedModifierSpec = generateUnscopedModifierFunctions(schema)
     assertThat(unscopedModifierSpec.toString()).contains(
       """
       |@Stable
@@ -92,8 +93,7 @@ class LayoutModifierGenerationTest {
     )
   }
 
-  @Test
-  fun `layout modifier implements toString`() {
+  @Test fun `layout modifier implements toString`() {
     var type = app.cash.redwood.LayoutModifier.customType(20.seconds)
     assertThat(type.toString()).isEqualTo("CustomType(customType=20s)")
 
