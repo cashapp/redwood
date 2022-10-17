@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol
 
+import kotlin.jvm.JvmInline
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
@@ -29,10 +30,19 @@ public fun interface DiffSink {
   public fun sendDiff(diff: Diff)
 }
 
+/** Identifies a widget instance. */
+@JvmInline
+@Serializable
+public value class Id(public val value: ULong) {
+  public companion object {
+    public val Root: Id = Id(0UL)
+  }
+}
+
 @Serializable
 public data class Event(
   /** Identifier for the widget from which this event originated. */
-  val id: ULong,
+  val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
   val tag: UInt,
   val value: JsonElement = JsonNull,
@@ -48,7 +58,7 @@ public data class Diff(
 @Serializable
 public data class PropertyDiff(
   /** Identifier for the widget whose property has changed. */
-  val id: ULong,
+  val id: Id,
   /** Identifies which property changed on the widget with [id]. */
   val tag: UInt,
   val value: JsonElement = JsonNull,
@@ -57,7 +67,7 @@ public data class PropertyDiff(
 @Serializable
 public data class LayoutModifiers(
   /** Identifier for the widget whose layout modifier has changed. */
-  val id: ULong,
+  val id: Id,
   /**
    * Array of layout modifiers. Each element of this array is itself a two-element array of the
    * layout modifier tag and then serialized value.
@@ -68,7 +78,7 @@ public data class LayoutModifiers(
 @Serializable
 public sealed class ChildrenDiff {
   /** Identifier for the widget whose children have changed. */
-  public abstract val id: ULong
+  public abstract val id: Id
 
   /** Identifies which group of children changed on the widget with [id]. */
   public abstract val tag: UInt
@@ -76,16 +86,16 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("clear")
   public object Clear : ChildrenDiff() {
-    override val id: ULong get() = RootId
+    override val id: Id get() = Id.Root
     override val tag: UInt get() = RootChildrenTag
   }
 
   @Serializable
   @SerialName("insert")
   public data class Insert(
-    override val id: ULong,
+    override val id: Id,
     override val tag: UInt,
-    val childId: ULong,
+    val childId: Id,
     val kind: Int,
     val index: Int,
   ) : ChildrenDiff()
@@ -93,7 +103,7 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("move")
   public data class Move(
-    override val id: ULong,
+    override val id: Id,
     override val tag: UInt,
     val fromIndex: Int,
     val toIndex: Int,
@@ -103,11 +113,11 @@ public sealed class ChildrenDiff {
   @Serializable
   @SerialName("remove")
   public data class Remove(
-    override val id: ULong,
+    override val id: Id,
     override val tag: UInt,
     val index: Int,
     val count: Int,
-    val removedIds: List<ULong>,
+    val removedIds: List<Id>,
   ) : ChildrenDiff() {
     init {
       require(count == removedIds.size) {
@@ -117,7 +127,6 @@ public sealed class ChildrenDiff {
   }
 
   public companion object {
-    public const val RootId: ULong = 0UL
     public const val RootChildrenTag: UInt = 1U
   }
 }

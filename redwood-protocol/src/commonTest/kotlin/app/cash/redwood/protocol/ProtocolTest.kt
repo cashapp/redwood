@@ -31,13 +31,13 @@ class ProtocolTest {
   }
 
   @Test fun eventNonNullValue() {
-    val model = Event(1U, 2U, JsonPrimitive("Hello"))
+    val model = Event(Id(1U), 2U, JsonPrimitive("Hello"))
     val json = """{"id":1,"tag":2,"value":"Hello"}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
   @Test fun eventNullValue() {
-    val model = Event(1U, 2U)
+    val model = Event(Id(1U), 2U)
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
@@ -46,13 +46,13 @@ class ProtocolTest {
     val model = Diff(
       childrenDiffs = listOf(
         ChildrenDiff.Clear,
-        ChildrenDiff.Insert(1U, 2U, 3U, 4, 5),
-        ChildrenDiff.Move(1U, 2U, 3, 4, 5),
-        ChildrenDiff.Remove(1U, 2U, 3, 4, listOf(5U, 6U, 7U, 8U)),
+        ChildrenDiff.Insert(Id(1U), 2U, Id(3U), 4, 5),
+        ChildrenDiff.Move(Id(1U), 2U, 3, 4, 5),
+        ChildrenDiff.Remove(Id(1U), 2U, 3, 4, listOf(Id(5U), Id(6U), Id(7U), Id(8U))),
       ),
       layoutModifiers = listOf(
         LayoutModifiers(
-          1U,
+          Id(1U),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -64,8 +64,8 @@ class ProtocolTest {
         ),
       ),
       propertyDiffs = listOf(
-        PropertyDiff(1U, 2U, JsonPrimitive("Hello")),
-        PropertyDiff(1U, 2U, JsonNull),
+        PropertyDiff(Id(1U), 2U, JsonPrimitive("Hello")),
+        PropertyDiff(Id(1U), 2U, JsonNull),
       ),
     )
     val json = "" +
@@ -95,7 +95,7 @@ class ProtocolTest {
 
   @Test fun removeCountMustMatchListSize() {
     assertFailsWith<IllegalArgumentException>("Count 4 != Removed ID list size 3") {
-      ChildrenDiff.Remove(1U, 2U, 3, 4, listOf(5U, 6U, 7U))
+      ChildrenDiff.Remove(Id(1U), 2U, 3, 4, listOf(Id(5U), Id(6U), Id(7U)))
     }
   }
 

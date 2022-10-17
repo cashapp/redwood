@@ -18,10 +18,10 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
@@ -32,7 +32,7 @@ public class ProtocolDisplay<T : Any>(
   private val eventSink: EventSink,
 ) : DiffSink {
   private val root: DiffConsumingWidget<T> = ProtocolDisplayRoot(container)
-  private val widgets = mutableMapOf(RootId to root)
+  private val widgets = mutableMapOf(Id.Root to root)
 
   override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
@@ -59,7 +59,7 @@ public class ProtocolDisplay<T : Any>(
         ChildrenDiff.Clear -> {
           children.clear()
           widgets.clear()
-          widgets[RootId] = root
+          widgets[Id.Root] = root
         }
       }
     }

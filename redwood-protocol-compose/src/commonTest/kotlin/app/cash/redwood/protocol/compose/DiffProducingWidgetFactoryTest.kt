@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.compose
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
@@ -47,7 +48,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = textInput as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1U
+    diffProducingWidget.id = Id(1U)
     diffProducingWidget._diffAppender = diffAppender
 
     textInput.customType(10.seconds)
@@ -55,7 +56,7 @@ class DiffProducingWidgetFactoryTest {
 
     val expected = Diff(
       propertyDiffs = listOf(
-        PropertyDiff(1U, 2U, JsonPrimitive("PT10S")),
+        PropertyDiff(Id(1U), 2U, JsonPrimitive("PT10S")),
       ),
     )
     assertEquals(expected, diffSink.diffs.single())
@@ -73,7 +74,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = button as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1U
+    diffProducingWidget.id = Id(1U)
     diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = LayoutModifier.customType(10.seconds)
@@ -82,7 +83,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          1U,
+          Id(1U),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -113,7 +114,7 @@ class DiffProducingWidgetFactoryTest {
     val diffProducingWidget = button as AbstractDiffProducingWidget
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = 1U
+    diffProducingWidget.id = Id(1U)
     diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = LayoutModifier.customTypeWithDefault(10.seconds, "sup")
@@ -122,7 +123,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          1U,
+          Id(1U),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -158,7 +159,7 @@ class DiffProducingWidgetFactoryTest {
       argument = it
     }
 
-    diffProducingWidget.sendEvent(Event(1U, 4U, JsonPrimitive("PT10S")))
+    diffProducingWidget.sendEvent(Event(Id(1U), 4U, JsonPrimitive("PT10S")))
 
     assertEquals(10.seconds, argument)
   }
@@ -167,7 +168,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory()
     val button = factory.Button() as AbstractDiffProducingWidget
 
-    val event = Event(1U, 3456543U)
+    val event = Event(Id(1U), 3456543U)
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(event)
     }
@@ -180,7 +181,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(mismatchHandler = handler)
     val button = factory.Button() as AbstractDiffProducingWidget
 
-    button.sendEvent(Event(1U, 3456543U))
+    button.sendEvent(Event(Id(1U), 3456543U))
 
     assertEquals("Unknown event 3456543 for 4", handler.events.single())
   }
