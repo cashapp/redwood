@@ -89,7 +89,7 @@ class ViewFlexContainerTest(
         "Items(${items.size}), " +
         "AlignItems.$alignItems, " +
         "JustifyContent.$justifyContent, " +
-        "Padding(${padding.start})"
+        "$padding"
     }
   }
 

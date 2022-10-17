@@ -102,6 +102,18 @@ public data class Padding(
     }
   }
 
+  override fun toString(): String {
+    return if (start == end && top == bottom) {
+      if (start == top) {
+        "Padding(all=$start)"
+      } else {
+        "Padding(horizontal=$start, vertical=$top)"
+      }
+    } else {
+      "Padding(start=$start, end=$end, top=$top, bottom=$bottom)"
+    }
+  }
+
   public companion object {
     public val Zero: Padding = Padding()
   }
