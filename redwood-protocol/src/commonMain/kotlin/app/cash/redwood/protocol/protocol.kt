@@ -34,7 +34,7 @@ public data class Event(
   /** Identifier for the widget from which this event originated. */
   val id: ULong,
   /** Identifies which event occurred on the widget with [id]. */
-  val tag: Int,
+  val tag: UInt,
   val value: JsonElement = JsonNull,
 )
 
@@ -50,7 +50,7 @@ public data class PropertyDiff(
   /** Identifier for the widget whose property has changed. */
   val id: ULong,
   /** Identifies which property changed on the widget with [id]. */
-  val tag: Int,
+  val tag: UInt,
   val value: JsonElement = JsonNull,
 )
 
@@ -71,20 +71,20 @@ public sealed class ChildrenDiff {
   public abstract val id: ULong
 
   /** Identifies which group of children changed on the widget with [id]. */
-  public abstract val tag: Int
+  public abstract val tag: UInt
 
   @Serializable
   @SerialName("clear")
   public object Clear : ChildrenDiff() {
     override val id: ULong get() = RootId
-    override val tag: Int get() = RootChildrenTag
+    override val tag: UInt get() = RootChildrenTag
   }
 
   @Serializable
   @SerialName("insert")
   public data class Insert(
     override val id: ULong,
-    override val tag: Int,
+    override val tag: UInt,
     val childId: ULong,
     val kind: Int,
     val index: Int,
@@ -94,7 +94,7 @@ public sealed class ChildrenDiff {
   @SerialName("move")
   public data class Move(
     override val id: ULong,
-    override val tag: Int,
+    override val tag: UInt,
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
@@ -104,7 +104,7 @@ public sealed class ChildrenDiff {
   @SerialName("remove")
   public data class Remove(
     override val id: ULong,
-    override val tag: Int,
+    override val tag: UInt,
     val index: Int,
     val count: Int,
     val removedIds: List<ULong>,
@@ -118,6 +118,6 @@ public sealed class ChildrenDiff {
 
   public companion object {
     public const val RootId: ULong = 0UL
-    public const val RootChildrenTag: Int = 1
+    public const val RootChildrenTag: UInt = 1U
   }
 }

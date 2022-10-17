@@ -572,12 +572,12 @@ class SchemaParserTest {
     val schema = parseSchema(SchemaTag::class)
 
     val widget = schema.widgets.single()
-    assertThat(widget.tag).isEqualTo(1)
-    assertThat(widget.traits[0].tag).isEqualTo(1)
-    assertThat(widget.traits[1].tag).isEqualTo(1)
+    assertThat(widget.tag).isEqualTo(1U)
+    assertThat(widget.traits[0].tag).isEqualTo(1U)
+    assertThat(widget.traits[1].tag).isEqualTo(1U)
 
     val layoutModifier = schema.layoutModifiers.single()
-    assertThat(layoutModifier.tag).isEqualTo(1)
+    assertThat(layoutModifier.tag).isEqualTo(1U)
   }
 
   @Schema(
@@ -593,28 +593,24 @@ class SchemaParserTest {
     val dependency = schema.dependencies.single()
 
     val widget = dependency.widgets.single()
-    assertThat(widget.tag).isEqualTo(4_000_001)
-    assertThat(widget.traits[0].tag).isEqualTo(1)
-    assertThat(widget.traits[1].tag).isEqualTo(1)
+    assertThat(widget.tag).isEqualTo(4_000_001U)
+    assertThat(widget.traits[0].tag).isEqualTo(1U)
+    assertThat(widget.traits[1].tag).isEqualTo(1U)
 
     val layoutModifier = dependency.layoutModifiers.single()
-    assertThat(layoutModifier.tag).isEqualTo(4_000_001)
+    assertThat(layoutModifier.tag).isEqualTo(4_000_001U)
   }
 
   @Test fun schemaTagOutOfRangeThrows() {
     assertThrows<IllegalArgumentException> {
-      parseSchema(SchemaTag::class, tag = 2001)
-    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: 2001")
-
-    assertThrows<IllegalArgumentException> {
-      parseSchema(SchemaTag::class, tag = -1)
-    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: -1")
+      parseSchema(SchemaTag::class, tag = 4001U)
+    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 4000]: 4001")
   }
 
   @Schema(
     members = [],
     dependencies = [
-      Dependency(2001, SchemaTag::class),
+      Dependency(4001, SchemaTag::class),
     ],
   )
   object SchemaDependencyTagTooHigh
@@ -631,13 +627,13 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaDependencyTagTooHigh::class)
     }.hasMessageThat().isEqualTo(
-      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 2001",
+      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 4000]: 4001",
     )
 
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaDependencyTagTooLow::class)
     }.hasMessageThat().isEqualTo(
-      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 0",
+      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 4000]: 0",
     )
   }
 

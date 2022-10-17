@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.schema.parser
 
-class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
-  val events = mutableListOf<String>()
-
-  override fun onUnknownEvent(kind: Int, tag: UInt) {
-    events += "Unknown event $tag for $kind"
+// https://youtrack.jetbrains.com/issue/KT-54465
+internal fun Int.toUIntExact(): UInt {
+  if (this < 0) {
+    throw ArithmeticException()
   }
+  return toUInt()
 }

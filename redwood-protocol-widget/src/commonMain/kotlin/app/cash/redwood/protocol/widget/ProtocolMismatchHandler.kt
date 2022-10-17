@@ -30,10 +30,10 @@ public interface ProtocolMismatchHandler {
   public fun onUnknownLayoutModifier(tag: Int)
 
   /** Handle a request to manipulate unknown children [tag] for the specified widget [kind]. */
-  public fun onUnknownChildren(kind: Int, tag: Int)
+  public fun onUnknownChildren(kind: Int, tag: UInt)
 
   /** Handle a request to set an unknown property [tag] for the specified widget [kind]. */
-  public fun onUnknownProperty(kind: Int, tag: Int)
+  public fun onUnknownProperty(kind: Int, tag: UInt)
 
   public companion object {
     /** A [ProtocolMismatchHandler] which throws [IllegalArgumentException] for all callbacks. */
@@ -47,11 +47,11 @@ public interface ProtocolMismatchHandler {
         throw IllegalArgumentException("Unknown layout modifier tag $tag")
       }
 
-      override fun onUnknownChildren(kind: Int, tag: Int) {
+      override fun onUnknownChildren(kind: Int, tag: UInt) {
         throw IllegalArgumentException("Unknown children tag $tag for widget kind $kind")
       }
 
-      override fun onUnknownProperty(kind: Int, tag: Int) {
+      override fun onUnknownProperty(kind: Int, tag: UInt) {
         throw IllegalArgumentException("Unknown property tag $tag for widget kind $kind")
       }
     }
