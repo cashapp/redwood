@@ -59,8 +59,7 @@ internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   return widthSpec to heightSpec
 }
 
-internal fun Pair<MeasureSpec, MeasureSpec>.toConstraints(): Constraints {
-  val (widthSpec, heightSpec) = this
+internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Constraints {
   val minWidth: Int
   val maxWidth: Int
   when (widthSpec.mode) {
