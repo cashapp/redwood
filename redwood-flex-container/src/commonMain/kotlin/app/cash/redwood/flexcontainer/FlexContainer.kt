@@ -88,7 +88,7 @@ public class FlexContainer {
    * attributes are done in a later procedure, so the items' measured width and measured
    * height may be changed in a later process.
    */
-  internal fun calculateFlexLines(
+  private fun calculateFlexLines(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): MutableList<FlexLine> {
@@ -282,7 +282,7 @@ public class FlexContainer {
    * an individual child in each flex line if any children's flexGrow (or flexShrink if remaining
    * space is negative) properties are set to non-zero.
    */
-  internal fun determineMainSize(
+  private fun determineMainSize(
     flexLines: List<FlexLine>,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -692,7 +692,7 @@ public class FlexContainer {
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
-  internal fun determineCrossSize(
+  private fun determineCrossSize(
     flexLines: MutableList<FlexLine>,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -856,7 +856,7 @@ public class FlexContainer {
    * Expand the item if the [FlexContainer.alignItems] attribute is set to
    * [AlignItems.Stretch] or [FlexItem.alignSelf] is set as [AlignItems.Stretch].
    */
-  internal fun stretchChildren(flexLines: List<FlexLine>) {
+  private fun stretchChildren(flexLines: List<FlexLine>) {
     if (alignItems == AlignItems.Stretch) {
       for (flexLine in flexLines) {
         for (i in 0 until flexLine.itemCount) {
@@ -1431,8 +1431,7 @@ public class FlexContainer {
   }
 
   /**
-   * Call [Measurable.measure] and update [FlexItem.measuredWidth] and [FlexItem.measuredHeight]
-   * with the result.
+   * Call [Measurable.measure] and update [FlexItem.measuredWidth] and [FlexItem.measuredHeight] with the result.
    */
   private fun FlexItem.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
     val (width, height) = measurable.measure(widthSpec, heightSpec)

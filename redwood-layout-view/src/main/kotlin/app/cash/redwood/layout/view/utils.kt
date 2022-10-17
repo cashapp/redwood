@@ -82,3 +82,9 @@ private class ViewMeasurable(private val view: View) : Measurable() {
     return Size(view.measuredWidth, view.measuredHeight)
   }
 }
+
+internal fun View.setTouchEnabled(enable: Boolean) {
+  setOnTouchListener(if (enable) null else blockScrollTouchListener)
+}
+
+private val blockScrollTouchListener = View.OnTouchListener { _, _ -> true }

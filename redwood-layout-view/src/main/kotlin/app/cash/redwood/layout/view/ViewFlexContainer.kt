@@ -15,10 +15,11 @@
  */
 package app.cash.redwood.layout.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView as VerticalScrollView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
@@ -27,6 +28,7 @@ import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexcontainer.Size
+import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.MutableListChildren
@@ -37,16 +39,31 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
     flexDirection = direction
   }
 
-  private val _view = HostView(context)
-  val view: View get() = _view
+  private val hostView = HostView(context)
+
+  private val scrollView = if (direction.isHorizontal) {
+    HorizontalScrollView(context).apply {
+      isFillViewport = true
+      setTouchEnabled(false)
+      addView(hostView)
+    }
+  } else {
+    VerticalScrollView(context).apply {
+      isFillViewport = true
+      setTouchEnabled(false)
+      addView(hostView)
+    }
+  }
+
+  val view: View get() = scrollView
 
   val children: Widget.Children<View> = MutableListChildren(
     onUpdate = { views ->
       container.items.clear()
-      _view.removeAllViews()
+      hostView.removeAllViews()
       views.forEach {
         container.items += it.asItem()
-        _view.addView(it)
+        hostView.addView(it)
       }
     },
   )
@@ -58,13 +75,8 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
     invalidate()
   }
 
-  @SuppressLint("ClickableViewAccessibility")
   fun overflow(overflow: Overflow) {
-    if (overflow == Overflow.Scroll) {
-      _view.setOnTouchListener(null)
-    } else {
-      _view.setOnTouchListener { _, _ -> true }
-    }
+    scrollView.setTouchEnabled(overflow == Overflow.Scroll)
     invalidate()
   }
 
@@ -79,8 +91,8 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
   }
 
   private fun invalidate() {
-    _view.invalidate()
-    _view.requestLayout()
+    scrollView.invalidate()
+    scrollView.requestLayout()
   }
 
   private inner class HostView(context: Context) : ViewGroup(context) {

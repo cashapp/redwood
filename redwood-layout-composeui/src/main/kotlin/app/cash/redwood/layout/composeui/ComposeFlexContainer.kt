@@ -139,7 +139,7 @@ private class ComposeMeasurable(private val measurable: Measurable) : RedwoodMea
   }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    this.placeable = measurable.measure(Pair(widthSpec, heightSpec).toConstraints())
+    this.placeable = measurable.measure(measureSpecsToConstraints(widthSpec, heightSpec))
     return Size(placeable.width, placeable.height)
   }
 }
