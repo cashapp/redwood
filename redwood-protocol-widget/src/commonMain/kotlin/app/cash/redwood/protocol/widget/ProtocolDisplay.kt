@@ -95,7 +95,7 @@ private class ProtocolDisplayRoot<T : Any>(
     throw AssertionError("unexpected: $diff")
   }
 
-  override fun children(tag: Int) = when (tag) {
+  override fun children(tag: UInt) = when (tag) {
     RootChildrenTag -> children
     else -> throw AssertionError("unexpected: $tag")
   }

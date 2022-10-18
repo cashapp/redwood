@@ -190,7 +190,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
-                    .addStatement("appendDiff(%T(this.id, %L, json.encodeToJsonElement(serializer_%L, %N)))", propertyDiff, trait.tag, serializerId, trait.name)
+                    .addStatement("appendDiff(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))", propertyDiff, trait.tag, serializerId, trait.name)
                     .build(),
                 )
               }
@@ -207,7 +207,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addParameter(trait.name, trait.lambdaType)
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
-                    .addStatement("appendDiff(%T(this.id, %L, %M(%NSet)))", propertyDiff, trait.tag, JsonPrimitive, trait.name)
+                    .addStatement("appendDiff(%T(this.id, %LU, %M(%NSet)))", propertyDiff, trait.tag, JsonPrimitive, trait.name)
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
                     .build(),
@@ -240,13 +240,13 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                       nextSerializerId++
                     }
                     addStatement(
-                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
+                      "%LU -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
                       event.tag,
                       event.name,
                       serializerId,
                     )
                   } else {
-                    addStatement("%L -> %N?.invoke()", event.tag, event.name)
+                    addStatement("%LU -> %N?.invoke()", event.tag, event.name)
                   }
                 }
               }

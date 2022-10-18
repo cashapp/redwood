@@ -35,7 +35,7 @@ public interface DiffConsumingWidget<T : Any> : Widget<T> {
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public fun children(tag: Int): Widget.Children<T>?
+  public fun children(tag: UInt): Widget.Children<T>?
 
   public interface Factory<T : Any> {
     /**

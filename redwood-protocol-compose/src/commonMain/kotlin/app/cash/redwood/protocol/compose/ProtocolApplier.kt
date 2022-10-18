@@ -45,7 +45,7 @@ import app.cash.redwood.protocol.PropertyDiff
  */
 @Composable
 @Suppress("FunctionName") // Hiding from auto-complete.
-public fun _SyntheticChildren(tag: Int, content: @Composable () -> Unit) {
+public fun _SyntheticChildren(tag: UInt, content: @Composable () -> Unit) {
   ComposeNode<DiffProducingChildrenWidget.Intermediate, Applier<*>>(
     factory = {
       DiffProducingChildrenWidget.Intermediate(tag)
@@ -62,9 +62,9 @@ public fun _SyntheticChildren(tag: Int, content: @Composable () -> Unit) {
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
 private sealed class DiffProducingChildrenWidget(
-  val tag: Int,
+  val tag: UInt,
 ) : AbstractDiffProducingWidget(-1) {
-  class Intermediate(tag: Int) : DiffProducingChildrenWidget(tag)
+  class Intermediate(tag: UInt) : DiffProducingChildrenWidget(tag)
   class Root : DiffProducingChildrenWidget(RootChildrenTag) {
     init {
       id = RootId

@@ -175,7 +175,7 @@ internal fun generateComposable(
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("%M(%L) {\n", syntheticChildren, trait.tag)
+                  add("%M(%LU) {\n", syntheticChildren, trait.tag)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))

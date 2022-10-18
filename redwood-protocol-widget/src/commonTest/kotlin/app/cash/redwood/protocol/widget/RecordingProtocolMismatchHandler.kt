@@ -26,11 +26,11 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
     events += "Unknown layout modifier $tag"
   }
 
-  override fun onUnknownChildren(kind: Int, tag: Int) {
+  override fun onUnknownChildren(kind: Int, tag: UInt) {
     events += "Unknown children $tag for $kind"
   }
 
-  override fun onUnknownProperty(kind: Int, tag: Int) {
+  override fun onUnknownProperty(kind: Int, tag: UInt) {
     events += "Unknown property $tag for $kind"
   }
 }

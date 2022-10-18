@@ -35,6 +35,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.asTypeName
 
 /*
@@ -116,7 +117,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
                   for (widget in schema.widgets.sortedBy { it.tag }) {
                     addStatement("%L -> %N()", widget.tag, widget.type.flatName)
                   }
-                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0U }) {
                     for (widget in dependency.widgets.sortedBy { it.tag }) {
                       addStatement("%L -> %N.%N()", widget.tag, dependency.name, widget.type.flatName)
                     }
@@ -275,14 +276,14 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       }
 
                       addStatement(
-                        "%L -> delegate.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
+                        "%LU -> delegate.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
                       )
                     }
                     is Event -> {
-                      beginControlFlow("%L ->", trait.tag)
+                      beginControlFlow("%LU ->", trait.tag)
                       beginControlFlow(
                         "val %N: %T = if (diff.value.%M.%M)",
                         trait.name,
@@ -296,13 +297,13 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                           nextSerializerId++
                         }
                         addStatement(
-                          "{ eventSink.sendEvent(%T(diff.id, %L, json.encodeToJsonElement(serializer_%L, it))) }",
+                          "{ eventSink.sendEvent(%T(diff.id, %LU, json.encodeToJsonElement(serializer_%L, it))) }",
                           eventType,
                           trait.tag,
                           serializerId,
                         )
                       } else {
-                        addStatement("{ eventSink.sendEvent(%T(diff.id, %L)) }", eventType, trait.tag)
+                        addStatement("{ eventSink.sendEvent(%T(diff.id, %LU)) }", eventType, trait.tag)
                       }
                       nextControlFlow("else")
                       addStatement("null")
@@ -331,13 +332,13 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
           addFunction(
             FunSpec.builder("children")
               .addModifiers(OVERRIDE)
-              .addParameter("tag", INT)
+              .addParameter("tag", U_INT)
               .returns(childrenOfT.copy(nullable = true))
               .apply {
                 if (childrens.isNotEmpty()) {
                   beginControlFlow("return when (tag)")
                   for (children in childrens) {
-                    addStatement("%L -> delegate.%N", children.tag, children.name)
+                    addStatement("%LU -> delegate.%N", children.tag, children.name)
                   }
                   beginControlFlow("else ->")
                   addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)

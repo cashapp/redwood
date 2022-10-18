@@ -197,7 +197,7 @@ class DiffConsumingWidgetFactoryTest {
     val button = factory.create(4)!!
 
     val t = assertFailsWith<IllegalArgumentException> {
-      button.children(345432)
+      button.children(345432U)
     }
     assertEquals("Unknown children tag 345432 for widget kind 4", t.message)
   }
@@ -210,7 +210,7 @@ class DiffConsumingWidgetFactoryTest {
     )
 
     val button = factory.create(4)!!
-    assertNull(button.children(345432))
+    assertNull(button.children(345432U))
 
     assertEquals("Unknown children 345432 for 4", handler.events.single())
   }
@@ -231,7 +231,7 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(5)!!
 
     val throwingEventSink = EventSink { error(it) }
-    textInput.apply(PropertyDiff(1U, 2, JsonPrimitive("PT10S")), throwingEventSink)
+    textInput.apply(PropertyDiff(1U, 2U, JsonPrimitive("PT10S")), throwingEventSink)
 
     assertEquals(10.seconds, recordingTextInput.customType)
   }
@@ -240,7 +240,7 @@ class DiffConsumingWidgetFactoryTest {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(4) as DiffConsumingWidget<*>
 
-    val diff = PropertyDiff(1U, 345432)
+    val diff = PropertyDiff(1U, 345432U)
     val eventSink = EventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
@@ -256,7 +256,7 @@ class DiffConsumingWidgetFactoryTest {
     )
     val button = factory.create(4) as DiffConsumingWidget<*>
 
-    button.apply(PropertyDiff(1U, 345432)) { throw UnsupportedOperationException() }
+    button.apply(PropertyDiff(1U, 345432U)) { throw UnsupportedOperationException() }
 
     assertEquals("Unknown property 345432 for 4", handler.events.single())
   }
@@ -277,11 +277,11 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(5)!!
 
     val eventSink = RecordingEventSink()
-    textInput.apply(PropertyDiff(1U, 4, JsonPrimitive(true)), eventSink)
+    textInput.apply(PropertyDiff(1U, 4U, JsonPrimitive(true)), eventSink)
 
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
-    assertEquals(Event(1U, 4, JsonPrimitive("PT10S")), eventSink.events.single())
+    assertEquals(Event(1U, 4U, JsonPrimitive("PT10S")), eventSink.events.single())
   }
 
   open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {

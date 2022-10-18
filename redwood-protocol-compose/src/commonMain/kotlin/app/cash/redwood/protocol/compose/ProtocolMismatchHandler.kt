@@ -24,13 +24,13 @@ import kotlin.jvm.JvmField
  */
 public interface ProtocolMismatchHandler {
   /** Handle a request to process an unknown event [tag] for the specified widget [kind]. */
-  public fun onUnknownEvent(kind: Int, tag: Int)
+  public fun onUnknownEvent(kind: Int, tag: UInt)
 
   public companion object {
     /** A [ProtocolMismatchHandler] which throws [IllegalArgumentException] for all callbacks. */
     @JvmField
     public val Throwing: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
-      override fun onUnknownEvent(kind: Int, tag: Int) {
+      override fun onUnknownEvent(kind: Int, tag: UInt) {
         throw IllegalArgumentException("Unknown event tag $tag for widget kind $kind")
       }
     }
