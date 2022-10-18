@@ -22,9 +22,9 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.Button
@@ -84,20 +84,20 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1U, 1 /* row */, 0),
-          ChildrenDiff.Insert(1U, 1U, 2U, 3 /* text */, 0),
-          ChildrenDiff.Insert(1U, 1U, 3U, 1 /* row */, 1),
-          ChildrenDiff.Insert(3U, 1U, 4U, 3 /* text */, 0),
+          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1U), 1 /* row */, 0),
+          ChildrenDiff.Insert(Id(1U), 1U, Id(2U), 3 /* text */, 0),
+          ChildrenDiff.Insert(Id(1U), 1U, Id(3U), 1 /* row */, 1),
+          ChildrenDiff.Insert(Id(3U), 1U, Id(4U), 3 /* text */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(1U, JsonArray(listOf())),
-          LayoutModifiers(2U, JsonArray(listOf())),
-          LayoutModifiers(3U, JsonArray(listOf())),
-          LayoutModifiers(4U, JsonArray(listOf())),
+          LayoutModifiers(Id(1U), JsonArray(listOf())),
+          LayoutModifiers(Id(2U), JsonArray(listOf())),
+          LayoutModifiers(Id(3U), JsonArray(listOf())),
+          LayoutModifiers(Id(4U), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(2U, 1U /* text */, JsonPrimitive("hey")),
-          PropertyDiff(4U, 1U /* text */, JsonPrimitive("hello")),
+          PropertyDiff(Id(2U), 1U /* text */, JsonPrimitive("hey")),
+          PropertyDiff(Id(4U), 1U /* text */, JsonPrimitive("hello")),
         ),
       ),
       diffs.removeFirst(),
@@ -134,43 +134,43 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(RootId, RootChildrenTag, 1U, 4 /* button */, 0),
+          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1U), 4 /* button */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(1U, JsonArray(listOf())),
+          LayoutModifiers(Id(1U), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(1U, 1U /* text */, JsonPrimitive("state: 0")),
-          PropertyDiff(1U, 2U /* onClick */, JsonPrimitive(true)),
+          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 0")),
+          PropertyDiff(Id(1U), 2U /* onClick */, JsonPrimitive(true)),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    composition.sendEvent(Event(1U, 2U))
+    composition.sendEvent(Event(Id(1U), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1U, 1U /* text */, JsonPrimitive("state: 1")),
+          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 1")),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    composition.sendEvent(Event(1U, 2U))
+    composition.sendEvent(Event(Id(1U), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1U, 1U /* text */, JsonPrimitive("state: 2")),
-          PropertyDiff(1U, 2U /* text */, JsonPrimitive(false)),
+          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 2")),
+          PropertyDiff(Id(1U), 2U /* text */, JsonPrimitive(false)),
         ),
       ),
       diffs.removeFirst(),
@@ -184,7 +184,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(1U, 1U /* text */, JsonPrimitive("state: 3")),
+          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 3")),
         ),
       ),
       diffs.removeFirst(),

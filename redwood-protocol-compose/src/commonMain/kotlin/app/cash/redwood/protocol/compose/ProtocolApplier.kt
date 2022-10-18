@@ -23,8 +23,8 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.compose.RedwoodApplier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootId
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 
@@ -67,7 +67,7 @@ private sealed class DiffProducingChildrenWidget(
   class Intermediate(tag: UInt) : DiffProducingChildrenWidget(tag)
   class Root : DiffProducingChildrenWidget(RootChildrenTag) {
     init {
-      id = RootId
+      id = Id.Root
     }
   }
 
@@ -90,7 +90,7 @@ public abstract class AbstractDiffProducingWidget(
   override val value: Nothing
     get() = throw AssertionError()
 
-  public var id: ULong = ULong.MAX_VALUE
+  public var id: Id = Id(ULong.MAX_VALUE)
     internal set
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
@@ -149,7 +149,7 @@ internal class ProtocolApplier(
   private val diffAppender: DiffAppender,
 ) : AbstractApplier<AbstractDiffProducingWidget>(DiffProducingChildrenWidget.Root()),
   RedwoodApplier<DiffProducingWidget.Factory> {
-  private var nextId = RootId + 1U
+  private var nextId = Id.Root.next()
   internal val nodes = mutableMapOf(root.id to root)
 
   override fun onEndChanges() {
@@ -169,7 +169,9 @@ internal class ProtocolApplier(
     } else {
       val current = current as DiffProducingChildrenWidget
 
-      val id = nextId++
+      val id = nextId
+      nextId = id.next()
+
       instance.id = id
       instance._diffAppender = diffAppender
 
@@ -190,7 +192,7 @@ internal class ProtocolApplier(
     // TODO We should not have to track this and send it as part of the protocol.
     //  Ideally this would be entirely encapsulated on the display-side with additional bookkeeping.
     //  For now, we track it here and send it in the protocol as a simple solution.
-    val removedIds = ArrayList<ULong>(count)
+    val removedIds = ArrayList<Id>(count)
     for (i in index until index + count) {
       removedIds.add(children[i].id)
     }
@@ -215,3 +217,5 @@ internal class ProtocolApplier(
     diffAppender.append(ChildrenDiff.Clear)
   }
 }
+
+private fun Id.next(): Id = Id(value + 1UL)

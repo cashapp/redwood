@@ -19,6 +19,7 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.accessibilityDescription
 import example.redwood.compose.customType
@@ -231,7 +232,7 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(5)!!
 
     val throwingEventSink = EventSink { error(it) }
-    textInput.apply(PropertyDiff(1U, 2U, JsonPrimitive("PT10S")), throwingEventSink)
+    textInput.apply(PropertyDiff(Id(1U), 2U, JsonPrimitive("PT10S")), throwingEventSink)
 
     assertEquals(10.seconds, recordingTextInput.customType)
   }
@@ -240,7 +241,7 @@ class DiffConsumingWidgetFactoryTest {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(4) as DiffConsumingWidget<*>
 
-    val diff = PropertyDiff(1U, 345432U)
+    val diff = PropertyDiff(Id(1U), 345432U)
     val eventSink = EventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
@@ -256,7 +257,7 @@ class DiffConsumingWidgetFactoryTest {
     )
     val button = factory.create(4) as DiffConsumingWidget<*>
 
-    button.apply(PropertyDiff(1U, 345432U)) { throw UnsupportedOperationException() }
+    button.apply(PropertyDiff(Id(1U), 345432U)) { throw UnsupportedOperationException() }
 
     assertEquals("Unknown property 345432 for 4", handler.events.single())
   }
@@ -277,11 +278,11 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(5)!!
 
     val eventSink = RecordingEventSink()
-    textInput.apply(PropertyDiff(1U, 4U, JsonPrimitive(true)), eventSink)
+    textInput.apply(PropertyDiff(Id(1U), 4U, JsonPrimitive(true)), eventSink)
 
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
-    assertEquals(Event(1U, 4U, JsonPrimitive("PT10S")), eventSink.events.single())
+    assertEquals(Event(Id(1U), 4U, JsonPrimitive("PT10S")), eventSink.events.single())
   }
 
   open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
