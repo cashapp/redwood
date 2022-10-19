@@ -164,7 +164,7 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(layoutModifier) { layoutModifiers = it }\n")
+            .add("set(layoutModifier) { layoutModifiers = layoutModifier }\n")
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
