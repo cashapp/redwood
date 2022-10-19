@@ -25,34 +25,52 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
-internal val eventType = ClassName("app.cash.redwood.protocol", "Event")
-internal val eventSink = ClassName("app.cash.redwood.protocol", "EventSink")
-internal val propertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
-internal val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+internal object Protocol {
+  val Event = ClassName("app.cash.redwood.protocol", "Event")
+  val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
+  val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
+  val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+}
 
-internal val abstractDiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
-internal val diffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
-internal val diffProducingWidgetFactory = diffProducingWidget.nestedClass("Factory")
-internal val syntheticChildren = MemberName("app.cash.redwood.protocol.compose", "_SyntheticChildren")
-internal val ComposeProtocolMismatchHandler = ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
+internal object ComposeProtocol {
+  val AbstractDiffProducingWidget =
+    ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
+  val DiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
+  val DiffProducingWidgetFactory = DiffProducingWidget.nestedClass("Factory")
+  val SyntheticChildren = MemberName("app.cash.redwood.protocol.compose", "_SyntheticChildren")
+  val ProtocolMismatchHandler =
+    ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
+}
 
-internal val DiffConsumingWidget = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingWidget")
-internal val DiffConsumingWidgetFactory = DiffConsumingWidget.nestedClass("Factory")
-internal val WidgetProtocolMismatchHandler = ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
+internal object WidgetProtocol {
+  val DiffConsumingWidget = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingWidget")
+  val DiffConsumingWidgetFactory = DiffConsumingWidget.nestedClass("Factory")
+  val ProtocolMismatchHandler =
+    ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
+}
 
-internal val LayoutModifier = ClassName("app.cash.redwood", "LayoutModifier")
-internal val LayoutModifierElement = LayoutModifier.nestedClass("Element")
-internal val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
+internal object Redwood {
+  val LayoutModifier = ClassName("app.cash.redwood", "LayoutModifier")
+  val LayoutModifierElement = LayoutModifier.nestedClass("Element")
+  val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
+}
 
-internal val widgetType = ClassName("app.cash.redwood.widget", "Widget")
-internal val widgetChildren = widgetType.nestedClass("Children")
-internal val widgetFactory = widgetType.nestedClass("Factory")
+internal object RedwoodWidget {
+  val Widget = ClassName("app.cash.redwood.widget", "Widget")
+  val WidgetChildren = Widget.nestedClass("Children")
+  val WidgetChildrenOfT = WidgetChildren.parameterizedBy(typeVariableT)
+  val WidgetFactory = Widget.nestedClass("Factory")
+}
 
-internal val redwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
+internal object RedwoodCompose {
+  val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
+}
 
-internal val composable = ClassName("androidx.compose.runtime", "Composable")
-internal val composableTargetMarker = ClassName("androidx.compose.runtime", "ComposableTargetMarker")
-internal val stable = ClassName("androidx.compose.runtime", "Stable")
+internal object ComposeRuntime {
+  val Composable = ClassName("androidx.compose.runtime", "Composable")
+  val ComposableTargetMarker = ClassName("androidx.compose.runtime", "ComposableTargetMarker")
+  val Stable = ClassName("androidx.compose.runtime", "Stable")
+}
 
 internal fun composableLambda(
   receiver: TypeName?,
@@ -63,47 +81,34 @@ internal fun composableLambda(
     receiver = receiver,
   ).copy(
     annotations = listOf(
-      AnnotationSpec.builder(composable).build(),
+      AnnotationSpec.builder(ComposeRuntime.Composable).build(),
       AnnotationSpec.builder(composeTargetMarker).build(),
     ),
   )
 }
 
-internal val ae = ClassName("kotlin", "AssertionError")
+internal object Stdlib {
+  val AssertionError = ClassName("kotlin", "AssertionError")
+}
 
 internal val typeVariableT = TypeVariableName("T", listOf(ANY))
-internal val childrenOfT = widgetChildren.parameterizedBy(typeVariableT)
 
-@JvmField internal val Json = ClassName("kotlinx.serialization.json", "Json")
+internal object KotlinxSerialization {
+  val Json = ClassName("kotlinx.serialization.json", "Json")
+  val JsonDefault = Json.nestedClass("Default")
+  val JsonArray = ClassName("kotlinx.serialization.json", "JsonArray")
+  val JsonElement = ClassName("kotlinx.serialization.json", "JsonElement")
+  val buildJsonArray = MemberName("kotlinx.serialization.json", "buildJsonArray")
+  val buildJsonObject = MemberName("kotlinx.serialization.json", "buildJsonObject")
+  val jsonArray = MemberName("kotlinx.serialization.json", "jsonArray")
+  val jsonObject = MemberName("kotlinx.serialization.json", "jsonObject")
 
-@JvmField internal val jsonCompanion = ClassName("kotlinx.serialization.json", "Json", "Default")
-
-@JvmField internal val JsonArray = ClassName("kotlinx.serialization.json", "JsonArray")
-
-@JvmField internal val JsonElement = ClassName("kotlinx.serialization.json", "JsonElement")
-
-@JvmField internal val buildJsonArray = MemberName("kotlinx.serialization.json", "buildJsonArray")
-
-@JvmField internal val buildJsonObject = MemberName("kotlinx.serialization.json", "buildJsonObject")
-
-@JvmField internal val jsonArray = MemberName("kotlinx.serialization.json", "jsonArray")
-
-@JvmField internal val jsonObject = MemberName("kotlinx.serialization.json", "jsonObject")
-
-@JvmField internal val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
-
-@JvmField internal val jsonInt = MemberName("kotlinx.serialization.json", "int")
-
-@JvmField internal val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
-
-@JvmField internal val jsonPrimitiveToBoolean = MemberName("kotlinx.serialization.json", "boolean")
-
-@JvmField internal val jsonElementToJsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
-
-@JvmField internal val Contextual = ClassName("kotlinx.serialization", "Contextual")
-
-@JvmField internal val Serializable = ClassName("kotlinx.serialization", "Serializable")
-
-@JvmField internal val serializer = MemberName("kotlinx.serialization", "serializer")
-
-@JvmField internal val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
+  @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
+  val jsonInt = MemberName("kotlinx.serialization.json", "int")
+  val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
+  val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
+  val Contextual = ClassName("kotlinx.serialization", "Contextual")
+  val Serializable = ClassName("kotlinx.serialization", "Serializable")
+  val serializer = MemberName("kotlinx.serialization", "serializer")
+  val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
+}
