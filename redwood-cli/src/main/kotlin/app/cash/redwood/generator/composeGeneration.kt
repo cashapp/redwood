@@ -61,7 +61,7 @@ internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
             .build(),
         )
         .addAnnotation(
-          AnnotationSpec.builder(composableTargetMarker)
+          AnnotationSpec.builder(ComposeRuntime.ComposableTargetMarker)
             .addMember("description = %S", schema.name + " Composable")
             .build(),
         )
@@ -107,7 +107,7 @@ internal fun generateComposable(
     .addFunction(
       FunSpec.builder(flatName)
         .addModifiers(PUBLIC)
-        .addAnnotation(composable)
+        .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(composeTargetMarker)
         .apply {
           // If the last trait is a child lambda move the layout modifier position to be
@@ -122,8 +122,8 @@ internal fun generateComposable(
           while (true) {
             if (index == layoutModifierIndex) {
               addParameter(
-                ParameterSpec.builder("layoutModifier", LayoutModifier)
-                  .defaultValue("%T", LayoutModifier)
+                ParameterSpec.builder("layoutModifier", Redwood.LayoutModifier)
+                  .defaultValue("%T", Redwood.LayoutModifier)
                   .build(),
               )
             }
@@ -175,7 +175,7 @@ internal fun generateComposable(
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("%M(%LU) {\n", syntheticChildren, trait.tag)
+                  add("%M(%LU) {\n", ComposeProtocol.SyntheticChildren, trait.tag)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))
@@ -206,7 +206,7 @@ internal fun generateComposable(
 
           addStatement(
             "%M<%T, %T>(%L)",
-            redwoodComposeNode,
+            RedwoodCompose.RedwoodComposeNode,
             widgetFactoryType,
             widgetType,
             arguments.joinToCode(",\n", "\n", ",\n"),
@@ -233,7 +233,7 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
   return FileSpec.builder(scopeType.packageName, scopeType.simpleName)
     .apply {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
-        .addAnnotation(LayoutScopeMarker)
+        .addAnnotation(Redwood.LayoutScopeMarker)
         .addModifiers(SEALED)
 
       for (layoutModifier in schema.layoutModifiers) {
@@ -299,9 +299,9 @@ private fun generateLayoutModifierFunction(
 ): FunSpec {
   val simpleName = layoutModifier.type.simpleName!!
   return FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
-    .addAnnotation(stable)
-    .receiver(LayoutModifier)
-    .returns(LayoutModifier)
+    .addAnnotation(ComposeRuntime.Stable)
+    .receiver(Redwood.LayoutModifier)
+    .returns(Redwood.LayoutModifier)
     .apply {
       val arguments = mutableListOf<CodeBlock>()
       for (property in layoutModifier.properties) {

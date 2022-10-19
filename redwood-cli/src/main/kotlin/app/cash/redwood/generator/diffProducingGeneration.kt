@@ -54,28 +54,28 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
       TypeSpec.classBuilder(type)
         .addModifiers(if (schema === host) PUBLIC else INTERNAL)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
-        .addSuperinterface(diffProducingWidgetFactory)
+        .addSuperinterface(ComposeProtocol.DiffProducingWidgetFactory)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter(
-              ParameterSpec.builder("json", Json)
-                .defaultValue("%T", jsonCompanion)
+              ParameterSpec.builder("json", KotlinxSerialization.Json)
+                .defaultValue("%T", KotlinxSerialization.JsonDefault)
                 .build(),
             )
             .addParameter(
-              ParameterSpec.builder("mismatchHandler", ComposeProtocolMismatchHandler)
-                .defaultValue("%T.Throwing", ComposeProtocolMismatchHandler)
+              ParameterSpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
+                .defaultValue("%T.Throwing", ComposeProtocol.ProtocolMismatchHandler)
                 .build(),
             )
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("json", Json, PRIVATE)
+          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
             .initializer("json")
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -155,22 +155,22 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .superclass(abstractDiffProducingWidget)
+        .superclass(ComposeProtocol.AbstractDiffProducingWidget)
         .addSuperclassConstructorParameter("%L", widget.tag)
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("json", Json)
-            .addParameter("mismatchHandler", ComposeProtocolMismatchHandler)
+            .addParameter("json", KotlinxSerialization.Json)
+            .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("json", Json, PRIVATE)
+          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
             .initializer("json")
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ComposeProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -190,7 +190,13 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
-                    .addStatement("appendDiff(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))", propertyDiff, trait.tag, serializerId, trait.name)
+                    .addStatement(
+                      "appendDiff(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))",
+                      Protocol.PropertyDiff,
+                      trait.tag,
+                      serializerId,
+                      trait.name,
+                    )
                     .build(),
                 )
               }
@@ -207,7 +213,13 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addParameter(trait.name, trait.lambdaType)
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
-                    .addStatement("appendDiff(%T(this.id, %LU, %M(%NSet)))", propertyDiff, trait.tag, JsonPrimitive, trait.name)
+                    .addStatement(
+                      "appendDiff(%T(this.id, %LU, %M(%NSet)))",
+                      Protocol.PropertyDiff,
+                      trait.tag,
+                      KotlinxSerialization.JsonPrimitive,
+                      trait.name,
+                    )
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
                     .build(),
@@ -218,7 +230,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                   PropertySpec.builder(trait.name, NOTHING, OVERRIDE)
                     .getter(
                       FunSpec.getterBuilder()
-                        .addStatement("throw %T()", ae)
+                        .addStatement("throw %T()", Stdlib.AssertionError)
                         .build(),
                     )
                     .build(),
@@ -230,7 +242,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
           addFunction(
             FunSpec.builder("sendEvent")
               .addModifiers(OVERRIDE)
-              .addParameter("event", eventType)
+              .addParameter("event", Protocol.Event)
               .beginControlFlow("when (val tag = event.tag)")
               .apply {
                 for (event in widget.traits.filterIsInstance<Event>()) {
@@ -257,28 +269,31 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
 
           for ((typeName, id) in serializerIds) {
             addProperty(
-              PropertySpec.builder("serializer_$id", KSerializer.parameterizedBy(typeName))
+              PropertySpec.builder(
+                "serializer_$id",
+                KotlinxSerialization.KSerializer.parameterizedBy(typeName),
+              )
                 .addModifiers(PRIVATE)
-                .initializer("json.serializersModule.%M()", serializer)
+                .initializer("json.serializersModule.%M()", KotlinxSerialization.serializer)
                 .build(),
             )
           }
         }
         .addProperty(
-          PropertySpec.builder("layoutModifiers", LayoutModifier, OVERRIDE)
+          PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier, OVERRIDE)
             .mutable()
             .getter(
               FunSpec.getterBuilder()
-                .addStatement("throw %T()", ae)
+                .addStatement("throw %T()", Stdlib.AssertionError)
                 .build(),
             )
             .setter(
               FunSpec.setterBuilder()
-                .addParameter("value", LayoutModifier)
-                .beginControlFlow("val json = %M", buildJsonArray)
+                .addParameter("value", Redwood.LayoutModifier)
+                .beginControlFlow("val json = %M", KotlinxSerialization.buildJsonArray)
                 .addStatement("value.foldIn(Unit) { _, element -> add(element.toJsonElement(json)) }")
                 .endControlFlow()
-                .addStatement("appendDiff(%T(id, json))", LayoutModifiers)
+                .addStatement("appendDiff(%T(id, json))", Protocol.LayoutModifiers)
                 .build(),
             )
             .build(),
@@ -293,9 +308,9 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
     .addFunction(
       FunSpec.builder("toJsonElement")
         .addModifiers(INTERNAL)
-        .receiver(LayoutModifierElement)
-        .addParameter("json", Json)
-        .returns(JsonElement)
+        .receiver(Redwood.LayoutModifierElement)
+        .addParameter("json", KotlinxSerialization.Json)
+        .returns(KotlinxSerialization.JsonElement)
         .beginControlFlow("return when (this)")
         .apply {
           if (schema.layoutModifiers.isEmpty()) {
@@ -316,7 +331,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
             }
           }
         }
-        .addStatement("else -> throw %T()", ae)
+        .addStatement("else -> throw %T()", Stdlib.AssertionError)
         .endControlFlow()
         .build(),
     )
@@ -330,17 +345,21 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
             TypeSpec.objectBuilder(surrogateName)
               .addFunction(
                 FunSpec.builder("encode")
-                  .returns(JsonElement)
-                  .beginControlFlow("return %M", buildJsonArray)
-                  .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
-                  .addStatement("add(%M {})", buildJsonObject)
+                  .returns(KotlinxSerialization.JsonElement)
+                  .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
+                  .addStatement(
+                    "add(%M(%L))",
+                    KotlinxSerialization.JsonPrimitive,
+                    layoutModifier.tag,
+                  )
+                  .addStatement("add(%M {})", KotlinxSerialization.buildJsonObject)
                   .endControlFlow()
                   .build(),
               )
               .build()
           } else {
             TypeSpec.classBuilder(surrogateName)
-              .addAnnotation(Serializable)
+              .addAnnotation(KotlinxSerialization.Serializable)
               .addModifiers(PRIVATE)
               .addSuperinterface(modifierType)
               .apply {
@@ -360,7 +379,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
                   addProperty(
                     PropertySpec.builder(property.name, propertyType)
                       .addModifiers(OVERRIDE)
-                      .addAnnotation(Contextual)
+                      .addAnnotation(KotlinxSerialization.Contextual)
                       .initializer("%N", property.name)
                       .build(),
                   )
@@ -378,11 +397,15 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
                 TypeSpec.companionObjectBuilder()
                   .addFunction(
                     FunSpec.builder("encode")
-                      .addParameter("json", Json)
+                      .addParameter("json", KotlinxSerialization.Json)
                       .addParameter("value", modifierType)
-                      .returns(JsonElement)
-                      .beginControlFlow("return %M", buildJsonArray)
-                      .addStatement("add(%M(%L))", JsonPrimitive, layoutModifier.tag)
+                      .returns(KotlinxSerialization.JsonElement)
+                      .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
+                      .addStatement(
+                        "add(%M(%L))",
+                        KotlinxSerialization.JsonPrimitive,
+                        layoutModifier.tag,
+                      )
                       .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
                       .endControlFlow()
                       .build(),

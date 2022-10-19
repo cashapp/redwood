@@ -26,7 +26,7 @@ internal fun generateLayoutModifierInterface(schema: Schema, layoutModifier: Lay
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.interfaceBuilder(type)
-        .addSuperinterface(LayoutModifierElement)
+        .addSuperinterface(Redwood.LayoutModifierElement)
         .apply {
           for (trait in layoutModifier.properties) {
             addProperty(trait.name, trait.type.asTypeName())

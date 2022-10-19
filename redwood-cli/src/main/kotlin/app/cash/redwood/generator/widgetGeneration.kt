@@ -45,7 +45,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(widgetFactory.parameterizedBy(typeVariableT))
+        .addSuperinterface(RedwoodWidget.WidgetFactory.parameterizedBy(typeVariableT))
         .apply {
           for (node in schema.widgets) {
             addFunction(
@@ -86,7 +86,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
       TypeSpec.interfaceBuilder(flatName)
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableT)
-        .addSuperinterface(widgetType.parameterizedBy(typeVariableT))
+        .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableT))
         .addKdoc("{tag=${widget.tag}}")
         .apply {
           for (trait in widget.traits) {
@@ -111,7 +111,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               }
               is Children -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, childrenOfT)
+                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfT)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addKdoc("{tag=${trait.tag}}")
                     .build(),
