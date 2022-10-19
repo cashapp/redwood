@@ -79,17 +79,17 @@ internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
 @Composable
 @SunspotComposable
 fun SunspotButton(
-  layoutModifier: LayoutModifier = LayoutModifier,
   text: String?,
   enabled: Boolean = true,
-  onClick: (() -> Unit)? = null
+  onClick: (() -> Unit)? = null,
+  layoutModifier: LayoutModifier = LayoutModifier,
 ): Unit {
   RedwoodComposeNode<SunspotWidgetFactory<*>, SunspotButton<*>>(
     factory = SunspotWidgetFactory<*>::SunspotButton,
     update = {
-      set(text) { text(text) }
-      set(enabled) { enabled(enabled) }
-      set(onClick) { onClick(onClick) }
+      set(text, SunspotButton<*>::text)
+      set(enabled, SunspotButton<*>::enabled)
+      set(onClick, SunspotButton<*>::onClick)
     },
   )
 }
@@ -171,7 +171,7 @@ internal fun generateComposable(
             when (trait) {
               is Property,
               is Event, -> {
-                updateLambda.add("set(%1N) { %1N(%1N) }\n", trait.name)
+                updateLambda.add("set(%1N, %2T::%1N)\n", trait.name, widgetType)
               }
               is Children -> {
                 childrenLambda.apply {
