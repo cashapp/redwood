@@ -205,7 +205,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
-        .addModifiers(if (schema === host) PUBLIC else INTERNAL)
+        .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableT)
         .addSuperinterface(protocolType)
         .primaryConstructor(
