@@ -328,6 +328,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
         addType(
           if (layoutModifier.properties.isEmpty()) {
             TypeSpec.objectBuilder(surrogateName)
+              .addModifiers(PRIVATE)
               .addFunction(
                 FunSpec.builder("encode")
                   .returns(JsonElement)
