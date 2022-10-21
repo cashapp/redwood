@@ -69,7 +69,7 @@ public class HTMLElementChildren(
     parent.clear()
   }
 
-  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
-    _children.updateLayoutModifier(index, layoutModifier)
+  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    _children.setLayoutModifier(index, layoutModifier)
   }
 }

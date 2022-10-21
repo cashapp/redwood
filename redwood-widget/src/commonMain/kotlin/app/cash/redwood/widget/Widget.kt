@@ -61,6 +61,6 @@ public interface Widget<T : Any> {
     public fun clear()
 
     /** Set the [LayoutModifier] for the widget at [index]. */
-    public fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier)
+    public fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier)
   }
 }

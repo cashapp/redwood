@@ -49,7 +49,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
     _children.clear()
   }
 
-  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
-    _children.updateLayoutModifier(index, layoutModifier)
+  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    _children.setLayoutModifier(index, layoutModifier)
   }
 }

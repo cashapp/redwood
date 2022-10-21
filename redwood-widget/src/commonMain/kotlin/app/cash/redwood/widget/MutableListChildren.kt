@@ -53,7 +53,7 @@ public class MutableListChildren<T : Any>(
     onUpdate(list)
   }
 
-  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
     list.set(index, list[index].copy(layoutModifier = layoutModifier))
     onUpdate(list)
   }

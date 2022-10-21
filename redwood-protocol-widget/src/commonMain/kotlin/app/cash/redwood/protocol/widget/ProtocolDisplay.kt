@@ -70,7 +70,7 @@ public class ProtocolDisplay<T : Any>(
       val node = node(layoutModifier.id)
       val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
       node.widget.updateLayoutModifier(layoutModifier.elements)
-      node.parentChildren.updateLayoutModifier(childIndex, node.widget.layoutModifiers)
+      node.parentChildren.setLayoutModifier(childIndex, node.widget.layoutModifiers)
     }
 
     for (propertyDiff in diff.propertyDiffs) {
