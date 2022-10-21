@@ -32,7 +32,7 @@ public class ProtocolDisplay<T : Any>(
   private val eventSink: EventSink,
 ) : DiffSink {
   private val root: DiffConsumingWidget<T> = ProtocolDisplayRoot(container)
-  private val nodes = mutableMapOf(Id.Root to Node(root, container))
+  private val nodes = mutableMapOf(Id.Root to Node(root, Id.Root, container))
 
   override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
@@ -42,8 +42,8 @@ public class ProtocolDisplay<T : Any>(
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
           val childWidget = factory.create(childrenDiff.kind) ?: continue
-          children.insert(childrenDiff.index, childWidget)
-          nodes[childrenDiff.childId] = Node(childWidget, children)
+          children.insert(childrenDiff.index, childWidget.value, childWidget.layoutModifiers)
+          nodes[childrenDiff.childId] = Node(childWidget, childrenDiff.id, children)
           node.childIds.add(childrenDiff.index, childrenDiff.childId)
         }
         is ChildrenDiff.Move -> {
@@ -61,15 +61,18 @@ public class ProtocolDisplay<T : Any>(
           children.clear()
           node.childIds.clear()
           nodes.clear()
-          nodes[Id.Root] = Node(root, container)
+          nodes[Id.Root] = Node(root, Id.Root, container)
         }
       }
     }
 
     for (layoutModifier in diff.layoutModifiers) {
       val node = node(layoutModifier.id)
-      node.widget.updateLayoutModifier(layoutModifier.elements)
-      node.parent.updateLayoutModifier(node.widget)
+      val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
+      if (childIndex != -1) {
+        node.widget.updateLayoutModifier(layoutModifier.elements)
+        node.parentChildren.set(childIndex, node.widget.layoutModifiers)
+      }
     }
 
     for (propertyDiff in diff.propertyDiffs) {
@@ -84,7 +87,8 @@ public class ProtocolDisplay<T : Any>(
 
 private class Node<T : Any>(
   val widget: DiffConsumingWidget<T>,
-  val parent: Widget.Children<T>,
+  val parentId: Id,
+  val parentChildren: Widget.Children<T>,
 ) {
   private var _childIds: MutableList<Id>? = null
   val childIds: MutableList<Id>

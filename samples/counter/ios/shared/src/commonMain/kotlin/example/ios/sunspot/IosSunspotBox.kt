@@ -36,6 +36,6 @@ class IosSunspotBox(
   override val children = MutableListChildren { newViews ->
     @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
     (value.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-    newViews.forEach(value::addArrangedSubview)
+    newViews.forEach { value.addArrangedSubview(it.widget) }
   }
 }

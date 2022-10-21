@@ -17,13 +17,27 @@ package app.cash.redwood.widget
 
 import android.view.View
 import android.view.ViewGroup
+import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.MutableListChildren.Child
 
-public class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
-  override fun insert(index: Int, widget: Widget<View>) {
-    parent.addView(widget.value, index)
+public class ViewGroupChildren(
+  private val parent: ViewGroup,
+) : Widget.Children<View> {
+  private val _children = MutableListChildren<View>()
+  public val children: List<Child<View>> get() = _children
+
+  override fun insert(index: Int, widget: View, layoutModifier: LayoutModifier) {
+    _children.insert(index, widget, layoutModifier)
+    parent.addView(widget, index)
+  }
+
+  override fun set(index: Int, layoutModifier: LayoutModifier) {
+    _children.set(index, layoutModifier)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+    _children.move(fromIndex, toIndex, count)
+
     val views = Array(count) { offset ->
       parent.getChildAt(fromIndex + offset)
     }
@@ -40,10 +54,12 @@ public class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<
   }
 
   override fun remove(index: Int, count: Int) {
+    _children.remove(index, count)
     parent.removeViews(index, count)
   }
 
   override fun clear() {
+    _children.clear()
     parent.removeAllViews()
   }
 }

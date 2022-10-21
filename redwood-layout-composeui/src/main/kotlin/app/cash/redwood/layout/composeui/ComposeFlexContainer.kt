@@ -29,7 +29,6 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
-import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
@@ -56,8 +55,6 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private var overflow by mutableStateOf(Overflow.Clip)
 
   var modifier: Modifier by mutableStateOf(Modifier)
-
-  var layoutModifiers: LayoutModifier = LayoutModifier
 
   fun padding(padding: Padding) {
     container.padding = padding.toSpacing()

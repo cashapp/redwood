@@ -29,7 +29,6 @@ import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.widget.Widget
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -122,11 +121,7 @@ class ComposeFlexContainerTest(
           modifier = Modifier.background(Color.Green),
         )
       }
-      val widget = object : Widget<@Composable () -> Unit> {
-        override val value = composable
-        override var layoutModifiers: LayoutModifier = LayoutModifier
-      }
-      container.children.insert(index, widget)
+      container.children.insert(index, composable, LayoutModifier)
     }
 
     paparazzi.snapshot {

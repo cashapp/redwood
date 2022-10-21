@@ -33,9 +33,7 @@ internal class ViewRow(context: Context) : Row<View> {
 
   override val value: View get() = container.view
 
-  override var layoutModifiers: LayoutModifier
-    get() = container.layoutModifiers
-    set(value) { container.layoutModifiers = value }
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun padding(padding: Padding) {
     container.padding(padding)

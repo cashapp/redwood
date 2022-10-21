@@ -47,10 +47,10 @@ class CounterViewControllerDelegate(
       onEvent = { NSLog("RedwoodEvent: $it") },
     )
 
-    val children = MutableListChildren { newViews ->
+    val children = MutableListChildren { children ->
       @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
       (root.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-      newViews.forEach(root::addArrangedSubview)
+      children.forEach { root.addArrangedSubview(it.widget) }
     }
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(

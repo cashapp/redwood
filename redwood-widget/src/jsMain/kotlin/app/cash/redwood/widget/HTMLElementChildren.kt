@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.MutableListChildren.Child
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
@@ -22,13 +24,24 @@ import org.w3c.dom.get
 public class HTMLElementChildren(
   private val parent: HTMLElement,
 ) : Widget.Children<HTMLElement> {
-  override fun insert(index: Int, widget: Widget<HTMLElement>) {
+  private val _children = MutableListChildren<HTMLElement>()
+  public val children: List<Child<HTMLElement>> get() = _children
+
+  override fun insert(index: Int, widget: HTMLElement, layoutModifier: LayoutModifier) {
+    _children.insert(index, widget, layoutModifier)
+
     // Null element returned when index == childCount causes insertion at end.
     val current = parent.children[index]
-    parent.insertBefore(widget.value, current)
+    parent.insertBefore(widget, current)
+  }
+
+  override fun set(index: Int, layoutModifier: LayoutModifier) {
+    _children.set(index, layoutModifier)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+    _children.move(fromIndex, toIndex, count)
+
     val elements = Array(count) {
       val element = parent.children[fromIndex] as HTMLElement
       parent.removeChild(element)
@@ -48,12 +61,15 @@ public class HTMLElementChildren(
   }
 
   override fun remove(index: Int, count: Int) {
+    _children.remove(index, count)
+
     repeat(count) {
       parent.removeChild(parent.children[index]!!)
     }
   }
 
   override fun clear() {
+    _children.clear()
     parent.clear()
   }
 }

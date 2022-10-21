@@ -20,7 +20,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView as VerticalScrollView
-import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
@@ -58,17 +57,15 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
   val view: View get() = scrollView
 
   val children: Widget.Children<View> = MutableListChildren(
-    onUpdate = { widgets ->
+    onUpdate = { children ->
       container.items.clear()
       hostView.removeAllViews()
-      widgets.forEach {
-        container.items += it.value.asItem()
-        hostView.addView(it.value)
+      children.forEach {
+        container.items += it.widget.asItem()
+        hostView.addView(it.widget)
       }
     },
   )
-
-  var layoutModifiers: LayoutModifier = LayoutModifier
 
   fun padding(padding: Padding) {
     container.padding = padding.toSpacing()
