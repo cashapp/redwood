@@ -53,7 +53,7 @@ public class ProtocolDisplay<T : Any>(
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
           for (i in childrenDiff.index until childrenDiff.index + childrenDiff.count) {
-            nodes.keys.remove(node.childIds[i])
+            nodes.remove(node.childIds[i])
           }
           node.childIds.remove(childrenDiff.index, childrenDiff.count)
         }
@@ -69,10 +69,8 @@ public class ProtocolDisplay<T : Any>(
     for (layoutModifier in diff.layoutModifiers) {
       val node = node(layoutModifier.id)
       val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
-      if (childIndex != -1) {
-        node.widget.updateLayoutModifier(layoutModifier.elements)
-        node.parentChildren.set(childIndex, node.widget.layoutModifiers)
-      }
+      node.widget.updateLayoutModifier(layoutModifier.elements)
+      node.parentChildren.updateLayoutModifier(childIndex, node.widget.layoutModifiers)
     }
 
     for (propertyDiff in diff.propertyDiffs) {

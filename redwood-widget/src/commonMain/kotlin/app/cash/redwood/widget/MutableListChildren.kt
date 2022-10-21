@@ -38,11 +38,6 @@ public class MutableListChildren<T : Any>(
     onUpdate(list)
   }
 
-  override fun set(index: Int, layoutModifier: LayoutModifier) {
-    list.set(index, list[index].copy(layoutModifier = layoutModifier))
-    onUpdate(list)
-  }
-
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     list.move(fromIndex, toIndex, count)
     onUpdate(list)
@@ -55,6 +50,11 @@ public class MutableListChildren<T : Any>(
 
   override fun clear() {
     list.clear()
+    onUpdate(list)
+  }
+
+  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    list.set(index, list[index].copy(layoutModifier = layoutModifier))
     onUpdate(list)
   }
 

@@ -190,7 +190,7 @@ internal class ProtocolApplier(
     val children = current._children
 
     for (i in index until index + count) {
-      nodes.keys.remove(children[i].id)
+      nodes.remove(children[i].id)
     }
     children.remove(index, count)
     diffAppender.append(ChildrenDiff.Remove(current.id, current.tag, index, count))

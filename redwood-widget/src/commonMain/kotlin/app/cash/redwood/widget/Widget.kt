@@ -44,9 +44,6 @@ public interface Widget<T : Any> {
     /** Insert child [widget] with [LayoutModifier] at [index]. */
     public fun insert(index: Int, widget: T, layoutModifier: LayoutModifier)
 
-    /** Set the [LayoutModifier] for the widget at [index]. */
-    public fun set(index: Int, layoutModifier: LayoutModifier)
-
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
      *
@@ -62,5 +59,8 @@ public interface Widget<T : Any> {
 
     /** Remove all child widgets. */
     public fun clear()
+
+    /** Set the [LayoutModifier] for the widget at [index]. */
+    public fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier)
   }
 }

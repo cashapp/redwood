@@ -37,10 +37,6 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
     _children.insert(index, widget, layoutModifier)
   }
 
-  override fun set(index: Int, layoutModifier: LayoutModifier) {
-    _children.set(index, layoutModifier)
-  }
-
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _children.move(fromIndex, toIndex, count)
   }
@@ -51,5 +47,9 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
 
   override fun clear() {
     _children.clear()
+  }
+
+  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    _children.updateLayoutModifier(index, layoutModifier)
   }
 }

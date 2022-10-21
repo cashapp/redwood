@@ -35,10 +35,6 @@ public class HTMLElementChildren(
     parent.insertBefore(widget, current)
   }
 
-  override fun set(index: Int, layoutModifier: LayoutModifier) {
-    _children.set(index, layoutModifier)
-  }
-
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _children.move(fromIndex, toIndex, count)
 
@@ -71,5 +67,9 @@ public class HTMLElementChildren(
   override fun clear() {
     _children.clear()
     parent.clear()
+  }
+
+  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    _children.updateLayoutModifier(index, layoutModifier)
   }
 }

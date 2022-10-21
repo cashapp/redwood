@@ -31,10 +31,6 @@ public class ViewGroupChildren(
     parent.addView(widget, index)
   }
 
-  override fun set(index: Int, layoutModifier: LayoutModifier) {
-    _children.set(index, layoutModifier)
-  }
-
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _children.move(fromIndex, toIndex, count)
 
@@ -61,5 +57,9 @@ public class ViewGroupChildren(
   override fun clear() {
     _children.clear()
     parent.removeAllViews()
+  }
+
+  override fun updateLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
+    _children.updateLayoutModifier(index, layoutModifier)
   }
 }
