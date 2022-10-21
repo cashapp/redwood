@@ -17,13 +17,16 @@ package app.cash.redwood.layout.view
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_6
 import app.cash.paparazzi.Paparazzi
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.widget.Widget
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -115,7 +118,11 @@ class ViewFlexContainerTest(
         setTextColor(Color.BLACK)
         text = item
       }
-      container.children.insert(index, view)
+      val widget = object : Widget<View> {
+        override val value = view
+        override var layoutModifiers: LayoutModifier = LayoutModifier
+      }
+      container.children.insert(index, widget)
     }
 
     paparazzi.snapshot(container.view)

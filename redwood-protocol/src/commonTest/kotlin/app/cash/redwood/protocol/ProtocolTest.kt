@@ -17,7 +17,6 @@ package app.cash.redwood.protocol
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
@@ -48,7 +47,7 @@ class ProtocolTest {
         ChildrenDiff.Clear,
         ChildrenDiff.Insert(Id(1U), 2U, Id(3U), 4, 5),
         ChildrenDiff.Move(Id(1U), 2U, 3, 4, 5),
-        ChildrenDiff.Remove(Id(1U), 2U, 3, 4, listOf(Id(5U), Id(6U), Id(7U), Id(8U))),
+        ChildrenDiff.Remove(Id(1U), 2U, 3, 4),
       ),
       layoutModifiers = listOf(
         LayoutModifiers(
@@ -73,7 +72,7 @@ class ProtocolTest {
       """["clear",{}],""" +
       """["insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
-      """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
+      """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
       """],"layoutModifiers":[""" +
       """{"id":1,"elements":[[1,{}]]}""" +
       """],"propertyDiffs":[""" +
@@ -91,12 +90,6 @@ class ProtocolTest {
     )
     val json = "{}"
     assertJsonRoundtrip(Diff.serializer(), model, json)
-  }
-
-  @Test fun removeCountMustMatchListSize() {
-    assertFailsWith<IllegalArgumentException>("Count 4 != Removed ID list size 3") {
-      ChildrenDiff.Remove(Id(1U), 2U, 3, 4, listOf(Id(5U), Id(6U), Id(7U)))
-    }
   }
 
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {

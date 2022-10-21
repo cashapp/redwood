@@ -58,12 +58,12 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
   val view: View get() = scrollView
 
   val children: Widget.Children<View> = MutableListChildren(
-    onUpdate = { views ->
+    onUpdate = { widgets ->
       container.items.clear()
       hostView.removeAllViews()
-      views.forEach {
-        container.items += it.asItem()
-        hostView.addView(it)
+      widgets.forEach {
+        container.items += it.value.asItem()
+        hostView.addView(it.value)
       }
     },
   )

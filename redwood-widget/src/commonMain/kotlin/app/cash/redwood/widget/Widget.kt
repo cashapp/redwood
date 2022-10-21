@@ -24,6 +24,9 @@ public interface Widget<T : Any> {
    */
   public val value: T
 
+  /**
+   * A collection of elements that change how a widget is laid out.
+   */
   public var layoutModifiers: LayoutModifier
 
   /**
@@ -39,7 +42,7 @@ public interface Widget<T : Any> {
    */
   public interface Children<T : Any> {
     /** Insert child [widget] at [index]. */
-    public fun insert(index: Int, widget: T)
+    public fun insert(index: Int, widget: Widget<T>)
 
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
@@ -56,5 +59,8 @@ public interface Widget<T : Any> {
 
     /** Remove all child widgets. */
     public fun clear()
+
+    /** Indicates [widget]'s [LayoutModifier] has been updated. */
+    public fun updateLayoutModifier(widget: Widget<T>) {}
   }
 }

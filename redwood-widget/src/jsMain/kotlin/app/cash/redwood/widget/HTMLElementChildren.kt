@@ -22,10 +22,10 @@ import org.w3c.dom.get
 public class HTMLElementChildren(
   private val parent: HTMLElement,
 ) : Widget.Children<HTMLElement> {
-  override fun insert(index: Int, widget: HTMLElement) {
+  override fun insert(index: Int, widget: Widget<HTMLElement>) {
     // Null element returned when index == childCount causes insertion at end.
     val current = parent.children[index]
-    parent.insertBefore(widget, current)
+    parent.insertBefore(widget.value, current)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {

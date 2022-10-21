@@ -19,8 +19,8 @@ import android.view.View
 import android.view.ViewGroup
 
 public class ViewGroupChildren(private val parent: ViewGroup) : Widget.Children<View> {
-  override fun insert(index: Int, widget: View) {
-    parent.addView(widget, index)
+  override fun insert(index: Int, widget: Widget<View>) {
+    parent.addView(widget.value, index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
