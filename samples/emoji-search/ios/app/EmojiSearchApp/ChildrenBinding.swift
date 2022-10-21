@@ -55,6 +55,6 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
         update(storage)
     }
 
-    func set(index: Int32, layoutModifier: Redwood_runtimeLayoutModifier) {
+    func setLayoutModifier(index: Int32, layoutModifier: Redwood_runtimeLayoutModifier) {
     }
 }
