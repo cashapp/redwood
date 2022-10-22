@@ -15,18 +15,23 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple700 = Color(0xFF3700B3)
@@ -46,6 +51,12 @@ private val DarkColorPalette = darkColors(
   secondary = Teal200,
 )
 
+private val LightColorPalette = lightColors(
+  primary = Purple200,
+  primaryVariant = Purple700,
+  secondary = Teal200,
+)
+
 private val Shapes = Shapes(
   small = RoundedCornerShape(4.dp),
   medium = RoundedCornerShape(4.dp),
@@ -54,12 +65,22 @@ private val Shapes = Shapes(
 
 @Composable
 fun EmojiSearchTheme(
+  darkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable () -> Unit
 ) {
+  val colors = if (darkTheme) {
+    DarkColorPalette
+  } else {
+    LightColorPalette
+  }
   MaterialTheme(
-    colors = DarkColorPalette,
+    colors = colors,
     typography = Typography,
-    shapes = Shapes,
-    content = content
-  )
+    shapes = Shapes
+  ) {
+    CompositionLocalProvider(
+      LocalContentColor provides MaterialTheme.colors.onBackground,
+      content = content
+    )
+  }
 }
