@@ -87,6 +87,7 @@ fun SunspotButton(
   RedwoodComposeNode<SunspotWidgetFactory<*>, SunspotButton<*>>(
     factory = SunspotWidgetFactory<*>::SunspotButton,
     update = {
+      set(layoutModifier) { layoutModifiers = it }
       set(text, SunspotButton<*>::text)
       set(enabled, SunspotButton<*>::enabled)
       set(onClick, SunspotButton<*>::onClick)
@@ -164,7 +165,7 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(layoutModifier) { layoutModifiers = layoutModifier }\n")
+            .add("set(layoutModifier) { layoutModifiers = it }\n")
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
