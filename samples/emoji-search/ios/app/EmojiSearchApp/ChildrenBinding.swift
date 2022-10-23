@@ -30,7 +30,7 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
         update(storage)
     }
 
-    func insert(index: Int32, widget: Redwood_widget) {
+    func insert(index: Int32, widget: Redwood_widgetWidget) {
         storage.insert(widget.value as! UIView, at: Int(index))
         update(storage)
     }
