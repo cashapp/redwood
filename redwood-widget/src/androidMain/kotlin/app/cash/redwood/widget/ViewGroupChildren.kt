@@ -17,22 +17,20 @@ package app.cash.redwood.widget
 
 import android.view.View
 import android.view.ViewGroup
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.widget.MutableListChildren.Child
 
 public class ViewGroupChildren(
   private val parent: ViewGroup,
 ) : Widget.Children<View> {
-  private val _children = MutableListChildren<View>()
-  public val children: List<Child<View>> get() = _children
+  private val _widgets = MutableListChildren<View>()
+  public val widgets: List<Widget<View>> get() = _widgets
 
-  override fun insert(index: Int, widget: View, layoutModifier: LayoutModifier) {
-    _children.insert(index, widget, layoutModifier)
-    parent.addView(widget, index)
+  override fun insert(index: Int, widget: Widget<View>) {
+    _widgets.insert(index, widget)
+    parent.addView(widget.value, index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    _children.move(fromIndex, toIndex, count)
+    _widgets.move(fromIndex, toIndex, count)
 
     val views = Array(count) { offset ->
       parent.getChildAt(fromIndex + offset)
@@ -50,16 +48,16 @@ public class ViewGroupChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    _children.remove(index, count)
+    _widgets.remove(index, count)
     parent.removeViews(index, count)
   }
 
   override fun clear() {
-    _children.clear()
+    _widgets.clear()
     parent.removeAllViews()
   }
 
-  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
-    _children.setLayoutModifier(index, layoutModifier)
+  override fun onLayoutModifierUpdated(index: Int) {
+    _widgets.onLayoutModifierUpdated(index)
   }
 }

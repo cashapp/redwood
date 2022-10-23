@@ -151,6 +151,12 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
   }
 
   protected fun <T : Any> Widget.Children<T>.insert(index: Int, widget: T) {
-    insert(index, widget, LayoutModifier)
+    insert(
+      index = index,
+      widget = object : Widget<T> {
+        override val value: T = widget
+        override var layoutModifiers: LayoutModifier = LayoutModifier
+      },
+    )
   }
 }

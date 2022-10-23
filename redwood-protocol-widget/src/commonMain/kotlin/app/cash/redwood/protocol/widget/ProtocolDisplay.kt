@@ -42,7 +42,7 @@ public class ProtocolDisplay<T : Any>(
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
           val childWidget = factory.create(childrenDiff.kind) ?: continue
-          children.insert(childrenDiff.index, childWidget.value, childWidget.layoutModifiers)
+          children.insert(childrenDiff.index, childWidget)
           nodes[childrenDiff.childId] = Node(childWidget, childrenDiff.id, children)
           node.childIds.add(childrenDiff.index, childrenDiff.childId)
         }
@@ -70,7 +70,7 @@ public class ProtocolDisplay<T : Any>(
       val node = node(layoutModifier.id)
       val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
       node.widget.updateLayoutModifier(layoutModifier.elements)
-      node.parentChildren.setLayoutModifier(childIndex, node.widget.layoutModifiers)
+      node.parentChildren.onLayoutModifierUpdated(childIndex)
     }
 
     for (propertyDiff in diff.propertyDiffs) {

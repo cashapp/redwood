@@ -61,8 +61,8 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
       container.items.clear()
       hostView.removeAllViews()
       children.forEach {
-        container.items += it.widget.asItem()
-        hostView.addView(it.widget)
+        container.items += it.value.asItem()
+        hostView.addView(it.value)
       }
     },
   )

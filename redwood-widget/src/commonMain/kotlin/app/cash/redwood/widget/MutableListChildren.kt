@@ -15,9 +15,6 @@
  */
 package app.cash.redwood.widget
 
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.widget.MutableListChildren.Child
-
 /**
  * A [MutableList] that is also a [Widget.Children].
  *
@@ -25,16 +22,16 @@ import app.cash.redwood.widget.MutableListChildren.Child
  * @param onUpdate Optional callback invoked when contents change via the [Widget.Children] API.
  */
 public class MutableListChildren<T : Any>(
-  private val list: MutableList<Child<T>> = mutableListOf(),
-  private val onUpdate: (List<Child<T>>) -> Unit = {},
-) : Widget.Children<T>, MutableList<Child<T>> by list {
+  private val list: MutableList<Widget<T>> = mutableListOf(),
+  private val onUpdate: (List<Widget<T>>) -> Unit = {},
+) : Widget.Children<T>, MutableList<Widget<T>> by list {
   /** @param onUpdate Callback invoked when contents change via the [Widget.Children] API. */
-  public constructor(onUpdate: (List<Child<T>>) -> Unit) : this(mutableListOf(), onUpdate = onUpdate)
+  public constructor(onUpdate: (List<Widget<T>>) -> Unit) : this(mutableListOf(), onUpdate = onUpdate)
 
-  public val children: List<Child<T>> get() = list
+  public val children: List<Widget<T>> get() = list
 
-  override fun insert(index: Int, widget: T, layoutModifier: LayoutModifier) {
-    list.add(index, Child(widget, layoutModifier))
+  override fun insert(index: Int, widget: Widget<T>) {
+    list.add(index, widget)
     onUpdate(list)
   }
 
@@ -53,13 +50,7 @@ public class MutableListChildren<T : Any>(
     onUpdate(list)
   }
 
-  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
-    list.set(index, list[index].copy(layoutModifier = layoutModifier))
+  override fun onLayoutModifierUpdated(index: Int) {
     onUpdate(list)
   }
-
-  public data class Child<T : Any>(
-    val widget: T,
-    val layoutModifier: LayoutModifier,
-  )
 }

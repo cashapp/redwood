@@ -41,8 +41,8 @@ public interface Widget<T : Any> {
    * list. No additional validation needs to be performed (for example, checking index bounds).
    */
   public interface Children<T : Any> {
-    /** Insert child [widget] with [LayoutModifier] at [index]. */
-    public fun insert(index: Int, widget: T, layoutModifier: LayoutModifier)
+    /** Insert child [widget] at [index]. */
+    public fun insert(index: Int, widget: Widget<T>)
 
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].
@@ -60,7 +60,7 @@ public interface Widget<T : Any> {
     /** Remove all child widgets. */
     public fun clear()
 
-    /** Set the [LayoutModifier] for the widget at [index]. */
-    public fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier)
+    /** Indicates that the [LayoutModifier] for the widget at [index] has changed. */
+    public fun onLayoutModifierUpdated(index: Int)
   }
 }

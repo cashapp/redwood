@@ -50,7 +50,7 @@ class CounterViewControllerDelegate(
     val children = MutableListChildren { children ->
       @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
       (root.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-      children.forEach { root.addArrangedSubview(it.widget) }
+      children.forEach { root.addArrangedSubview(it.value) }
     }
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(

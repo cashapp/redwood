@@ -49,7 +49,7 @@ public class TreehouseUIKitView<T : Any>(
     MutableListChildren { children ->
       @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
       (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-      children.forEach { view.addSubview(it.widget) }
+      children.forEach { view.addSubview(it.value) }
     }
 
   private val mutableHostConfiguration = MutableStateFlow(HostConfiguration())

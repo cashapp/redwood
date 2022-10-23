@@ -17,39 +17,37 @@ package app.cash.redwood.widget.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.MutableListChildren
-import app.cash.redwood.widget.MutableListChildren.Child
 import app.cash.redwood.widget.Widget
 
 public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private val _children = MutableListChildren<@Composable () -> Unit>(mutableStateListOf())
-  public val children: List<Child<@Composable () -> Unit>> get() = _children
+  private val _widgets = MutableListChildren<@Composable () -> Unit>(mutableStateListOf())
+  public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
   public fun render() {
-    for (child in _children) {
-      child.widget()
+    for (child in _widgets) {
+      child.value()
     }
   }
 
-  override fun insert(index: Int, widget: @Composable () -> Unit, layoutModifier: LayoutModifier) {
-    _children.insert(index, widget, layoutModifier)
+  override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
+    _widgets.insert(index, widget)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    _children.move(fromIndex, toIndex, count)
+    _widgets.move(fromIndex, toIndex, count)
   }
 
   override fun remove(index: Int, count: Int) {
-    _children.remove(index, count)
+    _widgets.remove(index, count)
   }
 
   override fun clear() {
-    _children.clear()
+    _widgets.clear()
   }
 
-  override fun setLayoutModifier(index: Int, layoutModifier: LayoutModifier) {
-    _children.setLayoutModifier(index, layoutModifier)
+  override fun onLayoutModifierUpdated(index: Int) {
+    _widgets.onLayoutModifierUpdated(index)
   }
 }
