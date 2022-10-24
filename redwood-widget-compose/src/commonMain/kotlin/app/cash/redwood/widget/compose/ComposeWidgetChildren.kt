@@ -21,34 +21,41 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.Widget
 
 public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private val _widgets = mutableStateListOf<Pair<Widget<@Composable () -> Unit>, LayoutModifier>>()
-  public val widgets: List<Pair<Widget<@Composable () -> Unit>, LayoutModifier>> get() = _widgets
+  private val layoutModifiers = mutableStateListOf<LayoutModifier>()
+
+  private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
+  public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
   public fun render() {
-    for (widget in _widgets) {
-      widget.first.value()
+    for (index in _widgets.indices) {
+      // Observe the layout modifier so we recompose if it changes.
+      layoutModifiers[index]
+      _widgets[index].value()
     }
   }
 
   override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
-    _widgets.add(index, widget to widget.layoutModifiers)
+    _widgets.add(index, widget)
+    layoutModifiers.add(index, widget.layoutModifiers)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
+    layoutModifiers.move(fromIndex, toIndex, count)
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
+    layoutModifiers.remove(index, count)
   }
 
   override fun clear() {
     _widgets.clear()
+    layoutModifiers.clear()
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    val widget = widgets[index].first
-    _widgets.set(index, widget to widget.layoutModifiers)
+    layoutModifiers.set(index, _widgets[index].layoutModifiers)
   }
 }
