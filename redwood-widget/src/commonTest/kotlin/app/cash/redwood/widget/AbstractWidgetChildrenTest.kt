@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.LayoutModifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -147,5 +148,15 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     children.insert(1, widget("two"))
     children.clear()
     assertEquals(listOf(), names())
+  }
+
+  protected fun <T : Any> Widget.Children<T>.insert(index: Int, widget: T) {
+    insert(
+      index = index,
+      widget = object : Widget<T> {
+        override val value: T = widget
+        override var layoutModifiers: LayoutModifier = LayoutModifier
+      },
+    )
   }
 }

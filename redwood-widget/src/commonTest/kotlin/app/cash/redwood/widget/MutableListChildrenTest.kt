@@ -22,7 +22,7 @@ class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
   private var updateCount = Int.MIN_VALUE
   override val children = MutableListChildren<String> { updateCount++ }
   override fun widget(name: String) = name
-  override fun names() = children.toList()
+  override fun names() = children.map { it.value }
 
   @Test fun insertCallsUpdate() {
     updateCount = 0

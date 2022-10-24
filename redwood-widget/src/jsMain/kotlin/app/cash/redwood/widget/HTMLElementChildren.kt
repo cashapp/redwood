@@ -22,13 +22,20 @@ import org.w3c.dom.get
 public class HTMLElementChildren(
   private val parent: HTMLElement,
 ) : Widget.Children<HTMLElement> {
-  override fun insert(index: Int, widget: HTMLElement) {
+  private val _widgets = MutableListChildren<HTMLElement>()
+  public val widgets: List<Widget<HTMLElement>> get() = _widgets
+
+  override fun insert(index: Int, widget: Widget<HTMLElement>) {
+    _widgets.insert(index, widget)
+
     // Null element returned when index == childCount causes insertion at end.
     val current = parent.children[index]
-    parent.insertBefore(widget, current)
+    parent.insertBefore(widget.value, current)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+    _widgets.move(fromIndex, toIndex, count)
+
     val elements = Array(count) {
       val element = parent.children[fromIndex] as HTMLElement
       parent.removeChild(element)
@@ -48,12 +55,19 @@ public class HTMLElementChildren(
   }
 
   override fun remove(index: Int, count: Int) {
+    _widgets.remove(index, count)
+
     repeat(count) {
       parent.removeChild(parent.children[index]!!)
     }
   }
 
   override fun clear() {
+    _widgets.clear()
     parent.clear()
+  }
+
+  override fun onLayoutModifierUpdated(index: Int) {
+    _widgets.onLayoutModifierUpdated(index)
   }
 }

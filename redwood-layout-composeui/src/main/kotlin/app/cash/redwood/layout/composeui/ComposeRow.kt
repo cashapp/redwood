@@ -32,9 +32,7 @@ internal class ComposeRow : Row<@Composable () -> Unit> {
 
   override val value: @Composable () -> Unit get() = container.composable
 
-  override var layoutModifiers: LayoutModifier
-    get() = container.layoutModifiers
-    set(value) { container.layoutModifiers = value }
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun padding(padding: Padding) {
     container.padding(padding)

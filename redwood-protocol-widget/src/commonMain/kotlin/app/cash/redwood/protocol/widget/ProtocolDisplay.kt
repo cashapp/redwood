@@ -27,57 +27,70 @@ import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
 public class ProtocolDisplay<T : Any>(
-  container: Widget.Children<T>,
+  private val container: Widget.Children<T>,
   private val factory: DiffConsumingWidget.Factory<T>,
   private val eventSink: EventSink,
 ) : DiffSink {
   private val root: DiffConsumingWidget<T> = ProtocolDisplayRoot(container)
-  private val widgets = mutableMapOf(Id.Root to root)
+  private val nodes = mutableMapOf(Id.Root to Node(root, Id.Root, container))
 
   override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
-      val widget = checkNotNull(widgets[childrenDiff.id]) {
-        "Unknown widget ID ${childrenDiff.id}"
-      }
-      val children = widget.children(childrenDiff.tag) ?: continue
+      val node = node(childrenDiff.id)
+      val children = node.widget.children(childrenDiff.tag) ?: continue
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
           val childWidget = factory.create(childrenDiff.kind) ?: continue
-          widgets[childrenDiff.childId] = childWidget
-          children.insert(childrenDiff.index, childWidget.value)
+          children.insert(childrenDiff.index, childWidget)
+          nodes[childrenDiff.childId] = Node(childWidget, childrenDiff.id, children)
+          node.childIds.add(childrenDiff.index, childrenDiff.childId)
         }
         is ChildrenDiff.Move -> {
           children.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)
+          node.childIds.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)
         }
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
-
-          @Suppress("ConvertArgumentToSet") // Bad advice as the collection is iterated.
-          widgets.keys.removeAll(childrenDiff.removedIds)
+          for (i in childrenDiff.index until childrenDiff.index + childrenDiff.count) {
+            nodes.remove(node.childIds[i])
+          }
+          node.childIds.remove(childrenDiff.index, childrenDiff.count)
         }
         ChildrenDiff.Clear -> {
           children.clear()
-          widgets.clear()
-          widgets[Id.Root] = root
+          node.childIds.clear()
+          nodes.clear()
+          nodes[Id.Root] = Node(root, Id.Root, container)
         }
       }
     }
 
     for (layoutModifier in diff.layoutModifiers) {
-      val widget = checkNotNull(widgets[layoutModifier.id]) {
-        "Unknown widget ID ${layoutModifier.id}"
-      }
-      widget.updateLayoutModifier(layoutModifier.elements)
+      val node = node(layoutModifier.id)
+      val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
+      node.widget.updateLayoutModifier(layoutModifier.elements)
+      node.parentChildren.onLayoutModifierUpdated(childIndex)
     }
 
     for (propertyDiff in diff.propertyDiffs) {
-      val widget = checkNotNull(widgets[propertyDiff.id]) {
-        "Unknown widget ID ${propertyDiff.id}"
-      }
-      widget.apply(propertyDiff, eventSink)
+      node(propertyDiff.id).widget.apply(propertyDiff, eventSink)
     }
   }
+
+  private fun node(id: Id): Node<T> {
+    return checkNotNull(nodes[id]) { "Unknown widget ID $id" }
+  }
+}
+
+private class Node<T : Any>(
+  val widget: DiffConsumingWidget<T>,
+  val parentId: Id,
+  val parentChildren: Widget.Children<T>,
+) {
+  private var _childIds: MutableList<Id>? = null
+  val childIds: MutableList<Id>
+    get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
 }
 
 private class ProtocolDisplayRoot<T : Any>(

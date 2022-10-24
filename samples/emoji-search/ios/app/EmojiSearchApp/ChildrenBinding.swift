@@ -30,8 +30,8 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
         update(storage)
     }
 
-    func insert(index: Int32, widget: Any) {
-        storage.insert(widget as! UIView, at: Int(index))
+    func insert(index: Int32, widget: Redwood_widgetWidget) {
+        storage.insert(widget.value as! UIView, at: Int(index))
         update(storage)
     }
 
@@ -53,5 +53,8 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
     func remove(index: Int32, count: Int32) {
         (0..<count).forEach { _ in storage.remove(at: Int(index)) }
         update(storage)
+    }
+
+    func onLayoutModifierUpdated(index: Int32) {
     }
 }

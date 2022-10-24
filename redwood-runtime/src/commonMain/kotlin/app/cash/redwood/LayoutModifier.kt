@@ -18,6 +18,9 @@ package app.cash.redwood
 
 import androidx.compose.runtime.Stable
 
+/**
+ * An ordered, immutable collection of elements that change how a widget is laid out.
+ */
 @Stable
 public interface LayoutModifier {
 

@@ -189,17 +189,11 @@ internal class ProtocolApplier(
     val current = current as DiffProducingChildrenWidget
     val children = current._children
 
-    // TODO We should not have to track this and send it as part of the protocol.
-    //  Ideally this would be entirely encapsulated on the display-side with additional bookkeeping.
-    //  For now, we track it here and send it in the protocol as a simple solution.
-    val removedIds = ArrayList<Id>(count)
     for (i in index until index + count) {
-      removedIds.add(children[i].id)
+      nodes.remove(children[i].id)
     }
-
-    nodes.keys.removeAll(removedIds)
     children.remove(index, count)
-    diffAppender.append(ChildrenDiff.Remove(current.id, current.tag, index, count, removedIds))
+    diffAppender.append(ChildrenDiff.Remove(current.id, current.tag, index, count))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
