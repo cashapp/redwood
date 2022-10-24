@@ -32,7 +32,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
   }
 
   override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
-    _widgets.set(index, widget to widget.layoutModifiers)
+    _widgets.add(index, widget to widget.layoutModifiers)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
