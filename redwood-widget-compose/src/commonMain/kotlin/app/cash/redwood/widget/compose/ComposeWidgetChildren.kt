@@ -17,22 +17,22 @@ package app.cash.redwood.widget.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.Widget
 
 public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private val _widgets = MutableListChildren<@Composable () -> Unit>(mutableStateListOf())
-  public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
+  private val _widgets = mutableStateListOf<Pair<Widget<@Composable () -> Unit>, LayoutModifier>>()
+  public val widgets: List<Pair<Widget<@Composable () -> Unit>, LayoutModifier>> get() = _widgets
 
   @Composable
   public fun render() {
-    for (child in _widgets) {
-      child.value()
+    for (widget in _widgets) {
+      widget.first.value()
     }
   }
 
   override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
-    _widgets.insert(index, widget)
+    _widgets.set(index, widget to widget.layoutModifiers)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -48,6 +48,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    _widgets.onLayoutModifierUpdated(index)
+    val widget = widgets[index].first
+    _widgets.set(index, widget to widget.layoutModifiers)
   }
 }
