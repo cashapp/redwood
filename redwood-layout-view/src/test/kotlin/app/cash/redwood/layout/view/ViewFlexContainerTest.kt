@@ -25,6 +25,10 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.layout.Grow
+import app.cash.redwood.layout.HorizontalAlignment
+import app.cash.redwood.layout.VerticalAlignment
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.Widget
 import org.junit.Rule
@@ -63,6 +67,11 @@ class ViewFlexContainerTest(
         JustifyContent.SpaceEvenly,
       ),
       listOf(
+        LayoutModifier,
+        GrowImpl(1f),
+        CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch),
+      ),
+      listOf(
         Padding.Zero,
         Padding(100),
       ),
@@ -75,7 +84,8 @@ class ViewFlexContainerTest(
           items = it[1] as List<String>,
           alignItems = it[2] as AlignItems,
           justifyContent = it[3] as JustifyContent,
-          padding = it[4] as Padding,
+          layoutModifiers = it[4] as LayoutModifier,
+          padding = it[5] as Padding,
         ),
       )
     }
@@ -85,6 +95,7 @@ class ViewFlexContainerTest(
       val items: List<String>,
       val alignItems: AlignItems,
       val justifyContent: JustifyContent,
+      val layoutModifiers: LayoutModifier,
       val padding: Padding,
     ) {
       override fun toString() = "" +
@@ -92,6 +103,7 @@ class ViewFlexContainerTest(
         "Items(${items.size}), " +
         "AlignItems.$alignItems, " +
         "JustifyContent.$justifyContent, " +
+        "$layoutModifiers, " +
         "$padding"
     }
   }
@@ -157,3 +169,11 @@ private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Arr
     partials.flatMap { partial -> list.map { element -> partial + element } }
   }
 }
+
+private data class GrowImpl(
+  override val value: Float,
+) : Grow
+
+private data class CrossAxisAlignmentImpl(
+  override val alignment: CrossAxisAlignment,
+) : HorizontalAlignment, VerticalAlignment

@@ -15,12 +15,29 @@
  */
 package app.cash.redwood.layout.composeui
 
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.AlignSelf
+import app.cash.redwood.flexcontainer.FlexDirection
+import app.cash.redwood.flexcontainer.FlexItem
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexShrink
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.MeasureSpecMode
+import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.Spacing
+import app.cash.redwood.flexcontainer.isHorizontal
+import app.cash.redwood.flexcontainer.isVertical
+import app.cash.redwood.layout.Grow
+import app.cash.redwood.layout.HorizontalAlignment
+import app.cash.redwood.layout.Padding as PaddingModifier
+import app.cash.redwood.layout.Shrink
+import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
@@ -40,6 +57,14 @@ internal fun CrossAxisAlignment.toAlignItems() = when (this) {
   CrossAxisAlignment.Center -> AlignItems.Center
   CrossAxisAlignment.End -> AlignItems.FlexEnd
   CrossAxisAlignment.Stretch -> AlignItems.Stretch
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
+  CrossAxisAlignment.Start -> AlignSelf.FlexStart
+  CrossAxisAlignment.Center -> AlignSelf.Center
+  CrossAxisAlignment.End -> AlignSelf.FlexEnd
+  CrossAxisAlignment.Stretch -> AlignSelf.Stretch
   else -> throw AssertionError()
 }
 
@@ -95,4 +120,57 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
     else -> throw AssertionError()
   }
   return Constraints(minWidth, maxWidth, minHeight, maxHeight)
+}
+
+internal fun Measurable.asItem(layoutModifiers: LayoutModifier, direction: FlexDirection): FlexItem {
+  var flexGrow = DefaultFlexGrow
+  var flexShrink = DefaultFlexShrink
+  var padding = Padding.Zero
+  var crossAxisAlignment = CrossAxisAlignment.Start
+  var isCrossAxisAlignmentSet = false
+  layoutModifiers.forEach { modifier ->
+    when (modifier) {
+      is Grow -> flexGrow = modifier.value
+      is Shrink -> flexShrink = modifier.value
+      is PaddingModifier -> padding = modifier.padding
+      is HorizontalAlignment -> if (direction.isVertical) {
+        crossAxisAlignment = modifier.alignment
+        isCrossAxisAlignmentSet = true
+      }
+      is VerticalAlignment -> if (direction.isHorizontal) {
+        crossAxisAlignment = modifier.alignment
+        isCrossAxisAlignmentSet = true
+      }
+    }
+  }
+  return FlexItem(
+    flexGrow = flexGrow,
+    flexShrink = flexShrink,
+    margin = padding.toSpacing(),
+    alignSelf = if (isCrossAxisAlignmentSet) {
+      crossAxisAlignment.toAlignSelf()
+    } else {
+      AlignSelf.Auto
+    },
+    measurable = ComposeMeasurable(this),
+  )
+}
+
+internal class ComposeMeasurable(private val measurable: Measurable) : RedwoodMeasurable() {
+
+  lateinit var placeable: Placeable
+    private set
+
+  override fun width(height: Int): Int {
+    return measurable.minIntrinsicWidth(height)
+  }
+
+  override fun height(width: Int): Int {
+    return measurable.minIntrinsicHeight(width)
+  }
+
+  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+    this.placeable = measurable.measure(measureSpecsToConstraints(widthSpec, heightSpec))
+    return Size(placeable.width, placeable.height)
+  }
 }

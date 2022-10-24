@@ -27,16 +27,12 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
-import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
-import app.cash.redwood.flexcontainer.FlexItem
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
-import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
@@ -101,8 +97,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     constraints: Constraints,
   ): MeasureResult = with(scope) {
     container.items.clear()
-    measurables.forEach { measurable ->
-      container.items += FlexItem(measurable = ComposeMeasurable(measurable))
+    measurables.forEachIndexed { index, measurable ->
+      container.items += measurable.asItem(_children.widgets[index].layoutModifiers, direction)
     }
 
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
@@ -119,25 +115,6 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
         node.measurable = defaultMeasurable
       }
     }
-  }
-}
-
-private class ComposeMeasurable(private val measurable: Measurable) : RedwoodMeasurable() {
-
-  lateinit var placeable: Placeable
-    private set
-
-  override fun width(height: Int): Int {
-    return measurable.minIntrinsicWidth(height)
-  }
-
-  override fun height(width: Int): Int {
-    return measurable.minIntrinsicHeight(width)
-  }
-
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    this.placeable = measurable.measure(measureSpecsToConstraints(widthSpec, heightSpec))
-    return Size(placeable.width, placeable.height)
   }
 }
 

@@ -123,7 +123,7 @@ internal class DiffProducingSunspotButton(
     get() = throw AssertionError()
     set(value) {
       val json = buildJsonArray {
-        value.foldIn(Unit) { _, element -> add(element.toJsonElement(json))
+        value.forEach { element -> add(element.toJsonElement(json))
       }
       appendDiff(LayoutModifiers(id, json))
     }
@@ -291,7 +291,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.LayoutModifier)
                 .beginControlFlow("val json = %M", KotlinxSerialization.buildJsonArray)
-                .addStatement("value.foldIn(Unit) { _, element -> add(element.toJsonElement(json)) }")
+                .addStatement("value.forEach { element -> add(element.toJsonElement(json)) }")
                 .endControlFlow()
                 .addStatement("appendDiff(%T(id, json))", Protocol.LayoutModifiers)
                 .build(),

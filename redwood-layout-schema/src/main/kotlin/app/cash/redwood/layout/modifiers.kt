@@ -19,31 +19,49 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.schema.LayoutModifier
 
-/** Grow the item relative to [value] along the main axis. */
+/**
+ * Configure how much of the remaining space in the layout should be assigned to this item.
+ *
+ * [Grow] increases the amount of remaining space to assign to this item. [value] must be non-negative (i.e. >= 0).
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow
+ */
 @LayoutModifier(1, scopes = [RowScope::class, ColumnScope::class])
 public data class Grow(
-  val value: Int,
+  val value: Float,
 )
 
-/** Shrink the item relative to [value] along the main axis. */
+/**
+ * Configure how much of the remaining space in the layout should be assigned to this item.
+ *
+ * [Shrink] decreases the amount of remaining space to assign to this item. [value] must be non-negative (i.e. >= 0).
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink
+ */
 @LayoutModifier(2, scopes = [RowScope::class, ColumnScope::class])
 public data class Shrink(
-  val value: Int,
+  val value: Float,
 )
 
-/** Add additional space around the item. */
+/**
+ * Add additional space around the item.
+ */
 @LayoutModifier(3, scopes = [RowScope::class, ColumnScope::class])
 public data class Padding(
   val padding: Padding,
 )
 
-/** Set the alignment for an item along the horizontal axis. */
+/**
+ * Set the alignment for an item along the horizontal axis.
+ */
 @LayoutModifier(4, scopes = [ColumnScope::class])
 public data class HorizontalAlignment(
   val alignment: CrossAxisAlignment,
 )
 
-/** Set the alignment for an item along the vertical axis. */
+/**
+ * Set the alignment for an item along the vertical axis.
+ */
 @LayoutModifier(5, scopes = [RowScope::class])
 public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,

@@ -15,15 +15,28 @@
  */
 package app.cash.redwood.layout.view
 
+import android.annotation.SuppressLint
 import android.view.View
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
+import app.cash.redwood.flexcontainer.AlignSelf
+import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.FlexItem
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexShrink
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.Measurable
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.MeasureSpecMode
 import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.Spacing
+import app.cash.redwood.flexcontainer.isHorizontal
+import app.cash.redwood.flexcontainer.isVertical
+import app.cash.redwood.layout.Grow
+import app.cash.redwood.layout.HorizontalAlignment
+import app.cash.redwood.layout.Padding as PaddingModifier
+import app.cash.redwood.layout.Shrink
+import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
@@ -43,6 +56,14 @@ internal fun CrossAxisAlignment.toAlignItems() = when (this) {
   CrossAxisAlignment.Center -> AlignItems.Center
   CrossAxisAlignment.End -> AlignItems.FlexEnd
   CrossAxisAlignment.Stretch -> AlignItems.Stretch
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
+  CrossAxisAlignment.Start -> AlignSelf.FlexStart
+  CrossAxisAlignment.Center -> AlignSelf.Center
+  CrossAxisAlignment.End -> AlignSelf.FlexEnd
+  CrossAxisAlignment.Stretch -> AlignSelf.Stretch
   else -> throw AssertionError()
 }
 
@@ -69,7 +90,39 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun View.asItem() = FlexItem(measurable = ViewMeasurable(this@asItem))
+internal fun View.asItem(layoutModifiers: LayoutModifier, direction: FlexDirection): FlexItem {
+  var flexGrow = DefaultFlexGrow
+  var flexShrink = DefaultFlexShrink
+  var padding = Padding.Zero
+  var crossAxisAlignment = CrossAxisAlignment.Start
+  var isCrossAxisAlignmentSet = false
+  layoutModifiers.forEach { modifier ->
+    when (modifier) {
+      is Grow -> flexGrow = modifier.value
+      is Shrink -> flexShrink = modifier.value
+      is PaddingModifier -> padding = modifier.padding
+      is HorizontalAlignment -> if (direction.isVertical) {
+        crossAxisAlignment = modifier.alignment
+        isCrossAxisAlignmentSet = true
+      }
+      is VerticalAlignment -> if (direction.isHorizontal) {
+        crossAxisAlignment = modifier.alignment
+        isCrossAxisAlignmentSet = true
+      }
+    }
+  }
+  return FlexItem(
+    flexGrow = flexGrow,
+    flexShrink = flexShrink,
+    margin = padding.toSpacing(),
+    alignSelf = if (isCrossAxisAlignmentSet) {
+      crossAxisAlignment.toAlignSelf()
+    } else {
+      AlignSelf.Auto
+    },
+    measurable = ViewMeasurable(this),
+  )
+}
 
 private class ViewMeasurable(private val view: View) : Measurable() {
   override val requestedWidth get() = view.layoutParams.width
@@ -87,4 +140,5 @@ internal fun View.setTouchEnabled(enable: Boolean) {
   setOnTouchListener(if (enable) null else blockScrollTouchListener)
 }
 
+@SuppressLint("ClickableViewAccessibility")
 private val blockScrollTouchListener = View.OnTouchListener { _, _ -> true }
