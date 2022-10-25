@@ -29,7 +29,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
-import com.squareup.kotlinpoet.KModifier.SEALED
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -219,7 +218,7 @@ internal fun generateComposable(
 }
 
 /*
-sealed interface RowScope {
+interface RowScope {
   @Stable
   fun LayoutModifier.something(...): LayoutModifier {
     return then(SomethingImpl(...))
@@ -228,14 +227,13 @@ sealed interface RowScope {
 
 internal object RowScopeImpl : RowScope
 */
-internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): FileSpec {
+internal fun generateScope(schema: Schema, scope: KClass<*>): FileSpec {
   val scopeName = scope.simpleName!!
   val scopeType = ClassName(schema.composePackage(), scopeName)
   return FileSpec.builder(scopeType.packageName, scopeType.simpleName)
     .apply {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(Redwood.LayoutScopeMarker)
-        .addModifiers(SEALED)
 
       for (layoutModifier in schema.layoutModifiers) {
         if (scope !in layoutModifier.scopes) {
@@ -257,32 +255,13 @@ internal fun generateScopeAndScopedModifiers(schema: Schema, scope: KClass<*>): 
 }
 
 /*
-@Stable
-fun LayoutModifier.something(...): LayoutModifier {
-  return then(SomethingImpl(...))
-}
-*/
-internal fun generateUnscopedModifierFunctions(schema: Schema): FileSpec? {
-  val unscopedLayoutModifiers = schema.layoutModifiers.filter { it.scopes.isEmpty() }
-  if (unscopedLayoutModifiers.isEmpty()) return null
-
-  return FileSpec.builder(schema.composePackage(), "unscopedLayoutModifiers")
-    .apply {
-      for (layoutModifier in unscopedLayoutModifiers) {
-        addFunction(generateLayoutModifierFunction(schema, layoutModifier))
-      }
-    }
-    .build()
-}
-
-/*
 internal class SomethingImpl(...): Something {
   public override fun equals(other: Any?): Boolean = ...
   public override fun hashCode(): Int = ...
   public override fun toString(): String = ...
 }
 */
-internal fun generateModifierImpls(schema: Schema): FileSpec? {
+internal fun generateLayoutModifierImpls(schema: Schema): FileSpec? {
   if (schema.layoutModifiers.isEmpty()) return null
 
   return FileSpec.builder(schema.composePackage(), "layoutModifiers")

@@ -19,9 +19,7 @@ import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.parser.parseSchema
 import com.google.common.truth.Truth.assertThat
-import example.redwood.compose.customType
-import example.redwood.compose.customTypeStateless
-import example.redwood.compose.customTypeWithDefault
+import example.redwood.compose.TestScope
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
@@ -35,12 +33,14 @@ class LayoutModifierGenerationTest {
   )
   interface SimpleNameCollisionSchema
 
+  object SimpleNameCollisionScope
+
   interface NavigationBar {
-    @LayoutModifier(1)
+    @LayoutModifier(1, SimpleNameCollisionScope::class)
     data class ContentDescription(val text: String)
   }
 
-  @LayoutModifier(3)
+  @LayoutModifier(2, SimpleNameCollisionScope::class)
   data class ContentDescription(val text: String)
 
   @Test fun `simple names do not collide`() {
@@ -58,42 +58,30 @@ class LayoutModifierGenerationTest {
   @Schema(
     [
       ScopedLayoutModifier::class,
-      UnscopedLayoutModifier::class,
     ],
   )
-  interface ScopedAndUnscopedSchema
+  interface ScopedModifierSchema
 
   object LayoutModifierScope
 
   @LayoutModifier(1, LayoutModifierScope::class)
   object ScopedLayoutModifier
 
-  @LayoutModifier(2)
-  object UnscopedLayoutModifier
-
   @Test fun `layout modifier functions are stable`() {
-    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+    val schema = parseSchema(ScopedModifierSchema::class)
 
-    val scopedModifier = schema.layoutModifiers.single { it.type == ScopedLayoutModifier::class }
-    val scope = scopedModifier.scopes.single { it == LayoutModifierScope::class }
-    val scopeSpec = generateScopeAndScopedModifiers(schema, scope)
+    val modifier = schema.layoutModifiers.single { it.type == ScopedLayoutModifier::class }
+    val scope = modifier.scopes.single { it == LayoutModifierScope::class }
+    val scopeSpec = generateScope(schema, scope)
     assertThat(scopeSpec.toString()).contains(
       """
       |  @Stable
       |  public fun LayoutModifier.scopedLayoutModifier(): LayoutModifier
       """.trimMargin(),
     )
-
-    val unscopedModifierSpec = generateUnscopedModifierFunctions(schema)
-    assertThat(unscopedModifierSpec.toString()).contains(
-      """
-      |@Stable
-      |public fun LayoutModifier.unscopedLayoutModifier(): LayoutModifier
-      """.trimMargin(),
-    )
   }
 
-  @Test fun `layout modifier implements toString`() {
+  @Test fun `layout modifier implements toString`() = with(object : TestScope {}) {
     var type = app.cash.redwood.LayoutModifier.customType(20.seconds)
     assertThat(type.toString()).isEqualTo("CustomType(customType=20s)")
 

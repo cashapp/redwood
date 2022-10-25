@@ -80,33 +80,34 @@ public data class TextInput(
 @Widget(6)
 public object Space
 
+public object TestScope
+
+public object SecondaryTestScope
+
 @LayoutModifier(1, RowScope::class)
 public data class RowVerticalAlignment(
   /** -1 for top, 0 for middle, 1 for bottom. */
   val direction: Int,
 )
 
-@LayoutModifier(2)
+@LayoutModifier(2, TestScope::class)
 public data class AccessibilityDescription(
   val value: String,
 )
 
-@LayoutModifier(3)
+@LayoutModifier(3, TestScope::class)
 public data class CustomType(
   val customType: Duration,
 )
 
-@LayoutModifier(4)
+@LayoutModifier(4, TestScope::class)
 public object CustomTypeStateless
 
-@LayoutModifier(5)
+@LayoutModifier(5, TestScope::class)
 public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
 
-public object TestScopeOne
-public object TestScopeTwo
-
-@LayoutModifier(6, scopes = [TestScopeOne::class, TestScopeTwo::class])
+@LayoutModifier(6, TestScope::class, SecondaryTestScope::class)
 public object CustomTypeWithMultipleScopes

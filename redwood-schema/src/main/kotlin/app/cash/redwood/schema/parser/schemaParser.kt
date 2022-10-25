@@ -82,8 +82,8 @@ public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
     throw IllegalArgumentException(
       buildString {
         appendLine("Schema @Widget tags must be unique")
-        for ((tag, group) in badWidgets) {
-          append("\n- @Widget($tag): ")
+        for ((widgetTag, group) in badWidgets) {
+          append("\n- @Widget($widgetTag): ")
           group.joinTo(this) { it.type.qualifiedName!! }
         }
       },
@@ -95,18 +95,24 @@ public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
     throw IllegalArgumentException(
       buildString {
         appendLine("Schema @LayoutModifier tags must be unique")
-        for ((tag, group) in badLayoutModifiers) {
-          append("\n- @LayoutModifier($tag): ")
+        for ((modifierTag, group) in badLayoutModifiers) {
+          append("\n- @LayoutModifier($modifierTag): ")
           group.joinTo(this) { it.type.qualifiedName!! }
         }
       },
     )
   }
 
-  val scopes = widgets
+  val widgetScopes = widgets
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
-    .mapNotNullTo(mutableSetOf()) { it.scope }
+    .mapNotNull { it.scope }
+  val layoutModifierScopes = layoutModifiers
+    .flatMap { it.scopes }
+  val scopes = buildSet {
+    addAll(widgetScopes)
+    addAll(layoutModifierScopes)
+  }
 
   val badDependencyTags = schemaAnnotation.dependencies
     .groupBy { it.tag }
@@ -115,8 +121,8 @@ public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
     throw IllegalArgumentException(
       buildString {
         appendLine("Schema dependency tags must be unique")
-        for ((tag, group) in badDependencyTags) {
-          append("\n- Dependency tag $tag: ")
+        for ((dependencyTag, group) in badDependencyTags) {
+          append("\n- Dependency tag $dependencyTag: ")
           group.joinTo(this) { it.schema.qualifiedName!! }
         }
       },
@@ -276,6 +282,9 @@ private fun parseLayoutModifier(
 ): LayoutModifier {
   require(annotation.tag in 1 until maxMemberTag.toInt()) {
     "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
+  }
+  require(annotation.scopes.isNotEmpty()) {
+    "@LayoutModifier ${memberType.qualifiedName} must have at least one scope."
   }
   val tag = schemaTag * maxMemberTag + annotation.tag.toUIntExact()
 

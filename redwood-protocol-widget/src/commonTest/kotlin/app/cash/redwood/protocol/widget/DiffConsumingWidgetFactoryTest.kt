@@ -21,9 +21,7 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
-import example.redwood.compose.accessibilityDescription
-import example.redwood.compose.customType
-import example.redwood.compose.customTypeWithDefault
+import example.redwood.compose.TestScope
 import example.redwood.widget.Button
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.ExampleSchemaWidgetFactory
@@ -98,7 +96,9 @@ class DiffConsumingWidgetFactoryTest {
       },
     )
 
-    assertEquals(LayoutModifier.customType(10.seconds), textInput.layoutModifiers)
+    with(object : TestScope {}) {
+      assertEquals(LayoutModifier.customType(10.seconds), textInput.layoutModifiers)
+    }
   }
 
   @Test fun layoutModifierDeserializationHonorsDefaultExpressions() {
@@ -131,7 +131,9 @@ class DiffConsumingWidgetFactoryTest {
       },
     )
 
-    assertEquals(LayoutModifier.customTypeWithDefault(10.seconds, "sup"), textInput.layoutModifiers)
+    with(object : TestScope {}) {
+      assertEquals(LayoutModifier.customTypeWithDefault(10.seconds, "sup"), textInput.layoutModifiers)
+    }
   }
 
   @Test fun unknownLayoutModifierThrowsDefault() {
@@ -190,7 +192,9 @@ class DiffConsumingWidgetFactoryTest {
     assertEquals("Unknown layout modifier 345432", handler.events.single())
 
     // Ensure only the invalid LayoutModifier was discarded and not all of them.
-    assertEquals(LayoutModifier.accessibilityDescription("hi"), recordingTextInput.layoutModifiers)
+    with(object : TestScope {}) {
+      assertEquals(LayoutModifier.accessibilityDescription("hi"), recordingTextInput.layoutModifiers)
+    }
   }
 
   @Test fun unknownChildrenThrowsDefault() {

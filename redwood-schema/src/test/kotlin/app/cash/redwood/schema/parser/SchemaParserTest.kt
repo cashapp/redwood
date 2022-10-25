@@ -767,4 +767,20 @@ class SchemaParserTest {
       """.trimMargin(),
     )
   }
+
+  @Schema(
+    members = [
+      UnscopedLayoutModifier::class,
+    ],
+  )
+  interface UnscopedModifierSchema
+
+  @LayoutModifier(1)
+  object UnscopedLayoutModifier
+
+  @Test fun `layout modifier must have at least one scope`() {
+    assertThrows<IllegalArgumentException> {
+      parseSchema(UnscopedModifierSchema::class)
+    }.hasMessageThat().isEqualTo("@LayoutModifier UnscopedLayoutModifier must have at least one scope.")
+  }
 }

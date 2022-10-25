@@ -71,19 +71,17 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     when (type) {
       Compose -> {
         generateComposableTargetMarker(schema).writeTo(out)
-        generateUnscopedModifierFunctions(schema)?.writeTo(out)
-        generateModifierImpls(schema)?.writeTo(out)
+        generateLayoutModifierImpls(schema)?.writeTo(out)
         for (scope in schema.scopes) {
-          generateScopeAndScopedModifiers(schema, scope).writeTo(out)
+          generateScope(schema, scope).writeTo(out)
         }
         for (widget in schema.widgets) {
           generateComposable(schema, widget).writeTo(out)
         }
         for (dependency in schema.dependencies) {
-          generateUnscopedModifierFunctions(dependency)?.writeTo(out)
-          generateModifierImpls(dependency)?.writeTo(out)
+          generateLayoutModifierImpls(dependency)?.writeTo(out)
           for (scope in dependency.scopes) {
-            generateScopeAndScopedModifiers(dependency, scope).writeTo(out)
+            generateScope(dependency, scope).writeTo(out)
           }
           for (widget in dependency.widgets) {
             generateComposable(dependency, widget, host = schema).writeTo(out)
