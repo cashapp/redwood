@@ -22,8 +22,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
-import example.redwood.compose.customType
-import example.redwood.compose.customTypeWithDefault
+import example.redwood.compose.TestScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -77,7 +76,9 @@ class DiffProducingWidgetFactoryTest {
     diffProducingWidget.id = Id(1U)
     diffProducingWidget._diffAppender = diffAppender
 
-    button.layoutModifiers = LayoutModifier.customType(10.seconds)
+    button.layoutModifiers = with(object : TestScope {}) {
+      LayoutModifier.customType(10.seconds)
+    }
     diffAppender.trySend()
 
     val expected = Diff(
@@ -117,7 +118,9 @@ class DiffProducingWidgetFactoryTest {
     diffProducingWidget.id = Id(1U)
     diffProducingWidget._diffAppender = diffAppender
 
-    button.layoutModifiers = LayoutModifier.customTypeWithDefault(10.seconds, "sup")
+    button.layoutModifiers = with(object : TestScope {}) {
+      LayoutModifier.customTypeWithDefault(10.seconds, "sup")
+    }
     diffAppender.trySend()
 
     val expected = Diff(

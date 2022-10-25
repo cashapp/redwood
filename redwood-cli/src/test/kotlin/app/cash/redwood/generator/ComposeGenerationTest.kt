@@ -63,11 +63,11 @@ class ComposeGenerationTest {
   @Test fun scopeIsAnnotatedWithLayoutScopeMarker() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
-    val fileSpec = generateScopeAndScopedModifiers(schema, RowScope::class)
+    val fileSpec = generateScope(schema, RowScope::class)
     assertThat(fileSpec.toString()).contains(
       """
       |@LayoutScopeMarker
-      |public sealed interface RowScope
+      |public interface RowScope
       """.trimMargin(),
     )
   }

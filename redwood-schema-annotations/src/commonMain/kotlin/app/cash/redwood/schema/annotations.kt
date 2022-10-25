@@ -116,11 +116,11 @@ public annotation class Default(val expression: String)
 
 /**
  * Annotates a data class which represents a layout modifier for a [Widget]. Each layout modifier
- * in a [Schema] must have a unique [tag] among all [@LayoutModifier][LayoutModifier] annotations
- * in the [Schema].
+ * in a [Schema] must have a unique [tag] among all [LayoutModifier] annotations in the [Schema].
+ * Additionally, each layout modifier must be associated with at least one scope.
  *
  * ```
- * @LayoutModifier(1)
+ * @LayoutModifier(1, RowScope::class)
  * data class RowAlignment(
  *   val value: VerticalAlignment,
  * )
