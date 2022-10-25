@@ -27,6 +27,8 @@ import kotlin.reflect.full.createType
 import org.junit.Test
 
 class SchemaParserTest {
+  object TestScope
+
   interface NonAnnotationSchema
 
   @Test fun nonAnnotatedSchemaThrows() {
@@ -63,7 +65,7 @@ class SchemaParserTest {
   interface DoubleAnnotatedWidgetSchema
 
   @Widget(1)
-  @LayoutModifier(1)
+  @LayoutModifier(1, TestScope::class)
   data class DoubleAnnotatedWidget(
     @Property(1) val name: String,
   )
@@ -121,17 +123,17 @@ class SchemaParserTest {
   )
   interface DuplicateLayoutModifierTagSchema
 
-  @LayoutModifier(1)
+  @LayoutModifier(1, TestScope::class)
   data class DuplicateLayoutModifierTagA(
     val name: String,
   )
 
-  @LayoutModifier(2)
+  @LayoutModifier(2, TestScope::class)
   data class NonDuplicateLayoutModifierTag(
     val name: String,
   )
 
-  @LayoutModifier(1)
+  @LayoutModifier(1, TestScope::class)
   data class DuplicateLayoutModifierTagB(
     val name: String,
   )
@@ -274,7 +276,7 @@ class SchemaParserTest {
   )
   interface NonDataClassLayoutModifierSchema
 
-  @LayoutModifier(1)
+  @LayoutModifier(1, TestScope::class)
   class NonDataClassLayoutModifier(
     @Property(1) val name: String,
   )
@@ -519,7 +521,7 @@ class SchemaParserTest {
   )
   interface OneMillionLayoutModifierSchema
 
-  @LayoutModifier(1_000_000)
+  @LayoutModifier(1_000_000, TestScope::class)
   data class OneMillionLayoutModifier(
     val value: Int,
   )
@@ -540,7 +542,7 @@ class SchemaParserTest {
   )
   interface ZeroLayoutModifierSchema
 
-  @LayoutModifier(0)
+  @LayoutModifier(0, TestScope::class)
   data class ZeroLayoutModifier(
     val value: Int,
   )
@@ -563,7 +565,7 @@ class SchemaParserTest {
     @Children(1) val children: () -> Unit,
   )
 
-  @LayoutModifier(1)
+  @LayoutModifier(1, TestScope::class)
   data class SomeLayoutModifier(
     val value: Int,
   )
@@ -781,6 +783,7 @@ class SchemaParserTest {
   @Test fun `layout modifier must have at least one scope`() {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnscopedModifierSchema::class)
-    }.hasMessageThat().isEqualTo("@LayoutModifier UnscopedLayoutModifier must have at least one scope.")
+    }.hasMessageThat().isEqualTo("@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.UnscopedLayoutModifier " +
+      "must have at least one scope.")
   }
 }
