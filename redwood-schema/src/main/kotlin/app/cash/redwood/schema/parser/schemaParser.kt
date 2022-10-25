@@ -249,8 +249,8 @@ private fun parseWidget(
     throw IllegalArgumentException(
       buildString {
         appendLine("${memberType.qualifiedName}'s @Children tags must be unique")
-        for ((tag, group) in badChildren) {
-          append("\n- @Children($tag): ")
+        for ((childTag, group) in badChildren) {
+          append("\n- @Children($childTag): ")
           group.joinTo(this) { it.name }
         }
       },
@@ -264,8 +264,8 @@ private fun parseWidget(
     throw IllegalArgumentException(
       buildString {
         appendLine("${memberType.qualifiedName}'s @Property tags must be unique")
-        for ((tag, group) in badProperties) {
-          append("\n- @Property($tag): ")
+        for ((propertyTag, group) in badProperties) {
+          append("\n- @Property($propertyTag): ")
           group.joinTo(this) { it.name }
         }
       },

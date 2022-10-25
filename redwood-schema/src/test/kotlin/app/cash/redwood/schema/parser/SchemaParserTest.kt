@@ -783,7 +783,9 @@ class SchemaParserTest {
   @Test fun `layout modifier must have at least one scope`() {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnscopedModifierSchema::class)
-    }.hasMessageThat().isEqualTo("@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.UnscopedLayoutModifier " +
-      "must have at least one scope.")
+    }.hasMessageThat().isEqualTo(
+      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.UnscopedLayoutModifier " +
+        "must have at least one scope.",
+    )
   }
 }
