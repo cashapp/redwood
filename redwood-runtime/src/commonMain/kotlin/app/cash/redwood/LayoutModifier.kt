@@ -47,6 +47,11 @@ public interface LayoutModifier {
   public fun <R> foldOut(initial: R, operation: (Element, R) -> R): R
 
   /**
+   * Iterates over all [Element]s in this [LayoutModifier].
+   */
+  public fun forEach(block: (Element) -> Unit)
+
+  /**
    * Returns `true` if [predicate] returns true for any [Element] in this [LayoutModifier].
    */
   public fun any(predicate: (Element) -> Boolean): Boolean
@@ -75,6 +80,8 @@ public interface LayoutModifier {
     override fun <R> foldOut(initial: R, operation: (Element, R) -> R): R =
       operation(this, initial)
 
+    override fun forEach(block: (Element) -> Unit): Unit = block(this)
+
     override fun any(predicate: (Element) -> Boolean): Boolean = predicate(this)
 
     override fun all(predicate: (Element) -> Boolean): Boolean = predicate(this)
@@ -90,6 +97,7 @@ public interface LayoutModifier {
   public companion object : LayoutModifier {
     override fun <R> foldIn(initial: R, operation: (R, Element) -> R): R = initial
     override fun <R> foldOut(initial: R, operation: (Element, R) -> R): R = initial
+    override fun forEach(block: (Element) -> Unit) {}
     override fun any(predicate: (Element) -> Boolean): Boolean = false
     override fun all(predicate: (Element) -> Boolean): Boolean = true
     override infix fun then(other: LayoutModifier): LayoutModifier = other
@@ -110,6 +118,11 @@ public class CombinedLayoutModifier(
 
   override fun <R> foldOut(initial: R, operation: (LayoutModifier.Element, R) -> R): R =
     outer.foldOut(inner.foldOut(initial, operation), operation)
+
+  override fun forEach(block: (LayoutModifier.Element) -> Unit) {
+    outer.forEach(block)
+    inner.forEach(block)
+  }
 
   override fun any(predicate: (LayoutModifier.Element) -> Boolean): Boolean =
     outer.any(predicate) || inner.any(predicate)
