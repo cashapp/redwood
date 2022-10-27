@@ -68,6 +68,8 @@ public class HTMLElementChildren(
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    _widgets.onLayoutModifierUpdated(index)
+    val element = parent.children[index] as HTMLElement
+    parent.removeChild(element)
+    parent.insertBefore(element, parent.children[index])
   }
 }

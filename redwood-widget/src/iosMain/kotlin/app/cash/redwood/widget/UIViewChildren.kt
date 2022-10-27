@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,51 +15,58 @@
  */
 package app.cash.redwood.widget
 
-import android.view.View
-import android.view.ViewGroup
+import platform.UIKit.UIView
+import platform.UIKit.insertSubview
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.setNeedsDisplay
 
-public class ViewGroupChildren(
-  private val parent: ViewGroup,
-) : Widget.Children<View> {
-  private val _widgets = MutableListChildren<View>()
-  public val widgets: List<Widget<View>> get() = _widgets
+public class UIViewChildren(
+  private val parent: UIView,
+) : Widget.Children<UIView> {
+  private val _widgets = MutableListChildren<UIView>()
+  public val widgets: List<Widget<UIView>> get() = _widgets
 
-  override fun insert(index: Int, widget: Widget<View>) {
+  override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.insert(index, widget)
-    parent.addView(widget.value, index)
+    parent.insertSubview(widget.value, index.toLong())
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
-    val views = Array(count) { offset ->
-      parent.getChildAt(fromIndex + offset)
+    val subviews = Array(count) { offset ->
+      parent.typedSubviews[fromIndex + offset].also(UIView::removeFromSuperview)
     }
-    parent.removeViews(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
       toIndex - count
     } else {
       toIndex
     }
-    views.forEachIndexed { offset, view ->
-      parent.addView(view, newIndex + offset)
+    subviews.forEachIndexed { offset, view ->
+      parent.insertSubview(view, (newIndex + offset).toLong())
     }
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
-    parent.removeViews(index, count)
+
+    for (i in 0 until count) {
+      // Subviews aren't removed immediately from the list.
+      parent.typedSubviews[index + i].removeFromSuperview()
+    }
   }
 
   override fun clear() {
     _widgets.clear()
-    parent.removeAllViews()
+
+    for (subview in parent.typedSubviews) {
+      subview.removeFromSuperview()
+    }
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    val view = parent.getChildAt(index)
-    view.invalidate()
-    view.requestLayout()
+    val subview = parent.typedSubviews[index]
+    subview.setNeedsDisplay()
   }
 }
