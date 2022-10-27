@@ -18,7 +18,7 @@ package example.ios
 import androidx.compose.runtime.BroadcastFrameClock
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
-import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.UIViewChildren
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
 import example.sunspot.compose.DiffProducingSunspotWidgetFactory
@@ -28,9 +28,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
 import platform.Foundation.NSLog
 import platform.UIKit.UIStackView
-import platform.UIKit.UIView
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.subviews
 
 class CounterViewControllerDelegate(
   root: UIStackView,
@@ -47,11 +44,10 @@ class CounterViewControllerDelegate(
       onEvent = { NSLog("RedwoodEvent: $it") },
     )
 
-    val children = MutableListChildren { children ->
-      @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
-      (root.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-      children.forEach { root.addArrangedSubview(it.value) }
-    }
+    val children = UIViewChildren(
+      parent = root,
+      insert = { view, index -> root.insertArrangedSubview(view, index.toULong()) },
+    )
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(
       container = children,

@@ -22,13 +22,14 @@ import platform.UIKit.setNeedsDisplay
 
 public class UIViewChildren(
   private val parent: UIView,
+  private val insert: (UIView, Int) -> Unit = { view, index -> parent.insertSubview(view, index.toLong()) },
 ) : Widget.Children<UIView> {
   private val _widgets = MutableListChildren<UIView>()
   public val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.insert(index, widget)
-    parent.insertSubview(widget.value, index.toLong())
+    insert(widget.value, index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -44,7 +45,7 @@ public class UIViewChildren(
       toIndex
     }
     subviews.forEachIndexed { offset, view ->
-      parent.insertSubview(view, (newIndex + offset).toLong())
+      insert(view, newIndex + offset)
     }
   }
 
