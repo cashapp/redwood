@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.treehouse
 
-import java.net.URI
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,9 +23,6 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -37,55 +32,61 @@ import okhttp3.WebSocketListener
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal actual fun hotReloadFlow(flow: Flow<String>): Flow<String> {
-  return flow.transformLatest { manifestUrl ->
+  return flow {
     val wsClient: OkHttpClient = OkHttpClient.Builder()
       .readTimeout(0, TimeUnit.MILLISECONDS)
       .connectTimeout(1, TimeUnit.SECONDS)
       .build()
 
-    var currentlyConnectedToWebSocket = false
+    emitAll(
+      flow.flatMapLatest { manifestUrl ->
+        var currentlyConnectedToWebSocket = false
 
-    val uri = URI(manifestUrl)
-    val request: Request = Request.Builder()
-      .url("ws://${uri.host}:${uri.port}/ws")
-      .build()
+        val request: Request = Request.Builder()
+          .url(manifestUrl.toHttpUrl().resolve("/ws")!!)
+          .build()
 
-    val wsFlow:Flow<String> = callbackFlow {
-      var ws: WebSocket? = null
-      launch {
-        while (true) {
-          if (!currentlyConnectedToWebSocket) {
-            emit(manifestUrl)
-            ws = wsClient.newWebSocket(request, object : WebSocketListener() {
-              override fun onOpen(webSocket: WebSocket, response: Response) {
-                currentlyConnectedToWebSocket = true
+        return@flatMapLatest callbackFlow {
+          var ws: WebSocket? = null
+          launch {
+            while (true) {
+              if (!currentlyConnectedToWebSocket) {
+                trySendBlocking(manifestUrl)
+                println("we are here")
+                ws = wsClient.newWebSocket(
+                  request,
+                  object : WebSocketListener() {
+                    override fun onOpen(webSocket: WebSocket, response: Response) {
+                      currentlyConnectedToWebSocket = true
+                    }
+
+                    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                      currentlyConnectedToWebSocket = false
+                      webSocket.close(1000, null)
+                    }
+
+                    override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                      currentlyConnectedToWebSocket = false
+                      webSocket.close(1000, null)
+                    }
+
+                    override fun onMessage(webSocket: WebSocket, text: String) {
+                      if (text == "reload") {
+                        trySendBlocking(manifestUrl)
+                      }
+                    }
+                  },
+                )
               }
-
-              override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                currentlyConnectedToWebSocket = false
-                webSocket.close(1000, null)
-              }
-
-              override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                currentlyConnectedToWebSocket = false
-                webSocket.close(1000, null)
-              }
-
-              override fun onMessage(webSocket: WebSocket, text: String) {
-                if (text == "reload") {
-                  trySendBlocking(manifestUrl)
-                }
-              }
-            })
+              delay(500.milliseconds)
+            }
           }
-          delay(500.milliseconds)
-        }
-      }
 
-      awaitClose {
-        ws?.close(1000, null)
-      }
-    }
-    wsFlow.onEach { emit(it) }.collect()
+          awaitClose {
+            ws?.close(1000, null)
+          }
+        }
+      },
+    )
   }
 }

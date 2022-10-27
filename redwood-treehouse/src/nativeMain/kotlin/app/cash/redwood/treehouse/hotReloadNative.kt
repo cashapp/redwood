@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.treehouse
 
 import kotlin.time.Duration.Companion.milliseconds
@@ -22,4 +21,3 @@ import kotlinx.coroutines.flow.Flow
 internal actual fun hotReloadFlow(flow: Flow<String>): Flow<String> {
   return flow.rebounce(500.milliseconds)
 }
-
