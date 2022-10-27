@@ -42,6 +42,9 @@ kotlin {
     nativeMain {
       dependsOn(hostMain)
     }
+    iosMain {
+      dependsOn(nativeMain)
+    }
     androidMain {
       dependsOn(hostMain)
       dependencies {

@@ -106,7 +106,7 @@ public class TreehouseLauncher internal constructor(
     }
 
     val manifestUrlFlowForLoad = when (spec.freshCodePolicy) {
-      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> spec.manifestUrl.rebounce(500.milliseconds)
+      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> hotReloadFlow(spec.manifestUrl)
       else -> spec.manifestUrl
     }
 
