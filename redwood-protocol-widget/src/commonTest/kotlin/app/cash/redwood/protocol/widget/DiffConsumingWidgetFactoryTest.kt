@@ -16,19 +16,12 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.TestScope
-import example.redwood.widget.Button
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
-import example.redwood.widget.ExampleSchemaWidgetFactory
-import example.redwood.widget.Row
-import example.redwood.widget.ScopedRow
-import example.redwood.widget.Space
-import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -287,27 +280,6 @@ class DiffConsumingWidgetFactoryTest {
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
     assertEquals(Event(Id(1U), 4U, JsonPrimitive("PT10S")), eventSink.events.single())
-  }
-
-  open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
-    override val RedwoodLayout = object : RedwoodLayoutWidgetFactory<Nothing> {
-      override fun Column() = TODO("Not yet implemented")
-      override fun Row() = TODO("Not yet implemented")
-    }
-    override fun Row(): Row<Nothing> = TODO()
-    override fun ScopedRow(): ScopedRow<Nothing> = TODO()
-    override fun Text(): Text<Nothing> = TODO()
-    override fun Button() = object : Button<Nothing> {
-      override val value get() = TODO()
-      override var layoutModifiers: LayoutModifier
-        get() = TODO()
-        set(_) { TODO() }
-
-      override fun text(text: String?) = TODO()
-      override fun onClick(onClick: (() -> Unit)?) = TODO()
-    }
-    override fun TextInput(): TextInput<Nothing> = TODO()
-    override fun Space(): Space<Nothing> = TODO()
   }
 
   class RecordingTextInput : TextInput<Nothing> {
