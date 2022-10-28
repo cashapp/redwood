@@ -43,7 +43,10 @@ public class ProtocolDisplay<T : Any>(
         is ChildrenDiff.Insert -> {
           val childWidget = factory.create(childrenDiff.kind) ?: continue
           children.insert(childrenDiff.index, childWidget)
-          nodes[childrenDiff.childId] = Node(childWidget, childrenDiff.id, children)
+          val old = nodes.put(childrenDiff.childId, Node(childWidget, childrenDiff.id, children))
+          require(old == null) {
+            "Insert attempted to replace existing widget with ID ${childrenDiff.childId.value}"
+          }
           node.childIds.add(childrenDiff.index, childrenDiff.childId)
         }
         is ChildrenDiff.Move -> {

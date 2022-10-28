@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2022 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package app.cash.redwood.protocol.widget
+
+import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
+import example.redwood.widget.Button
+import example.redwood.widget.ExampleSchemaWidgetFactory
+import example.redwood.widget.Row
+import example.redwood.widget.ScopedRow
+import example.redwood.widget.Space
+import example.redwood.widget.Text
+import example.redwood.widget.TextInput
+
+open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
+  override val RedwoodLayout = object : RedwoodLayoutWidgetFactory<Nothing> {
+    override fun Column() = TODO()
+    override fun Row() = TODO()
+  }
+  override fun Row(): Row<Nothing> = TODO()
+  override fun ScopedRow(): ScopedRow<Nothing> = TODO()
+  override fun Text(): Text<Nothing> = TODO()
+  override fun Button() = object : Button<Nothing> {
+    override val value get() = TODO()
+    override var layoutModifiers: LayoutModifier
+      get() = TODO()
+      set(_) { TODO() }
+
+    override fun text(text: String?) = TODO()
+    override fun onClick(onClick: (() -> Unit)?) = TODO()
+  }
+  override fun TextInput(): TextInput<Nothing> = TODO()
+  override fun Space(): Space<Nothing> = TODO()
+}
