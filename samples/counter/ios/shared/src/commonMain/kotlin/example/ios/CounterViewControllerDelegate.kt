@@ -23,6 +23,7 @@ import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
 import example.sunspot.compose.DiffProducingSunspotWidgetFactory
 import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
+import kotlinx.cinterop.convert
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
@@ -46,7 +47,7 @@ class CounterViewControllerDelegate(
 
     val children = UIViewChildren(
       parent = root,
-      insert = { view, index -> root.insertArrangedSubview(view, index.toULong()) },
+      insert = { view, index -> root.insertArrangedSubview(view, index.convert()) },
     )
     val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
     val display = ProtocolDisplay(

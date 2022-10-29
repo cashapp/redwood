@@ -15,14 +15,18 @@
  */
 package app.cash.redwood.widget
 
+import kotlinx.cinterop.convert
 import platform.UIKit.UIView
 import platform.UIKit.insertSubview
 import platform.UIKit.removeFromSuperview
 import platform.UIKit.setNeedsDisplay
+import platform.darwin.NSInteger
 
 public class UIViewChildren(
   private val parent: UIView,
-  private val insert: (UIView, Int) -> Unit = { view, index -> parent.insertSubview(view, index.toLong()) },
+  private val insert: (UIView, Int) -> Unit = { view, index ->
+    parent.insertSubview(view, index.convert<NSInteger>())
+  },
 ) : Widget.Children<UIView> {
   private val _widgets = MutableListChildren<UIView>()
   public val widgets: List<Widget<UIView>> get() = _widgets

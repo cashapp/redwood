@@ -18,6 +18,7 @@ package example.ios.sunspot
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.UIViewChildren
 import example.sunspot.widget.SunspotBox
+import kotlinx.cinterop.convert
 import platform.UIKit.UILayoutConstraintAxisHorizontal
 import platform.UIKit.UIStackView
 import platform.UIKit.UIStackViewDistributionFillEqually
@@ -33,6 +34,6 @@ class IosSunspotBox(
 
   override val children = UIViewChildren(
     parent = value,
-    insert = { view, index -> value.insertArrangedSubview(view, index.toULong()) },
+    insert = { view, index -> value.insertArrangedSubview(view, index.convert()) },
   )
 }
