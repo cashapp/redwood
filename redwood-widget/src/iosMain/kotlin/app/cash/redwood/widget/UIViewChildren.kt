@@ -35,8 +35,8 @@ public class UIViewChildren(
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
-    val subviews = Array(count) { offset ->
-      parent.typedSubviews[fromIndex + offset].also(UIView::removeFromSuperview)
+    val subviews = Array(count) {
+      parent.typedSubviews[fromIndex].also(UIView::removeFromSuperview)
     }
 
     val newIndex = if (toIndex > fromIndex) {
@@ -52,9 +52,8 @@ public class UIViewChildren(
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
 
-    for (i in 0 until count) {
-      // Subviews aren't removed immediately from the list.
-      parent.typedSubviews[index + i].removeFromSuperview()
+    repeat(count) {
+      parent.typedSubviews[index].removeFromSuperview()
     }
   }
 
