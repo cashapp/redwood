@@ -23,8 +23,6 @@ package app.cash.redwood.widget
 public class MutableListChildren<T : Any>(
   private val list: MutableList<Widget<T>> = mutableListOf(),
 ) : Widget.Children<T>, MutableList<Widget<T>> by list {
-  public val children: List<Widget<T>> get() = list
-
   override fun insert(index: Int, widget: Widget<T>) {
     list.add(index, widget)
   }
