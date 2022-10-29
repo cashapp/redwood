@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
@@ -25,8 +25,6 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
-import platform.UIKit.addSubview
-import platform.UIKit.removeFromSuperview
 import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
@@ -45,12 +43,7 @@ public class TreehouseUIKitView<T : Any>(
       }
     }
 
-  override val children: Widget.Children<*> =
-    MutableListChildren { children ->
-      @Suppress("UNCHECKED_CAST") // cinterop loses the generic.
-      (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
-      children.forEach { view.addSubview(it.value) }
-    }
+  override val children: Widget.Children<*> = UIViewChildren(view)
 
   private val mutableHostConfiguration = MutableStateFlow(HostConfiguration())
 

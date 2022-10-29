@@ -24,11 +24,7 @@ class TextBinding: WidgetText {
         return view
     }()
 
-    init() {
-        self.layoutModifiers = ExposedKt.layoutModifier()
-    }
-
-    var layoutModifiers: Redwood_runtimeLayoutModifier
+    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 
     func text(text: String) {

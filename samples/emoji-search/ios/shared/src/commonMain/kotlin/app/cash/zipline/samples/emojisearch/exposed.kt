@@ -17,6 +17,7 @@ package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseUIKitView
+import app.cash.redwood.widget.UIViewChildren
 import example.schema.widget.EmojiSearchWidgetFactory
 import okio.ByteString
 import okio.toByteString
@@ -28,6 +29,7 @@ fun exposedTypes(
   emojiSearchEvent: EmojiSearchEvent,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   treehouseUIKitView: TreehouseUIKitView<*>,
+  uiViewChildren: UIViewChildren,
 ) {
   throw AssertionError()
 }

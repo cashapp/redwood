@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package app.cash.redwood.widget
 
-import UIKit
-import shared
+import platform.UIKit.UIView
+import platform.UIKit.subviews
 
-class RowBinding: WidgetRow {
-    private let root: UIStackView = {
-        let view = UIStackView()
-        view.axis = .horizontal
-        view.contentMode = .left
-        return view
-    }()
-
-    lazy var children: Redwood_widgetWidgetChildren = Redwood_widgetUIViewChildren(
-        parent: root,
-        insert: { [unowned self] (view, index) in return self.root.addArrangedSubview(view) }
-    )
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
-    var value: Any { root }
-}
+@Suppress("UNCHECKED_CAST")
+internal val UIView.typedSubviews: List<UIView>
+  get() = subviews as List<UIView>

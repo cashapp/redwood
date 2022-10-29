@@ -30,10 +30,13 @@ import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 
-internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
+internal class ViewFlexContainer(
+  context: Context,
+  private val direction: FlexDirection,
+) {
   private val container = FlexContainer().apply {
     flexDirection = direction
   }
@@ -56,16 +59,8 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
 
   val view: View get() = scrollView
 
-  val children: Widget.Children<View> = MutableListChildren(
-    onUpdate = { widgets ->
-      container.items.clear()
-      hostView.removeAllViews()
-      widgets.forEach { widget ->
-        container.items += widget.value.asItem(widget.layoutModifiers, direction)
-        hostView.addView(widget.value)
-      }
-    },
-  )
+  private val _children = ViewGroupChildren(hostView)
+  val children: Widget.Children<View> get() = _children
 
   fun padding(padding: Padding) {
     container.padding = padding.toSpacing()
@@ -108,6 +103,24 @@ internal class ViewFlexContainer(context: Context, direction: FlexDirection) {
       container.items.forEachIndexed { index, item ->
         getChildAt(index).layout(item.left, item.top, item.right, item.bottom)
       }
+    }
+
+    override fun onViewAdded(child: View) {
+      super.onViewAdded(child)
+      _children.widgets.forEachIndexed { index, widget ->
+        if (widget.value === child) {
+          container.items.add(index, widget.value.asItem(widget.layoutModifiers, direction))
+          return@forEachIndexed
+        }
+      }
+    }
+
+    override fun onViewRemoved(child: View) {
+      super.onViewRemoved(child)
+      val index = container.items.indexOfFirst { item ->
+        (item.measurable as ViewMeasurable).view === child
+      }
+      container.items.removeAt(index)
     }
   }
 }

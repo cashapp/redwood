@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package app.cash.redwood.widget
 
-import UIKit
-import shared
+import platform.UIKit.UILabel
+import platform.UIKit.UIView
+import platform.UIKit.subviews
 
-class RowBinding: WidgetRow {
-    private let root: UIStackView = {
-        let view = UIStackView()
-        view.axis = .horizontal
-        view.contentMode = .left
-        return view
-    }()
+class UIViewChildrenTest : AbstractWidgetChildrenTest<UIView>() {
+  private val parent = UIView()
+  override val children = UIViewChildren(parent)
 
-    lazy var children: Redwood_widgetWidgetChildren = Redwood_widgetUIViewChildren(
-        parent: root,
-        insert: { [unowned self] (view, index) in return self.root.addArrangedSubview(view) }
-    )
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
-    var value: Any { root }
+  override fun widget(name: String): UIView {
+    return UILabel().apply { text = name }
+  }
+
+  override fun names(): List<String> {
+    return parent.subviews.map { (it as UILabel).text!! }
+  }
 }

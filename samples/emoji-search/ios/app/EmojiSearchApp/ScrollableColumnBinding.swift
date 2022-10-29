@@ -37,12 +37,11 @@ class ScrollableColumnBinding: NSObject, WidgetScrollableColumn {
 
 extension ScrollableColumnBinding: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        views.count
+        return views.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = TableViewCell(view: views[indexPath.row])
-        return cell
+        return TableViewCell(view: views[indexPath.row])
     }
 }
 
@@ -59,6 +58,7 @@ private class TableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 

@@ -124,7 +124,7 @@ internal fun View.asItem(layoutModifiers: LayoutModifier, direction: FlexDirecti
   )
 }
 
-private class ViewMeasurable(private val view: View) : Measurable() {
+internal class ViewMeasurable(val view: View) : Measurable() {
   override val requestedWidth get() = view.layoutParams.width
   override val requestedHeight get() = view.layoutParams.height
   override val minWidth get() = view.minimumWidth

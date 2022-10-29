@@ -24,11 +24,13 @@ import example.shared.Counter
 import example.sunspot.compose.DiffProducingSunspotWidgetFactory
 import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.browser.document
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
+  @OptIn(DelicateCoroutinesApi::class)
   val composition = ProtocolRedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     factory = DiffProducingSunspotWidgetFactory(),
