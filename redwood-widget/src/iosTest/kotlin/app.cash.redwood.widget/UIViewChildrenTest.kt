@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.widget
 
-import kotlin.test.Test
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
 import platform.UIKit.subviews
