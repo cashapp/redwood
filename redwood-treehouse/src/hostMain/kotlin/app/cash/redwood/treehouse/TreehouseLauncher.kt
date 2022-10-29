@@ -20,7 +20,6 @@ import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -106,7 +105,7 @@ public class TreehouseLauncher internal constructor(
     }
 
     val manifestUrlFlowForLoad = when (spec.freshCodePolicy) {
-      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> spec.manifestUrl.rebounce(500.milliseconds)
+      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> hotReloadFlow(spec.manifestUrl)
       else -> spec.manifestUrl
     }
 
