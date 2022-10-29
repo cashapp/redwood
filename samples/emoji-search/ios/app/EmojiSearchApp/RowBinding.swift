@@ -25,9 +25,10 @@ class RowBinding: WidgetRow {
         return view
     }()
 
-    lazy var children: Redwood_widgetWidgetChildren = Redwood_widgetUIViewChildren(root, { [unowned self] (view, index) in
-        return self.root.addArrangedSubview(view)
-    })
+    lazy var children: Redwood_widgetWidgetChildren = Redwood_widgetUIViewChildren(
+        parent: root,
+        insert: { [unowned self] (view, index) in return self.root.addArrangedSubview(view) }
+    )
     var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 }
