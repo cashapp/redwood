@@ -30,10 +30,9 @@ class ImageBinding: WidgetImage {
 
     init(imageLoader: RemoteImageLoader) {
         self.imageLoader = imageLoader
-        self.layoutModifiers = ExposedKt.layoutModifier()
     }
 
-    var layoutModifiers: Redwood_runtimeLayoutModifier
+    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 
     func url(url: String) {
@@ -53,14 +52,3 @@ class ImageBinding: WidgetImage {
         }
     }
 }
-
-class ScaledHeightImageView: UIImageView {
-
-    override var intrinsicContentSize: CGSize {
-        if let myImage = self.image {
-            return CGSize(width: 44, height: 44)
-        }
-        return CGSize(width: -1.0, height: -1.0)
-    }
-}
-

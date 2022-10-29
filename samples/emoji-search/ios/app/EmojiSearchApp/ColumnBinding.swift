@@ -21,15 +21,13 @@ class ColumnBinding: WidgetColumn {
     private let root: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
+        view.contentMode = .left
         return view
     }()
 
-    init() {}
-
-    lazy var children: Redwood_widgetWidgetChildren = ChildrenBinding { [unowned self] views in
-        self.root.subviews.forEach { $0.removeFromSuperview() }
-        views.forEach { self.root.addArrangedSubview($0) }
-    }
+    lazy var children: Redwood_widgetWidgetChildren = Redwood_widgetUIViewChildren(root, { [unowned self] (view, index) in
+        return self.root.addArrangedSubview(view)
+    })
     var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 }

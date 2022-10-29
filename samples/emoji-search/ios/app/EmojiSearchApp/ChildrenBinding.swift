@@ -37,8 +37,7 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
 
     func move(fromIndex: Int32, toIndex: Int32, count: Int32) {
         let childrenToMove = (0..<count).map { _ -> UIView in
-            let child = storage[Int(fromIndex)]
-            return child
+            return storage[Int(fromIndex)]
         }
 
         let newIndex = Int((toIndex > fromIndex) ? toIndex - count : toIndex)
@@ -55,6 +54,5 @@ class ChildrenBinding: Redwood_widgetWidgetChildren {
         update(storage)
     }
 
-    func onLayoutModifierUpdated(index: Int32) {
-    }
+    func onLayoutModifierUpdated(index: Int32) {}
 }
