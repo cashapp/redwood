@@ -34,10 +34,10 @@ public data class Widget(
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   val traits: List<Trait>,
 ) {
-  public sealed class Trait {
-    public abstract val tag: UInt
-    public abstract val name: String
-    public abstract val defaultExpression: String?
+  public sealed interface Trait {
+    public val tag: UInt
+    public val name: String
+    public val defaultExpression: String?
   }
 
   public data class Property(
@@ -45,22 +45,21 @@ public data class Widget(
     override val name: String,
     val type: KType,
     override val defaultExpression: String?,
-  ) : Trait()
+  ) : Trait
 
   public data class Event(
     override val tag: UInt,
     override val name: String,
     override val defaultExpression: String?,
     val parameterType: KType?,
-  ) : Trait()
+  ) : Trait
 
   public data class Children(
     override val tag: UInt,
     override val name: String,
+    override val defaultExpression: String?,
     val scope: KClass<*>? = null,
-  ) : Trait() {
-    override val defaultExpression: String? get() = null
-  }
+  ) : Trait
 }
 
 public data class LayoutModifier(

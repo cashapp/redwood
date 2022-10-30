@@ -142,12 +142,15 @@ internal fun generateComposable(
                 }
                 is Event -> {
                   ParameterSpec.builder(trait.name, trait.lambdaType)
-                    .defaultValue("null")
+                    .defaultValue(trait.defaultExpression ?: "null")
                     .build()
                 }
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage(), it.simpleName!!) }
                   ParameterSpec.builder(trait.name, composableLambda(scope, composeTargetMarker))
+                    .apply {
+                      trait.defaultExpression?.let { defaultValue(it) }
+                    }
                     .build()
                 }
               },

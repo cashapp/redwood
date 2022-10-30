@@ -16,6 +16,8 @@
 package app.cash.redwood.generator
 
 import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.Default
+import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.schema.parser.parseSchema
@@ -37,7 +39,7 @@ class ComposeGenerationTest {
     @Children(2) val unscoped: () -> Unit,
   )
 
-  @Test fun functionTargetMarker() {
+  @Test fun `function target marker`() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
@@ -50,7 +52,7 @@ class ComposeGenerationTest {
     )
   }
 
-  @Test fun scopedAndUnscopedChildrenWithTargetMarker() {
+  @Test fun `scoped and unscoped children with target marker`() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
@@ -60,7 +62,7 @@ class ComposeGenerationTest {
     }
   }
 
-  @Test fun scopeIsAnnotatedWithLayoutScopeMarker() {
+  @Test fun `scope is annotated with layout scope marker`() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
     val fileSpec = generateScope(schema, RowScope::class)
@@ -70,5 +72,33 @@ class ComposeGenerationTest {
       |public interface RowScope
       """.trimMargin(),
     )
+  }
+
+  @Schema(
+    [
+      DefaultTestWidget::class,
+    ],
+  )
+  interface DefaultSchema
+
+  @Widget(1)
+  data class DefaultTestWidget(
+    @Property(1) @Default("\"test\"")
+    val trait: String,
+    @Property(2) @Default("{ error(\"test\") }")
+    val onEvent: () -> Unit,
+    @Children(1) @Default("{}")
+    val block: () -> Unit,
+  )
+
+  @Test fun `default is supported for all property types`() {
+    val schema = parseSchema(DefaultSchema::class)
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).apply {
+      contains("trait: String = \"test\"")
+      contains("onEvent: (() -> Unit)? = { error(\"test\") }")
+      contains("block: @Composable @DefaultSchemaComposable () -> Unit = {}")
+    }
   }
 }
