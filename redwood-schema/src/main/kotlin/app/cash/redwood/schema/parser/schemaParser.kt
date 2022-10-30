@@ -229,7 +229,7 @@ private fun parseWidget(
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        Widget.Children(children.tag.toUIntExact(), it.name!!, scope)
+        Widget.Children(children.tag.toUIntExact(), it.name!!, defaultExpression, scope)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }
