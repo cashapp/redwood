@@ -30,13 +30,15 @@ allprojects {
     google()
   }
 
-  tasks.withType(Test).configureEach {
+  tasks.withType(AbstractTestTask).configureEach {
     testLogging {
       if (System.getenv("CI") == "true") {
         events = ["failed", "skipped", "passed"]
       }
       exceptionFormat "full"
     }
+    // Force tests to always run to avoid caching issues.
+    outputs.upToDateWhen { false }
   }
 
   plugins.withId('java-base') {
