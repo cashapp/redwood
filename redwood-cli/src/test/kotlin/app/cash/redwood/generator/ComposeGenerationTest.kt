@@ -83,9 +83,12 @@ class ComposeGenerationTest {
 
   @Widget(1)
   data class DefaultTestWidget(
-    @Property(1) @Default("\"test\"") val trait: String,
-    @Property(2) @Default("{ error(\"test\") }") val onEvent: () -> Unit,
-    @Children(1) @Default("{}") val block: () -> Unit,
+    @Property(1) @Default("\"test\"")
+    val trait: String,
+    @Property(2) @Default("{ error(\"test\") }")
+    val onEvent: () -> Unit,
+    @Children(1) @Default("{}")
+    val block: () -> Unit,
   )
 
   @Test fun `default is supported for all property types`() {
