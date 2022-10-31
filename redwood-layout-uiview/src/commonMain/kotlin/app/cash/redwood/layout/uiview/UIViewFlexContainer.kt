@@ -28,10 +28,12 @@ import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSize
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.invalidateIntrinsicContentSize
+import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
 import platform.UIKit.subviews
 
@@ -86,6 +88,17 @@ internal class UIViewFlexContainer(
     override fun layoutSubviews() {
       val measureResult = _view.bounds.useContents { measure(size.toMeasureSpecs()) }
       container.layout(measureResult)
+
+      container.items.forEach { item ->
+        _view.setFrame(
+          CGRectMake(
+            item.left.toDouble(),
+            item.top.toDouble(),
+            (item.right - item.left).toDouble(),
+            (item.bottom - item.top).toDouble(),
+          )
+        )
+      }
     }
 
     private fun measure(measureSpecs: Pair<MeasureSpec, MeasureSpec>): MeasureResult {
