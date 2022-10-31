@@ -1,0 +1,17 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutSchema.widget
+        implementation projects.redwoodFlexContainer
+        implementation projects.redwoodWidgetCompose
+      }
+    }
+  }
+}

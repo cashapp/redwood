@@ -104,7 +104,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
     val result = container.measure(widthSpec, heightSpec)
     return layout(result.containerSize.width, result.containerSize.height) {
-      container.layout(result, result.containerSize)
+      container.layout(result)
 
       for (item in container.items) {
         (item.measurable as ComposeMeasurable).placeable.placeRelative(item.left, item.top)

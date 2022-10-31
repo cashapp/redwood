@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused", "UNUSED_PARAMETER")
+
 package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.LayoutModifier
@@ -23,7 +25,7 @@ import okio.ByteString
 import okio.toByteString
 import platform.Foundation.NSData
 
-@Suppress("unused", "UNUSED_PARAMETER") // Used to export types to Objective-C / Swift.
+// Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchEvent: EmojiSearchEvent,
