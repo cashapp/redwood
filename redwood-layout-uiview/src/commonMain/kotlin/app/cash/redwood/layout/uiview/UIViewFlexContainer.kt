@@ -96,7 +96,7 @@ internal class UIViewFlexContainer(
             item.top.toDouble(),
             (item.right - item.left).toDouble(),
             (item.bottom - item.top).toDouble(),
-          )
+          ),
         )
       }
     }
