@@ -56,7 +56,6 @@ internal actual fun hotReloadFlow(flow: Flow<String>): Flow<String> {
             while (true) {
               if (!currentlyConnectedToWebSocket) {
                 trySendBlocking(manifestUrl)
-                println("we are here")
                 ws = wsClient.newWebSocket(
                   request,
                   object : WebSocketListener() {
