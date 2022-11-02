@@ -106,8 +106,8 @@ internal class UIViewFlexContainer(
       _view.setContentSize(
         CGSizeMake(
           measureResult.containerSize.width.toDouble(),
-          container.items.last().top.toDouble()
-        )
+          container.items.last().top.toDouble(),
+        ),
       )
 
       container.items.forEachIndexed { index, item ->

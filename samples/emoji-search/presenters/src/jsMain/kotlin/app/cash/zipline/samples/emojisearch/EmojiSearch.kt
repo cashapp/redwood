@@ -41,7 +41,7 @@ class EmojiSearchTreehouseUi(
     val viewModel by viewModels.collectAsState(initialViewModel)
 
     Column(
-      horizontalAlignment = CrossAxisAlignment.Stretch
+      horizontalAlignment = CrossAxisAlignment.Stretch,
     ) {
       TextInput(
         text = viewModel.searchTerm,
