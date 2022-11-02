@@ -34,6 +34,7 @@ public class UIViewChildren(
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.insert(index, widget)
     insert(widget.value, index)
+    invalidate()
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -51,6 +52,7 @@ public class UIViewChildren(
     subviews.forEachIndexed { offset, view ->
       insert(view, newIndex + offset)
     }
+    invalidate()
   }
 
   override fun remove(index: Int, count: Int) {
@@ -59,6 +61,7 @@ public class UIViewChildren(
     repeat(count) {
       parent.typedSubviews[index].removeFromSuperview()
     }
+    invalidate()
   }
 
   override fun clear() {
@@ -67,10 +70,14 @@ public class UIViewChildren(
     for (subview in parent.typedSubviews) {
       subview.removeFromSuperview()
     }
+    invalidate()
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    val subview = parent.typedSubviews[index]
-    subview.setNeedsDisplay()
+    invalidate()
+  }
+
+  private fun invalidate() {
+    parent.setNeedsDisplay()
   }
 }
