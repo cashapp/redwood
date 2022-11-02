@@ -421,9 +421,9 @@ private fun generateToJsonElement(schema: Schema): FunSpec {
             .build(),
         )
       } else {
-        for ((layoutModifierSchema, layoutModifier) in layoutModifiers) {
-          val modifierType = layoutModifierSchema.layoutModifierType(layoutModifier)
-          val surrogate = layoutModifierSchema.layoutModifierSurrogate(layoutModifier, schema)
+        for ((localSchema, layoutModifier) in layoutModifiers) {
+          val modifierType = localSchema.layoutModifierType(layoutModifier)
+          val surrogate = localSchema.layoutModifierSurrogate(layoutModifier, schema)
           if (layoutModifier.properties.isEmpty()) {
             addStatement("is %T -> %T.encode()", modifierType, surrogate)
           } else {

@@ -475,8 +475,8 @@ private fun generateJsonElementToLayoutModifier(schema: Schema): FunSpec {
             .build(),
         )
       } else {
-        for ((layoutModifierSchema, layoutModifier) in layoutModifiers) {
-          val typeName = ClassName(layoutModifierSchema.widgetPackage(schema), layoutModifier.type.simpleName!! + "Impl")
+        for ((localSchema, layoutModifier) in layoutModifiers) {
+          val typeName = ClassName(localSchema.widgetPackage(schema), layoutModifier.type.simpleName!! + "Impl")
           if (layoutModifier.properties.isEmpty()) {
             addStatement("%L -> return %T", layoutModifier.tag, typeName)
           } else {
