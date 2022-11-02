@@ -21,16 +21,10 @@ import shared
 
 class IosEmojiSearchWidgetFactory: WidgetEmojiSearchWidgetFactory {
     let imageLoader = RemoteImageLoader()
+    
+    var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
+        Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
 
-    func Row() -> WidgetRow {
-        return RowBinding()
-    }
-    func Column() -> WidgetColumn {
-        return ColumnBinding()
-    }
-    func ScrollableColumn() -> WidgetScrollableColumn {
-        return ScrollableColumnBinding()
-    }
     func TextInput() -> WidgetTextInput {
         return TextInputBinding()
     }
@@ -39,5 +33,39 @@ class IosEmojiSearchWidgetFactory: WidgetEmojiSearchWidgetFactory {
     }
     func Image() -> WidgetImage {
         return ImageBinding(imageLoader: imageLoader)
+    }
+}
+
+private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
+    func create(delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) -> UIScrollView {
+        return DelegateUIScrollView(delegate)
+    }
+
+    class DelegateUIScrollView : UIScrollView {
+        private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
+
+        init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
+            self._delegate = delegate
+            super.init(frame: .zero)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override var intrinsicContentSize: CGSize {
+            let intrinsicContentSize = _delegate.intrinsicContentSize
+            return CGSize(width: intrinsicContentSize.width, height: intrinsicContentSize.height)
+        }
+
+        override func sizeThatFits(_ size: CGSize) -> CGSize {
+            let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
+            let outputSize = _delegate.sizeThatFits(size: inputSize)
+            return CGSize(width: outputSize.width, height: outputSize.height)
+        }
+
+        override func layoutSubviews() {
+            _delegate.layoutSubviews()
+        }
     }
 }

@@ -26,10 +26,8 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.CGSize
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.invalidateIntrinsicContentSize
@@ -77,16 +75,17 @@ internal class UIViewFlexContainer(
   }
 
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
-    override val intrinsicContentSize: CValue<CGSize>
-      get() = measure(unspecifiedMeasureSpecs).containerSize.toCGSize()
+    override val intrinsicContentSize: DoubleSize
+      get() = measure(unspecifiedMeasureSpecs).containerSize.toDoubleSize()
 
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      val measureResult = size.useContents { measure(toMeasureSpecs()) }
-      return measureResult.containerSize.toCGSize()
+    override fun sizeThatFits(size: DoubleSize): DoubleSize {
+      return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
     }
 
     override fun layoutSubviews() {
-      val measureResult = _view.bounds.useContents { measure(size.toMeasureSpecs()) }
+      val measureResult = _view.bounds.useContents {
+        measure(size.toDoubleSize().toMeasureSpecs())
+      }
       container.layout(measureResult)
 
       container.items.forEach { item ->

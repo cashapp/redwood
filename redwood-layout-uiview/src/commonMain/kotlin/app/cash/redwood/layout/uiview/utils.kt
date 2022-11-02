@@ -75,11 +75,13 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 
 internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
 
-internal fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
+internal fun Size.toDoubleSize() = DoubleSize(width.toDouble(), height.toDouble())
+
+internal fun CGSize.toDoubleSize() = DoubleSize(width, height)
 
 internal fun CValue<CGSize>.toSize() = useContents { Size(width.roundToInt(), height.roundToInt()) }
 
-internal fun CGSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
+internal fun DoubleSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when (width) {
     UIViewNoIntrinsicMetric -> MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified)
     else -> MeasureSpec.from(width.roundToInt(), MeasureSpecMode.AtMost)

@@ -5,7 +5,12 @@ This artifact includes `Row` and `Column` widget implementations for UIKit.
 Currently, `UIViewRedwoodLayoutWidgetFactory` requires a `UIScrollView` factory due to Kotlin-Swift interop issues. Here's an implementation you can copy into your Swift project:
 
 ```swift
-class UIScrollViewFactoryImpl: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
+// Add the UIView widget factory to your main widget factory.
+var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
+    Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactoryImpl())
+
+// Copy this class into the same file.
+class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
     func create(delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) -> UIScrollView {
         return DelegateUIScrollView(delegate)
     }
@@ -23,17 +28,18 @@ class UIScrollViewFactoryImpl: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
         }
 
         override var intrinsicContentSize: CGSize {
-            return _delegate.intrinsicContentSize
+            let intrinsicContentSize = _delegate.intrinsicContentSize
+            return CGSize(width: intrinsicContentSize.width, height: intrinsicContentSize.height)
         }
 
         override func sizeThatFits(_ size: CGSize) -> CGSize {
-            return _delegate.sizeThatFits(size)
+            let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
+            let outputSize = _delegate.sizeThatFits(size: inputSize)
+            return CGSize(width: outputSize.width, height: outputSize.height)
         }
 
         override func layoutSubviews() {
-            super.layoutSubviews()
             _delegate.layoutSubviews()
         }
     }
-}
 ```
