@@ -91,10 +91,7 @@ internal class UIViewFlexContainer(
     }
 
     override fun layoutSubviews() {
-      if (!needsLayout) {
-        return
-      }
-
+      if (!needsLayout) return
       needsLayout = false
 
       val measureResult = _view.bounds.useContents {
@@ -124,7 +121,6 @@ internal class UIViewFlexContainer(
     }
 
     private fun measure(measureSpecs: Pair<MeasureSpec, MeasureSpec>): MeasureResult {
-      println("MEASURE - $direction ${container.items.size}")
       syncItems()
       return container.measure(measureSpecs.first, measureSpecs.second)
     }

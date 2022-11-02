@@ -40,52 +40,38 @@ private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFacto
     func create(delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) -> UIScrollView {
         return DelegateUIScrollView(delegate)
     }
+}
 
-    class DelegateUIScrollView : UIScrollView {
-        private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
+private class DelegateUIScrollView : UIScrollView {
+    private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
 
-        init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
-            self._delegate = delegate
-            super.init(frame: .zero)
-        }
+    init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
+        self._delegate = delegate
+        super.init(frame: .zero)
+    }
 
-        required init?(coder: NSCoder) {
-            fatalError("unimplemented")
-        }
+    required init?(coder: NSCoder) {
+        fatalError("unimplemented")
+    }
 
-        override var intrinsicContentSize: CGSize {
-            let intrinsicContentSize = _delegate.intrinsicContentSize
-            return CGSize(width: intrinsicContentSize.width, height: intrinsicContentSize.height)
-        }
+    override var intrinsicContentSize: CGSize {
+        let outputSize = _delegate.intrinsicContentSize
+        return CGSize(width: outputSize.width, height: outputSize.height)
+    }
 
-        override func sizeThatFits(_ size: CGSize) -> CGSize {
-            let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
-            let outputSize = _delegate.sizeThatFits(size: inputSize)
-            let size = CGSize(width: outputSize.width, height: outputSize.height)
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
+        let outputSize = _delegate.sizeThatFits(size: inputSize)
+        return CGSize(width: outputSize.width, height: outputSize.height)
+    }
 
-            print("----- giving child \(inputSize) measured child \(size)")
+    override func setNeedsLayout() {
+        super.setNeedsLayout()
+        _delegate.setNeedsLayout()
+    }
 
-            return size
-        }
-
-        override func setNeedsLayout() {
-            super.setNeedsLayout()
-            _delegate.setNeedsLayout()
-        }
-
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            _delegate.layoutSubviews()
-        }
-
-        override func didAddSubview(_ subview: UIView) {
-            super.didAddSubview(subview)
-            _delegate.setNeedsLayout()
-        }
-
-        override func willRemoveSubview(_ subview: UIView) {
-            super.willRemoveSubview(subview)
-            _delegate.setNeedsLayout()
-        }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _delegate.layoutSubviews()
     }
 }

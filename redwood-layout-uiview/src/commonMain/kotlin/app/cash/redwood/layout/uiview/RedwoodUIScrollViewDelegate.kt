@@ -24,8 +24,8 @@ import platform.UIKit.UIScrollView
 public interface RedwoodUIScrollViewDelegate {
   public val intrinsicContentSize: DoubleSize
   public fun sizeThatFits(size: DoubleSize): DoubleSize
-  public fun layoutSubviews()
   public fun setNeedsLayout()
+  public fun layoutSubviews()
 }
 
 /**
