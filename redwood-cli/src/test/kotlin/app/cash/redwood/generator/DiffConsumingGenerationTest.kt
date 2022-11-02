@@ -55,4 +55,14 @@ class DiffConsumingGenerationTest {
       Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE),
     )
   }
+
+  @Test fun `dependency layout modifiers are included in serialization`() {
+    val schema = parseSchema(PrimarySchema::class)
+
+    val fileSpec = generateDiffConsumingLayoutModifiers(schema)
+    assertThat(fileSpec.toString()).apply {
+      contains("1 -> PrimaryModifierImpl.serializer()")
+      contains("1000001 -> SecondaryModifierImpl.serializer()")
+    }
+  }
 }
