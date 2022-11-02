@@ -70,7 +70,7 @@ class EmojiSearchActivity : ComponentActivity() {
         viewBinder = object : ViewBinder {
           override fun widgetFactory(
             json: Json,
-          ): DiffConsumingWidget.Factory<*> = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
+          ) = DiffConsumingEmojiSearchWidgetFactory(
             delegate = AndroidEmojiSearchWidgetFactory,
             json = json,
           )

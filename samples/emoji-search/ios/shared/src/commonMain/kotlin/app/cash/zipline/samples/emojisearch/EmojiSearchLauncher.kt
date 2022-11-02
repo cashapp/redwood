@@ -15,7 +15,6 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.ViewBinder
@@ -37,7 +36,8 @@ class EmojiSearchLauncher(
   private val coroutineScope: CoroutineScope = MainScope()
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
 
-  public fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+  @Suppress("unused") // Invoked in Swift.
+  fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
     val treehouseLauncher = TreehouseLauncher(
       httpClient = nsurlSession.asZiplineHttpClient(),
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
@@ -51,7 +51,7 @@ class EmojiSearchLauncher(
         viewBinder = object : ViewBinder {
           override fun widgetFactory(
             json: Json,
-          ): DiffConsumingWidget.Factory<*> = DiffConsumingEmojiSearchWidgetFactory<UIView>(
+          ) = DiffConsumingEmojiSearchWidgetFactory(
             delegate = widgetFactory,
             json = json,
           )

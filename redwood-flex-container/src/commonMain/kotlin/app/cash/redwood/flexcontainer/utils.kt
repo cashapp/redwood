@@ -40,7 +40,7 @@ internal val FlexLine.itemCountVisible: Int
 
 /** The largest main size of all flex lines. */
 internal fun List<FlexLine>.getLargestMainSize(): Int {
-  return if (isEmpty()) Int.MIN_VALUE else maxOf { it.mainSize }
+  return if (isEmpty()) 0 else maxOf { it.mainSize }
 }
 
 /** The sum of the cross sizes of all flex lines. */

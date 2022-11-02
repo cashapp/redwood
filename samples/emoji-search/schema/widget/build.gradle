@@ -13,6 +13,14 @@ kotlin {
   }
 
   jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutSchema.widget
+      }
+    }
+  }
 }
 
 redwoodSchema {

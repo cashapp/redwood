@@ -41,7 +41,6 @@ class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
       onValueChange = { onTextChanged?.invoke(it) },
       label = { Text(hint) },
       maxLines = 2,
-      textStyle = Typography.h3,
       modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),

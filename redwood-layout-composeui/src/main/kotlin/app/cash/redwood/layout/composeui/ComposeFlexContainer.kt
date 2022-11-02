@@ -32,7 +32,6 @@ import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
-import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
@@ -96,26 +95,24 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     measurables: List<Measurable>,
     constraints: Constraints,
   ): MeasureResult = with(scope) {
+    syncItems(measurables)
+    val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
+    val result = container.measure(widthSpec, heightSpec)
+    val (layoutWidth, layoutHeight) = result.containerSize
+
+    return layout(layoutWidth, layoutHeight) {
+      container.layout(result)
+
+      for (item in container.items) {
+        (item.measurable as ComposeMeasurable).placeable.place(item.left, item.top)
+      }
+    }
+  }
+
+  private fun syncItems(measurables: List<Measurable>) {
     container.items.clear()
     measurables.forEachIndexed { index, measurable ->
       container.items += measurable.asItem(_children.widgets[index].layoutModifiers, direction)
     }
-
-    val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
-    val result = container.measure(widthSpec, heightSpec)
-    return layout(result.containerSize.width, result.containerSize.height) {
-      container.layout(result)
-
-      for (item in container.items) {
-        (item.measurable as ComposeMeasurable).placeable.placeRelative(item.left, item.top)
-      }
-
-      // Clear any references to the compose measurable.
-      container.items.forEach { node ->
-        node.measurable = defaultMeasurable
-      }
-    }
   }
 }
-
-private val defaultMeasurable = RedwoodMeasurable()
