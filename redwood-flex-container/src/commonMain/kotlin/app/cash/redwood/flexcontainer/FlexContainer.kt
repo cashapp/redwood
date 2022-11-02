@@ -1158,7 +1158,7 @@ public class FlexContainer {
     return Size(width, height)
   }
 
-  public fun layout(result: MeasureResult, size: Size) {
+  public fun layout(result: MeasureResult, size: Size = result.containerSize) {
     when (flexDirection) {
       FlexDirection.Row -> {
         layoutHorizontal(result.flexLines, false, size.width, size.height)
