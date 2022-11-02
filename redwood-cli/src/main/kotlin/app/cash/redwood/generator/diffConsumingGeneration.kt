@@ -25,7 +25,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
-import com.squareup.kotlinpoet.KModifier.DATA
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -371,16 +370,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
           FunSpec.builder("updateLayoutModifier")
             .addModifiers(OVERRIDE)
             .addParameter("value", KotlinxSerialization.JsonArray)
-            .addStatement(
-              """
-              |layoutModifiers = value.fold<%1T, %2T>(%2T) { modifier, element ->
-              |  modifier then element.%3M(json, mismatchHandler)
-              |}
-              """.trimMargin(),
-              KotlinxSerialization.JsonElement,
-              Redwood.LayoutModifier,
-              host.toLayoutModifier,
-            )
+            .addStatement("layoutModifiers = value.%M(json, mismatchHandler)", host.toLayoutModifier)
             .build(),
         )
         .build(),
@@ -388,62 +378,20 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifier(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffConsumingLayoutModifiers(schema: Schema, host: Schema = schema): FileSpec {
   return FileSpec.builder(schema.widgetPackage(host), "layoutModifierSerialization")
     .apply {
       if (schema === host) {
-        addFunction(
-          FunSpec.builder("toLayoutModifier")
-            .addModifiers(INTERNAL)
-            .receiver(KotlinxSerialization.JsonElement)
-            .addParameter("json", KotlinxSerialization.Json)
-            .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
-            .returns(Redwood.LayoutModifier)
-            .addStatement("val array = %M", KotlinxSerialization.jsonArray)
-            .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
-            .addStatement("")
-            .beginControlFlow(
-              "val serializer = when (val tag = array[0].%M.%M)",
-              KotlinxSerialization.jsonPrimitive,
-              KotlinxSerialization.jsonInt,
-            )
-            .apply {
-              if (schema.layoutModifiers.isEmpty()) {
-                addAnnotation(
-                  AnnotationSpec.builder(Suppress::class)
-                    .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
-                    .build(),
-                )
-              }
-              for (layoutModifier in schema.layoutModifiers) {
-                val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
-                if (layoutModifier.properties.isEmpty()) {
-                  addStatement("%L -> return %T", layoutModifier.tag, typeName)
-                } else {
-                  addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
-                }
-              }
-            }
-            .beginControlFlow("else ->")
-            .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
-            .addStatement("return %T", Redwood.LayoutModifier)
-            .endControlFlow()
-            .endControlFlow()
-            .addStatement("")
-            .addStatement("val value = array[1].%M", KotlinxSerialization.jsonObject)
-            .addStatement("return json.decodeFromJsonElement(serializer, value)")
-            .build(),
-        )
+        addFunction(generateJsonArrayToLayoutModifier(schema))
+        addFunction(generateJsonElementToLayoutModifier(schema))
       }
 
       for (layoutModifier in schema.layoutModifiers) {
-        val typeName =
-          ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
+        val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
         val typeBuilder = if (layoutModifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
         } else {
           TypeSpec.classBuilder(typeName)
-            .addModifiers(DATA)
             .addAnnotation(KotlinxSerialization.Serializable)
             .apply {
               val primaryConstructor = FunSpec.constructorBuilder()
@@ -480,5 +428,70 @@ internal fun generateDiffConsumingLayoutModifier(schema: Schema, host: Schema = 
         )
       }
     }
+    .build()
+}
+
+private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
+  return FunSpec.builder("toLayoutModifier")
+    .addModifiers(INTERNAL)
+    .receiver(KotlinxSerialization.JsonArray)
+    .addParameter("json", KotlinxSerialization.Json)
+    .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
+    .addStatement(
+      """
+      |return fold<%1T, %2T>(%2T) { modifier, element ->
+      |  modifier then element.%3M(json, mismatchHandler)
+      |}
+      """.trimMargin(),
+      KotlinxSerialization.JsonElement,
+      Redwood.LayoutModifier,
+      schema.toLayoutModifier,
+    )
+    .returns(Redwood.LayoutModifier)
+    .build()
+}
+
+private fun generateJsonElementToLayoutModifier(schema: Schema): FunSpec {
+  return FunSpec.builder("toLayoutModifier")
+    .addModifiers(PRIVATE)
+    .receiver(KotlinxSerialization.JsonElement)
+    .addParameter("json", KotlinxSerialization.Json)
+    .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
+    .returns(Redwood.LayoutModifier)
+    .addStatement("val array = %M", KotlinxSerialization.jsonArray)
+    .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
+    .addStatement("")
+    .beginControlFlow(
+      "val serializer = when (val tag = array[0].%M.%M)",
+      KotlinxSerialization.jsonPrimitive,
+      KotlinxSerialization.jsonInt,
+    )
+    .apply {
+      val layoutModifiers = schema.allLayoutModifiers()
+      if (layoutModifiers.isEmpty()) {
+        addAnnotation(
+          AnnotationSpec.builder(Suppress::class)
+            .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
+            .build(),
+        )
+      } else {
+        for ((localSchema, layoutModifier) in layoutModifiers) {
+          val typeName = ClassName(localSchema.widgetPackage(schema), layoutModifier.type.simpleName!! + "Impl")
+          if (layoutModifier.properties.isEmpty()) {
+            addStatement("%L -> return %T", layoutModifier.tag, typeName)
+          } else {
+            addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
+          }
+        }
+      }
+    }
+    .beginControlFlow("else ->")
+    .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
+    .addStatement("return %T", Redwood.LayoutModifier)
+    .endControlFlow()
+    .endControlFlow()
+    .addStatement("")
+    .addStatement("val value = array[1].%M", KotlinxSerialization.jsonObject)
+    .addStatement("return json.decodeFromJsonElement(serializer, value)")
     .build()
 }

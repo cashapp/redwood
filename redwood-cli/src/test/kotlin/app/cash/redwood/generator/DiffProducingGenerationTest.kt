@@ -49,4 +49,14 @@ class DiffProducingGenerationTest {
       """.trimMargin(),
     )
   }
+
+  @Test fun `dependency layout modifiers are included in serialization`() {
+    val schema = parseSchema(PrimarySchema::class)
+
+    val fileSpec = generateDiffProducingLayoutModifiers(schema)
+    assertThat(fileSpec.toString()).apply {
+      contains("is PrimaryModifier -> PrimaryModifierSurrogate.encode(json, this)")
+      contains("is SecondaryModifier -> SecondaryModifierSurrogate.encode(json, this)")
+    }
+  }
 }

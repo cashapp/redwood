@@ -290,10 +290,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.LayoutModifier)
-                .beginControlFlow("val json = %M", KotlinxSerialization.buildJsonArray)
-                .addStatement("value.forEach { element -> add(element.toJsonElement(json)) }")
-                .endControlFlow()
-                .addStatement("appendDiff(%T(id, json))", Protocol.LayoutModifiers)
+                .addStatement("appendDiff(%T(id, value.%M(json)))", Protocol.LayoutModifiers, host.toJsonArray)
                 .build(),
             )
             .build(),
@@ -303,39 +300,14 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
     .build()
 }
 
-internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema = schema): FileSpec {
   return FileSpec.builder(schema.composePackage(host), "layoutModifierSerialization")
-    .addFunction(
-      FunSpec.builder("toJsonElement")
-        .addModifiers(INTERNAL)
-        .receiver(Redwood.LayoutModifierElement)
-        .addParameter("json", KotlinxSerialization.Json)
-        .returns(KotlinxSerialization.JsonElement)
-        .beginControlFlow("return when (this)")
-        .apply {
-          if (schema.layoutModifiers.isEmpty()) {
-            addAnnotation(
-              AnnotationSpec.builder(Suppress::class)
-                .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
-                .build(),
-            )
-          }
-
-          for (layoutModifier in schema.layoutModifiers) {
-            val modifierType = schema.layoutModifierType(layoutModifier)
-            val surrogate = schema.layoutModifierSurrogate(layoutModifier, host)
-            if (layoutModifier.properties.isEmpty()) {
-              addStatement("is %T -> %T.encode()", modifierType, surrogate)
-            } else {
-              addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
-            }
-          }
-        }
-        .addStatement("else -> throw %T()", Stdlib.AssertionError)
-        .endControlFlow()
-        .build(),
-    )
     .apply {
+      if (schema === host) {
+        addFunction(generateToJsonArray(schema))
+        addFunction(generateToJsonElement(schema))
+      }
+
       for (layoutModifier in schema.layoutModifiers) {
         val surrogateName = schema.layoutModifierSurrogate(layoutModifier, host)
         val modifierType = schema.layoutModifierType(layoutModifier)
@@ -361,7 +333,7 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
           } else {
             TypeSpec.classBuilder(surrogateName)
               .addAnnotation(KotlinxSerialization.Serializable)
-              .addModifiers(PRIVATE)
+              .addModifiers(INTERNAL)
               .addSuperinterface(modifierType)
               .apply {
                 val primaryConstructor = FunSpec.constructorBuilder()
@@ -418,5 +390,49 @@ internal fun generateDiffProducingLayoutModifier(schema: Schema, host: Schema = 
         )
       }
     }
+    .build()
+}
+
+private fun generateToJsonArray(schema: Schema): FunSpec {
+  return FunSpec.builder("toJsonArray")
+    .addModifiers(INTERNAL)
+    .receiver(Redwood.LayoutModifier)
+    .addParameter("json", KotlinxSerialization.Json)
+    .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
+    .addStatement("forEach { element -> add(element.%M(json)) }", schema.toJsonElement)
+    .endControlFlow()
+    .returns(KotlinxSerialization.JsonArray)
+    .build()
+}
+
+private fun generateToJsonElement(schema: Schema): FunSpec {
+  return FunSpec.builder("toJsonElement")
+    .addModifiers(PRIVATE)
+    .receiver(Redwood.LayoutModifierElement)
+    .addParameter("json", KotlinxSerialization.Json)
+    .returns(KotlinxSerialization.JsonElement)
+    .beginControlFlow("return when (this)")
+    .apply {
+      val layoutModifiers = schema.allLayoutModifiers()
+      if (layoutModifiers.isEmpty()) {
+        addAnnotation(
+          AnnotationSpec.builder(Suppress::class)
+            .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+            .build(),
+        )
+      } else {
+        for ((localSchema, layoutModifier) in layoutModifiers) {
+          val modifierType = localSchema.layoutModifierType(layoutModifier)
+          val surrogate = localSchema.layoutModifierSurrogate(layoutModifier, schema)
+          if (layoutModifier.properties.isEmpty()) {
+            addStatement("is %T -> %T.encode()", modifierType, surrogate)
+          } else {
+            addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
+          }
+        }
+      }
+    }
+    .addStatement("else -> throw %T()", Stdlib.AssertionError)
+    .endControlFlow()
     .build()
 }

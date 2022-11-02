@@ -111,6 +111,18 @@ internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassNam
 internal val Schema.toLayoutModifier: MemberName get() =
   MemberName(widgetPackage(this), "toLayoutModifier")
 
+internal val Schema.toJsonArray: MemberName get() =
+  MemberName(composePackage(this), "toJsonArray")
+
+internal val Schema.toJsonElement: MemberName get() =
+  MemberName(composePackage(this), "toJsonElement")
+
+internal fun Schema.allLayoutModifiers(): List<Pair<Schema, LayoutModifier>> {
+  return (listOf(this) + dependencies).flatMap { schema ->
+    schema.layoutModifiers.map { schema to it }
+  }
+}
+
 internal fun layoutModifierEquals(schema: Schema, layoutModifier: LayoutModifier): FunSpec {
   val interfaceType = schema.layoutModifierType(layoutModifier)
   return FunSpec.builder("equals")
