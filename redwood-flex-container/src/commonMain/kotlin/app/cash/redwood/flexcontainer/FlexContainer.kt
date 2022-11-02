@@ -1155,7 +1155,6 @@ public class FlexContainer {
       }
       else -> throw AssertionError()
     }
-    println("$calculatedMaxWidth, $calculatedMaxHeight")
     return Size(width, height)
   }
 

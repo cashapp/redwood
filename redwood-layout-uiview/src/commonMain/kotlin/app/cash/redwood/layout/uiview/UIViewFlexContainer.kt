@@ -33,7 +33,6 @@ import platform.UIKit.UIView
 import platform.UIKit.invalidateIntrinsicContentSize
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
-import platform.UIKit.subviews
 
 internal class UIViewFlexContainer(
   viewFactory: RedwoodUIScrollViewFactory,
@@ -107,8 +106,8 @@ internal class UIViewFlexContainer(
 
     private fun syncItems() {
       container.items.clear()
-      _view.subviews.forEachIndexed { index, view ->
-        container.items += (view as UIView).asItem(_children.widgets[index].layoutModifiers, direction)
+      _children.widgets.forEach { widget ->
+        container.items += widget.value.asItem(widget.layoutModifiers, direction)
       }
     }
   }

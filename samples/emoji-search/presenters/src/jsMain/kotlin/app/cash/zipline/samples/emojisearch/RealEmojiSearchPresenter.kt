@@ -85,7 +85,6 @@ class RealEmojiSearchPresenter(
         searchTerms.all { image.label.contains(it, ignoreCase = true) }
       }
       .take(25)
-    println(filteredImages.toString())
     return EmojiSearchViewModel(latestSearchTerm, filteredImages)
   }
 }

@@ -16,8 +16,6 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.flexcontainer.Size
-import kotlinx.cinterop.CValue
-import platform.CoreGraphics.CGSize
 import platform.UIKit.UIScrollView
 
 /**

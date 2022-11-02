@@ -50,7 +50,7 @@ private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFacto
         }
 
         required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
+            fatalError("unimplemented")
         }
 
         override var intrinsicContentSize: CGSize {
