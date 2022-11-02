@@ -28,11 +28,14 @@ import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.invalidateIntrinsicContentSize
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
+import platform.UIKit.subviews
+import platform.UIKit.superview
 
 internal class UIViewFlexContainer(
   viewFactory: RedwoodUIScrollViewFactory,
@@ -74,6 +77,8 @@ internal class UIViewFlexContainer(
   }
 
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
+    private var needsLayout = true
+
     override val intrinsicContentSize: DoubleSize
       get() = measure(unspecifiedMeasureSpecs).containerSize.toDoubleSize()
 
@@ -81,14 +86,33 @@ internal class UIViewFlexContainer(
       return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
     }
 
+    override fun setNeedsLayout() {
+      needsLayout = true
+    }
+
     override fun layoutSubviews() {
+      if (!needsLayout) {
+        return
+      }
+
+      needsLayout = false
+
       val measureResult = _view.bounds.useContents {
         measure(size.toDoubleSize().toMeasureSpecs())
       }
       container.layout(measureResult)
 
-      container.items.forEach { item ->
-        _view.setFrame(
+      _view.superview?.setNeedsLayout()
+      _view.setContentSize(
+        CGSizeMake(
+          measureResult.containerSize.width.toDouble(),
+          container.items.last().top.toDouble()
+        )
+      )
+
+      container.items.forEachIndexed { index, item ->
+        // need to set frame of child, not _view
+        (_view.subviews[index] as UIView).setFrame(
           CGRectMake(
             item.left.toDouble(),
             item.top.toDouble(),
@@ -100,6 +124,7 @@ internal class UIViewFlexContainer(
     }
 
     private fun measure(measureSpecs: Pair<MeasureSpec, MeasureSpec>): MeasureResult {
+      println("MEASURE - $direction ${container.items.size}")
       syncItems()
       return container.measure(measureSpecs.first, measureSpecs.second)
     }

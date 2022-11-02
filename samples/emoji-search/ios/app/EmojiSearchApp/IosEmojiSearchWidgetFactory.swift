@@ -61,11 +61,31 @@ private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFacto
         override func sizeThatFits(_ size: CGSize) -> CGSize {
             let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
             let outputSize = _delegate.sizeThatFits(size: inputSize)
-            return CGSize(width: outputSize.width, height: outputSize.height)
+            let size = CGSize(width: outputSize.width, height: outputSize.height)
+
+            print("----- giving child \(inputSize) measured child \(size)")
+
+            return size
+        }
+
+        override func setNeedsLayout() {
+            super.setNeedsLayout()
+            _delegate.setNeedsLayout()
         }
 
         override func layoutSubviews() {
+            super.layoutSubviews()
             _delegate.layoutSubviews()
+        }
+
+        override func didAddSubview(_ subview: UIView) {
+            super.didAddSubview(subview)
+            _delegate.setNeedsLayout()
+        }
+
+        override func willRemoveSubview(_ subview: UIView) {
+            super.willRemoveSubview(subview)
+            _delegate.setNeedsLayout()
         }
     }
 }
