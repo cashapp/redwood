@@ -55,10 +55,7 @@ class EmojiSearchTreehouseUi(
           Row(
             verticalAlignment = CrossAxisAlignment.Center,
           ) {
-            Image(
-              url = image.url,
-              layoutModifier = LayoutModifier.padding(Padding(20)),
-            )
+            Image(url = image.url)
             Text(text = image.label)
           }
         }
