@@ -39,7 +39,9 @@ class ComposeUiImage : Image<@Composable () -> Unit> {
     AsyncImage(
       model = url,
       contentDescription = null,
-      modifier = Modifier.size(48.dp),
+      modifier = Modifier
+        .size(64.dp)
+        .padding(8.dp),
     )
   }
 
