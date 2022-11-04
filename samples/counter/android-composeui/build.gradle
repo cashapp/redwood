@@ -1,0 +1,25 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.redwood'
+
+dependencies {
+  implementation projects.samples.counter.sunspot.compose.protocol
+  implementation projects.samples.counter.sunspot.widget.protocol
+  implementation projects.samples.counter.presenter
+  implementation libs.kotlinx.coroutines.android
+
+  implementation libs.google.material
+  implementation libs.androidx.activity.compose
+  implementation libs.androidx.appCompat
+  implementation libs.androidx.core
+  implementation libs.androidx.compose.material
+  implementation libs.androidx.compose.ui
+  implementation libs.androidx.compose.ui.tooling.preview
+  implementation projects.redwoodWidgetCompose
+  debugImplementation libs.androidx.compose.ui.tooling
+
+}
+
+android {
+  namespace 'example.android.composeui'
+}

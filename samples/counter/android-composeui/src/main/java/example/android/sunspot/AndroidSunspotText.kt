@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.shared
+package example.android.sunspot
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import example.sunspot.compose.SunspotBox
-import example.sunspot.compose.SunspotButton
-import example.sunspot.compose.SunspotText
+import app.cash.redwood.LayoutModifier
+import example.sunspot.widget.SunspotText
+import androidx.compose.material.Text
 
-@Composable
-fun Counter(value: Int = 0) {
-  var count by remember { mutableStateOf(value) }
 
-  SunspotBox {
-    SunspotButton("-1", onClick = { count-- })
-    SunspotText(count.toString())
-    SunspotButton("+1", onClick = { count++ })
+class AndroidSunspotText : SunspotText<@Composable () -> Unit> {
+  private var text by mutableStateOf("")
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override val value = @Composable {
+    Text(
+      text = text,
+      color = MaterialTheme.colors.onBackground,
+    )
+  }
+
+  override fun text(text: String?) {
+    this.text = text ?: ""
   }
 }
