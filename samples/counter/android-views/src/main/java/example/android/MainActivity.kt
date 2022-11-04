@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
  */
 package example.android
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.LinearLayout.LayoutParams
-import android.widget.LinearLayout.VERTICAL
+import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolDisplay
@@ -33,7 +32,7 @@ import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
   private val scope = CoroutineScope(AndroidUiDispatcher.Main)
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +46,7 @@ class MainActivity : Activity() {
       onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
-    val root = LinearLayout(this).apply {
-      orientation = VERTICAL
+    val root = FrameLayout(this).apply {
       layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
     setContentView(root)
