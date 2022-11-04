@@ -7,8 +7,11 @@ dependencies {
   implementation projects.samples.counter.sunspot.widget.protocol
   implementation projects.samples.counter.presenter
   implementation libs.kotlinx.coroutines.android
+  implementation libs.google.material
+  implementation libs.androidx.core
+  implementation libs.androidx.appCompat
 }
 
 android {
-  namespace 'example.android'
+  namespace 'example.android.views'
 }

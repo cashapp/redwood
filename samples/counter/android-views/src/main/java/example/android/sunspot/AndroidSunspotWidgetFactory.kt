@@ -29,7 +29,9 @@ class AndroidSunspotWidgetFactory(
   private val context: Context,
 ) : SunspotWidgetFactory<View> {
   override fun SunspotBox(): SunspotBox<View> {
-    val view = LinearLayout(context)
+    val view = LinearLayout(context).apply {
+      orientation = LinearLayout.VERTICAL
+    }
     return AndroidSunspotBox(view)
   }
 
