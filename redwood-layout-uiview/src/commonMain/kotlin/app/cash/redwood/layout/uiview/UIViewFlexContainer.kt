@@ -72,7 +72,6 @@ internal class UIViewFlexContainer(
 
   private fun invalidate() {
     _view.setNeedsLayout()
-    _view.invalidateIntrinsicContentSize()
   }
 
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
