@@ -21,7 +21,6 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.MeasureSpecMode
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.UIViewChildren
@@ -79,12 +78,9 @@ internal class UIViewFlexContainer(
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
     private var needsLayout = true
 
-    // measure(unspecifiedMeasureSpecs).containerSize.toDoubleSize()
-    override val intrinsicContentSize: DoubleSize
-      get() = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+    override val intrinsicContentSize = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
 
     override fun sizeThatFits(size: DoubleSize): DoubleSize {
-      println("sizeThatFits() - $size")
       return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
     }
 
@@ -108,7 +104,6 @@ internal class UIViewFlexContainer(
         ),
       )
       _view.superview?.setNeedsLayout()
-      println("layoutSubviews() - ${measureResult.containerSize}")
 
       container.items.forEachIndexed { index, item ->
         _view.typedSubviews[index].setFrame(
@@ -135,8 +130,3 @@ internal class UIViewFlexContainer(
     }
   }
 }
-
-private val unspecifiedMeasureSpecs = Pair(
-  MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified),
-  MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified),
-)

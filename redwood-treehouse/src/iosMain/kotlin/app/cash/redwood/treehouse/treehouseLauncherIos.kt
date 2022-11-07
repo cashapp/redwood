@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
+import platform.Foundation.NSLog
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSThread
 
@@ -47,17 +48,17 @@ public fun TreehouseLauncher(
 internal class IosTreehousePlatform : TreehousePlatform {
   override fun logInfo(message: String, throwable: Throwable?) {
     if (throwable != null) {
-      // NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
+      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
     } else {
-      // NSLog("Treehouse: $message")
+      NSLog("Treehouse: $message")
     }
   }
 
   override fun logWarning(message: String, throwable: Throwable?) {
     if (throwable != null) {
-      // NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
+      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
     } else {
-      // NSLog("Treehouse: $message")
+      NSLog("Treehouse: $message")
     }
   }
 
