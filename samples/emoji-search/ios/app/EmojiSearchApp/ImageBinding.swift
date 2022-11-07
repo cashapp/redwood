@@ -20,7 +20,7 @@ import UIKit
 
 class ImageBinding: WidgetImage {
     private let root: UIImageView = {
-        let view = UIImageView()
+        let view = ImageView()
         view.contentMode = .scaleAspectFit
         view.setContentHuggingPriority(.required, for: .horizontal)
         return view
@@ -50,5 +50,16 @@ class ImageBinding: WidgetImage {
 
             self.root.image = image
         }
+    }
+}
+
+private class ImageView: UIImageView {
+    
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 48, height: 48)
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: 48, height: 48)
     }
 }

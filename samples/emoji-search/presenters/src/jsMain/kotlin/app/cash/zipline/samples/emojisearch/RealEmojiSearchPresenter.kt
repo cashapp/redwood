@@ -17,6 +17,7 @@ package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
+import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,12 +29,12 @@ import kotlinx.serialization.json.Json
 class RealEmojiSearchPresenter(
   private val hostApi: HostApi,
 ) : EmojiSearchPresenter {
-  private var imageIndex = listOf<EmojiImage>()
+  private var emojis = listOf<EmojiImage>()
   private var latestSearchTerm = ""
 
   private val loadingImage = EmojiImage(
-    "watch",
-    "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+    label = "watch",
+    url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
   )
   private val initialViewModel = EmojiSearchViewModel("", listOf(loadingImage))
 
@@ -54,12 +55,12 @@ class RealEmojiSearchPresenter(
     events: Flow<EmojiSearchEvent>,
   ): Flow<EmojiSearchViewModel> {
     return channelFlow {
-      loadImageIndex()
+      loadEmojis()
       send(produceModel())
 
       events.collectLatest { event ->
         when (event) {
-          is EmojiSearchEvent.SearchTermEvent -> {
+          is SearchTermEvent -> {
             latestSearchTerm = event.searchTerm
             send(produceModel())
           }
@@ -68,19 +69,20 @@ class RealEmojiSearchPresenter(
     }
   }
 
-  private suspend fun loadImageIndex() {
+  private suspend fun loadEmojis() {
     val emojisJson = hostApi.httpCall(
       url = "https://api.github.com/emojis",
       headers = mapOf("Accept" to "application/vnd.github.v3+json"),
     )
     val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
-    imageIndex = labelToUrl.map { (key, value) -> EmojiImage(key, value) }
+    emojis = labelToUrl.map { (key, value) -> EmojiImage(key, value) }
   }
 
   private fun produceModel(): EmojiSearchViewModel {
-    val filteredImages = imageIndex
+    val searchTerms = latestSearchTerm.split(" ")
+    val filteredImages = emojis
       .filter { image ->
-        latestSearchTerm.split(" ").all { it in image.label }
+        searchTerms.all { image.label.contains(it, ignoreCase = true) }
       }
       .take(25)
     return EmojiSearchViewModel(latestSearchTerm, filteredImages)

@@ -21,21 +21,19 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.MeasureSpecMode
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
-import platform.UIKit.invalidateIntrinsicContentSize
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
-import platform.UIKit.subviews
+import platform.UIKit.superview
 
 internal class UIViewFlexContainer(
   viewFactory: RedwoodUIScrollViewFactory,
@@ -73,29 +71,45 @@ internal class UIViewFlexContainer(
 
   private fun invalidate() {
     _view.setNeedsLayout()
-    _view.invalidateIntrinsicContentSize()
   }
 
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
-    override val intrinsicContentSize: CValue<CGSize>
-      get() = measure(unspecifiedMeasureSpecs).containerSize.toCGSize()
+    private var needsLayout = true
 
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      val measureResult = size.useContents { measure(toMeasureSpecs()) }
-      return measureResult.containerSize.toCGSize()
+    override val intrinsicContentSize get() = noIntrinsicSize
+
+    override fun sizeThatFits(size: DoubleSize): DoubleSize {
+      return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
+    }
+
+    override fun setNeedsLayout() {
+      needsLayout = true
     }
 
     override fun layoutSubviews() {
-      val measureResult = _view.bounds.useContents { measure(size.toMeasureSpecs()) }
+      if (!needsLayout) return
+      needsLayout = false
+
+      val measureResult = _view.bounds.useContents {
+        measure(size.toDoubleSize().toMeasureSpecs())
+      }
       container.layout(measureResult)
 
-      container.items.forEach { item ->
-        _view.setFrame(
+      _view.setContentSize(
+        CGSizeMake(
+          width = container.items.maxOfOrNull { it.right }?.toDouble() ?: 0.0,
+          height = container.items.maxOfOrNull { it.top }?.toDouble() ?: 0.0,
+        ),
+      )
+      _view.superview?.setNeedsLayout()
+
+      container.items.forEachIndexed { index, item ->
+        _view.typedSubviews[index].setFrame(
           CGRectMake(
-            item.left.toDouble(),
-            item.top.toDouble(),
-            (item.right - item.left).toDouble(),
-            (item.bottom - item.top).toDouble(),
+            x = item.left.toDouble(),
+            y = item.top.toDouble(),
+            width = (item.right - item.left).toDouble(),
+            height = (item.bottom - item.top).toDouble(),
           ),
         )
       }
@@ -108,14 +122,11 @@ internal class UIViewFlexContainer(
 
     private fun syncItems() {
       container.items.clear()
-      _view.subviews.forEachIndexed { index, view ->
-        container.items += (view as UIView).asItem(_children.widgets[index].layoutModifiers, direction)
+      _children.widgets.forEach { widget ->
+        container.items += widget.value.asItem(widget.layoutModifiers, direction)
       }
     }
   }
 }
 
-private val unspecifiedMeasureSpecs = Pair(
-  MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified),
-  MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified),
-)
+private val noIntrinsicSize = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)

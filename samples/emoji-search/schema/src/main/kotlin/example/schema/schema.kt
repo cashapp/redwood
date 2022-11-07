@@ -15,51 +15,37 @@
  */
 package example.schema
 
-import app.cash.redwood.schema.Children
+import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
+import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 
 @Schema(
-  [
-    Row::class,
-    Column::class,
-    ScrollableColumn::class,
+  members = [
     TextInput::class,
     Text::class,
     Image::class,
+  ],
+  dependencies = [
+    Dependency(1, RedwoodLayout::class),
   ],
 )
 interface EmojiSearch
 
 @Widget(1)
-data class Row(
-  @Children(1) val children: () -> Unit,
-)
-
-@Widget(2)
-data class Column(
-  @Children(1) val children: () -> Unit,
-)
-
-@Widget(3)
-data class ScrollableColumn(
-  @Children(1) val children: () -> Unit,
-)
-
-@Widget(4)
 data class TextInput(
   @Property(1) val hint: String,
   @Property(2) val text: String,
   @Property(3) val onTextChanged: (String) -> Unit,
 )
 
-@Widget(5)
+@Widget(2)
 data class Text(
   @Property(1) val text: String,
 )
 
-@Widget(6)
+@Widget(3)
 data class Image(
   @Property(1) val url: String,
 )

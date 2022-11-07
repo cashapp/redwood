@@ -1122,14 +1122,14 @@ public class FlexContainer {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
-    val calculatedMaxHeight: Int
     val calculatedMaxWidth: Int
+    val calculatedMaxHeight: Int
     if (flexDirection.isHorizontal) {
-      calculatedMaxHeight = flexLines.getSumOfCrossSize() + padding.top + padding.bottom
       calculatedMaxWidth = flexLines.getLargestMainSize()
+      calculatedMaxHeight = flexLines.getSumOfCrossSize() + padding.top + padding.bottom
     } else {
-      calculatedMaxHeight = flexLines.getLargestMainSize()
       calculatedMaxWidth = flexLines.getSumOfCrossSize() + padding.start + padding.end
+      calculatedMaxHeight = flexLines.getLargestMainSize()
     }
     val width = when (widthMeasureSpec.mode) {
       MeasureSpecMode.Exactly -> {

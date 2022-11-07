@@ -38,6 +38,7 @@ import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
@@ -45,7 +46,9 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
+import platform.UIKit.intrinsicContentSize
 import platform.UIKit.sizeThatFits
+import platform.UIKit.subviews
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -75,11 +78,13 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 
 internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
 
-internal fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
+internal fun Size.toDoubleSize() = DoubleSize(width.toDouble(), height.toDouble())
+
+internal fun CGSize.toDoubleSize() = DoubleSize(width, height)
 
 internal fun CValue<CGSize>.toSize() = useContents { Size(width.roundToInt(), height.roundToInt()) }
 
-internal fun CGSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
+internal fun DoubleSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when (width) {
     UIViewNoIntrinsicMetric -> MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified)
     else -> MeasureSpec.from(width.roundToInt(), MeasureSpecMode.AtMost)
@@ -102,6 +107,10 @@ internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpe
   }
   return CGSizeMake(width, height)
 }
+
+@Suppress("UNCHECKED_CAST")
+internal val UIView.typedSubviews: List<UIView>
+  get() = subviews as List<UIView>
 
 internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirection): FlexItem {
   var flexGrow = DefaultFlexGrow
@@ -138,8 +147,23 @@ internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirec
 }
 
 internal class UIViewMeasurable(val view: UIView) : Measurable() {
+  override val minWidth: Int
+    get() = view.intrinsicContentSize.useContents {
+      if (width == UIViewNoIntrinsicMetric) 0 else ceil(width).toInt()
+    }
+  override val minHeight: Int
+    get() = view.intrinsicContentSize.useContents {
+      if (height == UIViewNoIntrinsicMetric) 0 else ceil(height).toInt()
+    }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    return view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
+    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
+    if (widthSpec.mode == MeasureSpecMode.Exactly) {
+      output = output.copy(width = widthSpec.size)
+    }
+    if (heightSpec.mode == MeasureSpecMode.Exactly) {
+      output = output.copy(height = heightSpec.size)
+    }
+    return output
   }
 }

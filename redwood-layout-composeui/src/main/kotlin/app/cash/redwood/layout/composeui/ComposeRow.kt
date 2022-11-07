@@ -26,7 +26,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.Widget
 
 internal class ComposeRow : Row<@Composable () -> Unit> {
-  private val container = ComposeFlexContainer(FlexDirection.Column)
+  private val container = ComposeFlexContainer(FlexDirection.Row)
 
   override val children: Widget.Children<@Composable () -> Unit> get() = container.children
 

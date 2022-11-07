@@ -5,35 +5,50 @@ This artifact includes `Row` and `Column` widget implementations for UIKit.
 Currently, `UIViewRedwoodLayoutWidgetFactory` requires a `UIScrollView` factory due to Kotlin-Swift interop issues. Here's an implementation you can copy into your Swift project:
 
 ```swift
-class UIScrollViewFactoryImpl: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
+private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
     func create(delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) -> UIScrollView {
         return DelegateUIScrollView(delegate)
     }
+}
 
-    class DelegateUIScrollView : UIScrollView {
-        private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
+private class DelegateUIScrollView : UIScrollView {
+    private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
 
-        init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
-            self._delegate = delegate
-            super.init(frame: .zero)
-        }
+    init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
+        self._delegate = delegate
+        super.init(frame: .zero)
+    }
 
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    required init?(coder: NSCoder) {
+        fatalError("unimplemented")
+    }
 
-        override var intrinsicContentSize: CGSize {
-            return _delegate.intrinsicContentSize
-        }
+    override var intrinsicContentSize: CGSize {
+        let outputSize = _delegate.intrinsicContentSize
+        return CGSize(width: outputSize.width, height: outputSize.height)
+    }
 
-        override func sizeThatFits(_ size: CGSize) -> CGSize {
-            return _delegate.sizeThatFits(size)
-        }
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
+        let outputSize = _delegate.sizeThatFits(size: inputSize)
+        return CGSize(width: outputSize.width, height: outputSize.height)
+    }
 
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            _delegate.layoutSubviews()
-        }
+    override func setNeedsLayout() {
+        super.setNeedsLayout()
+        _delegate.setNeedsLayout()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _delegate.layoutSubviews()
     }
 }
+```
+
+Then add the widget factory to your main widget factory:
+
+```swift
+var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
+    Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
 ```

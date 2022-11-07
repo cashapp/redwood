@@ -15,16 +15,16 @@
  */
 package app.cash.redwood.layout.uiview
 
-import kotlinx.cinterop.CValue
-import platform.CoreGraphics.CGSize
+import app.cash.redwood.flexcontainer.Size
 import platform.UIKit.UIScrollView
 
 /**
  * A delegate whose methods should be called when the corresponding [UIScrollView] method is invoked.
  */
 public interface RedwoodUIScrollViewDelegate {
-  public val intrinsicContentSize: CValue<CGSize>
-  public fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize>
+  public val intrinsicContentSize: DoubleSize
+  public fun sizeThatFits(size: DoubleSize): DoubleSize
+  public fun setNeedsLayout()
   public fun layoutSubviews()
 }
 
@@ -34,3 +34,11 @@ public interface RedwoodUIScrollViewDelegate {
 public interface RedwoodUIScrollViewFactory {
   public fun create(delegate: RedwoodUIScrollViewDelegate): UIScrollView
 }
+
+/**
+ * A [Size] composed of two [Double]s.
+ */
+public data class DoubleSize(
+  val width: Double,
+  val height: Double,
+)

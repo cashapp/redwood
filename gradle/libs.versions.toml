@@ -59,6 +59,6 @@ zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", vers
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "zipline" }
 paparazzi-gradlePlugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version = "1.1.0" }
 jimfs = "com.google.jimfs:jimfs:1.2"
-coil-compose = { module = "io.coil-kt:coil-compose", version = "2.1.0" }
+coil-compose = { module = "io.coil-kt:coil-compose", version = "2.2.2" }
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
