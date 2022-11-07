@@ -60,7 +60,7 @@ class EmojiSearchTreehouseUi(
           ) {
             Image(
               url = image.url,
-              layoutModifier = LayoutModifier.padding(Padding(4)),
+              layoutModifier = LayoutModifier.padding(Padding(8)),
             )
             Text(text = image.label)
           }
