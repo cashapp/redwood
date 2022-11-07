@@ -41,9 +41,7 @@ class EmojiSearchTreehouseUi(
   override fun Show() {
     val viewModel by viewModels.collectAsState(initialViewModel)
 
-    Column(
-      horizontalAlignment = CrossAxisAlignment.Stretch,
-    ) {
+    Column {
       TextInput(
         text = viewModel.searchTerm,
         hint = "Search",
@@ -52,7 +50,6 @@ class EmojiSearchTreehouseUi(
       Column(
         overflow = Overflow.Scroll,
         padding = Padding(horizontal = 40),
-        horizontalAlignment = CrossAxisAlignment.Stretch,
       ) {
         for (image in viewModel.images) {
           Row(
