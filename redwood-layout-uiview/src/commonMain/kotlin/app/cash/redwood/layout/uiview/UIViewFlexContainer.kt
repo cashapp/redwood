@@ -77,7 +77,7 @@ internal class UIViewFlexContainer(
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
     private var needsLayout = true
 
-    override val intrinsicContentSize = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+    override val intrinsicContentSize get() = noIntrinsicSize
 
     override fun sizeThatFits(size: DoubleSize): DoubleSize {
       return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
@@ -129,3 +129,5 @@ internal class UIViewFlexContainer(
     }
   }
 }
+
+private val noIntrinsicSize = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
