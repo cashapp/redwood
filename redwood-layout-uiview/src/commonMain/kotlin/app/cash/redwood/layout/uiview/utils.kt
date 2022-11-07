@@ -38,6 +38,7 @@ import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
@@ -148,20 +149,20 @@ internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirec
 internal class UIViewMeasurable(val view: UIView) : Measurable() {
   override val minWidth: Int
     get() = view.intrinsicContentSize.useContents {
-      if (width == UIViewNoIntrinsicMetric) 0 else width.roundToInt()
+      if (width == UIViewNoIntrinsicMetric) 0 else ceil(width).toInt()
     }
   override val minHeight: Int
     get() = view.intrinsicContentSize.useContents {
-      if (height == UIViewNoIntrinsicMetric) 0 else height.roundToInt()
+      if (height == UIViewNoIntrinsicMetric) 0 else ceil(height).toInt()
     }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
     if (widthSpec.mode == MeasureSpecMode.Exactly) {
-      // output = output.copy(width = widthSpec.size)
+      output = output.copy(width = widthSpec.size)
     }
     if (heightSpec.mode == MeasureSpecMode.Exactly) {
-      // output = output.copy(height = heightSpec.size)
+      output = output.copy(height = heightSpec.size)
     }
     return output
   }
