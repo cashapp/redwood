@@ -31,7 +31,6 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.invalidateIntrinsicContentSize
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
 import platform.UIKit.superview
