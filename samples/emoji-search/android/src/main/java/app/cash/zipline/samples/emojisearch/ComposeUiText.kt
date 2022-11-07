@@ -24,11 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
-import coil.compose.AsyncImage
 import example.schema.widget.Text
 
 class ComposeUiText : Text<@Composable () -> Unit> {

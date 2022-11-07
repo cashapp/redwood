@@ -45,7 +45,9 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
+import platform.UIKit.intrinsicContentSize
 import platform.UIKit.sizeThatFits
+import platform.UIKit.subviews
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -105,6 +107,10 @@ internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpe
   return CGSizeMake(width, height)
 }
 
+@Suppress("UNCHECKED_CAST")
+internal val UIView.typedSubviews: List<UIView>
+  get() = subviews as List<UIView>
+
 internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirection): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
@@ -140,8 +146,23 @@ internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirec
 }
 
 internal class UIViewMeasurable(val view: UIView) : Measurable() {
+  override val minWidth: Int
+    get() = view.intrinsicContentSize.useContents {
+      if (width == UIViewNoIntrinsicMetric) 0 else width.roundToInt()
+    }
+  override val minHeight: Int
+    get() = view.intrinsicContentSize.useContents {
+      if (height == UIViewNoIntrinsicMetric) 0 else height.roundToInt()
+    }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    return view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
+    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
+    if (widthSpec.mode == MeasureSpecMode.Exactly) {
+      // output = output.copy(width = widthSpec.size)
+    }
+    if (heightSpec.mode == MeasureSpecMode.Exactly) {
+      // output = output.copy(height = heightSpec.size)
+    }
+    return output
   }
 }

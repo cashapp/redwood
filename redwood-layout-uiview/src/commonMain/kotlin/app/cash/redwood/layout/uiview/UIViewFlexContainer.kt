@@ -31,10 +31,10 @@ import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.invalidateIntrinsicContentSize
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
-import platform.UIKit.subviews
 import platform.UIKit.superview
 
 internal class UIViewFlexContainer(
@@ -79,10 +79,12 @@ internal class UIViewFlexContainer(
   private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
     private var needsLayout = true
 
+    // measure(unspecifiedMeasureSpecs).containerSize.toDoubleSize()
     override val intrinsicContentSize: DoubleSize
-      get() = measure(unspecifiedMeasureSpecs).containerSize.toDoubleSize()
+      get() = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
 
     override fun sizeThatFits(size: DoubleSize): DoubleSize {
+      println("sizeThatFits() - $size")
       return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
     }
 
@@ -99,17 +101,17 @@ internal class UIViewFlexContainer(
       }
       container.layout(measureResult)
 
-      _view.superview?.setNeedsLayout()
       _view.setContentSize(
         CGSizeMake(
-          width = measureResult.containerSize.width.toDouble(),
-          height = container.items.last().top.toDouble(),
+          width = container.items.maxOfOrNull { it.right }?.toDouble() ?: 0.0,
+          height = container.items.maxOfOrNull { it.top }?.toDouble() ?: 0.0,
         ),
       )
+      _view.superview?.setNeedsLayout()
+      println("layoutSubviews() - ${measureResult.containerSize}")
 
       container.items.forEachIndexed { index, item ->
-        // need to set frame of child, not _view
-        (_view.subviews[index] as UIView).setFrame(
+        _view.typedSubviews[index].setFrame(
           CGRectMake(
             x = item.left.toDouble(),
             y = item.top.toDouble(),

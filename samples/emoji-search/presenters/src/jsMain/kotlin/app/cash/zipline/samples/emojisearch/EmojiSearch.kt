@@ -18,6 +18,7 @@ package app.cash.zipline.samples.emojisearch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
@@ -57,7 +58,10 @@ class EmojiSearchTreehouseUi(
           Row(
             verticalAlignment = CrossAxisAlignment.Center,
           ) {
-            Image(url = image.url)
+            Image(
+              url = image.url,
+              layoutModifier = LayoutModifier.padding(Padding(4)),
+            )
             Text(text = image.label)
           }
         }
