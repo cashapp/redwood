@@ -11,6 +11,8 @@ module:redwood-layout-composeui
 app.cash.redwood.layout.composeui
 module:redwood-layout-schema
 app.cash.redwood.layout
+module:redwood-layout-uiview
+app.cash.redwood.layout.uiview
 module:redwood-layout-view
 app.cash.redwood.layout.view
 module:redwood-protocol
