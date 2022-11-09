@@ -46,9 +46,9 @@ import app.cash.redwood.protocol.PropertyDiff
 @Composable
 @Suppress("FunctionName") // Hiding from auto-complete.
 public fun _SyntheticChildren(tag: UInt, content: @Composable () -> Unit) {
-  ComposeNode<DiffProducingChildrenWidget.Intermediate, Applier<*>>(
+  ComposeNode<DiffProducingChildrenWidget, Applier<*>>(
     factory = {
-      DiffProducingChildrenWidget.Intermediate(tag)
+      DiffProducingChildrenWidget(tag)
     },
     update = {
     },
@@ -61,15 +61,10 @@ public fun _SyntheticChildren(tag: UInt, content: @Composable () -> Unit) {
  * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
  * creation of the protocol diffs. This is safe because these types never appears in the node map.
  */
-private sealed class DiffProducingChildrenWidget(
+private class DiffProducingChildrenWidget(
   val tag: UInt,
 ) : AbstractDiffProducingWidget(-1) {
-  class Intermediate(tag: UInt) : DiffProducingChildrenWidget(tag)
-  class Root : DiffProducingChildrenWidget(RootChildrenTag) {
-    init {
-      id = Id.Root
-    }
-  }
+  val children = mutableListOf<AbstractDiffProducingWidget>()
 
   override var layoutModifiers: LayoutModifier
     get() = throw AssertionError()
@@ -95,9 +90,6 @@ public abstract class AbstractDiffProducingWidget(
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
   internal lateinit var _diffAppender: DiffAppender
-
-  @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
-  internal val _children = mutableListOf<AbstractDiffProducingWidget>()
 
   protected fun appendDiff(layoutModifiers: LayoutModifiers) {
     _diffAppender.append(layoutModifiers)
@@ -126,8 +118,8 @@ public abstract class AbstractDiffProducingWidget(
  *                     /          \
  *                    /            \
  *            ToolbarNode        ListNode
- *             /     \                 \
- *            /       \                 \
+ *             ·     ·                 ·
+ *            ·       ·                 ·
  * Children(tag=1)  Children(tag=2)   Children(tag=1)
  *        |              |               /       \
  *        |              |              /         \
@@ -143,11 +135,16 @@ public abstract class AbstractDiffProducingWidget(
  * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
  * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
  * ```
+ * The tree produced by this applier is not a real tree. We do not maintain any relationship from
+ * the user nodes to the synthetic children nodes as they can never be individually moved/removed.
+ * The hierarchy is maintained by Compose's slot table and is represented by dotted lines.
  */
 internal class ProtocolApplier(
   override val factory: DiffProducingWidget.Factory,
   private val diffAppender: DiffAppender,
-) : AbstractApplier<AbstractDiffProducingWidget>(DiffProducingChildrenWidget.Root()),
+) : AbstractApplier<AbstractDiffProducingWidget>(
+  root = DiffProducingChildrenWidget(RootChildrenTag).apply { id = Id.Root },
+),
   RedwoodApplier<DiffProducingWidget.Factory> {
   private var nextId = Id.Root.next()
   internal val nodes = mutableMapOf(root.id to root)
@@ -157,8 +154,6 @@ internal class ProtocolApplier(
   }
 
   override fun insertTopDown(index: Int, instance: AbstractDiffProducingWidget) {
-    current._children.add(index, instance)
-
     if (instance is DiffProducingChildrenWidget) {
       // Inherit the ID from the current node such that changes to the children can be reported
       // as if they occurred directly on the parent.
@@ -168,6 +163,7 @@ internal class ProtocolApplier(
       // display (they are always implied by the display interfaces).
     } else {
       val current = current as DiffProducingChildrenWidget
+      current.children.add(index, instance)
 
       val id = nextId
       nextId = id.next()
@@ -187,7 +183,7 @@ internal class ProtocolApplier(
   override fun remove(index: Int, count: Int) {
     // Children instances are never removed from their parents.
     val current = current as DiffProducingChildrenWidget
-    val children = current._children
+    val children = current.children
 
     for (i in index until index + count) {
       nodes.remove(children[i].id)
@@ -200,12 +196,13 @@ internal class ProtocolApplier(
     // Children instances are never moved within their parents.
     val current = current as DiffProducingChildrenWidget
 
-    current._children.move(from, to, count)
+    current.children.move(from, to, count)
     diffAppender.append(ChildrenDiff.Move(current.id, current.tag, from, to, count))
   }
 
   override fun onClear() {
-    current._children.clear()
+    val current = current as DiffProducingChildrenWidget
+    current.children.clear()
     nodes.clear()
     nodes[current.id] = current // Restore root node into map.
     diffAppender.append(ChildrenDiff.Clear)
