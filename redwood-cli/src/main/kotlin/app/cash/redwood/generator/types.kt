@@ -37,7 +37,6 @@ internal object ComposeProtocol {
     ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
   val DiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
   val DiffProducingWidgetFactory = DiffProducingWidget.nestedClass("Factory")
-  val SyntheticChildren = MemberName("app.cash.redwood.protocol.compose", "_SyntheticChildren")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
 }
@@ -63,7 +62,7 @@ internal object RedwoodWidget {
 }
 
 internal object RedwoodCompose {
-  val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
+  val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "_RedwoodComposeNode")
 }
 
 internal object ComposeRuntime {
