@@ -16,18 +16,12 @@
 package example.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.AndroidUiDispatcher
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
-import example.shared.Counter
-import example.sunspot.compose.DiffProducingSunspotWidgetFactory
-import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -37,39 +31,18 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val widgets = initComposition {
-      Counter()
-    }
+    val children = ComposeWidgetChildren()
+    RedwoodComposition(
+      scope = scope,
+      container = children,
+      factory = AndroidSunspotWidgetFactory(),
+    )
 
     setContent {
       CounterTheme {
-        widgets.render()
+        children.render()
       }
     }
-  }
-
-  private fun initComposition(content: @Composable () -> Unit): ComposeWidgetChildren {
-    val composeChildren = ComposeWidgetChildren()
-
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(),
-      widgetVersion = 1U,
-      onDiff = { Log.d("RedwoodDiff", it.toString()) },
-      onEvent = { Log.d("RedwoodEvent", it.toString()) },
-    )
-
-    val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory())
-    val display = ProtocolDisplay(
-      container = composeChildren,
-      factory = factory,
-      eventSink = composition,
-    )
-
-    composition.start(display)
-    composition.setContent(content)
-
-    return composeChildren
   }
 
   override fun onDestroy() {

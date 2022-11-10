@@ -3,8 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.redwood'
 
 dependencies {
-  implementation projects.samples.counter.sunspot.compose.protocol
-  implementation projects.samples.counter.sunspot.widget.protocol
+  implementation projects.samples.counter.sunspot.widget
   implementation projects.samples.counter.presenter
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material

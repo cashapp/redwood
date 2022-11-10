@@ -15,17 +15,23 @@
  */
 package app.cash.redwood.compose
 
+import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import androidx.compose.runtime.Composition
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.widget.Widget
-import kotlin.DeprecationLevel.ERROR
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 public interface RedwoodComposition {
   public fun setContent(content: @Composable () -> Unit)
@@ -36,14 +42,90 @@ public interface RedwoodComposition {
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated("Not implemented yet", level = ERROR)
 public fun <T : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<T>,
   factory: Widget.Factory<T>,
 ): RedwoodComposition {
-  TODO()
+  return WidgetRedwoodComposition(scope, WidgetApplier(factory, container))
+}
+
+private class WidgetRedwoodComposition(
+  private val scope: CoroutineScope,
+  applier: WidgetApplier<*>,
+) : RedwoodComposition {
+  private val recomposer = Recomposer(scope.coroutineContext)
+
+  private var applyScheduled = false
+  private var snapshotJob: Job? = null
+
+  // Set up a trigger to apply changes on the next frame if a global write was observed.
+  private val snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    if (!applyScheduled) {
+      applyScheduled = true
+      snapshotJob = scope.launch {
+        applyScheduled = false
+        Snapshot.sendApplyNotifications()
+      }
+    }
+  }
+
+  // These launch undispatched so that they reach their first suspension points before returning
+  // control to the caller.
+  private val recomposeJob = scope.launch(start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
+  }
+
+  private val composition = Composition(applier, recomposer)
+
+  override fun setContent(content: @Composable () -> Unit) {
+    composition.setContent(content)
+  }
+
+  override fun cancel() {
+    snapshotHandle.dispose()
+    snapshotJob?.cancel()
+    recomposeJob.cancel()
+    recomposer.cancel()
+  }
+}
+
+private class WidgetApplier<T : Any>(
+  override val factory: Widget.Factory<T>,
+  container: Widget.Children<T>,
+) : _RedwoodApplier<Widget.Factory<T>>,
+  AbstractApplier<Widget<T>>(_ChildrenWidget(container)) {
+
+  override fun insertTopDown(index: Int, instance: Widget<T>) {
+    if (instance is _ChildrenWidget) {
+      instance.children = instance.accessor!!.invoke(current)
+      instance.accessor = null
+    } else {
+      val current = current as _ChildrenWidget
+      current.children!!.insert(index, instance)
+    }
+  }
+
+  override fun insertBottomUp(index: Int, instance: Widget<T>) {
+    // Ignored, we insert top-down for now.
+  }
+
+  override fun remove(index: Int, count: Int) {
+    // Children instances are never removed from their parents.
+    val current = current as _ChildrenWidget
+    current.children!!.remove(index, count)
+  }
+
+  override fun move(from: Int, to: Int, count: Int) {
+    // Children instances are never moved within their parents.
+    val current = current as _ChildrenWidget
+    current.children!!.move(from, to, count)
+  }
+
+  override fun onClear() {
+    val current = current as _ChildrenWidget
+    current.children!!.clear()
+  }
 }
 
 /**

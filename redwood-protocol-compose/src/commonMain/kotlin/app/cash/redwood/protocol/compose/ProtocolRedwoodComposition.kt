@@ -79,7 +79,6 @@ private class DiffProducingRedwoodComposition(
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.
-    // TODO where should this live?
     var applyScheduled = false
     snapshotHandle = Snapshot.registerGlobalWriteObserver {
       if (!applyScheduled) {

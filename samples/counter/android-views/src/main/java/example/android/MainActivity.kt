@@ -16,19 +16,13 @@
 package example.android
 
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
-import android.widget.LinearLayout.LayoutParams
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.ViewGroupChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
-import example.sunspot.compose.DiffProducingSunspotWidgetFactory
-import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -38,27 +32,14 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val composition = ProtocolRedwoodComposition(
+    val root = findViewById<ViewGroup>(android.R.id.content)
+    val rootContainer = ViewGroupChildren(root)
+
+    val composition = RedwoodComposition(
       scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(),
-      widgetVersion = 1U,
-      onDiff = { Log.d("RedwoodDiff", it.toString()) },
-      onEvent = { Log.d("RedwoodEvent", it.toString()) },
+      container = rootContainer,
+      factory = AndroidSunspotWidgetFactory(this),
     )
-
-    val root = FrameLayout(this).apply {
-      layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
-    }
-    setContentView(root)
-
-    val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory(this))
-    val display = ProtocolDisplay(
-      container = ViewGroupChildren(root),
-      factory = factory,
-      eventSink = composition,
-    )
-
-    composition.start(display)
 
     composition.setContent {
       Counter()

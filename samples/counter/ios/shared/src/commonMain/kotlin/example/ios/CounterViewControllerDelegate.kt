@@ -16,18 +16,14 @@
 package example.ios
 
 import androidx.compose.runtime.BroadcastFrameClock
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.UIViewChildren
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
-import example.sunspot.compose.DiffProducingSunspotWidgetFactory
-import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
-import platform.Foundation.NSLog
 import platform.UIKit.UIStackView
 
 class CounterViewControllerDelegate(
@@ -37,26 +33,15 @@ class CounterViewControllerDelegate(
   private val scope = MainScope() + clock
 
   init {
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(),
-      widgetVersion = 1U,
-      onDiff = { NSLog("RedwoodDiff: $it") },
-      onEvent = { NSLog("RedwoodEvent: $it") },
-    )
-
     val children = UIViewChildren(
       parent = root,
       insert = { view, index -> root.insertArrangedSubview(view, index.convert()) },
     )
-    val factory = DiffConsumingSunspotWidgetFactory(IosSunspotNodeFactory)
-    val display = ProtocolDisplay(
+    val composition = RedwoodComposition(
+      scope = scope,
       container = children,
-      factory = factory,
-      eventSink = composition,
+      factory = IosSunspotNodeFactory,
     )
-
-    composition.start(display)
 
     composition.setContent {
       Counter()
