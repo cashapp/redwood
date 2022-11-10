@@ -38,10 +38,11 @@ import kotlinx.serialization.modules.SerializersModule
  * It updates the binding when the views change in [onContentChanged], and when new code is
  * available in [onCodeChanged].
  */
-public class TreehouseApp<T : Any>(
+public class TreehouseApp<T : Any> internal constructor(
   private val scope: CoroutineScope,
+  public val spec: Spec<T>,
   public val dispatchers: TreehouseDispatchers,
-  public val viewBinder: ViewBinder,
+  private val eventPublisher: EventPublisher,
 ) {
   /** All state is confined to [TreehouseDispatchers.zipline]. */
   private var closed = false
@@ -67,7 +68,7 @@ public class TreehouseApp<T : Any>(
   }
 
   /**
-   * Refresh the code. Even if no views are currently showing we refresh the code so we're ready
+   * Refresh the code. Even if no views are currently showing we refresh the code, so we're ready
    * when a view is added.
    */
   public fun onCodeChanged(zipline: Zipline, context: T) {
@@ -100,7 +101,7 @@ public class TreehouseApp<T : Any>(
   private suspend fun bind(view: TreehouseView<T>) {
     dispatchers.checkZipline()
 
-    // Make sure we're tracking this view so we can update it when the code changes.
+    // Make sure we're tracking this view, so we can update it when the code changes.
     val content = view.boundContent
     if (content == viewToBoundContent[view]) {
       return // Nothing has changed.
@@ -116,7 +117,7 @@ public class TreehouseApp<T : Any>(
     } else {
       // If we're waiting for code to load, show a loading indicator until it's ready.
       withContext(dispatchers.ui) {
-        viewBinder.codeLoading(view)
+        spec.viewBinder.codeLoading(view)
       }
     }
   }
@@ -126,6 +127,7 @@ public class TreehouseApp<T : Any>(
     dispatchers.checkZipline()
     closed = true
     ziplineSession?.cancel()
+    eventPublisher.appCanceled(this)
   }
 
   /** The host state for a single code load. We get a new session each time we get new code. */
@@ -170,7 +172,10 @@ public class TreehouseApp<T : Any>(
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       val display = ProtocolDisplay(
         container = view.children as Widget.Children<Any>,
-        factory = viewBinder.widgetFactory(zipline.json) as Factory<Any>,
+        factory = spec.viewBinder.widgetFactory(
+          zipline.json,
+          eventPublisher.protocolMismatchHandler(this@TreehouseApp)
+        ) as Factory<Any>,
         eventSink = eventSink,
       )
 
@@ -185,8 +190,8 @@ public class TreehouseApp<T : Any>(
               view.children.clear()
 
               when {
-                isInitialLaunch -> viewBinder.beforeInitialCode(view)
-                else -> viewBinder.beforeUpdatedCode(view)
+                isInitialLaunch -> spec.viewBinder.beforeInitialCode(view)
+                else -> spec.viewBinder.beforeUpdatedCode(view)
               }
             }
 

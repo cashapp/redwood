@@ -36,7 +36,7 @@ import okio.Path
 public class TreehouseLauncher internal constructor(
   private val platform: TreehousePlatform,
   public val dispatchers: TreehouseDispatchers,
-  private val eventListener: EventListener,
+  eventListener: EventListener,
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
   private val embeddedDir: Path,
@@ -44,12 +44,14 @@ public class TreehouseLauncher internal constructor(
   private val cacheName: String,
   private val cacheMaxSizeInBytes: Long,
 ) : Closeable {
+  private val eventPublisher = EventPublisher(eventListener)
+
   /** Loads applications from the network only. The cache is neither read nor written. */
   private val ziplineLoaderNetworkOnly = ZiplineLoader(
     dispatcher = dispatchers.zipline,
     manifestVerifier = manifestVerifier,
     httpClient = httpClient,
-    eventListener = TreehouseEventListener(platform),
+    eventListener = eventPublisher.ziplineEventListener,
   )
 
   /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
@@ -71,11 +73,14 @@ public class TreehouseLauncher internal constructor(
     scope: CoroutineScope,
     spec: TreehouseApp.Spec<T>,
   ): TreehouseApp<T> {
-    val treehouseApp = TreehouseApp<T>(
+    val treehouseApp = TreehouseApp(
       scope = scope,
       dispatchers = dispatchers,
-      viewBinder = spec.viewBinder,
+      spec = spec,
+      eventPublisher = eventPublisher,
     )
+
+    eventPublisher.appCreated(treehouseApp)
 
     scope.launch(dispatchers.zipline) {
       val ziplineFileFlow = ziplineFlow(spec)

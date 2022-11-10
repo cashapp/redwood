@@ -17,11 +17,10 @@ package app.cash.zipline.samples.emojisearch
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.TreehouseView
@@ -70,9 +69,11 @@ class EmojiSearchActivity : ComponentActivity() {
         viewBinder = object : ViewBinder {
           override fun widgetFactory(
             json: Json,
+            mismatchHandler: ProtocolMismatchHandler,
           ) = DiffConsumingEmojiSearchWidgetFactory(
             delegate = AndroidEmojiSearchWidgetFactory,
             json = json,
+            mismatchHandler = mismatchHandler,
           )
         },
       ),
