@@ -174,7 +174,7 @@ public class TreehouseApp<T : Any> internal constructor(
         container = view.children as Widget.Children<Any>,
         factory = spec.viewBinder.widgetFactory(
           zipline.json,
-          eventPublisher.protocolMismatchHandler(this@TreehouseApp)
+          eventPublisher.protocolMismatchHandler(this@TreehouseApp),
         ) as Factory<Any>,
         eventSink = eventSink,
       )
