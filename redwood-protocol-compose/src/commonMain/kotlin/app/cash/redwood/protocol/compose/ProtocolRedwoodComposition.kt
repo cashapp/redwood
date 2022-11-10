@@ -24,6 +24,7 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -32,10 +33,8 @@ import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface ProtocolRedwoodComposition : EventSink {
+public interface ProtocolRedwoodComposition : RedwoodComposition, EventSink {
   public fun start(diffSink: DiffSink)
-  public fun setContent(content: @Composable () -> Unit)
-  public fun cancel()
 }
 
 /**
