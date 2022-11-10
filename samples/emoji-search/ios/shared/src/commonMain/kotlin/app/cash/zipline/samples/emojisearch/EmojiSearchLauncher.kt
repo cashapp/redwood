@@ -15,6 +15,7 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.ViewBinder
@@ -51,9 +52,11 @@ class EmojiSearchLauncher(
         viewBinder = object : ViewBinder {
           override fun widgetFactory(
             json: Json,
+            mismatchHandler: ProtocolMismatchHandler,
           ) = DiffConsumingEmojiSearchWidgetFactory(
             delegate = widgetFactory,
             json = json,
+            mismatchHandler = mismatchHandler,
           )
         },
       ),

@@ -33,9 +33,9 @@ public abstract class EventListener {
   public open fun codeLoadStart(
     app: TreehouseApp<*>,
     manifestUrl: String?,
-  ): Any? = Unit
+  ): Any? = null
 
-  public open fun codeLoadEnd(
+  public open fun codeLoadSuccess(
     app: TreehouseApp<*>,
     manifestUrl: String?,
     startValue: Any?,
@@ -65,23 +65,23 @@ public abstract class EventListener {
   public open fun onUnknownChildren(
     app: TreehouseApp<*>,
     kind: Int,
-    tag: Int,
+    tag: UInt,
   ) {
   }
 
   public open fun onUnknownProperty(
     app: TreehouseApp<*>,
     kind: Int,
-    tag: Int,
+    tag: UInt,
   ) {
   }
 
   public open fun downloadStart(
     app: TreehouseApp<*>,
     url: String,
-  ): Any? = Unit
+  ): Any? = null
 
-  public open fun downloadEnd(
+  public open fun downloadSuccess(
     app: TreehouseApp<*>,
     url: String,
     startValue: Any?,
@@ -117,7 +117,7 @@ public abstract class EventListener {
 
   public open fun callStart(
     call: Call,
-  ): Any? = Unit
+  ): Any? = null
 
   public open fun callEnd(
     call: Call,

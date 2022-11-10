@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import kotlinx.serialization.json.Json
 
 public interface ViewBinder {
@@ -29,5 +30,8 @@ public interface ViewBinder {
   public fun beforeUpdatedCode(view: TreehouseView<*>) {}
 
   /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
-  public fun widgetFactory(json: Json): DiffConsumingWidget.Factory<*>
+  public fun widgetFactory(
+    json: Json,
+    mismatchHandler: ProtocolMismatchHandler,
+  ): DiffConsumingWidget.Factory<*>
 }
