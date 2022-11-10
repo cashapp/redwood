@@ -42,11 +42,6 @@ internal class DiffProducingWidgetChildren(
     diffAppender.append(ChildrenDiff.Move(id, tag, fromIndex, toIndex, count))
   }
 
-  override fun clear() {
-    ids.clear()
-    diffAppender.append(ChildrenDiff.Clear)
-  }
-
   override fun onLayoutModifierUpdated(index: Int) {
     throw AssertionError()
   }

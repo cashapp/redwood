@@ -61,12 +61,6 @@ public class ProtocolDisplay<T : Any>(
           }
           node.childIds.remove(childrenDiff.index, childrenDiff.count)
         }
-        ChildrenDiff.Clear -> {
-          children.clear()
-          node.childIds.clear()
-          nodes.clear()
-          nodes[Id.Root] = node
-        }
       }
     }
 

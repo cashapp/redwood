@@ -35,9 +35,5 @@ public class MutableListChildren<T : Any>(
     list.remove(index, count)
   }
 
-  override fun clear() {
-    list.clear()
-  }
-
   override fun onLayoutModifierUpdated(index: Int) {}
 }

@@ -65,15 +65,6 @@ public class UIViewChildren(
     invalidate()
   }
 
-  override fun clear() {
-    _widgets.clear()
-
-    for (subview in parent.typedSubviews) {
-      subview.removeFromSuperview()
-    }
-    invalidate()
-  }
-
   override fun onLayoutModifierUpdated(index: Int) {
     invalidate()
   }

@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.widget
 
-import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
@@ -60,11 +59,6 @@ public class HTMLElementChildren(
     repeat(count) {
       parent.removeChild(parent.children[index]!!)
     }
-  }
-
-  override fun clear() {
-    _widgets.clear()
-    parent.clear()
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
