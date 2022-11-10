@@ -27,12 +27,13 @@ import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
 public class ProtocolDisplay<T : Any>(
-  private val container: Widget.Children<T>,
+  container: Widget.Children<T>,
   private val factory: DiffConsumingWidget.Factory<T>,
   private val eventSink: EventSink,
 ) : DiffSink {
-  private val root: DiffConsumingWidget<T> = ProtocolDisplayRoot(container)
-  private val nodes = mutableMapOf(Id.Root to Node(root, Id.Root, container))
+  private val nodes = mutableMapOf(
+    Id.Root to Node(ProtocolDisplayRoot(container), Id.Root, container),
+  )
 
   override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
@@ -64,7 +65,7 @@ public class ProtocolDisplay<T : Any>(
           children.clear()
           node.childIds.clear()
           nodes.clear()
-          nodes[Id.Root] = Node(root, Id.Root, container)
+          nodes[Id.Root] = node
         }
       }
     }
