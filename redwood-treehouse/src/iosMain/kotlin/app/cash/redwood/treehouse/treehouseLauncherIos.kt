@@ -30,6 +30,7 @@ import platform.Foundation.NSThread
 public fun TreehouseLauncher(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
+  eventListener: EventListener = EventListener.NONE,
   embeddedDir: Path = "/".toPath(),
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
   cacheName: String = "zipline",
@@ -37,6 +38,7 @@ public fun TreehouseLauncher(
 ): TreehouseLauncher = TreehouseLauncher(
   platform = IosTreehousePlatform(),
   dispatchers = IosTreehouseDispatchers(),
+  eventListener = eventListener,
   httpClient = httpClient,
   manifestVerifier = manifestVerifier,
   embeddedDir = embeddedDir,

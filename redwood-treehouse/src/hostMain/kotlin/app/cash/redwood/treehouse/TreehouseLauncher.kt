@@ -36,6 +36,7 @@ import okio.Path
 public class TreehouseLauncher internal constructor(
   private val platform: TreehousePlatform,
   public val dispatchers: TreehouseDispatchers,
+  private val eventListener: EventListener,
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
   private val embeddedDir: Path,

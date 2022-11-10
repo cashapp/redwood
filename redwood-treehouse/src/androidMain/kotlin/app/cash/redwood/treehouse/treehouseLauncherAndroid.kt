@@ -35,6 +35,7 @@ public fun TreehouseLauncher(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
+  eventListener: EventListener = EventListener.NONE,
   embeddedDir: Path = "/".toPath(),
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
   cacheName: String = "zipline",
@@ -42,6 +43,7 @@ public fun TreehouseLauncher(
 ): TreehouseLauncher = TreehouseLauncher(
   platform = AndroidTreehousePlatform(context),
   dispatchers = AndroidTreehouseDispatchers(),
+  eventListener = eventListener,
   httpClient = httpClient.asZiplineHttpClient(),
   manifestVerifier = manifestVerifier,
   embeddedDir = embeddedDir,
