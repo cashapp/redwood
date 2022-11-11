@@ -187,7 +187,7 @@ public class TreehouseApp<T : Any> internal constructor(
           scope.launch(dispatchers.ui) {
             if (firstDiff) {
               firstDiff = false
-              view.children.clear()
+              view.reset()
 
               when {
                 isInitialLaunch -> spec.viewBinder.beforeInitialCode(view)

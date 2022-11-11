@@ -42,6 +42,7 @@ public fun <T : Any> TreehouseContent(
       override val boundContent: TreehouseView.Content<T> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
+      override fun reset() = children.remove(0, children.widgets.size)
     }
   }
 

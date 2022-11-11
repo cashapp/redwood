@@ -50,11 +50,6 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
     layoutModifiers.remove(index, count)
   }
 
-  override fun clear() {
-    _widgets.clear()
-    layoutModifiers.clear()
-  }
-
   override fun onLayoutModifierUpdated(index: Int) {
     layoutModifiers.set(index, _widgets[index].layoutModifiers)
   }

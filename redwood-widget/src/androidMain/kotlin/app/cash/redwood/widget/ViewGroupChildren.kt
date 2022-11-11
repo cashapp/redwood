@@ -52,11 +52,6 @@ public class ViewGroupChildren(
     parent.removeViews(index, count)
   }
 
-  override fun clear() {
-    _widgets.clear()
-    parent.removeAllViews()
-  }
-
   override fun onLayoutModifierUpdated(index: Int) {
     val view = parent.getChildAt(index)
     view.invalidate()

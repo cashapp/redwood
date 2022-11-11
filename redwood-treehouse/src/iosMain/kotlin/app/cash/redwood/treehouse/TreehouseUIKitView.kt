@@ -50,6 +50,10 @@ public class TreehouseUIKitView<T : Any>(
   override val hostConfiguration: StateFlow<HostConfiguration>
     get() = mutableHostConfiguration
 
+  override fun reset() {
+    children.remove(0, view.subviews.size)
+  }
+
   public fun setContent(content: TreehouseView.Content<T>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content

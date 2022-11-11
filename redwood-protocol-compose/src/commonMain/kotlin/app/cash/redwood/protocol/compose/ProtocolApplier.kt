@@ -69,12 +69,17 @@ internal class ProtocolApplier(
 ) {
   private var nextId = Id.Root.next()
   internal val nodes = mutableMapOf(Id.Root to root)
+  private var closed = false
 
   override fun onEndChanges() {
+    check(!closed)
+
     diffAppender.trySend()
   }
 
   override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
+    check(!closed)
+
     if (instance is _ChildrenWidget) {
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
@@ -98,6 +103,8 @@ internal class ProtocolApplier(
   }
 
   override fun remove(index: Int, count: Int) {
+    check(!closed)
+
     // Children instances are never removed from their parents.
     val current = current as _ChildrenWidget
     val children = current.children as DiffProducingWidgetChildren
@@ -109,17 +116,15 @@ internal class ProtocolApplier(
   }
 
   override fun move(from: Int, to: Int, count: Int) {
+    check(!closed)
+
     // Children instances are never moved within their parents.
     val current = current as _ChildrenWidget
     current.children!!.move(from, to, count)
   }
 
   override fun onClear() {
-    nodes.clear()
-    nodes[Id.Root] = current // Restore root node into map.
-
-    val current = current as _ChildrenWidget
-    current.children!!.clear()
+    closed = true
   }
 
   private fun Id.next(): Id = Id(value + 1UL)
