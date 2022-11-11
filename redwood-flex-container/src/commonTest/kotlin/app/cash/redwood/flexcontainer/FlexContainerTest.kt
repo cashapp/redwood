@@ -26,6 +26,7 @@ class FlexContainerTest {
     flexWrap = FlexWrap.Wrap
     alignItems = AlignItems.Stretch
     alignContent = AlignContent.Stretch
+    roundToInt = true
   }
 
   @Test

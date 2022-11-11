@@ -42,6 +42,7 @@ internal class UIViewFlexContainer(
 ) {
   private val container = FlexContainer().apply {
     flexDirection = direction
+    roundToInt = false
   }
 
   private val _view: UIScrollView = viewFactory.create(UIViewDelegate())
