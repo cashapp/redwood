@@ -42,6 +42,13 @@ public abstract class EventListener {
   ) {
   }
 
+  public open fun codeLoadSkipped(
+    app: TreehouseApp<*>,
+    manifestUrl: String?,
+    startValue: Any?,
+  ) {
+  }
+
   public open fun codeLoadFailed(
     app: TreehouseApp<*>,
     manifestUrl: String?,
