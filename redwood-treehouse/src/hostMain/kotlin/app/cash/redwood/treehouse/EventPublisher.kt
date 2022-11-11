@@ -15,36 +15,51 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
-import app.cash.zipline.EventListener as ZiplineEventListener
+import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
 
 internal class EventPublisher(
   private val listener: EventListener,
 ) {
-  private var applications = mapOf<String, TreehouseApp<*>>()
+  private var nameToApplication = mapOf<String, TreehouseApp<*>>()
 
   fun appCreated(app: TreehouseApp<*>) {
-    applications = applications + (app.spec.name to app)
+    nameToApplication = nameToApplication + (app.spec.name to app)
     listener.appCreated(app)
   }
 
   fun appCanceled(app: TreehouseApp<*>) {
-    applications = applications - app.spec.name
+    nameToApplication = nameToApplication - app.spec.name
     listener.appCanceled(app)
   }
 
   val ziplineEventListener = object : ZiplineEventListener() {
     override fun applicationLoadStart(applicationName: String, manifestUrl: String?): Any? {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       return listener.codeLoadStart(app, manifestUrl)
     }
 
-    override fun applicationLoadEnd(applicationName: String, manifestUrl: String?, startValue: Any?) {
-      val app = applications[applicationName]!!
+    override fun applicationLoadSuccess(
+      applicationName: String,
+      manifestUrl: String?,
+      zipline: Zipline,
+      startValue: Any?,
+    ) {
+      val app = nameToApplication[applicationName]!!
       listener.codeLoadSuccess(app, manifestUrl, startValue)
+    }
+
+    override fun applicationLoadSkipped(
+      applicationName: String,
+      manifestUrl: String,
+      startValue: Any?,
+    ) {
+      val app = nameToApplication[applicationName]!!
+      listener.codeLoadSkipped(app, manifestUrl, startValue)
     }
 
     override fun applicationLoadFailed(
@@ -53,29 +68,29 @@ internal class EventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       listener.codeLoadFailed(app, manifestUrl, exception, startValue)
     }
 
-    override fun bindService(name: String, service: ZiplineService) {
+    override fun bindService(zipline: Zipline, name: String, service: ZiplineService) {
       listener.bindService(name, service)
     }
 
-    override fun callStart(call: Call): Any? {
+    override fun callStart(zipline: Zipline, call: Call): Any? {
       return listener.callStart(call)
     }
 
-    override fun callEnd(call: Call, result: CallResult, startValue: Any?) {
+    override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
       listener.callEnd(call, result, startValue)
     }
 
     override fun downloadStart(applicationName: String, url: String): Any? {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       return listener.downloadStart(app, url)
     }
 
     override fun downloadEnd(applicationName: String, url: String, startValue: Any?) {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       listener.downloadSuccess(app, url, startValue)
     }
 
@@ -85,20 +100,20 @@ internal class EventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       listener.downloadFailed(app, url, exception, startValue)
     }
 
     override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
-      val app = applications[applicationName]!!
+      val app = nameToApplication[applicationName]!!
       listener.manifestParseFailed(app, url, exception)
     }
 
-    override fun takeService(name: String, service: ZiplineService) {
+    override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
       listener.takeService(name, service)
     }
 
-    override fun serviceLeaked(name: String) {
+    override fun serviceLeaked(zipline: Zipline, name: String) {
       listener.serviceLeaked(name)
     }
   }
