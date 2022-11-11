@@ -173,6 +173,7 @@ public class TreehouseApp<T : Any> internal constructor(
       val display = ProtocolDisplay(
         container = view.children as Widget.Children<Any>,
         factory = spec.viewBinder.widgetFactory(
+          view,
           zipline.json,
           eventPublisher.protocolMismatchHandler(this@TreehouseApp),
         ) as Factory<Any>,

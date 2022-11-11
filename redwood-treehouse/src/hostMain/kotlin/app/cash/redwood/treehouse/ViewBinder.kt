@@ -31,6 +31,7 @@ public interface ViewBinder {
 
   /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
   public fun widgetFactory(
+    view: TreehouseView<*>,
     json: Json,
     mismatchHandler: ProtocolMismatchHandler,
   ): DiffConsumingWidget.Factory<*>
