@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,6 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
-import android.annotation.SuppressLint
 import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
