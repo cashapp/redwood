@@ -21,7 +21,7 @@ import shared
 
 class IosEmojiSearchWidgetFactory: WidgetEmojiSearchWidgetFactory {
     let imageLoader = RemoteImageLoader()
-    
+
     var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
         Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
 
@@ -60,7 +60,7 @@ private class DelegateUIScrollView : UIScrollView {
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let inputSize = Redwood_layout_uiviewDoubleSize(width: size.width, height: size.height)
+        let inputSize = Redwood_flex_containerSize(width: size.width, height: size.height)
         let outputSize = _delegate.sizeThatFits(size: inputSize)
         return CGSize(width: outputSize.width, height: outputSize.height)
     }

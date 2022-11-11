@@ -67,14 +67,14 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
+internal fun Padding.toSpacing() = Spacing(start.toDouble(), end.toDouble(), top.toDouble(), bottom.toDouble())
 
 internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
-  size = View.MeasureSpec.getSize(measureSpec),
+  size = View.MeasureSpec.getSize(measureSpec).toDouble(),
   mode = MeasureSpecMode.fromAndroid(View.MeasureSpec.getMode(measureSpec)),
 )
 
-internal fun MeasureSpec.toAndroid(): Int = View.MeasureSpec.makeMeasureSpec(size, mode.toAndroid())
+internal fun MeasureSpec.toAndroid(): Int = View.MeasureSpec.makeMeasureSpec(size.toInt(), mode.toAndroid())
 
 internal fun MeasureSpecMode.Companion.fromAndroid(mode: Int): MeasureSpecMode = when (mode) {
   View.MeasureSpec.UNSPECIFIED -> Unspecified
@@ -125,14 +125,14 @@ internal fun View.asItem(layoutModifiers: LayoutModifier, direction: FlexDirecti
 }
 
 internal class ViewMeasurable(val view: View) : Measurable() {
-  override val requestedWidth get() = view.layoutParams.width
-  override val requestedHeight get() = view.layoutParams.height
-  override val minWidth get() = view.minimumWidth
-  override val minHeight get() = view.minimumHeight
+  override val requestedWidth get() = view.layoutParams.width.toDouble()
+  override val requestedHeight get() = view.layoutParams.height.toDouble()
+  override val minWidth get() = view.minimumWidth.toDouble()
+  override val minHeight get() = view.minimumHeight.toDouble()
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     view.measure(widthSpec.toAndroid(), heightSpec.toAndroid())
-    return Size(view.measuredWidth, view.measuredHeight)
+    return Size(view.measuredWidth.toDouble(), view.measuredHeight.toDouble())
   }
 }
 

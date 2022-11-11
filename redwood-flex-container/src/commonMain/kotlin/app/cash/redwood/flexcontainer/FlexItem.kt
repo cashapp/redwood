@@ -44,7 +44,7 @@ public class FlexItem(
    * The attribute determines how much this child will grow if positive free space is
    * distributed relative to the rest of other items included in the same flex line.
    */
-  public val flexGrow: Float = DefaultFlexGrow,
+  public val flexGrow: Double = DefaultFlexGrow,
 
   /**
    * The flex shrink attribute of the item.
@@ -52,7 +52,7 @@ public class FlexItem(
    * The attribute determines how much this child will shrink if negative free space is
    * distributed relative to the rest of other items included in the same flex line.
    */
-  public val flexShrink: Float = DefaultFlexShrink,
+  public val flexShrink: Double = DefaultFlexShrink,
 
   /**
    * The flexBasisPercent attribute of the item.
@@ -66,7 +66,7 @@ public class FlexItem(
    * This attribute is only effective when the parent's MeasureSpec mode is
    * MeasureSpec.EXACTLY. The default value is -1, which means not set.
    */
-  public val flexBasisPercent: Float = DefaultFlexBasisPercent,
+  public val flexBasisPercent: Double = DefaultFlexBasisPercent,
 
   /**
    * The align self attribute of the item.
@@ -107,14 +107,14 @@ public class FlexItem(
 ) {
 
   /** The item's size after invoking [FlexContainer.measure]. */
-  public var measuredWidth: Int = -1
-  public var measuredHeight: Int = -1
+  public var measuredWidth: Double = -1.0
+  public var measuredHeight: Double = -1.0
 
   /** The item's bounds after invoking [FlexContainer.layout]. */
-  public var left: Int = -1
-  public var top: Int = -1
-  public var right: Int = -1
-  public var bottom: Int = -1
+  public var left: Double = -1.0
+  public var top: Double = -1.0
+  public var right: Double = -1.0
+  public var bottom: Double = -1.0
 
   public companion object {
     /** The default value for the baseline attribute */
@@ -124,15 +124,15 @@ public class FlexItem(
     public const val DefaultOrder: Int = 1
 
     /** The default value for the flex grow attribute */
-    public const val DefaultFlexGrow: Float = 0f
+    public const val DefaultFlexGrow: Double = 0.0
 
     /** The default value for the flex shrink attribute */
-    public const val DefaultFlexShrink: Float = 1f
+    public const val DefaultFlexShrink: Double = 1.0
 
     /** The value representing the flex shrink attribute is not set */
-    public const val UndefinedFlexShrink: Float = 0f
+    public const val UndefinedFlexShrink: Double = 0.0
 
     /** The default value for the flex basis percent attribute */
-    public const val DefaultFlexBasisPercent: Float = -1f
+    public const val DefaultFlexBasisPercent: Double = -1.0
   }
 }

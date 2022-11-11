@@ -26,6 +26,7 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
+import android.annotation.SuppressLint
 import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
 import app.cash.redwood.layout.api.Overflow
@@ -39,6 +40,7 @@ internal class ViewFlexContainer(
 ) {
   private val container = FlexContainer().apply {
     flexDirection = direction
+    roundToInt = true
   }
 
   private val hostView = HostView(context)
@@ -95,13 +97,14 @@ internal class ViewFlexContainer(
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
       val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
       measureResult = container.measure(widthSpec, heightSpec)
-      setMeasuredDimension(measureResult.containerSize.width, measureResult.containerSize.height)
+      setMeasuredDimension(measureResult.containerSize.width.toInt(), measureResult.containerSize.height.toInt())
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      container.layout(measureResult, Size(right - left, bottom - top))
+      container.layout(measureResult, Size((right - left).toDouble(), (bottom - top).toDouble()))
       container.items.forEachIndexed { index, item ->
-        getChildAt(index).layout(item.left, item.top, item.right, item.bottom)
+        getChildAt(index).layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
       }
     }
 

@@ -25,12 +25,12 @@ internal class FlexLine {
   /**
    * The size of the flex line along the main axis of the flex container.
    */
-  var mainSize = 0
+  var mainSize = 0.0
 
   /**
    * The size of the flex line along the cross axis of the flex container.
    */
-  var crossSize = 0
+  var crossSize = 0.0
 
   /**
    * The number of items contained in this flex line.
@@ -45,22 +45,22 @@ internal class FlexLine {
   /**
    * The sum of the flexGrow properties of the children included in this flex line.
    */
-  var totalFlexGrow = 0f
+  var totalFlexGrow = 0.0
 
   /**
    * The sum of the flexShrink properties of the children included in this flex line.
    */
-  var totalFlexShrink = 0f
+  var totalFlexShrink = 0.0
 
   /**
    * The largest value of the individual child's baseline.
    */
-  var maxBaseline = 0
+  var maxBaseline = 0.0
 
   /**
    * The sum of the cross size used before this flex line.
    */
-  var sumCrossSizeBefore = 0
+  var sumCrossSizeBefore = 0.0
 
   /**
    * The index of the first child included in this flex line (inclusive).

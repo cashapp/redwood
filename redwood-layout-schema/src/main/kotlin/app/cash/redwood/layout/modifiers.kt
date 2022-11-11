@@ -28,7 +28,7 @@ import app.cash.redwood.schema.LayoutModifier
  */
 @LayoutModifier(1, RowScope::class, ColumnScope::class)
 public data class Grow(
-  val value: Float,
+  val value: Double,
 )
 
 /**
@@ -40,7 +40,7 @@ public data class Grow(
  */
 @LayoutModifier(2, RowScope::class, ColumnScope::class)
 public data class Shrink(
-  val value: Float,
+  val value: Double,
 )
 
 /**

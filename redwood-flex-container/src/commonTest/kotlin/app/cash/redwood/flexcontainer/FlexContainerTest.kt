@@ -30,28 +30,28 @@ class FlexContainerTest {
 
   @Test
   fun testCalculateHorizontalFlexLines() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(200, 100))
-    val item3 = FlexItem(measurable = BoxMeasurable(300, 100))
-    val item4 = FlexItem(measurable = BoxMeasurable(400, 100))
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(300.0, 100.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(400.0, 100.0))
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
 
     val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
 
     assertEquals(3, lines.size)
-    assertEquals(300, lines[0].mainSize)
-    assertEquals(300, lines[1].mainSize)
-    assertEquals(400, lines[2].mainSize)
-    assertEquals(100, lines[0].crossSize)
-    assertEquals(100, lines[1].crossSize)
-    assertEquals(100, lines[2].crossSize)
+    assertEquals(300.0, lines[0].mainSize)
+    assertEquals(300.0, lines[1].mainSize)
+    assertEquals(400.0, lines[2].mainSize)
+    assertEquals(100.0, lines[0].crossSize)
+    assertEquals(100.0, lines[1].crossSize)
+    assertEquals(100.0, lines[2].crossSize)
 
     val firstLine = lines[0]
     assertEquals(0, firstLine.firstIndex)
@@ -66,28 +66,28 @@ class FlexContainerTest {
 
   @Test
   fun testCalculateVerticalFlexLines() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 300))
-    val item4 = FlexItem(measurable = BoxMeasurable(100, 400))
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 300.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(100.0, 400.0))
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
+    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
 
     val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
 
     assertEquals(3, lines.size)
-    assertEquals(300, lines[0].mainSize)
-    assertEquals(300, lines[1].mainSize)
-    assertEquals(400, lines[2].mainSize)
-    assertEquals(100, lines[0].crossSize)
-    assertEquals(100, lines[1].crossSize)
-    assertEquals(100, lines[2].crossSize)
+    assertEquals(300.0, lines[0].mainSize)
+    assertEquals(300.0, lines[1].mainSize)
+    assertEquals(400.0, lines[2].mainSize)
+    assertEquals(100.0, lines[0].crossSize)
+    assertEquals(100.0, lines[1].crossSize)
+    assertEquals(100.0, lines[2].crossSize)
 
     val firstLine = lines[0]
     assertEquals(0, firstLine.firstIndex)
@@ -102,159 +102,159 @@ class FlexContainerTest {
 
   @Test
   fun testDetermineMainSize_direction_row_flexGrowSet() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(200, 100), flexGrow = 1.0f)
-    val item3 = FlexItem(measurable = BoxMeasurable(300, 100))
-    val item4 = FlexItem(measurable = BoxMeasurable(400, 100), flexGrow = 2.0f)
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(200.0, 100.0), flexGrow = 1.0)
+    val item3 = FlexItem(measurable = BoxMeasurable(300.0, 100.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(400.0, 100.0), flexGrow = 2.0)
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100, item1.measuredWidth)
-    assertEquals(100, item1.measuredHeight)
+    assertEquals(100.0, item1.measuredWidth)
+    assertEquals(100.0, item1.measuredHeight)
     // item2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400, item2.measuredWidth)
-    assertEquals(100, item2.measuredHeight)
-    assertEquals(300, item3.measuredWidth)
-    assertEquals(100, item3.measuredHeight)
+    assertEquals(400.0, item2.measuredWidth)
+    assertEquals(100.0, item2.measuredHeight)
+    assertEquals(300.0, item3.measuredWidth)
+    assertEquals(100.0, item3.measuredHeight)
     // item4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500, item4.measuredWidth)
-    assertEquals(100, item4.measuredHeight)
+    assertEquals(500.0, item4.measuredWidth)
+    assertEquals(100.0, item4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_column_flexGrowSet() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(100, 200), flexGrow = 1.0f)
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 300))
-    val item4 = FlexItem(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(100.0, 200.0), flexGrow = 1.0)
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 300.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(100.0, 400.0), flexGrow = 2.0)
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
+    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100, item1.measuredWidth)
-    assertEquals(100, item1.measuredHeight)
-    assertEquals(100, item2.measuredWidth)
+    assertEquals(100.0, item1.measuredWidth)
+    assertEquals(100.0, item1.measuredHeight)
+    assertEquals(100.0, item2.measuredWidth)
     // item2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400, item2.measuredHeight)
-    assertEquals(100, item3.measuredWidth)
-    assertEquals(300, item3.measuredHeight)
-    assertEquals(100, item4.measuredWidth)
+    assertEquals(400.0, item2.measuredHeight)
+    assertEquals(100.0, item3.measuredWidth)
+    assertEquals(300.0, item3.measuredHeight)
+    assertEquals(100.0, item4.measuredWidth)
     // item4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500, item4.measuredHeight)
+    assertEquals(500.0, item4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_row_flexShrinkSet() {
-    val item1 = FlexItem(measurable = BoxMeasurable(200, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(200, 100))
-    val item3 = FlexItem(measurable = BoxMeasurable(200, 100))
-    val item4 = FlexItem(measurable = BoxMeasurable(200, 100))
+    val item1 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the width
-    assertEquals(125, item1.measuredWidth)
-    assertEquals(100, item1.measuredHeight)
-    assertEquals(125, item2.measuredWidth)
-    assertEquals(100, item2.measuredHeight)
-    assertEquals(125, item3.measuredWidth)
-    assertEquals(100, item3.measuredHeight)
-    assertEquals(125, item4.measuredWidth)
-    assertEquals(100, item4.measuredHeight)
+    assertEquals(125.0, item1.measuredWidth)
+    assertEquals(100.0, item1.measuredHeight)
+    assertEquals(125.0, item2.measuredWidth)
+    assertEquals(100.0, item2.measuredHeight)
+    assertEquals(125.0, item3.measuredWidth)
+    assertEquals(100.0, item3.measuredHeight)
+    assertEquals(125.0, item4.measuredWidth)
+    assertEquals(100.0, item4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_direction_column_flexShrinkSet() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item2 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item4 = FlexItem(measurable = BoxMeasurable(100, 200))
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
     container.items += item1
     container.items += item2
     container.items += item3
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
+    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the height
-    assertEquals(100, item1.measuredWidth)
-    assertEquals(125, item1.measuredHeight)
-    assertEquals(100, item2.measuredWidth)
-    assertEquals(125, item2.measuredHeight)
-    assertEquals(100, item3.measuredWidth)
-    assertEquals(125, item3.measuredHeight)
-    assertEquals(100, item4.measuredWidth)
-    assertEquals(125, item4.measuredHeight)
+    assertEquals(100.0, item1.measuredWidth)
+    assertEquals(125.0, item1.measuredHeight)
+    assertEquals(100.0, item2.measuredWidth)
+    assertEquals(125.0, item2.measuredHeight)
+    assertEquals(100.0, item3.measuredWidth)
+    assertEquals(125.0, item3.measuredHeight)
+    assertEquals(100.0, item4.measuredWidth)
+    assertEquals(125.0, item4.measuredHeight)
   }
 
   @Test
   fun testDetermineMainSize_directionRow_fixedSizeViewAndShrinkable_doNotExceedMaxMainSize() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
-    val item2 = FlexItem(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0), flexShrink = 0.0)
+    val item2 = FlexItem(measurable = BoxMeasurable(2000.0, 2000.0)) // simulate a very long text view
     container.items += item1
     container.items += item2
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.AtMost)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100, item1.measuredWidth)
-    assertEquals(400, item2.measuredWidth)
+    assertEquals(100.0, item1.measuredWidth)
+    assertEquals(400.0, item2.measuredWidth)
   }
 
   @Test
   fun testDetermineMainSize_directionRow_twoFixedSizeViewsAndShrinkable_doNotExceedMaxMainSize() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
-    val item2 = FlexItem(measurable = BoxMeasurable(2000, 2000)) // simulate a very long text view
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 100), flexShrink = 0f)
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0), flexShrink = 0.0)
+    val item2 = FlexItem(measurable = BoxMeasurable(2000.0, 2000.0)) // simulate a very long text view
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 100.0), flexShrink = 0.0)
     container.items += item1
     container.items += item2
     container.items += item3
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.AtMost)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Unspecified)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.AtMost)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100, item1.measuredWidth)
-    assertEquals(300, item2.measuredWidth)
-    assertEquals(100, item3.measuredWidth)
+    assertEquals(100.0, item1.measuredWidth)
+    assertEquals(300.0, item2.measuredWidth)
+    assertEquals(100.0, item3.measuredWidth)
   }
 
   @Test
   fun testDetermineCrossSize_direction_row_alignContent_stretch() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(200, 100))
-    val item3 = FlexItem(measurable = BoxMeasurable(300, 100))
-    val item4 = FlexItem(measurable = BoxMeasurable(400, 100))
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(200.0, 100.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(300.0, 100.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(400.0, 100.0))
     container.items += item1
     container.items += item2
     container.items += item3
@@ -262,25 +262,25 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining height in this case)
-    assertEquals(333, item1.measuredHeight)
-    assertEquals(333, item2.measuredHeight)
-    assertEquals(333, item3.measuredHeight)
-    assertEquals(334, item4.measuredHeight)
+    assertEquals(333.0, item1.measuredHeight)
+    assertEquals(333.0, item2.measuredHeight)
+    assertEquals(333.0, item3.measuredHeight)
+    assertEquals(334.0, item4.measuredHeight)
   }
 
   @Test
   fun testDetermineCrossSize_direction_column_alignContent_stretch() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100))
-    val item2 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 300))
-    val item4 = FlexItem(measurable = BoxMeasurable(100, 400))
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0))
+    val item2 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 300.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(100.0, 400.0))
     container.items += item1
     container.items += item2
     container.items += item3
@@ -288,40 +288,40 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining width in this case)
-    assertEquals(333, item1.measuredWidth)
-    assertEquals(333, item2.measuredWidth)
-    assertEquals(333, item3.measuredWidth)
-    assertEquals(334, item4.measuredWidth)
+    assertEquals(333.0, item1.measuredWidth)
+    assertEquals(333.0, item2.measuredWidth)
+    assertEquals(333.0, item3.measuredWidth)
+    assertEquals(334.0, item4.measuredWidth)
   }
 
   @Test
   fun testMakeMeasureSpec() {
-    var spec = MeasureSpec.from(100, MeasureSpecMode.AtMost)
-    assertEquals(100, spec.size)
+    var spec = MeasureSpec.from(100.0, MeasureSpecMode.AtMost)
+    assertEquals(100.0, spec.size)
     assertEquals(MeasureSpecMode.AtMost, spec.mode)
 
-    spec = MeasureSpec.from(999, MeasureSpecMode.Exactly)
-    assertEquals(999, spec.size)
+    spec = MeasureSpec.from(999.0, MeasureSpecMode.Exactly)
+    assertEquals(999.0, spec.size)
     assertEquals(MeasureSpecMode.Exactly, spec.mode)
 
-    spec = MeasureSpec.from(0, MeasureSpecMode.Unspecified)
-    assertEquals(0, spec.size)
+    spec = MeasureSpec.from(0.0, MeasureSpecMode.Unspecified)
+    assertEquals(0.0, spec.size)
     assertEquals(MeasureSpecMode.Unspecified, spec.mode)
   }
 
   @Test
   fun testFlexLine_anyItemsHaveFlexGrow() {
-    val item1 = FlexItem(measurable = BoxMeasurable(100, 100), flexGrow = 1.0f)
-    val item2 = FlexItem(measurable = BoxMeasurable(100, 200))
-    val item3 = FlexItem(measurable = BoxMeasurable(100, 300))
-    val item4 = FlexItem(measurable = BoxMeasurable(100, 400), flexGrow = 2.0f)
+    val item1 = FlexItem(measurable = BoxMeasurable(100.0, 100.0), flexGrow = 1.0)
+    val item2 = FlexItem(measurable = BoxMeasurable(100.0, 200.0))
+    val item3 = FlexItem(measurable = BoxMeasurable(100.0, 300.0))
+    val item4 = FlexItem(measurable = BoxMeasurable(100.0, 400.0), flexGrow = 2.0)
     container.items += item1
     container.items += item2
     container.items += item3
@@ -329,8 +329,8 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(1000, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(500, MeasureSpecMode.Exactly)
+    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
+    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
     assertEquals(3, lines.size)
     assertTrue(lines[0].anyItemsHaveFlexGrow)
@@ -339,7 +339,7 @@ class FlexContainerTest {
   }
 
   class BoxMeasurable(
-    override val requestedWidth: Int,
-    override val requestedHeight: Int,
+    override val requestedWidth: Double,
+    override val requestedHeight: Double,
   ) : Measurable()
 }

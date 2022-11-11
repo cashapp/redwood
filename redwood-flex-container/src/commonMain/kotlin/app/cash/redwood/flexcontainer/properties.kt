@@ -18,7 +18,6 @@
 package app.cash.redwood.flexcontainer
 
 import kotlin.jvm.JvmInline
-import kotlin.math.abs
 
 /**
  * This attribute controls the alignment of the flex lines in the flex container.
@@ -185,29 +184,38 @@ public value class JustifyContent private constructor(private val ordinal: Int) 
 /**
  * A MeasureSpec encapsulates the layout requirements passed from parent to child.
  * Each MeasureSpec represents a requirement for either the width or the height.
- * A MeasureSpec is comprised of a size and a mode.
+ * A MeasureSpec is composed of a size and a mode.
  */
-@JvmInline
-public value class MeasureSpec private constructor(private val value: Int) {
+public class MeasureSpec private constructor(
+  public val size: Double,
+  public val mode: MeasureSpecMode,
+) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    return other is MeasureSpec &&
+      size == other.size &&
+      mode == other.mode
+  }
 
-  public val size: Int get() = value and 0x3FFF
-  public val mode: MeasureSpecMode get() = MeasureSpecMode(abs(value shr 30))
+  override fun hashCode(): Int {
+    var result = size.hashCode()
+    result = 31 * result + mode.hashCode()
+    return result
+  }
 
   override fun toString(): String {
     return "MeasureSpec(size=$size, mode=$mode)"
   }
 
   public companion object {
-    public const val MaxSize: Int = Int.MAX_VALUE and 0x00FFFFFF
-
-    public fun from(size: Int, mode: MeasureSpecMode): MeasureSpec {
-      require(size in 0..MaxSize) { "invalid size: $size" }
+    public fun from(size: Double, mode: MeasureSpecMode): MeasureSpec {
+      require(size >= 0) { "invalid size: $size" }
       // Use the top 2 bits for the mode and use the bottom 30 bits for the size.
-      return MeasureSpec((mode.ordinal shl 30) or (size and 0x3FFF))
+      return MeasureSpec(size, mode)
     }
 
     /** A convenience function to constrain [size] inside a given [measureSpec]. */
-    public fun resolveSize(size: Int, measureSpec: MeasureSpec): Int {
+    public fun resolveSize(size: Double, measureSpec: MeasureSpec): Double {
       return when (measureSpec.mode) {
         MeasureSpecMode.AtMost -> minOf(measureSpec.size, size)
         MeasureSpecMode.Exactly -> measureSpec.size
@@ -254,10 +262,10 @@ public value class MeasureSpecMode internal constructor(internal val ordinal: In
  * Describes the padding/margin to apply to a node/flexbox.
  */
 public data class Spacing(
-  val start: Int = 0,
-  val end: Int = 0,
-  val top: Int = 0,
-  val bottom: Int = 0,
+  val start: Double = 0.0,
+  val end: Double = 0.0,
+  val top: Double = 0.0,
+  val bottom: Double = 0.0,
 ) {
   init {
     require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
@@ -271,11 +279,11 @@ public data class Spacing(
 }
 
 /**
- * A two-dimensional size composed of two [Int]s.
+ * A two-dimensional size composed of two [Double]s.
  */
 public data class Size(
-  val width: Int,
-  val height: Int,
+  val width: Double,
+  val height: Double,
 ) {
   init {
     require(width >= 0 && height >= 0) {
@@ -284,6 +292,6 @@ public data class Size(
   }
 
   public companion object {
-    public val Zero: Size = Size(0, 0)
+    public val Zero: Size = Size(0.0, 0.0)
   }
 }
