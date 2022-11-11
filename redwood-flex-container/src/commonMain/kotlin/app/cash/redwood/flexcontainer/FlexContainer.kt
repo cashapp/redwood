@@ -136,7 +136,7 @@ public class FlexContainer {
         continue
       }
       val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
-        item.flexBasisPercent * mainSize
+        roundIfEnabled(item.flexBasisPercent * mainSize)
       } else {
         orientation.mainSize(item)
       }
