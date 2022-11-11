@@ -138,19 +138,7 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     assertEquals(listOf("one", "two", "three"), names())
   }
 
-  @Test fun clearWhenEmpty() {
-    children.clear()
-    assertEquals(listOf(), names())
-  }
-
-  @Test fun clearWhenNonEmpty() {
-    children.insert(0, widget("one"))
-    children.insert(1, widget("two"))
-    children.clear()
-    assertEquals(listOf(), names())
-  }
-
-  protected fun <T : Any> Widget.Children<T>.insert(index: Int, widget: T) {
+  private fun <T : Any> Widget.Children<T>.insert(index: Int, widget: T) {
     insert(
       index = index,
       widget = object : Widget<T> {

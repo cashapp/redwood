@@ -1,0 +1,26 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.zipline'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  js {
+    browser()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.jetbrains.compose.runtime
+        implementation libs.kotlinx.serialization.core
+        api libs.zipline
+        api projects.redwoodTreehouse
+        implementation projects.redwoodWidget
+      }
+    }
+  }
+}

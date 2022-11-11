@@ -77,19 +77,23 @@ internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
 /*
 @Composable
 @SunspotComposable
-fun SunspotButton(
-  text: String?,
-  enabled: Boolean = true,
-  onClick: (() -> Unit)? = null,
+fun Row(
+  padding: Padding = Padding.Zero,
+  overflow: Overflow = Overflow.Clip,
   layoutModifier: LayoutModifier = LayoutModifier,
+  children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  RedwoodComposeNode<SunspotWidgetFactory<*>, SunspotButton<*>>(
-    factory = SunspotWidgetFactory<*>::SunspotButton,
+  _RedwoodComposeNode<SunspotWidgetFactory<*>, Row<*>>(
+    factory = { it.RedwoodLayout.Row() },
     update = {
       set(layoutModifier) { layoutModifiers = it }
-      set(text, SunspotButton<*>::text)
-      set(enabled, SunspotButton<*>::enabled)
-      set(onClick, SunspotButton<*>::onClick)
+      set(padding, Row<*>::padding)
+      set(overflow, Row<*>::overflow)
+    },
+    content = {
+      into(Row<*>::children) {
+        RowScopeImpl.children()
+      }
     },
   )
 }
@@ -110,13 +114,9 @@ internal fun generateComposable(
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(composeTargetMarker)
         .apply {
-          // If the last trait is a child lambda move the layout modifier position to be
-          // second-to-last. This ensures you can still use trailing lambda syntax.
-          val layoutModifierIndex = if (widget.traits.lastOrNull() is Children) {
-            widget.traits.size - 1
-          } else {
-            widget.traits.size
-          }
+          // Set the layout modifier as the last non-child lambda in the function signature.
+          // This ensures you can still use trailing lambda syntax.
+          val layoutModifierIndex = widget.traits.indexOfLast { it !is Children } + 1
 
           var index = 0
           while (true) {
@@ -178,7 +178,7 @@ internal fun generateComposable(
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("%M(%LU) {\n", ComposeProtocol.SyntheticChildren, trait.tag)
+                  add("into(%T::%N) {\n", widgetType, trait.name)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))

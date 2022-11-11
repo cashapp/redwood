@@ -20,12 +20,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
+import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
 import example.schema.compose.Image
 import example.schema.compose.Text
 import example.schema.compose.TextInput
@@ -35,7 +35,8 @@ class EmojiSearchTreehouseUi(
   private val initialViewModel: EmojiSearchViewModel,
   private val viewModels: Flow<EmojiSearchViewModel>,
   private val onEvent: (EmojiSearchEvent) -> Unit,
-) : TreehouseUi {
+  override val factory: DiffProducingEmojiSearchWidgetFactory,
+) : TreehouseUi, DiffProducingWidgetFactoryProvider {
 
   @Composable
   override fun Show() {
@@ -49,11 +50,8 @@ class EmojiSearchTreehouseUi(
         hint = "Search",
         onTextChanged = { onEvent(SearchTermEvent(it)) },
       )
-      Column(
-        overflow = Overflow.Scroll,
-        padding = Padding(horizontal = 40),
-      ) {
-        for (image in viewModel.images) {
+      LazyColumn {
+        items(viewModel.images) { image ->
           Row(
             verticalAlignment = CrossAxisAlignment.Center,
           ) {

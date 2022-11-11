@@ -28,6 +28,7 @@ import kotlinx.serialization.json.Json
 
 class RealEmojiSearchPresenter(
   private val hostApi: HostApi,
+  private val json: Json,
 ) : EmojiSearchPresenter {
   private var emojis = listOf<EmojiImage>()
   private var latestSearchTerm = ""
@@ -40,13 +41,15 @@ class RealEmojiSearchPresenter(
 
   override fun launch(): ZiplineTreehouseUi {
     val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
+    val factory = DiffProducingEmojiSearchWidgetFactory(json)
     val treehouseUi = EmojiSearchTreehouseUi(
       initialViewModel = initialViewModel,
       viewModels = produceModels(events),
       onEvent = events::tryEmit,
+      factory = factory,
     )
     return treehouseUi.asZiplineTreehouseUi(
-      factory = DiffProducingEmojiSearchWidgetFactory(),
+      factory = factory,
       widgetVersion = 0U,
     )
   }
@@ -84,7 +87,6 @@ class RealEmojiSearchPresenter(
       .filter { image ->
         searchTerms.all { image.label.contains(it, ignoreCase = true) }
       }
-      .take(25)
     return EmojiSearchViewModel(latestSearchTerm, filteredImages)
   }
 }

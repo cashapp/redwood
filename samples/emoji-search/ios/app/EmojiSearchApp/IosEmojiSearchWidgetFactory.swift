@@ -19,12 +19,20 @@ import Foundation
 import UIKit
 import shared
 
-class IosEmojiSearchWidgetFactory: WidgetEmojiSearchWidgetFactory {
+class IosEmojiSearchWidgetFactory<T : AnyObject>: WidgetEmojiSearchWidgetFactory {
+    let treehouseApp: Redwood_treehouseTreehouseApp<T>
     let imageLoader = RemoteImageLoader()
-    
+
     var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
         Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
 
+    init(treehouseApp: Redwood_treehouseTreehouseApp<T>) {
+        self.treehouseApp = treehouseApp
+    }
+
+    func LazyColumn() -> WidgetLazyColumn {
+        return LazyColumnBinding(treehouseApp: treehouseApp)
+    }
     func TextInput() -> WidgetTextInput {
         return TextInputBinding()
     }

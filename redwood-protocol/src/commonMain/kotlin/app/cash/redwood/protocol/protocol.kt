@@ -84,13 +84,6 @@ public sealed class ChildrenDiff {
   public abstract val tag: UInt
 
   @Serializable
-  @SerialName("clear")
-  public object Clear : ChildrenDiff() {
-    override val id: Id get() = Id.Root
-    override val tag: UInt get() = RootChildrenTag
-  }
-
-  @Serializable
   @SerialName("insert")
   public data class Insert(
     override val id: Id,

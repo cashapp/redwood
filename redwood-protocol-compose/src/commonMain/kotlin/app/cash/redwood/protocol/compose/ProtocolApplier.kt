@@ -17,100 +17,20 @@ package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeNode
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.compose.RedwoodApplier
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.compose._ChildrenWidget
+import app.cash.redwood.compose._RedwoodApplier
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifiers
-import app.cash.redwood.protocol.PropertyDiff
-
-/**
- * A synthetic node which allows the applier to differentiate between multiple groups of children.
- *
- * Compose's tree assumes each node only has single list of children. Or, put another way, even if
- * you apply multiple children Compose treats them as a single list of child nodes. In order to
- * differentiate between these children lists we introduce synthetic nodes. Every real node which
- * supports one or more groups of children will have one or more of these synthetic nodes as its
- * direct descendants. The nodes which are produced by each group of children will then become the
- * descendants of those synthetic nodes.
- *
- * This function is named weirdly to prevent normal usage since bad things will happen.
- *
- * @see ProtocolApplier
- * @suppress For generated code usage only.
- */
-@Composable
-@Suppress("FunctionName") // Hiding from auto-complete.
-public fun _SyntheticChildren(tag: UInt, content: @Composable () -> Unit) {
-  ComposeNode<DiffProducingChildrenWidget, Applier<*>>(
-    factory = {
-      DiffProducingChildrenWidget(tag)
-    },
-    update = {
-    },
-    content = content,
-  )
-}
-
-/**
- * A node which exists in the tree to emulate supporting multiple children sets but which does not
- * appear directly in the protocol. The ID of these nodes mirrors that of its parent to simplify
- * creation of the protocol diffs. This is safe because these types never appears in the node map.
- */
-private class DiffProducingChildrenWidget(
-  val tag: UInt,
-) : AbstractDiffProducingWidget(-1) {
-  val children = mutableListOf<AbstractDiffProducingWidget>()
-
-  override var layoutModifiers: LayoutModifier
-    get() = throw AssertionError()
-    set(_) = throw AssertionError()
-
-  override fun sendEvent(event: Event) {
-    // These types should never make it into the node map and thus cannot be targeted by events.
-    throw AssertionError()
-  }
-}
-
-/**
- * @suppress For generated code usage only.
- */
-public abstract class AbstractDiffProducingWidget(
-  public val type: Int,
-) : DiffProducingWidget {
-  override val value: Nothing
-    get() = throw AssertionError()
-
-  public var id: Id = Id(ULong.MAX_VALUE)
-    internal set
-
-  @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
-  internal lateinit var _diffAppender: DiffAppender
-
-  protected fun appendDiff(layoutModifiers: LayoutModifiers) {
-    _diffAppender.append(layoutModifiers)
-  }
-
-  protected fun appendDiff(diff: PropertyDiff) {
-    _diffAppender.append(diff)
-  }
-
-  public abstract fun sendEvent(event: Event)
-}
+import app.cash.redwood.widget.Widget
 
 /**
  * An [Applier] which records operations on the tree as models which can then be separately applied
  * by the display layer. Additionally, it has special handling for emulating nodes which contain
  * multiple children.
  *
- * Nodes in the tree are required to alternate between [DiffProducingChildrenWidget] instances
- * and non-[DiffProducingChildrenWidget] [AbstractDiffProducingWidget] subtypes starting
- * from the root. This invariant is maintained by virtue of the fact that all of the input
- * `@Composables` should be generated code.
+ * Nodes in the tree are required to alternate between [_ChildrenWidget] instances and
+ * [AbstractDiffProducingWidget] subtypes starting from the root. This invariant is maintained by
+ * virtue of the fact that all of the input `@Composables` should be generated code.
  *
  * For example, a node tree may look like this:
  * ```
@@ -125,8 +45,8 @@ public abstract class AbstractDiffProducingWidget(
  *        |              |              /         \
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
- * But the protocol diff output would only record non-[DiffProducingChildrenWidget] nodes using
- * their [DiffProducingChildrenWidget.tag] value:
+ * But the protocol diff output would only record [AbstractDiffProducingWidget] nodes using
+ * their [AbstractDiffProducingWidget.id] and [AbstractDiffProducingWidget.type] value:
  * ```
  * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
  * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
@@ -142,71 +62,70 @@ public abstract class AbstractDiffProducingWidget(
 internal class ProtocolApplier(
   override val factory: DiffProducingWidget.Factory,
   private val diffAppender: DiffAppender,
-) : AbstractApplier<AbstractDiffProducingWidget>(
-  root = DiffProducingChildrenWidget(RootChildrenTag).apply { id = Id.Root },
-),
-  RedwoodApplier<DiffProducingWidget.Factory> {
+) : _RedwoodApplier<DiffProducingWidget.Factory>, AbstractApplier<Widget<Nothing>>(
+  root = _ChildrenWidget(
+    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, diffAppender),
+  ),
+) {
   private var nextId = Id.Root.next()
-  internal val nodes = mutableMapOf(root.id to root)
+  internal val nodes = mutableMapOf(Id.Root to root)
+  private var closed = false
 
   override fun onEndChanges() {
+    check(!closed)
+
     diffAppender.trySend()
   }
 
-  override fun insertTopDown(index: Int, instance: AbstractDiffProducingWidget) {
-    if (instance is DiffProducingChildrenWidget) {
-      // Inherit the ID from the current node such that changes to the children can be reported
-      // as if they occurred directly on the parent.
-      instance.id = current.id
-      // We do not add children instances to the map (they have no unique IDs and are only
-      // available through indexing on the parent) and we do not send them over the wire to the
-      // display (they are always implied by the display interfaces).
-    } else {
-      val current = current as DiffProducingChildrenWidget
-      current.children.add(index, instance)
+  override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
+    check(!closed)
 
+    if (instance is _ChildrenWidget) {
+      instance.children = instance.accessor!!.invoke(current)
+      instance.accessor = null
+    } else {
       val id = nextId
       nextId = id.next()
 
+      instance as AbstractDiffProducingWidget
       instance.id = id
       instance._diffAppender = diffAppender
 
       nodes[id] = instance
-      diffAppender.append(ChildrenDiff.Insert(current.id, current.tag, id, instance.type, index))
+
+      val current = current as _ChildrenWidget
+      current.children!!.insert(index, instance)
     }
   }
 
-  override fun insertBottomUp(index: Int, instance: AbstractDiffProducingWidget) {
+  override fun insertBottomUp(index: Int, instance: Widget<Nothing>) {
     // Ignored, we insert top-down for now.
   }
 
   override fun remove(index: Int, count: Int) {
+    check(!closed)
+
     // Children instances are never removed from their parents.
-    val current = current as DiffProducingChildrenWidget
-    val children = current.children
+    val current = current as _ChildrenWidget
+    val children = current.children as DiffProducingWidgetChildren
 
     for (i in index until index + count) {
-      nodes.remove(children[i].id)
+      nodes.remove(children.ids[i])
     }
     children.remove(index, count)
-    diffAppender.append(ChildrenDiff.Remove(current.id, current.tag, index, count))
   }
 
   override fun move(from: Int, to: Int, count: Int) {
-    // Children instances are never moved within their parents.
-    val current = current as DiffProducingChildrenWidget
+    check(!closed)
 
-    current.children.move(from, to, count)
-    diffAppender.append(ChildrenDiff.Move(current.id, current.tag, from, to, count))
+    // Children instances are never moved within their parents.
+    val current = current as _ChildrenWidget
+    current.children!!.move(from, to, count)
   }
 
   override fun onClear() {
-    val current = current as DiffProducingChildrenWidget
-    current.children.clear()
-    nodes.clear()
-    nodes[current.id] = current // Restore root node into map.
-    diffAppender.append(ChildrenDiff.Clear)
+    closed = true
   }
-}
 
-private fun Id.next(): Id = Id(value + 1UL)
+  private fun Id.next(): Id = Id(value + 1UL)
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,11 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.zipline.Zipline
+import app.cash.zipline.ziplineServiceSerializer
+import example.values.LazyListIntervalContent
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 
-private val zipline by lazy { Zipline.get(treehouseSerializersModule) }
-
-@OptIn(ExperimentalJsExport::class)
-@JsExport
-fun preparePresenters() {
-  val hostApi = zipline.take<HostApi>(
-    name = "HostApi",
-  )
-
-  zipline.bind<EmojiSearchPresenter>(
-    name = "EmojiSearchPresenter",
-    instance = RealEmojiSearchPresenter(hostApi, zipline.json),
-  )
+val treehouseSerializersModule = SerializersModule {
+  contextual(ziplineServiceSerializer<LazyListIntervalContent.Item>())
 }

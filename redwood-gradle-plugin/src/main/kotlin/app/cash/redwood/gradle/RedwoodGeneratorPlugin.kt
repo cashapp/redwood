@@ -47,8 +47,7 @@ public abstract class RedwoodGeneratorPlugin(
     internal val generatorFlag: String,
     internal val dependencyArtifactId: String,
   ) {
-    // TODO This should only rely on redwood-compose and not redwood-protocol-compose.
-    Compose("--compose", "redwood-protocol-compose"),
+    Compose("--compose", "redwood-compose"),
     ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
     LayoutModifiers("--layout-modifiers", "redwood-runtime"),
     Widget("--widget", "redwood-widget"),

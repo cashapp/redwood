@@ -33,8 +33,9 @@ class EmojiSearchViewController : UIViewController {
     }
 
     override func loadView() {
-        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi(), widgetFactory: IosEmojiSearchWidgetFactory())
+        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
+        emojiSearchLauncher.widgetFactory = IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp)
         let treehouseView = Redwood_treehouseTreehouseUIKitView<PresentersEmojiSearchPresenter>(treehouseApp: treehouseApp)
         treehouseView.setContent(content: EmojiSearchContent())
 

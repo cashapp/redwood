@@ -44,7 +44,6 @@ class ProtocolTest {
   @Test fun diff() {
     val model = Diff(
       childrenDiffs = listOf(
-        ChildrenDiff.Clear,
         ChildrenDiff.Insert(Id(1U), 2U, Id(3U), 4, 5),
         ChildrenDiff.Move(Id(1U), 2U, 3, 4, 5),
         ChildrenDiff.Remove(Id(1U), 2U, 3, 4),
@@ -69,7 +68,6 @@ class ProtocolTest {
     )
     val json = "" +
       """{"childrenDiffs":[""" +
-      """["clear",{}],""" +
       """["insert",{"id":1,"tag":2,"childId":3,"kind":4,"index":5}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
