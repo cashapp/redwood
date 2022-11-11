@@ -227,10 +227,11 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
               }
               is Children -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, NOTHING, OVERRIDE)
+                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
+                    .addModifiers(OVERRIDE)
                     .getter(
                       FunSpec.getterBuilder()
-                        .addStatement("throw %T()", Stdlib.AssertionError)
+                        .addStatement("return diffProducingWidgetChildren(%LU)", trait.tag)
                         .build(),
                     )
                     .build(),

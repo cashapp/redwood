@@ -77,19 +77,23 @@ internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
 /*
 @Composable
 @SunspotComposable
-fun SunspotButton(
-  text: String?,
-  enabled: Boolean = true,
-  onClick: (() -> Unit)? = null,
+fun Row(
+  padding: Padding = Padding.Zero,
+  overflow: Overflow = Overflow.Clip,
   layoutModifier: LayoutModifier = LayoutModifier,
+  children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  RedwoodComposeNode<SunspotWidgetFactory<*>, SunspotButton<*>>(
-    factory = SunspotWidgetFactory<*>::SunspotButton,
+  _RedwoodComposeNode<SunspotWidgetFactory<*>, Row<*>>(
+    factory = { it.RedwoodLayout.Row() },
     update = {
       set(layoutModifier) { layoutModifiers = it }
-      set(text, SunspotButton<*>::text)
-      set(enabled, SunspotButton<*>::enabled)
-      set(onClick, SunspotButton<*>::onClick)
+      set(padding, Row<*>::padding)
+      set(overflow, Row<*>::overflow)
+    },
+    content = {
+      into(Row<*>::children) {
+        RowScopeImpl.children()
+      }
     },
   )
 }
@@ -178,7 +182,7 @@ internal fun generateComposable(
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("%M(%LU) {\n", ComposeProtocol.SyntheticChildren, trait.tag)
+                  add("into(%T::%N) {\n", widgetType, trait.name)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))
