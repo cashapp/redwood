@@ -186,6 +186,7 @@ public value class JustifyContent private constructor(private val ordinal: Int) 
  * Each MeasureSpec represents a requirement for either the width or the height.
  * A MeasureSpec is composed of a size and a mode.
  */
+// TODO: Convert MeasureSpec into an inline class.
 public class MeasureSpec private constructor(
   public val size: Double,
   public val mode: MeasureSpecMode,
