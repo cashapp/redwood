@@ -110,13 +110,9 @@ internal fun generateComposable(
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(composeTargetMarker)
         .apply {
-          // If the last trait is a child lambda move the layout modifier position to be
-          // second-to-last. This ensures you can still use trailing lambda syntax.
-          val layoutModifierIndex = if (widget.traits.lastOrNull() is Children) {
-            widget.traits.size - 1
-          } else {
-            widget.traits.size
-          }
+          // Set the layout modifier as the last non-child lambda in the function signature.
+          // This ensures you can still use trailing lambda syntax.
+          val layoutModifierIndex = widget.traits.indexOfLast { it !is Children } + 1
 
           var index = 0
           while (true) {

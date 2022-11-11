@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.generator
 
+import androidx.compose.runtime.Composable
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
@@ -100,5 +101,31 @@ class ComposeGenerationTest {
       contains("onEvent: (() -> Unit)? = { error(\"test\") }")
       contains("block: @Composable @DefaultSchemaComposable () -> Unit = {}")
     }
+  }
+
+  @Schema(
+    [
+      MultipleChildWidget::class,
+    ],
+  )
+  interface MultipleChildSchema
+
+  @Widget(1)
+  data class MultipleChildWidget(
+    @Children(1) val top: @Composable () -> Unit,
+    @Children(2) val bottom: @Composable () -> Unit,
+  )
+
+  @Test fun `layout modifier is the last non child parameter`() {
+    val schema = parseSchema(MultipleChildSchema::class)
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |  layoutModifier: LayoutModifier = LayoutModifier,
+      |  top: @Composable @MultipleChildSchemaComposable () -> Unit,
+      |  bottom: @Composable @MultipleChildSchemaComposable () -> Unit,
+      """.trimMargin(),
+    )
   }
 }
