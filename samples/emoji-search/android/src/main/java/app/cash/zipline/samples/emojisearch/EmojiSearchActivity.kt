@@ -17,6 +17,7 @@ package app.cash.zipline.samples.emojisearch
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
@@ -61,7 +62,8 @@ class EmojiSearchActivity : ComponentActivity() {
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
     )
 
-    return treehouseLauncher.launch(
+    var widgetFactory: AndroidEmojiSearchWidgetFactory<*>? = null
+    val treehouseApp = treehouseLauncher.launch(
       scope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
@@ -70,14 +72,16 @@ class EmojiSearchActivity : ComponentActivity() {
           override fun widgetFactory(
             json: Json,
             mismatchHandler: ProtocolMismatchHandler,
-          ) = DiffConsumingEmojiSearchWidgetFactory(
-            delegate = AndroidEmojiSearchWidgetFactory,
+          ) = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
+            delegate = widgetFactory!!,
             json = json,
             mismatchHandler = mismatchHandler,
           )
         },
       ),
     )
+    widgetFactory = AndroidEmojiSearchWidgetFactory(treehouseApp)
+    return treehouseApp
   }
 
   override fun onDestroy() {

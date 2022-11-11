@@ -49,6 +49,7 @@ include ':samples:emoji-search:schema:compose'
 include ':samples:emoji-search:schema:compose:protocol'
 include ':samples:emoji-search:schema:widget'
 include ':samples:emoji-search:schema:widget:protocol'
+include ':samples:emoji-search:values'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
