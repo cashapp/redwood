@@ -27,7 +27,7 @@ internal fun AlignSelf.toAlignItems() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun FlexItem.layout(left: Int, top: Int, right: Int, bottom: Int) {
+internal fun FlexItem.layout(left: Double, top: Double, right: Double, bottom: Double) {
   this.left = left
   this.top = top
   this.right = right
@@ -39,22 +39,22 @@ internal val FlexLine.itemCountVisible: Int
   get() = itemCount - invisibleItemCount
 
 /** The largest main size of all flex lines. */
-internal fun List<FlexLine>.getLargestMainSize(): Int {
-  return if (isEmpty()) 0 else maxOf { it.mainSize }
+internal fun List<FlexLine>.getLargestMainSize(): Double {
+  return if (isEmpty()) 0.0 else maxOf { it.mainSize }
 }
 
 /** The sum of the cross sizes of all flex lines. */
-internal fun List<FlexLine>.getSumOfCrossSize(): Int {
+internal fun List<FlexLine>.getSumOfCrossSize(): Double {
   return sumOf { it.crossSize }
 }
 
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
-  padding: Int,
-  childDimension: Int,
+  padding: Double,
+  childDimension: Double,
 ): MeasureSpec {
-  val size = maxOf(0, spec.size - padding)
-  var resultSize = 0
+  val size = maxOf(0.0, spec.size - padding)
+  var resultSize = 0.0
   var resultMode = MeasureSpecMode.Unspecified
   when (spec.mode) {
     MeasureSpecMode.Exactly -> if (childDimension >= 0) {

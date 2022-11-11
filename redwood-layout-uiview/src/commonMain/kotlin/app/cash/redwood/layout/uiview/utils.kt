@@ -38,8 +38,6 @@ import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
-import kotlin.math.ceil
-import kotlin.math.roundToInt
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
@@ -76,22 +74,22 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
+internal fun Padding.toSpacing() = Spacing(start.toDouble(), end.toDouble(), top.toDouble(), bottom.toDouble())
 
-internal fun Size.toDoubleSize() = DoubleSize(width.toDouble(), height.toDouble())
+internal fun Size.toDoubleSize() = Size(width, height)
 
-internal fun CGSize.toDoubleSize() = DoubleSize(width, height)
+internal fun CGSize.toDoubleSize() = Size(width, height)
 
-internal fun CValue<CGSize>.toSize() = useContents { Size(width.roundToInt(), height.roundToInt()) }
+internal fun CValue<CGSize>.toSize() = useContents { Size(width, height) }
 
-internal fun DoubleSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
+internal fun Size.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when (width) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(width.roundToInt(), MeasureSpecMode.AtMost)
+    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
+    else -> MeasureSpec.from(width, MeasureSpecMode.AtMost)
   }
   val heightSpec = when (height) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(MeasureSpec.MaxSize, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(height.roundToInt(), MeasureSpecMode.AtMost)
+    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
+    else -> MeasureSpec.from(height, MeasureSpecMode.AtMost)
   }
   return widthSpec to heightSpec
 }
@@ -99,11 +97,11 @@ internal fun DoubleSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
 internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpec): CValue<CGSize> {
   val width = when (widthSpec.mode) {
     MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> widthSpec.size.toDouble()
+    else -> widthSpec.size
   }
   val height = when (heightSpec.mode) {
     MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> heightSpec.size.toDouble()
+    else -> heightSpec.size
   }
   return CGSizeMake(width, height)
 }
@@ -147,13 +145,13 @@ internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirec
 }
 
 internal class UIViewMeasurable(val view: UIView) : Measurable() {
-  override val minWidth: Int
+  override val minWidth: Double
     get() = view.intrinsicContentSize.useContents {
-      if (width == UIViewNoIntrinsicMetric) 0 else ceil(width).toInt()
+      if (width == UIViewNoIntrinsicMetric) 0.0 else width
     }
-  override val minHeight: Int
+  override val minHeight: Double
     get() = view.intrinsicContentSize.useContents {
-      if (height == UIViewNoIntrinsicMetric) 0 else ceil(height).toInt()
+      if (height == UIViewNoIntrinsicMetric) 0.0 else height
     }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {

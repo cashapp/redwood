@@ -21,6 +21,7 @@ import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec
+import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.UIViewChildren
@@ -41,6 +42,7 @@ internal class UIViewFlexContainer(
 ) {
   private val container = FlexContainer().apply {
     flexDirection = direction
+    roundToInt = false
   }
 
   private val _view: UIScrollView = viewFactory.create(UIViewDelegate())
@@ -78,7 +80,7 @@ internal class UIViewFlexContainer(
 
     override val intrinsicContentSize get() = noIntrinsicSize
 
-    override fun sizeThatFits(size: DoubleSize): DoubleSize {
+    override fun sizeThatFits(size: Size): Size {
       return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
     }
 
@@ -129,4 +131,4 @@ internal class UIViewFlexContainer(
   }
 }
 
-private val noIntrinsicSize = DoubleSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+private val noIntrinsicSize = Size(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)

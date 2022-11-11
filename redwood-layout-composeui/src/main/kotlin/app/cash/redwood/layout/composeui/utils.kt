@@ -68,18 +68,18 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Padding.toSpacing() = Spacing(start, end, top, bottom)
+internal fun Padding.toSpacing() = Spacing(start.toDouble(), end.toDouble(), top.toDouble(), bottom.toDouble())
 
 internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when {
-    hasFixedWidth -> MeasureSpec.from(maxWidth, MeasureSpecMode.Exactly)
-    hasBoundedWidth -> MeasureSpec.from(maxWidth, MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minWidth, MeasureSpecMode.Unspecified)
+    hasFixedWidth -> MeasureSpec.from(maxWidth.toDouble(), MeasureSpecMode.Exactly)
+    hasBoundedWidth -> MeasureSpec.from(maxWidth.toDouble(), MeasureSpecMode.AtMost)
+    else -> MeasureSpec.from(minWidth.toDouble(), MeasureSpecMode.Unspecified)
   }
   val heightSpec = when {
-    hasFixedHeight -> MeasureSpec.from(maxHeight, MeasureSpecMode.Exactly)
-    hasBoundedHeight -> MeasureSpec.from(maxHeight, MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minHeight, MeasureSpecMode.Unspecified)
+    hasFixedHeight -> MeasureSpec.from(maxHeight.toDouble(), MeasureSpecMode.Exactly)
+    hasBoundedHeight -> MeasureSpec.from(maxHeight.toDouble(), MeasureSpecMode.AtMost)
+    else -> MeasureSpec.from(minHeight.toDouble(), MeasureSpecMode.Unspecified)
   }
   return widthSpec to heightSpec
 }
@@ -89,12 +89,12 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
   val maxWidth: Int
   when (widthSpec.mode) {
     MeasureSpecMode.Exactly -> {
-      minWidth = widthSpec.size
-      maxWidth = widthSpec.size
+      minWidth = widthSpec.size.toInt()
+      maxWidth = widthSpec.size.toInt()
     }
     MeasureSpecMode.AtMost -> {
       minWidth = 0
-      maxWidth = widthSpec.size
+      maxWidth = widthSpec.size.toInt()
     }
     MeasureSpecMode.Unspecified -> {
       minWidth = 0
@@ -106,12 +106,12 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
   val maxHeight: Int
   when (heightSpec.mode) {
     MeasureSpecMode.Exactly -> {
-      minHeight = heightSpec.size
-      maxHeight = heightSpec.size
+      minHeight = heightSpec.size.toInt()
+      maxHeight = heightSpec.size.toInt()
     }
     MeasureSpecMode.AtMost -> {
       minHeight = 0
-      maxHeight = heightSpec.size
+      maxHeight = heightSpec.size.toInt()
     }
     MeasureSpecMode.Unspecified -> {
       minHeight = 0
@@ -161,16 +161,16 @@ internal class ComposeMeasurable(private val measurable: Measurable) : RedwoodMe
   lateinit var placeable: Placeable
     private set
 
-  override fun width(height: Int): Int {
-    return measurable.minIntrinsicWidth(height)
+  override fun width(height: Double): Double {
+    return measurable.minIntrinsicWidth(height.toInt()).toDouble()
   }
 
-  override fun height(width: Int): Int {
-    return measurable.minIntrinsicHeight(width)
+  override fun height(width: Double): Double {
+    return measurable.minIntrinsicHeight(width.toInt()).toDouble()
   }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     this.placeable = measurable.measure(measureSpecsToConstraints(widthSpec, heightSpec))
-    return Size(placeable.width, placeable.height)
+    return Size(placeable.width.toDouble(), placeable.height.toDouble())
   }
 }

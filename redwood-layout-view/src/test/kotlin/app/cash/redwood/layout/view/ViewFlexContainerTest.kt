@@ -68,7 +68,7 @@ class ViewFlexContainerTest(
       ),
       listOf(
         LayoutModifier,
-        GrowImpl(1f),
+        GrowImpl(1.0),
         CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch),
       ),
       listOf(
@@ -171,7 +171,7 @@ private inline fun <reified T> cartesianProduct(vararg lists: List<T>): List<Arr
 }
 
 private data class GrowImpl(
-  override val value: Float,
+  override val value: Double,
 ) : Grow
 
 private data class CrossAxisAlignmentImpl(

@@ -27,15 +27,15 @@ class StringWidget(
   var flexItem = FlexItem(measurable = this)
 
   override val minWidth
-    get() = words.maxOf { it.length } + 2
+    get() = words.maxOf { it.length } + 2.0
   override val minHeight
-    get() = 2
+    get() = 2.0
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
     val widthSpecMode = widthSpec.mode
-    val width = widthSpec.size
+    val width = widthSpec.size.toInt()
     val heightSpecMode = heightSpec.mode
-    val height = heightSpec.size
+    val height = heightSpec.size.toInt()
 
     val lines = when (widthSpecMode) {
       MeasureSpecMode.Exactly -> lines(maxWidth = width - 2)
@@ -58,7 +58,7 @@ class StringWidget(
       else -> lines.size + 2
     }
 
-    return Size(measuredWidth, measuredHeight)
+    return Size(measuredWidth.toDouble(), measuredHeight.toDouble())
   }
 
   /** Returns a list of rows, each containing the words of that row. */
@@ -93,10 +93,10 @@ class StringWidget(
   }
 
   fun draw(canvas: StringCanvas) {
-    val left = flexItem.left
-    val top = flexItem.top
-    val right = flexItem.right
-    val bottom = flexItem.bottom
+    val left = flexItem.left.toInt()
+    val top = flexItem.top.toInt()
+    val right = flexItem.right.toInt()
+    val bottom = flexItem.bottom.toInt()
     val lines = lines(maxWidth = right - left - 2)
 
     var y = top

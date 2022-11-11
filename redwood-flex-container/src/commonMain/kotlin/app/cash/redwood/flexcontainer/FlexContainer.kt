@@ -62,6 +62,11 @@ public class FlexContainer {
   public var maxLines: Int = Int.MAX_VALUE
 
   /**
+   * If true, the flex container rounds item positions to the nearest integer.
+   */
+  public var roundToInt: Boolean = false
+
+  /**
    * Returns the items held in the container.
    */
   public val items: MutableList<FlexItem> = ObservableMutableList(
@@ -107,9 +112,9 @@ public class FlexContainer {
     val flexLines = ArrayList<FlexLine>(1)
 
     // The largest size in the cross axis.
-    var maxCrossSize = Int.MIN_VALUE
+    var maxCrossSize = Double.MIN_VALUE
     // The amount of cross size calculated in this method call.
-    var sumCrossSize = 0
+    var sumCrossSize = 0.0
     // The index of the item in the flex line.
     var indexInFlexLine = 0
 
@@ -131,7 +136,7 @@ public class FlexContainer {
         continue
       }
       val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
-        (mainSize * item.flexBasisPercent).roundToInt()
+        roundIfEnabled(item.flexBasisPercent * mainSize)
       } else {
         orientation.mainSize(item)
       }
@@ -187,7 +192,7 @@ public class FlexContainer {
         flexLine.mainSize = orientation.mainPadding(padding)
         flexLine.firstIndex = i
         indexInFlexLine = 0
-        maxCrossSize = Int.MIN_VALUE
+        maxCrossSize = Double.MIN_VALUE
       } else {
         flexLine.itemCount++
         indexInFlexLine++
@@ -235,9 +240,9 @@ public class FlexContainer {
    */
   private fun isWrapRequired(
     mode: MeasureSpecMode,
-    maxSize: Int,
-    currentLength: Int,
-    childLength: Int,
+    maxSize: Double,
+    currentLength: Double,
+    childLength: Double,
     flexItem: FlexItem,
     flexLinesSize: Int,
   ): Boolean {
@@ -270,7 +275,7 @@ public class FlexContainer {
     flexLines: MutableList<FlexLine>,
     flexLine: FlexLine,
     itemIndex: Int,
-    usedCrossSizeSoFar: Int,
+    usedCrossSizeSoFar: Double,
   ) {
     flexLine.sumCrossSizeBefore = usedCrossSizeSoFar
     flexLine.lastIndex = itemIndex
@@ -291,8 +296,8 @@ public class FlexContainer {
     // expand or shrink regardless of flex grow/flex shrink attributes.
     val childrenFrozen = BooleanArray(items.size)
 
-    val mainSize: Int
-    val paddingAlongMainAxis: Int
+    val mainSize: Double
+    val paddingAlongMainAxis: Double
     if (flexDirection.isHorizontal) {
       mainSize = if (widthMeasureSpec.mode == MeasureSpecMode.Exactly) {
         widthMeasureSpec.size
@@ -348,8 +353,8 @@ public class FlexContainer {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
-    maxMainSize: Int,
-    paddingAlongMainAxis: Int,
+    maxMainSize: Double,
+    paddingAlongMainAxis: Double,
     calledRecursively: Boolean,
   ) {
     if (flexLine.totalFlexGrow <= 0 || maxMainSize < flexLine.mainSize) {
@@ -369,11 +374,11 @@ public class FlexContainer {
     // direction to enclose its content (in the measureHorizontal method), but
     // the width will be expanded in this method. In that case, the height needs to be measured
     // again with the expanded width.
-    var largestCrossSize = 0
+    var largestCrossSize = 0.0
     if (!calledRecursively) {
-      flexLine.crossSize = Int.MIN_VALUE
+      flexLine.crossSize = Double.MIN_VALUE
     }
-    var accumulatedRoundError = 0f
+    var accumulatedRoundError = 0.0
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
       val child = orderedItems.getOrNull(index)
@@ -383,13 +388,13 @@ public class FlexContainer {
       val measurable = child.measurable
       if (flexDirection.isHorizontal) {
         // The direction of the main axis is horizontal
-        if (!childrenFrozen[index] && child.flexGrow > 0f) {
+        if (!childrenFrozen[index] && child.flexGrow > 0) {
           var rawCalculatedWidth = (child.measuredWidth + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
-            accumulatedRoundError = 0f
+            accumulatedRoundError = 0.0
           }
-          var newWidth = rawCalculatedWidth.roundToInt()
+          var newWidth = roundIfEnabled(rawCalculatedWidth)
           val maxWidth = measurable.maxWidth
           if (newWidth > maxWidth) {
             // This means the child can't expand beyond the value of the maxWidth attribute.
@@ -404,10 +409,10 @@ public class FlexContainer {
             accumulatedRoundError += rawCalculatedWidth - newWidth
             if (accumulatedRoundError > 1.0) {
               newWidth += 1
-              accumulatedRoundError -= 1.0f
+              accumulatedRoundError -= 1.0
             } else if (accumulatedRoundError < -1.0) {
               newWidth -= 1
-              accumulatedRoundError += 1.0f
+              accumulatedRoundError += 1.0
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
@@ -427,13 +432,13 @@ public class FlexContainer {
         flexLine.mainSize += (child.measuredWidth + child.margin.start + child.margin.end)
       } else {
         // The direction of the main axis is vertical
-        if (!childrenFrozen[index] && child.flexGrow > 0f) {
+        if (!childrenFrozen[index] && child.flexGrow > 0) {
           var rawCalculatedHeight = (child.measuredHeight + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
-            accumulatedRoundError = 0f
+            accumulatedRoundError = 0.0
           }
-          var newHeight = rawCalculatedHeight.roundToInt()
+          var newHeight = roundIfEnabled(rawCalculatedHeight)
           val maxHeight = measurable.maxHeight
           if (newHeight > maxHeight) {
             // This means the child can't expand beyond the value of the maxHeight attribute.
@@ -448,10 +453,10 @@ public class FlexContainer {
             accumulatedRoundError += rawCalculatedHeight - newHeight
             if (accumulatedRoundError > 1.0) {
               newHeight += 1
-              accumulatedRoundError -= 1.0f
+              accumulatedRoundError -= 1.0
             } else if (accumulatedRoundError < -1.0) {
               newHeight -= 1
-              accumulatedRoundError += 1.0f
+              accumulatedRoundError += 1.0
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
@@ -502,8 +507,8 @@ public class FlexContainer {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
-    maxMainSize: Int,
-    paddingAlongMainAxis: Int,
+    maxMainSize: Double,
+    paddingAlongMainAxis: Double,
     calledRecursively: Boolean,
   ) {
     val sizeBeforeShrink = flexLine.mainSize
@@ -512,7 +517,7 @@ public class FlexContainer {
     }
     var needsReshrink = false
     val unitShrink = (flexLine.mainSize - maxMainSize) / flexLine.totalFlexShrink
-    var accumulatedRoundError = 0f
+    var accumulatedRoundError = 0.0
     flexLine.mainSize = paddingAlongMainAxis
 
     // Setting the cross size of the flex line as the temporal value since the cross size of
@@ -524,9 +529,9 @@ public class FlexContainer {
     // direction to enclose its content (in the measureHorizontal method), but
     // the width will be expanded in this method. In that case, the height needs to be measured
     // again with the expanded width.
-    var largestCrossSize = 0
+    var largestCrossSize = 0.0
     if (!calledRecursively) {
-      flexLine.crossSize = Int.MIN_VALUE
+      flexLine.crossSize = Double.MIN_VALUE
     }
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
@@ -537,13 +542,13 @@ public class FlexContainer {
       val measurable = child.measurable
       if (flexDirection.isHorizontal) {
         // The direction of main axis is horizontal
-        if (!childrenFrozen[index] && child.flexShrink > 0f) {
+        if (!childrenFrozen[index] && child.flexShrink > 0) {
           var rawCalculatedWidth = child.measuredWidth - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
-            accumulatedRoundError = 0f
+            accumulatedRoundError = 0.0
           }
-          var newWidth = rawCalculatedWidth.roundToInt()
+          var newWidth = roundIfEnabled(rawCalculatedWidth)
           val minWidth = measurable.minWidth
           if (newWidth < minWidth) {
             // This means the child doesn't have enough space to distribute the negative
@@ -558,10 +563,10 @@ public class FlexContainer {
             accumulatedRoundError += rawCalculatedWidth - newWidth
             if (accumulatedRoundError > 1.0) {
               newWidth += 1
-              accumulatedRoundError -= 1f
+              accumulatedRoundError -= 1
             } else if (accumulatedRoundError < -1.0) {
               newWidth -= 1
-              accumulatedRoundError += 1f
+              accumulatedRoundError += 1
             }
           }
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
@@ -581,13 +586,13 @@ public class FlexContainer {
         flexLine.mainSize += child.measuredWidth + child.margin.start + child.margin.end
       } else {
         // The direction of main axis is vertical
-        if (!childrenFrozen[index] && child.flexShrink > 0f) {
+        if (!childrenFrozen[index] && child.flexShrink > 0) {
           var rawCalculatedHeight = child.measuredHeight - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
-            accumulatedRoundError = 0f
+            accumulatedRoundError = 0.0
           }
-          var newHeight = rawCalculatedHeight.roundToInt()
+          var newHeight = roundIfEnabled(rawCalculatedHeight)
           val minHeight = measurable.minHeight
           if (newHeight < minHeight) {
             // Need to invoke this method again like the case flex direction is vertical
@@ -599,10 +604,10 @@ public class FlexContainer {
             accumulatedRoundError += rawCalculatedHeight - newHeight
             if (accumulatedRoundError > 1.0) {
               newHeight += 1
-              accumulatedRoundError -= 1f
+              accumulatedRoundError -= 1
             } else if (accumulatedRoundError < -1.0) {
               newHeight -= 1
-              accumulatedRoundError += 1f
+              accumulatedRoundError += 1
             }
           }
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
@@ -641,7 +646,7 @@ public class FlexContainer {
   private fun getChildWidthMeasureSpecInternal(
     widthMeasureSpec: MeasureSpec,
     flexItem: FlexItem,
-    padding: Int,
+    padding: Double,
   ): MeasureSpec {
     val measurable = flexItem.measurable
     val childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
@@ -664,7 +669,7 @@ public class FlexContainer {
   private fun getChildHeightMeasureSpecInternal(
     heightMeasureSpec: MeasureSpec,
     flexItem: FlexItem,
-    padding: Int,
+    padding: Double,
   ): MeasureSpec {
     val measurable = flexItem.measurable
     val childHeightMeasureSpec = MeasureSpec.getChildMeasureSpec(
@@ -699,7 +704,7 @@ public class FlexContainer {
   ) {
     val paddingAlongCrossAxis = flexDirection.toOrientation().crossPadding(padding)
     val mode: MeasureSpecMode // The MeasureSpec mode along the cross axis
-    val size: Int // The MeasureSpec size along the cross axis
+    val size: Double // The MeasureSpec size along the cross axis
     if (flexDirection.isHorizontal) {
       mode = heightMeasureSpec.mode
       size = heightMeasureSpec.size
@@ -718,8 +723,8 @@ public class FlexContainer {
             if (totalCrossSize >= size) {
               return@switch
             }
-            val freeSpaceUnit = (size - totalCrossSize) / flexLines.size.toFloat()
-            var accumulatedError = 0f
+            val freeSpaceUnit = (size - totalCrossSize) / flexLines.size
+            var accumulatedError = 0.0
             var i = 0
             val flexLinesSize = flexLines.size
             while (i < flexLinesSize) {
@@ -727,16 +732,16 @@ public class FlexContainer {
               var newCrossSizeAsFloat = flexLine.crossSize + freeSpaceUnit
               if (i == flexLines.size - 1) {
                 newCrossSizeAsFloat += accumulatedError
-                accumulatedError = 0f
+                accumulatedError = 0.0
               }
-              var newCrossSize = newCrossSizeAsFloat.roundToInt()
+              var newCrossSize = roundIfEnabled(newCrossSizeAsFloat)
               accumulatedError += newCrossSizeAsFloat - newCrossSize
               if (accumulatedError > 1) {
                 newCrossSize += 1
-                accumulatedError -= 1f
+                accumulatedError -= 1
               } else if (accumulatedError < -1) {
                 newCrossSize -= 1
-                accumulatedError += 1f
+                accumulatedError += 1
               }
               flexLine.crossSize = newCrossSize
               i++
@@ -776,10 +781,10 @@ public class FlexContainer {
               return@switch
             }
             // The value of free space along the cross axis between each flex line.
-            var spaceBetweenFlexLine = (size - totalCrossSize).toFloat()
+            var spaceBetweenFlexLine = size - totalCrossSize
             val numberOfSpaces = flexLines.size - 1
-            spaceBetweenFlexLine /= numberOfSpaces.toFloat()
-            var accumulatedError = 0f
+            spaceBetweenFlexLine /= numberOfSpaces
+            var accumulatedError = 0.0
             val newFlexLines = ArrayList<FlexLine>()
             var i = 0
             val flexLineSize = flexLines.size
@@ -791,18 +796,18 @@ public class FlexContainer {
                 if (i == flexLines.size - 2) {
                   // The last dummy space block in the flex container.
                   // Adjust the cross size by the accumulated error.
-                  dummySpaceFlexLine.crossSize = (spaceBetweenFlexLine + accumulatedError).roundToInt()
-                  accumulatedError = 0f
+                  dummySpaceFlexLine.crossSize = roundIfEnabled(spaceBetweenFlexLine + accumulatedError)
+                  accumulatedError = 0.0
                 } else {
-                  dummySpaceFlexLine.crossSize = spaceBetweenFlexLine.roundToInt()
+                  dummySpaceFlexLine.crossSize = roundIfEnabled(spaceBetweenFlexLine)
                 }
                 accumulatedError += (spaceBetweenFlexLine - dummySpaceFlexLine.crossSize)
                 if (accumulatedError > 1) {
                   dummySpaceFlexLine.crossSize += 1
-                  accumulatedError -= 1f
+                  accumulatedError -= 1
                 } else if (accumulatedError < -1) {
                   dummySpaceFlexLine.crossSize -= 1
-                  accumulatedError += 1f
+                  accumulatedError += 1
                 }
                 newFlexLines.add(dummySpaceFlexLine)
               }
@@ -832,8 +837,8 @@ public class FlexContainer {
 
   private fun constructFlexLinesForAlignContentCenter(
     flexLines: List<FlexLine>,
-    size: Int,
-    totalCrossSize: Int,
+    size: Double,
+    totalCrossSize: Double,
   ): List<FlexLine> {
     val spaceAboveAndBottom = (size - totalCrossSize) / 2
     val newFlexLines = ArrayList<FlexLine>()
@@ -897,7 +902,7 @@ public class FlexContainer {
   /**
    * Expand the item vertically to the size of the [crossSize] (considering [item]'s margins).
    */
-  private fun stretchViewVertically(item: FlexItem, crossSize: Int) {
+  private fun stretchViewVertically(item: FlexItem, crossSize: Double) {
     val newHeight = (crossSize - item.margin.top - item.margin.bottom)
       .coerceIn(item.measurable.minHeight, item.measurable.maxHeight)
     item.measuredWidth = item.measuredWidth
@@ -907,7 +912,7 @@ public class FlexContainer {
   /**
    * Expand the item horizontally to the size of the crossSize (considering [item]'s margins).
    */
-  private fun stretchViewHorizontally(item: FlexItem, crossSize: Int) {
+  private fun stretchViewHorizontally(item: FlexItem, crossSize: Double) {
     val newWidth = (crossSize - item.margin.start - item.margin.end)
       .coerceIn(item.measurable.minWidth, item.measurable.maxWidth)
     item.measuredWidth = newWidth
@@ -921,10 +926,10 @@ public class FlexContainer {
   private fun layoutSingleChildHorizontal(
     item: FlexItem,
     flexLine: FlexLine,
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int,
+    left: Double,
+    top: Double,
+    right: Double,
+    bottom: Double,
   ) {
     var alignItems = alignItems
     if (item.alignSelf != AlignSelf.Auto) {
@@ -992,10 +997,10 @@ public class FlexContainer {
     item: FlexItem,
     flexLine: FlexLine,
     isRtl: Boolean,
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int,
+    left: Double,
+    top: Double,
+    right: Double,
+    bottom: Double,
   ) {
     var alignItems = alignItems
     if (item.alignSelf != AlignSelf.Auto) {
@@ -1073,7 +1078,7 @@ public class FlexContainer {
     if (alignItems == AlignItems.Baseline) {
       for (flexLine in flexLines) {
         // The largest height value that also take the baseline shift into account
-        var largestHeightInLine = Int.MIN_VALUE
+        var largestHeightInLine = Double.MIN_VALUE
         for (i in flexLine.firstIndex..flexLine.lastIndex) {
           val child = orderedItems.getOrNull(i)
           if (child == null || !child.visible) {
@@ -1122,8 +1127,8 @@ public class FlexContainer {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): Size {
-    val calculatedMaxWidth: Int
-    val calculatedMaxHeight: Int
+    val calculatedMaxWidth: Double
+    val calculatedMaxHeight: Double
     if (flexDirection.isHorizontal) {
       calculatedMaxWidth = flexLines.getLargestMainSize()
       calculatedMaxHeight = flexLines.getSumOfCrossSize() + padding.top + padding.bottom
@@ -1185,89 +1190,89 @@ public class FlexContainer {
   private fun layoutHorizontal(
     flexLines: List<FlexLine>,
     isRtl: Boolean,
-    width: Int,
-    height: Int,
+    width: Double,
+    height: Double,
   ) {
     val paddingLeft = padding.start
     val paddingRight = padding.end
-    // Use float to reduce the round error that may happen in when justifyContent ==
+    // Use double to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround
-    var childLeft: Float
+    var childLeft: Double
     // childBottom is used if the flexWrap is WrapReverse otherwise
     // childTop is used to align the vertical position of the children items.
     var childBottom = height - padding.bottom
     var childTop = padding.top
 
     // Used only for RTL layout
-    // Use float to reduce the round error that may happen in when justifyContent ==
+    // Use double to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround
-    var childRight: Float
+    var childRight: Double
     for (flexLine in flexLines) {
-      var spaceBetweenItem = 0f
+      var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
-          childLeft = paddingLeft.toFloat()
-          childRight = (width - paddingRight).toFloat()
+          childLeft = paddingLeft
+          childRight = width - paddingRight
         }
         JustifyContent.FlexEnd -> {
-          childLeft = (width - flexLine.mainSize + paddingRight).toFloat()
-          childRight = (flexLine.mainSize - paddingLeft).toFloat()
+          childLeft = width - flexLine.mainSize + paddingRight
+          childRight = flexLine.mainSize - paddingLeft
         }
         JustifyContent.Center -> {
-          childLeft = paddingLeft + (width - flexLine.mainSize) / 2f
-          childRight = width - paddingRight - (width - flexLine.mainSize) / 2f
+          childLeft = paddingLeft + (width - flexLine.mainSize) / 2
+          childRight = width - paddingRight - (width - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((width - flexLine.mainSize) / visibleCount.toFloat())
+            spaceBetweenItem = ((width - flexLine.mainSize) / visibleCount)
           }
-          childLeft = paddingLeft + spaceBetweenItem / 2f
-          childRight = width - paddingRight - spaceBetweenItem / 2f
+          childLeft = paddingLeft + spaceBetweenItem / 2
+          childRight = width - paddingRight - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
-          childLeft = paddingLeft.toFloat()
+          childLeft = paddingLeft
           val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) (visibleCount - 1).toFloat() else 1f
+          val denominator = if (visibleCount != 1) visibleCount - 1 else 1
           spaceBetweenItem = (width - flexLine.mainSize) / denominator
-          childRight = (width - paddingRight).toFloat()
+          childRight = width - paddingRight
         }
         JustifyContent.SpaceEvenly -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((width - flexLine.mainSize) / (visibleCount + 1).toFloat())
+            spaceBetweenItem = (width - flexLine.mainSize) / (visibleCount + 1)
           }
           childLeft = paddingLeft + spaceBetweenItem
           childRight = width - paddingRight - spaceBetweenItem
         }
         else -> throw AssertionError()
       }
-      spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
+      spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
       for (i in 0 until flexLine.itemCount) {
         val index = flexLine.firstIndex + i
         val child = orderedItems.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
-        childLeft += child.margin.start.toFloat()
-        childRight -= child.margin.end.toFloat()
+        childLeft += child.margin.start
+        childRight -= child.margin.end
         if (flexWrap == FlexWrap.WrapReverse) {
           if (isRtl) {
             layoutSingleChildHorizontal(
               item = child,
               flexLine = flexLine,
-              left = childRight.roundToInt() - child.measuredWidth,
+              left = childRight - child.measuredWidth,
               top = childBottom - child.measuredHeight,
-              right = childRight.roundToInt(),
+              right = childRight,
               bottom = childBottom,
             )
           } else {
             layoutSingleChildHorizontal(
               item = child,
               flexLine = flexLine,
-              left = childLeft.roundToInt(),
+              left = childLeft,
               top = childBottom - child.measuredHeight,
-              right = childLeft.roundToInt() + child.measuredWidth,
+              right = childLeft + child.measuredWidth,
               bottom = childBottom,
             )
           }
@@ -1276,18 +1281,18 @@ public class FlexContainer {
             layoutSingleChildHorizontal(
               item = child,
               flexLine = flexLine,
-              left = childRight.roundToInt() - child.measuredWidth,
+              left = childRight - child.measuredWidth,
               top = childTop,
-              right = childRight.roundToInt(),
+              right = childRight,
               bottom = childTop + child.measuredHeight,
             )
           } else {
             layoutSingleChildHorizontal(
               item = child,
               flexLine = flexLine,
-              left = childLeft.roundToInt(),
+              left = childLeft,
               top = childTop,
-              right = childLeft.roundToInt() + child.measuredWidth,
+              right = childLeft + child.measuredWidth,
               bottom = childTop + child.measuredHeight,
             )
           }
@@ -1311,8 +1316,8 @@ public class FlexContainer {
     flexLines: List<FlexLine>,
     isRtl: Boolean,
     fromBottomToTop: Boolean,
-    width: Int,
-    height: Int,
+    width: Double,
+    height: Double,
   ) {
     val paddingTop = padding.top
     val paddingBottom = padding.bottom
@@ -1322,61 +1327,61 @@ public class FlexContainer {
     // childLeft is used to align the horizontal position of the children items.
     var childRight = width - paddingRight
 
-    // Use float to reduce the round error that may happen in when justifyContent ==
+    // Use double to reduce the round error that may happen in when justifyContent ==
     // SpaceBetween or SpaceAround.
-    var childTop: Float
+    var childTop: Double
 
     // Used only for if the direction is from bottom to top
-    var childBottom: Float
+    var childBottom: Double
     for (flexLine in flexLines) {
-      var spaceBetweenItem = 0f
+      var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
-          childTop = paddingTop.toFloat()
-          childBottom = (height - paddingBottom).toFloat()
+          childTop = paddingTop
+          childBottom = height - paddingBottom
         }
         JustifyContent.FlexEnd -> {
-          childTop = (height - flexLine.mainSize + paddingBottom).toFloat()
-          childBottom = (flexLine.mainSize - paddingTop).toFloat()
+          childTop = height - flexLine.mainSize + paddingBottom
+          childBottom = flexLine.mainSize - paddingTop
         }
         JustifyContent.Center -> {
-          childTop = paddingTop + (height - flexLine.mainSize) / 2f
-          childBottom = height - paddingBottom - (height - flexLine.mainSize) / 2f
+          childTop = paddingTop + (height - flexLine.mainSize) / 2
+          childBottom = height - paddingBottom - (height - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / visibleCount.toFloat())
+            spaceBetweenItem = ((height - flexLine.mainSize) / visibleCount)
           }
-          childTop = paddingTop + spaceBetweenItem / 2f
-          childBottom = height - paddingBottom - spaceBetweenItem / 2f
+          childTop = paddingTop + spaceBetweenItem / 2
+          childBottom = height - paddingBottom - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
-          childTop = paddingTop.toFloat()
+          childTop = paddingTop
           val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) visibleCount - 1f else 1f
+          val denominator = if (visibleCount != 1) visibleCount - 1 else 1
           spaceBetweenItem = (height - flexLine.mainSize) / denominator
-          childBottom = (height - paddingBottom).toFloat()
+          childBottom = height - paddingBottom
         }
         JustifyContent.SpaceEvenly -> {
           val visibleCount = flexLine.itemCountVisible
           if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1f))
+            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1))
           }
           childTop = paddingTop + spaceBetweenItem
           childBottom = height - paddingBottom - spaceBetweenItem
         }
         else -> throw AssertionError()
       }
-      spaceBetweenItem = maxOf(spaceBetweenItem, 0f)
+      spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
       for (i in 0 until flexLine.itemCount) {
         val index = flexLine.firstIndex + i
         val child = orderedItems.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
-        childTop += child.margin.top.toFloat()
-        childBottom -= child.margin.bottom.toFloat()
+        childTop += child.margin.top
+        childBottom -= child.margin.bottom
         if (isRtl) {
           if (fromBottomToTop) {
             layoutSingleChildVertical(
@@ -1384,9 +1389,9 @@ public class FlexContainer {
               flexLine = flexLine,
               isRtl = true,
               left = childRight - child.measuredWidth,
-              top = childBottom.roundToInt() - child.measuredHeight,
+              top = childBottom - child.measuredHeight,
               right = childRight,
-              bottom = childBottom.roundToInt(),
+              bottom = childBottom,
             )
           } else {
             layoutSingleChildVertical(
@@ -1394,9 +1399,9 @@ public class FlexContainer {
               flexLine = flexLine,
               isRtl = true,
               left = childRight - child.measuredWidth,
-              top = childTop.roundToInt(),
+              top = childTop,
               right = childRight,
-              bottom = childTop.roundToInt() + child.measuredHeight,
+              bottom = childTop + child.measuredHeight,
             )
           }
         } else {
@@ -1406,9 +1411,9 @@ public class FlexContainer {
               flexLine = flexLine,
               isRtl = false,
               left = childLeft,
-              top = childBottom.roundToInt() - child.measuredHeight,
+              top = childBottom - child.measuredHeight,
               right = childLeft + child.measuredWidth,
-              bottom = childBottom.roundToInt(),
+              bottom = childBottom,
             )
           } else {
             layoutSingleChildVertical(
@@ -1416,9 +1421,9 @@ public class FlexContainer {
               flexLine = flexLine,
               isRtl = false,
               left = childLeft,
-              top = childTop.roundToInt(),
+              top = childTop,
               right = childLeft + child.measuredWidth,
-              bottom = childTop.roundToInt() + child.measuredHeight,
+              bottom = childTop + child.measuredHeight,
             )
           }
         }
@@ -1428,6 +1433,10 @@ public class FlexContainer {
       childLeft += flexLine.crossSize
       childRight -= flexLine.crossSize
     }
+  }
+
+  private fun roundIfEnabled(value: Double): Double {
+    return if (roundToInt) value.roundToInt().toDouble() else value
   }
 
   /**

@@ -41,6 +41,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private val container = FlexContainer().apply {
     flexDirection = direction
+    roundToInt = true
   }
 
   private val _children = ComposeWidgetChildren()
@@ -100,11 +101,11 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     val result = container.measure(widthSpec, heightSpec)
     val (layoutWidth, layoutHeight) = result.containerSize
 
-    return layout(layoutWidth, layoutHeight) {
+    return layout(layoutWidth.toInt(), layoutHeight.toInt()) {
       container.layout(result)
 
       for (item in container.items) {
-        (item.measurable as ComposeMeasurable).placeable.place(item.left, item.top)
+        (item.measurable as ComposeMeasurable).placeable.place(item.left.toInt(), item.top.toInt())
       }
     }
   }

@@ -19,10 +19,10 @@ internal fun FlexDirection.toOrientation(): Orientation {
   return if (isHorizontal) Orientation.Horizontal else Orientation.Vertical
 }
 
-internal fun Orientation.mainMeasuredSizeWithMargin(node: FlexItem): Int =
+internal fun Orientation.mainMeasuredSizeWithMargin(node: FlexItem): Double =
   mainMeasuredSize(node) + mainMargin(node)
 
-internal fun Orientation.crossMeasuredSizeWithMargin(node: FlexItem): Int =
+internal fun Orientation.crossMeasuredSizeWithMargin(node: FlexItem): Double =
   crossMeasuredSize(node) + crossMargin(node)
 
 /**
@@ -30,16 +30,16 @@ internal fun Orientation.crossMeasuredSizeWithMargin(node: FlexItem): Int =
  * of the underlying [FlexDirection].
  */
 internal sealed interface Orientation {
-  fun mainPadding(padding: Spacing): Int
-  fun crossPadding(padding: Spacing): Int
+  fun mainPadding(padding: Spacing): Double
+  fun crossPadding(padding: Spacing): Double
 
-  fun mainMargin(item: FlexItem): Int
-  fun crossMargin(item: FlexItem): Int
+  fun mainMargin(item: FlexItem): Double
+  fun crossMargin(item: FlexItem): Double
 
-  fun mainSize(item: FlexItem): Int
-  fun crossSize(item: FlexItem): Int
-  fun mainMeasuredSize(item: FlexItem): Int
-  fun crossMeasuredSize(item: FlexItem): Int
+  fun mainSize(item: FlexItem): Double
+  fun crossSize(item: FlexItem): Double
+  fun mainMeasuredSize(item: FlexItem): Double
+  fun crossMeasuredSize(item: FlexItem): Double
 
   object Horizontal : Orientation {
     override fun mainPadding(padding: Spacing) = padding.start + padding.end

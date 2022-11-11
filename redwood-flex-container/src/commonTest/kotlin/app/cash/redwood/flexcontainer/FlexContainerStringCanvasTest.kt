@@ -34,6 +34,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Column
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -70,6 +71,7 @@ class FlexContainerStringCanvasTest {
       flexDirection = Column
       justifyContent = JustifyContent.Center
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -108,6 +110,7 @@ class FlexContainerStringCanvasTest {
       flexDirection = Column
       alignItems = AlignItems.Center
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -144,6 +147,7 @@ class FlexContainerStringCanvasTest {
       flexDirection = Column
       alignItems = AlignItems.Stretch
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -181,6 +185,7 @@ class FlexContainerStringCanvasTest {
     val container = FlexContainer().apply {
       flexDirection = Row
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -205,8 +210,9 @@ class FlexContainerStringCanvasTest {
       flexDirection = Row
       justifyContent = JustifyContent.Center
       items += widgets.map { widget ->
-        FlexItem(flexBasisPercent = 0f, measurable = widget).also { widget.flexItem = it }
+        FlexItem(flexBasisPercent = 0.0, measurable = widget).also { widget.flexItem = it }
       }
+      roundToInt = true
     }
 
     assertEquals(
@@ -229,6 +235,7 @@ class FlexContainerStringCanvasTest {
       flexDirection = Row
       alignItems = AlignItems.Center
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -253,6 +260,7 @@ class FlexContainerStringCanvasTest {
       flexDirection = Row
       alignItems = AlignItems.Stretch
       items += widgets.map { it.flexItem }
+      roundToInt = true
     }
 
     assertEquals(
@@ -276,11 +284,11 @@ class FlexContainerStringCanvasTest {
     widgets: List<StringWidget>,
   ): String {
     val canvas = StringCanvas(width, height)
-    val widthSpec = MeasureSpec.from(width, MeasureSpecMode.Exactly)
-    val heightSpec = MeasureSpec.from(height, MeasureSpecMode.Exactly)
+    val widthSpec = MeasureSpec.from(width.toDouble(), MeasureSpecMode.Exactly)
+    val heightSpec = MeasureSpec.from(height.toDouble(), MeasureSpecMode.Exactly)
 
     val result = measure(widthSpec, heightSpec)
-    layout(result, Size(width, height))
+    layout(result, Size(width.toDouble(), height.toDouble()))
 
     for (widget in widgets) {
       widget.draw(canvas)
