@@ -166,8 +166,11 @@ allprojects {
         if (internalUrl.isPresent()) {
           maven {
             name = "internal"
-            url = providers.gradleProperty("internalUrl")
-            credentials(PasswordCredentials)
+            url = internalUrl
+            credentials {
+              username = providers.gradleProperty("internalUsername").get()
+              password = providers.gradleProperty("internalPassword").get()
+            }
           }
         }
       }
