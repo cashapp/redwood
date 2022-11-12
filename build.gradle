@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
@@ -45,6 +46,15 @@ allprojects {
     java {
       sourceCompatibility = JavaVersion.VERSION_11
       targetCompatibility = JavaVersion.VERSION_11
+    }
+  }
+
+  plugins.withId('com.vanniktech.maven.publish') {
+    mavenPublishing {
+      publishToMavenCentral(SonatypeHost.DEFAULT)
+      if (providers.systemProperty("RELEASE_SIGNING_ENABLED").getOrElse("true").toBoolean()) {
+        signAllPublications()
+      }
     }
   }
 
@@ -160,7 +170,7 @@ allprojects {
          *
          * Then run the following command to publish a new internal release:
          *
-         * ./gradlew publishAllPublicationsToInternalRepository
+         * ./gradlew publishAllPublicationsToInternalRepository -DRELEASE_SIGNING_ENABLED=false
          */
         def internalUrl = providers.gradleProperty("internalUrl")
         if (internalUrl.isPresent()) {
