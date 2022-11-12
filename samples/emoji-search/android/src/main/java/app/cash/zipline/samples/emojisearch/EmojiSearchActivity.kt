@@ -70,6 +70,7 @@ class EmojiSearchActivity : ComponentActivity() {
         hostApi = RealHostApi(httpClient),
         viewBinder = object : ViewBinder {
           override fun widgetFactory(
+            view: TreehouseView<*>,
             json: Json,
             mismatchHandler: ProtocolMismatchHandler,
           ) = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
