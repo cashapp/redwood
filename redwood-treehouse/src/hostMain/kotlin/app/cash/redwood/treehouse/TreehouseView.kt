@@ -23,11 +23,23 @@ public interface TreehouseView<T : Any> {
   public val boundContent: Content<T>?
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
+  public val codeListener: CodeListener
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
   public fun interface Content<T : Any> {
     public fun get(app: T): ZiplineTreehouseUi
+  }
+
+  public open class CodeListener {
+    /** Show a spinner when a view is waiting for the code to load. */
+    public fun codeLoading(view: TreehouseView<*>) {}
+
+    /** Clear the loading indicator when the first code is loaded. */
+    public fun beforeInitialCode(view: TreehouseView<*>) {}
+
+    /** Clear the previous UI and show a quick animation for subsequent code updates. */
+    public fun beforeUpdatedCode(view: TreehouseView<*>) {}
   }
 }

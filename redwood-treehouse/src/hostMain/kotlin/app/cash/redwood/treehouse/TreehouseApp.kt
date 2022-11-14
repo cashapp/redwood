@@ -117,7 +117,7 @@ public class TreehouseApp<T : Any> internal constructor(
     } else {
       // If we're waiting for code to load, show a loading indicator until it's ready.
       withContext(dispatchers.ui) {
-        spec.viewBinder.codeLoading(view)
+        view.codeListener.codeLoading(view)
       }
     }
   }
@@ -191,8 +191,8 @@ public class TreehouseApp<T : Any> internal constructor(
               view.reset()
 
               when {
-                isInitialLaunch -> spec.viewBinder.beforeInitialCode(view)
-                else -> spec.viewBinder.beforeUpdatedCode(view)
+                isInitialLaunch -> view.codeListener.beforeInitialCode(view)
+                else -> view.codeListener.beforeUpdatedCode(view)
               }
             }
 

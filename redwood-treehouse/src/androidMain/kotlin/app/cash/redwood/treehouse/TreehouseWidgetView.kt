@@ -22,6 +22,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,7 @@ public class TreehouseWidgetView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
 ) : FrameLayout(context), TreehouseView<T> {
+  public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<T>? = null
 
   override val boundContent: TreehouseView.Content<T>?
