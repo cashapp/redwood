@@ -19,7 +19,6 @@ import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.ViewBinder
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
@@ -48,21 +47,21 @@ class EmojiSearchLauncher(
 
     return treehouseLauncher.launch(
       scope = coroutineScope,
-      spec = EmojiSearchAppSpec(
+      spec = object : EmojiSearchAppSpec(
         manifestUrlString = manifestUrl,
         hostApi = hostApi,
-        viewBinder = object : ViewBinder {
-          override fun widgetFactory(
-            view: TreehouseView<*>,
-            json: Json,
-            mismatchHandler: ProtocolMismatchHandler,
-          ) = DiffConsumingEmojiSearchWidgetFactory(
-            delegate = widgetFactory,
-            json = json,
-            mismatchHandler = mismatchHandler,
-          )
-        },
-      ),
+      ) {
+        override fun widgetFactory(
+          app: TreehouseApp<EmojiSearchPresenter>,
+          view: TreehouseView<EmojiSearchPresenter>,
+          json: Json,
+          protocolMismatchHandler: ProtocolMismatchHandler,
+        ) = DiffConsumingEmojiSearchWidgetFactory(
+          delegate = widgetFactory,
+          json = json,
+          mismatchHandler = protocolMismatchHandler,
+        )
+      },
     )
   }
 }
