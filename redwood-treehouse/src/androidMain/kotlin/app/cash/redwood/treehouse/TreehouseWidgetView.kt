@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseWidgetView<T : Any>(
   context: Context,
   private val treehouseApp: TreehouseApp<T>,
+  override val widgetSystem: TreehouseView.WidgetSystem<T>,
 ) : FrameLayout(context), TreehouseView<T> {
   public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<T>? = null

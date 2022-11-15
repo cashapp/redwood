@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 public fun <T : Any> TreehouseContent(
   treehouseApp: TreehouseApp<T>,
+  widgetSystem: TreehouseView.WidgetSystem<T>,
   content: TreehouseView.Content<T>,
 ) {
   val hostConfiguration = HostConfiguration(
@@ -43,6 +44,7 @@ public fun <T : Any> TreehouseContent(
       override val boundContent: TreehouseView.Content<T> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
+      override val widgetSystem = widgetSystem
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }

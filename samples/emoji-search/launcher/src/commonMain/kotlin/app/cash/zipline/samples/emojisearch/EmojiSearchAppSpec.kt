@@ -16,7 +16,6 @@
 package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.ViewBinder
 import app.cash.zipline.Zipline
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.modules.SerializersModule
@@ -24,7 +23,6 @@ import kotlinx.serialization.modules.SerializersModule
 class EmojiSearchAppSpec(
   manifestUrlString: String,
   private val hostApi: HostApi,
-  override val viewBinder: ViewBinder,
 ) : TreehouseApp.Spec<EmojiSearchPresenter>() {
   override val name = "emoji-search"
   override val manifestUrl = flowOf(manifestUrlString)

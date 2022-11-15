@@ -15,20 +15,13 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
-import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.ViewBinder
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
-import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
-import example.schema.widget.EmojiSearchWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.serialization.json.Json
 import platform.Foundation.NSURLSession
-import platform.UIKit.UIView
 
 class EmojiSearchLauncher(
   private val nsurlSession: NSURLSession,
@@ -36,8 +29,6 @@ class EmojiSearchLauncher(
 ) {
   private val coroutineScope: CoroutineScope = MainScope()
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
-
-  lateinit var widgetFactory: EmojiSearchWidgetFactory<UIView>
 
   @Suppress("unused") // Invoked in Swift.
   fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
@@ -51,17 +42,6 @@ class EmojiSearchLauncher(
       spec = EmojiSearchAppSpec(
         manifestUrlString = manifestUrl,
         hostApi = hostApi,
-        viewBinder = object : ViewBinder {
-          override fun widgetFactory(
-            view: TreehouseView<*>,
-            json: Json,
-            mismatchHandler: ProtocolMismatchHandler,
-          ) = DiffConsumingEmojiSearchWidgetFactory(
-            delegate = widgetFactory,
-            json = json,
-            mismatchHandler = mismatchHandler,
-          )
-        },
       ),
     )
   }

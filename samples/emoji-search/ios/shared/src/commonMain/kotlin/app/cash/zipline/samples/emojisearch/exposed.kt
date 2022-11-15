@@ -19,8 +19,12 @@ package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseUIKitView
+import app.cash.redwood.treehouse.TreehouseView
+import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
+import kotlinx.serialization.json.Json
 import okio.ByteString
 import okio.toByteString
 import platform.Foundation.NSData
@@ -32,6 +36,7 @@ fun exposedTypes(
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   treehouseUIKitView: TreehouseUIKitView<*>,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
+  widgetSystem: TreehouseView.WidgetSystem<*>,
 ) {
   throw AssertionError()
 }
@@ -39,3 +44,9 @@ fun exposedTypes(
 fun byteStringOf(data: NSData): ByteString = data.toByteString()
 
 fun layoutModifier(): LayoutModifier = LayoutModifier
+
+fun diffConsumingEmojiSearchWidgetFactory(
+  delegate: EmojiSearchWidgetFactory<*>,
+  json: Json = Json.Default,
+  mismatchHandler: ProtocolMismatchHandler,
+) = DiffConsumingEmojiSearchWidgetFactory(delegate, json, mismatchHandler)

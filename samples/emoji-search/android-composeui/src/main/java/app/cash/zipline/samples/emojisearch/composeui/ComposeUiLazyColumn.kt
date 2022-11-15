@@ -28,12 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import example.schema.widget.LazyColumn
 import example.values.LazyListIntervalContent
 
 class ComposeUiLazyColumn<T : Any>(
   treehouseApp: TreehouseApp<T>,
+  widgetSystem: TreehouseView.WidgetSystem<T>,
 ) : LazyColumn<@Composable () -> Unit> {
   private var intervals by mutableStateOf<List<LazyListIntervalContent>>(emptyList())
 
@@ -52,7 +54,7 @@ class ComposeUiLazyColumn<T : Any>(
       intervals.forEach { interval ->
         items(interval.count) { index ->
           Box(Modifier.height(64.dp)) {
-            TreehouseContent(treehouseApp) { interval.itemProvider.get(index) }
+            TreehouseContent(treehouseApp, widgetSystem) { interval.itemProvider.get(index) }
           }
         }
       }

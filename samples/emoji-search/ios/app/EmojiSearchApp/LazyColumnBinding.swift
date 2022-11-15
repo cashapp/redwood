@@ -19,11 +19,13 @@ import shared
 
 class LazyColumnBinding<T : AnyObject>: NSObject, WidgetLazyColumn, UITableViewDataSource {
     private let treehouseApp: Redwood_treehouseTreehouseApp<T>
+    private let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     private let root = UITableView()
     private var intervals: [ValuesLazyListIntervalContent] = []
 
-    init(treehouseApp: Redwood_treehouseTreehouseApp<T>) {
+    init(treehouseApp: Redwood_treehouseTreehouseApp<T>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
+        self.widgetSystem = widgetSystem
         super.init()
         root.dataSource = self
     }
@@ -45,7 +47,7 @@ class LazyColumnBinding<T : AnyObject>: NSObject, WidgetLazyColumn, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let treehouseView = Redwood_treehouseTreehouseUIKitView(treehouseApp: treehouseApp)
+        let treehouseView = Redwood_treehouseTreehouseUIKitView(treehouseApp: treehouseApp, widgetSystem: widgetSystem)
         treehouseView.setContent(content: CellContent(itemProvider: intervals[indexPath.section].itemProvider, index: indexPath.row))
         let cell = TableViewCell(view: treehouseView.view)
         return cell
