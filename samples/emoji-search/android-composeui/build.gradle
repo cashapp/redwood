@@ -1,0 +1,32 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'app.cash.redwood'
+
+android {
+  namespace "app.cash.zipline.samples.emojisearch.composeui"
+  defaultConfig {
+    applicationId = "com.example.zipline.emojisearch.composeui"
+  }
+  buildFeatures {
+    compose = true
+  }
+}
+
+dependencies {
+  implementation libs.coil.compose
+  implementation libs.google.material
+  implementation libs.kotlinx.coroutines.android
+  implementation projects.samples.emojiSearch.launcher
+  implementation projects.samples.emojiSearch.presenters
+  implementation projects.samples.emojiSearch.schema.widget.protocol
+  implementation libs.androidx.activity.compose
+  implementation libs.androidx.appCompat
+  implementation libs.androidx.core
+  implementation libs.androidx.compose.material
+  implementation libs.androidx.compose.ui
+  implementation libs.androidx.compose.ui.tooling.preview
+  implementation projects.redwoodLayoutComposeui
+  implementation projects.redwoodTreehouseComposeui
+  implementation projects.redwoodWidgetCompose
+  debugImplementation libs.androidx.compose.ui.tooling
+}
