@@ -17,7 +17,9 @@ package app.cash.zipline.samples.emojisearch.views
 
 import android.content.Context
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp

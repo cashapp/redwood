@@ -18,10 +18,13 @@ package app.cash.zipline.samples.emojisearch.views
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.NoLiveLiterals
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.redwood.treehouse.*
+import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseLauncher
+import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.ViewBinder
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.samples.emojisearch.EmojiSearchAppSpec
 import app.cash.zipline.samples.emojisearch.EmojiSearchPresenter
@@ -31,7 +34,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 
-@NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
 
@@ -44,7 +46,7 @@ class EmojiSearchActivity : ComponentActivity() {
     setContentView(
       TreehouseWidgetView(this, treehouseApp).apply {
         setContent(treehouseContent)
-      }
+      },
     )
   }
 
@@ -54,7 +56,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseLauncher = TreehouseLauncher(
       context = applicationContext,
       httpClient = httpClient,
-      manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+      manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
     )
 
     var widgetFactory: AndroidViewEmojiSearchWidgetFactory<*>? = null
