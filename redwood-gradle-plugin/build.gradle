@@ -92,6 +92,6 @@ buildConfig {
   }
 
   packageName('app.cash.redwood.gradle')
-  buildConfigField("String", "androidxComposeCompiler", "\"${libs.versions.androidxComposeCompiler.get()}\"")
+  buildConfigField("String", "jbComposeCompiler", "\"${libs.versions.jbComposeCompiler.get()}\"")
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
 }
