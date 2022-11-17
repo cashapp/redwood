@@ -69,23 +69,7 @@ public class FlexContainer {
   /**
    * Returns the items held in the container.
    */
-  public val items: MutableList<FlexItem> = ObservableMutableList(
-    onChange = { orderedItems = listOf() },
-  )
-
-  /**
-   * Holds the list of [items] after [FlexItem.order] has been taken into account.
-   */
-  private var orderedItems: List<FlexItem> = listOf()
-    get() {
-      if (field.size != items.size) {
-        // Lazily sort the items by their order descending.
-        field = items.withIndex()
-          .sortedWith(compareBy({ -it.value.order }, { it.index }))
-          .map { it.value }
-      }
-      return field
-    }
+  public val items: MutableList<FlexItem> = mutableListOf()
 
   /**
    * Calculates how many flex lines are needed in the flex container layout by measuring each child.
@@ -121,7 +105,7 @@ public class FlexContainer {
     var flexLine = FlexLine()
     flexLine.mainSize = orientation.mainPadding(padding)
     for (i in 0 until items.size) {
-      val item = orderedItems.getOrNull(i)
+      val item = items.getOrNull(i)
       if (item == null) {
         if (isLastFlexItem(i, items.size, flexLine)) {
           addFlexLine(flexLines, flexLine, i, sumCrossSize)
@@ -381,7 +365,7 @@ public class FlexContainer {
     var accumulatedRoundError = 0.0
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
-      val child = orderedItems.getOrNull(index)
+      val child = items.getOrNull(index)
       if (child == null || !child.visible) {
         continue
       }
@@ -535,7 +519,7 @@ public class FlexContainer {
     }
     for (i in 0 until flexLine.itemCount) {
       val index = flexLine.firstIndex + i
-      val child = orderedItems.getOrNull(index)
+      val child = items.getOrNull(index)
       if (child == null || !child.visible) {
         continue
       }
@@ -869,7 +853,7 @@ public class FlexContainer {
           if (i >= items.size) {
             continue
           }
-          val item = orderedItems.getOrNull(itemIndex)
+          val item = items.getOrNull(itemIndex)
           if (item == null || !item.visible) {
             continue
           }
@@ -886,7 +870,7 @@ public class FlexContainer {
     } else {
       for (flexLine in flexLines) {
         for (index in flexLine.firstIndex..flexLine.lastIndex) {
-          val item = orderedItems[index]
+          val item = items[index]
           if (item.alignSelf == AlignSelf.Stretch) {
             if (flexDirection.isHorizontal) {
               stretchViewVertically(item, flexLine.crossSize)
@@ -1080,7 +1064,7 @@ public class FlexContainer {
         // The largest height value that also take the baseline shift into account
         var largestHeightInLine = Double.MIN_VALUE
         for (i in flexLine.firstIndex..flexLine.lastIndex) {
-          val child = orderedItems.getOrNull(i)
+          val child = items.getOrNull(i)
           if (child == null || !child.visible) {
             continue
           }
@@ -1250,7 +1234,7 @@ public class FlexContainer {
       spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
       for (i in 0 until flexLine.itemCount) {
         val index = flexLine.firstIndex + i
-        val child = orderedItems.getOrNull(index)
+        val child = items.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
@@ -1376,7 +1360,7 @@ public class FlexContainer {
       spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
       for (i in 0 until flexLine.itemCount) {
         val index = flexLine.firstIndex + i
-        val child = orderedItems.getOrNull(index)
+        val child = items.getOrNull(index)
         if (child == null || !child.visible) {
           continue
         }
