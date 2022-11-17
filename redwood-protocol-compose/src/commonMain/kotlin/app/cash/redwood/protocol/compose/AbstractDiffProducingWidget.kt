@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.protocol.compose
 
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
@@ -30,7 +29,7 @@ public abstract class AbstractDiffProducingWidget(
   override val value: Nothing
     get() = throw AssertionError()
 
-  public var id: Id = Id(ULong.MAX_VALUE)
+  public override var id: Id = Id(ULong.MAX_VALUE)
     internal set
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
@@ -47,6 +46,4 @@ public abstract class AbstractDiffProducingWidget(
   protected fun diffProducingWidgetChildren(tag: UInt): Children<Nothing> {
     return DiffProducingWidgetChildren(id, tag, _diffAppender)
   }
-
-  public abstract fun sendEvent(event: Event)
 }

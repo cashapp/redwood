@@ -61,14 +61,13 @@ import app.cash.redwood.widget.Widget
  */
 internal class ProtocolApplier(
   override val factory: DiffProducingWidget.Factory,
+  private val protocolState: ProtocolState,
   private val diffAppender: DiffAppender,
 ) : _RedwoodApplier<DiffProducingWidget.Factory>, AbstractApplier<Widget<Nothing>>(
   root = _ChildrenWidget(
     DiffProducingWidgetChildren(Id.Root, RootChildrenTag, diffAppender),
   ),
 ) {
-  private var nextId = Id.Root.next()
-  internal val nodes = mutableMapOf(Id.Root to root)
   private var closed = false
 
   override fun onEndChanges() {
@@ -84,14 +83,11 @@ internal class ProtocolApplier(
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      val id = nextId
-      nextId = id.next()
-
       instance as AbstractDiffProducingWidget
-      instance.id = id
+      instance.id = protocolState.nextId()
       instance._diffAppender = diffAppender
 
-      nodes[id] = instance
+      protocolState.put(instance)
 
       val current = current as _ChildrenWidget
       current.children!!.insert(index, instance)
@@ -110,7 +106,7 @@ internal class ProtocolApplier(
     val children = current.children as DiffProducingWidgetChildren
 
     for (i in index until index + count) {
-      nodes.remove(children.ids[i])
+      protocolState.remove(children.ids[i])
     }
     children.remove(index, count)
   }
@@ -124,8 +120,7 @@ internal class ProtocolApplier(
   }
 
   override fun onClear() {
+    check(!closed)
     closed = true
   }
-
-  private fun Id.next(): Id = Id(value + 1UL)
 }

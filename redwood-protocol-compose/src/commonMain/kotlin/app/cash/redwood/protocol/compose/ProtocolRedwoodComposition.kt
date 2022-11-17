@@ -48,12 +48,14 @@ public fun ProtocolRedwoodComposition(
   onDiff: DiffSink = DiffSink {},
   onEvent: EventSink = EventSink {},
 ): ProtocolRedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, widgetVersion, onDiff, onEvent)
+  val protocolState = ProtocolState()
+  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, onDiff, onEvent)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
   private val factory: DiffProducingWidget.Factory,
+  private val protocolState: ProtocolState,
   private val widgetVersion: UInt,
   private val onDiff: DiffSink,
   private val onEvent: EventSink,
@@ -75,7 +77,7 @@ private class DiffProducingRedwoodComposition(
       diffSink.sendDiff(diff)
     }
 
-    applier = ProtocolApplier(factory, diffAppender)
+    applier = ProtocolApplier(factory, protocolState, diffAppender)
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.
@@ -101,13 +103,7 @@ private class DiffProducingRedwoodComposition(
     check(this::applier.isInitialized) { "display not initialized" }
 
     onEvent.sendEvent(event)
-
-    val node = applier.nodes[event.id] as AbstractDiffProducingWidget?
-    if (node == null) {
-      // TODO how to handle race where an incoming event targets this removed node?
-      throw IllegalArgumentException("Unknown node ${event.id} for event with tag ${event.tag}")
-    }
-    node.sendEvent(event)
+    protocolState.sendEvent(event)
   }
 
   @OptIn(InternalComposeApi::class) // See internal function comment below.

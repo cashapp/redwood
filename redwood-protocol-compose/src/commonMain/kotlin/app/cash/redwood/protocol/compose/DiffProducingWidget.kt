@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.protocol.compose
 
+import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
 /**
@@ -22,6 +24,10 @@ import app.cash.redwood.widget.Widget
  * based on its properties.
  */
 public interface DiffProducingWidget : Widget<Nothing> {
+  public val id: Id
+
+  public fun sendEvent(event: Event)
+
   /**
    * Marker interface for types whose functions create [DiffProducingWidget]s.
    */
