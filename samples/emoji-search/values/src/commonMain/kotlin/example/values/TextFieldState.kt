@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch
 
-import example.values.TextFieldState
+package example.values
+
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class EmojiSearchEvent {
-  @Serializable
-  class SearchTermEvent(
-    val searchTerm: TextFieldState,
-  ) : EmojiSearchEvent()
-}
-
-@Serializable
-data class EmojiSearchViewModel(
-  val searchTerm: TextFieldState,
-  val images: List<EmojiImage>,
-)
-
-@Serializable
-data class EmojiImage(
-  val label: String,
-  val url: String,
+data class TextFieldState(
+  val text: String = "",
+  val selectionStart: Int = 0,
+  val selectionEnd: Int = 0,
+  val userEditCount: Long = 0L,
 )

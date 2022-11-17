@@ -19,6 +19,7 @@ import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
+import example.values.TextFieldState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
@@ -31,13 +32,13 @@ class RealEmojiSearchPresenter(
   private val json: Json,
 ) : EmojiSearchPresenter {
   private var emojis = listOf<EmojiImage>()
-  private var latestSearchTerm = ""
+  private var latestSearchTerm = TextFieldState()
 
   private val loadingImage = EmojiImage(
     label = "watch",
     url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
   )
-  private val initialViewModel = EmojiSearchViewModel("", listOf(loadingImage))
+  private val initialViewModel = EmojiSearchViewModel(latestSearchTerm, listOf(loadingImage))
 
   override fun launch(): ZiplineTreehouseUi {
     val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
@@ -64,8 +65,11 @@ class RealEmojiSearchPresenter(
       events.collectLatest { event ->
         when (event) {
           is SearchTermEvent -> {
-            latestSearchTerm = event.searchTerm
-            send(produceModel())
+            if(event.searchTerm.userEditCount > latestSearchTerm.userEditCount) {
+              println("!!!JS Setting latestSearchTerm to ${event.searchTerm}")
+              latestSearchTerm = event.searchTerm
+              send(produceModel())
+            }
           }
         }
       }
@@ -82,7 +86,7 @@ class RealEmojiSearchPresenter(
   }
 
   private fun produceModel(): EmojiSearchViewModel {
-    val searchTerms = latestSearchTerm.split(" ")
+    val searchTerms = latestSearchTerm.text.split(" ")
     val filteredImages = emojis
       .filter { image ->
         searchTerms.all { image.label.contains(it, ignoreCase = true) }
