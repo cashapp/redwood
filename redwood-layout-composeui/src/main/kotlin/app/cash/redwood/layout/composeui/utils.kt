@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import android.content.Context
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
@@ -36,7 +37,6 @@ import app.cash.redwood.flexcontainer.isVertical
 import app.cash.redwood.layout.Grow
 import app.cash.redwood.layout.HorizontalAlignment
 import app.cash.redwood.layout.Padding as PaddingModifier
-import android.content.Context
 import app.cash.redwood.layout.Shrink
 import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment

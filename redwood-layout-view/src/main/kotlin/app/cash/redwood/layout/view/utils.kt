@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.View
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
@@ -35,7 +36,6 @@ import app.cash.redwood.flexcontainer.isVertical
 import app.cash.redwood.layout.Grow
 import app.cash.redwood.layout.HorizontalAlignment
 import app.cash.redwood.layout.Padding as PaddingModifier
-import android.content.Context
 import app.cash.redwood.layout.Shrink
 import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment

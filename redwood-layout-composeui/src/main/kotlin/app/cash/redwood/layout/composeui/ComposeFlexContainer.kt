@@ -55,7 +55,6 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private lateinit var context: Context
   private var padding = Padding.Zero
 
-
   var modifier: Modifier by mutableStateOf(Modifier)
 
   fun padding(padding: Padding) {
