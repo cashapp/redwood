@@ -20,8 +20,6 @@ import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.MeasureResult
-import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.UIViewChildren
@@ -80,8 +78,8 @@ internal class UIViewFlexContainer(
 
     override val intrinsicContentSize get() = noIntrinsicSize
 
-    override fun sizeThatFits(size: Size): Size {
-      return measure(size.toMeasureSpecs()).containerSize.toDoubleSize()
+    override fun sizeThatFits(size: UnsafeSize): UnsafeSize {
+      return measure(size).containerSize.toUnsafeSize()
     }
 
     override fun setNeedsLayout() {
@@ -92,15 +90,13 @@ internal class UIViewFlexContainer(
       if (!needsLayout) return
       needsLayout = false
 
-      val measureResult = _view.bounds.useContents {
-        measure(size.toDoubleSize().toMeasureSpecs())
-      }
-      container.layout(measureResult)
+      val bounds = _view.bounds.useContents { size.toUnsafeSize() }
+      container.layout(measure(bounds))
 
       _view.setContentSize(
         CGSizeMake(
-          width = container.items.maxOfOrNull { it.right }?.toDouble() ?: 0.0,
-          height = container.items.maxOfOrNull { it.top }?.toDouble() ?: 0.0,
+          width = container.items.maxOfOrNull { it.right } ?: 0.0,
+          height = container.items.maxOfOrNull { it.top } ?: 0.0,
         ),
       )
       _view.superview?.setNeedsLayout()
@@ -108,18 +104,19 @@ internal class UIViewFlexContainer(
       container.items.forEachIndexed { index, item ->
         _view.typedSubviews[index].setFrame(
           CGRectMake(
-            x = item.left.toDouble(),
-            y = item.top.toDouble(),
-            width = (item.right - item.left).toDouble(),
-            height = (item.bottom - item.top).toDouble(),
+            x = item.left,
+            y = item.top,
+            width = item.right - item.left,
+            height = item.bottom - item.top,
           ),
         )
       }
     }
 
-    private fun measure(measureSpecs: Pair<MeasureSpec, MeasureSpec>): MeasureResult {
+    private fun measure(size: UnsafeSize): MeasureResult {
       syncItems()
-      return container.measure(measureSpecs.first, measureSpecs.second)
+      val (widthSpec, heightSpec) = size.toMeasureSpecs()
+      return container.measure(widthSpec, heightSpec)
     }
 
     private fun syncItems() {
@@ -131,4 +128,4 @@ internal class UIViewFlexContainer(
   }
 }
 
-private val noIntrinsicSize = Size(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+private val noIntrinsicSize = UnsafeSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
