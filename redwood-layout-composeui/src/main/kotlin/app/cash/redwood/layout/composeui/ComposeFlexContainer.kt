@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import android.content.Context
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,6 +28,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexContainer
@@ -50,10 +52,14 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
 
+  private lateinit var context: Context
+  private var padding = Padding.Zero
+
+
   var modifier: Modifier by mutableStateOf(Modifier)
 
   fun padding(padding: Padding) {
-    container.padding = padding.toSpacing()
+    this.padding = padding
     recomposeTick++
   }
 
@@ -76,6 +82,10 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
       content = {
         // Observe this so we can manually trigger recomposition.
         recomposeTick
+
+        // Get this for use in 'measure'.
+        context = LocalContext.current
+
         _children.render()
       },
       modifier = if (overflow == Overflow.Scroll) {
@@ -97,6 +107,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     constraints: Constraints,
   ): MeasureResult = with(scope) {
     syncItems(measurables)
+    container.padding = padding.toSpacing(context)
+
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
     val result = container.measure(widthSpec, heightSpec)
     val (layoutWidth, layoutHeight) = result.containerSize
@@ -113,7 +125,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private fun syncItems(measurables: List<Measurable>) {
     container.items.clear()
     measurables.forEachIndexed { index, measurable ->
-      container.items += measurable.asItem(_children.widgets[index].layoutModifiers, direction)
+      container.items += measurable.asItem(context, _children.widgets[index].layoutModifiers, direction)
     }
   }
 }
