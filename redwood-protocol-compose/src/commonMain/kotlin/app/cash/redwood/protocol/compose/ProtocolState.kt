@@ -20,7 +20,9 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 
-public class ProtocolState : EventSink {
+public class ProtocolState(
+  private val onEvent: EventSink = EventSink {},
+) : EventSink {
   private var nextId = Id.Root.value + 1U
   private val nodes = mutableMapOf<Id, DiffProducingWidget>()
 
@@ -43,6 +45,7 @@ public class ProtocolState : EventSink {
       // TODO how to handle race where an incoming event targets this removed node?
       "Unknown node ${event.id} for event with tag ${event.tag}"
     }
+    onEvent.sendEvent(event)
     node.sendEvent(event)
   }
 }

@@ -26,14 +26,12 @@ import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.DiffSink
-import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface ProtocolRedwoodComposition : RedwoodComposition, EventSink {
+public interface ProtocolRedwoodComposition : RedwoodComposition {
   public fun start(diffSink: DiffSink)
 }
 
@@ -43,13 +41,12 @@ public interface ProtocolRedwoodComposition : RedwoodComposition, EventSink {
  */
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
+  protocolState: ProtocolState,
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
   onDiff: DiffSink = DiffSink {},
-  onEvent: EventSink = EventSink {},
 ): ProtocolRedwoodComposition {
-  val protocolState = ProtocolState()
-  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, onDiff, onEvent)
+  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, onDiff)
 }
 
 private class DiffProducingRedwoodComposition(
@@ -58,7 +55,6 @@ private class DiffProducingRedwoodComposition(
   private val protocolState: ProtocolState,
   private val widgetVersion: UInt,
   private val onDiff: DiffSink,
-  private val onEvent: EventSink,
 ) : ProtocolRedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
 
@@ -97,13 +93,6 @@ private class DiffProducingRedwoodComposition(
     recomposeJob = scope.launch(start = UNDISPATCHED) {
       recomposer.runRecomposeAndApplyChanges()
     }
-  }
-
-  override fun sendEvent(event: Event) {
-    check(this::applier.isInitialized) { "display not initialized" }
-
-    onEvent.sendEvent(event)
-    protocolState.sendEvent(event)
   }
 
   @OptIn(InternalComposeApi::class) // See internal function comment below.
