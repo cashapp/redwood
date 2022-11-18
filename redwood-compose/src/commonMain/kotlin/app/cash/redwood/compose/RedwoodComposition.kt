@@ -47,7 +47,14 @@ public fun <T : Any> RedwoodComposition(
   container: Widget.Children<T>,
   factory: Widget.Factory<T>,
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, WidgetApplier(factory, container))
+  return RedwoodComposition(scope, WidgetApplier(factory, container))
+}
+
+public fun <T : Any> RedwoodComposition(
+  scope: CoroutineScope,
+  applier: WidgetApplier<T>,
+) : RedwoodComposition {
+  return WidgetRedwoodComposition(scope, applier)
 }
 
 private class WidgetRedwoodComposition(
@@ -90,18 +97,47 @@ private class WidgetRedwoodComposition(
   }
 }
 
-private class WidgetApplier<T : Any>(
-  override val factory: Widget.Factory<T>,
-  container: Widget.Children<T>,
-) : _RedwoodApplier<Widget.Factory<T>>,
-  AbstractApplier<Widget<T>>(_ChildrenWidget(container)) {
+/**
+ * Nodes in the tree are required to alternate between [ChildrenWidget] instances and
+ * regular [Widget] subtypes starting from the root. This invariant is maintained by
+ * virtue of the fact that all of the input `@Composables` should be generated code.
+ *
+ * For example, a node tree may look like this:
+ * ```
+ *                    Children(tag=1)
+ *                     /          \
+ *                    /            \
+ *            ToolbarNode        ListNode
+ *             ·     ·                 ·
+ *            ·       ·                 ·
+ * Children(tag=1)  Children(tag=2)   Children(tag=1)
+ *        |              |               /       \
+ *        |              |              /         \
+ *   ButtonNode     ButtonNode     TextNode     TextNode
+ * ```
+ * The tree produced by this applier is not a real tree. We do not maintain any relationship from
+ * the user nodes to the synthetic children nodes as they can never be individually moved/removed.
+ * The hierarchy is maintained by Compose's slot table and is visualized above by dotted lines.
+ */
+public class WidgetApplier<T : Any>(
+  public val factory: Widget.Factory<T>,
+  rootChildren: Widget.Children<T>,
+  private val onEndChanges: () -> Unit = {},
+) : AbstractApplier<Widget<T>>(ChildrenWidget(rootChildren)) {
+  private var closed = false
+
+  override fun onEndChanges() {
+    onEndChanges.invoke()
+  }
 
   override fun insertTopDown(index: Int, instance: Widget<T>) {
-    if (instance is _ChildrenWidget) {
+    check(!closed)
+
+    if (instance is ChildrenWidget) {
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      val current = current as _ChildrenWidget
+      val current = current as ChildrenWidget
       current.children!!.insert(index, instance)
     }
   }
@@ -111,20 +147,24 @@ private class WidgetApplier<T : Any>(
   }
 
   override fun remove(index: Int, count: Int) {
+    check(!closed)
+
     // Children instances are never removed from their parents.
-    val current = current as _ChildrenWidget
+    val current = current as ChildrenWidget
     current.children!!.remove(index, count)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
+    check(!closed)
+
     // Children instances are never moved within their parents.
-    val current = current as _ChildrenWidget
+    val current = current as ChildrenWidget
     current.children!!.move(from, to, count)
   }
 
   override fun onClear() {
-    val current = current as _ChildrenWidget
-    current.children!!.clear()
+    check(!closed)
+    closed = true
   }
 }
 
@@ -147,9 +187,10 @@ public inline fun <F : Widget.Factory<*>, W : Widget<*>> _RedwoodComposeNode(
 
   if (currentComposer.inserting) {
     @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as _RedwoodApplier<F>
+    val applier = currentComposer.applier as WidgetApplier<F>
     currentComposer.createNode {
-      factory(applier.factory)
+      @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
+      factory(applier.factory as F)
     }
   } else {
     currentComposer.useNode()
@@ -171,10 +212,10 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
     accessor: (W) -> Widget.Children<*>,
     content: @Composable () -> Unit,
   ) {
-    ComposeNode<_ChildrenWidget<*>, Applier<*>>(
+    ComposeNode<ChildrenWidget<*>, Applier<*>>(
       factory = {
         @Suppress("UNCHECKED_CAST")
-        _ChildrenWidget(accessor as (Widget<Any>) -> Widget.Children<Any>)
+        ChildrenWidget(accessor as (Widget<Any>) -> Widget.Children<Any>)
       },
       update = {},
       content = content,
@@ -198,25 +239,15 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
  *
  * @suppress For generated code usage only.
  */
-// TODO Make this type private when the applier moves into this module.
-@Suppress("ClassName") // Hiding from auto-complete.
-public class _ChildrenWidget<T : Any> private constructor(
-  public var accessor: ((Widget<T>) -> Widget.Children<T>)?,
-  public var children: Widget.Children<T>?,
+private class ChildrenWidget<T : Any> private constructor(
+  var accessor: ((Widget<T>) -> Widget.Children<T>)?,
+  var children: Widget.Children<T>?,
 ) : Widget<T> {
-  public constructor(accessor: (Widget<T>) -> Widget.Children<T>) : this(accessor, null)
-  public constructor(children: Widget.Children<T>) : this(null, children)
+  constructor(accessor: (Widget<T>) -> Widget.Children<T>) : this(accessor, null)
+  constructor(children: Widget.Children<T>) : this(null, children)
 
   override val value: Nothing get() = throw AssertionError()
   override var layoutModifiers: LayoutModifier
     get() = throw AssertionError()
     set(_) { throw AssertionError() }
-}
-
-/**
- * @suppress For generated code usage only.
- */
-@Suppress("ClassName") // Hiding from auto-complete.
-public interface _RedwoodApplier<F : Widget.Factory<*>> {
-  public val factory: F
 }

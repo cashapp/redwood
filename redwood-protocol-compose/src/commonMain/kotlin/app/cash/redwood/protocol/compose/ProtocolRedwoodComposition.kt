@@ -16,20 +16,16 @@
 package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Composition
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.MonotonicFrameClock
-import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.currentComposer
-import androidx.compose.runtime.snapshots.ObserverHandle
-import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.compose.WidgetApplier
+import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.DiffSink
+import app.cash.redwood.protocol.Id
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
@@ -41,47 +37,19 @@ public fun ProtocolRedwoodComposition(
   widgetVersion: UInt,
   diffSink: DiffSink,
 ): RedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, widgetVersion, diffSink)
+  val protocolState = factory.protocolState
+  val rootChildren = DiffProducingWidgetChildren(Id.Root, RootChildrenTag, protocolState)
+  val applier = WidgetApplier(factory, rootChildren) {
+    protocolState.createDiffOrNull()?.let(diffSink::sendDiff)
+  }
+  val composition = RedwoodComposition(scope, applier)
+  return DiffProducingRedwoodComposition(composition, widgetVersion)
 }
 
 private class DiffProducingRedwoodComposition(
-  private val scope: CoroutineScope,
-  factory: DiffProducingWidget.Factory,
+  private val composition: RedwoodComposition,
   private val widgetVersion: UInt,
-  diffSink: DiffSink,
-) : RedwoodComposition {
-  private val recomposer = Recomposer(scope.coroutineContext)
-
-  private val applier: ProtocolApplier
-  private val composition: Composition
-
-  private val snapshotHandle: ObserverHandle
-  private var snapshotJob: Job? = null
-  private val recomposeJob: Job
-
-  init {
-    applier = ProtocolApplier(factory, diffSink)
-    composition = Composition(applier, recomposer)
-
-    // Set up a trigger to apply changes on the next frame if a global write was observed.
-    var applyScheduled = false
-    snapshotHandle = Snapshot.registerGlobalWriteObserver {
-      if (!applyScheduled) {
-        applyScheduled = true
-        snapshotJob = scope.launch {
-          applyScheduled = false
-          Snapshot.sendApplyNotifications()
-        }
-      }
-    }
-
-    // These launch undispatched so that they reach their first suspension points before returning
-    // control to the caller.
-    recomposeJob = scope.launch(start = UNDISPATCHED) {
-      recomposer.runRecomposeAndApplyChanges()
-    }
-  }
-
+) : RedwoodComposition by composition {
   @OptIn(InternalComposeApi::class) // See internal function comment below.
   override fun setContent(content: @Composable () -> Unit) {
     // TODO using CompositionLocalProvider fails to link in release mode with:
@@ -101,12 +69,5 @@ private class DiffProducingRedwoodComposition(
       content()
       currentComposer.endProviders()
     }
-  }
-
-  override fun cancel() {
-    snapshotHandle.dispose()
-    snapshotJob?.cancel()
-    recomposeJob.cancel()
-    recomposer.cancel()
   }
 }
