@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,17 @@
  */
 package app.cash.redwood.protocol.compose
 
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.widget.Widget
 
 /**
- * A [Widget] with no platform-specific representation which instead produces protocol diffs
- * based on its properties.
+ * @suppress For generated code usage only.
  */
-public interface DiffProducingWidget : Widget<Nothing> {
-  public val id: Id
-  public val type: Int
+public class IdAllocator {
+  private var nextValue = Id.Root.value + 1U
 
-  override val value: Nothing
-    get() = throw AssertionError()
-
-  public fun sendEvent(event: Event)
-
-  /**
-   * Marker interface for types whose functions create [DiffProducingWidget]s.
-   */
-  public interface Factory : Widget.Factory<Nothing>
+  public fun next(): Id {
+    val value = nextValue
+    nextValue = value + 1U
+    return Id(value)
+  }
 }

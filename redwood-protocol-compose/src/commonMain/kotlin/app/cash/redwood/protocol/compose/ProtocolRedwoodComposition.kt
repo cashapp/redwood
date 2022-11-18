@@ -103,7 +103,7 @@ private class DiffProducingRedwoodComposition(
 
     onEvent.sendEvent(event)
 
-    val node = applier.nodes[event.id] as AbstractDiffProducingWidget?
+    val node = applier.nodes[event.id] as DiffProducingWidget?
     if (node == null) {
       // TODO how to handle race where an incoming event targets this removed node?
       throw IllegalArgumentException("Unknown node ${event.id} for event with tag ${event.tag}")
