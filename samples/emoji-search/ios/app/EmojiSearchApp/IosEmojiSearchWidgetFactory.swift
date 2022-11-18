@@ -51,10 +51,10 @@ private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFacto
 }
 
 private class DelegateUIScrollView : UIScrollView {
-    private var _delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
+    private var layoutDelegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate
 
     init(_ delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) {
-        self._delegate = delegate
+        self.layoutDelegate = delegate
         super.init(frame: .zero)
     }
 
@@ -63,23 +63,23 @@ private class DelegateUIScrollView : UIScrollView {
     }
 
     override var intrinsicContentSize: CGSize {
-        let outputSize = _delegate.intrinsicContentSize
+        let outputSize = layoutDelegate.intrinsicContentSize
         return CGSize(width: outputSize.width, height: outputSize.height)
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let inputSize = Redwood_flex_containerSize(width: size.width, height: size.height)
-        let outputSize = _delegate.sizeThatFits(size: inputSize)
+        let inputSize = Redwood_layout_uiviewUnsafeSize(width: size.width, height: size.height)
+        let outputSize = layoutDelegate.sizeThatFits(size: inputSize)
         return CGSize(width: outputSize.width, height: outputSize.height)
     }
 
     override func setNeedsLayout() {
         super.setNeedsLayout()
-        _delegate.setNeedsLayout()
+        layoutDelegate.setNeedsLayout()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        _delegate.layoutSubviews()
+        layoutDelegate.layoutSubviews()
     }
 }

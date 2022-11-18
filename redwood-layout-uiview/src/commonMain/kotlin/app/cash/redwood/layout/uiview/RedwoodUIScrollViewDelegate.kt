@@ -22,8 +22,8 @@ import platform.UIKit.UIScrollView
  * A delegate whose methods should be called when the corresponding [UIScrollView] method is invoked.
  */
 public interface RedwoodUIScrollViewDelegate {
-  public val intrinsicContentSize: Size
-  public fun sizeThatFits(size: Size): Size
+  public val intrinsicContentSize: UnsafeSize
+  public fun sizeThatFits(size: UnsafeSize): UnsafeSize
   public fun setNeedsLayout()
   public fun layoutSubviews()
 }
@@ -34,3 +34,11 @@ public interface RedwoodUIScrollViewDelegate {
 public interface RedwoodUIScrollViewFactory {
   public fun create(delegate: RedwoodUIScrollViewDelegate): UIScrollView
 }
+
+/**
+ * A [Size] that doesn't enforce that [width] and [height] are positive.
+ */
+public data class UnsafeSize(
+  val width: Double,
+  val height: Double,
+)
