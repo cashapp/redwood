@@ -33,17 +33,17 @@ public abstract class AbstractDiffProducingWidget(
     internal set
 
   @Suppress("PropertyName") // Avoiding potential collision with subtype properties.
-  internal lateinit var _diffAppender: DiffAppender
+  internal lateinit var _protocolState: ProtocolState
 
   protected fun appendDiff(layoutModifiers: LayoutModifiers) {
-    _diffAppender.append(layoutModifiers)
+    _protocolState.append(layoutModifiers)
   }
 
   protected fun appendDiff(diff: PropertyDiff) {
-    _diffAppender.append(diff)
+    _protocolState.append(diff)
   }
 
   protected fun diffProducingWidgetChildren(tag: UInt): Children<Nothing> {
-    return DiffProducingWidgetChildren(id, tag, _diffAppender)
+    return DiffProducingWidgetChildren(id, tag, _protocolState)
   }
 }

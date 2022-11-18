@@ -48,7 +48,7 @@ class DiffProducingWidgetFactoryTest {
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
     diffProducingWidget.id = Id(1U)
-    diffProducingWidget._diffAppender = diffAppender
+    diffProducingWidget._protocolState = diffAppender
 
     textInput.customType(10.seconds)
     diffAppender.trySend()
@@ -74,7 +74,7 @@ class DiffProducingWidgetFactoryTest {
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
     diffProducingWidget.id = Id(1U)
-    diffProducingWidget._diffAppender = diffAppender
+    diffProducingWidget._protocolState = diffAppender
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customType(10.seconds)
@@ -116,7 +116,7 @@ class DiffProducingWidgetFactoryTest {
     val diffSink = RecordingDiffSink()
     val diffAppender = DiffAppender(diffSink)
     diffProducingWidget.id = Id(1U)
-    diffProducingWidget._diffAppender = diffAppender
+    diffProducingWidget._protocolState = diffAppender
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customTypeWithDefault(10.seconds, "sup")
@@ -155,7 +155,7 @@ class DiffProducingWidgetFactoryTest {
     val textInput = factory.TextInput()
 
     val diffProducingWidget = textInput as AbstractDiffProducingWidget
-    diffProducingWidget._diffAppender = DiffAppender(RecordingDiffSink())
+    diffProducingWidget._protocolState = DiffAppender(RecordingDiffSink())
 
     var argument: Duration? = null
     textInput.onChangeCustomType {

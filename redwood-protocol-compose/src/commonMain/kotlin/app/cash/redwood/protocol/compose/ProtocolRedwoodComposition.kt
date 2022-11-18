@@ -62,9 +62,7 @@ private class DiffProducingRedwoodComposition(
   private val recomposeJob: Job
 
   init {
-    val diffAppender = DiffAppender(diffSink)
-
-    applier = ProtocolApplier(factory, protocolState, diffAppender)
+    applier = ProtocolApplier(factory, protocolState, diffSink)
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.

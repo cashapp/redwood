@@ -20,6 +20,7 @@ import androidx.compose.runtime.Applier
 import app.cash.redwood.compose._ChildrenWidget
 import app.cash.redwood.compose._RedwoodApplier
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
+import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
@@ -62,10 +63,10 @@ import app.cash.redwood.widget.Widget
 internal class ProtocolApplier(
   override val factory: DiffProducingWidget.Factory,
   private val protocolState: ProtocolState,
-  private val diffAppender: DiffAppender,
+  private val diffSink: DiffSink,
 ) : _RedwoodApplier<DiffProducingWidget.Factory>, AbstractApplier<Widget<Nothing>>(
   root = _ChildrenWidget(
-    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, diffAppender),
+    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, protocolState),
   ),
 ) {
   private var closed = false
@@ -73,7 +74,7 @@ internal class ProtocolApplier(
   override fun onEndChanges() {
     check(!closed)
 
-    diffAppender.trySend()
+    protocolState.createDiffOrNull()?.let(diffSink::sendDiff)
   }
 
   override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
@@ -85,9 +86,7 @@ internal class ProtocolApplier(
     } else {
       instance as AbstractDiffProducingWidget
       instance.id = protocolState.nextId()
-      instance._diffAppender = diffAppender
-
-      protocolState.put(instance)
+      instance._protocolState = protocolState
 
       val current = current as _ChildrenWidget
       current.children!!.insert(index, instance)
@@ -103,12 +102,7 @@ internal class ProtocolApplier(
 
     // Children instances are never removed from their parents.
     val current = current as _ChildrenWidget
-    val children = current.children as DiffProducingWidgetChildren
-
-    for (i in index until index + count) {
-      protocolState.remove(children.ids[i])
-    }
-    children.remove(index, count)
+    current.children!!.remove(index, count)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
