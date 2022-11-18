@@ -31,10 +31,6 @@ import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface ProtocolRedwoodComposition : RedwoodComposition {
-  public fun start(diffSink: DiffSink)
-}
-
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
@@ -44,34 +40,29 @@ public fun ProtocolRedwoodComposition(
   protocolState: ProtocolState,
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
-  onDiff: DiffSink = DiffSink {},
-): ProtocolRedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, onDiff)
+  diffSink: DiffSink,
+): RedwoodComposition {
+  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, diffSink)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
-  private val factory: DiffProducingWidget.Factory,
-  private val protocolState: ProtocolState,
+  factory: DiffProducingWidget.Factory,
+  protocolState: ProtocolState,
   private val widgetVersion: UInt,
-  private val onDiff: DiffSink,
-) : ProtocolRedwoodComposition {
+  diffSink: DiffSink,
+) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
 
-  private lateinit var applier: ProtocolApplier
-  private lateinit var composition: Composition
+  private val applier: ProtocolApplier
+  private val composition: Composition
 
-  private lateinit var snapshotHandle: ObserverHandle
+  private val snapshotHandle: ObserverHandle
   private var snapshotJob: Job? = null
-  private lateinit var recomposeJob: Job
+  private val recomposeJob: Job
 
-  override fun start(diffSink: DiffSink) {
-    check(!this::applier.isInitialized) { "display already initialized" }
-
-    val diffAppender = DiffAppender { diff ->
-      onDiff.sendDiff(diff)
-      diffSink.sendDiff(diff)
-    }
+  init {
+    val diffAppender = DiffAppender(diffSink)
 
     applier = ProtocolApplier(factory, protocolState, diffAppender)
     composition = Composition(applier, recomposer)
@@ -97,8 +88,6 @@ private class DiffProducingRedwoodComposition(
 
   @OptIn(InternalComposeApi::class) // See internal function comment below.
   override fun setContent(content: @Composable () -> Unit) {
-    check(this::applier.isInitialized) { "display not initialized" }
-
     // TODO using CompositionLocalProvider fails to link in release mode with:
     //  inlinable function call in a function with debug info must have a !dbg location
     //    %16 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %15)
