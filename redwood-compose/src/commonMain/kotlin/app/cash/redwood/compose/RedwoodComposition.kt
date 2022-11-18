@@ -77,8 +77,7 @@ private class WidgetRedwoodComposition(
     }
   }
 
-  // These launch undispatched so that they reach their first suspension points before returning
-  // control to the caller.
+  // Launch undispatched so we reach the first suspension point before returning control.
   private val recomposeJob = scope.launch(start = UNDISPATCHED) {
     recomposer.runRecomposeAndApplyChanges()
   }

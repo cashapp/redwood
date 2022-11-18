@@ -25,9 +25,7 @@ import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
 
-public class ProtocolState(
-  private val onEvent: EventSink = EventSink {},
-) : EventSink {
+public class ProtocolState : EventSink {
   private var nextId = Id.Root.value + 1U
   private val nodes = mutableMapOf<Id, DiffProducingWidget>()
 
@@ -54,7 +52,6 @@ public class ProtocolState(
       // TODO how to handle race where an incoming event targets this removed node?
       "Unknown node ${event.id} for event with tag ${event.tag}"
     }
-    onEvent.sendEvent(event)
     node.sendEvent(event)
   }
 
