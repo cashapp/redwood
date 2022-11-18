@@ -30,7 +30,7 @@ import app.cash.redwood.widget.Widget
  * multiple children.
  *
  * Nodes in the tree are required to alternate between [_ChildrenWidget] instances and
- * [AbstractDiffProducingWidget] subtypes starting from the root. This invariant is maintained by
+ * [DiffProducingWidget] subtypes starting from the root. This invariant is maintained by
  * virtue of the fact that all of the input `@Composables` should be generated code.
  *
  * For example, a node tree may look like this:
@@ -62,11 +62,10 @@ import app.cash.redwood.widget.Widget
  */
 internal class ProtocolApplier(
   override val factory: DiffProducingWidget.Factory,
-  private val protocolState: ProtocolState,
   private val diffSink: DiffSink,
 ) : _RedwoodApplier<DiffProducingWidget.Factory>, AbstractApplier<Widget<Nothing>>(
   root = _ChildrenWidget(
-    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, protocolState),
+    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, factory.protocolState),
   ),
 ) {
   private var closed = false
@@ -74,7 +73,7 @@ internal class ProtocolApplier(
   override fun onEndChanges() {
     check(!closed)
 
-    protocolState.createDiffOrNull()?.let(diffSink::sendDiff)
+    factory.protocolState.createDiffOrNull()?.let(diffSink::sendDiff)
   }
 
   override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
@@ -84,10 +83,6 @@ internal class ProtocolApplier(
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      instance as AbstractDiffProducingWidget
-      instance.id = protocolState.nextId()
-      instance._protocolState = protocolState
-
       val current = current as _ChildrenWidget
       current.children!!.insert(index, instance)
     }

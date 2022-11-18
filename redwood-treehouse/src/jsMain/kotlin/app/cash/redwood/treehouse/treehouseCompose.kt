@@ -23,7 +23,6 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.compose.ProtocolState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -38,16 +37,14 @@ public fun TreehouseUi.asZiplineTreehouseUi(
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
 ): ZiplineTreehouseUi {
-  val protocolState = ProtocolState()
-  return RedwoodZiplineTreehouseUi(this, protocolState, factory, widgetVersion)
+  return RedwoodZiplineTreehouseUi(this, factory, widgetVersion)
 }
 
 private class RedwoodZiplineTreehouseUi(
   private val treehouseUi: TreehouseUi,
-  private val protocolState: ProtocolState,
   private val factory: DiffProducingWidget.Factory,
   private val widgetVersion: UInt,
-) : ZiplineTreehouseUi, EventSink by protocolState {
+) : ZiplineTreehouseUi, EventSink by factory.protocolState {
   private lateinit var diffSinkToClose: DiffSinkService
   private lateinit var composition: RedwoodComposition
 
@@ -60,7 +57,6 @@ private class RedwoodZiplineTreehouseUi(
 
     val composition = ProtocolRedwoodComposition(
       scope = scope + frameClock,
-      protocolState = protocolState,
       factory = factory,
       widgetVersion = widgetVersion,
       diffSink = diffSink

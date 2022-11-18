@@ -24,12 +24,18 @@ import app.cash.redwood.widget.Widget
  * based on its properties.
  */
 public interface DiffProducingWidget : Widget<Nothing> {
+  override val value: Nothing
+    get() = throw AssertionError()
+
   public val id: Id
+  public val type: Int
 
   public fun sendEvent(event: Event)
 
   /**
-   * Marker interface for types whose functions create [DiffProducingWidget]s.
+   * Interface for types whose functions create [DiffProducingWidget]s.
    */
-  public interface Factory : Widget.Factory<Nothing>
+  public interface Factory : Widget.Factory<Nothing> {
+    public val protocolState: ProtocolState
+  }
 }

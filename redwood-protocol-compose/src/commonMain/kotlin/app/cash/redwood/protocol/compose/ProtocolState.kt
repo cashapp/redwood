@@ -23,6 +23,7 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.widget.Widget
 
 public class ProtocolState(
   private val onEvent: EventSink = EventSink {},
@@ -55,6 +56,10 @@ public class ProtocolState(
     }
     onEvent.sendEvent(event)
     node.sendEvent(event)
+  }
+
+  public fun widgetChildren(id: Id, tag: UInt): Widget.Children<Nothing> {
+    return DiffProducingWidgetChildren(id, tag, this)
   }
 
   public fun append(childrenDiff: ChildrenDiff) {

@@ -27,7 +27,7 @@ internal class DiffProducingWidgetChildren(
   private val ids = mutableListOf<Id>()
 
   override fun insert(index: Int, widget: Widget<Nothing>) {
-    widget as AbstractDiffProducingWidget
+    widget as DiffProducingWidget
     ids.add(index, widget.id)
     protocolState.putWidget(widget)
     protocolState.append(ChildrenDiff.Insert(id, tag, widget.id, widget.type, index))

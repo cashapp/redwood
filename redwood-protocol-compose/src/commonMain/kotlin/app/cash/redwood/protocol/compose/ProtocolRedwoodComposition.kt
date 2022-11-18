@@ -37,18 +37,16 @@ import kotlinx.coroutines.launch
  */
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
-  protocolState: ProtocolState,
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
   diffSink: DiffSink,
 ): RedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, protocolState, widgetVersion, diffSink)
+  return DiffProducingRedwoodComposition(scope, factory, widgetVersion, diffSink)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
   factory: DiffProducingWidget.Factory,
-  protocolState: ProtocolState,
   private val widgetVersion: UInt,
   diffSink: DiffSink,
 ) : RedwoodComposition {
@@ -62,7 +60,7 @@ private class DiffProducingRedwoodComposition(
   private val recomposeJob: Job
 
   init {
-    applier = ProtocolApplier(factory, protocolState, diffSink)
+    applier = ProtocolApplier(factory, diffSink)
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.
