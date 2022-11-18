@@ -53,7 +53,7 @@ public fun <T : Any> RedwoodComposition(
 public fun <T : Any> RedwoodComposition(
   scope: CoroutineScope,
   applier: WidgetApplier<T>,
-) : RedwoodComposition {
+): RedwoodComposition {
   return WidgetRedwoodComposition(scope, applier)
 }
 

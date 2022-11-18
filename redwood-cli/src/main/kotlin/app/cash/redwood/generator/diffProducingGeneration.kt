@@ -75,7 +75,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
         .addProperty(
           PropertySpec.builder("protocolState", ComposeProtocol.ProtocolState, PUBLIC, OVERRIDE)
             .initializer("protocolState")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
@@ -179,7 +179,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
         .addProperty(
           PropertySpec.builder("protocolState", ComposeProtocol.ProtocolState, PRIVATE)
             .initializer("protocolState")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
@@ -194,14 +194,16 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
         .addProperty(
           PropertySpec.builder("id", Protocol.Id, PUBLIC, OVERRIDE)
             .initializer("protocolState.nextId()")
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("type", INT, PUBLIC, OVERRIDE)
-            .getter(FunSpec.getterBuilder()
-              .addStatement("return %L", widget.tag)
-              .build())
-            .build()
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return %L", widget.tag)
+                .build(),
+            )
+            .build(),
         )
         .apply {
           var nextSerializerId = 0

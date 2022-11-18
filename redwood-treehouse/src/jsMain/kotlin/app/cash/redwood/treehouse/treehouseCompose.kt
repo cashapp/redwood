@@ -59,7 +59,7 @@ private class RedwoodZiplineTreehouseUi(
       scope = scope + frameClock,
       factory = factory,
       widgetVersion = widgetVersion,
-      diffSink = diffSink
+      diffSink = diffSink,
     )
 
     val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
