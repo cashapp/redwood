@@ -41,24 +41,18 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val protocolState = ProtocolState()
+    val factory = DiffProducingExampleSchemaWidgetFactory(protocolState, json)
     val textInput = factory.TextInput()
 
-    val diffProducingWidget = textInput as AbstractDiffProducingWidget
-    val diffSink = RecordingDiffSink()
-    val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget.id = Id(1U)
-    diffProducingWidget._protocolState = diffAppender
-
     textInput.customType(10.seconds)
-    diffAppender.trySend()
 
     val expected = Diff(
       propertyDiffs = listOf(
         PropertyDiff(Id(1U), 2U, JsonPrimitive("PT10S")),
       ),
     )
-    assertEquals(expected, diffSink.diffs.single())
+    assertEquals(expected, protocolState.createDiffOrNull())
   }
 
   @Test fun layoutModifierUsesSerializersModule() {
