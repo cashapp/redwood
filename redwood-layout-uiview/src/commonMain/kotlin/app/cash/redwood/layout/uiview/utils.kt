@@ -76,13 +76,13 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 
 internal fun Padding.toSpacing() = Spacing(start.toDouble(), end.toDouble(), top.toDouble(), bottom.toDouble())
 
-internal fun Size.toDoubleSize() = Size(width, height)
+internal fun CGSize.toSize() = Size(width, height)
 
-internal fun CGSize.toDoubleSize() = Size(width, height)
+internal fun CGSize.toUnsafeSize() = UnsafeSize(width, height)
 
-internal fun CValue<CGSize>.toSize() = useContents { Size(width, height) }
+internal fun Size.toUnsafeSize() = UnsafeSize(width, height)
 
-internal fun Size.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
+internal fun UnsafeSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when (width) {
     UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
     else -> MeasureSpec.from(width, MeasureSpecMode.AtMost)
@@ -155,7 +155,7 @@ internal class UIViewMeasurable(val view: UIView) : Measurable() {
     }
 
   override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).toSize()
+    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).useContents { toSize() }
     if (widthSpec.mode == MeasureSpecMode.Exactly) {
       output = output.copy(width = widthSpec.size)
     }

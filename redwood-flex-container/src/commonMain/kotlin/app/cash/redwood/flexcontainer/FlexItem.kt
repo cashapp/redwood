@@ -30,15 +30,6 @@ public class FlexItem(
   public val baseline: Int = DefaultBaseline,
 
   /**
-   * The order attribute of the item.
-   *
-   * The attribute can change the order in which the children are laid out.
-   * By default, children are displayed and laid out in the same order as they added to the
-   * [FlexContainer].
-   */
-  public val order: Int = DefaultOrder,
-
-  /**
    * The flex grow attribute of the item.
    *
    * The attribute determines how much this child will grow if positive free space is
@@ -119,9 +110,6 @@ public class FlexItem(
   public companion object {
     /** The default value for the baseline attribute */
     public const val DefaultBaseline: Int = -1
-
-    /** The default value for the order attribute */
-    public const val DefaultOrder: Int = 1
 
     /** The default value for the flex grow attribute */
     public const val DefaultFlexGrow: Double = 0.0

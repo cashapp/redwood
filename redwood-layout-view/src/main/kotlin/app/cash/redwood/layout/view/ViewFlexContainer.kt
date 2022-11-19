@@ -35,7 +35,7 @@ import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 
 internal class ViewFlexContainer(
-  context: Context,
+  private val context: Context,
   private val direction: FlexDirection,
 ) {
   private val container = FlexContainer().apply {
@@ -65,7 +65,7 @@ internal class ViewFlexContainer(
   val children: Widget.Children<View> get() = _children
 
   fun padding(padding: Padding) {
-    container.padding = padding.toSpacing()
+    container.padding = padding.toSpacing(context)
     invalidate()
   }
 
@@ -112,7 +112,7 @@ internal class ViewFlexContainer(
       super.onViewAdded(child)
       _children.widgets.forEachIndexed { index, widget ->
         if (widget.value === child) {
-          container.items.add(index, widget.value.asItem(widget.layoutModifiers, direction))
+          container.items.add(index, widget.value.asItem(context, widget.layoutModifiers, direction))
           return@forEachIndexed
         }
       }

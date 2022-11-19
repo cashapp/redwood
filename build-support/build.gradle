@@ -43,5 +43,5 @@ buildConfig {
   }
 
   packageName('app.cash.redwood.buildsupport')
-  buildConfigField("String", "androidxComposeCompiler", "\"${libs.versions.androidxComposeCompiler.get()}\"")
+  buildConfigField("String", "jbComposeCompiler", "\"${libs.versions.jbComposeCompiler.get()}\"")
 }
