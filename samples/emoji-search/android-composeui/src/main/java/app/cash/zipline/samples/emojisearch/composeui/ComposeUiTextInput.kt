@@ -20,6 +20,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -40,8 +41,11 @@ class ComposeUiTextInput(
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
+    // Preserve 'composition' and other state properties that we don't modify.
+    var textFieldValue = remember { TextFieldValue() }
+
     TextField(
-      value = TextFieldValue(
+      value = textFieldValue.copy(
         text = state.text,
         selection = TextRange(state.selectionStart, state.selectionEnd)
       ),
@@ -51,7 +55,10 @@ class ComposeUiTextInput(
         }
       },
       maxLines = 2,
-      onValueChange = ::stateChanged,
+      onValueChange = { newValue ->
+        textFieldValue = newValue
+        stateChanged(newValue)
+      },
     )
   }
 
