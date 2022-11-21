@@ -16,7 +16,6 @@
 package example.android
 
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout.LayoutParams
@@ -42,8 +41,6 @@ class MainActivity : AppCompatActivity() {
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
       widgetVersion = 1U,
-      onDiff = { Log.d("RedwoodDiff", it.toString()) },
-      onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
     val root = FrameLayout(this).apply {

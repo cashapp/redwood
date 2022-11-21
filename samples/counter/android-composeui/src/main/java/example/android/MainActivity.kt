@@ -16,7 +16,6 @@
 package example.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -55,8 +54,6 @@ class MainActivity : AppCompatActivity() {
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
       widgetVersion = 1U,
-      onDiff = { Log.d("RedwoodDiff", it.toString()) },
-      onEvent = { Log.d("RedwoodEvent", it.toString()) },
     )
 
     val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory())

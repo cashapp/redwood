@@ -45,18 +45,14 @@ public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
-  onDiff: DiffSink = DiffSink {},
-  onEvent: EventSink = EventSink {},
 ): ProtocolRedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, widgetVersion, onDiff, onEvent)
+  return DiffProducingRedwoodComposition(scope, factory, widgetVersion)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
   private val factory: DiffProducingWidget.Factory,
   private val widgetVersion: UInt,
-  private val onDiff: DiffSink,
-  private val onEvent: EventSink,
 ) : ProtocolRedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
 
@@ -70,11 +66,7 @@ private class DiffProducingRedwoodComposition(
   override fun start(diffSink: DiffSink) {
     check(!this::applier.isInitialized) { "display already initialized" }
 
-    val diffAppender = DiffAppender { diff ->
-      onDiff.sendDiff(diff)
-      diffSink.sendDiff(diff)
-    }
-
+    val diffAppender = DiffAppender(diffSink)
     applier = ProtocolApplier(factory, diffAppender)
     composition = Composition(applier, recomposer)
 
@@ -100,8 +92,6 @@ private class DiffProducingRedwoodComposition(
 
   override fun sendEvent(event: Event) {
     check(this::applier.isInitialized) { "display not initialized" }
-
-    onEvent.sendEvent(event)
 
     val node = applier.nodes[event.id] as DiffProducingWidget?
     if (node == null) {
