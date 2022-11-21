@@ -91,7 +91,6 @@ internal class ViewFlexContainer(
 
   private inner class HostView(context: Context) : ViewGroup(context) {
     private lateinit var measureResult: MeasureResult
-    private var itemsChanged = false
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       syncItems()
@@ -111,18 +110,7 @@ internal class ViewFlexContainer(
       }
     }
 
-    override fun onViewAdded(child: View) {
-      itemsChanged = true
-    }
-
-    override fun onViewRemoved(child: View) {
-      itemsChanged = true
-    }
-
     private fun syncItems() {
-      if (!itemsChanged) return
-      itemsChanged = false
-
       container.items.clear()
       _children.widgets.forEach { widget ->
         container.items += newFlexItem(
