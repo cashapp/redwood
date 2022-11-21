@@ -23,7 +23,7 @@ import kotlinx.serialization.json.JsonArray
 /**
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
  */
-public interface DiffConsumingWidget<T : Any> : Widget<T> {
+public interface DiffConsumingWidget<W : Any> : Widget<W> {
   public fun apply(diff: PropertyDiff, eventSink: EventSink)
 
   public fun updateLayoutModifier(value: JsonArray)
@@ -35,9 +35,9 @@ public interface DiffConsumingWidget<T : Any> : Widget<T> {
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public fun children(tag: UInt): Widget.Children<T>?
+  public fun children(tag: UInt): Widget.Children<W>?
 
-  public interface Factory<T : Any> {
+  public interface Factory<W : Any> {
     /**
      * Create a new protocol-consuming widget of the specified [kind].
      *
@@ -45,6 +45,6 @@ public interface DiffConsumingWidget<T : Any> : Widget<T> {
      * If `null` is returned, the caller should make every effort to ignore this widget and
      * continue executing.
      */
-    public fun create(kind: Int): DiffConsumingWidget<T>?
+    public fun create(kind: Int): DiffConsumingWidget<W>?
   }
 }

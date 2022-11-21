@@ -17,13 +17,13 @@
 import UIKit
 import shared
 
-class LazyColumnBinding<T : AnyObject>: NSObject, WidgetLazyColumn, UITableViewDataSource {
-    private let treehouseApp: Redwood_treehouseTreehouseApp<T>
+class LazyColumnBinding<A : AnyObject>: NSObject, WidgetLazyColumn, UITableViewDataSource {
+    private let treehouseApp: Redwood_treehouseTreehouseApp<A>
     private let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     private let root = UITableView()
     private var intervals: [ValuesLazyListIntervalContent] = []
 
-    init(treehouseApp: Redwood_treehouseTreehouseApp<T>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
+    init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
         self.widgetSystem = widgetSystem
         super.init()

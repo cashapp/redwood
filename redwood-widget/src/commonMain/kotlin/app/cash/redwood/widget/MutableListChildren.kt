@@ -20,10 +20,10 @@ package app.cash.redwood.widget
  *
  * @param list Optional existing [MutableList] instance to wrap.
  */
-public class MutableListChildren<T : Any>(
-  private val list: MutableList<Widget<T>> = mutableListOf(),
-) : Widget.Children<T>, MutableList<Widget<T>> by list {
-  override fun insert(index: Int, widget: Widget<T>) {
+public class MutableListChildren<W : Any>(
+  private val list: MutableList<Widget<W>> = mutableListOf(),
+) : Widget.Children<W>, MutableList<Widget<W>> by list {
+  override fun insert(index: Int, widget: Widget<W>) {
     list.add(index, widget)
   }
 

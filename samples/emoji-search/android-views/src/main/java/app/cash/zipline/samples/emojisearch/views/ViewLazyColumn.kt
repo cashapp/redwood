@@ -38,9 +38,9 @@ private data class LazyContentItem(
   val item: LazyListIntervalContent.Item,
 )
 
-class ViewLazyColumn<T : Any>(
-  treehouseApp: TreehouseApp<T>,
-  widgetSystem: TreehouseView.WidgetSystem<T>,
+class ViewLazyColumn<A : Any>(
+  treehouseApp: TreehouseApp<A>,
+  widgetSystem: TreehouseView.WidgetSystem<A>,
   override val value: RecyclerView,
 ) : LazyColumn<View> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
@@ -73,19 +73,19 @@ class ViewLazyColumn<T : Any>(
     )
   }
 
-  private class LazyContentItemListAdapter<T : Any>(
-    private val treehouseApp: TreehouseApp<T>,
-    private val widgetSystem: TreehouseView.WidgetSystem<T>,
+  private class LazyContentItemListAdapter<A : Any>(
+    private val treehouseApp: TreehouseApp<A>,
+    private val widgetSystem: TreehouseView.WidgetSystem<A>,
     private val contentHeight: Int,
-  ) : ListAdapter<LazyContentItem, ViewHolder<T>>(LazyContentItemDiffCallback) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<T> {
+  ) : ListAdapter<LazyContentItem, ViewHolder<A>>(LazyContentItemDiffCallback) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<A> {
       val container = FrameLayout(parent.context).apply {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
       }
       return ViewHolder(container, treehouseApp, widgetSystem)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<A>, position: Int) {
       val itemContent = currentList[position]
       holder.treehouseWidgetView.setContent {
         itemContent.item.get(itemContent.index)
@@ -93,10 +93,10 @@ class ViewLazyColumn<T : Any>(
     }
   }
 
-  private class ViewHolder<T : Any>(
+  private class ViewHolder<A : Any>(
     container: FrameLayout,
-    treehouseApp: TreehouseApp<T>,
-    widgetSystem: TreehouseView.WidgetSystem<T>,
+    treehouseApp: TreehouseApp<A>,
+    widgetSystem: TreehouseView.WidgetSystem<A>,
   ) : RecyclerView.ViewHolder(container) {
     val treehouseWidgetView = TreehouseWidgetView(container.context, treehouseApp, widgetSystem)
       .apply {

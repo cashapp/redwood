@@ -38,14 +38,14 @@ import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-public class DiffConsumingSunspotWidgetFactory<T : Any>(
-  private val delegate: SunspotWidgetFactory<T>,
+public class DiffConsumingSunspotWidgetFactory<W : Any>(
+  private val delegate: SunspotWidgetFactory<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : DiffConsumingWidget.Factory<T> {
+) : DiffConsumingWidget.Factory<W> {
   override val RedwoodLayout = DiffConsumingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, json, mismatchHandler)
 
-  override fun create(kind: Int): DiffConsumingWidget<T>? = when (kind) {
+  override fun create(kind: Int): DiffConsumingWidget<W>? = when (kind) {
     1 -> SunspotBox()
     2 -> SunspotText()
     3 -> SunspotButton()
@@ -57,20 +57,20 @@ public class DiffConsumingSunspotWidgetFactory<T : Any>(
     }
   }
 
-  private fun SunspotBox(): ProtocolSunspotBox<T> {
+  private fun SunspotBox(): ProtocolSunspotBox<W> {
     return ProtocolSunspotBox(delegate.SunspotBox(), json, mismatchHandler)
   }
   etc.
 }
 */
 internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
-  val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableT)
+  val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableW)
   val type = schema.diffConsumingWidgetFactoryType(host)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(if (schema === host) PUBLIC else INTERNAL)
-        .addTypeVariable(typeVariableT)
+        .addTypeVariable(typeVariableW)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("delegate", widgetFactory)
@@ -106,14 +106,14 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             // Only conform to entrypoint interface if we are the host. If we are not the host,
             // the host will handle the entire transitive dependency set of tags itself.
             addSuperinterface(
-              WidgetProtocol.DiffConsumingWidgetFactory.parameterizedBy(typeVariableT),
+              WidgetProtocol.DiffConsumingWidgetFactory.parameterizedBy(typeVariableW),
             )
             addFunction(
               FunSpec.builder("create")
                 .addModifiers(OVERRIDE)
                 .addParameter("kind", INT)
                 .returns(
-                  WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableT)
+                  WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableW)
                     .copy(nullable = true),
                 )
                 .beginControlFlow("return when (kind)")
@@ -138,7 +138,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             for (dependency in schema.dependencies.sortedBy { it.name }) {
               val dependencyType = dependency.diffConsumingWidgetFactoryType(host)
               addProperty(
-                PropertySpec.builder(dependency.name, dependencyType.parameterizedBy(typeVariableT))
+                PropertySpec.builder(dependency.name, dependencyType.parameterizedBy(typeVariableW))
                   .addModifiers(PRIVATE)
                   .initializer(
                     "%T(delegate.%N, json, mismatchHandler)",
@@ -155,7 +155,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(if (schema === host) PRIVATE else INTERNAL)
-                .returns(diffConsumingWidgetType.parameterizedBy(typeVariableT))
+                .returns(diffConsumingWidgetType.parameterizedBy(typeVariableW))
                 .addStatement(
                   "return %T(delegate.%N(), json, mismatchHandler)",
                   diffConsumingWidgetType,
@@ -171,12 +171,12 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
 }
 
 /*
-internal class DiffConsumingSunspotButton<T : Any>(
-  private val delegate: SunspotButton<T>,
+internal class DiffConsumingSunspotButton<W : Any>(
+  private val delegate: SunspotButton<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : DiffConsumingWidget<T> {
-  public override val value: T get() = delegate.value
+) : DiffConsumingWidget<W> {
+  public override val value: W get() = delegate.value
 
   public override val layoutModifiers: LayoutModifier
     get() = delegate.layoutModifiers
@@ -204,13 +204,13 @@ internal class DiffConsumingSunspotButton<T : Any>(
 */
 internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
   val type = schema.diffConsumingWidgetType(widget, host)
-  val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableT)
-  val protocolType = WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableT)
+  val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
+  val protocolType = WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableW)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .addTypeVariable(typeVariableT)
+        .addTypeVariable(typeVariableW)
         .addSuperinterface(protocolType)
         .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -235,7 +235,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("value", typeVariableT, OVERRIDE)
+          PropertySpec.builder("value", typeVariableW, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return delegate.value")

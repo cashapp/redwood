@@ -69,10 +69,10 @@ public class TreehouseLauncher internal constructor(
     )
   }
 
-  public fun <T : Any> launch(
+  public fun <A : Any> launch(
     scope: CoroutineScope,
-    spec: TreehouseApp.Spec<T>,
-  ): TreehouseApp<T> {
+    spec: TreehouseApp.Spec<A>,
+  ): TreehouseApp<A> {
     val treehouseApp = TreehouseApp(
       scope = scope,
       dispatchers = dispatchers,

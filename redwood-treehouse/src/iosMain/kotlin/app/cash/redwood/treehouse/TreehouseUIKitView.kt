@@ -30,15 +30,15 @@ import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
 
-public class TreehouseUIKitView<T : Any>(
-  private val treehouseApp: TreehouseApp<T>,
-  override val widgetSystem: TreehouseView.WidgetSystem<T>,
-) : TreehouseView<T> {
+public class TreehouseUIKitView<A : Any>(
+  private val treehouseApp: TreehouseApp<A>,
+  override val widgetSystem: TreehouseView.WidgetSystem<A>,
+) : TreehouseView<A> {
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()
-  private var content: TreehouseView.Content<T>? = null
+  private var content: TreehouseView.Content<A>? = null
 
-  override val boundContent: TreehouseView.Content<T>?
+  override val boundContent: TreehouseView.Content<A>?
     get() {
       return when {
         view.superview != null -> content
@@ -57,7 +57,7 @@ public class TreehouseUIKitView<T : Any>(
     children.remove(0, view.subviews.size)
   }
 
-  public fun setContent(content: TreehouseView.Content<T>) {
+  public fun setContent(content: TreehouseView.Content<A>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)

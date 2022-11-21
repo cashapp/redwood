@@ -38,16 +38,16 @@ import kotlinx.serialization.modules.SerializersModule
  * It updates the binding when the views change in [onContentChanged], and when new code is
  * available in [onCodeChanged].
  */
-public class TreehouseApp<T : Any> internal constructor(
+public class TreehouseApp<A : Any> internal constructor(
   private val scope: CoroutineScope,
-  public val spec: Spec<T>,
+  public val spec: Spec<A>,
   public val dispatchers: TreehouseDispatchers,
   private val eventPublisher: EventPublisher,
 ) {
   /** All state is confined to [TreehouseDispatchers.zipline]. */
   private var closed = false
   private var ziplineSession: ZiplineSession? = null
-  private val viewToBoundContent = mutableMapOf<TreehouseView<T>, TreehouseView.Content<T>>()
+  private val viewToBoundContent = mutableMapOf<TreehouseView<A>, TreehouseView.Content<A>>()
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -60,7 +60,7 @@ public class TreehouseApp<T : Any> internal constructor(
     get() = ziplineSession?.zipline
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
-  public fun onContentChanged(view: TreehouseView<T>) {
+  public fun onContentChanged(view: TreehouseView<A>) {
     dispatchers.checkUi()
     scope.launch(dispatchers.zipline) {
       bind(view)
@@ -71,7 +71,7 @@ public class TreehouseApp<T : Any> internal constructor(
    * Refresh the code. Even if no views are currently showing we refresh the code, so we're ready
    * when a view is added.
    */
-  public fun onCodeChanged(zipline: Zipline, context: T) {
+  public fun onCodeChanged(zipline: Zipline, context: A) {
     dispatchers.checkZipline()
     check(!closed)
 
@@ -98,7 +98,7 @@ public class TreehouseApp<T : Any> internal constructor(
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  private suspend fun bind(view: TreehouseView<T>) {
+  private suspend fun bind(view: TreehouseView<A>) {
     dispatchers.checkZipline()
 
     // Make sure we're tracking this view, so we can update it when the code changes.
@@ -133,16 +133,16 @@ public class TreehouseApp<T : Any> internal constructor(
   /** The host state for a single code load. We get a new session each time we get new code. */
   private inner class ZiplineSession(
     val scope: CoroutineScope,
-    val context: T,
+    val context: A,
     val zipline: Zipline,
     val isInitialLaunch: Boolean,
   ) {
     /** Map of views to the zipline service whose content drives those views. */
-    val bindings = mutableMapOf<TreehouseView<T>, ZiplineService>()
+    val bindings = mutableMapOf<TreehouseView<A>, ZiplineService>()
 
     fun bind(
-      view: TreehouseView<T>,
-      content: TreehouseView.Content<T>?,
+      view: TreehouseView<A>,
+      content: TreehouseView.Content<A>?,
     ) {
       dispatchers.checkZipline()
 
@@ -159,7 +159,7 @@ public class TreehouseApp<T : Any> internal constructor(
 
     private fun bindSinks(
       content: ZiplineTreehouseUi,
-      view: TreehouseView<T>,
+      view: TreehouseView<A>,
       isInitialLaunch: Boolean,
     ) {
       val eventSink = EventSink { event ->
@@ -215,7 +215,7 @@ public class TreehouseApp<T : Any> internal constructor(
   /**
    * Configuration and code to launch a Treehouse application.
    */
-  public abstract class Spec<T : Any> {
+  public abstract class Spec<A : Any> {
     public abstract val name: String
     public abstract val manifestUrl: Flow<String>
 
@@ -226,6 +226,6 @@ public class TreehouseApp<T : Any> internal constructor(
       get() = FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY
 
     public abstract fun bindServices(zipline: Zipline)
-    public abstract fun create(zipline: Zipline): T
+    public abstract fun create(zipline: Zipline): A
   }
 }

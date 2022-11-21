@@ -21,9 +21,9 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import example.schema.widget.EmojiSearchWidgetFactory
 
-class AndroidEmojiSearchWidgetFactory<T : Any>(
-  private val treehouseApp: TreehouseApp<T>,
-  private val widgetSystem: TreehouseView.WidgetSystem<T>,
+class AndroidEmojiSearchWidgetFactory<W : Any>(
+  private val treehouseApp: TreehouseApp<W>,
+  private val widgetSystem: TreehouseView.WidgetSystem<W>,
 ) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
   override val RedwoodLayout = ComposeRedwoodLayoutWidgetFactory()
   override fun LazyColumn() = ComposeUiLazyColumn(treehouseApp, widgetSystem)

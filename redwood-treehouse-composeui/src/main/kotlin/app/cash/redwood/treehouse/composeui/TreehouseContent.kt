@@ -28,10 +28,10 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-public fun <T : Any> TreehouseContent(
-  treehouseApp: TreehouseApp<T>,
-  widgetSystem: TreehouseView.WidgetSystem<T>,
-  content: TreehouseView.Content<T>,
+public fun <A : Any> TreehouseContent(
+  treehouseApp: TreehouseApp<A>,
+  widgetSystem: TreehouseView.WidgetSystem<A>,
+  content: TreehouseView.Content<A>,
 ) {
   val hostConfiguration = HostConfiguration(
     darkMode = isSystemInDarkTheme(),
@@ -39,9 +39,9 @@ public fun <T : Any> TreehouseContent(
 
   val rememberedContent = rememberUpdatedState(content)
   val treehouseView = remember {
-    object : TreehouseView<T> {
+    object : TreehouseView<A> {
       override var codeListener = TreehouseView.CodeListener()
-      override val boundContent: TreehouseView.Content<T> get() = rememberedContent.value
+      override val boundContent: TreehouseView.Content<A> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
       override val widgetSystem = widgetSystem

@@ -59,7 +59,7 @@ internal object Redwood {
 internal object RedwoodWidget {
   val Widget = ClassName("app.cash.redwood.widget", "Widget")
   val WidgetChildren = Widget.nestedClass("Children")
-  val WidgetChildrenOfT = WidgetChildren.parameterizedBy(typeVariableT)
+  val WidgetChildrenOfT = WidgetChildren.parameterizedBy(typeVariableW)
   val WidgetFactory = Widget.nestedClass("Factory")
 }
 
@@ -92,7 +92,7 @@ internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
 }
 
-internal val typeVariableT = TypeVariableName("T", listOf(ANY))
+internal val typeVariableW = TypeVariableName("W", listOf(ANY))
 
 internal object KotlinxSerialization {
   val Json = ClassName("kotlinx.serialization.json", "Json")
