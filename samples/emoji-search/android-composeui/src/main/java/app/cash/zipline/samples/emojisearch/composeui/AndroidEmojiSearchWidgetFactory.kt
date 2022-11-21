@@ -23,7 +23,7 @@ import example.schema.widget.EmojiSearchWidgetFactory
 class AndroidEmojiSearchWidgetFactory<T : Any>(private val treehouseApp: TreehouseApp<T>) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
   override val RedwoodLayout = ComposeRedwoodLayoutWidgetFactory()
   override fun LazyColumn() = ComposeUiLazyColumn(treehouseApp)
-  override fun TextInput() = ComposeUiTextInput()
+  override fun TextInput() = ComposeUiTextInput(treehouseApp.dispatchers)
   override fun Text() = ComposeUiText()
   override fun Image() = ComposeUiImage()
 }

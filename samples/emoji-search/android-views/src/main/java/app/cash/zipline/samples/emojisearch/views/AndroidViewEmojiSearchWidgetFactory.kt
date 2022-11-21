@@ -31,7 +31,7 @@ class AndroidViewEmojiSearchWidgetFactory<T : Any>(
 ) : EmojiSearchWidgetFactory<View> {
   override val RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context)
   override fun LazyColumn() = ViewLazyColumn(treehouseApp, RecyclerView(context))
-  override fun TextInput() = ViewTextInput(EditText(context))
+  override fun TextInput() = ViewTextInput(context, treehouseApp.dispatchers)
   override fun Text() = ViewText(TextView(context))
   override fun Image() = ViewImage(ImageView(context))
 }

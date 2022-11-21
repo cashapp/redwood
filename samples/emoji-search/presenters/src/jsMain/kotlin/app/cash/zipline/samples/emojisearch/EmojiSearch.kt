@@ -45,13 +45,12 @@ class EmojiSearchTreehouseUi(
     Column(
       horizontalAlignment = CrossAxisAlignment.Stretch,
     ) {
-      println("!!!JS Recomposing with ${viewModel.searchTerm}")
       TextInput(
-        text = viewModel.searchTerm,
+        state = viewModel.searchTerm,
         hint = "Search",
-        onTextChanged = {
+        onChange = {
           onEvent(SearchTermEvent(it))
-                        },
+        },
       )
       LazyColumn {
         items(viewModel.images) { image ->

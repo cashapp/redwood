@@ -65,11 +65,8 @@ class RealEmojiSearchPresenter(
       events.collectLatest { event ->
         when (event) {
           is SearchTermEvent -> {
-            if(event.searchTerm.userEditCount > latestSearchTerm.userEditCount) {
-              println("!!!JS Setting latestSearchTerm to ${event.searchTerm}")
-              latestSearchTerm = event.searchTerm
-              send(produceModel())
-            }
+            latestSearchTerm = event.searchTerm
+            send(produceModel())
           }
         }
       }

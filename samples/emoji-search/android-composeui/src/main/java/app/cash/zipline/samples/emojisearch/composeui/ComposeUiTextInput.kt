@@ -24,64 +24,82 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.TreehouseDispatchers
 import example.schema.widget.TextInput
 import example.values.TextFieldState
+import kotlin.coroutines.EmptyCoroutineContext
 
-class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
+class ComposeUiTextInput(
+  private val dispatchers: TreehouseDispatchers,
+) : TextInput<@Composable () -> Unit> {
+  private var state by mutableStateOf(TextFieldState())
   private var hint by mutableStateOf("")
-  private var composeState by mutableStateOf(TextFieldValue())
-  private var redwoodState by mutableStateOf(TextFieldState())
-  private var onTextChanged: ((TextFieldState) -> Unit)? = null
+  private var onChange: ((TextFieldState) -> Unit)? = null
+  private var updating = false
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
-    // not sure which of these are correct
-    // the first has one source of truth, but latency in the UI and a lot of TextField state bouncing around internally
-    // the second results in less latency in the UI but two sources of truth
-    val composeStateWithLastTextValue = composeState.copy(text = redwoodState.text)
-    // val composeStateWithLastTextValue = composeState
-
-    println("!!!Android - Recomposing with $composeStateWithLastTextValue")
     TextField(
-      value = composeStateWithLastTextValue,
-      onValueChange = { newComposeState ->
-        println("!!!Android - onValueChange $newComposeState")
-        composeState = newComposeState
-
-        val stringChangedSinceLastInvocation = redwoodState.text != newComposeState.text
-
-        onTextChanged?.invoke(
-          redwoodState.copy(
-            text = newComposeState.text,
-            selectionStart = newComposeState.selection.start,
-            selectionEnd = newComposeState.selection.end,
-            userEditCount = when {
-              stringChangedSinceLastInvocation -> redwoodState.userEditCount + 1
-              else -> redwoodState.userEditCount
-            }
-          )
-        )
+      value = TextFieldValue(
+        text = state.text,
+        selection = TextRange(state.selectionStart, state.selectionEnd)
+      ),
+      label = {
+        if (hint.isNotEmpty()) {
+          Text(hint)
+        }
       },
-      label = { Text(hint) },
       maxLines = 2,
+      onValueChange = ::stateChanged,
     )
+  }
+
+  /**
+   * Handle state changes from Treehouse. These will often be based on out-of-date user edits,
+   * in which case we discard the Treehouse update. Eventually the user will stop typing and we'll
+   * make the update without interrupting them.
+   */
+  override fun state(state: TextFieldState) {
+    if (state.userEditCount < this.state.userEditCount) return
+
+    check(!updating)
+    try {
+      updating = true
+      this.state = state
+    } finally {
+      updating = false
+    }
   }
 
   override fun hint(hint: String) {
     this.hint = hint
   }
 
-  override fun text(text: TextFieldState) {
-    println("!!!Android Setting text to $text")
-    this.redwoodState = text
-    this.composeState = this.composeState.copy(
-      text = text.text,
-      selection = TextRange(text.selectionStart, text.selectionEnd)
-    )
+  override fun onChange(onChange: ((TextFieldState) -> Unit)?) {
+    this.onChange = onChange
   }
 
-  override fun onTextChanged(onTextChanged: ((TextFieldState) -> Unit)?) {
-    this.onTextChanged = onTextChanged
+  /**
+   * Handle state changes from the user. When these happen we save the new state, which has a
+   * new [TextFieldState.userEditCount]. That way we can ignore updates that are based on stale
+   * data.
+   */
+  private fun stateChanged(value: TextFieldValue) {
+    // Ignore this update if it isn't a user edit.
+    if (updating) return
+
+    val newState = state.userEdit(
+      text = value.text,
+      selectionStart = value.selection.start,
+      selectionEnd = value.selection.end,
+    )
+    if (!state.contentEquals(newState)) {
+      state = newState
+      dispatchers.zipline.dispatch(
+        EmptyCoroutineContext,
+        Runnable { onChange?.invoke(newState) },
+      )
+    }
   }
 }
