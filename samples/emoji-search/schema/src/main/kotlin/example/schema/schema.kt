@@ -16,11 +16,13 @@
 package example.schema
 
 import app.cash.redwood.layout.RedwoodLayout
+import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 import example.values.LazyListIntervalContent
+import example.values.TextFieldState
 
 @Schema(
   members = [
@@ -37,9 +39,12 @@ interface EmojiSearch
 
 @Widget(1)
 data class TextInput(
-  @Property(1) val hint: String,
-  @Property(2) val text: String,
-  @Property(3) val onTextChanged: (String) -> Unit,
+  @Property(1) @Default("TextFieldState()")
+  val state: TextFieldState,
+  @Property(2) @Default("\"\"")
+  val hint: String,
+  @Property(3) @Default("null")
+  val onChange: (TextFieldState) -> Unit,
 )
 
 @Widget(2)

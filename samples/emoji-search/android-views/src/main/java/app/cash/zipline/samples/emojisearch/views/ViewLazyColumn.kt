@@ -63,7 +63,7 @@ class ViewLazyColumn<T : Any>(
   override fun intervals(intervals: List<LazyListIntervalContent>) {
     adapter.submitList(
       intervals.flatMap { interval ->
-        (0 until interval.count).map { index ->
+        List(interval.count) { index ->
           LazyContentItem(index, interval.itemProvider)
         }
       },

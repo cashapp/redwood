@@ -15,40 +15,99 @@
  */
 package app.cash.zipline.samples.emojisearch.views
 
+import android.content.Context
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.EditText
+import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.TreehouseDispatchers
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import example.schema.widget.TextInput
+import example.values.TextFieldState
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
 
 class ViewTextInput(
-  override val value: EditText,
+  context: Context,
+  private val dispatchers: TreehouseDispatchers,
 ) : TextInput<View> {
+  private var state = TextFieldState()
+  private var onChange: ((TextFieldState) -> Unit)? = null
+  private var updating = false
+
+  override val value = object : TextInputEditText(context) {
+    init {
+      addTextChangedListener(
+        onTextChanged = { _, _, _, _ ->
+          stateChanged(this)
+        }
+      )
+      maxLines = 2
+    }
+
+    override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+      super.onSelectionChanged(selStart, selEnd)
+      stateChanged(this)
+    }
+  }
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  init {
-    value.maxLines = 2
+  /**
+   * Handle state changes from Treehouse. These will often be based on out-of-date user edits,
+   * in which case we discard the Treehouse update. Eventually the user will stop typing and we'll
+   * make the update without interrupting them.
+   */
+  override fun state(state: TextFieldState) {
+    if (state.userEditCount < this.state.userEditCount) return
+
+    check(!updating)
+    try {
+      updating = true
+      this.state = state
+      value.setText(state.text)
+      value.setSelection(state.selectionStart, state.selectionEnd)
+    } finally {
+      updating = false
+    }
   }
 
   override fun hint(hint: String) {
     value.hint = hint
   }
 
-  override fun text(text: String) {
-    value.setText(text)
-    value.setSelection(text.length)
+  override fun onChange(onChange: ((TextFieldState) -> Unit)?) {
+    this.onChange = onChange
   }
 
-  private var watcher: TextWatcher? = null
-  override fun onTextChanged(onTextChanged: ((String) -> Unit)?) {
-    watcher = if (onTextChanged == null) {
-      watcher?.let(value::removeTextChangedListener)
-      null
-    } else {
-      value.doOnTextChanged { _, _, _, _ ->
-        onTextChanged.invoke(value.text.toString())
-      }
+  /**
+   * Handle state changes from the user. When these happen we save the new state, which has a
+   * new [TextFieldState.userEditCount]. That way we can ignore updates that are based on stale
+   * data.
+   */
+  private fun stateChanged(editText: EditText) {
+    // Ignore this update if it isn't a user edit.
+    if (updating) return
+
+    val newState = state.userEdit(
+      text = editText.text?.toString().orEmpty(),
+      selectionStart = editText.selectionStart,
+      selectionEnd = editText.selectionEnd,
+    )
+    if (!state.contentEquals(newState)) {
+      state = newState
+      dispatchers.zipline.dispatch(
+        EmptyCoroutineContext,
+        Runnable { onChange?.invoke(newState) },
+      )
     }
   }
 }

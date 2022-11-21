@@ -15,19 +15,20 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import example.values.TextFieldState
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class EmojiSearchEvent {
   @Serializable
   class SearchTermEvent(
-    val searchTerm: String,
+    val searchTerm: TextFieldState,
   ) : EmojiSearchEvent()
 }
 
 @Serializable
 data class EmojiSearchViewModel(
-  val searchTerm: String,
+  val searchTerm: TextFieldState,
   val images: List<EmojiImage>,
 )
 
