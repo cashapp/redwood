@@ -136,10 +136,11 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
   return Constraints(minWidth, maxWidth, minHeight, maxHeight)
 }
 
-internal fun Measurable.asItem(
+internal fun newFlexItem(
   context: Context,
-  layoutModifiers: LayoutModifier,
   direction: FlexDirection,
+  layoutModifiers: LayoutModifier,
+  measurable: RedwoodMeasurable,
 ): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
@@ -170,7 +171,7 @@ internal fun Measurable.asItem(
     } else {
       AlignSelf.Auto
     },
-    measurable = ComposeMeasurable(this),
+    measurable = measurable,
   )
 }
 
