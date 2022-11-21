@@ -28,6 +28,7 @@ import com.squareup.kotlinpoet.UNIT
 internal object Protocol {
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
+  val Id = ClassName("app.cash.redwood.protocol", "Id")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
   val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
 }
@@ -37,6 +38,7 @@ internal object ComposeProtocol {
     ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
   val DiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
   val DiffProducingWidgetFactory = DiffProducingWidget.nestedClass("Factory")
+  val IdAllocator = ClassName("app.cash.redwood.protocol.compose", "IdAllocator")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
 }

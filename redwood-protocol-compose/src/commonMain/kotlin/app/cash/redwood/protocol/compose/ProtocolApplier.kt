@@ -67,7 +67,6 @@ internal class ProtocolApplier(
     DiffProducingWidgetChildren(Id.Root, RootChildrenTag, diffAppender),
   ),
 ) {
-  private var nextId = Id.Root.next()
   internal val nodes = mutableMapOf(Id.Root to root)
   private var closed = false
 
@@ -84,14 +83,10 @@ internal class ProtocolApplier(
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      val id = nextId
-      nextId = id.next()
-
       instance as AbstractDiffProducingWidget
-      instance.id = id
       instance._diffAppender = diffAppender
 
-      nodes[id] = instance
+      nodes[instance.id] = instance
 
       val current = current as _ChildrenWidget
       current.children!!.insert(index, instance)
@@ -126,6 +121,4 @@ internal class ProtocolApplier(
   override fun onClear() {
     closed = true
   }
-
-  private fun Id.next(): Id = Id(value + 1UL)
 }
