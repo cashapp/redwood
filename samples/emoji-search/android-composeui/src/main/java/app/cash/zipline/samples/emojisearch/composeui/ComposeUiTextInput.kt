@@ -42,12 +42,12 @@ class ComposeUiTextInput(
 
   override val value = @Composable {
     // Preserve 'composition' and other state properties that we don't modify.
-    var textFieldValue = remember { TextFieldValue() }
+    var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
 
     TextField(
       value = textFieldValue.copy(
         text = state.text,
-        selection = TextRange(state.selectionStart, state.selectionEnd)
+        selection = TextRange(state.selectionStart, state.selectionEnd),
       ),
       label = {
         if (hint.isNotEmpty()) {
