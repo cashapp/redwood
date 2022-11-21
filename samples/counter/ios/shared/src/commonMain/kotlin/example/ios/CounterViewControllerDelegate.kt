@@ -27,7 +27,6 @@ import kotlinx.cinterop.convert
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
-import platform.Foundation.NSLog
 import platform.UIKit.UIStackView
 
 class CounterViewControllerDelegate(
@@ -41,8 +40,6 @@ class CounterViewControllerDelegate(
       scope = scope,
       factory = DiffProducingSunspotWidgetFactory(),
       widgetVersion = 1U,
-      onDiff = { NSLog("RedwoodDiff: $it") },
-      onEvent = { NSLog("RedwoodEvent: $it") },
     )
 
     val children = UIViewChildren(
