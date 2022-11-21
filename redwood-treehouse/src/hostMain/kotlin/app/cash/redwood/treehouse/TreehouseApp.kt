@@ -171,7 +171,6 @@ public class TreehouseApp<T : Any> internal constructor(
 
       val widgetFactory = view.widgetSystem.widgetFactory(
         app = this@TreehouseApp,
-        view = view,
         json = zipline.json,
         protocolMismatchHandler = eventPublisher.protocolMismatchHandler(this@TreehouseApp),
       )

@@ -40,7 +40,6 @@ public interface TreehouseView<T : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
       app: TreehouseApp<T>,
-      view: TreehouseView<T>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingWidget.Factory<*>

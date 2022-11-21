@@ -15,16 +15,15 @@
  */
 package app.cash.zipline.samples.emojisearch.views
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
-import app.cash.redwood.treehouse.ViewBinder
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.samples.emojisearch.EmojiSearchAppSpec
 import app.cash.zipline.samples.emojisearch.EmojiSearchPresenter
@@ -40,17 +39,31 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val treehouseApp = createTreehouseApp(this)
+    val treehouseApp = createTreehouseApp()
     val treehouseContent = TreehouseView.Content(EmojiSearchPresenter::launch)
 
+    val widgetSystem = object : TreehouseView.WidgetSystem<EmojiSearchPresenter> {
+      override fun widgetFactory(
+        app: TreehouseApp<EmojiSearchPresenter>,
+        json: Json,
+        protocolMismatchHandler: ProtocolMismatchHandler,
+      ): DiffConsumingWidget.Factory<*> {
+        return DiffConsumingEmojiSearchWidgetFactory(
+          delegate = AndroidViewEmojiSearchWidgetFactory(this@EmojiSearchActivity, treehouseApp),
+          json = json,
+          mismatchHandler = protocolMismatchHandler,
+        )
+      }
+    }
+
     setContentView(
-      TreehouseWidgetView(this, treehouseApp).apply {
+      TreehouseWidgetView(this, treehouseApp, widgetSystem).apply {
         setContent(treehouseContent)
       },
     )
   }
 
-  private fun createTreehouseApp(activity: Activity): TreehouseApp<EmojiSearchPresenter> {
+  private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
     val httpClient = OkHttpClient()
 
     val treehouseLauncher = TreehouseLauncher(
@@ -59,27 +72,13 @@ class EmojiSearchActivity : ComponentActivity() {
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
     )
 
-    var widgetFactory: AndroidViewEmojiSearchWidgetFactory<*>? = null
-    val treehouseApp = treehouseLauncher.launch(
+    return treehouseLauncher.launch(
       scope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
         hostApi = RealHostApi(httpClient),
-        viewBinder = object : ViewBinder {
-          override fun widgetFactory(
-            view: TreehouseView<*>,
-            json: Json,
-            mismatchHandler: ProtocolMismatchHandler,
-          ) = DiffConsumingEmojiSearchWidgetFactory(
-            delegate = widgetFactory!!,
-            json = json,
-            mismatchHandler = mismatchHandler,
-          )
-        },
       ),
     )
-    widgetFactory = AndroidViewEmojiSearchWidgetFactory(activity, treehouseApp)
-    return treehouseApp
   }
 
   override fun onDestroy() {
