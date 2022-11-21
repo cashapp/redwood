@@ -49,7 +49,11 @@ class EmojiSearchActivity : ComponentActivity() {
         protocolMismatchHandler: ProtocolMismatchHandler,
       ): DiffConsumingWidget.Factory<*> {
         return DiffConsumingEmojiSearchWidgetFactory(
-          delegate = AndroidViewEmojiSearchWidgetFactory(this@EmojiSearchActivity, treehouseApp),
+          delegate = AndroidViewEmojiSearchWidgetFactory(
+            context = this@EmojiSearchActivity,
+            treehouseApp = treehouseApp,
+            widgetSystem = this,
+          ),
           json = json,
           mismatchHandler = protocolMismatchHandler,
         )
