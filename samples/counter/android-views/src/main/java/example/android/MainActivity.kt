@@ -23,7 +23,7 @@ import android.widget.LinearLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.ViewGroupChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
@@ -52,13 +52,13 @@ class MainActivity : AppCompatActivity() {
     setContentView(root)
 
     val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory(this))
-    val display = ProtocolDisplay(
+    val bridge = ProtocolBridge(
       container = ViewGroupChildren(root),
       factory = factory,
       eventSink = composition,
     )
 
-    composition.start(display)
+    composition.start(bridge)
 
     composition.setContent {
       Counter()

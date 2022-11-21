@@ -25,9 +25,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class ProtocolDisplayTest {
+class ProtocolBridgeTest {
   @Test fun insertRootIdThrows() {
-    val protocolDisplay = ProtocolDisplay(
+    val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory()),
       eventSink = ::error,
@@ -44,13 +44,13 @@ class ProtocolDisplayTest {
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      protocolDisplay.sendDiff(diff)
+      bridge.sendDiff(diff)
     }
     assertEquals("Insert attempted to replace existing widget with ID 0", t.message)
   }
 
   @Test fun duplicateIdThrows() {
-    val protocolDisplay = ProtocolDisplay(
+    val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory()),
       eventSink = ::error,
@@ -66,9 +66,9 @@ class ProtocolDisplayTest {
         ),
       ),
     )
-    protocolDisplay.sendDiff(diff)
+    bridge.sendDiff(diff)
     val t = assertFailsWith<IllegalArgumentException> {
-      protocolDisplay.sendDiff(diff)
+      bridge.sendDiff(diff)
     }
     assertEquals("Insert attempted to replace existing widget with ID 1", t.message)
   }

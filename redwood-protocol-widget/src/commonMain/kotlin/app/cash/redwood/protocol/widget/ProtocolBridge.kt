@@ -22,17 +22,25 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
-public class ProtocolDisplay<T : Any>(
+/**
+ * Bridges the serialized Redwood protocol back to widgets on the display side.
+ *
+ * This type will consume [Diff]s and apply their [ChildrenDiff] operations to the widget tree.
+ * [PropertyDiff]s and [LayoutModifiers]s are forwarded to their respective widgets. Events from
+ * widgets are forwarded to [eventSink].
+ */
+public class ProtocolBridge<T : Any>(
   container: Widget.Children<T>,
   private val factory: DiffConsumingWidget.Factory<T>,
   private val eventSink: EventSink,
 ) : DiffSink {
   private val nodes = mutableMapOf(
-    Id.Root to Node(ProtocolDisplayRoot(container), Id.Root, container),
+    Id.Root to Node(DiffConsumingProtocolRoot(container), Id.Root, container),
   )
 
   override fun sendDiff(diff: Diff) {
@@ -91,7 +99,7 @@ private class Node<T : Any>(
     get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
 }
 
-private class ProtocolDisplayRoot<T : Any>(
+private class DiffConsumingProtocolRoot<T : Any>(
   private val children: Widget.Children<T>,
 ) : DiffConsumingWidget<T> {
   override var layoutModifiers: LayoutModifier

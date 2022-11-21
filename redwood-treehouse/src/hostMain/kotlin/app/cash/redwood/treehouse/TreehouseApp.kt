@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.DiffConsumingWidget.Factory
-import app.cash.redwood.protocol.widget.ProtocolDisplay
+import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
@@ -170,7 +170,7 @@ public class TreehouseApp<T : Any> internal constructor(
       }
 
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-      val display = ProtocolDisplay(
+      val bridge = ProtocolBridge(
         container = view.children as Widget.Children<Any>,
         factory = spec.viewBinder.widgetFactory(
           view,
@@ -196,7 +196,7 @@ public class TreehouseApp<T : Any> internal constructor(
               }
             }
 
-            display.sendDiff(diff)
+            bridge.sendDiff(diff)
           }
         }
       }
