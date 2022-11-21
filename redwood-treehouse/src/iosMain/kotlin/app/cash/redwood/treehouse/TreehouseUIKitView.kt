@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCAction
@@ -33,6 +34,7 @@ public class TreehouseUIKitView<T : Any>(
   private val treehouseApp: TreehouseApp<T>,
 ) : TreehouseView<T> {
   public val view: UIView = RootUiView(this)
+  public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<T>? = null
 
   override val boundContent: TreehouseView.Content<T>?

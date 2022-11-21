@@ -39,6 +39,7 @@ public fun <T : Any> TreehouseContent(
   val rememberedContent = rememberUpdatedState(content)
   val treehouseView = remember {
     object : TreehouseView<T> {
+      override var codeListener = TreehouseView.CodeListener()
       override val boundContent: TreehouseView.Content<T> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)

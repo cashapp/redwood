@@ -20,15 +20,6 @@ import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import kotlinx.serialization.json.Json
 
 public interface ViewBinder {
-  /** Show a spinner when a view is waiting for the code to load. */
-  public fun codeLoading(view: TreehouseView<*>) {}
-
-  /** Clear the loading indicator when the first code is loaded. */
-  public fun beforeInitialCode(view: TreehouseView<*>) {}
-
-  /** Clear the previous UI and show a quick animation for subsequent code updates. */
-  public fun beforeUpdatedCode(view: TreehouseView<*>) {}
-
   /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
   public fun widgetFactory(
     view: TreehouseView<*>,
