@@ -15,6 +15,7 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
@@ -42,7 +43,7 @@ class RealEmojiSearchPresenter(
 
   override fun launch(): ZiplineTreehouseUi {
     val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
-    val factory = DiffProducingEmojiSearchWidgetFactory(json)
+    val factory = DiffProducingEmojiSearchWidgetFactory(ProtocolBridge(), json)
     val treehouseUi = EmojiSearchTreehouseUi(
       initialViewModel = initialViewModel,
       viewModels = produceModels(events),

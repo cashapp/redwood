@@ -16,6 +16,7 @@
 package example.browser
 
 import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.protocol.compose.ProtocolBridge as ComposeProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.HTMLElementChildren
@@ -31,21 +32,23 @@ import org.w3c.dom.HTMLElement
 
 fun main() {
   @OptIn(DelicateCoroutinesApi::class)
+  val scope = GlobalScope + WindowAnimationFrameClock
+  val composeBridge = ComposeProtocolBridge()
   val composition = ProtocolRedwoodComposition(
-    scope = GlobalScope + WindowAnimationFrameClock,
-    factory = DiffProducingSunspotWidgetFactory(),
+    scope = scope,
+    factory = DiffProducingSunspotWidgetFactory(composeBridge),
     widgetVersion = 1U,
   )
 
   val content = document.getElementById("content")!! as HTMLElement
   val factory = DiffConsumingSunspotWidgetFactory(HtmlSunspotNodeFactory(document))
-  val bridge = ProtocolBridge(
+  val widgetBridge = ProtocolBridge(
     container = HTMLElementChildren(content),
     factory = factory,
-    eventSink = composition,
+    eventSink = composeBridge,
   )
 
-  composition.start(bridge)
+  composition.start(widgetBridge)
 
   composition.setContent {
     Counter()

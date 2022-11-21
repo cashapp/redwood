@@ -25,15 +25,15 @@ import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.DiffSink
-import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface ProtocolRedwoodComposition : RedwoodComposition, EventSink {
+public interface ProtocolRedwoodComposition : RedwoodComposition {
   public fun start(diffSink: DiffSink)
 }
 
@@ -66,8 +66,11 @@ private class DiffProducingRedwoodComposition(
   override fun start(diffSink: DiffSink) {
     check(!this::applier.isInitialized) { "display already initialized" }
 
-    val diffAppender = DiffAppender(diffSink)
-    applier = ProtocolApplier(factory, diffAppender)
+    val bridge = factory.bridge
+    val root = DiffProducingWidgetChildren(Id.Root, ChildrenDiff.RootChildrenTag, bridge)
+    applier = ProtocolApplier(factory, root) {
+      bridge.createDiffOrNull()?.let(diffSink::sendDiff)
+    }
     composition = Composition(applier, recomposer)
 
     // Set up a trigger to apply changes on the next frame if a global write was observed.
@@ -88,17 +91,6 @@ private class DiffProducingRedwoodComposition(
     recomposeJob = scope.launch(start = UNDISPATCHED) {
       recomposer.runRecomposeAndApplyChanges()
     }
-  }
-
-  override fun sendEvent(event: Event) {
-    check(this::applier.isInitialized) { "display not initialized" }
-
-    val node = applier.nodes[event.id] as DiffProducingWidget?
-    if (node == null) {
-      // TODO how to handle race where an incoming event targets this removed node?
-      throw IllegalArgumentException("Unknown node ${event.id} for event with tag ${event.tag}")
-    }
-    node.sendEvent(event)
   }
 
   @OptIn(InternalComposeApi::class) // See internal function comment below.

@@ -21,6 +21,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
+import app.cash.redwood.protocol.compose.ProtocolBridge as ComposeProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.ViewGroupChildren
@@ -37,9 +38,10 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val composeBridge = ComposeProtocolBridge()
     val composition = ProtocolRedwoodComposition(
       scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(),
+      factory = DiffProducingSunspotWidgetFactory(composeBridge),
       widgetVersion = 1U,
     )
 
@@ -49,13 +51,13 @@ class MainActivity : AppCompatActivity() {
     setContentView(root)
 
     val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory(this))
-    val bridge = ProtocolBridge(
+    val widgetBridge = ProtocolBridge(
       container = ViewGroupChildren(root),
       factory = factory,
-      eventSink = composition,
+      eventSink = composeBridge,
     )
 
-    composition.start(bridge)
+    composition.start(widgetBridge)
 
     composition.setContent {
       Counter()

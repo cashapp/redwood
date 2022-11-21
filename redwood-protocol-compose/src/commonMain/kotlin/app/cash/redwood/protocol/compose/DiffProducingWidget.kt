@@ -35,5 +35,7 @@ public interface DiffProducingWidget : Widget<Nothing> {
   /**
    * Marker interface for types whose functions create [DiffProducingWidget]s.
    */
-  public interface Factory : Widget.Factory<Nothing>
+  public interface Factory : Widget.Factory<Nothing> {
+    public val bridge: ProtocolBridge
+  }
 }

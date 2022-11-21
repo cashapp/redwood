@@ -19,8 +19,6 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import app.cash.redwood.compose._ChildrenWidget
 import app.cash.redwood.compose._RedwoodApplier
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
-import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
 /**
@@ -29,7 +27,7 @@ import app.cash.redwood.widget.Widget
  * multiple children.
  *
  * Nodes in the tree are required to alternate between [_ChildrenWidget] instances and
- * [AbstractDiffProducingWidget] subtypes starting from the root. This invariant is maintained by
+ * [DiffProducingWidget] subtypes starting from the root. This invariant is maintained by
  * virtue of the fact that all of the input `@Composables` should be generated code.
  *
  * For example, a node tree may look like this:
@@ -45,8 +43,8 @@ import app.cash.redwood.widget.Widget
  *        |              |              /         \
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
- * But the protocol diff output would only record [AbstractDiffProducingWidget] nodes using
- * their [AbstractDiffProducingWidget.id] and [AbstractDiffProducingWidget.type] value:
+ * But the protocol diff output would only record [DiffProducingWidget] nodes using
+ * their [DiffProducingWidget.id] and [DiffProducingWidget.type] value:
  * ```
  * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
  * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
@@ -60,20 +58,18 @@ import app.cash.redwood.widget.Widget
  * The hierarchy is maintained by Compose's slot table and is represented by dotted lines.
  */
 internal class ProtocolApplier(
-  override val factory: DiffProducingWidget.Factory,
-  private val diffAppender: DiffAppender,
-) : _RedwoodApplier<DiffProducingWidget.Factory>, AbstractApplier<Widget<Nothing>>(
-  root = _ChildrenWidget(
-    DiffProducingWidgetChildren(Id.Root, RootChildrenTag, diffAppender),
-  ),
+  override val factory: Widget.Factory<Nothing>,
+  rootChildren: Widget.Children<Nothing>,
+  private val onEndChanges: () -> Unit = {},
+) : _RedwoodApplier<Widget.Factory<Nothing>>, AbstractApplier<Widget<Nothing>>(
+  root = _ChildrenWidget(rootChildren),
 ) {
-  internal val nodes = mutableMapOf(Id.Root to root)
   private var closed = false
 
   override fun onEndChanges() {
     check(!closed)
 
-    diffAppender.trySend()
+    onEndChanges.invoke()
   }
 
   override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
@@ -83,37 +79,25 @@ internal class ProtocolApplier(
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      instance as AbstractDiffProducingWidget
-      instance._diffAppender = diffAppender
-
-      nodes[instance.id] = instance
-
       val current = current as _ChildrenWidget
       current.children!!.insert(index, instance)
     }
   }
 
   override fun insertBottomUp(index: Int, instance: Widget<Nothing>) {
-    // Ignored, we insert top-down for now.
+    // Ignored, we insert top-down.
   }
 
   override fun remove(index: Int, count: Int) {
     check(!closed)
 
-    // Children instances are never removed from their parents.
     val current = current as _ChildrenWidget
-    val children = current.children as DiffProducingWidgetChildren
-
-    for (i in index until index + count) {
-      nodes.remove(children.ids[i])
-    }
-    children.remove(index, count)
+    current.children!!.remove(index, count)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
     check(!closed)
 
-    // Children instances are never moved within their parents.
     val current = current as _ChildrenWidget
     current.children!!.move(from, to, count)
   }
