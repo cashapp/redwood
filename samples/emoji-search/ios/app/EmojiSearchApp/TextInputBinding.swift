@@ -24,22 +24,22 @@ class TextInputBinding: WidgetTextInput {
         view.autocapitalizationType = .none
         return view
     }()
+    
+    func state(state: ValuesTextFieldState) {
+        root.text = state.text
+    }
 
     func hint(hint: String) {
         root.placeholder = hint
     }
 
-    func onTextChanged(onTextChanged: ((String) -> Void)? = nil) {
+    func onChange(onChange: ((ValuesTextFieldState) -> Void)? = nil) {
         let identifier = UIAction.Identifier("TextInputBinding.onTextChanged")
 
         root.removeAction(identifiedBy: identifier, for: .editingChanged)
         root.addAction(UIAction(identifier: identifier, handler: { [unowned self] _ in
-            onTextChanged?(self.root.text ?? "")
+            onChange?(ValuesTextFieldState(text: self.root.text ?? "", selectionStart: 0, selectionEnd: 0, userEditCount: 0))
         }), for: .editingChanged)
-    }
-
-    func text(text: String) {
-        root.text = text
     }
 
     var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
