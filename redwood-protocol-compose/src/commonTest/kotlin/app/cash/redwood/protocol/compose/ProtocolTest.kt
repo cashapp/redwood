@@ -48,9 +48,9 @@ class ProtocolTest {
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
       factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
+      diffSink = ::error,
       widgetVersion = 22U,
     )
-    composition.start { }
 
     var actualDisplayVersion = 0U
     composition.setContent {
@@ -63,13 +63,13 @@ class ProtocolTest {
 
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
     val clock = BroadcastFrameClock()
+    val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
       factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
+      diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )
-    val diffs = ArrayDeque<Diff>()
-    composition.start { diff -> diffs += diff }
 
     composition.setContent {
       Row {
@@ -110,13 +110,13 @@ class ProtocolTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
     val bridge = ProtocolBridge()
+    val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
       factory = DiffProducingExampleSchemaWidgetFactory(bridge),
+      diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )
-    val diffs = ArrayDeque<Diff>()
-    composition.start { diff -> diffs += diff }
 
     composition.setContent {
       Button(

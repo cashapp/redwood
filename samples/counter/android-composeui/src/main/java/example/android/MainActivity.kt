@@ -52,11 +52,6 @@ class MainActivity : AppCompatActivity() {
     val composeChildren = ComposeWidgetChildren()
 
     val composeBridge = ComposeProtocolBridge()
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(composeBridge),
-      widgetVersion = 1U,
-    )
 
     val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory())
     val widgetBridge = ProtocolBridge(
@@ -65,7 +60,12 @@ class MainActivity : AppCompatActivity() {
       eventSink = composeBridge,
     )
 
-    composition.start(widgetBridge)
+    val composition = ProtocolRedwoodComposition(
+      scope = scope,
+      factory = DiffProducingSunspotWidgetFactory(composeBridge),
+      diffSink = widgetBridge,
+      widgetVersion = 1U,
+    )
     composition.setContent(content)
 
     return composeChildren

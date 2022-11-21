@@ -39,11 +39,6 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     val composeBridge = ComposeProtocolBridge()
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(composeBridge),
-      widgetVersion = 1U,
-    )
 
     val root = FrameLayout(this).apply {
       layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -57,8 +52,12 @@ class MainActivity : AppCompatActivity() {
       eventSink = composeBridge,
     )
 
-    composition.start(widgetBridge)
-
+    val composition = ProtocolRedwoodComposition(
+      scope = scope,
+      factory = DiffProducingSunspotWidgetFactory(composeBridge),
+      diffSink = widgetBridge,
+      widgetVersion = 1U,
+    )
     composition.setContent {
       Counter()
     }
