@@ -59,7 +59,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
 
   fun padding(padding: Padding) {
     this.padding = padding
-    recomposeTick++
+    invalidate()
   }
 
   fun overflow(overflow: Overflow) {
@@ -68,11 +68,15 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
 
   fun alignItems(alignItems: AlignItems) {
     container.alignItems = alignItems
-    recomposeTick++
+    invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
     container.justifyContent = justifyContent
+    invalidate()
+  }
+
+  private fun invalidate() {
     recomposeTick++
   }
 
@@ -116,7 +120,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
       container.layout(result)
 
       for (item in container.items) {
-        (item.measurable as ComposeMeasurable).placeable.place(item.left.toInt(), item.top.toInt())
+        val placeable = (item.measurable as ComposeMeasurable).placeable
+        placeable.place(item.left.toInt(), item.top.toInt())
       }
     }
   }
@@ -124,7 +129,12 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private fun syncItems(measurables: List<Measurable>) {
     container.items.clear()
     measurables.forEachIndexed { index, measurable ->
-      container.items += measurable.asItem(context, _children.widgets[index].layoutModifiers, direction)
+      container.items += newFlexItem(
+        context = context,
+        direction = direction,
+        layoutModifiers = _children.widgets[index].layoutModifiers,
+        measurable = ComposeMeasurable(measurable),
+      )
     }
   }
 }

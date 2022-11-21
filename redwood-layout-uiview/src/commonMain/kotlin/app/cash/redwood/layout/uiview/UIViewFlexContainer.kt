@@ -122,7 +122,11 @@ internal class UIViewFlexContainer(
     private fun syncItems() {
       container.items.clear()
       _children.widgets.forEach { widget ->
-        container.items += widget.value.asItem(widget.layoutModifiers, direction)
+        container.items += newFlexItem(
+          direction = direction,
+          layoutModifiers = widget.layoutModifiers,
+          measurable = UIViewMeasurable(widget.value),
+        )
       }
     }
   }

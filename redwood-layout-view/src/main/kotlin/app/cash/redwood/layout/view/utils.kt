@@ -104,10 +104,11 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun View.asItem(
+internal fun newFlexItem(
   context: Context,
-  layoutModifiers: LayoutModifier,
   direction: FlexDirection,
+  layoutModifiers: LayoutModifier,
+  measurable: Measurable,
 ): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
@@ -138,7 +139,7 @@ internal fun View.asItem(
     } else {
       AlignSelf.Auto
     },
-    measurable = ViewMeasurable(this),
+    measurable = measurable,
   )
 }
 

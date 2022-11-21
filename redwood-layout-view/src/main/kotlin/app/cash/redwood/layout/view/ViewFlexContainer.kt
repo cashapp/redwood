@@ -90,40 +90,48 @@ internal class ViewFlexContainer(
   }
 
   private inner class HostView(context: Context) : ViewGroup(context) {
-
     private lateinit var measureResult: MeasureResult
+    private var itemsChanged = false
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+      syncItems()
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
       val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
       measureResult = container.measure(widthSpec, heightSpec)
-      setMeasuredDimension(measureResult.containerSize.width.toInt(), measureResult.containerSize.height.toInt())
+      val (width, height) = measureResult.containerSize
+      setMeasuredDimension(width.toInt(), height.toInt())
     }
 
     @SuppressLint("DrawAllocation")
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
       container.layout(measureResult, Size((right - left).toDouble(), (bottom - top).toDouble()))
-      container.items.forEachIndexed { index, item ->
-        getChildAt(index).layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
+      for (item in container.items) {
+        val view = (item.measurable as ViewMeasurable).view
+        view.layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
       }
     }
 
     override fun onViewAdded(child: View) {
-      super.onViewAdded(child)
-      _children.widgets.forEachIndexed { index, widget ->
-        if (widget.value === child) {
-          container.items.add(index, widget.value.asItem(context, widget.layoutModifiers, direction))
-          return@forEachIndexed
-        }
-      }
+      itemsChanged = true
     }
 
     override fun onViewRemoved(child: View) {
-      super.onViewRemoved(child)
-      val index = container.items.indexOfFirst { item ->
-        (item.measurable as ViewMeasurable).view === child
+      itemsChanged = true
+    }
+
+    private fun syncItems() {
+      if (!itemsChanged) return
+      itemsChanged = false
+
+      container.items.clear()
+      _children.widgets.forEach { widget ->
+        container.items += newFlexItem(
+          context = context,
+          direction = direction,
+          layoutModifiers = widget.layoutModifiers,
+          measurable = ViewMeasurable(widget.value),
+        )
       }
-      container.items.removeAt(index)
     }
   }
 }

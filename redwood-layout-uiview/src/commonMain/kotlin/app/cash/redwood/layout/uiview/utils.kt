@@ -110,7 +110,11 @@ internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpe
 internal val UIView.typedSubviews: List<UIView>
   get() = subviews as List<UIView>
 
-internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirection): FlexItem {
+internal fun newFlexItem(
+  direction: FlexDirection,
+  layoutModifiers: LayoutModifier,
+  measurable: Measurable,
+): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
   var padding = Padding.Zero
@@ -140,7 +144,7 @@ internal fun UIView.asItem(layoutModifiers: LayoutModifier, direction: FlexDirec
     } else {
       AlignSelf.Auto
     },
-    measurable = UIViewMeasurable(this),
+    measurable = measurable,
   )
 }
 
