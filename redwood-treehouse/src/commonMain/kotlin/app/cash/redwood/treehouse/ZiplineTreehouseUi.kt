@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventSink
 import app.cash.zipline.ZiplineService
 
 /**
@@ -23,10 +23,9 @@ import app.cash.zipline.ZiplineService
  *
  * Most callers shouldn't use this directly; instead use `TreehouseUi`.
  */
-public interface ZiplineTreehouseUi : ZiplineService {
+public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     diffSink: DiffSinkService,
     hostConfigurations: FlowWithInitialValue<HostConfiguration>,
   )
-  public fun sendEvent(event: Event)
 }
