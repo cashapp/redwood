@@ -39,15 +39,14 @@ import com.squareup.kotlinpoet.asTypeName
 
 /*
 class DiffProducingSunspotWidgetFactory(
+  public override val bridge: ProtocolBridge,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : SunspotWidgetFactory<Nothing>, DiffProducingWidget.Factory {
-  private val ids = IdAllocator()
-
-  override val RedwoodLayout = DiffProducingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, ids, json, mismatchHandler)
-  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(ids.next(), json, mismatchHandler)
-  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(ids.next(), json, mismatchHandler)
-  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(ids.next(), json, mismatchHandler)
+  override val RedwoodLayout = DiffProducingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, bridge, json, mismatchHandler)
+  override fun SunspotBox(): SunspotBox<Nothing> = ProtocolSunspotBox(bridge.nextId(), json, mismatchHandler)
+  override fun SunspotText(): SunspotText<Nothing> = ProtocolSunspotText(bridge.nextId(), json, mismatchHandler)
+  override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(bridge.nextId(), json, mismatchHandler)
 }
 */
 internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
@@ -60,11 +59,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
         .addSuperinterface(ComposeProtocol.DiffProducingWidgetFactory)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .apply {
-              if (schema !== host) {
-                addParameter("ids", ComposeProtocol.IdAllocator)
-              }
-            }
+            .addParameter("bridge", ComposeProtocol.ProtocolBridge)
             .addParameter(
               ParameterSpec.builder("json", KotlinxSerialization.Json)
                 .defaultValue("%T", KotlinxSerialization.JsonDefault)
@@ -78,6 +73,11 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
             .build(),
         )
         .addProperty(
+          PropertySpec.builder("bridge", ComposeProtocol.ProtocolBridge, PUBLIC, OVERRIDE)
+            .initializer("bridge")
+            .build(),
+        )
+        .addProperty(
           PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
             .initializer("json")
             .build(),
@@ -87,24 +87,13 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
             .initializer("mismatchHandler")
             .build(),
         )
-        .addProperty(
-          PropertySpec.builder("ids", ComposeProtocol.IdAllocator, PRIVATE)
-            .apply {
-              if (schema === host) {
-                initializer("%T()", ComposeProtocol.IdAllocator)
-              } else {
-                initializer("ids")
-              }
-            }
-            .build(),
-        )
         .apply {
           if (schema === host) {
             for (dependency in schema.dependencies) {
               addProperty(
                 PropertySpec.builder(dependency.name, dependency.getWidgetFactoryType().parameterizedBy(NOTHING))
                   .addModifiers(OVERRIDE)
-                  .initializer("%T(ids, json, mismatchHandler)", dependency.diffProducingWidgetFactoryType(host))
+                  .initializer("%T(bridge, json, mismatchHandler)", dependency.diffProducingWidgetFactoryType(host))
                   .build(),
               )
             }
@@ -116,7 +105,7 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
-                  "return %T(ids.next(), json, mismatchHandler)",
+                  "return %T(bridge, json, mismatchHandler)",
                   schema.diffProducingWidgetType(widget, host),
                 )
                 .build(),
@@ -130,10 +119,11 @@ internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = s
 
 /*
 internal class DiffProducingSunspotButton(
-  public override val id: Id,
+  private val bridge: ProtocolBridge,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : AbstractDiffProducingWidget, SunspotButton<Nothing> {
+) : DiffProducingWidget, SunspotButton<Nothing> {
+  public override val id: Id = bridge.nextId()
   public override val type: Int get() = 3
 
   private var onClick: (() -> Unit)? = null
@@ -147,17 +137,17 @@ internal class DiffProducingSunspotButton(
       val json = buildJsonArray {
         value.forEach { element -> add(element.toJsonElement(json))
       }
-      appendDiff(LayoutModifiers(id, json))
+      bridge.append(LayoutModifiers(id, json))
     }
 
   override fun text(text: String?) {
-    appendDiff(PropertyDiff(this.id, 1, json.encodeToJsonElement(serializer_0, text)))
+    bridge.append(PropertyDiff(this.id, 1, json.encodeToJsonElement(serializer_0, text)))
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
     val onClickSet = onClick != null
     if (onClickSet != (this.onClick != null)) {
-      appendDiff(PropertyDiff(this.id, 3, onClickSet))
+      bridge.append(PropertyDiff(this.id, 3, onClickSet))
     }
     this.onClick = onClick
   }
@@ -177,18 +167,18 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .superclass(ComposeProtocol.AbstractDiffProducingWidget)
+        .addSuperinterface(ComposeProtocol.DiffProducingWidget)
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("id", Protocol.Id)
+            .addParameter("bridge", ComposeProtocol.ProtocolBridge)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("id", Protocol.Id, PUBLIC, OVERRIDE)
-            .initializer("id")
+          PropertySpec.builder("bridge", ComposeProtocol.ProtocolBridge, PRIVATE)
+            .initializer("bridge")
             .build(),
         )
         .addProperty(
@@ -199,6 +189,11 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
         .addProperty(
           PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("id", Protocol.Id, PUBLIC, OVERRIDE)
+            .initializer("bridge.nextId()")
             .build(),
         )
         .addProperty(
@@ -227,7 +222,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
                     .addStatement(
-                      "appendDiff(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))",
+                      "bridge.append(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))",
                       Protocol.PropertyDiff,
                       trait.tag,
                       serializerId,
@@ -250,7 +245,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
                     .addStatement(
-                      "appendDiff(%T(this.id, %LU, %M(%NSet)))",
+                      "bridge.append(%T(this.id, %LU, %M(%NSet)))",
                       Protocol.PropertyDiff,
                       trait.tag,
                       KotlinxSerialization.JsonPrimitive,
@@ -267,7 +262,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addModifiers(OVERRIDE)
                     .getter(
                       FunSpec.getterBuilder()
-                        .addStatement("return diffProducingWidgetChildren(%LU)", trait.tag)
+                        .addStatement("return bridge.widgetChildren(id, %LU)", trait.tag)
                         .build(),
                     )
                     .build(),
@@ -327,7 +322,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.LayoutModifier)
-                .addStatement("appendDiff(%T(id, value.%M(json)))", Protocol.LayoutModifiers, host.toJsonArray)
+                .addStatement("bridge.append(%T(id, value.%M(json)))", Protocol.LayoutModifiers, host.toJsonArray)
                 .build(),
             )
             .build(),

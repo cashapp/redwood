@@ -47,7 +47,7 @@ class ProtocolTest {
     val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(),
+      factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
       widgetVersion = 22U,
     )
     composition.start { }
@@ -65,7 +65,7 @@ class ProtocolTest {
     val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(),
+      factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
       widgetVersion = 1U,
     )
     val diffs = ArrayDeque<Diff>()
@@ -109,9 +109,10 @@ class ProtocolTest {
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
+    val bridge = ProtocolBridge()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(),
+      factory = DiffProducingExampleSchemaWidgetFactory(bridge),
       widgetVersion = 1U,
     )
     val diffs = ArrayDeque<Diff>()
@@ -148,7 +149,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    composition.sendEvent(Event(Id(1U), 2U))
+    bridge.sendEvent(Event(Id(1U), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
@@ -162,7 +163,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    composition.sendEvent(Event(Id(1U), 2U))
+    bridge.sendEvent(Event(Id(1U), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()

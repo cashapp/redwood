@@ -41,23 +41,18 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val bridge = ProtocolBridge()
+    val factory = DiffProducingExampleSchemaWidgetFactory(bridge, json)
     val textInput = factory.TextInput()
 
-    val diffProducingWidget = textInput as AbstractDiffProducingWidget
-    val diffSink = RecordingDiffSink()
-    val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget._diffAppender = diffAppender
-
     textInput.customType(10.seconds)
-    diffAppender.trySend()
 
     val expected = Diff(
       propertyDiffs = listOf(
         PropertyDiff(Id(1U), 2U, JsonPrimitive("PT10S")),
       ),
     )
-    assertEquals(expected, diffSink.diffs.single())
+    assertEquals(expected, bridge.createDiffOrNull())
   }
 
   @Test fun layoutModifierUsesSerializersModule() {
@@ -66,18 +61,13 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val bridge = ProtocolBridge()
+    val factory = DiffProducingExampleSchemaWidgetFactory(bridge, json)
     val button = factory.Button()
-
-    val diffProducingWidget = button as AbstractDiffProducingWidget
-    val diffSink = RecordingDiffSink()
-    val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customType(10.seconds)
     }
-    diffAppender.trySend()
 
     val expected = Diff(
       layoutModifiers = listOf(
@@ -98,7 +88,7 @@ class DiffProducingWidgetFactoryTest {
         ),
       ),
     )
-    assertEquals(expected, diffSink.diffs.single())
+    assertEquals(expected, bridge.createDiffOrNull())
   }
 
   @Test fun layoutModifierDefaultValueNotSerialized() {
@@ -107,18 +97,13 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val bridge = ProtocolBridge()
+    val factory = DiffProducingExampleSchemaWidgetFactory(bridge, json)
     val button = factory.Button()
-
-    val diffProducingWidget = button as AbstractDiffProducingWidget
-    val diffSink = RecordingDiffSink()
-    val diffAppender = DiffAppender(diffSink)
-    diffProducingWidget._diffAppender = diffAppender
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customTypeWithDefault(10.seconds, "sup")
     }
-    diffAppender.trySend()
 
     val expected = Diff(
       layoutModifiers = listOf(
@@ -139,7 +124,7 @@ class DiffProducingWidgetFactoryTest {
         ),
       ),
     )
-    assertEquals(expected, diffSink.diffs.single())
+    assertEquals(expected, bridge.createDiffOrNull())
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -148,11 +133,10 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = DiffProducingExampleSchemaWidgetFactory(json)
+    val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge(), json)
     val textInput = factory.TextInput()
 
-    val diffProducingWidget = textInput as AbstractDiffProducingWidget
-    diffProducingWidget._diffAppender = DiffAppender(RecordingDiffSink())
+    val diffProducingWidget = textInput as DiffProducingWidget
 
     var argument: Duration? = null
     textInput.onChangeCustomType {
@@ -165,8 +149,8 @@ class DiffProducingWidgetFactoryTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val factory = DiffProducingExampleSchemaWidgetFactory()
-    val button = factory.Button() as AbstractDiffProducingWidget
+    val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge())
+    val button = factory.Button() as DiffProducingWidget
 
     val event = Event(Id(1U), 3456543U)
     val t = assertFailsWith<IllegalArgumentException> {
@@ -178,8 +162,8 @@ class DiffProducingWidgetFactoryTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = DiffProducingExampleSchemaWidgetFactory(mismatchHandler = handler)
-    val button = factory.Button() as AbstractDiffProducingWidget
+    val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge(), mismatchHandler = handler)
+    val button = factory.Button() as DiffProducingWidget
 
     button.sendEvent(Event(Id(1U), 3456543U))
 

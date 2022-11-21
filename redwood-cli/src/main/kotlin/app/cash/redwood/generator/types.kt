@@ -34,11 +34,9 @@ internal object Protocol {
 }
 
 internal object ComposeProtocol {
-  val AbstractDiffProducingWidget =
-    ClassName("app.cash.redwood.protocol.compose", "AbstractDiffProducingWidget")
   val DiffProducingWidget = ClassName("app.cash.redwood.protocol.compose", "DiffProducingWidget")
   val DiffProducingWidgetFactory = DiffProducingWidget.nestedClass("Factory")
-  val IdAllocator = ClassName("app.cash.redwood.protocol.compose", "IdAllocator")
+  val ProtocolBridge = ClassName("app.cash.redwood.protocol.compose", "ProtocolBridge")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
 }

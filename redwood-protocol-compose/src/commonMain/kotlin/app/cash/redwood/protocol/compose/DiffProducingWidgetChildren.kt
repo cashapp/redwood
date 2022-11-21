@@ -22,24 +22,28 @@ import app.cash.redwood.widget.Widget
 internal class DiffProducingWidgetChildren(
   private val id: Id,
   private val tag: UInt,
-  private val diffAppender: DiffAppender,
+  private val bridge: ProtocolBridge,
 ) : Widget.Children<Nothing> {
-  val ids = mutableListOf<Id>()
+  private val ids = mutableListOf<Id>()
 
   override fun insert(index: Int, widget: Widget<Nothing>) {
     widget as DiffProducingWidget
     ids.add(index, widget.id)
-    diffAppender.append(ChildrenDiff.Insert(id, tag, widget.id, widget.type, index))
+    bridge.addWidget(widget)
+    bridge.append(ChildrenDiff.Insert(id, tag, widget.id, widget.type, index))
   }
 
   override fun remove(index: Int, count: Int) {
+    for (i in index until index + count) {
+      bridge.removeWidget(ids[i])
+    }
     ids.remove(index, count)
-    diffAppender.append(ChildrenDiff.Remove(id, tag, index, count))
+    bridge.append(ChildrenDiff.Remove(id, tag, index, count))
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     ids.move(fromIndex, toIndex, count)
-    diffAppender.append(ChildrenDiff.Move(id, tag, fromIndex, toIndex, count))
+    bridge.append(ChildrenDiff.Move(id, tag, fromIndex, toIndex, count))
   }
 
   override fun onLayoutModifierUpdated(index: Int) {

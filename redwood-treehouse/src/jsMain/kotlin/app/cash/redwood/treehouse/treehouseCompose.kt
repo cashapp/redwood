@@ -36,18 +36,20 @@ public fun TreehouseUi.asZiplineTreehouseUi(
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
 ): ZiplineTreehouseUi {
+  val bridge = factory.bridge
   val composition = ProtocolRedwoodComposition(
     scope = scope + frameClock,
     factory = factory,
     widgetVersion = widgetVersion,
   )
-  return RedwoodZiplineTreehouseUi(composition, this)
+  return RedwoodZiplineTreehouseUi(composition, this, bridge)
 }
 
 private class RedwoodZiplineTreehouseUi(
   private val composition: ProtocolRedwoodComposition,
   private val treehouseUi: TreehouseUi,
-) : ZiplineTreehouseUi, EventSink by composition {
+  private val eventSink: EventSink,
+) : ZiplineTreehouseUi, EventSink by eventSink {
   private var diffSinkToClose: DiffSinkService? = null
 
   override fun start(

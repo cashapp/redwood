@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,39 +17,45 @@ package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.DiffSink
+import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.widget.Widget
 
-/**
- * Aggregate [ChildrenDiff]s and [PropertyDiff]s until [trySend] sends them as a [Diff] to
- * [diffSink]. Each call to [trySend] clears the internal state back to empty.
- *
- * This class is not thread safe.
- */
-internal class DiffAppender(private val diffSink: DiffSink) {
+public class ProtocolBridge : EventSink {
+  private var nextValue = Id.Root.value + 1U
+  private val nodes = mutableMapOf<Id, DiffProducingWidget>()
+
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var layoutModifiers = mutableListOf<LayoutModifiers>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
 
-  fun append(childrenDiff: ChildrenDiff) {
+  public fun nextId(): Id {
+    val value = nextValue
+    nextValue = value + 1U
+    return Id(value)
+  }
+
+  public fun append(childrenDiff: ChildrenDiff) {
     childrenDiffs += childrenDiff
   }
 
-  fun append(layoutModifiers: LayoutModifiers) {
+  public fun append(layoutModifiers: LayoutModifiers) {
     this.layoutModifiers += layoutModifiers
   }
 
-  fun append(propertyDiff: PropertyDiff) {
+  public fun append(propertyDiff: PropertyDiff) {
     propertyDiffs += propertyDiff
   }
 
   /**
-   * If there were any calls to [append] since the last call to this function, send them as a [Diff]
-   * to [diffSink] and reset the internal lists to be empty. This function is a no-op if there were
+   * If there were any calls to [append] since the last call to this function return them as a
+   * [Diff] and reset the internal lists to be empty. This function returns null if there were
    * no calls to [append] since the last invocation.
    */
-  fun trySend() {
+  public fun createDiffOrNull(): Diff? {
     val existingChildrenDiffs = childrenDiffs
     val existingLayoutModifierDiffs = layoutModifiers
     val existingPropertyDiffs = propertyDiffs
@@ -58,12 +64,34 @@ internal class DiffAppender(private val diffSink: DiffSink) {
       layoutModifiers = mutableListOf()
       propertyDiffs = mutableListOf()
 
-      val diff = Diff(
+      return Diff(
         childrenDiffs = existingChildrenDiffs,
         layoutModifiers = existingLayoutModifierDiffs,
         propertyDiffs = existingPropertyDiffs,
       )
-      diffSink.sendDiff(diff)
     }
+    return null
+  }
+
+  public fun addWidget(widget: DiffProducingWidget) {
+    check(nodes.put(widget.id, widget) == null) {
+      "Attempted to add widget with ID ${widget.id.value} but one already exists"
+    }
+  }
+
+  public fun removeWidget(id: Id) {
+    nodes.remove(id)
+  }
+
+  public fun widgetChildren(id: Id, tag: UInt): Widget.Children<Nothing> {
+    return DiffProducingWidgetChildren(id, tag, this)
+  }
+
+  override fun sendEvent(event: Event) {
+    val node = checkNotNull(nodes[event.id]) {
+      // TODO how to handle race where an incoming event targets this removed node?
+      "Unknown node ${event.id} for event with tag ${event.tag}"
+    }
+    node.sendEvent(event)
   }
 }
