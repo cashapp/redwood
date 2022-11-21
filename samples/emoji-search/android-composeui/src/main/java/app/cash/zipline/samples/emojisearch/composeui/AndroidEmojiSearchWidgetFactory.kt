@@ -18,11 +18,15 @@ package app.cash.zipline.samples.emojisearch.composeui
 import androidx.compose.runtime.Composable
 import app.cash.redwood.layout.composeui.ComposeRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseView
 import example.schema.widget.EmojiSearchWidgetFactory
 
-class AndroidEmojiSearchWidgetFactory<T : Any>(private val treehouseApp: TreehouseApp<T>) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
+class AndroidEmojiSearchWidgetFactory<T : Any>(
+  private val treehouseApp: TreehouseApp<T>,
+  private val widgetSystem: TreehouseView.WidgetSystem<T>,
+) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
   override val RedwoodLayout = ComposeRedwoodLayoutWidgetFactory()
-  override fun LazyColumn() = ComposeUiLazyColumn(treehouseApp)
+  override fun LazyColumn() = ComposeUiLazyColumn(treehouseApp, widgetSystem)
   override fun TextInput() = ComposeUiTextInput(treehouseApp.dispatchers)
   override fun Text() = ComposeUiText()
   override fun Image() = ComposeUiImage()

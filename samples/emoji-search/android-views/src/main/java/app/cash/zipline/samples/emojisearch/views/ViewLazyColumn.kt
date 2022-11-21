@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import example.schema.widget.LazyColumn
 import example.values.LazyListIntervalContent
@@ -39,12 +40,14 @@ private data class LazyContentItem(
 
 class ViewLazyColumn<T : Any>(
   treehouseApp: TreehouseApp<T>,
+  widgetSystem: TreehouseView.WidgetSystem<T>,
   override val value: RecyclerView,
 ) : LazyColumn<View> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private val adapter = LazyContentItemListAdapter(
     treehouseApp,
+    widgetSystem,
     contentHeight = TypedValue.applyDimension(
       TypedValue.COMPLEX_UNIT_DIP,
       64F,
@@ -72,13 +75,14 @@ class ViewLazyColumn<T : Any>(
 
   private class LazyContentItemListAdapter<T : Any>(
     private val treehouseApp: TreehouseApp<T>,
+    private val widgetSystem: TreehouseView.WidgetSystem<T>,
     private val contentHeight: Int,
   ) : ListAdapter<LazyContentItem, ViewHolder<T>>(LazyContentItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<T> {
       val container = FrameLayout(parent.context).apply {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
       }
-      return ViewHolder(container, treehouseApp)
+      return ViewHolder(container, treehouseApp, widgetSystem)
     }
 
     override fun onBindViewHolder(holder: ViewHolder<T>, position: Int) {
@@ -91,15 +95,17 @@ class ViewLazyColumn<T : Any>(
 
   private class ViewHolder<T : Any>(
     container: FrameLayout,
-    treehouseApp: TreehouseApp<T>
+    treehouseApp: TreehouseApp<T>,
+    widgetSystem: TreehouseView.WidgetSystem<T>,
   ) : RecyclerView.ViewHolder(container) {
-    val treehouseWidgetView = TreehouseWidgetView(container.context, treehouseApp).apply {
-      layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-        gravity = Gravity.CENTER_HORIZONTAL
-      }
+    val treehouseWidgetView = TreehouseWidgetView(container.context, treehouseApp, widgetSystem)
+      .apply {
+        layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+          gravity = Gravity.CENTER_HORIZONTAL
+        }
 
-      container.addView(this)
-    }
+        container.addView(this)
+      }
   }
 
   private object LazyContentItemDiffCallback : DiffUtil.ItemCallback<LazyContentItem>() {

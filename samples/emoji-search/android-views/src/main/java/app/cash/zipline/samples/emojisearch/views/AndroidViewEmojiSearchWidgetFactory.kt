@@ -23,14 +23,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseView
 import example.schema.widget.EmojiSearchWidgetFactory
 
 class AndroidViewEmojiSearchWidgetFactory<T : Any>(
   private val context: Context,
-  private val treehouseApp: TreehouseApp<T>
+  private val treehouseApp: TreehouseApp<T>,
+  private val widgetSystem: TreehouseView.WidgetSystem<T>,
 ) : EmojiSearchWidgetFactory<View> {
   override val RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context)
-  override fun LazyColumn() = ViewLazyColumn(treehouseApp, RecyclerView(context))
+  override fun LazyColumn() = ViewLazyColumn(treehouseApp, widgetSystem, RecyclerView(context))
   override fun TextInput() = ViewTextInput(context, treehouseApp.dispatchers)
   override fun Text() = ViewText(TextView(context))
   override fun Image() = ViewImage(ImageView(context))

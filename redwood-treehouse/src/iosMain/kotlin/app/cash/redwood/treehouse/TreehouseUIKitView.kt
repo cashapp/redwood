@@ -32,6 +32,7 @@ import platform.UIKit.superview
 
 public class TreehouseUIKitView<T : Any>(
   private val treehouseApp: TreehouseApp<T>,
+  override val widgetSystem: TreehouseView.WidgetSystem<T>,
 ) : TreehouseView<T> {
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()

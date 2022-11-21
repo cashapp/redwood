@@ -15,14 +15,18 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.json.Json
 
 public interface TreehouseView<T : Any> {
   /** This is the actual content, or null if not attached to the screen. */
   public val boundContent: Content<T>?
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
+  public val widgetSystem: WidgetSystem<T>
   public val codeListener: CodeListener
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
@@ -30,6 +34,15 @@ public interface TreehouseView<T : Any> {
 
   public fun interface Content<T : Any> {
     public fun get(app: T): ZiplineTreehouseUi
+  }
+
+  public interface WidgetSystem<T : Any> {
+    /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
+    public fun widgetFactory(
+      app: TreehouseApp<T>,
+      json: Json,
+      protocolMismatchHandler: ProtocolMismatchHandler,
+    ): DiffConsumingWidget.Factory<*>
   }
 
   public open class CodeListener {

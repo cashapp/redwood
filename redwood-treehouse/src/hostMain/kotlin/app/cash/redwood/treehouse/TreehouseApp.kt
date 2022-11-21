@@ -17,7 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.DiffConsumingWidget.Factory
+import app.cash.redwood.protocol.widget.DiffConsumingWidget
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
@@ -46,7 +46,7 @@ public class TreehouseApp<T : Any> internal constructor(
 ) {
   /** All state is confined to [TreehouseDispatchers.zipline]. */
   private var closed = false
-  private var ziplineSession: ZiplineSession<T>? = null
+  private var ziplineSession: ZiplineSession? = null
   private val viewToBoundContent = mutableMapOf<TreehouseView<T>, TreehouseView.Content<T>>()
 
   /**
@@ -131,7 +131,7 @@ public class TreehouseApp<T : Any> internal constructor(
   }
 
   /** The host state for a single code load. We get a new session each time we get new code. */
-  private inner class ZiplineSession<T : Any>(
+  private inner class ZiplineSession(
     val scope: CoroutineScope,
     val context: T,
     val zipline: Zipline,
@@ -169,14 +169,16 @@ public class TreehouseApp<T : Any> internal constructor(
         }
       }
 
+      val widgetFactory = view.widgetSystem.widgetFactory(
+        app = this@TreehouseApp,
+        json = zipline.json,
+        protocolMismatchHandler = eventPublisher.protocolMismatchHandler(this@TreehouseApp),
+      )
+
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       val bridge = ProtocolBridge(
         container = view.children as Widget.Children<Any>,
-        factory = spec.viewBinder.widgetFactory(
-          view,
-          zipline.json,
-          eventPublisher.protocolMismatchHandler(this@TreehouseApp),
-        ) as Factory<Any>,
+        factory = widgetFactory as DiffConsumingWidget.Factory<Any>,
         eventSink = eventSink,
       )
 
@@ -222,8 +224,6 @@ public class TreehouseApp<T : Any> internal constructor(
 
     public open val freshCodePolicy: FreshCodePolicy
       get() = FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY
-
-    public abstract val viewBinder: ViewBinder
 
     public abstract fun bindServices(zipline: Zipline)
     public abstract fun create(zipline: Zipline): T
