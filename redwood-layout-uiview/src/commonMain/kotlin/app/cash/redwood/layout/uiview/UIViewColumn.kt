@@ -17,6 +17,7 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.FlexDirection
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
@@ -33,6 +34,14 @@ internal class UIViewColumn(viewFactory: RedwoodUIScrollViewFactory) : Column<UI
   override val value: UIView get() = container.view
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override fun width(width: Constraint) {
+    container.width(width)
+  }
+
+  override fun height(height: Constraint) {
+    container.height(height)
+  }
 
   override fun padding(padding: Padding) {
     container.padding(padding)

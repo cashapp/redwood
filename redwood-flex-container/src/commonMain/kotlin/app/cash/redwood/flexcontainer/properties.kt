@@ -260,7 +260,7 @@ public value class MeasureSpecMode internal constructor(internal val ordinal: In
 }
 
 /**
- * Describes the padding/margin to apply to a node/flexbox.
+ * Describes the padding/margin to apply to an item/container.
  */
 public data class Spacing(
   val start: Double = 0.0,

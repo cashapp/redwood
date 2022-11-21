@@ -25,6 +25,23 @@ import kotlinx.serialization.Serializable
 // TODO make value classes have private ctors and private vals.
 //  Blocked by https://issuetracker.google.com/issues/251430194.
 
+/** Controls how the container should determine its width/height. */
+@JvmInline
+@Serializable
+public value class Constraint internal constructor(internal val ordinal: Int) {
+
+  override fun toString(): String = when (ordinal) {
+    0 -> "Wrap"
+    1 -> "Fill"
+    else -> throw AssertionError()
+  }
+
+  public companion object {
+    public val Wrap: Constraint = Constraint(0)
+    public val Fill: Constraint = Constraint(1)
+  }
+}
+
 /** Equivalent to `justify-content`. */
 @JvmInline
 @Serializable

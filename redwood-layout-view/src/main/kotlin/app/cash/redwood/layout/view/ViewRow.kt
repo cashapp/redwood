@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.View
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.FlexDirection
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
@@ -34,6 +35,14 @@ internal class ViewRow(context: Context) : Row<View> {
   override val value: View get() = container.view
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override fun width(width: Constraint) {
+    container.width(width)
+  }
+
+  override fun height(height: Constraint) {
+    container.height(height)
+  }
 
   override fun padding(padding: Padding) {
     container.padding(padding)
