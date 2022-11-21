@@ -19,15 +19,15 @@ import Foundation
 import UIKit
 import shared
 
-class IosEmojiSearchWidgetFactory<T : AnyObject>: WidgetEmojiSearchWidgetFactory {
-    let treehouseApp: Redwood_treehouseTreehouseApp<T>
+class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory {
+    let treehouseApp: Redwood_treehouseTreehouseApp<A>
     let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()
 
     var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
         Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
 
-    init(treehouseApp: Redwood_treehouseTreehouseApp<T>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
+    init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
         self.widgetSystem = widgetSystem
     }

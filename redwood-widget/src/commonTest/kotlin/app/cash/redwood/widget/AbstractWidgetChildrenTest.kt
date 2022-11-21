@@ -19,9 +19,9 @@ import app.cash.redwood.LayoutModifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-abstract class AbstractWidgetChildrenTest<T : Any> {
-  abstract val children: Widget.Children<T>
-  abstract fun widget(name: String): T
+abstract class AbstractWidgetChildrenTest<W : Any> {
+  abstract val children: Widget.Children<W>
+  abstract fun widget(name: String): W
   abstract fun names(): List<String>
 
   @Test fun insertAppend() {
@@ -138,11 +138,11 @@ abstract class AbstractWidgetChildrenTest<T : Any> {
     assertEquals(listOf("one", "two", "three"), names())
   }
 
-  private fun <T : Any> Widget.Children<T>.insert(index: Int, widget: T) {
+  private fun <W : Any> Widget.Children<W>.insert(index: Int, widget: W) {
     insert(
       index = index,
-      widget = object : Widget<T> {
-        override val value: T = widget
+      widget = object : Widget<W> {
+        override val value: W = widget
         override var layoutModifiers: LayoutModifier = LayoutModifier
       },
     )

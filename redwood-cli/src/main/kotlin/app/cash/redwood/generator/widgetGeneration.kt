@@ -30,13 +30,13 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-interface SunspotWidgetFactory<T : Any> : Widget.Factory<T> {
+interface SunspotWidgetFactory<W : Any> : Widget.Factory<W> {
   /** {tag=1} */
-  fun SunspotText(): SunspotText<T>
+  fun SunspotText(): SunspotText<W>
   /** {tag=2} */
-  fun SunspotButton(): SunspotButton<T>
+  fun SunspotButton(): SunspotButton<W>
 
-  val RedwoodLayout: RedwoodLayoutWidgetFactory<T>
+  val RedwoodLayout: RedwoodLayoutWidgetFactory<W>
 }
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
@@ -44,14 +44,14 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(widgetFactoryType.packageName, widgetFactoryType.simpleName)
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
-        .addTypeVariable(typeVariableT)
-        .addSuperinterface(RedwoodWidget.WidgetFactory.parameterizedBy(typeVariableT))
+        .addTypeVariable(typeVariableW)
+        .addSuperinterface(RedwoodWidget.WidgetFactory.parameterizedBy(typeVariableW))
         .apply {
           for (node in schema.widgets) {
             addFunction(
               FunSpec.builder(node.type.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
-                .returns(schema.widgetType(node).parameterizedBy(typeVariableT))
+                .returns(schema.widgetType(node).parameterizedBy(typeVariableW))
                 .addKdoc("{tag=${node.tag}}")
                 .build(),
             )
@@ -59,7 +59,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
           for (dependency in schema.dependencies) {
             addProperty(
               dependency.name,
-              dependency.getWidgetFactoryType().parameterizedBy(typeVariableT),
+              dependency.getWidgetFactoryType().parameterizedBy(typeVariableW),
             )
           }
         }
@@ -70,7 +70,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 
 /*
 /** {tag=2} */
-interface SunspotButton<T: Any> : Widget<T> {
+interface SunspotButton<W: Any> : Widget<W> {
   /** {tag=1} */
   fun text(text: String?)
   /** {tag=2} */
@@ -85,8 +85,8 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
     .addType(
       TypeSpec.interfaceBuilder(flatName)
         .addModifiers(PUBLIC)
-        .addTypeVariable(typeVariableT)
-        .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableT))
+        .addTypeVariable(typeVariableW)
+        .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
         .addKdoc("{tag=${widget.tag}}")
         .apply {
           for (trait in widget.traits) {

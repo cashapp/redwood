@@ -38,10 +38,10 @@ public interface RedwoodComposition {
  */
 @Suppress("UNUSED_PARAMETER")
 @Deprecated("Not implemented yet", level = ERROR)
-public fun <T : Any> RedwoodComposition(
+public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
-  container: Widget.Children<T>,
-  factory: Widget.Factory<T>,
+  container: Widget.Children<W>,
+  factory: Widget.Factory<W>,
 ): RedwoodComposition {
   TODO()
 }
@@ -118,12 +118,12 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
  */
 // TODO Make this type private when the applier moves into this module.
 @Suppress("ClassName") // Hiding from auto-complete.
-public class _ChildrenWidget<T : Any> private constructor(
-  public var accessor: ((Widget<T>) -> Widget.Children<T>)?,
-  public var children: Widget.Children<T>?,
-) : Widget<T> {
-  public constructor(accessor: (Widget<T>) -> Widget.Children<T>) : this(accessor, null)
-  public constructor(children: Widget.Children<T>) : this(null, children)
+public class _ChildrenWidget<W : Any> private constructor(
+  public var accessor: ((Widget<W>) -> Widget.Children<W>)?,
+  public var children: Widget.Children<W>?,
+) : Widget<W> {
+  public constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null)
+  public constructor(children: Widget.Children<W>) : this(null, children)
 
   override val value: Nothing get() = throw AssertionError()
   override var layoutModifiers: LayoutModifier

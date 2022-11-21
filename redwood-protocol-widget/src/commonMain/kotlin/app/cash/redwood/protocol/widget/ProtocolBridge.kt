@@ -34,9 +34,9 @@ import kotlinx.serialization.json.JsonArray
  * [PropertyDiff]s and [LayoutModifiers]s are forwarded to their respective widgets. Events from
  * widgets are forwarded to [eventSink].
  */
-public class ProtocolBridge<T : Any>(
-  container: Widget.Children<T>,
-  private val factory: DiffConsumingWidget.Factory<T>,
+public class ProtocolBridge<W : Any>(
+  container: Widget.Children<W>,
+  private val factory: DiffConsumingWidget.Factory<W>,
   private val eventSink: EventSink,
 ) : DiffSink {
   private val nodes = mutableMapOf(
@@ -84,24 +84,24 @@ public class ProtocolBridge<T : Any>(
     }
   }
 
-  private fun node(id: Id): Node<T> {
+  private fun node(id: Id): Node<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID $id" }
   }
 }
 
-private class Node<T : Any>(
-  val widget: DiffConsumingWidget<T>,
+private class Node<W : Any>(
+  val widget: DiffConsumingWidget<W>,
   val parentId: Id,
-  val parentChildren: Widget.Children<T>,
+  val parentChildren: Widget.Children<W>,
 ) {
   private var _childIds: MutableList<Id>? = null
   val childIds: MutableList<Id>
     get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
 }
 
-private class DiffConsumingProtocolRoot<T : Any>(
-  private val children: Widget.Children<T>,
-) : DiffConsumingWidget<T> {
+private class DiffConsumingProtocolRoot<W : Any>(
+  private val children: Widget.Children<W>,
+) : DiffConsumingWidget<W> {
   override var layoutModifiers: LayoutModifier
     get() = throw AssertionError()
     set(value) = throw AssertionError("unexpected: $value")
@@ -119,5 +119,5 @@ private class DiffConsumingProtocolRoot<T : Any>(
     else -> throw AssertionError("unexpected: $tag")
   }
 
-  override val value: T get() = throw AssertionError()
+  override val value: W get() = throw AssertionError()
 }

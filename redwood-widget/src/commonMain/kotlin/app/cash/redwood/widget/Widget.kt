@@ -17,12 +17,12 @@ package app.cash.redwood.widget
 
 import app.cash.redwood.LayoutModifier
 
-public interface Widget<T : Any> {
+public interface Widget<W : Any> {
   /**
    * The underlying platform-specific representation of this widget. This value will be supplied to
    * another widget's [Children] for display.
    */
-  public val value: T
+  public val value: W
 
   /**
    * A collection of elements that change how a widget is laid out.
@@ -40,9 +40,9 @@ public interface Widget<T : Any> {
    * Arguments to these methods can be assumed to be validated against the current state of the
    * list. No additional validation needs to be performed (for example, checking index bounds).
    */
-  public interface Children<T : Any> {
+  public interface Children<W : Any> {
     /** Insert child [widget] at [index]. */
-    public fun insert(index: Int, widget: Widget<T>)
+    public fun insert(index: Int, widget: Widget<W>)
 
     /**
      * Move [count] child widgets from [fromIndex] to [toIndex].

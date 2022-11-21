@@ -29,15 +29,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
-public class TreehouseWidgetView<T : Any>(
+public class TreehouseWidgetView<A : Any>(
   context: Context,
-  private val treehouseApp: TreehouseApp<T>,
-  override val widgetSystem: TreehouseView.WidgetSystem<T>,
-) : FrameLayout(context), TreehouseView<T> {
+  private val treehouseApp: TreehouseApp<A>,
+  override val widgetSystem: TreehouseView.WidgetSystem<A>,
+) : FrameLayout(context), TreehouseView<A> {
   public override var codeListener: CodeListener = CodeListener()
-  private var content: TreehouseView.Content<T>? = null
+  private var content: TreehouseView.Content<A>? = null
 
-  override val boundContent: TreehouseView.Content<T>?
+  override val boundContent: TreehouseView.Content<A>?
     get() {
       return when {
         isAttachedToWindow -> content
@@ -57,7 +57,7 @@ public class TreehouseWidgetView<T : Any>(
     children.remove(0, childCount)
   }
 
-  public fun setContent(content: TreehouseView.Content<T>) {
+  public fun setContent(content: TreehouseView.Content<A>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content
     treehouseApp.onContentChanged(this)

@@ -21,25 +21,25 @@ import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
-public interface TreehouseView<T : Any> {
+public interface TreehouseView<A : Any> {
   /** This is the actual content, or null if not attached to the screen. */
-  public val boundContent: Content<T>?
+  public val boundContent: Content<A>?
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
-  public val widgetSystem: WidgetSystem<T>
+  public val widgetSystem: WidgetSystem<A>
   public val codeListener: CodeListener
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
-  public fun interface Content<T : Any> {
-    public fun get(app: T): ZiplineTreehouseUi
+  public fun interface Content<A : Any> {
+    public fun get(app: A): ZiplineTreehouseUi
   }
 
-  public interface WidgetSystem<T : Any> {
+  public interface WidgetSystem<A : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
-      app: TreehouseApp<T>,
+      app: TreehouseApp<A>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingWidget.Factory<*>
