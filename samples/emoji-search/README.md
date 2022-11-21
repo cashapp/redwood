@@ -30,10 +30,16 @@ run until you CTRL+C the process.
 Running Emoji-Search on Android
 -------------------------------
 
-Run this:
+Run this (to use the Compose UI frontend):
 
 ```
-./gradlew :samples:emoji-search:android:installDebug
+./gradlew :samples:emoji-search:android-composeui:installDebug
+```
+
+Or this (to use the Android View frontend):
+
+```
+./gradlew :samples:emoji-search:android-views:installDebug
 ```
 
 This Android app assumes it's running in an emulator and will attempt to fetch JavaScript from the
