@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.values
+package app.cash.redwood.treehouse.lazylayout.api
 
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.zipline.ZiplineService
@@ -21,12 +21,12 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LazyListIntervalContent(
-  @Contextual val count: Int,
-  @Contextual val itemProvider: Item,
+public class LazyListIntervalContent(
+  @Contextual public val count: Int,
+  @Contextual public val itemProvider: Item,
 ) {
 
-  interface Item : ZiplineService {
-    fun get(index: Int): ZiplineTreehouseUi
+  public interface Item : ZiplineService {
+    public fun get(index: Int): ZiplineTreehouseUi
   }
 }

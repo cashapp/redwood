@@ -20,7 +20,7 @@ import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import example.values.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 interface DiffProducingWidgetFactoryProvider {
   val factory: DiffProducingWidget.Factory
