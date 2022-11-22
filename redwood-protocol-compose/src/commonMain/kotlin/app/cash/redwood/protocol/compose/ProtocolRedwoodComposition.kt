@@ -21,7 +21,6 @@ import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.currentComposer
-import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
@@ -33,10 +32,6 @@ import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-public interface ProtocolRedwoodComposition : RedwoodComposition {
-  public fun start(diffSink: DiffSink)
-}
-
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
@@ -44,59 +39,44 @@ public interface ProtocolRedwoodComposition : RedwoodComposition {
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
   factory: DiffProducingWidget.Factory,
+  diffSink: DiffSink,
   widgetVersion: UInt,
-): ProtocolRedwoodComposition {
-  return DiffProducingRedwoodComposition(scope, factory, widgetVersion)
+): RedwoodComposition {
+  val bridge = factory.bridge
+  val root = DiffProducingWidgetChildren(Id.Root, ChildrenDiff.RootChildrenTag, bridge)
+  val applier = ProtocolApplier(factory, root) {
+    bridge.createDiffOrNull()?.let(diffSink::sendDiff)
+  }
+  return DiffProducingRedwoodComposition(scope, applier, widgetVersion)
 }
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
-  private val factory: DiffProducingWidget.Factory,
+  applier: ProtocolApplier,
   private val widgetVersion: UInt,
-) : ProtocolRedwoodComposition {
+) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
+  private val composition = Composition(applier, recomposer)
 
-  private lateinit var applier: ProtocolApplier
-  private lateinit var composition: Composition
-
-  private lateinit var snapshotHandle: ObserverHandle
   private var snapshotJob: Job? = null
-  private lateinit var recomposeJob: Job
-
-  override fun start(diffSink: DiffSink) {
-    check(!this::applier.isInitialized) { "display already initialized" }
-
-    val bridge = factory.bridge
-    val root = DiffProducingWidgetChildren(Id.Root, ChildrenDiff.RootChildrenTag, bridge)
-    applier = ProtocolApplier(factory, root) {
-      bridge.createDiffOrNull()?.let(diffSink::sendDiff)
-    }
-    composition = Composition(applier, recomposer)
-
+  private val snapshotHandle = Snapshot.registerGlobalWriteObserver {
     // Set up a trigger to apply changes on the next frame if a global write was observed.
-    // TODO where should this live?
-    var applyScheduled = false
-    snapshotHandle = Snapshot.registerGlobalWriteObserver {
-      if (!applyScheduled) {
-        applyScheduled = true
-        snapshotJob = scope.launch {
-          applyScheduled = false
-          Snapshot.sendApplyNotifications()
-        }
+    if (snapshotJob == null) {
+      snapshotJob = scope.launch {
+        snapshotJob = null
+        Snapshot.sendApplyNotifications()
       }
     }
+  }
 
-    // These launch undispatched so that they reach their first suspension points before returning
-    // control to the caller.
-    recomposeJob = scope.launch(start = UNDISPATCHED) {
-      recomposer.runRecomposeAndApplyChanges()
-    }
+  // These launch undispatched so that they reach their first suspension points before returning
+  // control to the caller.
+  private val recomposeJob = scope.launch(start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
   }
 
   @OptIn(InternalComposeApi::class) // See internal function comment below.
   override fun setContent(content: @Composable () -> Unit) {
-    check(this::applier.isInitialized) { "display not initialized" }
-
     // TODO using CompositionLocalProvider fails to link in release mode with:
     //  inlinable function call in a function with debug info must have a !dbg location
     //    %16 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %15)

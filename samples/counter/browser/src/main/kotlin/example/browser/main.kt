@@ -31,14 +31,7 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
-  @OptIn(DelicateCoroutinesApi::class)
-  val scope = GlobalScope + WindowAnimationFrameClock
   val composeBridge = ComposeProtocolBridge()
-  val composition = ProtocolRedwoodComposition(
-    scope = scope,
-    factory = DiffProducingSunspotWidgetFactory(composeBridge),
-    widgetVersion = 1U,
-  )
 
   val content = document.getElementById("content")!! as HTMLElement
   val factory = DiffConsumingSunspotWidgetFactory(HtmlSunspotNodeFactory(document))
@@ -48,8 +41,14 @@ fun main() {
     eventSink = composeBridge,
   )
 
-  composition.start(widgetBridge)
-
+  @OptIn(DelicateCoroutinesApi::class)
+  val scope = GlobalScope + WindowAnimationFrameClock
+  val composition = ProtocolRedwoodComposition(
+    scope = scope,
+    factory = DiffProducingSunspotWidgetFactory(composeBridge),
+    diffSink = widgetBridge,
+    widgetVersion = 1U,
+  )
   composition.setContent {
     Counter()
   }

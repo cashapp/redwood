@@ -38,11 +38,6 @@ class CounterViewControllerDelegate(
 
   init {
     val composeBridge = ComposeProtocolBridge()
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(composeBridge),
-      widgetVersion = 1U,
-    )
 
     val children = UIViewChildren(
       parent = root,
@@ -55,8 +50,12 @@ class CounterViewControllerDelegate(
       eventSink = composeBridge,
     )
 
-    composition.start(widgetBridge)
-
+    val composition = ProtocolRedwoodComposition(
+      scope = scope,
+      factory = DiffProducingSunspotWidgetFactory(composeBridge),
+      diffSink = widgetBridge,
+      widgetVersion = 1U,
+    )
     composition.setContent {
       Counter()
     }

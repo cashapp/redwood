@@ -19,6 +19,7 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
@@ -36,29 +37,30 @@ public fun TreehouseUi.asZiplineTreehouseUi(
   factory: DiffProducingWidget.Factory,
   widgetVersion: UInt,
 ): ZiplineTreehouseUi {
-  val bridge = factory.bridge
-  val composition = ProtocolRedwoodComposition(
-    scope = scope + frameClock,
-    factory = factory,
-    widgetVersion = widgetVersion,
-  )
-  return RedwoodZiplineTreehouseUi(composition, this, bridge)
+  return RedwoodZiplineTreehouseUi(factory, widgetVersion, this)
 }
 
 private class RedwoodZiplineTreehouseUi(
-  private val composition: ProtocolRedwoodComposition,
+  private val factory: DiffProducingWidget.Factory,
+  private val widgetVersion: UInt,
   private val treehouseUi: TreehouseUi,
-  private val eventSink: EventSink,
-) : ZiplineTreehouseUi, EventSink by eventSink {
-  private var diffSinkToClose: DiffSinkService? = null
+) : ZiplineTreehouseUi, EventSink by factory.bridge {
+  private lateinit var diffSinkToClose: DiffSinkService
+  private lateinit var composition: RedwoodComposition
 
   override fun start(
     diffSink: DiffSinkService,
     hostConfigurations: FlowWithInitialValue<HostConfiguration>,
   ) {
-    check(diffSinkToClose == null)
+    check(::diffSinkToClose.isInitialized)
     diffSinkToClose = diffSink
-    composition.start(diffSink)
+
+    val composition = ProtocolRedwoodComposition(
+      scope = scope + frameClock,
+      factory = factory,
+      widgetVersion = widgetVersion,
+      diffSink = diffSink,
+    )
 
     val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
     composition.setContent {
@@ -71,7 +73,7 @@ private class RedwoodZiplineTreehouseUi(
 
   override fun close() {
     composition.cancel()
-    diffSinkToClose?.close()
+    diffSinkToClose.close()
   }
 }
 
