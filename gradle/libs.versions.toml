@@ -42,6 +42,7 @@ androidx-compose-material = { module = "androidx.compose.material:material", ver
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
 
 google-material = { module = "com.google.android.material:material", version = "1.4.0" }
 

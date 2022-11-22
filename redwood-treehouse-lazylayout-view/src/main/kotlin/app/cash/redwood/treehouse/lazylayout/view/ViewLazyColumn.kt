@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch.views
+package app.cash.redwood.treehouse.lazylayout.view
 
 import android.util.TypedValue
 import android.view.Gravity
@@ -31,14 +31,14 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
-import example.schema.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 
 private data class LazyContentItem(
   val index: Int,
   val item: LazyListIntervalContent.Item,
 )
 
-class ViewLazyColumn<A : Any>(
+internal class ViewLazyColumn<A : Any>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
   override val value: RecyclerView,
@@ -118,6 +118,5 @@ class ViewLazyColumn<A : Any>(
       oldItem: LazyContentItem,
       newItem: LazyContentItem,
     ) = oldItem == newItem
-
   }
 }

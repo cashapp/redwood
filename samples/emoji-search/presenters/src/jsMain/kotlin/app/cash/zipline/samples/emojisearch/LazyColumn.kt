@@ -30,7 +30,7 @@ interface DiffProducingWidgetFactoryProvider {
 fun DiffProducingWidgetFactoryProvider.LazyColumn(content: LazyListScope.() -> Unit) {
   val lazyListScope = LazyListScope(factory)
   content(lazyListScope)
-  example.schema.compose.LazyColumn(lazyListScope.intervals)
+  app.cash.redwood.treehouse.lazylayout.compose.LazyColumn(lazyListScope.intervals)
 }
 
 class LazyListScope(private val factory: DiffProducingWidget.Factory) {

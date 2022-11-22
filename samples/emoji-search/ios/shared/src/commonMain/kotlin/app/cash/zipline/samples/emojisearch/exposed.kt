@@ -22,6 +22,7 @@ import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
 import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
 import kotlinx.serialization.json.Json
@@ -36,6 +37,7 @@ fun exposedTypes(
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   treehouseUIKitView: TreehouseUIKitView<*>,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
+  uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
   widgetSystem: TreehouseView.WidgetSystem<*>,
 ) {
   throw AssertionError()

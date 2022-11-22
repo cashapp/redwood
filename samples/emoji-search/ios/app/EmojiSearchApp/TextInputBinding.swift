@@ -24,7 +24,7 @@ class TextInputBinding: WidgetTextInput {
         view.autocapitalizationType = .none
         return view
     }()
-    
+
     func state(state: ValuesTextFieldState) {
         root.text = state.text
     }

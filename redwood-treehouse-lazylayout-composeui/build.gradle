@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+dependencies {
+  api projects.redwoodTreehouseComposeui
+  api projects.redwoodTreehouseLazylayoutSchema.widget
+  implementation projects.redwoodWidgetCompose
+  implementation libs.androidx.core
+  implementation libs.androidx.compose.foundation
+}
+
+android {
+  namespace 'app.cash.redwood.treehouse.lazylayout.composeui'
+
+  buildFeatures {
+    compose = true
+  }
+}

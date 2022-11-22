@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch.composeui
+package app.cash.redwood.treehouse.lazylayout.composeui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +30,10 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
-import example.schema.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 
-class ComposeUiLazyColumn<W : Any>(
+internal class ComposeUiLazyColumn<W : Any>(
   treehouseApp: TreehouseApp<W>,
   widgetSystem: TreehouseView.WidgetSystem<W>,
 ) : LazyColumn<@Composable () -> Unit> {

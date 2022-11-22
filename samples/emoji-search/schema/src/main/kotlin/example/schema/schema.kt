@@ -21,18 +21,18 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.RedwoodTreehouseLazyLayout
 import example.values.TextFieldState
 
 @Schema(
   members = [
-    LazyColumn::class,
     TextInput::class,
     Text::class,
     Image::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
+    Dependency(2, RedwoodTreehouseLazyLayout::class),
   ],
 )
 interface EmojiSearch
@@ -55,9 +55,4 @@ data class Text(
 @Widget(3)
 data class Image(
   @Property(1) val url: String,
-)
-
-@Widget(4)
-data class LazyColumn(
-  @Property(1) val intervals: List<LazyListIntervalContent>,
 )

@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+dependencies {
+  api projects.redwoodTreehouseLazylayoutSchema.widget
+  implementation libs.androidx.core
+  implementation libs.androidx.recyclerview
+}
+
+android {
+  namespace 'app.cash.redwood.treehouse.lazylayout.view'
+}
