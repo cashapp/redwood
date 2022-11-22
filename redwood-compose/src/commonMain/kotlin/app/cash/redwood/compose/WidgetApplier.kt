@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
-import app.cash.redwood.compose._ChildrenWidget
-import app.cash.redwood.compose._RedwoodApplier
 import app.cash.redwood.widget.Widget
 
 /**
- * An [Applier] which records operations on the tree as models which can then be separately applied
- * by the display layer. Additionally, it has special handling for emulating nodes which contain
- * multiple children.
+ * An [Applier] for a tree of [Widget]s.
  *
- * Nodes in the tree are required to alternate between [_ChildrenWidget] instances and
- * [DiffProducingWidget] subtypes starting from the root. This invariant is maintained by
- * virtue of the fact that all of the input `@Composables` should be generated code.
+ * This applier has special handling for emulating nodes which contain multiple children. Nodes in
+ * the tree are required to alternate between [ChildrenWidget] instances and user [Widget] subtypes
+ * starting at the root. This invariant is maintained by virtue of the fact that all of the input
+ * `@Composables` should be generated Redwood code.
  *
- * For example, a node tree may look like this:
+ * For example, a widget tree may look like this:
  * ```
  *                    Children(tag=1)
  *                     /          \
@@ -43,27 +40,15 @@ import app.cash.redwood.widget.Widget
  *        |              |              /         \
  *   ButtonNode     ButtonNode     TextNode     TextNode
  * ```
- * But the protocol diff output would only record [DiffProducingWidget] nodes using
- * their [DiffProducingWidget.id] and [DiffProducingWidget.type] value:
- * ```
- * Insert(id=<root-id>, tag=1, type=<toolbar-type>, childId=<toolbar-id>)
- * Insert(id=<toolbar-id>, tag=1, type=<button-type>, childId=..)
- * Insert(id=<toolbar-id>, tag=2, type=<button-type>, childId=..)
- * Insert(id=<root-id>, tag=1, type=<list-type>, childId=<list-id>)
- * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
- * Insert(id=<list-id>, tag=1, type=<text-type>, childId=..)
- * ```
  * The tree produced by this applier is not a real tree. We do not maintain any relationship from
- * the user nodes to the synthetic children nodes as they can never be individually moved/removed.
- * The hierarchy is maintained by Compose's slot table and is represented by dotted lines.
+ * user widgets to the synthetic children widgets as they can never be individually moved/removed.
+ * The hierarchy is maintained by Compose's slot table and is represented by dotted lines above.
  */
-internal class ProtocolApplier(
-  override val factory: Widget.Factory<Nothing>,
-  rootChildren: Widget.Children<Nothing>,
+public class WidgetApplier<W : Any>(
+  public val factory: Widget.Factory<W>,
+  root: Widget.Children<W>,
   private val onEndChanges: () -> Unit = {},
-) : _RedwoodApplier<Widget.Factory<Nothing>>, AbstractApplier<Widget<Nothing>>(
-  root = _ChildrenWidget(rootChildren),
-) {
+) : AbstractApplier<Widget<W>>(ChildrenWidget(root)) {
   private var closed = false
 
   override fun onEndChanges() {
@@ -72,33 +57,33 @@ internal class ProtocolApplier(
     onEndChanges.invoke()
   }
 
-  override fun insertTopDown(index: Int, instance: Widget<Nothing>) {
+  override fun insertTopDown(index: Int, instance: Widget<W>) {
     check(!closed)
 
-    if (instance is _ChildrenWidget) {
+    if (instance is ChildrenWidget) {
       instance.children = instance.accessor!!.invoke(current)
       instance.accessor = null
     } else {
-      val current = current as _ChildrenWidget
+      val current = current as ChildrenWidget
       current.children!!.insert(index, instance)
     }
   }
 
-  override fun insertBottomUp(index: Int, instance: Widget<Nothing>) {
+  override fun insertBottomUp(index: Int, instance: Widget<W>) {
     // Ignored, we insert top-down.
   }
 
   override fun remove(index: Int, count: Int) {
     check(!closed)
 
-    val current = current as _ChildrenWidget
+    val current = current as ChildrenWidget
     current.children!!.remove(index, count)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
     check(!closed)
 
-    val current = current as _ChildrenWidget
+    val current = current as ChildrenWidget
     current.children!!.move(from, to, count)
   }
 

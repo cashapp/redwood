@@ -24,6 +24,7 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.compose.WidgetApplier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.Id
@@ -44,7 +45,7 @@ public fun ProtocolRedwoodComposition(
 ): RedwoodComposition {
   val bridge = factory.bridge
   val root = DiffProducingWidgetChildren(Id.Root, ChildrenDiff.RootChildrenTag, bridge)
-  val applier = ProtocolApplier(factory, root) {
+  val applier = WidgetApplier(factory, root) {
     bridge.createDiffOrNull()?.let(diffSink::sendDiff)
   }
   return DiffProducingRedwoodComposition(scope, applier, widgetVersion)
@@ -52,7 +53,7 @@ public fun ProtocolRedwoodComposition(
 
 private class DiffProducingRedwoodComposition(
   private val scope: CoroutineScope,
-  applier: ProtocolApplier,
+  applier: WidgetApplier<Nothing>,
   private val widgetVersion: UInt,
 ) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
