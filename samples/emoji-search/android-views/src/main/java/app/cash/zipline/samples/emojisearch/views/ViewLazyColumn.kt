@@ -30,8 +30,8 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import example.schema.widget.LazyColumn
-import example.values.LazyListIntervalContent
 
 private data class LazyContentItem(
   val index: Int,

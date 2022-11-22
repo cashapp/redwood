@@ -15,8 +15,8 @@
  */
 package app.cash.zipline.samples.emojisearch
 
+import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.zipline.ziplineServiceSerializer
-import example.values.LazyListIntervalContent
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 

@@ -21,7 +21,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import example.values.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import example.values.TextFieldState
 
 @Schema(

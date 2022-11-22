@@ -31,7 +31,7 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import example.schema.widget.LazyColumn
-import example.values.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 class ComposeUiLazyColumn<W : Any>(
   treehouseApp: TreehouseApp<W>,

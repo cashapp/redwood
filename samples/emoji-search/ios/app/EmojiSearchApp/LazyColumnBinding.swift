@@ -21,7 +21,7 @@ class LazyColumnBinding<A : AnyObject>: NSObject, WidgetLazyColumn, UITableViewD
     private let treehouseApp: Redwood_treehouseTreehouseApp<A>
     private let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     private let root = UITableView()
-    private var intervals: [ValuesLazyListIntervalContent] = []
+    private var intervals: [Redwood_treehouse_lazylayout_apiLazyListIntervalContent] = []
 
     init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
@@ -30,7 +30,7 @@ class LazyColumnBinding<A : AnyObject>: NSObject, WidgetLazyColumn, UITableViewD
         root.dataSource = self
     }
 
-    func intervals(intervals: [ValuesLazyListIntervalContent]) {
+    func intervals(intervals: [Redwood_treehouse_lazylayout_apiLazyListIntervalContent]) {
         self.intervals = intervals
         root.reloadData()
     }
@@ -55,10 +55,10 @@ class LazyColumnBinding<A : AnyObject>: NSObject, WidgetLazyColumn, UITableViewD
 }
 
 private class CellContent : Redwood_treehouseTreehouseViewContent {
-    private let itemProvider: ValuesLazyListIntervalContentItem
+    private let itemProvider: Redwood_treehouse_lazylayout_apiLazyListIntervalContentItem
     private let index: Int
 
-    init(itemProvider: ValuesLazyListIntervalContentItem, index: Int) {
+    init(itemProvider: Redwood_treehouse_lazylayout_apiLazyListIntervalContentItem, index: Int) {
         self.itemProvider = itemProvider
         self.index = index
     }

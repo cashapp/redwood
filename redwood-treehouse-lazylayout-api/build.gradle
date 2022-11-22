@@ -1,23 +1,18 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.zipline'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  js {
-    browser()
-  }
-  jvm()
+  apply from: "${rootDir}/addAllTargets.gradle"
 
   sourceSets {
     commonMain {
       dependencies {
-        implementation libs.jetbrains.compose.runtime
         implementation libs.kotlinx.serialization.core
+        api libs.zipline
         api projects.redwoodTreehouse
-        implementation projects.redwoodWidget
       }
     }
   }

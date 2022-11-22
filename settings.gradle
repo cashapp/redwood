@@ -19,6 +19,7 @@ include ':redwood-schema'
 include ':redwood-schema-annotations'
 include ':redwood-treehouse'
 include ':redwood-treehouse-composeui'
+include ':redwood-treehouse-lazylayout-api'
 include ':redwood-widget'
 include ':redwood-widget-compose'
 
