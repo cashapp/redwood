@@ -52,7 +52,7 @@ private class RedwoodZiplineTreehouseUi(
     diffSink: DiffSinkService,
     hostConfigurations: FlowWithInitialValue<HostConfiguration>,
   ) {
-    check(::diffSinkToClose.isInitialized)
+    check(!::diffSinkToClose.isInitialized) { "start() can only be called once." }
     diffSinkToClose = diffSink
 
     val composition = ProtocolRedwoodComposition(
@@ -61,6 +61,7 @@ private class RedwoodZiplineTreehouseUi(
       widgetVersion = widgetVersion,
       diffSink = diffSink,
     )
+    this.composition = composition
 
     val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
     composition.setContent {
