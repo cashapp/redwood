@@ -10,8 +10,19 @@ dependencies {
   implementation libs.google.material
   implementation libs.androidx.core
   implementation libs.androidx.appCompat
+
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation projects.samples.counter.androidTests
 }
 
 android {
-  namespace 'example.android.views'
+  namespace 'com.example.redwood.counter.android.views'
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  buildFeatures {
+    buildConfig = true
+  }
 }
