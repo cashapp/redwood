@@ -27,6 +27,8 @@ module:redwood-schema-annotations
 app.cash.redwood.schema
 module:redwood-treehouse
 app.cash.redwood.treehouse
+module:redwood-treehouse-lazylayout-api
+app.cash.redwood.treehouse.lazylayout.api
 module:redwood-widget
 app.cash.redwood.widget
 module:redwood-widget-compose
