@@ -65,9 +65,10 @@ public inline fun <F : Widget.Factory<*>, W : Widget<*>> _RedwoodComposeNode(
 
   if (currentComposer.inserting) {
     @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as _RedwoodApplier<F>
+    val applier = currentComposer.applier as WidgetApplier<F>
     currentComposer.createNode {
-      factory(applier.factory)
+      @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
+      factory(applier.factory as F)
     }
   } else {
     currentComposer.useNode()
@@ -89,10 +90,10 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
     accessor: (W) -> Widget.Children<*>,
     content: @Composable () -> Unit,
   ) {
-    ComposeNode<_ChildrenWidget<*>, Applier<*>>(
+    ComposeNode<ChildrenWidget<*>, Applier<*>>(
       factory = {
         @Suppress("UNCHECKED_CAST")
-        _ChildrenWidget(accessor as (Widget<Any>) -> Widget.Children<Any>)
+        ChildrenWidget(accessor as (Widget<Any>) -> Widget.Children<Any>)
       },
       update = {},
       content = content,
@@ -116,25 +117,15 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
  *
  * @suppress For generated code usage only.
  */
-// TODO Make this type private when the applier moves into this module.
-@Suppress("ClassName") // Hiding from auto-complete.
-public class _ChildrenWidget<W : Any> private constructor(
-  public var accessor: ((Widget<W>) -> Widget.Children<W>)?,
-  public var children: Widget.Children<W>?,
+internal class ChildrenWidget<W : Any> private constructor(
+  var accessor: ((Widget<W>) -> Widget.Children<W>)?,
+  var children: Widget.Children<W>?,
 ) : Widget<W> {
-  public constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null)
-  public constructor(children: Widget.Children<W>) : this(null, children)
+  constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null)
+  constructor(children: Widget.Children<W>) : this(null, children)
 
   override val value: Nothing get() = throw AssertionError()
   override var layoutModifiers: LayoutModifier
     get() = throw AssertionError()
     set(_) { throw AssertionError() }
-}
-
-/**
- * @suppress For generated code usage only.
- */
-@Suppress("ClassName") // Hiding from auto-complete.
-public interface _RedwoodApplier<F : Widget.Factory<*>> {
-  public val factory: F
 }
