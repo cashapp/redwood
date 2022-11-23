@@ -18,16 +18,11 @@ package example.android
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.AndroidUiDispatcher
-import app.cash.redwood.protocol.compose.ProtocolBridge as ComposeProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
-import example.sunspot.compose.DiffProducingSunspotWidgetFactory
-import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -37,38 +32,21 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val widgets = initComposition {
+    val children = ComposeWidgetChildren()
+    val composition = RedwoodComposition(
+      scope = scope,
+      container = children,
+      factory = AndroidSunspotWidgetFactory(),
+    )
+    composition.setContent {
       Counter()
     }
 
     setContent {
       CounterTheme {
-        widgets.render()
+        children.render()
       }
     }
-  }
-
-  private fun initComposition(content: @Composable () -> Unit): ComposeWidgetChildren {
-    val composeChildren = ComposeWidgetChildren()
-
-    val composeBridge = ComposeProtocolBridge()
-
-    val factory = DiffConsumingSunspotWidgetFactory(AndroidSunspotWidgetFactory())
-    val widgetBridge = ProtocolBridge(
-      container = composeChildren,
-      factory = factory,
-      eventSink = composeBridge,
-    )
-
-    val composition = ProtocolRedwoodComposition(
-      scope = scope,
-      factory = DiffProducingSunspotWidgetFactory(composeBridge),
-      diffSink = widgetBridge,
-      widgetVersion = 1U,
-    )
-    composition.setContent(content)
-
-    return composeChildren
   }
 
   override fun onDestroy() {

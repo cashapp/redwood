@@ -39,9 +39,7 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:counter:presenter'
   include ':samples:counter:sunspot'
   include ':samples:counter:sunspot:compose'
-  include ':samples:counter:sunspot:compose:protocol'
   include ':samples:counter:sunspot:widget'
-  include ':samples:counter:sunspot:widget:protocol'
 
   include ':samples:emoji-search:android-composeui'
   include ':samples:emoji-search:android-views'

@@ -15,15 +15,11 @@
  */
 package example.browser
 
+import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
-import app.cash.redwood.protocol.compose.ProtocolBridge as ComposeProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.HTMLElementChildren
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
-import example.sunspot.compose.DiffProducingSunspotWidgetFactory
-import example.sunspot.widget.DiffConsumingSunspotWidgetFactory
 import kotlinx.browser.document
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -31,23 +27,13 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLElement
 
 fun main() {
-  val composeBridge = ComposeProtocolBridge()
-
   val content = document.getElementById("content")!! as HTMLElement
-  val factory = DiffConsumingSunspotWidgetFactory(HtmlSunspotNodeFactory(document))
-  val widgetBridge = ProtocolBridge(
-    container = HTMLElementChildren(content),
-    factory = factory,
-    eventSink = composeBridge,
-  )
 
   @OptIn(DelicateCoroutinesApi::class)
-  val scope = GlobalScope + WindowAnimationFrameClock
-  val composition = ProtocolRedwoodComposition(
-    scope = scope,
-    factory = DiffProducingSunspotWidgetFactory(composeBridge),
-    diffSink = widgetBridge,
-    widgetVersion = 1U,
+  val composition = RedwoodComposition(
+    scope = GlobalScope + WindowAnimationFrameClock,
+    container = HTMLElementChildren(content),
+    factory = HtmlSunspotNodeFactory(document),
   )
   composition.setContent {
     Counter()
