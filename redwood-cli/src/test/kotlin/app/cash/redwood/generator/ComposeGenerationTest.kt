@@ -48,6 +48,7 @@ class ComposeGenerationTest {
       """
       |@Composable
       |@ScopedAndUnscopedSchemaComposable
+      |@OptIn(RedwoodCodegenApi::class)
       |public fun
       """.trimMargin(),
     )

@@ -20,3 +20,11 @@ package app.cash.redwood
  */
 @DslMarker
 public annotation class LayoutScopeMarker
+
+/**
+ * Denote an API which should only be used by Redwood's generated code.
+ *
+ * @suppress
+ */
+@RequiresOptIn("This API is for use by Redwood's generated code only")
+public annotation class RedwoodCodegenApi
