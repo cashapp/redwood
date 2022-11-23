@@ -42,6 +42,7 @@ androidx-compose-material = { module = "androidx.compose.material:material", ver
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.1"
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"

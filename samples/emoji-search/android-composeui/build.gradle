@@ -26,6 +26,7 @@ dependencies {
   implementation libs.androidx.compose.ui
   implementation libs.androidx.compose.ui.tooling.preview
   implementation projects.redwoodLayoutComposeui
+  implementation projects.redwoodTreehouseLazylayoutComposeui
   implementation projects.redwoodTreehouseComposeui
   implementation projects.redwoodWidgetCompose
   debugImplementation libs.androidx.compose.ui.tooling

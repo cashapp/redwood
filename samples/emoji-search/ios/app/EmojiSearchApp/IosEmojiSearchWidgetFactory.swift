@@ -26,15 +26,17 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory
 
     var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
         Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
+    var RedwoodTreehouseLazyLayout: WidgetRedwoodTreehouseLazyLayoutWidgetFactory
 
     init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
         self.widgetSystem = widgetSystem
+        self.RedwoodTreehouseLazyLayout = Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
+          treehouseApp: treehouseApp,
+          widgetSystem: widgetSystem
+        )
     }
 
-    func LazyColumn() -> WidgetLazyColumn {
-        return LazyColumnBinding(treehouseApp: treehouseApp, widgetSystem: widgetSystem)
-    }
     func TextInput() -> WidgetTextInput {
         return TextInputBinding()
     }

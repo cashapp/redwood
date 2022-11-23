@@ -3,6 +3,6 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 dependencies {
   api projects.redwoodLayoutSchema
   api projects.redwoodSchemaAnnotations
-  api projects.redwoodTreehouseLazylayoutApi
+  api projects.redwoodTreehouseLazylayoutSchema
   api projects.samples.emojiSearch.values
 }

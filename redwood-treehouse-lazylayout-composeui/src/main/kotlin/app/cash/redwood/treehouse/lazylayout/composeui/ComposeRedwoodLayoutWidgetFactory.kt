@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch.composeui
+package app.cash.redwood.treehouse.lazylayout.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.layout.composeui.ComposeRedwoodLayoutWidgetFactory
-import app.cash.redwood.treehouse.lazylayout.composeui.ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
-import example.schema.widget.EmojiSearchWidgetFactory
 
-class AndroidEmojiSearchWidgetFactory<W : Any>(
+public class ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory<W : Any>(
   private val treehouseApp: TreehouseApp<W>,
-  widgetSystem: TreehouseView.WidgetSystem<W>,
-) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
-  override val RedwoodLayout = ComposeRedwoodLayoutWidgetFactory()
-  override val RedwoodTreehouseLazyLayout = ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory(treehouseApp, widgetSystem)
-  override fun TextInput() = ComposeUiTextInput(treehouseApp.dispatchers)
-  override fun Text() = ComposeUiText()
-  override fun Image() = ComposeUiImage()
+  private val widgetSystem: TreehouseView.WidgetSystem<W>,
+) : RedwoodTreehouseLazyLayoutWidgetFactory<@Composable () -> Unit> {
+  override fun LazyColumn(): LazyColumn<@Composable () -> Unit> = ComposeUiLazyColumn(treehouseApp, widgetSystem)
 }
