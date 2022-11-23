@@ -47,12 +47,12 @@ public interface TreehouseView<A : Any> {
 
   public open class CodeListener {
     /** Show a spinner when a view is waiting for the code to load. */
-    public fun codeLoading(view: TreehouseView<*>) {}
+    public open fun codeLoading(view: TreehouseView<*>) {}
 
     /** Clear the loading indicator when the first code is loaded. */
-    public fun beforeInitialCode(view: TreehouseView<*>) {}
+    public open fun beforeInitialCode(view: TreehouseView<*>) {}
 
     /** Clear the previous UI and show a quick animation for subsequent code updates. */
-    public fun beforeUpdatedCode(view: TreehouseView<*>) {}
+    public open fun beforeUpdatedCode(view: TreehouseView<*>) {}
   }
 }
