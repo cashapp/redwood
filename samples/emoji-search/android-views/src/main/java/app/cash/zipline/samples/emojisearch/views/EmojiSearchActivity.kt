@@ -18,7 +18,7 @@ package app.cash.zipline.samples.emojisearch.views
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
@@ -47,7 +47,7 @@ class EmojiSearchActivity : ComponentActivity() {
         app: TreehouseApp<EmojiSearchPresenter>,
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ): DiffConsumingWidget.Factory<*> {
+      ): DiffConsumingNode.Factory<*> {
         return DiffConsumingEmojiSearchWidgetFactory(
           delegate = AndroidViewEmojiSearchWidgetFactory(
             context = this@EmojiSearchActivity,

@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.DiffConsumingWidget
+import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +42,7 @@ public interface TreehouseView<A : Any> {
       app: TreehouseApp<A>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
-    ): DiffConsumingWidget.Factory<*>
+    ): DiffConsumingNode.Factory<*>
   }
 
   public open class CodeListener {

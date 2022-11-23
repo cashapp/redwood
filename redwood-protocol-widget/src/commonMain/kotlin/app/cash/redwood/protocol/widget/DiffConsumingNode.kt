@@ -16,17 +16,29 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
 /**
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
+ *
+ * @suppress
  */
-public interface DiffConsumingWidget<W : Any> : Widget<W> {
-  public fun apply(diff: PropertyDiff, eventSink: EventSink)
+public abstract class DiffConsumingNode<W : Any>(
+  public val parentId: Id,
+  public val parentChildren: Widget.Children<W>,
+) {
+  private var _childIds: MutableList<Id>? = null
+  public val childIds: MutableList<Id>
+    get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
 
-  public fun updateLayoutModifier(value: JsonArray)
+  public abstract val widget: Widget<W>
+
+  public abstract fun apply(diff: PropertyDiff, eventSink: EventSink)
+
+  public abstract fun updateLayoutModifier(value: JsonArray)
 
   /**
    * Return one of this widget's children groups by its [tag].
@@ -35,7 +47,7 @@ public interface DiffConsumingWidget<W : Any> : Widget<W> {
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public fun children(tag: UInt): Widget.Children<W>?
+  public abstract fun children(tag: UInt): Widget.Children<W>?
 
   public interface Factory<W : Any> {
     /**
@@ -45,6 +57,10 @@ public interface DiffConsumingWidget<W : Any> : Widget<W> {
      * If `null` is returned, the caller should make every effort to ignore this widget and
      * continue executing.
      */
-    public fun create(kind: Int): DiffConsumingWidget<W>?
+    public fun create(
+      parentId: Id,
+      parentChildren: Widget.Children<W>,
+      kind: Int,
+    ): DiffConsumingNode<W>?
   }
 }
