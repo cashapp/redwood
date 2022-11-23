@@ -23,6 +23,7 @@ import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.currentComposer
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
 import kotlin.DeprecationLevel.ERROR
 import kotlinx.coroutines.CoroutineScope
@@ -53,11 +54,11 @@ public fun <W : Any> RedwoodComposition(
  * @suppress For generated code usage only.
  */
 @Composable
-@Suppress("FunctionName") // Hiding from auto-complete.
-public inline fun <F : Widget.Factory<*>, W : Widget<*>> _RedwoodComposeNode(
+@RedwoodCodegenApi
+public inline fun <F : Widget.Factory<*>, W : Widget<*>> RedwoodComposeNode(
   crossinline factory: (F) -> W,
   update: @DisallowComposableCalls Updater<W>.() -> Unit,
-  content: @Composable _RedwoodComposeContent<W>.() -> Unit,
+  content: @Composable RedwoodComposeContent<W>.() -> Unit,
 ) {
   // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
   //  with currentComposer) in sync with ComposeNode.
@@ -75,7 +76,7 @@ public inline fun <F : Widget.Factory<*>, W : Widget<*>> _RedwoodComposeNode(
   }
 
   Updater<W>(currentComposer).update()
-  _RedwoodComposeContent.Instance.content()
+  RedwoodComposeContent.Instance.content()
 
   currentComposer.endNode()
 }
@@ -83,8 +84,8 @@ public inline fun <F : Widget.Factory<*>, W : Widget<*>> _RedwoodComposeNode(
 /**
  * @suppress For generated code usage only.
  */
-@Suppress("ClassName") // Hiding from auto-complete.
-public class _RedwoodComposeContent<out W : Widget<*>> {
+@RedwoodCodegenApi
+public class RedwoodComposeContent<out W : Widget<*>> {
   @Composable
   public fun into(
     accessor: (W) -> Widget.Children<*>,
@@ -101,7 +102,7 @@ public class _RedwoodComposeContent<out W : Widget<*>> {
   }
 
   public companion object {
-    public val Instance: _RedwoodComposeContent<Nothing> = _RedwoodComposeContent()
+    public val Instance: RedwoodComposeContent<Nothing> = RedwoodComposeContent()
   }
 }
 

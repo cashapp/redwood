@@ -77,6 +77,7 @@ internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
 /*
 @Composable
 @SunspotComposable
+@OptIn(RedwoodCodegenApi::class)
 fun Row(
   padding: Padding = Padding.Zero,
   overflow: Overflow = Overflow.Clip,
@@ -113,6 +114,11 @@ internal fun generateComposable(
         .addModifiers(PUBLIC)
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(composeTargetMarker)
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.OptIn)
+            .addMember("%T::class", Redwood.RedwoodCodegenApi)
+            .build(),
+        )
         .apply {
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.

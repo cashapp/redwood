@@ -52,6 +52,7 @@ internal object Redwood {
   val LayoutModifier = ClassName("app.cash.redwood", "LayoutModifier")
   val LayoutModifierElement = LayoutModifier.nestedClass("Element")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
+  val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
 }
 
 internal object RedwoodWidget {
@@ -62,7 +63,7 @@ internal object RedwoodWidget {
 }
 
 internal object RedwoodCompose {
-  val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "_RedwoodComposeNode")
+  val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
 }
 
 internal object ComposeRuntime {
@@ -88,6 +89,7 @@ internal fun composableLambda(
 
 internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
+  val OptIn = ClassName("kotlin", "OptIn")
 }
 
 internal val typeVariableW = TypeVariableName("W", listOf(ANY))
