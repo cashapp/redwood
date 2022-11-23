@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch
+package app.cash.redwood.treehouse.lazylayout.widget
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.protocol.compose.DiffProducingWidget
@@ -22,20 +22,20 @@ import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
-interface DiffProducingWidgetFactoryProvider {
-  val factory: DiffProducingWidget.Factory
+public interface DiffProducingWidgetFactoryProvider {
+  public val factory: DiffProducingWidget.Factory
 }
 
 @Composable
-fun DiffProducingWidgetFactoryProvider.LazyColumn(content: LazyListScope.() -> Unit) {
+public fun DiffProducingWidgetFactoryProvider.LazyColumn(content: LazyListScope.() -> Unit) {
   val lazyListScope = LazyListScope(factory)
   content(lazyListScope)
   app.cash.redwood.treehouse.lazylayout.compose.LazyColumn(lazyListScope.intervals)
 }
 
-class LazyListScope(private val factory: DiffProducingWidget.Factory) {
+public class LazyListScope(private val factory: DiffProducingWidget.Factory) {
   private val _intervals = mutableListOf<LazyListIntervalContent>()
-  val intervals: List<LazyListIntervalContent> = _intervals
+  public val intervals: List<LazyListIntervalContent> = _intervals
 
   private class Item(
     private val factory: DiffProducingWidget.Factory,
@@ -53,7 +53,7 @@ class LazyListScope(private val factory: DiffProducingWidget.Factory) {
     }
   }
 
-  fun items(
+  public fun items(
     count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
@@ -64,10 +64,10 @@ class LazyListScope(private val factory: DiffProducingWidget.Factory) {
   }
 }
 
-inline fun <T> LazyListScope.items(
+public inline fun <T> LazyListScope.items(
   items: List<T>,
   crossinline itemContent: @Composable (item: T) -> Unit,
-) = items(
+): Unit = items(
   count = items.size,
 ) {
   itemContent(items[it])

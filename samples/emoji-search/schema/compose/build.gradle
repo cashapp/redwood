@@ -12,6 +12,7 @@ kotlin {
     commonMain {
       dependencies {
         api(projects.samples.emojiSearch.schema.widget)
+        api(projects.redwoodTreehouseLazylayoutSchema.compose)
       }
     }
   }
