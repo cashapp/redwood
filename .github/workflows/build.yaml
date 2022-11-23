@@ -14,7 +14,19 @@ env:
 jobs:
   build:
     runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: 18
+      - uses: gradle/gradle-build-action@v2
 
+      - run: ./gradlew build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
+
+  paparazzi:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,28 +38,82 @@ jobs:
           java-version: 18
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew build verifyPaparazziDebug dokkaHtmlMultiModule --parallel
+      - run: ./gradlew verifyPaparazziDebug
 
-      - name: Build Counter iOS sample
+  sample-counter:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: 18
+      - uses: gradle/gradle-build-action@v2
+
+      - run: ./gradlew -p samples/counter build
+
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew -p samples/counter connectedCheck
+
+      - name: Build Counter iOS
         run: |
           cd samples/counter/ios/app
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
-      - name: Build Emoji Search iOS sample
+  sample-emoji:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: 18
+      - uses: gradle/gradle-build-action@v2
+
+      - run: ./gradlew -p samples/emoji-search build
+
+      - name: Build Emoji Search iOS
         run: |
           cd samples/emoji-search/ios/app
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
-      - run: ./gradlew publish
-        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
+  # This worker only serves to fan-in success on the parallel workers. It is used to guard merges
+  # on GitHub by always running whereas 'publish' below only runs on our 'trunk'.
+  success:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - paparazzi
+      - sample-counter
+      - sample-emoji
+    steps:
+      - run: exit 0
+
+  publish:
+    runs-on: macos-latest
+    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
+    needs:
+      - success
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: 18
+      - uses: gradle/gradle-build-action@v2
+
+      - run: ./gradlew publish dokkaHtmlMultiModule
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
 
       - name: Deploy docs to website
-        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

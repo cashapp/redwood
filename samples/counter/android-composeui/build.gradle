@@ -18,8 +18,18 @@ dependencies {
   implementation projects.redwoodWidgetCompose
   debugImplementation libs.androidx.compose.ui.tooling
 
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation projects.samples.counter.androidTests
 }
 
 android {
-  namespace 'example.android.composeui'
+  namespace 'com.example.redwood.android.composeui'
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  buildFeatures {
+    buildConfig = true
+  }
 }
