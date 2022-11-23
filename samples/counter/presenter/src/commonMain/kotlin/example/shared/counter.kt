@@ -30,7 +30,7 @@ fun Counter(value: Int = 0) {
 
   SunspotBox {
     SunspotButton("-1", onClick = { count-- })
-    SunspotText(count.toString())
+    SunspotText("Count: $count")
     SunspotButton("+1", onClick = { count++ })
   }
 }
