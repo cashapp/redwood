@@ -18,15 +18,20 @@ package app.cash.redwood.compose
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import androidx.compose.runtime.Composition
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
-import kotlin.DeprecationLevel.ERROR
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 public interface RedwoodComposition {
   public fun setContent(content: @Composable () -> Unit)
@@ -37,14 +42,55 @@ public interface RedwoodComposition {
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated("Not implemented yet", level = ERROR)
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
   factory: Widget.Factory<W>,
 ): RedwoodComposition {
-  TODO()
+  return WidgetRedwoodComposition(scope, WidgetApplier(factory, container))
+}
+
+public fun RedwoodComposition(
+  scope: CoroutineScope,
+  applier: WidgetApplier<*>,
+): RedwoodComposition {
+  return WidgetRedwoodComposition(scope, applier)
+}
+
+private class WidgetRedwoodComposition(
+  private val scope: CoroutineScope,
+  applier: WidgetApplier<*>,
+) : RedwoodComposition {
+  private val recomposer = Recomposer(scope.coroutineContext)
+  private val composition = Composition(applier, recomposer)
+
+  private var snapshotJob: Job? = null
+  private val snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    // Set up a trigger to apply changes on the next frame if a global write was observed.
+    if (snapshotJob == null) {
+      snapshotJob = scope.launch {
+        snapshotJob = null
+        Snapshot.sendApplyNotifications()
+      }
+    }
+  }
+
+  // These launch undispatched so that they reach their first suspension points before returning
+  // control to the caller.
+  private val recomposeJob = scope.launch(start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
+  }
+
+  override fun setContent(content: @Composable () -> Unit) {
+    composition.setContent(content)
+  }
+
+  override fun cancel() {
+    snapshotHandle.dispose()
+    snapshotJob?.cancel()
+    recomposeJob.cancel()
+    recomposer.cancel()
+  }
 }
 
 /**

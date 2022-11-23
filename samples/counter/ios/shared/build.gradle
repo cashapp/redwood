@@ -30,8 +30,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.counter.sunspot.compose.protocol
-        implementation projects.samples.counter.sunspot.widget.protocol
+        implementation projects.samples.counter.sunspot.widget
         implementation projects.samples.counter.presenter
 
         // We aren't multithreading, but we need Dispatchers.Main to refer to the actual UI thread
