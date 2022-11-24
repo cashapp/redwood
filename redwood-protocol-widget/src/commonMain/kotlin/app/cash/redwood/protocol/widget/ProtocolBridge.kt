@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.Diff
@@ -36,23 +35,24 @@ import kotlinx.serialization.json.JsonArray
  */
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
-  private val factory: DiffConsumingWidget.Factory<W>,
+  private val factory: DiffConsumingNode.Factory<W>,
   private val eventSink: EventSink,
 ) : DiffSink {
-  private val nodes = mutableMapOf(
-    Id.Root to Node(DiffConsumingProtocolRoot(container), Id.Root, container),
+  private val nodes = mutableMapOf<Id, DiffConsumingNode<W>>(
+    Id.Root to DiffConsumingProtocolRoot(container),
   )
 
   override fun sendDiff(diff: Diff) {
     for (childrenDiff in diff.childrenDiffs) {
-      val node = node(childrenDiff.id)
-      val children = node.widget.children(childrenDiff.tag) ?: continue
+      val id = childrenDiff.id
+      val node = node(id)
+      val children = node.children(childrenDiff.tag) ?: continue
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(childrenDiff.kind) ?: continue
-          children.insert(childrenDiff.index, childWidget)
-          val old = nodes.put(childrenDiff.childId, Node(childWidget, childrenDiff.id, children))
+          val childWidget = factory.create(id, children, childrenDiff.kind) ?: continue
+          children.insert(childrenDiff.index, childWidget.widget)
+          val old = nodes.put(childrenDiff.childId, childWidget)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${childrenDiff.childId.value}"
           }
@@ -75,37 +75,26 @@ public class ProtocolBridge<W : Any>(
     for (layoutModifier in diff.layoutModifiers) {
       val node = node(layoutModifier.id)
       val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
-      node.widget.updateLayoutModifier(layoutModifier.elements)
+      node.updateLayoutModifier(layoutModifier.elements)
       node.parentChildren.onLayoutModifierUpdated(childIndex)
     }
 
     for (propertyDiff in diff.propertyDiffs) {
-      node(propertyDiff.id).widget.apply(propertyDiff, eventSink)
+      node(propertyDiff.id).apply(propertyDiff, eventSink)
     }
   }
 
-  private fun node(id: Id): Node<W> {
+  private fun node(id: Id): DiffConsumingNode<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID $id" }
   }
 }
 
-private class Node<W : Any>(
-  val widget: DiffConsumingWidget<W>,
-  val parentId: Id,
-  val parentChildren: Widget.Children<W>,
-) {
-  private var _childIds: MutableList<Id>? = null
-  val childIds: MutableList<Id>
-    get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
-}
-
 private class DiffConsumingProtocolRoot<W : Any>(
   private val children: Widget.Children<W>,
-) : DiffConsumingWidget<W> {
-  override var layoutModifiers: LayoutModifier
-    get() = throw AssertionError()
-    set(value) = throw AssertionError("unexpected: $value")
-
+) : DiffConsumingNode<W>(
+  parentId = Id.Root, // This value is a lie, but it's never accessed on this node.
+  parentChildren = children, // This value is a lie, but it's never accessed on this node.
+) {
   override fun updateLayoutModifier(value: JsonArray) {
     throw AssertionError("unexpected: $value")
   }
@@ -119,5 +108,5 @@ private class DiffConsumingProtocolRoot<W : Any>(
     else -> throw AssertionError("unexpected: $tag")
   }
 
-  override val value: W get() = throw AssertionError()
+  override val widget: Widget<W> get() = throw AssertionError()
 }

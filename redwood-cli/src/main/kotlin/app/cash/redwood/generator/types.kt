@@ -42,8 +42,8 @@ internal object ComposeProtocol {
 }
 
 internal object WidgetProtocol {
-  val DiffConsumingWidget = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingWidget")
-  val DiffConsumingWidgetFactory = DiffConsumingWidget.nestedClass("Factory")
+  val DiffConsumingNode = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingNode")
+  val DiffConsumingNodeFactory = DiffConsumingNode.nestedClass("Factory")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
 }
@@ -58,7 +58,7 @@ internal object Redwood {
 internal object RedwoodWidget {
   val Widget = ClassName("app.cash.redwood.widget", "Widget")
   val WidgetChildren = Widget.nestedClass("Children")
-  val WidgetChildrenOfT = WidgetChildren.parameterizedBy(typeVariableW)
+  val WidgetChildrenOfW = WidgetChildren.parameterizedBy(typeVariableW)
   val WidgetFactory = Widget.nestedClass("Factory")
 }
 

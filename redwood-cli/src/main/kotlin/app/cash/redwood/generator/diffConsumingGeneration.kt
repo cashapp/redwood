@@ -42,23 +42,30 @@ public class DiffConsumingSunspotWidgetFactory<W : Any>(
   private val delegate: SunspotWidgetFactory<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : DiffConsumingWidget.Factory<W> {
+) : DiffConsumingNode.Factory<W> {
   override val RedwoodLayout = DiffConsumingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, json, mismatchHandler)
 
-  override fun create(kind: Int): DiffConsumingWidget<W>? = when (kind) {
-    1 -> SunspotBox()
-    2 -> SunspotText()
-    3 -> SunspotButton()
-    1_000_001 -> RedwoodLayout.Row()
-    1_000_002 -> RedwoodLayout.Column()
+  override fun create(
+    parentId: Id,
+    parentChildren: Widget.Children<W>,
+    kind: Int,
+  ): DiffConsumingWidget<W>? = when (kind) {
+    1 -> SunspotBox(parentId, parentChildren)
+    2 -> SunspotText(parentId, parentChildren)
+    3 -> SunspotButton(parentId, parentChildren)
+    1_000_001 -> RedwoodLayout.Row(parentId, parentChildren)
+    1_000_002 -> RedwoodLayout.Column(parentId, parentChildren)
     else -> {
       mismatchHandler.onUnknownWidget(kind)
       null
     }
   }
 
-  private fun SunspotBox(): ProtocolSunspotBox<W> {
-    return ProtocolSunspotBox(delegate.SunspotBox(), json, mismatchHandler)
+  private fun SunspotBox(
+    parentId: Id,
+    parentChildren: Widget.Children<W>,
+  ): DiffConsumingSunspotBox<W> {
+    return DiffConsumingSunspotBox(parentId, parentChildren, delegate.SunspotBox(), json, mismatchHandler)
   }
   etc.
 }
@@ -106,24 +113,26 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             // Only conform to entrypoint interface if we are the host. If we are not the host,
             // the host will handle the entire transitive dependency set of tags itself.
             addSuperinterface(
-              WidgetProtocol.DiffConsumingWidgetFactory.parameterizedBy(typeVariableW),
+              WidgetProtocol.DiffConsumingNodeFactory.parameterizedBy(typeVariableW),
             )
             addFunction(
               FunSpec.builder("create")
                 .addModifiers(OVERRIDE)
+                .addParameter("parentId", Protocol.Id)
+                .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
                 .addParameter("kind", INT)
                 .returns(
-                  WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableW)
+                  WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
                     .copy(nullable = true),
                 )
                 .beginControlFlow("return when (kind)")
                 .apply {
                   for (widget in schema.widgets.sortedBy { it.tag }) {
-                    addStatement("%L -> %N()", widget.tag, widget.type.flatName)
+                    addStatement("%L -> %N(parentId, parentChildren)", widget.tag, widget.type.flatName)
                   }
                   for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0U }) {
                     for (widget in dependency.widgets.sortedBy { it.tag }) {
-                      addStatement("%L -> %N.%N()", widget.tag, dependency.name, widget.type.flatName)
+                      addStatement("%L -> %N.%N(parentId, parentChildren)", widget.tag, dependency.name, widget.type.flatName)
                     }
                   }
                 }
@@ -155,9 +164,11 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(if (schema === host) PRIVATE else INTERNAL)
+                .addParameter("parentId", Protocol.Id)
+                .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
                 .returns(diffConsumingWidgetType.parameterizedBy(typeVariableW))
                 .addStatement(
-                  "return %T(delegate.%N(), json, mismatchHandler)",
+                  "return %T(parentId, parentChildren, delegate.%N(), json, mismatchHandler)",
                   diffConsumingWidgetType,
                   widget.type.flatName,
                 )
@@ -205,23 +216,27 @@ internal class DiffConsumingSunspotButton<W : Any>(
 internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
   val type = schema.diffConsumingWidgetType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
-  val protocolType = WidgetProtocol.DiffConsumingWidget.parameterizedBy(typeVariableW)
+  val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(protocolType)
+        .superclass(protocolType)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("delegate", widgetType)
+            .addParameter("parentId", Protocol.Id)
+            .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
+            .addParameter("widget", widgetType)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
             .build(),
         )
+        .addSuperclassConstructorParameter("parentId")
+        .addSuperclassConstructorParameter("parentChildren")
         .addProperty(
-          PropertySpec.builder("delegate", widgetType, PRIVATE)
-            .initializer("delegate")
+          PropertySpec.builder("widget", widgetType, OVERRIDE)
+            .initializer("widget")
             .build(),
         )
         .addProperty(
@@ -232,31 +247,6 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("value", typeVariableW, OVERRIDE)
-            .getter(
-              FunSpec.getterBuilder()
-                .addStatement("return delegate.value")
-                .build(),
-            )
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier, OVERRIDE)
-            .mutable()
-            .getter(
-              FunSpec.getterBuilder()
-                .addStatement("return delegate.layoutModifiers")
-                .build(),
-            )
-            .setter(
-              FunSpec.setterBuilder()
-                .addParameter("value", Redwood.LayoutModifier)
-                .addStatement("delegate.layoutModifiers = value")
-                .build(),
-            )
             .build(),
         )
         .apply {
@@ -280,7 +270,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       }
 
                       addStatement(
-                        "%LU -> delegate.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
+                        "%LU -> widget.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -317,7 +307,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       nextControlFlow("else")
                       addStatement("null")
                       endControlFlow()
-                      addStatement("delegate.%1N(%1N)", trait.name)
+                      addStatement("widget.%1N(%1N)", trait.name)
                       endControlFlow()
                     }
 
@@ -346,12 +336,12 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
             FunSpec.builder("children")
               .addModifiers(OVERRIDE)
               .addParameter("tag", U_INT)
-              .returns(RedwoodWidget.WidgetChildrenOfT.copy(nullable = true))
+              .returns(RedwoodWidget.WidgetChildrenOfW.copy(nullable = true))
               .apply {
                 if (childrens.isNotEmpty()) {
                   beginControlFlow("return when (tag)")
                   for (children in childrens) {
-                    addStatement("%LU -> delegate.%N", children.tag, children.name)
+                    addStatement("%LU -> widget.%N", children.tag, children.name)
                   }
                   beginControlFlow("else ->")
                   addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
@@ -370,7 +360,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
           FunSpec.builder("updateLayoutModifier")
             .addModifiers(OVERRIDE)
             .addParameter("value", KotlinxSerialization.JsonArray)
-            .addStatement("layoutModifiers = value.%M(json, mismatchHandler)", host.toLayoutModifier)
+            .addStatement("widget.layoutModifiers = value.%M(json, mismatchHandler)", host.toLayoutModifier)
             .build(),
         )
         .build(),

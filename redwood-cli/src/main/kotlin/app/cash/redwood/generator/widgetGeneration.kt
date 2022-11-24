@@ -111,7 +111,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               }
               is Children -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfT)
+                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addKdoc("{tag=${trait.tag}}")
                     .build(),
