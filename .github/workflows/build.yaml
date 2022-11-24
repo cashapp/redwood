@@ -25,6 +25,12 @@ jobs:
 
       - run: ./gradlew build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: site
+          path: build/dokka/htmlMultiModule/
+          if-no-files-found: error
+
   paparazzi:
     runs-on: ubuntu-latest
     steps:
@@ -102,13 +108,19 @@ jobs:
       - success
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: site
+          path: site
+
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
           java-version: 18
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew publish dokkaHtmlMultiModule
+      - run: ./gradlew publish
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -118,6 +130,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: build/dokka/htmlMultiModule
+          FOLDER: site
           TARGET_FOLDER: docs/latest/
           CLEAN: true
