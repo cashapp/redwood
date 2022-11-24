@@ -31,7 +31,9 @@ jobs:
           path: build/dokka/htmlMultiModule/
           if-no-files-found: error
 
-      - run: echo "// test" >> build.gradle
+      # Run the npm install on the full project. Without this, the partial build above updates the
+      # lock file with a subset of the full project's needs (thus making the git index dirty).
+      - run: ./gradlew kotlinNpmInstall
 
       - name: Ensure git index is clean
         run: test -z "$(git status --porcelain | tee /dev/fd/2)"
@@ -50,8 +52,6 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
-
-      - run: echo "test" > sup.txt
 
       - name: Ensure git index is clean
         run: test -z "$(git status --porcelain | tee /dev/fd/2)"
