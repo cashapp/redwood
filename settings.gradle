@@ -1,6 +1,5 @@
 rootProject.name = 'redwood'
 
-
 include ':redwood-cli'
 include ':redwood-compose'
 include ':redwood-flex-container'
