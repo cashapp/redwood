@@ -9,6 +9,7 @@ dependencies {
   api projects.redwoodLayoutSchema.widget
   implementation projects.redwoodFlexContainer
   implementation libs.androidx.core
+  testImplementation projects.redwoodLayoutSharedTest
 }
 
 android {

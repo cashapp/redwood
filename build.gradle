@@ -58,7 +58,12 @@ allprojects {
     }
   }
 
-  if (project.path.startsWith(':redwood-')) {
+  // List of Redwood modules that aren't published.
+  def privateApiModules = [
+    ":redwood-layout-shared-test"
+  ]
+
+  if (project.path.startsWith(':redwood-') && !privateApiModules.contains(project.path)) {
     plugins.withId('org.jetbrains.kotlin.jvm') {
       kotlin {
         explicitApi()

@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+dependencies {
+  api projects.redwoodFlexContainer
+  api projects.redwoodLayoutApi
+  api projects.redwoodLayoutSchema.layoutModifiers
+  api projects.redwoodRuntime
+  api projects.redwoodWidget
+  api libs.junit
+}
+
+android {
+  namespace 'app.cash.redwood.redwoodlayoutsharedtest'
+}
