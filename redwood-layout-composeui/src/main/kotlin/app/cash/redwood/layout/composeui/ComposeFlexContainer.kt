@@ -60,12 +60,12 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
 
   fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
-    recomposeTick++
+    invalidate()
   }
 
   fun height(height: Constraint) {
     container.fillHeight = height == Constraint.Fill
-    recomposeTick++
+    invalidate()
   }
 
   fun padding(padding: Padding) {
