@@ -45,7 +45,8 @@ public class TreehouseWidgetView<A : Any>(
       }
     }
 
-  override val children: Widget.Children<*> = ViewGroupChildren(this)
+  private val _children = ViewGroupChildren(this)
+  override val children: Widget.Children<*> = _children
 
   private val mutableHostConfiguration =
     MutableStateFlow(computeHostConfiguration(context.resources.configuration))
@@ -54,7 +55,10 @@ public class TreehouseWidgetView<A : Any>(
     get() = mutableHostConfiguration
 
   override fun reset() {
-    children.remove(0, childCount)
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    removeAllViews()
   }
 
   public fun setContent(content: TreehouseView.Content<A>) {
