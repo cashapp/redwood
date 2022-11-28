@@ -50,6 +50,11 @@ internal class UIViewFlexContainer(
   private val _children: UIViewChildren = UIViewChildren(_view)
   val children: Widget.Children<UIView> get() = _children
 
+  init {
+    _view.showsHorizontalScrollIndicator = false
+    _view.showsVerticalScrollIndicator = false
+  }
+
   fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
     invalidate()
