@@ -46,13 +46,12 @@ internal class ViewFlexContainer(
   }
   private val hostView = HostView(context)
   private val scrollView = newScrollView()
-
-  private var scrollEnabled = false
-
   val view: View get() = scrollView
 
   private val _children = ViewGroupChildren(hostView)
   val children: Widget.Children<View> get() = _children
+
+  private var scrollEnabled = false
 
   fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
@@ -99,6 +98,8 @@ internal class ViewFlexContainer(
         override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
           return scrollEnabled && super.onInterceptTouchEvent(ev)
         }
+      }.apply {
+        isFillViewport = true
       }
     } else {
       object : NestedScrollView(context) {
@@ -108,6 +109,8 @@ internal class ViewFlexContainer(
         override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
           return scrollEnabled && super.onInterceptTouchEvent(ev)
         }
+      }.apply {
+        isFillViewport = true
       }
     }.apply {
       isHorizontalScrollBarEnabled = false
