@@ -16,17 +16,12 @@
 package app.cash.zipline.samples.emojisearch.views
 
 import android.content.Context
-import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.EditText
 import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.TreehouseDispatchers
 import com.google.android.material.textfield.TextInputEditText
@@ -34,7 +29,6 @@ import com.google.android.material.textfield.TextInputLayout
 import example.schema.widget.TextInput
 import example.values.TextFieldState
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlinx.coroutines.CoroutineDispatcher
 
 class ViewTextInput(
   context: Context,
@@ -44,22 +38,28 @@ class ViewTextInput(
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var updating = false
 
-  override val value = object : TextInputEditText(context) {
-    init {
-      addTextChangedListener(
-        onTextChanged = { _, _, _, _ ->
-          stateChanged(this)
-        }
-      )
-      maxLines = 2
-    }
-
+  private val textInputLayout = TextInputLayout(context)
+  private val textInputEditText = object : TextInputEditText(textInputLayout.context) {
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
       super.onSelectionChanged(selStart, selEnd)
       stateChanged(this)
     }
   }
+
+  override val value get() = textInputLayout
   override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  init {
+    textInputLayout.addView(textInputEditText)
+    textInputLayout.layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+
+    textInputEditText.addTextChangedListener(
+      onTextChanged = { _, _, _, _ ->
+        stateChanged(textInputEditText)
+      }
+    )
+    textInputEditText.maxLines = 2
+  }
 
   /**
    * Handle state changes from Treehouse. These will often be based on out-of-date user edits,
@@ -73,8 +73,8 @@ class ViewTextInput(
     try {
       updating = true
       this.state = state
-      value.setText(state.text)
-      value.setSelection(state.selectionStart, state.selectionEnd)
+      textInputEditText.setText(state.text)
+      textInputEditText.setSelection(state.selectionStart, state.selectionEnd)
     } finally {
       updating = false
     }
