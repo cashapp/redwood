@@ -19,6 +19,7 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.Widget
@@ -75,10 +76,45 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
     verifySnapshot(container)
   }
+
+  @Test fun columnWithJustifyContentCenter() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.justifyContent(JustifyContent.Center)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun columnWithJustifyContentSpaceBetween() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.justifyContent(JustifyContent.SpaceBetween)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun columnWithJustifyContentSpaceAround() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.justifyContent(JustifyContent.SpaceAround)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
 }
 
 interface TestFlexContainer<T : Any> {
   val value: T
+  fun width(constraint: Constraint)
+  fun height(constraint: Constraint)
   fun alignItems(alignItems: AlignItems)
   fun justifyContent(justifyContent: JustifyContent)
   fun padding(padding: Padding)

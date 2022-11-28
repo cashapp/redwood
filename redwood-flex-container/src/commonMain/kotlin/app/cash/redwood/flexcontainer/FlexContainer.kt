@@ -27,6 +27,16 @@ import kotlin.math.roundToInt
  */
 public class FlexContainer {
   /**
+   * If true, the container will fill the available width passed to it in [measure].
+   */
+  public var fillWidth: Boolean = false
+
+  /**
+   * If true, the container will fill the available height passed to it in [measure].
+   */
+  public var fillHeight: Boolean = false
+
+  /**
    * The flex direction attribute of the container.
    */
   public var flexDirection: FlexDirection = FlexDirection.Row
@@ -887,20 +897,16 @@ public class FlexContainer {
    * Expand the item vertically to the size of the [crossSize] (considering [item]'s margins).
    */
   private fun stretchViewVertically(item: FlexItem, crossSize: Double) {
-    val newHeight = (crossSize - item.margin.top - item.margin.bottom)
+    item.measuredHeight = (crossSize - item.margin.top - item.margin.bottom)
       .coerceIn(item.measurable.minHeight, item.measurable.maxHeight)
-    item.measuredWidth = item.measuredWidth
-    item.measuredHeight = newHeight
   }
 
   /**
    * Expand the item horizontally to the size of the crossSize (considering [item]'s margins).
    */
   private fun stretchViewHorizontally(item: FlexItem, crossSize: Double) {
-    val newWidth = (crossSize - item.margin.start - item.margin.end)
+    item.measuredWidth = (crossSize - item.margin.start - item.margin.end)
       .coerceIn(item.measurable.minWidth, item.measurable.maxWidth)
-    item.measuredWidth = newWidth
-    item.measuredHeight = item.measuredHeight
   }
 
   /**
@@ -1045,10 +1051,21 @@ public class FlexContainer {
    * @param heightSpec vertical space requirements as imposed by the parent.
    */
   public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): MeasureResult {
-    if (flexDirection.isHorizontal) {
-      return measureHorizontal(widthSpec, heightSpec)
+    val width = if (fillWidth && widthSpec.mode != MeasureSpecMode.Exactly && widthSpec.size > 0) {
+      MeasureSpec.from(widthSpec.size, MeasureSpecMode.Exactly)
     } else {
-      return measureVertical(widthSpec, heightSpec)
+      widthSpec
+    }
+    val height = if (fillHeight && heightSpec.mode != MeasureSpecMode.Exactly && heightSpec.size > 0) {
+      MeasureSpec.from(heightSpec.size, MeasureSpecMode.Exactly)
+    } else {
+      heightSpec
+    }
+
+    if (flexDirection.isHorizontal) {
+      return measureHorizontal(width, height)
+    } else {
+      return measureVertical(width, height)
     }
   }
 
