@@ -1,6 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
   api projects.redwoodSchemaAnnotations
