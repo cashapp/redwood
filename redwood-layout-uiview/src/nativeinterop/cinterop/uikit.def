@@ -1,0 +1,14 @@
+package = app.cash.redwood.layout.uiview.cinterop
+language = Objective-C
+---
+
+#import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIView.h>
+
+@protocol UIViewWithOverrides
+- (CGSize) intrinsicContentSize;
+- (CGSize) sizeThatFits:(CGSize)size;
+- (void) setNeedsLayout;
+- (void) layoutSubviews;
+@end
