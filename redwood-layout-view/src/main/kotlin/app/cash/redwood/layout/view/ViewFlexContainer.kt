@@ -44,6 +44,7 @@ internal class ViewFlexContainer(
     flexDirection = direction
     roundToInt = true
   }
+
   private val hostView = HostView(context)
   private val scrollView = newScrollView()
   val view: View get() = scrollView
