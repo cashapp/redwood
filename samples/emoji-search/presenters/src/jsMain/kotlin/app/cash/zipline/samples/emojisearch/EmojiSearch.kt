@@ -46,7 +46,7 @@ class EmojiSearchTreehouseUi(
     Column(
       width = Constraint.Fill,
       horizontalAlignment = CrossAxisAlignment.Stretch,
-      padding = Padding(horizontal = 40),
+      padding = Padding(horizontal = 24),
     ) {
       TextInput(
         state = viewModel.searchTerm,
