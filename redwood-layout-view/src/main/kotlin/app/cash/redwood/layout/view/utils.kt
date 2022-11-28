@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import app.cash.redwood.LayoutModifier
@@ -154,10 +153,3 @@ internal class ViewMeasurable(val view: View) : Measurable() {
     return Size(view.measuredWidth.toDouble(), view.measuredHeight.toDouble())
   }
 }
-
-internal fun View.setTouchEnabled(enable: Boolean) {
-  setOnTouchListener(if (enable) null else blockScrollTouchListener)
-}
-
-@SuppressLint("ClickableViewAccessibility")
-private val blockScrollTouchListener = View.OnTouchListener { _, _ -> true }
