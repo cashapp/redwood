@@ -30,6 +30,7 @@ import app.cash.redwood.flexcontainer.MeasureResult
 import app.cash.redwood.flexcontainer.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexcontainer.Size
 import app.cash.redwood.flexcontainer.isHorizontal
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.ViewGroupChildren
@@ -52,6 +53,16 @@ internal class ViewFlexContainer(
 
   private val _children = ViewGroupChildren(hostView)
   val children: Widget.Children<View> get() = _children
+
+  fun width(width: Constraint) {
+    container.fillWidth = width == Constraint.Fill
+    invalidate()
+  }
+
+  fun height(height: Constraint) {
+    container.fillHeight = height == Constraint.Fill
+    invalidate()
+  }
 
   fun padding(padding: Padding) {
     container.padding = padding.toSpacing(context)

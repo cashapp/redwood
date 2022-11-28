@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.compose.Column
@@ -43,7 +44,9 @@ class EmojiSearchTreehouseUi(
     val viewModel by viewModels.collectAsState(initialViewModel)
 
     Column(
+      width = Constraint.Fill,
       horizontalAlignment = CrossAxisAlignment.Stretch,
+      padding = Padding(horizontal = 24),
     ) {
       TextInput(
         state = viewModel.searchTerm,
@@ -55,6 +58,7 @@ class EmojiSearchTreehouseUi(
       LazyColumn {
         items(viewModel.images) { image ->
           Row(
+            width = Constraint.Fill,
             verticalAlignment = CrossAxisAlignment.Center,
           ) {
             Image(

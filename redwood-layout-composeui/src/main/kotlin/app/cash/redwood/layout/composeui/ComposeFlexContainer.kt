@@ -35,6 +35,7 @@ import app.cash.redwood.flexcontainer.FlexContainer
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.isHorizontal
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.Widget
@@ -56,6 +57,16 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   private var padding = Padding.Zero
 
   var modifier: Modifier by mutableStateOf(Modifier)
+
+  fun width(width: Constraint) {
+    container.fillWidth = width == Constraint.Fill
+    invalidate()
+  }
+
+  fun height(height: Constraint) {
+    container.fillHeight = height == Constraint.Fill
+    invalidate()
+  }
 
   fun padding(padding: Padding) {
     this.padding = padding

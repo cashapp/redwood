@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout
 
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
@@ -26,13 +27,17 @@ import app.cash.redwood.schema.Widget
 
 @Widget(1)
 public data class Row(
-  @Property(1) @Default("Padding.Zero")
+  @Property(1) @Default("Constraint.Wrap")
+  val width: Constraint,
+  @Property(2) @Default("Constraint.Wrap")
+  val height: Constraint,
+  @Property(3) @Default("Padding.Zero")
   val padding: Padding,
-  @Property(2) @Default("Overflow.Clip")
+  @Property(4) @Default("Overflow.Clip")
   val overflow: Overflow,
-  @Property(3) @Default("MainAxisAlignment.Start")
+  @Property(5) @Default("MainAxisAlignment.Start")
   val horizontalAlignment: MainAxisAlignment,
-  @Property(4) @Default("CrossAxisAlignment.Start")
+  @Property(6) @Default("CrossAxisAlignment.Start")
   val verticalAlignment: CrossAxisAlignment,
   @Children(1) val children: RowScope.() -> Unit,
 )
@@ -41,13 +46,17 @@ public object RowScope
 
 @Widget(2)
 public data class Column(
-  @Property(1) @Default("Padding.Zero")
+  @Property(1) @Default("Constraint.Wrap")
+  val width: Constraint,
+  @Property(2) @Default("Constraint.Wrap")
+  val height: Constraint,
+  @Property(3) @Default("Padding.Zero")
   val padding: Padding,
-  @Property(2) @Default("Overflow.Clip")
+  @Property(4) @Default("Overflow.Clip")
   val overflow: Overflow,
-  @Property(3) @Default("CrossAxisAlignment.Start")
+  @Property(5) @Default("CrossAxisAlignment.Start")
   val horizontalAlignment: CrossAxisAlignment,
-  @Property(4) @Default("MainAxisAlignment.Start")
+  @Property(6) @Default("MainAxisAlignment.Start")
   val verticalAlignment: MainAxisAlignment,
   @Children(1) val children: ColumnScope.() -> Unit,
 )
