@@ -31,6 +31,13 @@ jobs:
           path: build/dokka/htmlMultiModule/
           if-no-files-found: error
 
+      # Run the npm install on the full project. Without this, the partial build above updates the
+      # lock file with a subset of the full project's needs (thus making the git index dirty).
+      - run: ./gradlew kotlinNpmInstall
+
+      - name: Ensure git index is clean
+        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+
   paparazzi:
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +52,9 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
+
+      - name: Ensure git index is clean
+        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
 
   sample-counter:
     runs-on: macos-latest
@@ -70,6 +80,9 @@ jobs:
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
+      - name: Ensure git index is clean
+        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+
   sample-emoji:
     runs-on: macos-latest
     steps:
@@ -88,6 +101,9 @@ jobs:
           cd samples/emoji-search/ios/app
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+
+      - name: Ensure git index is clean
+        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
 
   # This worker only serves to fan-in success on the parallel workers. It is used to guard merges
   # on GitHub by always running whereas 'publish' below only runs on our 'trunk'.
