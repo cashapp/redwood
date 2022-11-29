@@ -1,13 +1,20 @@
+import app.cash.redwood.buildsupport.ComposeHelpersGenerateTask
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+def composeHelpers = tasks.register("composeHelpers", ComposeHelpersGenerateTask) {
+  packageName = 'app.cash.redwood.widget'
+}
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(composeHelpers)
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodRuntime

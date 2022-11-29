@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package com.example
 
 internal fun <T> MutableList<T>.move(fromIndex: Int, toIndex: Int, count: Int) {
   val dest = if (fromIndex > toIndex) toIndex else toIndex - count
