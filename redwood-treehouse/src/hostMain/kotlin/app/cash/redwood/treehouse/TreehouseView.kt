@@ -45,14 +45,11 @@ public interface TreehouseView<A : Any> {
     ): DiffConsumingNode.Factory<*>
   }
 
-  public open class CodeListener {
-    /** Show a spinner when a view is waiting for the code to load. */
-    public open fun codeLoading(view: TreehouseView<*>) {}
-
-    /** Clear the loading indicator when the first code is loaded. */
-    public open fun beforeInitialCode(view: TreehouseView<*>) {}
-
-    /** Clear the previous UI and show a quick animation for subsequent code updates. */
-    public open fun beforeUpdatedCode(view: TreehouseView<*>) {}
+  public fun interface CodeListener {
+    /**
+     * Invoked each time new code is loaded. This is called after the view's old children have
+     * been cleared but before the children of the new code have been added.
+     */
+    public fun onCodeLoaded(initial: Boolean)
   }
 }

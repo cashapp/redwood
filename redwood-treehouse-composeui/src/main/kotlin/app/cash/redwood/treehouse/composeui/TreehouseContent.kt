@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 public fun <A : Any> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
+  onCodeLoaded: (initial: Boolean) -> Unit = {},
   content: TreehouseView.Content<A>,
 ) {
   val hostConfiguration = HostConfiguration(
@@ -38,9 +39,9 @@ public fun <A : Any> TreehouseContent(
   )
 
   val rememberedContent = rememberUpdatedState(content)
-  val treehouseView = remember {
+  val treehouseView = remember(onCodeLoaded, widgetSystem) {
     object : TreehouseView<A> {
-      override var codeListener = TreehouseView.CodeListener()
+      override var codeListener = TreehouseView.CodeListener(onCodeLoaded)
       override val boundContent: TreehouseView.Content<A> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
@@ -49,7 +50,7 @@ public fun <A : Any> TreehouseContent(
     }
   }
 
-  LaunchedEffect(hostConfiguration) {
+  LaunchedEffect(treehouseView, hostConfiguration) {
     treehouseView.hostConfiguration.value = hostConfiguration
   }
   LaunchedEffect(content) {

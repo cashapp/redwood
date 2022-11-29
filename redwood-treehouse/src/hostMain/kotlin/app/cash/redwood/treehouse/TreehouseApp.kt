@@ -28,7 +28,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
@@ -98,7 +97,7 @@ public class TreehouseApp<A : Any> internal constructor(
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  private suspend fun bind(view: TreehouseView<A>) {
+  private fun bind(view: TreehouseView<A>) {
     dispatchers.checkZipline()
 
     // Make sure we're tracking this view, so we can update it when the code changes.
@@ -111,15 +110,7 @@ public class TreehouseApp<A : Any> internal constructor(
       viewToBoundContent.remove(view)
     }
 
-    val ziplineSession = this.ziplineSession
-    if (ziplineSession != null) {
-      ziplineSession.bind(view, content)
-    } else {
-      // If we're waiting for code to load, show a loading indicator until it's ready.
-      withContext(dispatchers.ui) {
-        view.codeListener.codeLoading(view)
-      }
-    }
+    ziplineSession?.bind(view, content)
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
@@ -191,11 +182,7 @@ public class TreehouseApp<A : Any> internal constructor(
             if (firstDiff) {
               firstDiff = false
               view.reset()
-
-              when {
-                isInitialLaunch -> view.codeListener.beforeInitialCode(view)
-                else -> view.codeListener.beforeUpdatedCode(view)
-              }
+              view.codeListener.onCodeLoaded(isInitialLaunch)
             }
 
             bridge.sendDiff(diff)
