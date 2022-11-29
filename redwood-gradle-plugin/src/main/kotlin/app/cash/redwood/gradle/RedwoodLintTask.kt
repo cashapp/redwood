@@ -24,9 +24,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.gradle.workers.WorkAction
@@ -40,8 +37,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
-  @get:InputDirectory
-  @get:PathSensitive(PathSensitivity.ABSOLUTE)
+  @get:Input
   abstract val projectDirectory: RegularFileProperty
 
   @get:Input
