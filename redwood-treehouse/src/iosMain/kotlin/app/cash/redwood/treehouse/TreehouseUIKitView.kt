@@ -26,6 +26,7 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
+import platform.UIKit.removeFromSuperview
 import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
@@ -46,7 +47,8 @@ public class TreehouseUIKitView<A : Any>(
       }
     }
 
-  override val children: Widget.Children<*> = UIViewChildren(view)
+  private val _children = UIViewChildren(view)
+  override val children: Widget.Children<*> = _children
 
   private val mutableHostConfiguration = MutableStateFlow(HostConfiguration())
 
@@ -54,7 +56,11 @@ public class TreehouseUIKitView<A : Any>(
     get() = mutableHostConfiguration
 
   override fun reset() {
-    children.remove(0, view.subviews.size)
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    @Suppress("UNCHECKED_CAST") // Correct generic lost by cinterop.
+    (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
   public fun setContent(content: TreehouseView.Content<A>) {
