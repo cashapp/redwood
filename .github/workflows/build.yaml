@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 18
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 18
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 18
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew -p samples/counter build
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 18
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew -p samples/emoji-search build
@@ -133,7 +133,7 @@ jobs:
       - uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 18
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew publish
