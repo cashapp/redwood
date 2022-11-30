@@ -105,23 +105,14 @@ jobs:
       - name: Ensure git index is clean
         run: git add -A && git diff --cached --exit-code
 
-  # This worker only serves to fan-in success on the parallel workers. It is used to guard merges
-  # on GitHub by always running whereas 'publish' below only runs on our 'trunk'.
-  success:
-    runs-on: ubuntu-latest
+  publish:
+    runs-on: macos-latest
+    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
     needs:
       - build
       - paparazzi
       - sample-counter
       - sample-emoji
-    steps:
-      - run: exit 0
-
-  publish:
-    runs-on: macos-latest
-    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
-    needs:
-      - success
     steps:
       - uses: actions/checkout@v3
 
