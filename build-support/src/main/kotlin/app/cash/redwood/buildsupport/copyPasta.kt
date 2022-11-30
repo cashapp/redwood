@@ -25,19 +25,28 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
-abstract class ComposeHelpersGenerateTask @Inject constructor(
-  layout: ProjectLayout,
-) : AbstractCopyPastaTask("composeHelpers", layout)
+object ComposeHelpers {
+  @JvmStatic fun TaskContainer.get(packageName: String) = create("composeHelpers", packageName)
+}
 
-abstract class FlexboxLayoutGenerateTask @Inject constructor(
-  layout: ProjectLayout,
-) : AbstractCopyPastaTask("flexboxLayout", layout)
+object FlexContainerHelpers {
+  @JvmStatic fun TaskContainer.get(packageName: String) = create("flexContainerHelpers", packageName)
+}
 
-abstract class AbstractCopyPastaTask(
-  private val fileName: String,
-  layout: ProjectLayout,
-) : DefaultTask() {
+private fun TaskContainer.create(fileName: String, packageName: String): TaskProvider<CopyPastaTask> {
+  return register(fileName, CopyPastaTask::class.java) {
+    it.fileName.set(fileName)
+    it.packageName.set(packageName)
+  }
+}
+
+abstract class CopyPastaTask @Inject constructor(layout: ProjectLayout) : DefaultTask() {
+  @get:Input
+  abstract val fileName: Property<String>
+
   @get:Input
   abstract val packageName: Property<String>
 
@@ -47,15 +56,15 @@ abstract class AbstractCopyPastaTask(
   init {
     @Suppress("LeakingThis")
     outputDirectory.convention(
-      layout.buildDirectory.map {
-        it.dir("generated").dir("source").dir(fileName)
+      layout.buildDirectory.zip(fileName) { buildDir, fileName ->
+        buildDir.dir("generated").dir("source").dir(fileName)
       }
     )
   }
 
   @TaskAction fun run() {
-    val file = "$fileName.kt"
-    val content = AbstractCopyPastaTask::class.java.getResourceAsStream(file)!!
+    val file = "${fileName.get()}.kt"
+    val content = CopyPastaTask::class.java.getResourceAsStream(file)!!
       .use { it.readAllBytes().toString(UTF_8) }
       .replace("package com.example\n", "package ${packageName.get()}\n")
 
