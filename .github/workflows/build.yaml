@@ -36,7 +36,7 @@ jobs:
       - run: ./gradlew kotlinNpmInstall
 
       - name: Ensure git index is clean
-        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+        run: git add -A && git diff --cached --exit-code
 
   paparazzi:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
       - run: ./gradlew verifyPaparazziDebug
 
       - name: Ensure git index is clean
-        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+        run: git add -A && git diff --cached --exit-code
 
   sample-counter:
     runs-on: macos-latest
@@ -81,7 +81,7 @@ jobs:
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
       - name: Ensure git index is clean
-        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+        run: git add -A && git diff --cached --exit-code
 
   sample-emoji:
     runs-on: macos-latest
@@ -103,7 +103,7 @@ jobs:
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
       - name: Ensure git index is clean
-        run: test -z "$(git status --porcelain | tee /dev/fd/2)"
+        run: git add -A && git diff --cached --exit-code
 
   # This worker only serves to fan-in success on the parallel workers. It is used to guard merges
   # on GitHub by always running whereas 'publish' below only runs on our 'trunk'.
