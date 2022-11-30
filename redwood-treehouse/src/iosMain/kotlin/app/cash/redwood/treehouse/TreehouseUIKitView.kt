@@ -36,7 +36,7 @@ public class TreehouseUIKitView<A : Any>(
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : TreehouseView<A> {
   public val view: UIView = RootUiView(this)
-  public override var codeListener: CodeListener = CodeListener {}
+  public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<A>? = null
 
   override val boundContent: TreehouseView.Content<A>?

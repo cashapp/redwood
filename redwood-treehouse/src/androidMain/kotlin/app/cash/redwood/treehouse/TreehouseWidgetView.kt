@@ -34,7 +34,7 @@ public class TreehouseWidgetView<A : Any>(
   private val treehouseApp: TreehouseApp<A>,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : FrameLayout(context), TreehouseView<A> {
-  public override var codeListener: CodeListener = CodeListener {}
+  public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<A>? = null
 
   override val boundContent: TreehouseView.Content<A>?
