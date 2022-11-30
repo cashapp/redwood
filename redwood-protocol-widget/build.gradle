@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
@@ -8,6 +10,7 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.widget'))
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodWidget

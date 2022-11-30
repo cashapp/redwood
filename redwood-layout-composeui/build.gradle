@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.FlexContainerHelpers
+
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
@@ -19,5 +21,12 @@ android {
 
   buildFeatures {
     compose = true
+  }
+
+  def helpers = FlexContainerHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get()
+  // TODO Should be able to do `sourceSets.main.kotlin.srcDir(helpers)`.
+  //  https://issuetracker.google.com/issues/249468390
+  libraryVariants.all { variant ->
+    variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
   }
 }
