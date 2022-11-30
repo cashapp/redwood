@@ -45,11 +45,17 @@ public interface TreehouseView<A : Any> {
     ): DiffConsumingNode.Factory<*>
   }
 
-  public fun interface CodeListener {
+  public open class CodeListener {
+    /**
+     * Invoked when the initial code is still loading. This can be used to signal a loading state
+     * in the UI before there is anything to display.
+     */
+    public open fun onInitialCodeLoading() {}
+
     /**
      * Invoked each time new code is loaded. This is called after the view's old children have
      * been cleared but before the children of the new code have been added.
      */
-    public fun onCodeLoaded(initial: Boolean)
+    public open fun onCodeLoaded(initial: Boolean) {}
   }
 }

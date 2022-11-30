@@ -110,7 +110,14 @@ public class TreehouseApp<A : Any> internal constructor(
       viewToBoundContent.remove(view)
     }
 
-    ziplineSession?.bind(view, content)
+    val ziplineSession = ziplineSession
+    if (ziplineSession != null) {
+      ziplineSession.bind(view, content)
+    } else {
+      scope.launch(dispatchers.ui) {
+        view.codeListener.onInitialCodeLoading()
+      }
+    }
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
