@@ -20,13 +20,11 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexcontainer.AlignItems
 import app.cash.redwood.flexcontainer.AlignSelf
 import app.cash.redwood.flexcontainer.FlexDirection
 import app.cash.redwood.flexcontainer.FlexItem
 import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
 import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexShrink
-import app.cash.redwood.flexcontainer.JustifyContent
 import app.cash.redwood.flexcontainer.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexcontainer.MeasureSpec
 import app.cash.redwood.flexcontainer.MeasureSpecMode
@@ -40,34 +38,7 @@ import app.cash.redwood.layout.Padding as PaddingModifier
 import app.cash.redwood.layout.Shrink
 import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Padding
-
-internal fun MainAxisAlignment.toJustifyContent() = when (this) {
-  MainAxisAlignment.Start -> JustifyContent.FlexStart
-  MainAxisAlignment.Center -> JustifyContent.Center
-  MainAxisAlignment.End -> JustifyContent.FlexEnd
-  MainAxisAlignment.SpaceBetween -> JustifyContent.SpaceBetween
-  MainAxisAlignment.SpaceAround -> JustifyContent.SpaceAround
-  MainAxisAlignment.SpaceEvenly -> JustifyContent.SpaceEvenly
-  else -> throw AssertionError()
-}
-
-internal fun CrossAxisAlignment.toAlignItems() = when (this) {
-  CrossAxisAlignment.Start -> AlignItems.FlexStart
-  CrossAxisAlignment.Center -> AlignItems.Center
-  CrossAxisAlignment.End -> AlignItems.FlexEnd
-  CrossAxisAlignment.Stretch -> AlignItems.Stretch
-  else -> throw AssertionError()
-}
-
-internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
-  CrossAxisAlignment.Start -> AlignSelf.FlexStart
-  CrossAxisAlignment.Center -> AlignSelf.Center
-  CrossAxisAlignment.End -> AlignSelf.FlexEnd
-  CrossAxisAlignment.Stretch -> AlignSelf.Stretch
-  else -> throw AssertionError()
-}
 
 internal fun Padding.toSpacing(context: Context): Spacing {
   val density = DensityMultiplier * context.resources.displayMetrics.density

@@ -30,6 +30,10 @@ abstract class ComposeHelpersGenerateTask @Inject constructor(
   layout: ProjectLayout,
 ) : AbstractCopyPastaTask("composeHelpers", layout)
 
+abstract class FlexboxLayoutGenerateTask @Inject constructor(
+  layout: ProjectLayout,
+) : AbstractCopyPastaTask("flexboxLayout", layout)
+
 abstract class AbstractCopyPastaTask(
   private val fileName: String,
   layout: ProjectLayout,

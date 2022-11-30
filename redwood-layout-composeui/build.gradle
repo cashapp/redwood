@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.FlexboxLayoutGenerateTask
+
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
@@ -14,10 +16,21 @@ dependencies {
   testImplementation projects.redwoodLayoutSharedTest
 }
 
+def flexboxLayout = tasks.register("flexboxLayout", FlexboxLayoutGenerateTask) {
+  packageName = 'app.cash.redwood.layout.composeui'
+}
+
 android {
   namespace 'app.cash.redwood.layout.composeui'
 
   buildFeatures {
     compose = true
+  }
+
+  // TODO Should be able to do `sourceSets.main.kotlin.srcDir(flexboxLayout)`.
+  //  https://issuetracker.google.com/issues/249468390
+  libraryVariants.all { variant ->
+    def task = flexboxLayout.get()
+    variant.registerJavaGeneratingTask(task, task.outputDirectory.get().asFile)
   }
 }

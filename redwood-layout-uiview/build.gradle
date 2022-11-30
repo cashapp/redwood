@@ -1,6 +1,12 @@
+import app.cash.redwood.buildsupport.FlexboxLayoutGenerateTask
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+def flexboxLayout = tasks.register("flexboxLayout", FlexboxLayoutGenerateTask) {
+  packageName = 'app.cash.redwood.layout.uiview'
+}
 
 kotlin {
   iosArm64()
@@ -9,6 +15,7 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(flexboxLayout)
       dependencies {
         api projects.redwoodLayoutSchema.widget
         implementation projects.redwoodFlexContainer
