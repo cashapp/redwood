@@ -227,11 +227,11 @@ public class TreehouseApp<A : Any> internal constructor(
     }
 
     fun cancel() {
-      dispatchers.checkUi()
-
       content.close()
-      viewOrNull = null
-      bridgeOrNull = null
+      scope.launch(dispatchers.ui) {
+        viewOrNull = null
+        bridgeOrNull = null
+      }
     }
   }
 
