@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexcontainer
+package app.cash.redwood.flexbox
 
-import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
-import app.cash.redwood.flexcontainer.Measurable.Companion.WrapContent
+import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
+import app.cash.redwood.flexbox.Measurable.Companion.WrapContent
 
 internal fun AlignSelf.toAlignItems() = when (this) {
   AlignSelf.FlexStart -> AlignItems.FlexStart

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package app.cash.redwood.flexcontainer
+package app.cash.redwood.flexbox
 
-import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexBasisPercent
-import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexcontainer.FlexItem.Companion.UndefinedFlexShrink
-import app.cash.redwood.flexcontainer.Measurable.Companion.MatchParent
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexBasisPercent
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.FlexItem.Companion.UndefinedFlexShrink
+import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
 /**

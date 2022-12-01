@@ -32,8 +32,8 @@ object ComposeHelpers {
   @JvmStatic fun TaskContainer.get(packageName: String) = create("composeHelpers", packageName)
 }
 
-object FlexContainerHelpers {
-  @JvmStatic fun TaskContainer.get(packageName: String) = create("flexContainerHelpers", packageName)
+object FlexboxHelpers {
+  @JvmStatic fun TaskContainer.get(packageName: String) = create("flexboxHelpers", packageName)
 }
 
 private fun TaskContainer.create(fileName: String, packageName: String): TaskProvider<CopyPastaTask> {
