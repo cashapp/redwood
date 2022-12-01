@@ -16,12 +16,12 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
-import app.cash.zipline.ZiplineService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -136,7 +136,7 @@ public class TreehouseApp<A : Any> internal constructor(
     val isInitialLaunch: Boolean,
   ) {
     /** Map of views to the zipline service whose content drives those views. */
-    val bindings = mutableMapOf<TreehouseView<A>, ZiplineService>()
+    val bindings = mutableMapOf<TreehouseView<A>, WidgetBinding>()
 
     fun bind(
       view: TreehouseView<A>,
@@ -145,64 +145,93 @@ public class TreehouseApp<A : Any> internal constructor(
       dispatchers.checkZipline()
 
       val previous = bindings.remove(view)
-      previous?.close()
+      previous?.cancel()
 
       if (content == null) return
 
       val ziplineTreehouseUi = content.get(context)
-      bindSinks(ziplineTreehouseUi, view, isInitialLaunch)
+      val widgetBinding = WidgetBinding(ziplineTreehouseUi, isInitialLaunch, this, view)
+      widgetBinding.start(view)
 
-      bindings[view] = ziplineTreehouseUi
-    }
-
-    private fun bindSinks(
-      content: ZiplineTreehouseUi,
-      view: TreehouseView<A>,
-      isInitialLaunch: Boolean,
-    ) {
-      val eventSink = EventSink { event ->
-        // Send UI events on the zipline dispatcher.
-        scope.launch(dispatchers.zipline) {
-          content.sendEvent(event)
-        }
-      }
-
-      val widgetFactory = view.widgetSystem.widgetFactory(
-        app = this@TreehouseApp,
-        json = zipline.json,
-        protocolMismatchHandler = eventPublisher.protocolMismatchHandler(this@TreehouseApp),
-      )
-
-      @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-      val bridge = ProtocolBridge(
-        container = view.children as Widget.Children<Any>,
-        factory = widgetFactory as DiffConsumingNode.Factory<Any>,
-        eventSink = eventSink,
-      )
-
-      val diffSinkService = object : DiffSinkService {
-        private var firstDiff = true
-
-        override fun sendDiff(diff: Diff) {
-          // Receive UI updates on the UI dispatcher.
-          scope.launch(dispatchers.ui) {
-            if (firstDiff) {
-              firstDiff = false
-              view.reset()
-              view.codeListener.onCodeLoaded(isInitialLaunch)
-            }
-
-            bridge.sendDiff(diff)
-          }
-        }
-      }
-
-      content.start(diffSinkService, view.hostConfiguration.toFlowWithInitialValue())
+      bindings[view] = widgetBinding
     }
 
     fun cancel() {
       scope.cancel()
       zipline.close()
+    }
+  }
+
+  /**
+   * Binds a widget to a single code load.
+   *
+   * This aggressively manages the lifecycle of the widget, breaking widget reachability when the
+   * binding is canceled.
+   */
+  private inner class WidgetBinding(
+    private val content: ZiplineTreehouseUi,
+    private val isInitialLaunch: Boolean,
+    session: ZiplineSession,
+    view: TreehouseView<A>,
+  ) : EventSink, DiffSinkService {
+    private var firstDiff = true
+
+    /** Only accessed on the UI dispatcher. Null after [cancel]. */
+    private var viewOrNull: TreehouseView<A>? = view
+
+    /** Only accessed on the UI dispatcher. Null after [cancel]. */
+    @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
+    private var bridgeOrNull: ProtocolBridge<*>? = ProtocolBridge(
+      container = view.children as Widget.Children<Any>,
+      factory = view.widgetSystem.widgetFactory(
+        app = this@TreehouseApp,
+        json = session.zipline.json,
+        protocolMismatchHandler = eventPublisher.protocolMismatchHandler(this@TreehouseApp),
+      ) as DiffConsumingNode.Factory<Any>,
+      eventSink = this,
+    )
+
+    /** Send an event from the UI to Zipline. */
+    override fun sendEvent(event: Event) {
+      dispatchers.checkUi()
+      if (viewOrNull == null) return
+
+      // Send UI events on the zipline dispatcher.
+      scope.launch(dispatchers.zipline) {
+        content.sendEvent(event)
+      }
+    }
+
+    /** Send a diff from Zipline to the UI. */
+    override fun sendDiff(diff: Diff) {
+      // Receive UI updates on the UI dispatcher.
+      scope.launch(dispatchers.ui) {
+        val view = viewOrNull ?: return@launch
+        val bridge = bridgeOrNull ?: return@launch
+
+        if (firstDiff) {
+          firstDiff = false
+          view.reset()
+          view.codeListener.onCodeLoaded(isInitialLaunch)
+        }
+
+        bridge.sendDiff(diff)
+      }
+    }
+
+    fun start(view: TreehouseView<A>) {
+      content.start(
+        diffSink = this,
+        hostConfigurations = view.hostConfiguration.toFlowWithInitialValue(),
+      )
+    }
+
+    fun cancel() {
+      dispatchers.checkUi()
+
+      content.close()
+      viewOrNull = null
+      bridgeOrNull = null
     }
   }
 
