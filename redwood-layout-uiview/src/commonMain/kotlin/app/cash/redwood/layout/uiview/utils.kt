@@ -16,18 +16,18 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexcontainer.AlignSelf
-import app.cash.redwood.flexcontainer.FlexDirection
-import app.cash.redwood.flexcontainer.FlexItem
-import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexcontainer.FlexItem.Companion.DefaultFlexShrink
-import app.cash.redwood.flexcontainer.Measurable
-import app.cash.redwood.flexcontainer.MeasureSpec
-import app.cash.redwood.flexcontainer.MeasureSpecMode
-import app.cash.redwood.flexcontainer.Size
-import app.cash.redwood.flexcontainer.Spacing
-import app.cash.redwood.flexcontainer.isHorizontal
-import app.cash.redwood.flexcontainer.isVertical
+import app.cash.redwood.flexbox.AlignSelf
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.FlexItem
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
+import app.cash.redwood.flexbox.Measurable
+import app.cash.redwood.flexbox.MeasureSpec
+import app.cash.redwood.flexbox.MeasureSpecMode
+import app.cash.redwood.flexbox.Size
+import app.cash.redwood.flexbox.Spacing
+import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.Grow
 import app.cash.redwood.layout.HorizontalAlignment
 import app.cash.redwood.layout.Padding as PaddingModifier

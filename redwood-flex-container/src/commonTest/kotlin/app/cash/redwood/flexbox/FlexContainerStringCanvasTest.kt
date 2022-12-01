@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexcontainer
+package app.cash.redwood.flexbox
 
-import app.cash.redwood.flexcontainer.FlexDirection.Companion.Column
-import app.cash.redwood.flexcontainer.FlexDirection.Companion.Row
+import app.cash.redwood.flexbox.FlexDirection.Companion.Column
+import app.cash.redwood.flexbox.FlexDirection.Companion.Row
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

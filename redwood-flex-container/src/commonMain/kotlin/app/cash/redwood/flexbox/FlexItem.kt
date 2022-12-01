@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.flexcontainer
+package app.cash.redwood.flexbox
 
 /**
  * An item with properties that can be measured and laid out inside a [FlexContainer].

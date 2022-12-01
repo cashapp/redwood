@@ -30,11 +30,11 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Constraints
-import app.cash.redwood.flexcontainer.AlignItems
-import app.cash.redwood.flexcontainer.FlexContainer
-import app.cash.redwood.flexcontainer.FlexDirection
-import app.cash.redwood.flexcontainer.JustifyContent
-import app.cash.redwood.flexcontainer.isHorizontal
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexContainer
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding

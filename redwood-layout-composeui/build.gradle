@@ -1,4 +1,4 @@
-import app.cash.redwood.buildsupport.FlexContainerHelpers
+import app.cash.redwood.buildsupport.FlexboxHelpers
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
@@ -23,7 +23,7 @@ android {
     compose = true
   }
 
-  def helpers = FlexContainerHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get()
+  def helpers = FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get()
   // TODO Should be able to do `sourceSets.main.kotlin.srcDir(helpers)`.
   //  https://issuetracker.google.com/issues/249468390
   libraryVariants.all { variant ->

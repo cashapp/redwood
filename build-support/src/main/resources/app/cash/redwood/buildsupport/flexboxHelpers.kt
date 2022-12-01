@@ -15,9 +15,9 @@
  */
 package com.example
 
-import app.cash.redwood.flexcontainer.AlignItems
-import app.cash.redwood.flexcontainer.AlignSelf
-import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.AlignSelf
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 

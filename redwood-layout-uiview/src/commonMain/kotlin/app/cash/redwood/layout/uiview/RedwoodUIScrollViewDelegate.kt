@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.flexcontainer.Size
+import app.cash.redwood.flexbox.Size
 import platform.UIKit.UIScrollView
 
 /**
