@@ -25,6 +25,7 @@ import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
+import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -44,6 +45,7 @@ public fun <A : Any> TreehouseContent(
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView<A> {
       override val codeListener get() = rememberedCodeListener.value
+      override var stateChangeListener: OnStateChangeListener<A>? = null
       override val boundContent: TreehouseView.Content<A> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
@@ -51,12 +53,14 @@ public fun <A : Any> TreehouseContent(
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }
-
   LaunchedEffect(treehouseView, hostConfiguration) {
     treehouseView.hostConfiguration.value = hostConfiguration
   }
-  LaunchedEffect(treehouseApp, treehouseView, content) {
-    treehouseApp.onContentChanged(treehouseView)
+  LaunchedEffect(treehouseApp, treehouseView) {
+    treehouseApp.renderTo(treehouseView)
+  }
+  LaunchedEffect(treehouseView, content) {
+    treehouseView.stateChangeListener?.onStateChanged(treehouseView)
   }
 
   Box {

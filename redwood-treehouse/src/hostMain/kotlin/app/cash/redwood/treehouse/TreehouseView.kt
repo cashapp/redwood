@@ -28,9 +28,17 @@ public interface TreehouseView<A : Any> {
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem<A>
   public val codeListener: CodeListener
+  public var stateChangeListener: OnStateChangeListener<A>?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
+
+  public fun interface OnStateChangeListener<A : Any> {
+    /**
+     * Called when [TreehouseView.boundContent] has changed.
+     */
+    public fun onStateChanged(view: TreehouseView<A>)
+  }
 
   public fun interface Content<A : Any> {
     public fun get(app: A): ZiplineTreehouseUi
