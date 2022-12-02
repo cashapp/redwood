@@ -67,5 +67,6 @@ paparazzi-gradlePlugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin"
 jimfs = "com.google.jimfs:jimfs:1.2"
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-core = { module = "io.coil-kt:coil", version.ref = "coil" }
+turbine = "app.cash.turbine:turbine:0.12.1"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }

@@ -23,11 +23,11 @@ import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class ViewGroupChildrenTest : AbstractWidgetChildrenTest<View>() {
-  private val parent = FrameLayout(RuntimeEnvironment.application)
+  private val parent = FrameLayout(RuntimeEnvironment.getApplication())
   override val children = ViewGroupChildren(parent)
 
   override fun widget(name: String): View {
-    return View(RuntimeEnvironment.application).apply {
+    return View(RuntimeEnvironment.getApplication()).apply {
       tag = name
     }
   }

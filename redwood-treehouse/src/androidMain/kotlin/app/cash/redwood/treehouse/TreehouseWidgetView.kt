@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
@@ -66,7 +67,7 @@ public class TreehouseWidgetView<A : Any>(
     }
 
   private val _children = ViewGroupChildren(this)
-  override val children: Widget.Children<*> = _children
+  override val children: Widget.Children<View> get() = _children
 
   private val mutableHostConfiguration =
     MutableStateFlow(computeHostConfiguration(context.resources.configuration))

@@ -44,7 +44,7 @@ public interface TreehouseView<A : Any> {
     public fun get(app: A): ZiplineTreehouseUi
   }
 
-  public interface WidgetSystem<A : Any> {
+  public fun interface WidgetSystem<A : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
       app: TreehouseApp<A>,
