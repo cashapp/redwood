@@ -69,7 +69,8 @@ private class TableViewDataSource<A : Any>(
   }
 
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
-    val treehouseView = TreehouseUIKitView(treehouseApp, widgetSystem)
+    val treehouseView = TreehouseUIKitView(widgetSystem)
+    treehouseApp.renderTo(treehouseView)
     treehouseView.setContent(CellContent(intervals[cellForRowAtIndexPath.section.toInt()].itemProvider, cellForRowAtIndexPath.row.toInt()))
     return TableViewCell(treehouseView.view)
   }

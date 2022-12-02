@@ -65,9 +65,13 @@ public class TreehouseApp<A : Any> internal constructor(
   public val zipline: Zipline?
     get() = ziplineSession?.zipline
 
-  /** This function may only be invoked on [TreehouseDispatchers.ui]. */
-  public fun onContentChanged(view: TreehouseView<A>) {
+  private val stateChangeListener = TreehouseView.OnStateChangeListener { view ->
     bind(view, ziplineSession, codeChanged = false)
+  }
+
+  public fun renderTo(view: TreehouseView<A>) {
+    view.stateChangeListener = stateChangeListener
+    stateChangeListener.onStateChanged(view)
   }
 
   /**

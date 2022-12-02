@@ -61,7 +61,8 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     setContentView(
-      TreehouseWidgetView(this, treehouseApp, widgetSystem).apply {
+      TreehouseWidgetView(this, widgetSystem).apply {
+        treehouseApp.renderTo(this)
         setContent(treehouseContent)
       },
     )
