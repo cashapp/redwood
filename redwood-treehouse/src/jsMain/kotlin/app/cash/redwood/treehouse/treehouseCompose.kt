@@ -75,6 +75,7 @@ private class RedwoodZiplineTreehouseUi(
   override fun close() {
     composition.cancel()
     diffSinkToClose.close()
+    treehouseUi.close()
   }
 }
 
