@@ -64,9 +64,10 @@ public class TreehouseUIKitView<A : Any>(
     }
 
   private val _children = UIViewChildren(view)
-  override val children: Widget.Children<*> = _children
+  override val children: Widget.Children<UIView> get() = _children
 
-  private val mutableHostConfiguration = MutableStateFlow(HostConfiguration())
+  private val mutableHostConfiguration =
+    MutableStateFlow(computeHostConfiguration(view.traitCollection))
 
   override val hostConfiguration: StateFlow<HostConfiguration>
     get() = mutableHostConfiguration
@@ -88,11 +89,17 @@ public class TreehouseUIKitView<A : Any>(
     stateChangeListener?.onStateChanged(this)
   }
 
-  internal fun updateHostConfiguration(traitCollection: UITraitCollection) {
-    mutableHostConfiguration.value = HostConfiguration(
-      darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark,
-    )
+  internal fun updateHostConfiguration() {
+    mutableHostConfiguration.value = computeHostConfiguration(view.traitCollection)
   }
+}
+
+private fun computeHostConfiguration(
+  traitCollection: UITraitCollection,
+): HostConfiguration {
+  return HostConfiguration(
+    darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark,
+  )
 }
 
 @Suppress("unused") // cinterop erroneously exposes these as extension functions.
@@ -107,13 +114,10 @@ private class RootUiView(
 
   @ObjCAction fun didMoveToSuperview() {
     treehouseView.superviewChanged()
-    if (superview != null) {
-      treehouseView.updateHostConfiguration(traitCollection)
-    }
   }
 
   override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
-    treehouseView.updateHostConfiguration(traitCollection)
+    treehouseView.updateHostConfiguration()
   }
 }
