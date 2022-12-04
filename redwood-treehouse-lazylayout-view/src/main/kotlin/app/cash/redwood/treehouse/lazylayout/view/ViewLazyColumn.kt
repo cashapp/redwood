@@ -98,8 +98,10 @@ internal class ViewLazyColumn<A : Any>(
     treehouseApp: TreehouseApp<A>,
     widgetSystem: TreehouseView.WidgetSystem<A>,
   ) : RecyclerView.ViewHolder(container) {
-    val treehouseWidgetView = TreehouseWidgetView(container.context, treehouseApp, widgetSystem)
+    val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
       .apply {
+        treehouseApp.renderTo(this)
+
         layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
           gravity = Gravity.CENTER_HORIZONTAL
         }

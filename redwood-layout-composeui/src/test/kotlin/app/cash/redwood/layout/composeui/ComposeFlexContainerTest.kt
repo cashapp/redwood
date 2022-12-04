@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexcontainer.AlignItems
-import app.cash.redwood.flexcontainer.FlexDirection
-import app.cash.redwood.flexcontainer.JustifyContent
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint

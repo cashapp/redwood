@@ -28,15 +28,23 @@ public interface TreehouseView<A : Any> {
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem<A>
   public val codeListener: CodeListener
+  public var stateChangeListener: OnStateChangeListener<A>?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
+
+  public fun interface OnStateChangeListener<A : Any> {
+    /**
+     * Called when [TreehouseView.boundContent] has changed.
+     */
+    public fun onStateChanged(view: TreehouseView<A>)
+  }
 
   public fun interface Content<A : Any> {
     public fun get(app: A): ZiplineTreehouseUi
   }
 
-  public interface WidgetSystem<A : Any> {
+  public fun interface WidgetSystem<A : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
       app: TreehouseApp<A>,
@@ -46,13 +54,16 @@ public interface TreehouseView<A : Any> {
   }
 
   public open class CodeListener {
-    /** Show a spinner when a view is waiting for the code to load. */
-    public open fun codeLoading(view: TreehouseView<*>) {}
+    /**
+     * Invoked when the initial code is still loading. This can be used to signal a loading state
+     * in the UI before there is anything to display.
+     */
+    public open fun onInitialCodeLoading() {}
 
-    /** Clear the loading indicator when the first code is loaded. */
-    public open fun beforeInitialCode(view: TreehouseView<*>) {}
-
-    /** Clear the previous UI and show a quick animation for subsequent code updates. */
-    public open fun beforeUpdatedCode(view: TreehouseView<*>) {}
+    /**
+     * Invoked each time new code is loaded. This is called after the view's old children have
+     * been cleared but before the children of the new code have been added.
+     */
+    public open fun onCodeLoaded(initial: Boolean) {}
   }
 }

@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.FlexboxHelpers
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
@@ -36,6 +38,7 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.uiview'))
       dependencies {
         api projects.redwoodLayoutSchema.widget
         implementation projects.redwoodFlexContainer

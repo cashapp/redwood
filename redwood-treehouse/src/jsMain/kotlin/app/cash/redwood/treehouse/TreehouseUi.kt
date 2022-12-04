@@ -20,4 +20,7 @@ import androidx.compose.runtime.Composable
 public interface TreehouseUi {
   @Composable
   public fun Show()
+
+  public fun close() {
+  }
 }

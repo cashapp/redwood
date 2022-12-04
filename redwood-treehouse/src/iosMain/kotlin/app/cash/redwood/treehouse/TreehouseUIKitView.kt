@@ -16,8 +16,10 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
+import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
+import kotlin.DeprecationLevel.ERROR
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,16 +28,31 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
+import platform.UIKit.removeFromSuperview
 import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
 
 public class TreehouseUIKitView<A : Any>(
-  private val treehouseApp: TreehouseApp<A>,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : TreehouseView<A> {
+  @Deprecated(
+    message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
+    replaceWith = ReplaceWith("TreehouseUIKitView(widgetSystem).also(treehouseApp::renderTo)"),
+    level = ERROR,
+  )
+  @Suppress("UNUSED_PARAMETER")
+  public constructor(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseView.WidgetSystem<A>) : this(widgetSystem)
+
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()
+  public override var stateChangeListener: OnStateChangeListener<A>? = null
+    set(value) {
+      check(value != null) { "Views cannot be unbound from a listener at this time" }
+      check(field == null) { "View already bound to a listener" }
+      field = value
+    }
+
   private var content: TreehouseView.Content<A>? = null
 
   override val boundContent: TreehouseView.Content<A>?
@@ -46,7 +63,8 @@ public class TreehouseUIKitView<A : Any>(
       }
     }
 
-  override val children: Widget.Children<*> = UIViewChildren(view)
+  private val _children = UIViewChildren(view)
+  override val children: Widget.Children<*> = _children
 
   private val mutableHostConfiguration = MutableStateFlow(HostConfiguration())
 
@@ -54,17 +72,20 @@ public class TreehouseUIKitView<A : Any>(
     get() = mutableHostConfiguration
 
   override fun reset() {
-    children.remove(0, view.subviews.size)
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    @Suppress("UNCHECKED_CAST") // Correct generic lost by cinterop.
+    (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
   public fun setContent(content: TreehouseView.Content<A>) {
-    treehouseApp.dispatchers.checkUi()
     this.content = content
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
   internal fun superviewChanged() {
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
   internal fun updateHostConfiguration(traitCollection: UITraitCollection) {

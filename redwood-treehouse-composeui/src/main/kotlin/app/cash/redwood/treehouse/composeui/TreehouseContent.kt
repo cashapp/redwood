@@ -24,6 +24,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseView.CodeListener
+import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -31,16 +33,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 public fun <A : Any> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
+  codeListener: CodeListener = CodeListener(),
   content: TreehouseView.Content<A>,
 ) {
   val hostConfiguration = HostConfiguration(
     darkMode = isSystemInDarkTheme(),
   )
 
+  val rememberedCodeListener = rememberUpdatedState(codeListener)
   val rememberedContent = rememberUpdatedState(content)
-  val treehouseView = remember {
+  val treehouseView = remember(widgetSystem) {
     object : TreehouseView<A> {
-      override var codeListener = TreehouseView.CodeListener()
+      override val codeListener get() = rememberedCodeListener.value
+      override var stateChangeListener: OnStateChangeListener<A>? = null
       override val boundContent: TreehouseView.Content<A> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
@@ -48,12 +53,14 @@ public fun <A : Any> TreehouseContent(
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }
-
-  LaunchedEffect(hostConfiguration) {
+  LaunchedEffect(treehouseView, hostConfiguration) {
     treehouseView.hostConfiguration.value = hostConfiguration
   }
-  LaunchedEffect(content) {
-    treehouseApp.onContentChanged(treehouseView)
+  LaunchedEffect(treehouseApp, treehouseView) {
+    treehouseApp.renderTo(treehouseView)
+  }
+  LaunchedEffect(treehouseView, content) {
+    treehouseView.stateChangeListener?.onStateChanged(treehouseView)
   }
 
   Box {

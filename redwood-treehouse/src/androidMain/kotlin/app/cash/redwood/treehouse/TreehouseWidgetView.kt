@@ -20,21 +20,42 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
+import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
+import kotlin.DeprecationLevel.ERROR
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView<A : Any>(
   context: Context,
-  private val treehouseApp: TreehouseApp<A>,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : FrameLayout(context), TreehouseView<A> {
+  @Deprecated(
+    message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
+    replaceWith = ReplaceWith("TreehouseWidgetView(context, widgetSystem).also(treehouseApp::renderTo)"),
+    level = ERROR,
+  )
+  @Suppress("UNUSED_PARAMETER")
+  public constructor(
+    context: Context,
+    treehouseApp: TreehouseApp<A>,
+    widgetSystem: TreehouseView.WidgetSystem<A>,
+  ) : this(context, widgetSystem)
+
   public override var codeListener: CodeListener = CodeListener()
+  public override var stateChangeListener: OnStateChangeListener<A>? = null
+    set(value) {
+      check(value != null) { "Views cannot be unbound from a listener at this time" }
+      check(field == null) { "View already bound to a listener" }
+      field = value
+    }
+
   private var content: TreehouseView.Content<A>? = null
 
   override val boundContent: TreehouseView.Content<A>?
@@ -45,7 +66,8 @@ public class TreehouseWidgetView<A : Any>(
       }
     }
 
-  override val children: Widget.Children<*> = ViewGroupChildren(this)
+  private val _children = ViewGroupChildren(this)
+  override val children: Widget.Children<View> get() = _children
 
   private val mutableHostConfiguration =
     MutableStateFlow(computeHostConfiguration(context.resources.configuration))
@@ -54,23 +76,25 @@ public class TreehouseWidgetView<A : Any>(
     get() = mutableHostConfiguration
 
   override fun reset() {
-    children.remove(0, childCount)
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    removeAllViews()
   }
 
   public fun setContent(content: TreehouseView.Content<A>) {
-    treehouseApp.dispatchers.checkUi()
     this.content = content
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

@@ -60,7 +60,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val view = ComposeView(this)
     view.setContent {
       EmojiSearchTheme {
-        TreehouseContent(treehouseApp, widgetSystem, treehouseContent)
+        TreehouseContent(treehouseApp, widgetSystem, content = treehouseContent)
       }
     }
     setContentView(view)
