@@ -15,11 +15,26 @@
  */
 package com.example
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.AlignSelf
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.FlexItem
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
+import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
+import app.cash.redwood.flexbox.Measurable
+import app.cash.redwood.flexbox.Spacing
+import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
+import app.cash.redwood.layout.Grow as GrowModifier
+import app.cash.redwood.layout.HorizontalAlignment as HorizontalAlignmentModifier
+import app.cash.redwood.layout.Padding as PaddingModifier
+import app.cash.redwood.layout.Shrink as ShrinkModifier
+import app.cash.redwood.layout.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Padding
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -45,4 +60,49 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   CrossAxisAlignment.End -> AlignSelf.FlexEnd
   CrossAxisAlignment.Stretch -> AlignSelf.Stretch
   else -> throw AssertionError()
+}
+
+internal fun Padding.toSpacing(density: Double) = Spacing(
+  start = density * start.toDouble(),
+  end = density * end.toDouble(),
+  top = density * top.toDouble(),
+  bottom = density * bottom.toDouble(),
+)
+
+internal fun newFlexItem(
+  direction: FlexDirection,
+  density: Double,
+  layoutModifiers: LayoutModifier,
+  measurable: Measurable,
+): FlexItem {
+  var flexGrow = DefaultFlexGrow
+  var flexShrink = DefaultFlexShrink
+  var spacing = Spacing.Zero
+  var alignSelf = AlignSelf.Auto
+  layoutModifiers.forEach { modifier ->
+    when (modifier) {
+      is GrowModifier -> {
+        flexGrow = modifier.value
+      }
+      is ShrinkModifier -> {
+        flexShrink = modifier.value
+      }
+      is PaddingModifier -> {
+        spacing = modifier.padding.toSpacing(density)
+      }
+      is HorizontalAlignmentModifier -> if (direction.isVertical) {
+        alignSelf = modifier.alignment.toAlignSelf()
+      }
+      is VerticalAlignmentModifier -> if (direction.isHorizontal) {
+        alignSelf = modifier.alignment.toAlignSelf()
+      }
+    }
+  }
+  return FlexItem(
+    flexGrow = flexGrow,
+    flexShrink = flexShrink,
+    margin = spacing,
+    alignSelf = alignSelf,
+    measurable = measurable,
+  )
 }

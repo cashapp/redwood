@@ -66,7 +66,7 @@ internal class UIViewFlexContainer(
   }
 
   fun padding(padding: Padding) {
-    container.padding = padding.toSpacing()
+    container.padding = padding.toSpacing(DensityMultiplier)
     invalidate()
   }
 
@@ -140,6 +140,7 @@ internal class UIViewFlexContainer(
       _children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
+          density = DensityMultiplier,
           layoutModifiers = widget.layoutModifiers,
           measurable = UIViewMeasurable(widget.value),
         )

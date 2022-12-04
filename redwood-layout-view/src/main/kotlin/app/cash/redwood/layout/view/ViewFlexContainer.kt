@@ -44,6 +44,7 @@ internal class ViewFlexContainer(
     flexDirection = direction
     roundToInt = true
   }
+  private val density = DensityMultiplier * context.resources.displayMetrics.density
 
   private val hostView = HostView(context)
   private val scrollView = newScrollView()
@@ -65,7 +66,7 @@ internal class ViewFlexContainer(
   }
 
   fun padding(padding: Padding) {
-    container.padding = padding.toSpacing(context)
+    container.padding = padding.toSpacing(density)
     invalidate()
   }
 
@@ -145,8 +146,8 @@ internal class ViewFlexContainer(
       container.items.clear()
       _children.widgets.forEach { widget ->
         container.items += newFlexItem(
-          context = context,
           direction = direction,
+          density = density,
           layoutModifiers = widget.layoutModifiers,
           measurable = ViewMeasurable(widget.value),
         )
