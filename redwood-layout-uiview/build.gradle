@@ -9,6 +9,11 @@ kotlin {
     binaries {
       framework {
         baseName = "shared"
+        freeCompilerArgs += [
+          "-linker-option", "-framework", "-linker-option", "CoreGraphics",
+          "-linker-option", "-framework", "-linker-option", "Foundation",
+          "-linker-option", "-framework", "-linker-option", "UIKit",
+        ]
       }
     }
     compilations.named("main") {
@@ -19,6 +24,11 @@ kotlin {
     binaries {
       framework {
         baseName = "shared"
+        freeCompilerArgs += [
+          "-linker-option", "-framework", "-linker-option", "CoreGraphics",
+          "-linker-option", "-framework", "-linker-option", "Foundation",
+          "-linker-option", "-framework", "-linker-option", "UIKit",
+        ]
       }
     }
     compilations.named("main") {
@@ -29,6 +39,11 @@ kotlin {
     binaries {
       framework {
         baseName = "shared"
+        freeCompilerArgs += [
+          "-linker-option", "-framework", "-linker-option", "CoreGraphics",
+          "-linker-option", "-framework", "-linker-option", "Foundation",
+          "-linker-option", "-framework", "-linker-option", "UIKit",
+        ]
       }
     }
     compilations.named("main") {

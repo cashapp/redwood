@@ -24,7 +24,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.uiview.cinterop.CGSize
-import app.cash.redwood.layout.uiview.cinterop.UIViewWithOverridesProtocol
+import app.cash.redwood.layout.uiview.cinterop.UIScrollViewWithInterop
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
@@ -33,10 +33,8 @@ import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSizeMake
-import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.intrinsicContentSize
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
 import platform.UIKit.superview
@@ -95,7 +93,7 @@ internal class UIViewFlexContainer(
     _view.setNeedsLayout()
   }
 
-  private inner class HostView : UIScrollView(cValue { CGRectZero }), UIViewWithOverridesProtocol {
+  private inner class HostView : UIScrollViewWithInterop(cValue { CGRectZero }) {
     private var needsLayout = true
 
     init {
@@ -113,10 +111,13 @@ internal class UIViewFlexContainer(
     }
 
     override fun setNeedsLayout() {
+      super.setNeedsLayout()
       needsLayout = true
     }
 
     override fun layoutSubviews() {
+      super.layoutSubviews()
+
       if (!needsLayout) return
       needsLayout = false
 

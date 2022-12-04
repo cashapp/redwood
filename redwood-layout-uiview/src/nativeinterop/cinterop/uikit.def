@@ -4,9 +4,9 @@ language = Objective-C
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
-#import <UIKit/UIView.h>
+#import <UIKit/UIKit.h>
 
-@protocol UIViewWithOverrides
+@interface UIScrollViewWithInterop : UIScrollView
 - (CGSize) intrinsicContentSize;
 - (CGSize) sizeThatFits:(CGSize)size;
 - (void) setNeedsLayout;
