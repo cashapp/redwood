@@ -66,7 +66,7 @@ internal class UIViewFlexContainer(
   }
 
   fun padding(padding: Padding) {
-    container.padding = padding.toSpacing()
+    container.padding = padding.toSpacing(DensityMultiplier)
     invalidate()
   }
 

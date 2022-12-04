@@ -40,20 +40,10 @@ import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 
-internal fun Padding.toSpacing(context: Context): Spacing {
-  val density = DensityMultiplier * context.resources.displayMetrics.density
-  return Spacing(
-    start = density * start.toDouble(),
-    end = density * end.toDouble(),
-    top = density * top.toDouble(),
-    bottom = density * bottom.toDouble(),
-  )
-}
-
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are
 // visually similar on both platforms.
-private const val DensityMultiplier = 1.1
+internal const val DensityMultiplier = 1.1
 
 internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when {
@@ -136,7 +126,7 @@ internal fun newFlexItem(
   return FlexItem(
     flexGrow = flexGrow,
     flexShrink = flexShrink,
-    margin = padding.toSpacing(context),
+    margin = padding.toSpacing(DensityMultiplier),
     alignSelf = if (isCrossAxisAlignmentSet) {
       crossAxisAlignment.toAlignSelf()
     } else {

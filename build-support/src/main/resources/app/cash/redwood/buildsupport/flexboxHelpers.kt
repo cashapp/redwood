@@ -18,8 +18,10 @@ package com.example
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.AlignSelf
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Padding
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -46,3 +48,10 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   CrossAxisAlignment.Stretch -> AlignSelf.Stretch
   else -> throw AssertionError()
 }
+
+internal fun Padding.toSpacing(density: Double) = Spacing(
+  start = density * start.toDouble(),
+  end = density * end.toDouble(),
+  top = density * top.toDouble(),
+  bottom = density * bottom.toDouble(),
+)

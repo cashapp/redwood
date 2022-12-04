@@ -121,7 +121,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     constraints: Constraints,
   ): MeasureResult = with(scope) {
     syncItems(measurables)
-    container.padding = padding.toSpacing(context)
+    container.padding = padding.toSpacing(DensityMultiplier)
 
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
     val result = container.measure(widthSpec, heightSpec)

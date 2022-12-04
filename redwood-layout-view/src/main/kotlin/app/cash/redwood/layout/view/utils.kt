@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.view
 
-import android.content.Context
 import android.view.View
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignSelf
@@ -27,7 +26,6 @@ import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.Grow
@@ -38,20 +36,10 @@ import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 
-internal fun Padding.toSpacing(context: Context): Spacing {
-  val density = DensityMultiplier * context.resources.displayMetrics.density
-  return Spacing(
-    start = density * start.toDouble(),
-    end = density * end.toDouble(),
-    top = density * top.toDouble(),
-    bottom = density * bottom.toDouble(),
-  )
-}
-
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are
 // visually similar on both platforms.
-private const val DensityMultiplier = 1.1
+internal const val DensityMultiplier = 1.1
 
 internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
   size = View.MeasureSpec.getSize(measureSpec).toDouble(),
@@ -75,9 +63,9 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
 }
 
 internal fun newFlexItem(
-  context: Context,
   direction: FlexDirection,
   layoutModifiers: LayoutModifier,
+  density: Double,
   measurable: Measurable,
 ): FlexItem {
   var flexGrow = DefaultFlexGrow
@@ -103,7 +91,7 @@ internal fun newFlexItem(
   return FlexItem(
     flexGrow = flexGrow,
     flexShrink = flexShrink,
-    margin = padding.toSpacing(context),
+    margin = padding.toSpacing(density),
     alignSelf = if (isCrossAxisAlignmentSet) {
       crossAxisAlignment.toAlignSelf()
     } else {

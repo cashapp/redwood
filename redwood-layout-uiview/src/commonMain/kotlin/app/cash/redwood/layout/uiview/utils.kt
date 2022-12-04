@@ -25,7 +25,6 @@ import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.Grow
@@ -45,7 +44,8 @@ import platform.UIKit.intrinsicContentSize
 import platform.UIKit.sizeThatFits
 import platform.UIKit.subviews
 
-internal fun Padding.toSpacing() = Spacing(start.toDouble(), end.toDouble(), top.toDouble(), bottom.toDouble())
+// The cross platform density multiples use iOS as an anchor.
+internal const val DensityMultiplier = 1.0
 
 internal fun CGSize.toSize() = Size(width, height)
 
@@ -109,7 +109,7 @@ internal fun newFlexItem(
   return FlexItem(
     flexGrow = flexGrow,
     flexShrink = flexShrink,
-    margin = padding.toSpacing(),
+    margin = padding.toSpacing(DensityMultiplier),
     alignSelf = if (isCrossAxisAlignmentSet) {
       crossAxisAlignment.toAlignSelf()
     } else {
