@@ -140,6 +140,7 @@ internal class UIViewFlexContainer(
       _children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
+          density = DensityMultiplier,
           layoutModifiers = widget.layoutModifiers,
           measurable = UIViewMeasurable(widget.value),
         )

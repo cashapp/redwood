@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.composeui
 
-import android.content.Context
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,7 +27,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
@@ -52,9 +51,10 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
 
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
+  private var padding by mutableStateOf(Padding.Zero)
 
-  private lateinit var context: Context
-  private var padding = Padding.Zero
+  private var density = -1.0
+  private var paddingUpdated = false
 
   var modifier: Modifier by mutableStateOf(Modifier)
 
@@ -70,7 +70,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
 
   fun padding(padding: Padding) {
     this.padding = padding
-    invalidate()
+    this.paddingUpdated = true
   }
 
   fun overflow(overflow: Overflow) {
@@ -97,8 +97,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
         // Observe this so we can manually trigger recomposition.
         recomposeTick
 
-        // Get this for use in 'measure'.
-        context = LocalContext.current
+        // Read the density for use in 'measure'.
+        updateDensity(DensityMultiplier * LocalDensity.current.density)
 
         _children.render()
       },
@@ -115,13 +115,20 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     )
   }
 
+  private fun updateDensity(density: Double) {
+    if (density != this.density || paddingUpdated) {
+      this.density = density
+      this.paddingUpdated = false
+      container.padding = padding.toSpacing(density)
+    }
+  }
+
   private fun measure(
     scope: MeasureScope,
     measurables: List<Measurable>,
     constraints: Constraints,
   ): MeasureResult = with(scope) {
     syncItems(measurables)
-    container.padding = padding.toSpacing(DensityMultiplier)
 
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
     val result = container.measure(widthSpec, heightSpec)
@@ -141,8 +148,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     container.items.clear()
     measurables.forEachIndexed { index, measurable ->
       container.items += newFlexItem(
-        context = context,
         direction = direction,
+        density = density,
         layoutModifiers = _children.widgets[index].layoutModifiers,
         measurable = ComposeMeasurable(measurable),
       )

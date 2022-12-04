@@ -16,25 +16,10 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexItem
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.flexbox.isHorizontal
-import app.cash.redwood.flexbox.isVertical
-import app.cash.redwood.layout.Grow
-import app.cash.redwood.layout.HorizontalAlignment
-import app.cash.redwood.layout.Padding as PaddingModifier
-import app.cash.redwood.layout.Shrink
-import app.cash.redwood.layout.VerticalAlignment
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Padding
 
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are
@@ -60,45 +45,6 @@ internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
   MeasureSpecMode.Exactly -> View.MeasureSpec.EXACTLY
   MeasureSpecMode.AtMost -> View.MeasureSpec.AT_MOST
   else -> throw AssertionError()
-}
-
-internal fun newFlexItem(
-  direction: FlexDirection,
-  layoutModifiers: LayoutModifier,
-  density: Double,
-  measurable: Measurable,
-): FlexItem {
-  var flexGrow = DefaultFlexGrow
-  var flexShrink = DefaultFlexShrink
-  var padding = Padding.Zero
-  var crossAxisAlignment = CrossAxisAlignment.Start
-  var isCrossAxisAlignmentSet = false
-  layoutModifiers.forEach { modifier ->
-    when (modifier) {
-      is Grow -> flexGrow = modifier.value
-      is Shrink -> flexShrink = modifier.value
-      is PaddingModifier -> padding = modifier.padding
-      is HorizontalAlignment -> if (direction.isVertical) {
-        crossAxisAlignment = modifier.alignment
-        isCrossAxisAlignmentSet = true
-      }
-      is VerticalAlignment -> if (direction.isHorizontal) {
-        crossAxisAlignment = modifier.alignment
-        isCrossAxisAlignmentSet = true
-      }
-    }
-  }
-  return FlexItem(
-    flexGrow = flexGrow,
-    flexShrink = flexShrink,
-    margin = padding.toSpacing(density),
-    alignSelf = if (isCrossAxisAlignmentSet) {
-      crossAxisAlignment.toAlignSelf()
-    } else {
-      AlignSelf.Auto
-    },
-    measurable = measurable,
-  )
 }
 
 internal class ViewMeasurable(val view: View) : Measurable() {

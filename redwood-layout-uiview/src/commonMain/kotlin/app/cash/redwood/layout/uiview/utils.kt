@@ -15,25 +15,10 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexItem
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.flexbox.isHorizontal
-import app.cash.redwood.flexbox.isVertical
-import app.cash.redwood.layout.Grow
-import app.cash.redwood.layout.HorizontalAlignment
-import app.cash.redwood.layout.Padding as PaddingModifier
-import app.cash.redwood.layout.Shrink
-import app.cash.redwood.layout.VerticalAlignment
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Padding
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
@@ -80,44 +65,6 @@ internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpe
 @Suppress("UNCHECKED_CAST")
 internal val UIView.typedSubviews: List<UIView>
   get() = subviews as List<UIView>
-
-internal fun newFlexItem(
-  direction: FlexDirection,
-  layoutModifiers: LayoutModifier,
-  measurable: Measurable,
-): FlexItem {
-  var flexGrow = DefaultFlexGrow
-  var flexShrink = DefaultFlexShrink
-  var padding = Padding.Zero
-  var crossAxisAlignment = CrossAxisAlignment.Start
-  var isCrossAxisAlignmentSet = false
-  layoutModifiers.forEach { modifier ->
-    when (modifier) {
-      is Grow -> flexGrow = modifier.value
-      is Shrink -> flexShrink = modifier.value
-      is PaddingModifier -> padding = modifier.padding
-      is HorizontalAlignment -> if (direction.isVertical) {
-        crossAxisAlignment = modifier.alignment
-        isCrossAxisAlignmentSet = true
-      }
-      is VerticalAlignment -> if (direction.isHorizontal) {
-        crossAxisAlignment = modifier.alignment
-        isCrossAxisAlignmentSet = true
-      }
-    }
-  }
-  return FlexItem(
-    flexGrow = flexGrow,
-    flexShrink = flexShrink,
-    margin = padding.toSpacing(DensityMultiplier),
-    alignSelf = if (isCrossAxisAlignmentSet) {
-      crossAxisAlignment.toAlignSelf()
-    } else {
-      AlignSelf.Auto
-    },
-    measurable = measurable,
-  )
-}
 
 internal class UIViewMeasurable(val view: UIView) : Measurable() {
   override val minWidth: Double

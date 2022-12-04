@@ -147,8 +147,8 @@ internal class ViewFlexContainer(
       _children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
-          layoutModifiers = widget.layoutModifiers,
           density = density,
+          layoutModifiers = widget.layoutModifiers,
           measurable = ViewMeasurable(widget.value),
         )
       }
