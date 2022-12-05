@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.flexbox
 
 import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexBasisPercent
@@ -81,13 +80,90 @@ public class FlexContainer {
    */
   public val items: MutableList<FlexItem> = mutableListOf()
 
+  //region measure
+
+  /**
+   * Measures the flexbox's items according to the parent's [widthSpec] and [heightSpec] and returns
+   * the expected size of the flexbox.
+   *
+   * @param widthSpec horizontal space requirements as imposed by the parent.
+   * @param heightSpec vertical space requirements as imposed by the parent.
+   */
+  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
+    val width = if (fillWidth && widthSpec.mode != MeasureSpecMode.Exactly && widthSpec.size > 0) {
+      MeasureSpec.from(widthSpec.size, MeasureSpecMode.Exactly)
+    } else {
+      widthSpec
+    }
+    val height = if (fillHeight && heightSpec.mode != MeasureSpecMode.Exactly && heightSpec.size > 0) {
+      MeasureSpec.from(heightSpec.size, MeasureSpecMode.Exactly)
+    } else {
+      heightSpec
+    }
+
+    if (flexDirection.isHorizontal) {
+      return measureHorizontal(width, height)
+    } else {
+      return measureVertical(width, height)
+    }
+  }
+
+  private fun measureHorizontal(
+    widthSpec: MeasureSpec,
+    heightSpec: MeasureSpec,
+  ): Size {
+    val flexLines = calculateFlexLines(widthSpec, heightSpec)
+    determineMainSize(flexLines, widthSpec, heightSpec)
+
+    if (alignItems == AlignItems.Baseline) {
+      for (flexLine in flexLines) {
+        // The largest height value that also take the baseline shift into account
+        var largestHeightInLine = Double.MIN_VALUE
+        for (i in flexLine.firstIndex..flexLine.lastIndex) {
+          val child = items.getOrNull(i)
+          if (child == null || !child.visible) {
+            continue
+          }
+          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
+            val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
+            child.height + marginTop + child.margin.bottom
+          } else {
+            val marginBottom = maxOf(flexLine.maxBaseline - child.height + child.baseline, child.margin.bottom)
+            child.height + child.margin.top + marginBottom
+          }
+          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
+        }
+        flexLine.crossSize = largestHeightInLine
+      }
+    }
+
+    determineCrossSize(flexLines, widthSpec, heightSpec)
+    stretchChildren(flexLines)
+    val containerSize = calculateContainerSize(flexLines, widthSpec, heightSpec)
+    layout(flexLines, containerSize)
+    return containerSize
+  }
+
+  private fun measureVertical(
+    widthSpec: MeasureSpec,
+    heightSpec: MeasureSpec,
+  ): Size {
+    val flexLines = calculateFlexLines(widthSpec, heightSpec)
+    determineMainSize(flexLines, widthSpec, heightSpec)
+    determineCrossSize(flexLines, widthSpec, heightSpec)
+    stretchChildren(flexLines)
+    val containerSize = calculateContainerSize(flexLines, widthSpec, heightSpec)
+    layout(flexLines, containerSize)
+    return containerSize
+  }
+
   /**
    * Calculates how many flex lines are needed in the flex container layout by measuring each child.
    * Expanding or shrinking the flex items depending on the flex grow and flex shrink
    * attributes are done in a later procedure, so the items' measured width and measured
    * height may be changed in a later process.
    */
-  private fun calculateFlexLines(
+  internal fun calculateFlexLines(
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ): MutableList<FlexLine> {
@@ -146,9 +222,9 @@ public class FlexContainer {
         childDimension = orientation.crossSize(item),
       )
       if (flexDirection.isHorizontal) {
-        item.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
+        item.measure(childMainMeasureSpec, childCrossMeasureSpec)
       } else {
-        item.applyMeasure(childCrossMeasureSpec, childMainMeasureSpec)
+        item.measure(childCrossMeasureSpec, childMainMeasureSpec)
       }
 
       if (
@@ -179,7 +255,7 @@ public class FlexContainer {
             padding = orientation.crossPadding(padding) + orientation.crossMargin(item) + sumCrossSize,
             childDimension = crossSize,
           )
-          item.applyMeasure(childMainMeasureSpec, childCrossMeasureSpec)
+          item.measure(childMainMeasureSpec, childCrossMeasureSpec)
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
@@ -209,7 +285,7 @@ public class FlexContainer {
           // If the flex wrap property is WrapReverse, calculate the
           // baseline as the distance from the cross end and the baseline
           // since the cross size calculation is based on the distance from the cross end
-          maxOf(flexLine.maxBaseline, item.measuredHeight - item.baseline + item.margin.bottom)
+          maxOf(flexLine.maxBaseline, item.height - item.baseline + item.margin.bottom)
         }
       }
 
@@ -383,7 +459,7 @@ public class FlexContainer {
       if (flexDirection.isHorizontal) {
         // The direction of the main axis is horizontal
         if (!childrenFrozen[index] && child.flexGrow > 0) {
-          var rawCalculatedWidth = (child.measuredWidth + unitSpace * child.flexGrow)
+          var rawCalculatedWidth = (child.width + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0.0
@@ -414,20 +490,20 @@ public class FlexContainer {
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.measuredHeight = when (childHeightMeasureSpec.mode) {
+          child.height = when (childHeightMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
             MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
             MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
             else -> throw AssertionError()
           }
-          child.measuredWidth = newWidth
+          child.width = newWidth
         }
-        largestCrossSize = maxOf(largestCrossSize, child.measuredHeight + child.margin.top + child.margin.bottom)
-        flexLine.mainSize += (child.measuredWidth + child.margin.start + child.margin.end)
+        largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
+        flexLine.mainSize += (child.width + child.margin.start + child.margin.end)
       } else {
         // The direction of the main axis is vertical
         if (!childrenFrozen[index] && child.flexGrow > 0) {
-          var rawCalculatedHeight = (child.measuredHeight + unitSpace * child.flexGrow)
+          var rawCalculatedHeight = (child.height + unitSpace * child.flexGrow)
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0.0
@@ -458,16 +534,16 @@ public class FlexContainer {
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.measuredWidth = when (childWidthMeasureSpec.mode) {
+          child.width = when (childWidthMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
             MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
             MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
             else -> throw AssertionError()
           }
-          child.measuredHeight = newHeight
+          child.height = newHeight
         }
-        largestCrossSize = maxOf(largestCrossSize, child.measuredWidth + child.margin.start + child.margin.end)
-        flexLine.mainSize += (child.measuredHeight + child.margin.top + child.margin.bottom)
+        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.start + child.margin.end)
+        flexLine.mainSize += (child.height + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
     }
@@ -537,7 +613,7 @@ public class FlexContainer {
       if (flexDirection.isHorizontal) {
         // The direction of main axis is horizontal
         if (!childrenFrozen[index] && child.flexShrink > 0) {
-          var rawCalculatedWidth = child.measuredWidth - unitShrink * child.flexShrink
+          var rawCalculatedWidth = child.width - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0.0
@@ -568,20 +644,20 @@ public class FlexContainer {
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.measuredHeight = when (childHeightMeasureSpec.mode) {
+          child.height = when (childHeightMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
             MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
             MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
             else -> throw AssertionError()
           }
-          child.measuredWidth = newWidth
+          child.width = newWidth
         }
-        largestCrossSize = maxOf(largestCrossSize, child.measuredHeight + child.margin.top + child.margin.bottom)
-        flexLine.mainSize += child.measuredWidth + child.margin.start + child.margin.end
+        largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
+        flexLine.mainSize += child.width + child.margin.start + child.margin.end
       } else {
         // The direction of main axis is vertical
         if (!childrenFrozen[index] && child.flexShrink > 0) {
-          var rawCalculatedHeight = child.measuredHeight - unitShrink * child.flexShrink
+          var rawCalculatedHeight = child.height - unitShrink * child.flexShrink
           if (i == flexLine.itemCount - 1) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0.0
@@ -609,16 +685,16 @@ public class FlexContainer {
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.measuredWidth = when (childWidthMeasureSpec.mode) {
+          child.width = when (childWidthMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
             MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
             MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
             else -> throw AssertionError()
           }
-          child.measuredHeight = newHeight
+          child.height = newHeight
         }
-        largestCrossSize = maxOf(largestCrossSize, child.measuredWidth + child.margin.start + child.margin.end)
-        flexLine.mainSize += (child.measuredHeight + child.margin.top + child.margin.bottom)
+        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.start + child.margin.end)
+        flexLine.mainSize += (child.height + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
     }
@@ -871,9 +947,9 @@ public class FlexContainer {
             continue
           }
           if (flexDirection.isHorizontal) {
-            stretchViewVertically(item, flexLine.crossSize)
+            stretchItemVertically(item, flexLine.crossSize)
           } else {
-            stretchViewHorizontally(item, flexLine.crossSize)
+            stretchItemHorizontally(item, flexLine.crossSize)
           }
         }
       }
@@ -883,9 +959,9 @@ public class FlexContainer {
           val item = items[index]
           if (item.alignSelf == AlignSelf.Stretch) {
             if (flexDirection.isHorizontal) {
-              stretchViewVertically(item, flexLine.crossSize)
+              stretchItemVertically(item, flexLine.crossSize)
             } else {
-              stretchViewHorizontally(item, flexLine.crossSize)
+              stretchItemHorizontally(item, flexLine.crossSize)
             }
           }
         }
@@ -896,224 +972,17 @@ public class FlexContainer {
   /**
    * Expand the item vertically to the size of the [crossSize] (considering [item]'s margins).
    */
-  private fun stretchViewVertically(item: FlexItem, crossSize: Double) {
-    item.measuredHeight = (crossSize - item.margin.top - item.margin.bottom)
+  private fun stretchItemVertically(item: FlexItem, crossSize: Double) {
+    item.height = (crossSize - item.margin.top - item.margin.bottom)
       .coerceIn(item.measurable.minHeight, item.measurable.maxHeight)
   }
 
   /**
    * Expand the item horizontally to the size of the crossSize (considering [item]'s margins).
    */
-  private fun stretchViewHorizontally(item: FlexItem, crossSize: Double) {
-    item.measuredWidth = (crossSize - item.margin.start - item.margin.end)
+  private fun stretchItemHorizontally(item: FlexItem, crossSize: Double) {
+    item.width = (crossSize - item.margin.start - item.margin.end)
       .coerceIn(item.measurable.minWidth, item.measurable.maxWidth)
-  }
-
-  /**
-   * Place a single View when the layout direction is horizontal
-   * ([FlexContainer.flexDirection] is either [FlexDirection.Row] or [FlexDirection.RowReverse]).
-   */
-  private fun layoutSingleChildHorizontal(
-    item: FlexItem,
-    flexLine: FlexLine,
-    left: Double,
-    top: Double,
-    right: Double,
-    bottom: Double,
-  ) {
-    var alignItems = alignItems
-    if (item.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for ALIGN_SELF_AUTO.
-      // Assigning the alignSelf value as alignItems should work.
-      alignItems = item.alignSelf.toAlignItems()
-    }
-    val crossSize = flexLine.crossSize
-    when (alignItems) {
-      AlignItems.FlexStart, AlignItems.Stretch -> if (flexWrap != FlexWrap.WrapReverse) {
-        item.layout(left, top + item.margin.top, right, bottom + item.margin.top)
-      } else {
-        item.layout(left, top - item.margin.bottom, right, bottom - item.margin.bottom)
-      }
-      AlignItems.Baseline -> if (flexWrap != FlexWrap.WrapReverse) {
-        val marginTop = maxOf(flexLine.maxBaseline - item.baseline, item.margin.top)
-        item.layout(left, top + marginTop, right, bottom + marginTop)
-      } else {
-        val marginBottom = maxOf(flexLine.maxBaseline - item.measuredHeight + item.baseline, item.margin.bottom)
-        item.layout(left, top - marginBottom, right, bottom - marginBottom)
-      }
-      AlignItems.FlexEnd -> if (flexWrap != FlexWrap.WrapReverse) {
-        item.layout(
-          left = left,
-          top = top + crossSize - item.measuredHeight - item.margin.bottom,
-          right = right,
-          bottom = top + crossSize - item.margin.bottom,
-        )
-      } else {
-        // If the flexWrap == WrapReverse, the direction of the
-        // flexEnd is flipped (from top to bottom).
-        item.layout(
-          left = left,
-          top = top - crossSize + item.measuredHeight + item.margin.top,
-          right = right,
-          bottom = bottom - crossSize + item.measuredHeight + item.margin.top,
-        )
-      }
-      AlignItems.Center -> {
-        val topFromCrossAxis = (crossSize - item.measuredHeight + item.margin.top - item.margin.bottom) / 2
-        if (flexWrap != FlexWrap.WrapReverse) {
-          item.layout(
-            left = left,
-            top = top + topFromCrossAxis,
-            right = right,
-            bottom = top + topFromCrossAxis + item.measuredHeight,
-          )
-        } else {
-          item.layout(
-            left = left,
-            top = top - topFromCrossAxis,
-            right = right,
-            bottom = top - topFromCrossAxis + item.measuredHeight,
-          )
-        }
-      }
-    }
-  }
-
-  /**
-   * Place a single View when the layout direction is vertical
-   * ([FlexContainer.flexDirection] is either [FlexDirection.Column] or [FlexDirection.ColumnReverse]).
-   */
-  private fun layoutSingleChildVertical(
-    item: FlexItem,
-    flexLine: FlexLine,
-    isRtl: Boolean,
-    left: Double,
-    top: Double,
-    right: Double,
-    bottom: Double,
-  ) {
-    var alignItems = alignItems
-    if (item.alignSelf != AlignSelf.Auto) {
-      // Expecting the values for alignItems and alignSelf match except for Auto.
-      // Assigning the alignSelf value as alignItems should work.
-      alignItems = item.alignSelf.toAlignItems()
-    }
-    val crossSize = flexLine.crossSize
-    when (alignItems) {
-      AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!isRtl) {
-        item.layout(
-          left = left + item.margin.start,
-          top = top,
-          right = right + item.margin.start,
-          bottom = bottom,
-        )
-      } else {
-        item.layout(
-          left = left - item.margin.end,
-          top = top,
-          right = right - item.margin.end,
-          bottom = bottom,
-        )
-      }
-      AlignItems.FlexEnd -> if (!isRtl) {
-        item.layout(
-          left = left + crossSize - item.measuredWidth - item.margin.end,
-          top = top,
-          right = right + crossSize - item.measuredWidth - item.margin.end,
-          bottom = bottom,
-        )
-      } else {
-        // If the flexWrap == WrapReverse, the direction of the
-        // flexEnd is flipped (from left to right).
-        item.layout(
-          left = left - crossSize + item.measuredWidth + item.margin.start,
-          top = top,
-          right = right - crossSize + item.measuredWidth + item.margin.start,
-          bottom = bottom,
-        )
-      }
-      AlignItems.Center -> {
-        val leftFromCrossAxis = (crossSize - item.measuredWidth + item.margin.start - item.margin.end) / 2
-        if (!isRtl) {
-          item.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
-        } else {
-          item.layout(left - leftFromCrossAxis, top, right - leftFromCrossAxis, bottom)
-        }
-      }
-    }
-  }
-
-  /**
-   * Measures the flexbox's items according to the parent's [widthSpec] and [heightSpec] and returns
-   * the expected size of the flexbox.
-   *
-   * @param widthSpec horizontal space requirements as imposed by the parent.
-   * @param heightSpec vertical space requirements as imposed by the parent.
-   */
-  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): MeasureResult {
-    val width = if (fillWidth && widthSpec.mode != MeasureSpecMode.Exactly && widthSpec.size > 0) {
-      MeasureSpec.from(widthSpec.size, MeasureSpecMode.Exactly)
-    } else {
-      widthSpec
-    }
-    val height = if (fillHeight && heightSpec.mode != MeasureSpecMode.Exactly && heightSpec.size > 0) {
-      MeasureSpec.from(heightSpec.size, MeasureSpecMode.Exactly)
-    } else {
-      heightSpec
-    }
-
-    if (flexDirection.isHorizontal) {
-      return measureHorizontal(width, height)
-    } else {
-      return measureVertical(width, height)
-    }
-  }
-
-  private fun measureHorizontal(
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
-  ): MeasureResult {
-    val flexLines = calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
-    determineMainSize(flexLines, widthMeasureSpec, heightMeasureSpec)
-
-    if (alignItems == AlignItems.Baseline) {
-      for (flexLine in flexLines) {
-        // The largest height value that also take the baseline shift into account
-        var largestHeightInLine = Double.MIN_VALUE
-        for (i in flexLine.firstIndex..flexLine.lastIndex) {
-          val child = items.getOrNull(i)
-          if (child == null || !child.visible) {
-            continue
-          }
-          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
-            val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
-            child.measuredHeight + marginTop + child.margin.bottom
-          } else {
-            val marginBottom = maxOf(flexLine.maxBaseline - child.measuredHeight + child.baseline, child.margin.bottom)
-            child.measuredHeight + child.margin.top + marginBottom
-          }
-          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
-        }
-        flexLine.crossSize = largestHeightInLine
-      }
-    }
-
-    determineCrossSize(flexLines, widthMeasureSpec, heightMeasureSpec)
-    stretchChildren(flexLines)
-    val containerSize = setMeasuredDimensionForFlex(flexLines, widthMeasureSpec, heightMeasureSpec)
-    return MeasureResult(flexLines, containerSize)
-  }
-
-  private fun measureVertical(
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
-  ): MeasureResult {
-    val flexLines = calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
-    determineMainSize(flexLines, widthMeasureSpec, heightMeasureSpec)
-    determineCrossSize(flexLines, widthMeasureSpec, heightMeasureSpec)
-    stretchChildren(flexLines)
-    val containerSize = setMeasuredDimensionForFlex(flexLines, widthMeasureSpec, heightMeasureSpec)
-    return MeasureResult(flexLines, containerSize)
   }
 
   /**
@@ -1123,7 +992,7 @@ public class FlexContainer {
    * @param widthMeasureSpec horizontal space requirements as imposed by the parent
    * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
-  private fun setMeasuredDimensionForFlex(
+  private fun calculateContainerSize(
     flexLines: List<FlexLine>,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -1164,49 +1033,68 @@ public class FlexContainer {
     return Size(width, height)
   }
 
-  public fun layout(result: MeasureResult, size: Size = result.containerSize) {
+  private fun roundIfEnabled(value: Double): Double {
+    return if (roundToInt) value.roundToInt().toDouble() else value
+  }
+
+  //endregion
+  //region layout
+
+  /**
+   * Compute the left/top/right/bottom coordinates for each [FlexItem] in [items].
+   */
+  private fun layout(flexLines: List<FlexLine>, containerSize: Size) {
     when (flexDirection) {
       FlexDirection.Row -> {
-        layoutHorizontal(result.flexLines, false, size.width, size.height)
+        layoutHorizontal(
+          flexLines = flexLines,
+          width = containerSize.width,
+          height = containerSize.height,
+          rightToLeft = false
+        )
       }
       FlexDirection.RowReverse -> {
-        layoutHorizontal(result.flexLines, true, size.width, size.height)
+        layoutHorizontal(
+          flexLines = flexLines,
+          width = containerSize.width,
+          height = containerSize.height,
+          rightToLeft = true
+        )
       }
       FlexDirection.Column -> {
-        layoutVertical(result.flexLines, flexWrap == FlexWrap.WrapReverse, false, size.width, size.height)
+        layoutVertical(
+          flexLines = flexLines,
+          width = containerSize.width,
+          height = containerSize.height,
+          rightToLeft = flexWrap == FlexWrap.WrapReverse,
+          bottomToTop = false
+        )
       }
       FlexDirection.ColumnReverse -> {
-        layoutVertical(result.flexLines, flexWrap != FlexWrap.WrapReverse, true, size.width, size.height)
+        layoutVertical(
+          flexLines = flexLines,
+          width = containerSize.width,
+          height = containerSize.height,
+          rightToLeft = flexWrap != FlexWrap.WrapReverse,
+          bottomToTop = true
+        )
       }
       else -> throw AssertionError()
     }
   }
 
-  /**
-   * Sub method for `onLayout` when the [FlexContainer.flexDirection] is either
-   * [FlexDirection.Row] or [FlexDirection.RowReverse].
-   *
-   * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise.
-   */
+  /** Layout all [items] along the horizontal axis. */
   private fun layoutHorizontal(
     flexLines: List<FlexLine>,
-    isRtl: Boolean,
     width: Double,
     height: Double,
+    rightToLeft: Boolean,
   ) {
     val paddingLeft = padding.start
     val paddingRight = padding.end
-    // Use double to reduce the round error that may happen in when justifyContent ==
-    // SpaceBetween or SpaceAround
-    var childLeft: Double
-    // childBottom is used if the flexWrap is WrapReverse otherwise
-    // childTop is used to align the vertical position of the children items.
     var childBottom = height - padding.bottom
     var childTop = padding.top
-
-    // Used only for RTL layout
-    // Use double to reduce the round error that may happen in when justifyContent ==
-    // SpaceBetween or SpaceAround
+    var childLeft: Double
     var childRight: Double
     for (flexLine in flexLines) {
       var spaceBetweenItem = 0.0
@@ -1258,81 +1146,68 @@ public class FlexContainer {
         childLeft += child.margin.start
         childRight -= child.margin.end
         if (flexWrap == FlexWrap.WrapReverse) {
-          if (isRtl) {
+          if (rightToLeft) {
             layoutSingleChildHorizontal(
               item = child,
-              flexLine = flexLine,
-              left = childRight - child.measuredWidth,
-              top = childBottom - child.measuredHeight,
+              line = flexLine,
+              left = childRight - child.width,
+              top = childBottom - child.height,
               right = childRight,
               bottom = childBottom,
             )
           } else {
             layoutSingleChildHorizontal(
               item = child,
-              flexLine = flexLine,
+              line = flexLine,
               left = childLeft,
-              top = childBottom - child.measuredHeight,
-              right = childLeft + child.measuredWidth,
+              top = childBottom - child.height,
+              right = childLeft + child.width,
               bottom = childBottom,
             )
           }
         } else {
-          if (isRtl) {
+          if (rightToLeft) {
             layoutSingleChildHorizontal(
               item = child,
-              flexLine = flexLine,
-              left = childRight - child.measuredWidth,
+              line = flexLine,
+              left = childRight - child.width,
               top = childTop,
               right = childRight,
-              bottom = childTop + child.measuredHeight,
+              bottom = childTop + child.height,
             )
           } else {
             layoutSingleChildHorizontal(
               item = child,
-              flexLine = flexLine,
+              line = flexLine,
               left = childLeft,
               top = childTop,
-              right = childLeft + child.measuredWidth,
-              bottom = childTop + child.measuredHeight,
+              right = childLeft + child.width,
+              bottom = childTop + child.height,
             )
           }
         }
-        childLeft += child.measuredWidth + spaceBetweenItem + child.margin.end
-        childRight -= child.measuredWidth + spaceBetweenItem + child.margin.start
+        childLeft += child.width + spaceBetweenItem + child.margin.end
+        childRight -= child.width + spaceBetweenItem + child.margin.start
       }
       childTop += flexLine.crossSize
       childBottom -= flexLine.crossSize
     }
   }
 
-  /**
-   * Sub method for `onLayout` when the [FlexContainer.flexDirection] is either
-   * [FlexDirection.Column] or [FlexDirection.ColumnReverse].
-   *
-   * @param isRtl `true` if the horizontal layout direction is right to left, `false` otherwise
-   * @param fromBottomToTop `true` if the layout direction is bottom to top, `false` otherwise
-   */
+  /** Layout all [items] along the vertical axis. */
   private fun layoutVertical(
     flexLines: List<FlexLine>,
-    isRtl: Boolean,
-    fromBottomToTop: Boolean,
     width: Double,
     height: Double,
+    rightToLeft: Boolean,
+    bottomToTop: Boolean,
   ) {
     val paddingTop = padding.top
     val paddingBottom = padding.bottom
     val paddingRight = padding.end
     var childLeft = padding.start
-    // childRight is used if the flexWrap is WrapReverse otherwise
-    // childLeft is used to align the horizontal position of the children items.
     var childRight = width - paddingRight
-
-    // Use double to reduce the round error that may happen in when justifyContent ==
-    // SpaceBetween or SpaceAround.
     var childTop: Double
-
-    // Used only for if the direction is from bottom to top
     var childBottom: Double
     for (flexLine in flexLines) {
       var spaceBetweenItem = 0.0
@@ -1383,69 +1258,178 @@ public class FlexContainer {
         }
         childTop += child.margin.top
         childBottom -= child.margin.bottom
-        if (isRtl) {
-          if (fromBottomToTop) {
+        if (rightToLeft) {
+          if (bottomToTop) {
             layoutSingleChildVertical(
               item = child,
-              flexLine = flexLine,
-              isRtl = true,
-              left = childRight - child.measuredWidth,
-              top = childBottom - child.measuredHeight,
+              line = flexLine,
+              left = childRight - child.width,
+              top = childBottom - child.height,
               right = childRight,
               bottom = childBottom,
+              rightToLeft = true,
             )
           } else {
             layoutSingleChildVertical(
               item = child,
-              flexLine = flexLine,
-              isRtl = true,
-              left = childRight - child.measuredWidth,
+              line = flexLine,
+              left = childRight - child.width,
               top = childTop,
               right = childRight,
-              bottom = childTop + child.measuredHeight,
+              bottom = childTop + child.height,
+              rightToLeft = true,
             )
           }
         } else {
-          if (fromBottomToTop) {
+          if (bottomToTop) {
             layoutSingleChildVertical(
               item = child,
-              flexLine = flexLine,
-              isRtl = false,
+              line = flexLine,
               left = childLeft,
-              top = childBottom - child.measuredHeight,
-              right = childLeft + child.measuredWidth,
+              top = childBottom - child.height,
+              right = childLeft + child.width,
               bottom = childBottom,
+              rightToLeft = false,
             )
           } else {
             layoutSingleChildVertical(
               item = child,
-              flexLine = flexLine,
-              isRtl = false,
+              line = flexLine,
               left = childLeft,
               top = childTop,
-              right = childLeft + child.measuredWidth,
-              bottom = childTop + child.measuredHeight,
+              right = childLeft + child.width,
+              bottom = childTop + child.height,
+              rightToLeft = false,
             )
           }
         }
-        childTop += child.measuredHeight + spaceBetweenItem + child.margin.bottom
-        childBottom -= child.measuredHeight + spaceBetweenItem + child.margin.top
+        childTop += child.height + spaceBetweenItem + child.margin.bottom
+        childBottom -= child.height + spaceBetweenItem + child.margin.top
       }
       childLeft += flexLine.crossSize
       childRight -= flexLine.crossSize
     }
   }
 
-  private fun roundIfEnabled(value: Double): Double {
-    return if (roundToInt) value.roundToInt().toDouble() else value
+  /** Layout a single [item] along the horizontal axis. */
+  private fun layoutSingleChildHorizontal(
+    item: FlexItem,
+    line: FlexLine,
+    left: Double,
+    top: Double,
+    right: Double,
+    bottom: Double,
+  ) {
+    var alignItems = alignItems
+    if (item.alignSelf != AlignSelf.Auto) {
+      alignItems = item.alignSelf.toAlignItems()
+    }
+    val crossSize = line.crossSize
+    when (alignItems) {
+      AlignItems.FlexStart, AlignItems.Stretch -> if (flexWrap != FlexWrap.WrapReverse) {
+        item.layout(left, top + item.margin.top, right, bottom + item.margin.top)
+      } else {
+        item.layout(left, top - item.margin.bottom, right, bottom - item.margin.bottom)
+      }
+      AlignItems.Baseline -> if (flexWrap != FlexWrap.WrapReverse) {
+        val marginTop = maxOf(line.maxBaseline - item.baseline, item.margin.top)
+        item.layout(left, top + marginTop, right, bottom + marginTop)
+      } else {
+        val marginBottom = maxOf(line.maxBaseline - item.height + item.baseline, item.margin.bottom)
+        item.layout(left, top - marginBottom, right, bottom - marginBottom)
+      }
+      AlignItems.FlexEnd -> if (flexWrap != FlexWrap.WrapReverse) {
+        item.layout(
+          left = left,
+          top = top + crossSize - item.height - item.margin.bottom,
+          right = right,
+          bottom = top + crossSize - item.margin.bottom,
+        )
+      } else {
+        item.layout(
+          left = left,
+          top = top - crossSize + item.height + item.margin.top,
+          right = right,
+          bottom = bottom - crossSize + item.height + item.margin.top,
+        )
+      }
+      AlignItems.Center -> {
+        val topFromCrossAxis = (crossSize - item.height + item.margin.top - item.margin.bottom) / 2
+        if (flexWrap != FlexWrap.WrapReverse) {
+          item.layout(
+            left = left,
+            top = top + topFromCrossAxis,
+            right = right,
+            bottom = top + topFromCrossAxis + item.height,
+          )
+        } else {
+          item.layout(
+            left = left,
+            top = top - topFromCrossAxis,
+            right = right,
+            bottom = top - topFromCrossAxis + item.height,
+          )
+        }
+      }
+    }
   }
 
-  /**
-   * Call [Measurable.measure] and update [FlexItem.measuredWidth] and [FlexItem.measuredHeight] with the result.
-   */
-  private fun FlexItem.applyMeasure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
-    val (width, height) = measurable.measure(widthSpec, heightSpec)
-    this.measuredWidth = width.coerceIn(measurable.minWidth, measurable.maxWidth)
-    this.measuredHeight = height.coerceIn(measurable.minHeight, measurable.maxHeight)
+  /** Layout a single [item] along the vertical axis. */
+  private fun layoutSingleChildVertical(
+    item: FlexItem,
+    line: FlexLine,
+    left: Double,
+    top: Double,
+    right: Double,
+    bottom: Double,
+    rightToLeft: Boolean,
+  ) {
+    var alignItems = alignItems
+    if (item.alignSelf != AlignSelf.Auto) {
+      alignItems = item.alignSelf.toAlignItems()
+    }
+    val crossSize = line.crossSize
+    when (alignItems) {
+      AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!rightToLeft) {
+        item.layout(
+          left = left + item.margin.start,
+          top = top,
+          right = right + item.margin.start,
+          bottom = bottom,
+        )
+      } else {
+        item.layout(
+          left = left - item.margin.end,
+          top = top,
+          right = right - item.margin.end,
+          bottom = bottom,
+        )
+      }
+      AlignItems.FlexEnd -> if (!rightToLeft) {
+        item.layout(
+          left = left + crossSize - item.width - item.margin.end,
+          top = top,
+          right = right + crossSize - item.width - item.margin.end,
+          bottom = bottom,
+        )
+      } else {
+        item.layout(
+          left = left - crossSize + item.width + item.margin.start,
+          top = top,
+          right = right - crossSize + item.width + item.margin.start,
+          bottom = bottom,
+        )
+      }
+      AlignItems.Center -> {
+        val leftFromCrossAxis = (crossSize - item.width + item.margin.start - item.margin.end) / 2
+        if (!rightToLeft) {
+          item.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
+        } else {
+          item.layout(left - leftFromCrossAxis, top, right - leftFromCrossAxis, bottom)
+        }
+      }
+    }
   }
+
+  //endregion
 }

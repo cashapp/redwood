@@ -44,7 +44,7 @@ class FlexContainerTest {
     val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
 
-    val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
+    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300.0, lines[0].mainSize)
@@ -80,7 +80,7 @@ class FlexContainerTest {
     val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
 
-    val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
+    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
 
     assertEquals(3, lines.size)
     assertEquals(300.0, lines[0].mainSize)
@@ -117,16 +117,16 @@ class FlexContainerTest {
     val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100.0, item1.measuredWidth)
-    assertEquals(100.0, item1.measuredHeight)
+    assertEquals(100.0, item1.width)
+    assertEquals(100.0, item1.height)
     // item2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400.0, item2.measuredWidth)
-    assertEquals(100.0, item2.measuredHeight)
-    assertEquals(300.0, item3.measuredWidth)
-    assertEquals(100.0, item3.measuredHeight)
+    assertEquals(400.0, item2.width)
+    assertEquals(100.0, item2.height)
+    assertEquals(300.0, item3.width)
+    assertEquals(100.0, item3.height)
     // item4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500.0, item4.measuredWidth)
-    assertEquals(100.0, item4.measuredHeight)
+    assertEquals(500.0, item4.width)
+    assertEquals(100.0, item4.height)
   }
 
   @Test
@@ -145,16 +145,16 @@ class FlexContainerTest {
     val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
     container.measure(widthMeasureSpec, heightMeasureSpec)
 
-    assertEquals(100.0, item1.measuredWidth)
-    assertEquals(100.0, item1.measuredHeight)
-    assertEquals(100.0, item2.measuredWidth)
+    assertEquals(100.0, item1.width)
+    assertEquals(100.0, item1.height)
+    assertEquals(100.0, item2.width)
     // item2 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(400.0, item2.measuredHeight)
-    assertEquals(100.0, item3.measuredWidth)
-    assertEquals(300.0, item3.measuredHeight)
-    assertEquals(100.0, item4.measuredWidth)
+    assertEquals(400.0, item2.height)
+    assertEquals(100.0, item3.width)
+    assertEquals(300.0, item3.height)
+    assertEquals(100.0, item4.width)
     // item4 will expand to fill the left space in the first flex line since flex grow is set
-    assertEquals(500.0, item4.measuredHeight)
+    assertEquals(500.0, item4.height)
   }
 
   @Test
@@ -175,14 +175,14 @@ class FlexContainerTest {
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the width
-    assertEquals(125.0, item1.measuredWidth)
-    assertEquals(100.0, item1.measuredHeight)
-    assertEquals(125.0, item2.measuredWidth)
-    assertEquals(100.0, item2.measuredHeight)
-    assertEquals(125.0, item3.measuredWidth)
-    assertEquals(100.0, item3.measuredHeight)
-    assertEquals(125.0, item4.measuredWidth)
-    assertEquals(100.0, item4.measuredHeight)
+    assertEquals(125.0, item1.width)
+    assertEquals(100.0, item1.height)
+    assertEquals(125.0, item2.width)
+    assertEquals(100.0, item2.height)
+    assertEquals(125.0, item3.width)
+    assertEquals(100.0, item3.height)
+    assertEquals(125.0, item4.width)
+    assertEquals(100.0, item4.height)
   }
 
   @Test
@@ -203,14 +203,14 @@ class FlexContainerTest {
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the height
-    assertEquals(100.0, item1.measuredWidth)
-    assertEquals(125.0, item1.measuredHeight)
-    assertEquals(100.0, item2.measuredWidth)
-    assertEquals(125.0, item2.measuredHeight)
-    assertEquals(100.0, item3.measuredWidth)
-    assertEquals(125.0, item3.measuredHeight)
-    assertEquals(100.0, item4.measuredWidth)
-    assertEquals(125.0, item4.measuredHeight)
+    assertEquals(100.0, item1.width)
+    assertEquals(125.0, item1.height)
+    assertEquals(100.0, item2.width)
+    assertEquals(125.0, item2.height)
+    assertEquals(100.0, item3.width)
+    assertEquals(125.0, item3.height)
+    assertEquals(100.0, item4.width)
+    assertEquals(125.0, item4.height)
   }
 
   @Test
@@ -226,8 +226,8 @@ class FlexContainerTest {
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100.0, item1.measuredWidth)
-    assertEquals(400.0, item2.measuredWidth)
+    assertEquals(100.0, item1.width)
+    assertEquals(400.0, item2.width)
   }
 
   @Test
@@ -245,9 +245,9 @@ class FlexContainerTest {
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
-    assertEquals(100.0, item1.measuredWidth)
-    assertEquals(300.0, item2.measuredWidth)
-    assertEquals(100.0, item3.measuredWidth)
+    assertEquals(100.0, item1.width)
+    assertEquals(300.0, item2.width)
+    assertEquals(100.0, item3.width)
   }
 
   @Test
@@ -270,10 +270,10 @@ class FlexContainerTest {
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining height in this case)
-    assertEquals(333.0, item1.measuredHeight)
-    assertEquals(333.0, item2.measuredHeight)
-    assertEquals(333.0, item3.measuredHeight)
-    assertEquals(334.0, item4.measuredHeight)
+    assertEquals(333.0, item1.height)
+    assertEquals(333.0, item2.height)
+    assertEquals(333.0, item3.height)
+    assertEquals(334.0, item4.height)
   }
 
   @Test
@@ -296,10 +296,10 @@ class FlexContainerTest {
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
     // (remaining width in this case)
-    assertEquals(333.0, item1.measuredWidth)
-    assertEquals(333.0, item2.measuredWidth)
-    assertEquals(333.0, item3.measuredWidth)
-    assertEquals(334.0, item4.measuredWidth)
+    assertEquals(333.0, item1.width)
+    assertEquals(333.0, item2.width)
+    assertEquals(333.0, item3.width)
+    assertEquals(334.0, item4.width)
   }
 
   @Test
@@ -332,7 +332,7 @@ class FlexContainerTest {
     container.alignContent = AlignContent.Stretch
     val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
     val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val lines = container.measure(widthMeasureSpec, heightMeasureSpec).flexLines
+    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
     assertEquals(3, lines.size)
     assertTrue(lines[0].anyItemsHaveFlexGrow)
     assertFalse(lines[1].anyItemsHaveFlexGrow)

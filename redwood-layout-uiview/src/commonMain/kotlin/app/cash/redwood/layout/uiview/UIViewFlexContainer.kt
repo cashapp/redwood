@@ -19,7 +19,7 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureResult
+import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
@@ -95,7 +95,7 @@ internal class UIViewFlexContainer(
     override val intrinsicContentSize get() = noIntrinsicSize
 
     override fun sizeThatFits(size: UnsafeSize): UnsafeSize {
-      return measure(size).containerSize.toUnsafeSize()
+      return measure(size).toUnsafeSize()
     }
 
     override fun setNeedsLayout() {
@@ -107,7 +107,7 @@ internal class UIViewFlexContainer(
       needsLayout = false
 
       val bounds = _view.bounds.useContents { size.toUnsafeSize() }
-      container.layout(measure(bounds))
+      measure(bounds)
 
       _view.setContentSize(
         CGSizeMake(
@@ -129,7 +129,7 @@ internal class UIViewFlexContainer(
       }
     }
 
-    private fun measure(size: UnsafeSize): MeasureResult {
+    private fun measure(size: UnsafeSize): Size {
       syncItems()
       val (widthSpec, heightSpec) = size.toMeasureSpecs()
       return container.measure(widthSpec, heightSpec)

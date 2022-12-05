@@ -27,6 +27,12 @@ internal fun AlignSelf.toAlignItems() = when (this) {
   else -> throw AssertionError()
 }
 
+internal fun FlexItem.measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
+  val (width, height) = measurable.measure(widthSpec, heightSpec)
+  this.width = width.coerceIn(measurable.minWidth, measurable.maxWidth)
+  this.height = height.coerceIn(measurable.minHeight, measurable.maxHeight)
+}
+
 internal fun FlexItem.layout(left: Double, top: Double, right: Double, bottom: Double) {
   this.left = left
   this.top = top

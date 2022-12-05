@@ -94,18 +94,23 @@ public class FlexItem(
   /**
    * A callback to measure this item according to a set of measurement constraints.
    */
-  public var measurable: Measurable = Measurable(),
+  public val measurable: Measurable = Measurable(),
 ) {
-
   /** The item's size after invoking [FlexContainer.measure]. */
-  public var measuredWidth: Double = -1.0
-  public var measuredHeight: Double = -1.0
+  public var width: Double = -1.0
+    internal set
+  public var height: Double = -1.0
+    internal set
 
-  /** The item's bounds after invoking [FlexContainer.layout]. */
+  /** The item's bounds after invoking [FlexContainer.measure]. */
   public var left: Double = -1.0
+    internal set
   public var top: Double = -1.0
+    internal set
   public var right: Double = -1.0
+    internal set
   public var bottom: Double = -1.0
+    internal set
 
   public companion object {
     /** The default value for the baseline attribute */
