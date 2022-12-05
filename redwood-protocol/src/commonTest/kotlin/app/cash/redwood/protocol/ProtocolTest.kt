@@ -62,8 +62,8 @@ class ProtocolTest {
         ),
       ),
       propertyDiffs = listOf(
-        PropertyDiff(Id(1), 2U, JsonPrimitive("Hello")),
-        PropertyDiff(Id(1), 2U, JsonNull),
+        PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("Hello")),
+        PropertyDiff(Id(1), PropertyTag(2), JsonNull),
       ),
     )
     val json = "" +

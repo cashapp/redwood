@@ -43,7 +43,7 @@ class DiffProducingGenerationTest {
     assertThat(fileSpec.toString()).contains(
       """
       |  public override fun id(id: String): Unit {
-      |    bridge.append(PropertyDiff(this.id, 2U, json.encodeToJsonElement(serializer_0, id)))
+      |    bridge.append(PropertyDiff(this.id, PropertyTag(2), json.encodeToJsonElement(serializer_0, id)))
       |  }
       |
       """.trimMargin(),

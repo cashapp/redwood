@@ -141,13 +141,13 @@ internal class DiffProducingSunspotButton(
     }
 
   override fun text(text: String?) {
-    bridge.append(PropertyDiff(this.id, 1, json.encodeToJsonElement(serializer_0, text)))
+    bridge.append(PropertyDiff(this.id, PropertyTag(1), json.encodeToJsonElement(serializer_0, text)))
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
     val onClickSet = onClick != null
     if (onClickSet != (this.onClick != null)) {
-      bridge.append(PropertyDiff(this.id, 3, onClickSet))
+      bridge.append(PropertyDiff(this.id, PropertyTag(3), onClickSet))
     }
     this.onClick = onClick
   }
@@ -222,8 +222,9 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
                     .addStatement(
-                      "bridge.append(%T(this.id, %LU, json.encodeToJsonElement(serializer_%L, %N)))",
+                      "bridge.append(%T(this.id, %T(%L), json.encodeToJsonElement(serializer_%L, %N)))",
                       Protocol.PropertyDiff,
+                      Protocol.PropertyTag,
                       trait.tag,
                       serializerId,
                       trait.name,
@@ -245,8 +246,9 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addStatement("val %1NSet = %1N != null", trait.name)
                     .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
                     .addStatement(
-                      "bridge.append(%T(this.id, %LU, %M(%NSet)))",
+                      "bridge.append(%T(this.id, %T(%L), %M(%NSet)))",
                       Protocol.PropertyDiff,
+                      Protocol.PropertyTag,
                       trait.tag,
                       KotlinxSerialization.JsonPrimitive,
                       trait.name,

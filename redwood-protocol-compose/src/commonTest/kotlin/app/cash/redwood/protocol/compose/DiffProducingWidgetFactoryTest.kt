@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyTag
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.TestScope
 import kotlin.test.Test
@@ -50,7 +51,7 @@ class DiffProducingWidgetFactoryTest {
 
     val expected = Diff(
       propertyDiffs = listOf(
-        PropertyDiff(Id(1), 2U, JsonPrimitive("PT10S")),
+        PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
       ),
     )
     assertEquals(expected, bridge.createDiffOrNull())

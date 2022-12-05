@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.PropertyTag
 import kotlin.jvm.JvmField
 
 /**
@@ -33,7 +34,7 @@ public interface ProtocolMismatchHandler {
   public fun onUnknownChildren(kind: Int, tag: UInt)
 
   /** Handle a request to set an unknown property [tag] for the specified widget [kind]. */
-  public fun onUnknownProperty(kind: Int, tag: UInt)
+  public fun onUnknownProperty(kind: Int, tag: PropertyTag)
 
   public companion object {
     /** A [ProtocolMismatchHandler] which throws [IllegalArgumentException] for all callbacks. */
@@ -51,8 +52,8 @@ public interface ProtocolMismatchHandler {
         throw IllegalArgumentException("Unknown children tag $tag for widget kind $kind")
       }
 
-      override fun onUnknownProperty(kind: Int, tag: UInt) {
-        throw IllegalArgumentException("Unknown property tag $tag for widget kind $kind")
+      override fun onUnknownProperty(kind: Int, tag: PropertyTag) {
+        throw IllegalArgumentException("Unknown property tag ${tag.value} for widget kind $kind")
       }
     }
   }

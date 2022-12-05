@@ -31,6 +31,7 @@ internal object Protocol {
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
+  val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
   val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
 }
 

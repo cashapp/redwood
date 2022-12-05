@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.PropertyTag
+
 class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
   val events = mutableListOf<String>()
 
@@ -30,7 +32,7 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
     events += "Unknown children $tag for $kind"
   }
 
-  override fun onUnknownProperty(kind: Int, tag: UInt) {
-    events += "Unknown property $tag for $kind"
+  override fun onUnknownProperty(kind: Int, tag: PropertyTag) {
+    events += "Unknown property ${tag.value} for $kind"
   }
 }
