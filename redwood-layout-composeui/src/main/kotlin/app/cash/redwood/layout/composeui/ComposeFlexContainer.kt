@@ -69,8 +69,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   }
 
   fun padding(padding: Padding) {
-    this.padding = padding
     this.paddingUpdated = true
+    this.padding = padding
   }
 
   fun overflow(overflow: Overflow) {
@@ -131,12 +131,9 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     syncItems(measurables)
 
     val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
-    val result = container.measure(widthSpec, heightSpec)
-    val (layoutWidth, layoutHeight) = result.containerSize
+    val (width, height) = container.measure(widthSpec, heightSpec)
 
-    return layout(layoutWidth.toInt(), layoutHeight.toInt()) {
-      container.layout(result)
-
+    return layout(width.toInt(), height.toInt()) {
       for (item in container.items) {
         val placeable = (item.measurable as ComposeMeasurable).placeable
         placeable.place(item.left.toInt(), item.top.toInt())

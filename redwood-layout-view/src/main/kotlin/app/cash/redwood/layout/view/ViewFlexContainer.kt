@@ -26,9 +26,7 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureResult
 import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
-import app.cash.redwood.flexbox.Size
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
@@ -122,20 +120,15 @@ internal class ViewFlexContainer(
   }
 
   private inner class HostView(context: Context) : ViewGroup(context) {
-    private lateinit var measureResult: MeasureResult
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       syncItems()
       val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
       val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      measureResult = container.measure(widthSpec, heightSpec)
-      val (width, height) = measureResult.containerSize
+      val (width, height) = container.measure(widthSpec, heightSpec)
       setMeasuredDimension(width.toInt(), height.toInt())
     }
 
-    @SuppressLint("DrawAllocation")
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      container.layout(measureResult, Size((right - left).toDouble(), (bottom - top).toDouble()))
       for (item in container.items) {
         val view = (item.measurable as ViewMeasurable).view
         view.layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
