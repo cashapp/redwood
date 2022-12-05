@@ -39,6 +39,8 @@ internal class EventPublisher(
   }
 
   val ziplineEventListener = object : ZiplineEventListener() {
+    private var ziplineToApplication = mapOf<Zipline, TreehouseApp<*>>()
+
     override fun applicationLoadStart(applicationName: String, manifestUrl: String?): Any? {
       val app = nameToApplication[applicationName]!!
       return listener.codeLoadStart(app, manifestUrl)
@@ -51,7 +53,8 @@ internal class EventPublisher(
       startValue: Any?,
     ) {
       val app = nameToApplication[applicationName]!!
-      listener.codeLoadSuccess(app, manifestUrl, startValue)
+      ziplineToApplication = ziplineToApplication + (zipline to app)
+      listener.codeLoadSuccess(app, manifestUrl, zipline, startValue)
     }
 
     override fun applicationLoadSkipped(
@@ -74,15 +77,18 @@ internal class EventPublisher(
     }
 
     override fun bindService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.bindService(name, service)
+      val app = ziplineToApplication[zipline]!!
+      listener.bindService(app, name, service)
     }
 
     override fun callStart(zipline: Zipline, call: Call): Any? {
-      return listener.callStart(call)
+      val app = ziplineToApplication[zipline]!!
+      return listener.callStart(app, call)
     }
 
     override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
-      listener.callEnd(call, result, startValue)
+      val app = ziplineToApplication[zipline]!!
+      listener.callEnd(app, call, result, startValue)
     }
 
     override fun downloadStart(applicationName: String, url: String): Any? {
@@ -111,11 +117,19 @@ internal class EventPublisher(
     }
 
     override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.takeService(name, service)
+      val app = ziplineToApplication[zipline]!!
+      listener.takeService(app, name, service)
     }
 
     override fun serviceLeaked(zipline: Zipline, name: String) {
-      listener.serviceLeaked(name)
+      val app = ziplineToApplication[zipline] ?: return // Ignore leaks after Zipline.close.
+      listener.serviceLeaked(app, name)
+    }
+
+    override fun ziplineClosed(zipline: Zipline) {
+      val app = ziplineToApplication[zipline]!!
+      ziplineToApplication = ziplineToApplication - zipline
+      listener.codeUnloaded(app, zipline)
     }
   }
 

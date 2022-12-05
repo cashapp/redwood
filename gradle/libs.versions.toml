@@ -8,7 +8,7 @@ androidx-compose = "1.2.1"
 jbComposeCompiler = "1.3.2.1"
 jbComposeRuntime = "1.2.1"
 lint = "30.4.0-alpha09"
-zipline = "0.9.10"
+zipline = "0.9.11"
 coil = "2.2.2"
 
 [libraries]
