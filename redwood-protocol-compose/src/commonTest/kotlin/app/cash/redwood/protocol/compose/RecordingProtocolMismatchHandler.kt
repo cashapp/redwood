@@ -15,10 +15,12 @@
  */
 package app.cash.redwood.protocol.compose
 
+import app.cash.redwood.protocol.EventTag
+
 class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
   val events = mutableListOf<String>()
 
-  override fun onUnknownEvent(kind: Int, tag: UInt) {
-    events += "Unknown event $tag for $kind"
+  override fun onUnknownEvent(kind: Int, tag: EventTag) {
+    events += "Unknown event ${tag.value} for $kind"
   }
 }

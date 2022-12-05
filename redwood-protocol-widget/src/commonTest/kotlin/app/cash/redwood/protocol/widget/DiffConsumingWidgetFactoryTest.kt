@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import example.redwood.compose.TestScope
@@ -279,7 +280,7 @@ class DiffConsumingWidgetFactoryTest {
 
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
-    assertEquals(Event(Id(1), 4U, JsonPrimitive("PT10S")), eventSink.events.single())
+    assertEquals(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")), eventSink.events.single())
   }
 
   class RecordingTextInput : TextInput<Nothing> {

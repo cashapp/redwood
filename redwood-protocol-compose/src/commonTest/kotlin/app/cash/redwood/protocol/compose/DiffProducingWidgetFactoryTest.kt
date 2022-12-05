@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.compose
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
@@ -143,7 +144,7 @@ class DiffProducingWidgetFactoryTest {
       argument = it
     }
 
-    diffProducingWidget.sendEvent(Event(Id(1), 4U, JsonPrimitive("PT10S")))
+    diffProducingWidget.sendEvent(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
 
     assertEquals(10.seconds, argument)
   }
@@ -152,7 +153,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge())
     val button = factory.Button() as DiffProducingWidget
 
-    val event = Event(Id(1), 3456543U)
+    val event = Event(Id(1), EventTag(3456543))
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(event)
     }
@@ -165,7 +166,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge(), mismatchHandler = handler)
     val button = factory.Button() as DiffProducingWidget
 
-    button.sendEvent(Event(Id(1), 3456543U))
+    button.sendEvent(Event(Id(1), EventTag(3456543)))
 
     assertEquals("Unknown event 3456543 for 4", handler.events.single())
   }

@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
@@ -149,7 +150,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    bridge.sendEvent(Event(Id(1), 2U))
+    bridge.sendEvent(Event(Id(1), EventTag(2)))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
@@ -163,7 +164,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    bridge.sendEvent(Event(Id(1), 2U))
+    bridge.sendEvent(Event(Id(1), EventTag(2)))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
