@@ -49,7 +49,7 @@ class DiffProducingWidgetFactoryTest {
 
     val expected = Diff(
       propertyDiffs = listOf(
-        PropertyDiff(Id(1U), 2U, JsonPrimitive("PT10S")),
+        PropertyDiff(Id(1), 2U, JsonPrimitive("PT10S")),
       ),
     )
     assertEquals(expected, bridge.createDiffOrNull())
@@ -72,7 +72,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          Id(1U),
+          Id(1),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -108,7 +108,7 @@ class DiffProducingWidgetFactoryTest {
     val expected = Diff(
       layoutModifiers = listOf(
         LayoutModifiers(
-          Id(1U),
+          Id(1),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -143,7 +143,7 @@ class DiffProducingWidgetFactoryTest {
       argument = it
     }
 
-    diffProducingWidget.sendEvent(Event(Id(1U), 4U, JsonPrimitive("PT10S")))
+    diffProducingWidget.sendEvent(Event(Id(1), 4U, JsonPrimitive("PT10S")))
 
     assertEquals(10.seconds, argument)
   }
@@ -152,7 +152,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge())
     val button = factory.Button() as DiffProducingWidget
 
-    val event = Event(Id(1U), 3456543U)
+    val event = Event(Id(1), 3456543U)
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(event)
     }
@@ -165,7 +165,7 @@ class DiffProducingWidgetFactoryTest {
     val factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge(), mismatchHandler = handler)
     val button = factory.Button() as DiffProducingWidget
 
-    button.sendEvent(Event(Id(1U), 3456543U))
+    button.sendEvent(Event(Id(1), 3456543U))
 
     assertEquals("Unknown event 3456543 for 4", handler.events.single())
   }

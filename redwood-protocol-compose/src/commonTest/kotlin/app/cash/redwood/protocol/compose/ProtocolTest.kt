@@ -84,20 +84,20 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1U), 1 /* row */, 0),
-          ChildrenDiff.Insert(Id(1U), 1U, Id(2U), 3 /* text */, 0),
-          ChildrenDiff.Insert(Id(1U), 1U, Id(3U), 1 /* row */, 1),
-          ChildrenDiff.Insert(Id(3U), 1U, Id(4U), 3 /* text */, 0),
+          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1), 1 /* row */, 0),
+          ChildrenDiff.Insert(Id(1), 1U, Id(2), 3 /* text */, 0),
+          ChildrenDiff.Insert(Id(1), 1U, Id(3), 1 /* row */, 1),
+          ChildrenDiff.Insert(Id(3), 1U, Id(4), 3 /* text */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(Id(1U), JsonArray(listOf())),
-          LayoutModifiers(Id(2U), JsonArray(listOf())),
-          LayoutModifiers(Id(3U), JsonArray(listOf())),
-          LayoutModifiers(Id(4U), JsonArray(listOf())),
+          LayoutModifiers(Id(1), JsonArray(listOf())),
+          LayoutModifiers(Id(2), JsonArray(listOf())),
+          LayoutModifiers(Id(3), JsonArray(listOf())),
+          LayoutModifiers(Id(4), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(Id(2U), 1U /* text */, JsonPrimitive("hey")),
-          PropertyDiff(Id(4U), 1U /* text */, JsonPrimitive("hello")),
+          PropertyDiff(Id(2), 1U /* text */, JsonPrimitive("hey")),
+          PropertyDiff(Id(4), 1U /* text */, JsonPrimitive("hello")),
         ),
       ),
       diffs.removeFirst(),
@@ -135,43 +135,43 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1U), 4 /* button */, 0),
+          ChildrenDiff.Insert(Id.Root, RootChildrenTag, Id(1), 4 /* button */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(Id(1U), JsonArray(listOf())),
+          LayoutModifiers(Id(1), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 0")),
-          PropertyDiff(Id(1U), 2U /* onClick */, JsonPrimitive(true)),
+          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 0")),
+          PropertyDiff(Id(1), 2U /* onClick */, JsonPrimitive(true)),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    bridge.sendEvent(Event(Id(1U), 2U))
+    bridge.sendEvent(Event(Id(1), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 1")),
+          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 1")),
         ),
       ),
       diffs.removeFirst(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    bridge.sendEvent(Event(Id(1U), 2U))
+    bridge.sendEvent(Event(Id(1), 2U))
     yield() // Allow state change to be handled.
 
     clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 2")),
-          PropertyDiff(Id(1U), 2U /* text */, JsonPrimitive(false)),
+          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 2")),
+          PropertyDiff(Id(1), 2U /* text */, JsonPrimitive(false)),
         ),
       ),
       diffs.removeFirst(),
@@ -185,7 +185,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1U), 1U /* text */, JsonPrimitive("state: 3")),
+          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 3")),
         ),
       ),
       diffs.removeFirst(),

@@ -60,7 +60,7 @@ class ProtocolBridgeTest {
         ChildrenDiff.Insert(
           id = Id.Root,
           tag = RootChildrenTag,
-          childId = Id(1U),
+          childId = Id(1),
           kind = 4 /* button */,
           index = 0,
         ),

@@ -25,7 +25,7 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
 
 public class ProtocolBridge : EventSink {
-  private var nextValue = Id.Root.value + 1U
+  private var nextValue = Id.Root.value + 1L
   private val nodes = mutableMapOf<Id, DiffProducingWidget>()
 
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
@@ -34,7 +34,7 @@ public class ProtocolBridge : EventSink {
 
   public fun nextId(): Id {
     val value = nextValue
-    nextValue = value + 1U
+    nextValue = value + 1L
     return Id(value)
   }
 
