@@ -84,7 +84,7 @@ public class FlexContainer {
 
   /**
    * Measures the flexbox's items according to the parent's [widthSpec] and [heightSpec] and returns
-   * the expected size of the flexbox.
+   * the expected size of the container.
    *
    * @param widthSpec horizontal space requirements as imposed by the parent.
    * @param heightSpec vertical space requirements as imposed by the parent.
