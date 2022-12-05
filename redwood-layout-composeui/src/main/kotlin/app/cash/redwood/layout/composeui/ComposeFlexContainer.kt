@@ -69,8 +69,8 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
   }
 
   fun padding(padding: Padding) {
-    this.padding = padding
     this.paddingUpdated = true
+    this.padding = padding
   }
 
   fun overflow(overflow: Overflow) {
