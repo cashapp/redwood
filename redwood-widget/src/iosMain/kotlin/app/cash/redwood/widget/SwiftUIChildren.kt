@@ -28,17 +28,21 @@ public class SwiftUIChildren(
 
   private val _widgets = MutableListChildren<SwiftUIView>()
   public val widgets: List<Widget<SwiftUIView>> = _widgets
+  public var observer: (() -> Unit)? = null
 
   override fun insert(index: Int, widget: Widget<SwiftUIView>) {
     _widgets.add(index, widget)
+    observer?.invoke()
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
+    observer?.invoke()
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
+    observer?.invoke()
   }
 
   override fun onLayoutModifierUpdated(index: Int) {

@@ -33,6 +33,7 @@ public class TreehouseSwiftUIView<A : Any>(
 
   private val _children = SwiftUIChildren(this)
   override val children: Widget.Children<*> = _children
+  public override var stateChangeListener: TreehouseView.OnStateChangeListener<A>? = null
 
   override fun reset() {
     _children.remove(0, _children.widgets.size)
@@ -49,7 +50,7 @@ public class TreehouseSwiftUIView<A : Any>(
   public fun setContent(content: TreehouseView.Content<A>) {
     treehouseApp.dispatchers.checkUi()
     this.content = content
-    treehouseApp.onContentChanged(this)
+    stateChangeListener?.onStateChanged(this)
   }
 
 }
