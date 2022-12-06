@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.PropertyTag
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -43,7 +44,7 @@ class ProtocolMismatchHandlerTest {
 
   @Test fun throwingUnknownProperty() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownProperty(1, 2U)
+      ProtocolMismatchHandler.Throwing.onUnknownProperty(1, PropertyTag(2))
     }
     assertEquals("Unknown property tag 2 for widget kind 1", t.message)
   }

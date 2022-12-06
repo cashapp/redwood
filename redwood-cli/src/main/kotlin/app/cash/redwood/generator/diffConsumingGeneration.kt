@@ -197,7 +197,7 @@ internal class DiffConsumingSunspotButton<W : Any>(
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   public override fun apply(diff: PropertyDiff, eventSink: EventSink): Unit {
-    when (val tag = diff.tag) {
+    when (diff.tag.value) {
       1 -> delegate.text(json.decodeFromJsonElement(serializer_0, diff.value))
       2 -> delegate.enabled(json.decodeFromJsonElement(serializer_1, diff.value))
       3 -> {
@@ -208,7 +208,7 @@ internal class DiffConsumingSunspotButton<W : Any>(
         }
         delegate.onClick(onClick)
       }
-      else -> mismatchHandler.onUnknownProperty(12, tag)
+      else -> mismatchHandler.onUnknownProperty(12, diff.tag)
     }
   }
 }
@@ -259,7 +259,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
               .addModifiers(OVERRIDE)
               .addParameter("diff", Protocol.PropertyDiff)
               .addParameter("eventSink", Protocol.EventSink)
-              .beginControlFlow("when (val tag = diff.tag)")
+              .beginControlFlow("when (diff.tag.value)")
               .apply {
                 for (trait in properties) {
                   when (trait) {
@@ -270,7 +270,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       }
 
                       addStatement(
-                        "%LU -> widget.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
+                        "%L -> widget.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -278,7 +278,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                     }
 
                     is Event -> {
-                      beginControlFlow("%LU ->", trait.tag)
+                      beginControlFlow("%L ->", trait.tag)
                       beginControlFlow(
                         "val %N: %T = if (diff.value.%M.%M)",
                         trait.name,
@@ -329,7 +329,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                   )
                 }
               }
-              .addStatement("else -> mismatchHandler.onUnknownProperty(%L, tag)", widget.tag)
+              .addStatement("else -> mismatchHandler.onUnknownProperty(%L, diff.tag)", widget.tag)
               .endControlFlow()
               .build(),
           )

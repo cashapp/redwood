@@ -21,6 +21,7 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyTag
 import example.redwood.compose.TestScope
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.TextInput
@@ -230,7 +231,7 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
 
     val throwingEventSink = EventSink { error(it) }
-    textInput.apply(PropertyDiff(Id(1), 2U, JsonPrimitive("PT10S")), throwingEventSink)
+    textInput.apply(PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
 
     assertEquals(10.seconds, recordingTextInput.customType)
   }
@@ -239,7 +240,7 @@ class DiffConsumingWidgetFactoryTest {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
 
-    val diff = PropertyDiff(Id(1), 345432U)
+    val diff = PropertyDiff(Id(1), PropertyTag(345432))
     val eventSink = EventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
@@ -255,7 +256,7 @@ class DiffConsumingWidgetFactoryTest {
     )
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
 
-    button.apply(PropertyDiff(Id(1), 345432U)) { throw UnsupportedOperationException() }
+    button.apply(PropertyDiff(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
     assertEquals("Unknown property 345432 for 4", handler.events.single())
   }
@@ -276,7 +277,7 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
 
     val eventSink = RecordingEventSink()
-    textInput.apply(PropertyDiff(Id(1), 4U, JsonPrimitive(true)), eventSink)
+    textInput.apply(PropertyDiff(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)
 
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 

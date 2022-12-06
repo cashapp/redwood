@@ -15,22 +15,10 @@
  */
 package app.cash.redwood.protocol
 
-import kotlin.jvm.JvmInline
-import kotlinx.serialization.Serializable
-
-/** Identifies a widget instance. */
-@JvmInline
-@Serializable
-public value class Id(public val value: Long) {
-  public companion object {
-    public val Root: Id = Id(0L)
-  }
+public fun interface EventSink {
+  public fun sendEvent(event: Event)
 }
 
-@JvmInline
-@Serializable
-public value class EventTag(public val value: Int)
-
-@JvmInline
-@Serializable
-public value class PropertyTag(public val value: Int)
+public fun interface DiffSink {
+  public fun sendDiff(diff: Diff)
+}

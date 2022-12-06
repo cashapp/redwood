@@ -28,6 +28,7 @@ import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyTag
 import example.redwood.compose.Button
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.Row
@@ -97,8 +98,8 @@ class ProtocolTest {
           LayoutModifiers(Id(4), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(Id(2), 1U /* text */, JsonPrimitive("hey")),
-          PropertyDiff(Id(4), 1U /* text */, JsonPrimitive("hello")),
+          PropertyDiff(Id(2), PropertyTag(1) /* text */, JsonPrimitive("hey")),
+          PropertyDiff(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
         ),
       ),
       diffs.removeFirst(),
@@ -142,8 +143,8 @@ class ProtocolTest {
           LayoutModifiers(Id(1), JsonArray(listOf())),
         ),
         propertyDiffs = listOf(
-          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 0")),
-          PropertyDiff(Id(1), 2U /* onClick */, JsonPrimitive(true)),
+          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 0")),
+          PropertyDiff(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
         ),
       ),
       diffs.removeFirst(),
@@ -157,7 +158,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 1")),
+          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
         ),
       ),
       diffs.removeFirst(),
@@ -171,8 +172,8 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 2")),
-          PropertyDiff(Id(1), 2U /* text */, JsonPrimitive(false)),
+          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 2")),
+          PropertyDiff(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
         ),
       ),
       diffs.removeFirst(),
@@ -186,7 +187,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         propertyDiffs = listOf(
-          PropertyDiff(Id(1), 1U /* text */, JsonPrimitive("state: 3")),
+          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
         ),
       ),
       diffs.removeFirst(),

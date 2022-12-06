@@ -21,14 +21,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 
-public fun interface EventSink {
-  public fun sendEvent(event: Event)
-}
-
-public fun interface DiffSink {
-  public fun sendDiff(diff: Diff)
-}
-
 @Serializable
 public data class Event(
   /** Identifier for the widget from which this event originated. */
@@ -50,7 +42,7 @@ public data class PropertyDiff(
   /** Identifier for the widget whose property has changed. */
   val id: Id,
   /** Identifies which property changed on the widget with [id]. */
-  val tag: UInt,
+  val tag: PropertyTag,
   val value: JsonElement = JsonNull,
 )
 

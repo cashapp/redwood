@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
@@ -131,7 +132,7 @@ internal class EventPublisher(
       listener.onUnknownChildren(app, kind, tag)
     }
 
-    override fun onUnknownProperty(kind: Int, tag: UInt) {
+    override fun onUnknownProperty(kind: Int, tag: PropertyTag) {
       listener.onUnknownProperty(app, kind, tag)
     }
   }
