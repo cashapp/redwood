@@ -30,13 +30,13 @@ class ProtocolTest {
   }
 
   @Test fun eventNonNullValue() {
-    val model = Event(Id(1U), 2U, JsonPrimitive("Hello"))
+    val model = Event(Id(1), 2U, JsonPrimitive("Hello"))
     val json = """{"id":1,"tag":2,"value":"Hello"}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
   @Test fun eventNullValue() {
-    val model = Event(Id(1U), 2U)
+    val model = Event(Id(1), 2U)
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
@@ -44,13 +44,13 @@ class ProtocolTest {
   @Test fun diff() {
     val model = Diff(
       childrenDiffs = listOf(
-        ChildrenDiff.Insert(Id(1U), 2U, Id(3U), 4, 5),
-        ChildrenDiff.Move(Id(1U), 2U, 3, 4, 5),
-        ChildrenDiff.Remove(Id(1U), 2U, 3, 4),
+        ChildrenDiff.Insert(Id(1), 2U, Id(3), 4, 5),
+        ChildrenDiff.Move(Id(1), 2U, 3, 4, 5),
+        ChildrenDiff.Remove(Id(1), 2U, 3, 4),
       ),
       layoutModifiers = listOf(
         LayoutModifiers(
-          Id(1U),
+          Id(1),
           buildJsonArray {
             add(
               buildJsonArray {
@@ -62,8 +62,8 @@ class ProtocolTest {
         ),
       ),
       propertyDiffs = listOf(
-        PropertyDiff(Id(1U), 2U, JsonPrimitive("Hello")),
-        PropertyDiff(Id(1U), 2U, JsonNull),
+        PropertyDiff(Id(1), 2U, JsonPrimitive("Hello")),
+        PropertyDiff(Id(1), 2U, JsonNull),
       ),
     )
     val json = "" +

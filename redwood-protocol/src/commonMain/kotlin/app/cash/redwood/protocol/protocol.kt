@@ -33,9 +33,9 @@ public fun interface DiffSink {
 /** Identifies a widget instance. */
 @JvmInline
 @Serializable
-public value class Id(public val value: ULong) {
+public value class Id(public val value: Long) {
   public companion object {
-    public val Root: Id = Id(0UL)
+    public val Root: Id = Id(0L)
   }
 }
 
