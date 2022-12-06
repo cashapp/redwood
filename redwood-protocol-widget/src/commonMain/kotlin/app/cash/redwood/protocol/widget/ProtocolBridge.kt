@@ -50,7 +50,7 @@ public class ProtocolBridge<W : Any>(
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(id, children, childrenDiff.kind) ?: continue
+          val childWidget = factory.create(id, children, childrenDiff.widgetTag) ?: continue
           children.insert(childrenDiff.index, childWidget.widget)
           val old = nodes.put(childrenDiff.childId, childWidget)
           require(old == null) {

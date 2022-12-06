@@ -31,7 +31,7 @@ internal class DiffProducingWidgetChildren(
     widget as DiffProducingWidget
     ids.add(index, widget.id)
     bridge.addWidget(widget)
-    bridge.append(ChildrenDiff.Insert(id, tag, widget.id, widget.type, index))
+    bridge.append(ChildrenDiff.Insert(id, tag, widget.id, widget.tag, index))
   }
 
   override fun remove(index: Int, count: Int) {

@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 
 /**
@@ -25,7 +26,7 @@ import app.cash.redwood.widget.Widget
  */
 public interface DiffProducingWidget : Widget<Nothing> {
   public val id: Id
-  public val type: Int
+  public val tag: WidgetTag
 
   override val value: Nothing
     get() = throw AssertionError()

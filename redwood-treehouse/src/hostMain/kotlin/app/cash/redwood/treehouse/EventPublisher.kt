@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
@@ -117,20 +118,20 @@ internal class EventPublisher(
   }
 
   fun protocolMismatchHandler(app: TreehouseApp<*>) = object : ProtocolMismatchHandler {
-    override fun onUnknownWidget(kind: Int) {
-      listener.onUnknownWidget(app, kind)
+    override fun onUnknownWidget(tag: WidgetTag) {
+      listener.onUnknownWidget(app, tag)
     }
 
     override fun onUnknownLayoutModifier(tag: Int) {
       listener.onUnknownLayoutModifier(app, tag)
     }
 
-    override fun onUnknownChildren(kind: Int, tag: ChildrenTag) {
-      listener.onUnknownChildren(app, kind, tag)
+    override fun onUnknownChildren(widgetTag: WidgetTag, tag: ChildrenTag) {
+      listener.onUnknownChildren(app, widgetTag, tag)
     }
 
-    override fun onUnknownProperty(kind: Int, tag: PropertyTag) {
-      listener.onUnknownProperty(app, kind, tag)
+    override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
+      listener.onUnknownProperty(app, widgetTag, tag)
     }
   }
 }

@@ -29,6 +29,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.Button
 import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
 import example.redwood.compose.Row
@@ -86,10 +87,10 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), 1 /* row */, 0),
-          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(2), 3 /* text */, 0),
-          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(3), 1 /* row */, 1),
-          ChildrenDiff.Insert(Id(3), ChildrenTag(1), Id(4), 3 /* text */, 0),
+          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(1) /* row */, 0),
+          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(2), WidgetTag(3) /* text */, 0),
+          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(3), WidgetTag(1) /* row */, 1),
+          ChildrenDiff.Insert(Id(3), ChildrenTag(1), Id(4), WidgetTag(3) /* text */, 0),
         ),
         layoutModifiers = listOf(
           LayoutModifiers(Id(1), JsonArray(listOf())),
@@ -137,7 +138,7 @@ class ProtocolTest {
     assertEquals(
       Diff(
         childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), 4 /* button */, 0),
+          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(4) /* button */, 0),
         ),
         layoutModifiers = listOf(
           LayoutModifiers(Id(1), JsonArray(listOf())),

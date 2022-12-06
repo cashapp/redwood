@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.WidgetTag
 import kotlin.jvm.JvmField
 
 /**
@@ -24,15 +25,17 @@ import kotlin.jvm.JvmField
  * a newer schema than the other, or if their schemas were changed in an incompatible way.
  */
 public interface ProtocolMismatchHandler {
-  /** Handle a request to process an unknown event [tag] for the specified widget [kind]. */
-  public fun onUnknownEvent(kind: Int, tag: EventTag)
+  /** Handle a request to process an unknown event [tag] for the specified widget [widgetTag]. */
+  public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
   public companion object {
     /** A [ProtocolMismatchHandler] which throws [IllegalArgumentException] for all callbacks. */
     @JvmField
     public val Throwing: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
-      override fun onUnknownEvent(kind: Int, tag: EventTag) {
-        throw IllegalArgumentException("Unknown event tag ${tag.value} for widget kind $kind")
+      override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+        throw IllegalArgumentException(
+          "Unknown event tag ${tag.value} for widget tag ${widgetTag.value}",
+        )
       }
     }
   }

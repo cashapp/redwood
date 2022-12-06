@@ -24,7 +24,6 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -124,7 +123,7 @@ internal class DiffProducingSunspotButton(
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : DiffProducingWidget, SunspotButton<Nothing> {
   public override val id: Id = bridge.nextId()
-  public override val type: Int get() = 3
+  public override val tag: WidgetTag get() = WidgetTag(3)
 
   private var onClick: (() -> Unit)? = null
 
@@ -197,10 +196,10 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("type", INT, PUBLIC, OVERRIDE)
+          PropertySpec.builder("tag", Protocol.WidgetTag, PUBLIC, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
-                .addStatement("return %L", widget.tag)
+                .addStatement("return %T(%L)", Protocol.WidgetTag, widget.tag)
                 .build(),
             )
             .build(),
@@ -300,7 +299,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                   }
                 }
               }
-              .addStatement("else -> mismatchHandler.onUnknownEvent(%L, event.tag)", widget.tag)
+              .addStatement("else -> mismatchHandler.onUnknownEvent(tag, event.tag)")
               .endControlFlow()
               .build(),
           )
