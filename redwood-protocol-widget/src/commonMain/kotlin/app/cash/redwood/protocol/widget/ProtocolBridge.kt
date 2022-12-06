@@ -16,7 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenDiff
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.EventSink
@@ -103,8 +103,8 @@ private class DiffConsumingProtocolRoot<W : Any>(
     throw AssertionError("unexpected: $diff")
   }
 
-  override fun children(tag: UInt) = when (tag) {
-    RootChildrenTag -> children
+  override fun children(tag: ChildrenTag) = when (tag) {
+    ChildrenTag.Root -> children
     else -> throw AssertionError("unexpected: $tag")
   }
 

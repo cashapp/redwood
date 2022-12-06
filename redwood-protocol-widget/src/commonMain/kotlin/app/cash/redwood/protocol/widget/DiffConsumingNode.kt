@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
@@ -47,7 +48,7 @@ public abstract class DiffConsumingNode<W : Any>(
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public abstract fun children(tag: UInt): Widget.Children<W>?
+  public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 
   public interface Factory<W : Any> {
     /**

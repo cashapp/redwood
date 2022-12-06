@@ -16,7 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenDiff
-import app.cash.redwood.protocol.ChildrenDiff.Companion.RootChildrenTag
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.MutableListChildren
@@ -36,7 +36,7 @@ class ProtocolBridgeTest {
       childrenDiffs = listOf(
         ChildrenDiff.Insert(
           id = Id.Root,
-          tag = RootChildrenTag,
+          tag = ChildrenTag.Root,
           childId = Id.Root,
           kind = 4 /* button */,
           index = 0,
@@ -59,7 +59,7 @@ class ProtocolBridgeTest {
       childrenDiffs = listOf(
         ChildrenDiff.Insert(
           id = Id.Root,
-          tag = RootChildrenTag,
+          tag = ChildrenTag.Root,
           childId = Id(1),
           kind = 4 /* button */,
           index = 0,
