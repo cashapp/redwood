@@ -15,12 +15,7 @@
  */
 package app.cash.redwood.widget
 
-import kotlinx.cinterop.convert
-import platform.darwin.NSInteger
-
-public interface SwiftUIView {
-
-}
+public interface SwiftUIView
 
 public class SwiftUIChildren(
   private val parent: SwiftUIView,
@@ -48,5 +43,4 @@ public class SwiftUIChildren(
   override fun onLayoutModifierUpdated(index: Int) {
     // TODO
   }
-
 }
