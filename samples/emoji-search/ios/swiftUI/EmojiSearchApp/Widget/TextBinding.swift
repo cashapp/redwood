@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class TextBinding: WidgetText, SwiftUIView, Identifiable {
+final class TextBinding: BaseWidget, WidgetText, SwiftUIViewBinding {
     
     @Published var text: String = ""
     
@@ -13,8 +13,6 @@ final class TextBinding: WidgetText, SwiftUIView, Identifiable {
     }
     
     var view: some View { TextView(binding: self) }
-    var value: Any { NSNull() }
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     
 }
 

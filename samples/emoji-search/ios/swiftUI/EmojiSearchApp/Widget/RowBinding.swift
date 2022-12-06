@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class RowBinding: WidgetRow, SwiftUIView, Identifiable {
+final class RowBinding: BaseWidget, WidgetRow, SwiftUIViewBinding {
     func height(height: Int32) {
         
     }
@@ -30,12 +30,10 @@ final class RowBinding: WidgetRow, SwiftUIView, Identifiable {
     }
     
     var children: Redwood_widgetWidgetChildren!
-    var value: Any { NSNull() }
     var view: some View { RowView(binding: self) }
     
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
-    
-    init() {
+    override init() {
+        super.init()
         self.children = Redwood_widgetSwiftUIChildren(parent: self)
     }
     

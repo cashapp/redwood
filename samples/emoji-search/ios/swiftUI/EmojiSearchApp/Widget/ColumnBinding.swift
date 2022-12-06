@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class ColumnBinding: WidgetColumn, SwiftUIView, Identifiable {
+final class ColumnBinding: BaseWidget, WidgetColumn, SwiftUIViewBinding {
     func height(height: Int32) {
         
     }
@@ -30,14 +30,11 @@ final class ColumnBinding: WidgetColumn, SwiftUIView, Identifiable {
     }
 
     var children: Redwood_widgetWidgetChildren!
-
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
-
-    var value: Any { NSNull() }
     
     var view: some View { ColumnView(binding: self) }
     
-    init() {
+    override init() {
+        super.init()
         self.children = Redwood_widgetSwiftUIChildren(parent: self)
     }
 

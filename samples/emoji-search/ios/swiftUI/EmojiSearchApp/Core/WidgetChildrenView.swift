@@ -25,7 +25,7 @@ extension WidgetChildrenView: View {
         }
     }
     
-    private func childView(widget: any SwiftUIView) -> AnyView {
+    private func childView(widget: any SwiftUIViewBinding) -> AnyView {
         return AnyView(widget.view)
     }
     

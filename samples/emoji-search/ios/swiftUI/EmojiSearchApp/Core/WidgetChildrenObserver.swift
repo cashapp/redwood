@@ -17,9 +17,9 @@ final class WidgetChildrenObserver: ObservableObject {
         children.widgets
     }
 
-    var swiftUIWidgets: [any SwiftUIView] {
+    var swiftUIWidgets: [any SwiftUIViewBinding] {
         return children.widgets.map { widget in
-            guard let swiftUIWidget = widget as? any SwiftUIView else {
+            guard let swiftUIWidget = widget as? any SwiftUIViewBinding else {
                 fatalError("Could not cast \(String(describing: widget)) as SwiftUIView")
             }
             return swiftUIWidget

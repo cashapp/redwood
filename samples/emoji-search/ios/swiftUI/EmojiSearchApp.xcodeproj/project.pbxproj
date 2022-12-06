@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		320A9E3134B16AB401CAB3B3 /* Pods_EmojiSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B340877E75215F2AED9BA8 /* Pods_EmojiSearchApp.framework */; };
+		C46C9E50293ECB3200AD7E1E /* BaseWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46C9E4F293ECB3200AD7E1E /* BaseWidget.swift */; };
 		C4A7515E2938598D00D3F831 /* IosHostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A7515D2938598D00D3F831 /* IosHostApi.swift */; };
 		C4A751672938674300D3F831 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4A751642938674300D3F831 /* Assets.xcassets */; };
 		C4A751682938674300D3F831 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4A751662938674300D3F831 /* Preview Assets.xcassets */; };
@@ -15,7 +16,7 @@
 		C4A7516E2938734100D3F831 /* SwiftUIEmojiSearchWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A7516D2938734100D3F831 /* SwiftUIEmojiSearchWidgetFactory.swift */; };
 		C4A751702938734700D3F831 /* SwiftUILayoutWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A7516F2938734700D3F831 /* SwiftUILayoutWidgetFactory.swift */; };
 		C4A75172293873E700D3F831 /* ColumnBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A75171293873E700D3F831 /* ColumnBinding.swift */; };
-		FA42CB27293C34DE00031CF0 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42CB26293C34DE00031CF0 /* SwiftUIView.swift */; };
+		FA42CB27293C34DE00031CF0 /* SwiftUIViewBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42CB26293C34DE00031CF0 /* SwiftUIViewBinding.swift */; };
 		FA42CB29293C350200031CF0 /* WidgetChildrenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42CB28293C350200031CF0 /* WidgetChildrenView.swift */; };
 		FA42CB2B293C361100031CF0 /* WidgetChildrenObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42CB2A293C361100031CF0 /* WidgetChildrenObserver.swift */; };
 		FA42CB2D293C3A4C00031CF0 /* LazyColumnBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42CB2C293C3A4C00031CF0 /* LazyColumnBinding.swift */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		8D728DFB15C556F9D94C2A56 /* Pods-EmojiSearchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.release.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.release.xcconfig"; sourceTree = "<group>"; };
 		B1676165A1782330A65CC380 /* Pods-EmojiSearchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.debug.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.debug.xcconfig"; sourceTree = "<group>"; };
+		C46C9E4F293ECB3200AD7E1E /* BaseWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseWidget.swift; sourceTree = "<group>"; };
 		C4A7512F2938580300D3F831 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4A7515D2938598D00D3F831 /* IosHostApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosHostApi.swift; sourceTree = "<group>"; };
 		C4A751642938674300D3F831 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -44,7 +46,7 @@
 		C4A7516F2938734700D3F831 /* SwiftUILayoutWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUILayoutWidgetFactory.swift; sourceTree = "<group>"; };
 		C4A75171293873E700D3F831 /* ColumnBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnBinding.swift; sourceTree = "<group>"; };
 		D2B340877E75215F2AED9BA8 /* Pods_EmojiSearchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmojiSearchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA42CB26293C34DE00031CF0 /* SwiftUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		FA42CB26293C34DE00031CF0 /* SwiftUIViewBinding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIViewBinding.swift; sourceTree = "<group>"; };
 		FA42CB28293C350200031CF0 /* WidgetChildrenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetChildrenView.swift; sourceTree = "<group>"; };
 		FA42CB2A293C361100031CF0 /* WidgetChildrenObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetChildrenObserver.swift; sourceTree = "<group>"; };
 		FA42CB2C293C3A4C00031CF0 /* LazyColumnBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyColumnBinding.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				FA42CB3D293C529B00031CF0 /* RowBinding.swift */,
 				FA42CB3F293C540800031CF0 /* ImageBinding.swift */,
 				FA42CB41293C556900031CF0 /* TextBinding.swift */,
+				C46C9E4F293ECB3200AD7E1E /* BaseWidget.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -173,7 +176,7 @@
 		FA42CB25293C34CF00031CF0 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				FA42CB26293C34DE00031CF0 /* SwiftUIView.swift */,
+				FA42CB26293C34DE00031CF0 /* SwiftUIViewBinding.swift */,
 				FA42CB28293C350200031CF0 /* WidgetChildrenView.swift */,
 				FA42CB2A293C361100031CF0 /* WidgetChildrenObserver.swift */,
 				FA42CB30293C413500031CF0 /* EnvironmentKeys.swift */,
@@ -294,9 +297,10 @@
 				FA42CB3C293C471100031CF0 /* ContentView.swift in Sources */,
 				FA42CB40293C540800031CF0 /* ImageBinding.swift in Sources */,
 				FA42CB35293C46FC00031CF0 /* RemoteImageLoader.swift in Sources */,
-				FA42CB27293C34DE00031CF0 /* SwiftUIView.swift in Sources */,
+				FA42CB27293C34DE00031CF0 /* SwiftUIViewBinding.swift in Sources */,
 				FA42CB3A293C471100031CF0 /* EmojiSearchApp.swift in Sources */,
 				C4A7516E2938734100D3F831 /* SwiftUIEmojiSearchWidgetFactory.swift in Sources */,
+				C46C9E50293ECB3200AD7E1E /* BaseWidget.swift in Sources */,
 				C4A7515E2938598D00D3F831 /* IosHostApi.swift in Sources */,
 				FA42CB2B293C361100031CF0 /* WidgetChildrenObserver.swift in Sources */,
 				FA42CB29293C350200031CF0 /* WidgetChildrenView.swift in Sources */,

@@ -4,12 +4,12 @@ import Foundation
 import shared
 import SwiftUI
 
-protocol SwiftUIView: Redwood_widgetSwiftUIView, ObservableObject {
+protocol SwiftUIViewBinding: Redwood_widgetSwiftUIView, ObservableObject {
     
     associatedtype ViewType: View
     @ViewBuilder var view: ViewType { get }
 
-    // Conform classes to Identifiable to get this conformance
+    // This gets automatic conformance in BaseWidget
     var id: ObjectIdentifier { get }
     
 }

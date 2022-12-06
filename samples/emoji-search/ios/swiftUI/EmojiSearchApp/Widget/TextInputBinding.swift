@@ -6,7 +6,7 @@ import SwiftUI
 
 // MARK: - Memory footprint
 
-final class TextInputBinding: WidgetTextInput, SwiftUIView, Identifiable {
+final class TextInputBinding: BaseWidget, WidgetTextInput, SwiftUIViewBinding {
 
     @Published var hint: String = ""
     @Published var text: String = ""
@@ -29,9 +29,7 @@ final class TextInputBinding: WidgetTextInput, SwiftUIView, Identifiable {
         }
     }
 
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
     var view: some View { TextInputView(binding: self) }
-    var value: Any { NSNull() }
     
     var textBinding: Binding<String> {
         return Binding<String> { [unowned self] in

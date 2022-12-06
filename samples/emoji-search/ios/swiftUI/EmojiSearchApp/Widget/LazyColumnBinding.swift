@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class LazyColumnBinding: WidgetLazyColumn, SwiftUIView, Identifiable {
+final class LazyColumnBinding: BaseWidget, WidgetLazyColumn, SwiftUIViewBinding {
     
     @Published var intervals: [Redwood_treehouse_lazylayout_apiLazyListIntervalContent] = []
     @Published fileprivate var randomID: String = ""
@@ -14,10 +14,7 @@ final class LazyColumnBinding: WidgetLazyColumn, SwiftUIView, Identifiable {
         self.randomID = UUID().uuidString
     }
     
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
-    
     var view: some View { LazyColumnView(binding: self) }
-    var value: Any { NSNull() }
 }
 
 struct LazyColumnView: View {

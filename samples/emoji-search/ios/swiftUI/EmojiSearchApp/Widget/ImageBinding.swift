@@ -4,17 +4,15 @@ import Foundation
 import shared
 import SwiftUI
 
-final class ImageBinding: WidgetImage, SwiftUIView, Identifiable {
+final class ImageBinding: BaseWidget, WidgetImage, SwiftUIViewBinding {
     
     @Published var url: String = ""
     
     func url(url: String) {
         self.url = url
     }
-    
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
+
     var view: some View { ImageView(binding: self) }
-    var value: Any { NSNull() }
     
 }
 
