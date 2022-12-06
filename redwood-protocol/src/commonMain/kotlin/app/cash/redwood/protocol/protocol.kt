@@ -63,13 +63,13 @@ public sealed class ChildrenDiff {
   public abstract val id: Id
 
   /** Identifies which group of children changed on the widget with [id]. */
-  public abstract val tag: UInt
+  public abstract val tag: ChildrenTag
 
   @Serializable
   @SerialName("insert")
   public data class Insert(
     override val id: Id,
-    override val tag: UInt,
+    override val tag: ChildrenTag,
     val childId: Id,
     val kind: Int,
     val index: Int,
@@ -79,7 +79,7 @@ public sealed class ChildrenDiff {
   @SerialName("move")
   public data class Move(
     override val id: Id,
-    override val tag: UInt,
+    override val tag: ChildrenTag,
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
@@ -89,12 +89,8 @@ public sealed class ChildrenDiff {
   @SerialName("remove")
   public data class Remove(
     override val id: Id,
-    override val tag: UInt,
+    override val tag: ChildrenTag,
     val index: Int,
     val count: Int,
   ) : ChildrenDiff()
-
-  public companion object {
-    public const val RootChildrenTag: UInt = 1U
-  }
 }

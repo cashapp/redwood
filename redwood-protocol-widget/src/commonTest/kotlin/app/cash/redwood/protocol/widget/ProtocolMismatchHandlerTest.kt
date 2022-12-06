@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,7 +38,7 @@ class ProtocolMismatchHandlerTest {
 
   @Test fun throwingUnknownChildren() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownChildren(1, 2U)
+      ProtocolMismatchHandler.Throwing.onUnknownChildren(1, ChildrenTag(2))
     }
     assertEquals("Unknown children tag 2 for widget kind 1", t.message)
   }

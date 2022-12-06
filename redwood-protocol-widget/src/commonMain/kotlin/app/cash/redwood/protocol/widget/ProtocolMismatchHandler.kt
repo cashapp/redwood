@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
 import kotlin.jvm.JvmField
 
@@ -31,7 +32,7 @@ public interface ProtocolMismatchHandler {
   public fun onUnknownLayoutModifier(tag: Int)
 
   /** Handle a request to manipulate unknown children [tag] for the specified widget [kind]. */
-  public fun onUnknownChildren(kind: Int, tag: UInt)
+  public fun onUnknownChildren(kind: Int, tag: ChildrenTag)
 
   /** Handle a request to set an unknown property [tag] for the specified widget [kind]. */
   public fun onUnknownProperty(kind: Int, tag: PropertyTag)
@@ -48,8 +49,8 @@ public interface ProtocolMismatchHandler {
         throw IllegalArgumentException("Unknown layout modifier tag $tag")
       }
 
-      override fun onUnknownChildren(kind: Int, tag: UInt) {
-        throw IllegalArgumentException("Unknown children tag $tag for widget kind $kind")
+      override fun onUnknownChildren(kind: Int, tag: ChildrenTag) {
+        throw IllegalArgumentException("Unknown children tag ${tag.value} for widget kind $kind")
       }
 
       override fun onUnknownProperty(kind: Int, tag: PropertyTag) {

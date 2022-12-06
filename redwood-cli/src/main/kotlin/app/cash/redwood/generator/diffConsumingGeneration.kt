@@ -34,7 +34,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.asTypeName
 
 /*
@@ -337,13 +336,13 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
           addFunction(
             FunSpec.builder("children")
               .addModifiers(OVERRIDE)
-              .addParameter("tag", U_INT)
+              .addParameter("tag", Protocol.ChildrenTag)
               .returns(RedwoodWidget.WidgetChildrenOfW.copy(nullable = true))
               .apply {
                 if (childrens.isNotEmpty()) {
-                  beginControlFlow("return when (tag)")
+                  beginControlFlow("return when (tag.value)")
                   for (children in childrens) {
-                    addStatement("%LU -> widget.%N", children.tag, children.name)
+                    addStatement("%L -> widget.%N", children.tag, children.name)
                   }
                   beginControlFlow("else ->")
                   addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)

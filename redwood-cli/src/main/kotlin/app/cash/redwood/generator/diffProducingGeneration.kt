@@ -264,7 +264,11 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .addModifiers(OVERRIDE)
                     .getter(
                       FunSpec.getterBuilder()
-                        .addStatement("return bridge.widgetChildren(id, %LU)", trait.tag)
+                        .addStatement(
+                          "return bridge.widgetChildren(id, %T(%L))",
+                          Protocol.ChildrenTag,
+                          trait.tag,
+                        )
                         .build(),
                     )
                     .build(),
