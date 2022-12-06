@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
 
 class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
@@ -28,8 +29,8 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
     events += "Unknown layout modifier $tag"
   }
 
-  override fun onUnknownChildren(kind: Int, tag: UInt) {
-    events += "Unknown children $tag for $kind"
+  override fun onUnknownChildren(kind: Int, tag: ChildrenTag) {
+    events += "Unknown children ${tag.value} for $kind"
   }
 
   override fun onUnknownProperty(kind: Int, tag: PropertyTag) {

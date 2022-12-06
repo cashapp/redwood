@@ -44,9 +44,9 @@ class ProtocolTest {
   @Test fun diff() {
     val model = Diff(
       childrenDiffs = listOf(
-        ChildrenDiff.Insert(Id(1), 2U, Id(3), 4, 5),
-        ChildrenDiff.Move(Id(1), 2U, 3, 4, 5),
-        ChildrenDiff.Remove(Id(1), 2U, 3, 4),
+        ChildrenDiff.Insert(Id(1), ChildrenTag(2), Id(3), 4, 5),
+        ChildrenDiff.Move(Id(1), ChildrenTag(2), 3, 4, 5),
+        ChildrenDiff.Remove(Id(1), ChildrenTag(2), 3, 4),
       ),
       layoutModifiers = listOf(
         LayoutModifiers(

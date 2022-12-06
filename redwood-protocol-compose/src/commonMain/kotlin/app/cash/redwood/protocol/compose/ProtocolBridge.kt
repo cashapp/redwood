@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -83,7 +84,7 @@ public class ProtocolBridge : EventSink {
     nodes.remove(id)
   }
 
-  public fun widgetChildren(id: Id, tag: UInt): Widget.Children<Nothing> {
+  public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
     return DiffProducingWidgetChildren(id, tag, this)
   }
 

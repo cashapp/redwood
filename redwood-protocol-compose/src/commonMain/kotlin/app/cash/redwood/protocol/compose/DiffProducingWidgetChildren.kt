@@ -16,12 +16,13 @@
 package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
 internal class DiffProducingWidgetChildren(
   private val id: Id,
-  private val tag: UInt,
+  private val tag: ChildrenTag,
   private val bridge: ProtocolBridge,
 ) : Widget.Children<Nothing> {
   private val ids = mutableListOf<Id>()

@@ -34,3 +34,11 @@ public value class EventTag(public val value: Int)
 @JvmInline
 @Serializable
 public value class PropertyTag(public val value: Int)
+
+@JvmInline
+@Serializable
+public value class ChildrenTag(public val value: Int) {
+  public companion object {
+    public val Root: ChildrenTag = ChildrenTag(0)
+  }
+}

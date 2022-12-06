@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
@@ -197,7 +198,7 @@ class DiffConsumingWidgetFactoryTest {
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
 
     val t = assertFailsWith<IllegalArgumentException> {
-      button.children(345432U)
+      button.children(ChildrenTag(345432))
     }
     assertEquals("Unknown children tag 345432 for widget kind 4", t.message)
   }
@@ -210,7 +211,7 @@ class DiffConsumingWidgetFactoryTest {
     )
 
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
-    assertNull(button.children(345432U))
+    assertNull(button.children(ChildrenTag(345432)))
 
     assertEquals("Unknown children 345432 for 4", handler.events.single())
   }
