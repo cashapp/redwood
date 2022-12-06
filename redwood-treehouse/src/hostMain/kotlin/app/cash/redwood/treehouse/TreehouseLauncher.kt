@@ -37,8 +37,8 @@ public class TreehouseLauncher internal constructor(
   private val platform: TreehousePlatform,
   public val dispatchers: TreehouseDispatchers,
   eventListener: EventListener,
-  httpClient: ZiplineHttpClient,
-  manifestVerifier: ManifestVerifier,
+  private val httpClient: ZiplineHttpClient,
+  private val manifestVerifier: ManifestVerifier,
   private val embeddedDir: Path,
   private val embeddedFileSystem: FileSystem,
   private val cacheName: String,
@@ -46,27 +46,9 @@ public class TreehouseLauncher internal constructor(
 ) : Closeable {
   private val eventPublisher = EventPublisher(eventListener)
 
-  /** Loads applications from the network only. The cache is neither read nor written. */
-  private val ziplineLoaderNetworkOnly = ZiplineLoader(
-    dispatcher = dispatchers.zipline,
-    manifestVerifier = manifestVerifier,
-    httpClient = httpClient,
-    eventListener = eventPublisher.ziplineEventListener,
-  )
-
   /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
   private val cache: ZiplineCache by lazy {
     platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
-  }
-
-  /** Loads applications from the network, the cache, or the embedded resources. */
-  private val ziplineLoaderNetworkCacheEmbedded: ZiplineLoader by lazy {
-    ziplineLoaderNetworkOnly.withCache(
-      cache = cache,
-    ).withEmbedded(
-      embeddedDir = embeddedDir,
-      embeddedFileSystem = embeddedFileSystem,
-    )
   }
 
   public fun <A : AppService> launch(
@@ -83,7 +65,7 @@ public class TreehouseLauncher internal constructor(
     eventPublisher.appCreated(treehouseApp)
 
     scope.launch(dispatchers.zipline) {
-      val ziplineFileFlow = ziplineFlow(spec)
+      val ziplineFileFlow = ziplineFlow(treehouseApp)
       ziplineFileFlow.collect {
         when (it) {
           is LoadResult.Success -> {
@@ -91,7 +73,7 @@ public class TreehouseLauncher internal constructor(
             treehouseApp.onCodeChanged(it.zipline, app)
           }
           is LoadResult.Failure -> {
-            // TODO
+            // EventListener already notified.
           }
         }
       }
@@ -104,10 +86,30 @@ public class TreehouseLauncher internal constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  private fun ziplineFlow(spec: TreehouseApp.Spec<*>): Flow<LoadResult> {
+  private fun ziplineFlow(treehouseApp: TreehouseApp<*>): Flow<LoadResult> {
+    val spec = treehouseApp.spec
+
+    // Loads applications from the network only. The cache is neither read nor written.
+    val ziplineLoaderNetworkOnly = ZiplineLoader(
+      dispatcher = dispatchers.zipline,
+      manifestVerifier = manifestVerifier,
+      httpClient = httpClient,
+      eventListener = eventPublisher.ziplineEventListener(treehouseApp),
+    )
+
     val ziplineLoaderForLoad = when (spec.freshCodePolicy) {
-      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> ziplineLoaderNetworkOnly
-      else -> ziplineLoaderNetworkCacheEmbedded
+      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> {
+        ziplineLoaderNetworkOnly
+      }
+      else -> {
+        // Loads applications from the network, the cache, or the embedded resources.
+        ziplineLoaderNetworkOnly.withCache(
+          cache = cache,
+        ).withEmbedded(
+          embeddedDir = embeddedDir,
+          embeddedFileSystem = embeddedFileSystem,
+        )
+      }
     }
 
     val manifestUrlFlowForLoad = when (spec.freshCodePolicy) {

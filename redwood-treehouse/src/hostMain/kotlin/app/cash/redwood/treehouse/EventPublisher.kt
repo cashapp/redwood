@@ -39,9 +39,8 @@ internal class EventPublisher(
     listener.appCanceled(app)
   }
 
-  val ziplineEventListener = object : ZiplineEventListener() {
+  fun ziplineEventListener(app: TreehouseApp<*>) = object : ZiplineEventListener() {
     override fun applicationLoadStart(applicationName: String, manifestUrl: String?): Any? {
-      val app = nameToApplication[applicationName]!!
       return listener.codeLoadStart(app, manifestUrl)
     }
 
@@ -51,8 +50,7 @@ internal class EventPublisher(
       zipline: Zipline,
       startValue: Any?,
     ) {
-      val app = nameToApplication[applicationName]!!
-      listener.codeLoadSuccess(app, manifestUrl, startValue)
+      listener.codeLoadSuccess(app, manifestUrl, zipline, startValue)
     }
 
     override fun applicationLoadSkipped(
@@ -60,7 +58,6 @@ internal class EventPublisher(
       manifestUrl: String,
       startValue: Any?,
     ) {
-      val app = nameToApplication[applicationName]!!
       listener.codeLoadSkipped(app, manifestUrl, startValue)
     }
 
@@ -70,29 +67,26 @@ internal class EventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      val app = nameToApplication[applicationName]!!
       listener.codeLoadFailed(app, manifestUrl, exception, startValue)
     }
 
     override fun bindService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.bindService(name, service)
+      listener.bindService(app, name, service)
     }
 
     override fun callStart(zipline: Zipline, call: Call): Any? {
-      return listener.callStart(call)
+      return listener.callStart(app, call)
     }
 
     override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
-      listener.callEnd(call, result, startValue)
+      listener.callEnd(app, call, result, startValue)
     }
 
     override fun downloadStart(applicationName: String, url: String): Any? {
-      val app = nameToApplication[applicationName]!!
       return listener.downloadStart(app, url)
     }
 
     override fun downloadEnd(applicationName: String, url: String, startValue: Any?) {
-      val app = nameToApplication[applicationName]!!
       listener.downloadSuccess(app, url, startValue)
     }
 
@@ -102,21 +96,23 @@ internal class EventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      val app = nameToApplication[applicationName]!!
       listener.downloadFailed(app, url, exception, startValue)
     }
 
     override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
-      val app = nameToApplication[applicationName]!!
       listener.manifestParseFailed(app, url, exception)
     }
 
     override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.takeService(name, service)
+      listener.takeService(app, name, service)
     }
 
     override fun serviceLeaked(zipline: Zipline, name: String) {
-      listener.serviceLeaked(name)
+      listener.serviceLeaked(app, name)
+    }
+
+    override fun ziplineClosed(zipline: Zipline) {
+      listener.codeUnloaded(app, zipline)
     }
   }
 
