@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,8 +25,6 @@ import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 /**
@@ -56,7 +53,7 @@ private class RedwoodZiplineTreehouseUi(
     diffSinkToClose = diffSink
 
     val composition = ProtocolRedwoodComposition(
-      scope = scope + frameClock,
+      scope = scope + StandardFrameClock,
       factory = factory,
       widgetVersion = widgetVersion,
       diffSink = diffSink,
@@ -81,22 +78,3 @@ private class RedwoodZiplineTreehouseUi(
 
 @OptIn(DelicateCoroutinesApi::class)
 private val scope: CoroutineScope = GlobalScope
-private val frameClock: BroadcastFrameClock by lazy { newFrameClock(scope) }
-
-// TODO(jwilson): replace this with a native frame clock.
-private fun newFrameClock(
-  coroutineScope: CoroutineScope,
-  ticksPerSecond: Long = 60,
-): BroadcastFrameClock {
-  val result = BroadcastFrameClock()
-  coroutineScope.launch {
-    var now = 0L
-    val delayNanos = 1_000_000_000L / ticksPerSecond
-    while (true) {
-      result.sendFrame(now)
-      delay(delayNanos / 1_000_000)
-      now += delayNanos
-    }
-  }
-  return result
-}

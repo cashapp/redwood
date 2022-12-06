@@ -18,12 +18,13 @@ package app.cash.redwood.treehouse.lazylayout.view
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 
-public class ViewRedwoodTreehouseLazyLayoutWidgetFactory<A : Any>(
+public class ViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private val context: Context,
   private val treehouseApp: TreehouseApp<A>,
   private val widgetSystem: TreehouseView.WidgetSystem<A>,

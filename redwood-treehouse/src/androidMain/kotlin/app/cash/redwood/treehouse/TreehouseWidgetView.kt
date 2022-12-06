@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
-public class TreehouseWidgetView<A : Any>(
+public class TreehouseWidgetView<A : AppService>(
   context: Context,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : FrameLayout(context), TreehouseView<A> {

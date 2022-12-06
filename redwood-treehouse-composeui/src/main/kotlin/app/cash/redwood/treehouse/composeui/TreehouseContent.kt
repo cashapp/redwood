@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
@@ -30,7 +31,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-public fun <A : Any> TreehouseContent(
+public fun <A : AppService> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
   codeListener: CodeListener = CodeListener(),

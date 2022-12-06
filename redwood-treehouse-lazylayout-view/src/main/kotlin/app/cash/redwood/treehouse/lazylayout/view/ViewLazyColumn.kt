@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
@@ -38,7 +39,7 @@ private data class LazyContentItem(
   val item: LazyListIntervalContent.Item,
 )
 
-internal class ViewLazyColumn<A : Any>(
+internal class ViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
   override val value: RecyclerView,
@@ -73,7 +74,7 @@ internal class ViewLazyColumn<A : Any>(
     )
   }
 
-  private class LazyContentItemListAdapter<A : Any>(
+  private class LazyContentItemListAdapter<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
     private val widgetSystem: TreehouseView.WidgetSystem<A>,
     private val contentHeight: Int,
@@ -93,7 +94,7 @@ internal class ViewLazyColumn<A : Any>(
     }
   }
 
-  private class ViewHolder<A : Any>(
+  private class ViewHolder<A : AppService>(
     container: FrameLayout,
     treehouseApp: TreehouseApp<A>,
     widgetSystem: TreehouseView.WidgetSystem<A>,

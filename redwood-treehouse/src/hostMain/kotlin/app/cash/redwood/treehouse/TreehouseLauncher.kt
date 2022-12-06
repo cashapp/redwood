@@ -69,7 +69,7 @@ public class TreehouseLauncher internal constructor(
     )
   }
 
-  public fun <A : Any> launch(
+  public fun <A : AppService> launch(
     scope: CoroutineScope,
     spec: TreehouseApp.Spec<A>,
   ): TreehouseApp<A> {

@@ -17,20 +17,19 @@ package app.cash.zipline.samples.emojisearch.views
 
 import android.content.Context
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
 
-class AndroidViewEmojiSearchWidgetFactory<W : Any>(
+class AndroidViewEmojiSearchWidgetFactory<A : AppService>(
   private val context: Context,
-  private val treehouseApp: TreehouseApp<W>,
-  widgetSystem: TreehouseView.WidgetSystem<W>,
+  private val treehouseApp: TreehouseApp<A>,
+  widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : EmojiSearchWidgetFactory<View> {
   override val RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context)
   override val RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, widgetSystem)

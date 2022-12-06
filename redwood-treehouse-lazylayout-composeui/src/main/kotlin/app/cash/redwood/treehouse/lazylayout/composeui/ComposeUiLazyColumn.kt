@@ -27,15 +27,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 
-internal class ComposeUiLazyColumn<W : Any>(
-  treehouseApp: TreehouseApp<W>,
-  widgetSystem: TreehouseView.WidgetSystem<W>,
+internal class ComposeUiLazyColumn<A : AppService>(
+  treehouseApp: TreehouseApp<A>,
+  widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : LazyColumn<@Composable () -> Unit> {
   private var intervals by mutableStateOf<List<LazyListIntervalContent>>(emptyList())
 

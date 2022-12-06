@@ -25,6 +25,7 @@ import app.cash.zipline.Zipline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
@@ -34,10 +35,10 @@ import kotlinx.serialization.modules.SerializersModule
 /**
  * This class binds downloaded code to on-screen views.
  *
- * It updates the binding when the views change in [onContentChanged], and when new code is
- * available in [onCodeChanged].
+ * It updates the binding when the views change via [TreehouseView.OnStateChangeListener], and when
+ * new code is available in [onCodeChanged].
  */
-public class TreehouseApp<A : Any> internal constructor(
+public class TreehouseApp<A : AppService> internal constructor(
   private val scope: CoroutineScope,
   public val spec: Spec<A>,
   public val dispatchers: TreehouseDispatchers,
@@ -87,6 +88,22 @@ public class TreehouseApp<A : Any> internal constructor(
     // This job lets us cancel the Android Treehouse job without canceling its sibling jobs.
     val supervisorJob = SupervisorJob(scope.coroutineContext.job)
     val cancelableScope = CoroutineScope(supervisorJob + dispatchers.zipline)
+
+    cancelableScope.launch(dispatchers.zipline) {
+      val clockService = context.frameClockService
+      coroutineContext.job.invokeOnCompletion {
+        clockService.close()
+      }
+      val ticksPerSecond = 60
+      var now = 0L
+      val delayNanos = 1_000_000_000L / ticksPerSecond
+      while (true) {
+        clockService.sendFrame(now)
+        delay(delayNanos / 1_000_000)
+        now += delayNanos
+      }
+    }
+
     cancelableScope.launch(dispatchers.ui) {
       val previous = ziplineSession
 
@@ -285,7 +302,7 @@ public class TreehouseApp<A : Any> internal constructor(
   /**
    * Configuration and code to launch a Treehouse application.
    */
-  public abstract class Spec<A : Any> {
+  public abstract class Spec<A : AppService> {
     public abstract val name: String
     public abstract val manifestUrl: Flow<String>
 

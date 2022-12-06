@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse.lazylayout.uiview
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
@@ -35,7 +36,7 @@ import platform.UIKit.section
 import platform.UIKit.setFrame
 import platform.darwin.NSInteger
 
-internal class UIViewLazyColumn<A : Any>(
+internal class UIViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : LazyColumn<UIView> {
@@ -54,7 +55,7 @@ internal class UIViewLazyColumn<A : Any>(
   override val value: UIView get() = root
 }
 
-private class TableViewDataSource<A : Any>(
+private class TableViewDataSource<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   private val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : UITableViewDiffableDataSource() {
@@ -76,7 +77,7 @@ private class TableViewDataSource<A : Any>(
   }
 }
 
-private class CellContent<A : Any>(
+private class CellContent<A : AppService>(
   private val itemProvider: LazyListIntervalContent.Item,
   private val index: Int,
 ) : TreehouseView.Content<A> {
