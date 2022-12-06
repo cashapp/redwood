@@ -202,7 +202,7 @@ internal class DiffConsumingSunspotButton<W : Any>(
       2 -> delegate.enabled(json.decodeFromJsonElement(serializer_1, diff.value))
       3 -> {
         val onClick: (() -> Unit)? = if (diff.value.jsonPrimitive.boolean) {
-          { eventSink.sendEvent(Event(diff.id, 3)) }
+          { eventSink.sendEvent(Event(diff.id, EventTag(3))) }
         } else {
           null
         }
@@ -292,15 +292,17 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                           nextSerializerId++
                         }
                         addStatement(
-                          "{ eventSink.sendEvent(%T(diff.id, %LU, json.encodeToJsonElement(serializer_%L, it))) }",
+                          "{ eventSink.sendEvent(%T(diff.id, %T(%L), json.encodeToJsonElement(serializer_%L, it))) }",
                           Protocol.Event,
+                          Protocol.EventTag,
                           trait.tag,
                           serializerId,
                         )
                       } else {
                         addStatement(
-                          "{ eventSink.sendEvent(%T(diff.id, %LU)) }",
+                          "{ eventSink.sendEvent(%T(diff.id, %T(%L))) }",
                           Protocol.Event,
+                          Protocol.EventTag,
                           trait.tag,
                         )
                       }

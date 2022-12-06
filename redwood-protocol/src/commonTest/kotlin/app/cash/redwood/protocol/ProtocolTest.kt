@@ -30,13 +30,13 @@ class ProtocolTest {
   }
 
   @Test fun eventNonNullValue() {
-    val model = Event(Id(1), 2U, JsonPrimitive("Hello"))
+    val model = Event(Id(1), EventTag(2), JsonPrimitive("Hello"))
     val json = """{"id":1,"tag":2,"value":"Hello"}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
   @Test fun eventNullValue() {
-    val model = Event(Id(1), 2U)
+    val model = Event(Id(1), EventTag(2))
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }

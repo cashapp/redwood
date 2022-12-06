@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.protocol
 
-import kotlin.jvm.JvmInline
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
@@ -30,21 +29,12 @@ public fun interface DiffSink {
   public fun sendDiff(diff: Diff)
 }
 
-/** Identifies a widget instance. */
-@JvmInline
-@Serializable
-public value class Id(public val value: Long) {
-  public companion object {
-    public val Root: Id = Id(0L)
-  }
-}
-
 @Serializable
 public data class Event(
   /** Identifier for the widget from which this event originated. */
   val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
-  val tag: UInt,
+  val tag: EventTag,
   val value: JsonElement = JsonNull,
 )
 

@@ -153,9 +153,9 @@ internal class DiffProducingSunspotButton(
   }
 
   override fun sendEvent(event: Event) {
-    when (val tag = event.tag) {
+    when (event.tag.value) {
       3 -> onClick?.invoke()
-      else -> mismatchHandler.onUnknownEvent(12, tag)
+      else -> mismatchHandler.onUnknownEvent(12, event.tag)
     }
   }
 }
@@ -275,7 +275,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
             FunSpec.builder("sendEvent")
               .addModifiers(OVERRIDE)
               .addParameter("event", Protocol.Event)
-              .beginControlFlow("when (val tag = event.tag)")
+              .beginControlFlow("when (event.tag.value)")
               .apply {
                 for (event in widget.traits.filterIsInstance<Event>()) {
                   val parameterType = event.parameterType?.asTypeName()
@@ -284,17 +284,17 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                       nextSerializerId++
                     }
                     addStatement(
-                      "%LU -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
+                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
                       event.tag,
                       event.name,
                       serializerId,
                     )
                   } else {
-                    addStatement("%LU -> %N?.invoke()", event.tag, event.name)
+                    addStatement("%L -> %N?.invoke()", event.tag, event.name)
                   }
                 }
               }
-              .addStatement("else -> mismatchHandler.onUnknownEvent(%L, tag)", widget.tag)
+              .addStatement("else -> mismatchHandler.onUnknownEvent(%L, event.tag)", widget.tag)
               .endControlFlow()
               .build(),
           )

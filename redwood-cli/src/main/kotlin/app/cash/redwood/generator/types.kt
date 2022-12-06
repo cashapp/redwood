@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.UNIT
 
 internal object Protocol {
   val Event = ClassName("app.cash.redwood.protocol", "Event")
+  val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")

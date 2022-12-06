@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.protocol
 
-import app.cash.redwood.protocol.EventTag
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
 
-class ProtocolMismatchHandlerTest {
-  @Test fun throwingUnknownEvent() {
-    val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownEvent(1, EventTag(2))
-    }
-    assertEquals("Unknown event tag 2 for widget kind 1", t.message)
+/** Identifies a widget instance. */
+@JvmInline
+@Serializable
+public value class Id(public val value: Long) {
+  public companion object {
+    public val Root: Id = Id(0L)
   }
 }
+
+@JvmInline
+@Serializable
+public value class EventTag(public val value: Int)
