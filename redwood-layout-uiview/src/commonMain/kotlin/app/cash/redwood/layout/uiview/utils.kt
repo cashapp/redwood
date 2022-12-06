@@ -36,8 +36,6 @@ internal fun CGSize.toSize() = Size(width, height)
 
 internal fun CGSize.toUnsafeSize() = UnsafeSize(width, height)
 
-internal fun Size.toUnsafeSize() = UnsafeSize(width, height)
-
 internal fun UnsafeSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when (width) {
     UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)

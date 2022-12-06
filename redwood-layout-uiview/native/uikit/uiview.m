@@ -13,14 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+#import "uiview.h"
 
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
-import app.cash.redwood.layout.widget.Row
-import platform.UIKit.UIView
+@implementation HostView
 
-public class UIViewRedwoodLayoutWidgetFactory() : RedwoodLayoutWidgetFactory<UIView> {
-  override fun Column(): Column<UIView> = UIViewColumn()
-  override fun Row(): Row<UIView> = UIViewRow()
+- (id)initWithFrame :(CGRect)frame :(id <RedwoodScrollViewDelegate>)kotlinDelegate
+{
+  self = [super initWithFrame:frame];
+  self.kotlinDelegate = kotlinDelegate;
+    return self;
 }
+
+- (CGSize)intrinsicContentSize
+{
+  return [self.kotlinDelegate intrinsicContentSize];
+}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  return [self.kotlinDelegate sizeThatFits:size];
+}
+
+- (void)setNeedsLayout
+{
+  [super setNeedsLayout];
+  [self.kotlinDelegate setNeedsLayout];
+}
+
+- (void)layoutSubviews
+{
+  [super layoutSubviews];
+  [self.kotlinDelegate layoutSubviews];
+}
+
+@end

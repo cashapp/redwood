@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+#import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "RedwoodScrollViewDelegate.h"
 
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
-import app.cash.redwood.layout.widget.Row
-import platform.UIKit.UIView
-
-public class UIViewRedwoodLayoutWidgetFactory() : RedwoodLayoutWidgetFactory<UIView> {
-  override fun Column(): Column<UIView> = UIViewColumn()
-  override fun Row(): Row<UIView> = UIViewRow()
-}
+@interface HostView : UIScrollView
+@property id <RedwoodScrollViewDelegate> kotlinDelegate;
+@end

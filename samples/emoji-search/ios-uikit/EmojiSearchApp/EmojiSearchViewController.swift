@@ -56,7 +56,7 @@ class EmojiSearchWidgetSystem : Redwood_treehouseTreehouseViewWidgetSystem {
         return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
             provider: WidgetEmojiSearchWidgetFactories<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
-                RedwoodLayout: Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory()),
+                RedwoodLayout: Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(),
                 RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
                     treehouseApp: app,
                     widgetSystem: self
