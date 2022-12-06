@@ -45,14 +45,14 @@ class EmojiSearchViewController : UIViewController {
 }
 
 class EmojiSearchContent : Redwood_treehouseTreehouseViewContent {
-    func get(app: Any) -> Redwood_treehouseZiplineTreehouseUi {
+    func get(app: Redwood_treehouseAppService) -> Redwood_treehouseZiplineTreehouseUi {
         let treehouesUi = (app as! PresentersEmojiSearchPresenter)
         return treehouesUi.launch()
     }
 }
 
 class EmojiSearchWidgetSystem : Redwood_treehouseTreehouseViewWidgetSystem {
-    func widgetFactory(app: Redwood_treehouseTreehouseApp<AnyObject>, json: Kotlinx_serialization_jsonJson, protocolMismatchHandler: Redwood_protocol_widgetProtocolMismatchHandler) -> Redwood_protocol_widgetDiffConsumingNodeFactory {
+    func widgetFactory(app: Redwood_treehouseTreehouseApp<Redwood_treehouseAppService>, json: Kotlinx_serialization_jsonJson, protocolMismatchHandler: Redwood_protocol_widgetProtocolMismatchHandler) -> Redwood_protocol_widgetDiffConsumingNodeFactory {
         return ExposedKt.diffConsumingEmojiSearchWidgetFactory(
             delegate: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
             json: json,
