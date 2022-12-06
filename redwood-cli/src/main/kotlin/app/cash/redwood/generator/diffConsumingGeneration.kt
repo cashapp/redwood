@@ -24,7 +24,6 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -47,15 +46,15 @@ public class DiffConsumingSunspotWidgetFactory<W : Any>(
   override fun create(
     parentId: Id,
     parentChildren: Widget.Children<W>,
-    kind: Int,
-  ): DiffConsumingWidget<W>? = when (kind) {
+    tag: WidgetTag,
+  ): DiffConsumingWidget<W>? = when (tag.value) {
     1 -> SunspotBox(parentId, parentChildren)
     2 -> SunspotText(parentId, parentChildren)
     3 -> SunspotButton(parentId, parentChildren)
     1_000_001 -> RedwoodLayout.Row(parentId, parentChildren)
     1_000_002 -> RedwoodLayout.Column(parentId, parentChildren)
     else -> {
-      mismatchHandler.onUnknownWidget(kind)
+      mismatchHandler.onUnknownWidget(tag)
       null
     }
   }
@@ -119,12 +118,12 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
                 .addModifiers(OVERRIDE)
                 .addParameter("parentId", Protocol.Id)
                 .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
-                .addParameter("kind", INT)
+                .addParameter("tag", Protocol.WidgetTag)
                 .returns(
                   WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
                     .copy(nullable = true),
                 )
-                .beginControlFlow("return when (kind)")
+                .beginControlFlow("return when (tag.value)")
                 .apply {
                   for (widget in schema.widgets.sortedBy { it.tag }) {
                     addStatement("%L -> %N(parentId, parentChildren)", widget.tag, widget.type.flatName)
@@ -136,7 +135,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
                   }
                 }
                 .beginControlFlow("else ->")
-                .addStatement("mismatchHandler.onUnknownWidget(kind)")
+                .addStatement("mismatchHandler.onUnknownWidget(tag)")
                 .addStatement("null")
                 .endControlFlow()
                 .endControlFlow()
@@ -207,7 +206,7 @@ internal class DiffConsumingSunspotButton<W : Any>(
         }
         delegate.onClick(onClick)
       }
-      else -> mismatchHandler.onUnknownProperty(12, diff.tag)
+      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), diff.tag)
     }
   }
 }
@@ -328,7 +327,11 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                   )
                 }
               }
-              .addStatement("else -> mismatchHandler.onUnknownProperty(%L, diff.tag)", widget.tag)
+              .addStatement(
+                "else -> mismatchHandler.onUnknownProperty(%T(%L), diff.tag)",
+                Protocol.WidgetTag,
+                widget.tag,
+              )
               .endControlFlow()
               .build(),
           )
@@ -345,12 +348,20 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                     addStatement("%L -> widget.%N", children.tag, children.name)
                   }
                   beginControlFlow("else ->")
-                  addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
+                  addStatement(
+                    "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                    Protocol.WidgetTag,
+                    widget.tag,
+                  )
                   addStatement("null")
                   endControlFlow()
                   endControlFlow()
                 } else {
-                  addStatement("mismatchHandler.onUnknownChildren(%L, tag)", widget.tag)
+                  addStatement(
+                    "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                    Protocol.WidgetTag,
+                    widget.tag,
+                  )
                   addStatement("return null")
                 }
               }

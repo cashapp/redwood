@@ -31,9 +31,10 @@ internal object Protocol {
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
+  val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
-  val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+  val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
 internal object ComposeProtocol {

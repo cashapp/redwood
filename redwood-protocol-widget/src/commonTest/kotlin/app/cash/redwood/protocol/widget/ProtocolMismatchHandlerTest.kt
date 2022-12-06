@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -24,9 +25,9 @@ import kotlin.test.assertFailsWith
 class ProtocolMismatchHandlerTest {
   @Test fun throwingUnknownWidget() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownWidget(1)
+      ProtocolMismatchHandler.Throwing.onUnknownWidget(WidgetTag(1))
     }
-    assertEquals("Unknown widget kind 1", t.message)
+    assertEquals("Unknown widget tag 1", t.message)
   }
 
   @Test fun throwingUnknownLayoutModifier() {
@@ -38,15 +39,15 @@ class ProtocolMismatchHandlerTest {
 
   @Test fun throwingUnknownChildren() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownChildren(1, ChildrenTag(2))
+      ProtocolMismatchHandler.Throwing.onUnknownChildren(WidgetTag(1), ChildrenTag(2))
     }
-    assertEquals("Unknown children tag 2 for widget kind 1", t.message)
+    assertEquals("Unknown children tag 2 for widget tag 1", t.message)
   }
 
   @Test fun throwingUnknownProperty() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownProperty(1, PropertyTag(2))
+      ProtocolMismatchHandler.Throwing.onUnknownProperty(WidgetTag(1), PropertyTag(2))
     }
-    assertEquals("Unknown property tag 2 for widget kind 1", t.message)
+    assertEquals("Unknown property tag 2 for widget tag 1", t.message)
   }
 }

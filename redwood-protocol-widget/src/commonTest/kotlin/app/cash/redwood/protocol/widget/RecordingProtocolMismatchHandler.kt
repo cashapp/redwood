@@ -17,23 +17,24 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 
 class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
   val events = mutableListOf<String>()
 
-  override fun onUnknownWidget(kind: Int) {
-    events += "Unknown widget $kind"
+  override fun onUnknownWidget(tag: WidgetTag) {
+    events += "Unknown widget ${tag.value}"
   }
 
   override fun onUnknownLayoutModifier(tag: Int) {
     events += "Unknown layout modifier $tag"
   }
 
-  override fun onUnknownChildren(kind: Int, tag: ChildrenTag) {
-    events += "Unknown children ${tag.value} for $kind"
+  override fun onUnknownChildren(widgetTag: WidgetTag, tag: ChildrenTag) {
+    events += "Unknown children ${tag.value} for ${widgetTag.value}"
   }
 
-  override fun onUnknownProperty(kind: Int, tag: PropertyTag) {
-    events += "Unknown property ${tag.value} for $kind"
+  override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
+    events += "Unknown property ${tag.value} for ${widgetTag.value}"
   }
 }

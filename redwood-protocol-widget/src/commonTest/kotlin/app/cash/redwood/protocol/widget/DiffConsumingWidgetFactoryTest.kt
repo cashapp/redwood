@@ -23,6 +23,7 @@ import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.TestScope
 import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
 import example.redwood.widget.TextInput
@@ -45,9 +46,9 @@ class DiffConsumingWidgetFactoryTest {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
 
     val t = assertFailsWith<IllegalArgumentException> {
-      factory.create(Id.Root, ThrowingWidgetChildren(), 345432)
+      factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))
     }
-    assertEquals("Unknown widget kind 345432", t.message)
+    assertEquals("Unknown widget tag 345432", t.message)
   }
 
   @Test fun unknownWidgetCallsHandler() {
@@ -57,7 +58,7 @@ class DiffConsumingWidgetFactoryTest {
       mismatchHandler = handler,
     )
 
-    assertNull(factory.create(Id.Root, ThrowingWidgetChildren(), 345432))
+    assertNull(factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432)))
 
     assertEquals("Unknown widget 345432", handler.events.single())
   }
@@ -75,7 +76,7 @@ class DiffConsumingWidgetFactoryTest {
       },
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
+    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
       buildJsonArray {
@@ -110,7 +111,7 @@ class DiffConsumingWidgetFactoryTest {
       },
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
+    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
       buildJsonArray {
@@ -134,7 +135,7 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownLayoutModifierThrowsDefault() {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
+    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.updateLayoutModifier(
@@ -167,7 +168,7 @@ class DiffConsumingWidgetFactoryTest {
       mismatchHandler = handler,
     )
 
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
+    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
     textInput.updateLayoutModifier(
       buildJsonArray {
         add(
@@ -195,12 +196,12 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownChildrenThrowsDefault() {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
+    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(ChildrenTag(345432))
     }
-    assertEquals("Unknown children tag 345432 for widget kind 4", t.message)
+    assertEquals("Unknown children tag 345432 for widget tag 4", t.message)
   }
 
   @Test fun unknownChildrenCallsHandler() {
@@ -210,7 +211,7 @@ class DiffConsumingWidgetFactoryTest {
       mismatchHandler = handler,
     )
 
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
+    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
     assertNull(button.children(ChildrenTag(345432)))
 
     assertEquals("Unknown children 345432 for 4", handler.events.single())
@@ -229,7 +230,7 @@ class DiffConsumingWidgetFactoryTest {
       },
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
+    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
@@ -239,14 +240,14 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownPropertyThrowsDefaults() {
     val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
+    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val diff = PropertyDiff(Id(1), PropertyTag(345432))
     val eventSink = EventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
     }
-    assertEquals("Unknown property tag 345432 for widget kind 4", t.message)
+    assertEquals("Unknown property tag 345432 for widget tag 4", t.message)
   }
 
   @Test fun unknownPropertyCallsHandler() {
@@ -255,7 +256,7 @@ class DiffConsumingWidgetFactoryTest {
       delegate = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), 4)!!
+    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     button.apply(PropertyDiff(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
@@ -275,7 +276,7 @@ class DiffConsumingWidgetFactoryTest {
       },
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), 5)!!
+    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyDiff(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)

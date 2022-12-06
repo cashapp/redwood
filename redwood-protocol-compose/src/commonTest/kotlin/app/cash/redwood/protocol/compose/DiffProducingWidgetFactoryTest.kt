@@ -159,7 +159,7 @@ class DiffProducingWidgetFactoryTest {
       button.sendEvent(event)
     }
 
-    assertEquals("Unknown event tag 3456543 for widget kind 4", t.message)
+    assertEquals("Unknown event tag 3456543 for widget tag 4", t.message)
   }
 
   @Test fun unknownEventCallsHandler() {

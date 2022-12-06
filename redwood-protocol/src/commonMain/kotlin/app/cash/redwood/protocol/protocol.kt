@@ -71,7 +71,7 @@ public sealed class ChildrenDiff {
     override val id: Id,
     override val tag: ChildrenTag,
     val childId: Id,
-    val kind: Int,
+    val widgetTag: WidgetTag,
     val index: Int,
   ) : ChildrenDiff()
 

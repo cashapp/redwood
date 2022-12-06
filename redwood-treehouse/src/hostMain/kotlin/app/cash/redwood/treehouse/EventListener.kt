@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline
@@ -111,7 +112,7 @@ public abstract class EventListener {
    */
   public open fun onUnknownWidget(
     app: TreehouseApp<*>,
-    kind: Int,
+    tag: WidgetTag,
   ) {
   }
 
@@ -129,7 +130,7 @@ public abstract class EventListener {
    */
   public open fun onUnknownChildren(
     app: TreehouseApp<*>,
-    kind: Int,
+    widgetTag: WidgetTag,
     tag: ChildrenTag,
   ) {
   }
@@ -139,7 +140,7 @@ public abstract class EventListener {
    */
   public open fun onUnknownProperty(
     app: TreehouseApp<*>,
-    kind: Int,
+    widgetTag: WidgetTag,
     tag: PropertyTag,
   ) {
   }

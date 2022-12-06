@@ -19,6 +19,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonArray
 
@@ -52,16 +53,16 @@ public abstract class DiffConsumingNode<W : Any>(
 
   public interface Factory<W : Any> {
     /**
-     * Create a new protocol-consuming widget of the specified [kind].
+     * Create a new protocol-consuming widget of the specified [tag].
      *
-     * Invalid [kind] values can either produce an exception or result in `null` being returned.
+     * Invalid [tag] values can either produce an exception or result in `null` being returned.
      * If `null` is returned, the caller should make every effort to ignore this widget and
      * continue executing.
      */
     public fun create(
       parentId: Id,
       parentChildren: Widget.Children<W>,
-      kind: Int,
+      tag: WidgetTag,
     ): DiffConsumingNode<W>?
   }
 }

@@ -33,6 +33,10 @@ public value class EventTag(public val value: Int)
 
 @JvmInline
 @Serializable
+public value class WidgetTag(public val value: Int)
+
+@JvmInline
+@Serializable
 public value class PropertyTag(public val value: Int)
 
 @JvmInline
