@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
@@ -52,5 +51,4 @@ public class TreehouseSwiftUIView<A : Any>(
     this.content = content
     stateChangeListener?.onStateChanged(this)
   }
-
 }

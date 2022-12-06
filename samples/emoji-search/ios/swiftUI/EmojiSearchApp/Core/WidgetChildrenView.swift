@@ -20,13 +20,23 @@ struct WidgetChildrenView {
 extension WidgetChildrenView: View {
     
     var body: some View {
-        return ForEach(observer.swiftUIWidgets, id: \.self.id) { widget in
+        ForEach(swiftUIWidgets, id: \.self.id) { widget in
             childView(widget: widget)
         }
     }
     
     private func childView(widget: any SwiftUIViewBinding) -> AnyView {
         return AnyView(widget.view)
+    }
+
+    // This causes compilation issues when inside the observer
+    private var swiftUIWidgets: [any SwiftUIViewBinding] {
+        return observer.widgets.map { widget in
+            guard let swiftUIWidget = widget as? any SwiftUIViewBinding else {
+                fatalError("Could not cast \(String(describing: widget)) as SwiftUIView")
+            }
+            return swiftUIWidget
+        }
     }
     
 }
