@@ -29,14 +29,9 @@ final class ColumnBinding: BaseWidget, WidgetColumn, SwiftUIViewBinding {
 
     }
 
-    var children: Redwood_widgetWidgetChildren!
+    let children: Redwood_widgetWidgetChildren = Redwood_widgetSwiftUIChildren()
     
     var view: some View { ColumnView(binding: self) }
-    
-    override init() {
-        super.init()
-        self.children = Redwood_widgetSwiftUIChildren(parent: self)
-    }
 
 }
 

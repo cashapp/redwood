@@ -6,14 +6,32 @@ import SwiftUI
 
 final class ImageBinding: BaseWidget, WidgetImage, SwiftUIViewBinding {
     
-    @Published var url: String = ""
+    @Published var lastURL: URL?
+    @Published var image: UIImage? = nil
+    
+    let imageLoader: RemoteImageLoader
     
     func url(url: String) {
-        self.url = url
+        image = nil
+        guard let url = URL(string: url) else {
+            return
+        }
+
+        lastURL = url
+        imageLoader.loadImage(url: url) { [unowned self] url, image in
+            guard self.lastURL == url else {
+                return
+            }
+
+            self.image = image
+        }
     }
 
     var view: some View { ImageView(binding: self) }
     
+    init(imageLoader: RemoteImageLoader) {
+        self.imageLoader = imageLoader
+    }
 }
 
 struct ImageView: View {
@@ -22,13 +40,12 @@ struct ImageView: View {
     
     var body: some View {
         content
-            .id(binding.url)
     }
     
     @ViewBuilder
     private var content: some View {
-        if let url = URL(string: binding.url) {
-            AsyncImage(url: url)
+        if let image = binding.image {
+            Image(uiImage: image)
         } else {
             EmptyView()
         }

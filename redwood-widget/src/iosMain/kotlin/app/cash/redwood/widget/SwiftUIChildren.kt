@@ -17,9 +17,7 @@ package app.cash.redwood.widget
 
 public interface SwiftUIView
 
-public class SwiftUIChildren(
-  private val parent: SwiftUIView,
-) : Widget.Children<SwiftUIView> {
+public class SwiftUIChildren() : Widget.Children<SwiftUIView> {
 
   private val _widgets = MutableListChildren<SwiftUIView>()
   public val widgets: List<Widget<SwiftUIView>> = _widgets

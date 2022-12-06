@@ -30,7 +30,7 @@ public class TreehouseSwiftUIView<A : Any>(
   public override var codeListener: CodeListener = CodeListener()
   private var content: TreehouseView.Content<A>? = null
 
-  private val _children = SwiftUIChildren(this)
+  private val _children = SwiftUIChildren()
   override val children: Widget.Children<*> = _children
   public override var stateChangeListener: TreehouseView.OnStateChangeListener<A>? = null
 

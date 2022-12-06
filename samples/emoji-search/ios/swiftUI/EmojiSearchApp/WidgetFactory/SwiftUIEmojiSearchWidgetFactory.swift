@@ -20,5 +20,5 @@ class SwiftUIEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFac
 
     func TextInput() -> WidgetTextInput { TextInputBinding() }
     func Text() -> WidgetText { TextBinding() }
-    func Image() -> WidgetImage { ImageBinding() }
+    func Image() -> WidgetImage { ImageBinding(imageLoader: imageLoader) }
 }
