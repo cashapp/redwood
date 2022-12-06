@@ -40,9 +40,17 @@ internal fun FlexItem.layout(left: Double, top: Double, right: Double, bottom: D
   this.bottom = bottom
 }
 
-/** The number of items who are not invisible in this flex line. */
-internal val FlexLine.itemCountVisible: Int
-  get() = itemCount - invisibleItemCount
+internal inline fun <T> List<T>.forEachIndices(block: (T) -> Unit) {
+  for (index in indices) block(get(index))
+}
+
+/** The index of the last child included in this flex line or -1 if the flex line is empty. */
+internal val FlexLine.lastIndex: Int
+  get() = if (itemCount > 0) firstIndex + itemCount - 1 else -1
+
+/** The range of item indices covered by this flex line. */
+internal inline val FlexLine.indices: IntRange
+  get() = firstIndex..lastIndex
 
 /** The largest main size of all flex lines. */
 internal fun List<FlexLine>.getLargestMainSize(): Double {

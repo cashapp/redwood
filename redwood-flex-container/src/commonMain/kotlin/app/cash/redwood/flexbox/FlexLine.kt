@@ -38,11 +38,6 @@ internal class FlexLine {
   var itemCount = 0
 
   /**
-   * The number of items who are invisible (i.e. aren't included in measure or layout).
-   */
-  var invisibleItemCount = 0
-
-  /**
    * The sum of the flexGrow properties of the children included in this flex line.
    */
   var totalFlexGrow = 0.0
@@ -63,14 +58,9 @@ internal class FlexLine {
   var sumCrossSizeBefore = 0.0
 
   /**
-   * The index of the first child included in this flex line (inclusive).
+   * The index of the first item included in this flex line.
    */
   var firstIndex = 0
-
-  /**
-   * The index of the last child included in this flex line (inclusive).
-   */
-  var lastIndex = 0
 
   /**
    * True if any [FlexItem]s in this line have [FlexItem.flexGrow] attributes set

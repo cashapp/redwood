@@ -116,14 +116,11 @@ public class FlexContainer {
     determineMainSize(flexLines, widthSpec, heightSpec)
 
     if (alignItems == AlignItems.Baseline) {
-      for (flexLine in flexLines) {
+      flexLines.forEachIndices { flexLine ->
         // The largest height value that also take the baseline shift into account
         var largestHeightInLine = Double.MIN_VALUE
-        for (i in flexLine.firstIndex..flexLine.lastIndex) {
-          val child = items.getOrNull(i)
-          if (child == null || !child.visible) {
-            continue
-          }
+        for (i in flexLine.indices) {
+          val child = items[i]
           val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
             val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
             child.height + marginTop + child.margin.bottom
@@ -191,20 +188,7 @@ public class FlexContainer {
     var flexLine = FlexLine()
     flexLine.mainSize = orientation.mainPadding(padding)
     for (i in 0 until items.size) {
-      val item = items.getOrNull(i)
-      if (item == null) {
-        if (isLastFlexItem(i, items.size, flexLine)) {
-          addFlexLine(flexLines, flexLine, i, sumCrossSize)
-        }
-        continue
-      } else if (!item.visible) {
-        flexLine.invisibleItemCount++
-        flexLine.itemCount++
-        if (isLastFlexItem(i, items.size, flexLine)) {
-          addFlexLine(flexLines, flexLine, i, sumCrossSize)
-        }
-        continue
-      }
+      val item = items[i]
       val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
         roundIfEnabled(item.flexBasisPercent * mainSize)
       } else {
@@ -237,8 +221,9 @@ public class FlexContainer {
           flexLinesSize = flexLines.size,
         )
       ) {
-        if (flexLine.itemCountVisible > 0) {
-          addFlexLine(flexLines, flexLine, maxOf(i - 1, 0), sumCrossSize)
+        if (flexLine.itemCount > 0) {
+          flexLine.sumCrossSizeBefore = sumCrossSize
+          flexLines += flexLine
           sumCrossSize += flexLine.crossSize
         }
         val crossSize = orientation.crossSize(item)
@@ -290,7 +275,8 @@ public class FlexContainer {
       }
 
       if (isLastFlexItem(i, items.size, flexLine)) {
-        addFlexLine(flexLines, flexLine, i, sumCrossSize)
+        flexLine.sumCrossSizeBefore = sumCrossSize
+        flexLines += flexLine
         sumCrossSize += flexLine.crossSize
       }
     }
@@ -338,18 +324,7 @@ public class FlexContainer {
     childCount: Int,
     flexLine: FlexLine,
   ): Boolean {
-    return childIndex == childCount - 1 && flexLine.itemCountVisible > 0
-  }
-
-  private fun addFlexLine(
-    flexLines: MutableList<FlexLine>,
-    flexLine: FlexLine,
-    itemIndex: Int,
-    usedCrossSizeSoFar: Double,
-  ) {
-    flexLine.sumCrossSizeBefore = usedCrossSizeSoFar
-    flexLine.lastIndex = itemIndex
-    flexLines += flexLine
+    return childIndex == childCount - 1 && flexLine.itemCount > 0
   }
 
   /**
@@ -383,7 +358,7 @@ public class FlexContainer {
       }
       paddingAlongMainAxis = padding.top + padding.bottom
     }
-    for (flexLine in flexLines) {
+    flexLines.forEachIndices { flexLine ->
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
         expandFlexItems(
           childrenFrozen = childrenFrozen,
@@ -449,18 +424,14 @@ public class FlexContainer {
       flexLine.crossSize = Double.MIN_VALUE
     }
     var accumulatedRoundError = 0.0
-    for (i in 0 until flexLine.itemCount) {
-      val index = flexLine.firstIndex + i
-      val child = items.getOrNull(index)
-      if (child == null || !child.visible) {
-        continue
-      }
+    for (i in flexLine.indices) {
+      val child = items[i]
       val measurable = child.measurable
       if (flexDirection.isHorizontal) {
         // The direction of the main axis is horizontal
-        if (!childrenFrozen[index] && child.flexGrow > 0) {
+        if (!childrenFrozen[i] && child.flexGrow > 0) {
           var rawCalculatedWidth = (child.width + unitSpace * child.flexGrow)
-          if (i == flexLine.itemCount - 1) {
+          if (i == flexLine.lastIndex) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0.0
           }
@@ -473,7 +444,7 @@ public class FlexContainer {
             // (children items). In that case, invoke this method again with the same fromIndex.
             needsReexpand = true
             newWidth = maxWidth
-            childrenFrozen[index] = true
+            childrenFrozen[i] = true
             flexLine.totalFlexGrow -= child.flexGrow
           } else {
             accumulatedRoundError += rawCalculatedWidth - newWidth
@@ -502,9 +473,9 @@ public class FlexContainer {
         flexLine.mainSize += (child.width + child.margin.start + child.margin.end)
       } else {
         // The direction of the main axis is vertical
-        if (!childrenFrozen[index] && child.flexGrow > 0) {
+        if (!childrenFrozen[i] && child.flexGrow > 0) {
           var rawCalculatedHeight = (child.height + unitSpace * child.flexGrow)
-          if (i == flexLine.itemCount - 1) {
+          if (i == flexLine.lastIndex) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0.0
           }
@@ -517,7 +488,7 @@ public class FlexContainer {
             // (children items). In that case, invoke this method again with the same fromIndex.
             needsReexpand = true
             newHeight = maxHeight
-            childrenFrozen[index] = true
+            childrenFrozen[i] = true
             flexLine.totalFlexGrow -= child.flexGrow
           } else {
             accumulatedRoundError += rawCalculatedHeight - newHeight
@@ -603,18 +574,14 @@ public class FlexContainer {
     if (!calledRecursively) {
       flexLine.crossSize = Double.MIN_VALUE
     }
-    for (i in 0 until flexLine.itemCount) {
-      val index = flexLine.firstIndex + i
-      val child = items.getOrNull(index)
-      if (child == null || !child.visible) {
-        continue
-      }
+    for (i in flexLine.indices) {
+      val child = items[i]
       val measurable = child.measurable
       if (flexDirection.isHorizontal) {
         // The direction of main axis is horizontal
-        if (!childrenFrozen[index] && child.flexShrink > 0) {
+        if (!childrenFrozen[i] && child.flexShrink > 0) {
           var rawCalculatedWidth = child.width - unitShrink * child.flexShrink
-          if (i == flexLine.itemCount - 1) {
+          if (i == flexLine.lastIndex) {
             rawCalculatedWidth += accumulatedRoundError
             accumulatedRoundError = 0.0
           }
@@ -627,7 +594,7 @@ public class FlexContainer {
             // items). In that case, invoke this method again with the same fromIndex.
             needsReshrink = true
             newWidth = minWidth
-            childrenFrozen[index] = true
+            childrenFrozen[i] = true
             flexLine.totalFlexShrink -= child.flexShrink
           } else {
             accumulatedRoundError += rawCalculatedWidth - newWidth
@@ -656,9 +623,9 @@ public class FlexContainer {
         flexLine.mainSize += child.width + child.margin.start + child.margin.end
       } else {
         // The direction of main axis is vertical
-        if (!childrenFrozen[index] && child.flexShrink > 0) {
+        if (!childrenFrozen[i] && child.flexShrink > 0) {
           var rawCalculatedHeight = child.height - unitShrink * child.flexShrink
-          if (i == flexLine.itemCount - 1) {
+          if (i == flexLine.lastIndex) {
             rawCalculatedHeight += accumulatedRoundError
             accumulatedRoundError = 0.0
           }
@@ -668,7 +635,7 @@ public class FlexContainer {
             // Need to invoke this method again like the case flex direction is vertical
             needsReshrink = true
             newHeight = minHeight
-            childrenFrozen[index] = true
+            childrenFrozen[i] = true
             flexLine.totalFlexShrink -= child.flexShrink
           } else {
             accumulatedRoundError += rawCalculatedHeight - newHeight
@@ -796,11 +763,10 @@ public class FlexContainer {
             val freeSpaceUnit = (size - totalCrossSize) / flexLines.size
             var accumulatedError = 0.0
             var i = 0
-            val flexLinesSize = flexLines.size
-            while (i < flexLinesSize) {
+            while (i < flexLines.size) {
               val flexLine = flexLines[i]
               var newCrossSizeAsFloat = flexLine.crossSize + freeSpaceUnit
-              if (i == flexLines.size - 1) {
+              if (i == flexLines.lastIndex) {
                 newCrossSizeAsFloat += accumulatedError
                 accumulatedError = 0.0
               }
@@ -838,10 +804,10 @@ public class FlexContainer {
             val newFlexLines = ArrayList<FlexLine>()
             val dummySpaceFlexLine = FlexLine()
             dummySpaceFlexLine.crossSize = spaceTopAndBottom
-            for (flexLine in flexLines) {
-              newFlexLines.add(dummySpaceFlexLine)
-              newFlexLines.add(flexLine)
-              newFlexLines.add(dummySpaceFlexLine)
+            flexLines.forEachIndices { flexLine ->
+              newFlexLines += dummySpaceFlexLine
+              newFlexLines += flexLine
+              newFlexLines += dummySpaceFlexLine
             }
             flexLines.clear()
             flexLines += newFlexLines
@@ -852,16 +818,15 @@ public class FlexContainer {
             }
             // The value of free space along the cross axis between each flex line.
             var spaceBetweenFlexLine = size - totalCrossSize
-            val numberOfSpaces = flexLines.size - 1
+            val numberOfSpaces = flexLines.lastIndex
             spaceBetweenFlexLine /= numberOfSpaces
             var accumulatedError = 0.0
             val newFlexLines = ArrayList<FlexLine>()
             var i = 0
-            val flexLineSize = flexLines.size
-            while (i < flexLineSize) {
+            while (i < flexLines.size) {
               val flexLine = flexLines[i]
-              newFlexLines.add(flexLine)
-              if (i != flexLines.size - 1) {
+              newFlexLines += flexLine
+              if (i != flexLines.lastIndex) {
                 val dummySpaceFlexLine = FlexLine()
                 if (i == flexLines.size - 2) {
                   // The last dummy space block in the flex container.
@@ -879,7 +844,7 @@ public class FlexContainer {
                   dummySpaceFlexLine.crossSize -= 1
                   accumulatedError += 1
                 }
-                newFlexLines.add(dummySpaceFlexLine)
+                newFlexLines += dummySpaceFlexLine
               }
               i++
             }
@@ -916,12 +881,12 @@ public class FlexContainer {
     dummySpaceFlexLine.crossSize = spaceAboveAndBottom
     for (i in flexLines.indices) {
       if (i == 0) {
-        newFlexLines.add(dummySpaceFlexLine)
+        newFlexLines += dummySpaceFlexLine
       }
       val flexLine = flexLines[i]
-      newFlexLines.add(flexLine)
-      if (i == flexLines.size - 1) {
-        newFlexLines.add(dummySpaceFlexLine)
+      newFlexLines += flexLine
+      if (i == flexLines.lastIndex) {
+        newFlexLines += dummySpaceFlexLine
       }
     }
     return newFlexLines
@@ -934,15 +899,8 @@ public class FlexContainer {
   private fun stretchChildren(flexLines: List<FlexLine>) {
     if (alignItems == AlignItems.Stretch) {
       for (flexLine in flexLines) {
-        for (i in 0 until flexLine.itemCount) {
-          val itemIndex = flexLine.firstIndex + i
-          if (i >= items.size) {
-            continue
-          }
-          val item = items.getOrNull(itemIndex)
-          if (item == null || !item.visible) {
-            continue
-          }
+        for (i in flexLine.indices) {
+          val item = items[i]
           if (item.alignSelf != AlignSelf.Auto && item.alignSelf != AlignSelf.Stretch) {
             continue
           }
@@ -954,8 +912,8 @@ public class FlexContainer {
         }
       }
     } else {
-      for (flexLine in flexLines) {
-        for (index in flexLine.firstIndex..flexLine.lastIndex) {
+      flexLines.forEachIndices { flexLine ->
+        for (index in flexLine.indices) {
           val item = items[index]
           if (item.alignSelf == AlignSelf.Stretch) {
             if (flexDirection.isHorizontal) {
@@ -1096,7 +1054,7 @@ public class FlexContainer {
     var childTop = padding.top
     var childLeft: Double
     var childRight: Double
-    for (flexLine in flexLines) {
+    flexLines.forEachIndices { flexLine ->
       var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1112,24 +1070,21 @@ public class FlexContainer {
           childRight = width - paddingRight - (width - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
-          val visibleCount = flexLine.itemCountVisible
-          if (visibleCount != 0) {
-            spaceBetweenItem = ((width - flexLine.mainSize) / visibleCount)
+          if (flexLine.itemCount != 0) {
+            spaceBetweenItem = ((width - flexLine.mainSize) / flexLine.itemCount)
           }
           childLeft = paddingLeft + spaceBetweenItem / 2
           childRight = width - paddingRight - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
           childLeft = paddingLeft
-          val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) visibleCount - 1 else 1
+          val denominator = if (flexLine.itemCount != 1) flexLine.itemCount - 1 else 1
           spaceBetweenItem = (width - flexLine.mainSize) / denominator
           childRight = width - paddingRight
         }
         JustifyContent.SpaceEvenly -> {
-          val visibleCount = flexLine.itemCountVisible
-          if (visibleCount != 0) {
-            spaceBetweenItem = (width - flexLine.mainSize) / (visibleCount + 1)
+          if (flexLine.itemCount != 0) {
+            spaceBetweenItem = (width - flexLine.mainSize) / (flexLine.itemCount + 1)
           }
           childLeft = paddingLeft + spaceBetweenItem
           childRight = width - paddingRight - spaceBetweenItem
@@ -1137,12 +1092,8 @@ public class FlexContainer {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
-      for (i in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + i
-        val child = items.getOrNull(index)
-        if (child == null || !child.visible) {
-          continue
-        }
+      for (i in flexLine.indices) {
+        val child = items[i]
         childLeft += child.margin.start
         childRight -= child.margin.end
         if (flexWrap == FlexWrap.WrapReverse) {
@@ -1209,7 +1160,7 @@ public class FlexContainer {
     var childRight = width - paddingRight
     var childTop: Double
     var childBottom: Double
-    for (flexLine in flexLines) {
+    flexLines.forEachIndices { flexLine ->
       var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
@@ -1225,24 +1176,21 @@ public class FlexContainer {
           childBottom = height - paddingBottom - (height - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
-          val visibleCount = flexLine.itemCountVisible
-          if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / visibleCount)
+          if (flexLine.itemCount != 0) {
+            spaceBetweenItem = ((height - flexLine.mainSize) / flexLine.itemCount)
           }
           childTop = paddingTop + spaceBetweenItem / 2
           childBottom = height - paddingBottom - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
           childTop = paddingTop
-          val visibleCount = flexLine.itemCountVisible
-          val denominator = if (visibleCount != 1) visibleCount - 1 else 1
+          val denominator = if (flexLine.itemCount != 1) flexLine.itemCount - 1 else 1
           spaceBetweenItem = (height - flexLine.mainSize) / denominator
           childBottom = height - paddingBottom
         }
         JustifyContent.SpaceEvenly -> {
-          val visibleCount = flexLine.itemCountVisible
-          if (visibleCount != 0) {
-            spaceBetweenItem = ((height - flexLine.mainSize) / (visibleCount + 1))
+          if (flexLine.itemCount != 0) {
+            spaceBetweenItem = ((height - flexLine.mainSize) / (flexLine.itemCount + 1))
           }
           childTop = paddingTop + spaceBetweenItem
           childBottom = height - paddingBottom - spaceBetweenItem
@@ -1250,12 +1198,8 @@ public class FlexContainer {
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
-      for (i in 0 until flexLine.itemCount) {
-        val index = flexLine.firstIndex + i
-        val child = items.getOrNull(index)
-        if (child == null || !child.visible) {
-          continue
-        }
+      for (i in flexLine.indices) {
+        val child = items[i]
         childTop += child.margin.top
         childBottom -= child.margin.bottom
         if (rightToLeft) {

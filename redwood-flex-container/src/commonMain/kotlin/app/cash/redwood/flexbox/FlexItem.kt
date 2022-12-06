@@ -20,11 +20,6 @@ package app.cash.redwood.flexbox
  */
 public class FlexItem(
   /**
-   * True if this item is visible and should be laid out.
-   */
-  public val visible: Boolean = true,
-
-  /**
    * The baseline used for [AlignItems.Baseline] and [AlignSelf.Baseline].
    */
   public val baseline: Int = DefaultBaseline,
