@@ -42,11 +42,17 @@ kotlin {
     nativeMain {
       dependsOn(hostMain)
     }
-    androidMain {
+    commonJvmMain {
       dependsOn(hostMain)
       dependencies {
         api libs.okHttp
       }
+    }
+    androidMain {
+      dependsOn(commonJvmMain)
+    }
+    jvmMain {
+      dependsOn(commonJvmMain)
     }
 
     hostTest {
@@ -59,11 +65,17 @@ kotlin {
     nativeTest {
       dependsOn(hostTest)
     }
-    androidTest {
+    commonJvmTest {
       dependsOn(hostTest)
+    }
+    androidTest {
+      dependsOn(commonJvmTest)
       dependencies {
         implementation libs.robolectric
       }
+    }
+    jvmTest {
+      dependsOn(commonJvmTest)
     }
   }
 }
