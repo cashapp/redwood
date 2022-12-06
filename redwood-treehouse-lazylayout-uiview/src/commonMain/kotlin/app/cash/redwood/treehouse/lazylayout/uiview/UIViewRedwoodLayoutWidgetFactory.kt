@@ -15,13 +15,14 @@
  */
 package app.cash.redwood.treehouse.lazylayout.uiview
 
+import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 import platform.UIKit.UIView
 
-public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory<A : Any>(
+public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private var treehouseApp: TreehouseApp<A>,
   private var widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<UIView> {

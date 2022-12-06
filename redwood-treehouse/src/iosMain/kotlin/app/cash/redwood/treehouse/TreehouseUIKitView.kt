@@ -33,7 +33,7 @@ import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
 
-public class TreehouseUIKitView<A : Any>(
+public class TreehouseUIKitView<A : AppService>(
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : TreehouseView<A> {
   @Deprecated(
