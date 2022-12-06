@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class TextBinding: WidgetText, SwiftUIView {
+final class TextBinding: WidgetText, SwiftUIView, Identifiable {
     
     @Published var text: String = ""
     

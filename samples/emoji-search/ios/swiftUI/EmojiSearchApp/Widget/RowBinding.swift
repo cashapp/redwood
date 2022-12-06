@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class RowBinding: WidgetRow, SwiftUIView {
+final class RowBinding: WidgetRow, SwiftUIView, Identifiable {
     func height(height: Int32) {
         
     }

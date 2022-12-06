@@ -6,7 +6,7 @@ import SwiftUI
 
 // MARK: - Memory footprint
 
-final class TextInputBinding: WidgetTextInput, SwiftUIView {
+final class TextInputBinding: WidgetTextInput, SwiftUIView, Identifiable {
 
     @Published var hint: String = ""
     @Published var text: String = ""

@@ -4,7 +4,7 @@ import Foundation
 import shared
 import SwiftUI
 
-final class ImageBinding: WidgetImage, SwiftUIView {
+final class ImageBinding: WidgetImage, SwiftUIView, Identifiable {
     
     @Published var url: String = ""
     

@@ -4,9 +4,9 @@ import Foundation
 import shared
 import SwiftUI
 
-final class ColumnBinding: WidgetColumn, SwiftUIView {
+final class ColumnBinding: WidgetColumn, SwiftUIView, Identifiable {
     func height(height: Int32) {
-
+        
     }
 
     func horizontalAlignment(horizontalAlignment: Int32) {

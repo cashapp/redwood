@@ -20,16 +20,13 @@ struct WidgetChildrenView {
 extension WidgetChildrenView: View {
     
     var body: some View {
-        return ForEach(Array(observer.widgets.indices), id: \.self) { index in
-            childView(widget: observer.widgets[index])
+        return ForEach(observer.swiftUIWidgets, id: \.self.id) { widget in
+            childView(widget: widget)
         }
     }
     
-    private func childView(widget: Any) -> AnyView {
-        guard let child = widget as? any SwiftUIView else {
-            fatalError("Could not cast \(String(describing: widget)) as SwiftUIView")
-        }
-        return AnyView(child.view)
+    private func childView(widget: any SwiftUIView) -> AnyView {
+        return AnyView(widget.view)
     }
     
 }

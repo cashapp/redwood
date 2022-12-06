@@ -16,4 +16,13 @@ final class WidgetChildrenObserver: ObservableObject {
     var widgets: [any Redwood_widgetWidget] {
         children.widgets
     }
+
+    var swiftUIWidgets: [any SwiftUIView] {
+        return children.widgets.map { widget in
+            guard let swiftUIWidget = widget as? any SwiftUIView else {
+                fatalError("Could not cast \(String(describing: widget)) as SwiftUIView")
+            }
+            return swiftUIWidget
+        }
+    }
 }
