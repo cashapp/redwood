@@ -43,6 +43,6 @@ public value class PropertyTag(public val value: Int)
 @Serializable
 public value class ChildrenTag(public val value: Int) {
   public companion object {
-    public val Root: ChildrenTag = ChildrenTag(0)
+    public val Root: ChildrenTag = ChildrenTag(1)
   }
 }
