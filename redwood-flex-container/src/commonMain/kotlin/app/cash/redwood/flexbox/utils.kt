@@ -27,8 +27,8 @@ internal fun AlignSelf.toAlignItems() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun FlexItem.measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec) {
-  val (width, height) = measurable.measure(widthSpec, heightSpec)
+internal fun FlexItem.measure(constraints: Constraints) {
+  val (width, height) = measurable.measure(constraints)
   this.width = width.coerceIn(measurable.minWidth, measurable.maxWidth)
   this.height = height.coerceIn(measurable.minHeight, measurable.maxHeight)
 }
@@ -62,55 +62,40 @@ internal fun List<FlexLine>.getSumOfCrossSize(): Double {
   return sumOf { it.crossSize }
 }
 
-internal fun MeasureSpec.Companion.getChildMeasureSpec(
-  spec: MeasureSpec,
+internal fun getChildAxis(
+  axis: Axis,
   padding: Double,
   childDimension: Double,
-): MeasureSpec {
-  val size = maxOf(0.0, spec.size - padding)
-  var resultSize = 0.0
-  var resultMode = MeasureSpecMode.Unspecified
-  when (spec.mode) {
-    MeasureSpecMode.Exactly -> if (childDimension >= 0) {
-      resultSize = childDimension
-      resultMode = MeasureSpecMode.Exactly
+): Axis {
+  val size = maxOf(0.0, axis.max - padding)
+  var minSize = axis.min
+  var maxSize = axis.max
+  when {
+    axis.isFixed -> if (childDimension >= 0) {
+      minSize = childDimension
+      maxSize = childDimension
     } else if (childDimension == MatchParent) {
-      // Child wants to be our size. So be it.
-      resultSize = size
-      resultMode = MeasureSpecMode.Exactly
+      minSize = size
+      maxSize = size
     } else if (childDimension == WrapContent) {
-      // Child wants to determine its own size. It can't be bigger than us.
-      resultSize = size
-      resultMode = MeasureSpecMode.AtMost
+      maxSize = size
     }
-    MeasureSpecMode.AtMost -> if (childDimension >= 0) {
-      // Child wants a specific size... so be it.
-      resultSize = childDimension
-      resultMode = MeasureSpecMode.Exactly
+    axis.isBounded -> if (childDimension >= 0) {
+      minSize = childDimension
+      maxSize = childDimension
     } else if (childDimension == MatchParent) {
-      // Child wants to be our size, but our size is not fixed.
-      // Constrain child to not be bigger than us.
-      resultSize = size
-      resultMode = MeasureSpecMode.AtMost
+      maxSize = size
     } else if (childDimension == WrapContent) {
-      // Child wants to determine its own size. It can't be bigger than us.
-      resultSize = size
-      resultMode = MeasureSpecMode.AtMost
+      maxSize = size
     }
-    MeasureSpecMode.Unspecified -> if (childDimension >= 0) {
-      // Child wants a specific size... let them have it.
-      resultSize = childDimension
-      resultMode = MeasureSpecMode.Exactly
+    else -> if (childDimension >= 0) {
+      minSize = childDimension
+      maxSize = childDimension
     } else if (childDimension == MatchParent) {
-      // Child wants to be our size... find out how big it should be.
-      resultSize = size
-      resultMode = MeasureSpecMode.Unspecified
+      maxSize = Constraints.Infinity
     } else if (childDimension == WrapContent) {
-      // Child wants to determine its own size... find out how big it should be.
-      resultSize = size
-      resultMode = MeasureSpecMode.Unspecified
+      maxSize = Constraints.Infinity
     }
-    else -> throw AssertionError()
   }
-  return from(resultSize, resultMode)
+  return Axis(minSize, maxSize)
 }

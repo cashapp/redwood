@@ -31,30 +31,27 @@ class StringWidget(
   override val minHeight
     get() = 2.0
 
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    val widthSpecMode = widthSpec.mode
-    val width = widthSpec.size.toInt()
-    val heightSpecMode = heightSpec.mode
-    val height = heightSpec.size.toInt()
+  override fun measure(constraints: Constraints): Size {
+    val width = constraints.maxWidth.toInt()
+    val height = constraints.maxHeight.toInt()
 
-    val lines = when (widthSpecMode) {
-      MeasureSpecMode.Exactly -> lines(maxWidth = width - 2)
-      MeasureSpecMode.AtMost -> lines(maxWidth = width - 2)
+    val lines = when {
+      constraints.hasFixedWidth -> lines(maxWidth = width - 2)
+      constraints.hasBoundedWidth -> lines(maxWidth = width - 2)
       else -> listOf(listOf(text))
     }
 
-    val measuredWidth = when (widthSpecMode) {
-      MeasureSpecMode.Exactly -> width
-      MeasureSpecMode.AtMost -> minOf(
-        width,
-        (lines.maxOfOrNull { line -> line.sumOf { word -> word.length + 1 } - 1 } ?: 0) + 2,
+    val measuredWidth = when {
+      constraints.hasFixedWidth -> width
+      constraints.hasBoundedWidth -> minOf(
+        width, (lines.maxOfOrNull { line -> line.sumOf { word -> word.length + 1 } - 1 } ?: 0) + 2,
       )
       else -> text.length + 2
     }
 
-    val measuredHeight = when (heightSpecMode) {
-      MeasureSpecMode.Exactly -> height
-      MeasureSpecMode.AtMost -> minOf(height, lines.size + 2)
+    val measuredHeight = when {
+      constraints.hasFixedHeight -> height
+      constraints.hasBoundedHeight -> minOf(height, lines.size + 2)
       else -> lines.size + 2
     }
 

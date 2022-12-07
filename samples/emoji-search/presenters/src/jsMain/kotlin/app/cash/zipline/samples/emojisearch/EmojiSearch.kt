@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
@@ -55,8 +56,10 @@ class EmojiSearchTreehouseUi(
           onEvent(SearchTermEvent(it))
         },
       )
-      LazyColumn {
-        items(viewModel.images) { image ->
+      Column(
+        overflow = Overflow.Scroll,
+      ) {
+        viewModel.images.take(25).forEach { image ->
           Row(
             width = Constraint.Fill,
             verticalAlignment = CrossAxisAlignment.Center,

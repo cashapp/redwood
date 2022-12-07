@@ -131,8 +131,7 @@ internal class UIViewFlexContainer(
 
     private fun measure(size: UnsafeSize): Size {
       syncItems()
-      val (widthSpec, heightSpec) = size.toMeasureSpecs()
-      return container.measure(widthSpec, heightSpec)
+      return container.measure(size.toConstraints())
     }
 
     private fun syncItems() {

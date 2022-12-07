@@ -26,7 +26,6 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
@@ -122,9 +121,8 @@ internal class ViewFlexContainer(
   private inner class HostView(context: Context) : ViewGroup(context) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
       syncItems()
-      val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
-      val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      val (width, height) = container.measure(widthSpec, heightSpec)
+      val constraints = measureSpecsToConstraints(widthMeasureSpec, heightMeasureSpec)
+      val (width, height) = container.measure(constraints)
       setMeasuredDimension(width.toInt(), height.toInt())
     }
 

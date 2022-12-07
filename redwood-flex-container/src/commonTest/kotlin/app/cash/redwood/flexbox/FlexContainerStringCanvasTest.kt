@@ -284,10 +284,7 @@ class FlexContainerStringCanvasTest {
     widgets: List<StringWidget>,
   ): String {
     val canvas = StringCanvas(width, height)
-    val widthSpec = MeasureSpec.from(width.toDouble(), MeasureSpecMode.Exactly)
-    val heightSpec = MeasureSpec.from(height.toDouble(), MeasureSpecMode.Exactly)
-
-    measure(widthSpec, heightSpec)
+    measure(Constraints.fixed(width.toDouble(), height.toDouble()))
 
     for (widget in widgets) {
       widget.draw(canvas)

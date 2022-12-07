@@ -19,11 +19,11 @@ internal fun FlexDirection.toOrientation(): Orientation {
   return if (isHorizontal) Orientation.Horizontal else Orientation.Vertical
 }
 
-internal fun Orientation.mainMeasuredSizeWithMargin(node: FlexItem): Double =
-  mainMeasuredSize(node) + mainMargin(node)
+internal fun Orientation.mainMeasuredSizeWithMargin(item: FlexItem): Double =
+  mainMeasuredSize(item) + mainMargin(item)
 
-internal fun Orientation.crossMeasuredSizeWithMargin(node: FlexItem): Double =
-  crossMeasuredSize(node) + crossMargin(node)
+internal fun Orientation.crossMeasuredSizeWithMargin(item: FlexItem): Double =
+  crossMeasuredSize(item) + crossMargin(item)
 
 /**
  * An interface to perform operations along the main/cross axis without knowledge
@@ -36,20 +36,25 @@ internal sealed interface Orientation {
   fun mainMargin(item: FlexItem): Double
   fun crossMargin(item: FlexItem): Double
 
-  fun mainSize(item: FlexItem): Double
-  fun crossSize(item: FlexItem): Double
+  fun mainRequestedSize(item: FlexItem): Double
+  fun crossRequestedSize(item: FlexItem): Double
   fun mainMeasuredSize(item: FlexItem): Double
   fun crossMeasuredSize(item: FlexItem): Double
+
+  fun Constraints.asMainAxis(): Axis
+  fun Constraints.asCrossAxis(): Axis
 
   object Horizontal : Orientation {
     override fun mainPadding(padding: Spacing) = padding.start + padding.end
     override fun crossPadding(padding: Spacing) = padding.top + padding.bottom
     override fun mainMargin(item: FlexItem) = item.margin.start + item.margin.end
     override fun crossMargin(item: FlexItem) = item.margin.top + item.margin.bottom
-    override fun mainSize(item: FlexItem) = item.measurable.requestedWidth
-    override fun crossSize(item: FlexItem) = item.measurable.requestedHeight
+    override fun mainRequestedSize(item: FlexItem) = item.measurable.requestedWidth
+    override fun crossRequestedSize(item: FlexItem) = item.measurable.requestedHeight
     override fun mainMeasuredSize(item: FlexItem) = item.width
     override fun crossMeasuredSize(item: FlexItem) = item.height
+    override fun Constraints.asMainAxis() = asWidth()
+    override fun Constraints.asCrossAxis() = asHeight()
   }
 
   object Vertical : Orientation {
@@ -57,9 +62,11 @@ internal sealed interface Orientation {
     override fun crossPadding(padding: Spacing) = padding.start + padding.end
     override fun mainMargin(item: FlexItem) = item.margin.top + item.margin.bottom
     override fun crossMargin(item: FlexItem) = item.margin.start + item.margin.end
-    override fun mainSize(item: FlexItem) = item.measurable.requestedHeight
-    override fun crossSize(item: FlexItem) = item.measurable.requestedWidth
+    override fun mainRequestedSize(item: FlexItem) = item.measurable.requestedHeight
+    override fun crossRequestedSize(item: FlexItem) = item.measurable.requestedWidth
     override fun mainMeasuredSize(item: FlexItem) = item.height
     override fun crossMeasuredSize(item: FlexItem) = item.width
+    override fun Constraints.asMainAxis() = asHeight()
+    override fun Constraints.asCrossAxis() = asWidth()
   }
 }

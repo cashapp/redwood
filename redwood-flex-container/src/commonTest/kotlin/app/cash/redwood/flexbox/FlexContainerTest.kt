@@ -41,10 +41,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
 
-    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val constraints = Constraints.fixedWidth(500.0)
+    val lines = container.calculateFlexLines(constraints)
 
     assertEquals(3, lines.size)
     assertEquals(300.0, lines[0].mainSize)
@@ -77,10 +76,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
 
-    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
+    val constraints = Constraints.fixedHeight(500.0)
+    val lines = container.calculateFlexLines(constraints)
 
     assertEquals(3, lines.size)
     assertEquals(300.0, lines[0].mainSize)
@@ -113,9 +111,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixedWidth(500.0)
+    container.measure(constraints)
 
     assertEquals(100.0, item1.width)
     assertEquals(100.0, item1.height)
@@ -141,9 +139,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
-    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixedHeight(500.0)
+    container.measure(constraints)
 
     assertEquals(100.0, item1.width)
     assertEquals(100.0, item1.height)
@@ -169,9 +167,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixedWidth(500.0)
+    container.measure(constraints)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the width
@@ -197,9 +195,9 @@ class FlexContainerTest {
     container.items += item4
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixedHeight(500.0)
+    container.measure(constraints)
 
     // Flex shrink is set to 1.0 (default value) for all views.
     // They should be shrunk equally for the amount overflown the height
@@ -220,9 +218,9 @@ class FlexContainerTest {
     container.items += item1
     container.items += item2
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.AtMost)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints(maxWidth = 500.0)
+    container.measure(constraints)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
@@ -239,9 +237,9 @@ class FlexContainerTest {
     container.items += item2
     container.items += item3
     container.flexWrap = FlexWrap.NoWrap
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.AtMost)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Unspecified)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints(maxWidth = 500.0)
+    container.measure(constraints)
 
     // Container with WRAP_CONTENT and a max width forces resizable children to shrink
     // to avoid exceeding max available space.
@@ -263,9 +261,9 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Row
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixed(500.0, 1000.0)
+    container.measure(constraints)
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
@@ -289,9 +287,9 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    container.measure(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixed(1000.0, 500.0)
+    container.measure(constraints)
 
     // align content is set to Align.STRETCH, the cross size for each flex line is stretched
     // to distribute the remaining free space along the cross axis
@@ -300,21 +298,6 @@ class FlexContainerTest {
     assertEquals(333.0, item2.width)
     assertEquals(333.0, item3.width)
     assertEquals(334.0, item4.width)
-  }
-
-  @Test
-  fun testMakeMeasureSpec() {
-    var spec = MeasureSpec.from(100.0, MeasureSpecMode.AtMost)
-    assertEquals(100.0, spec.size)
-    assertEquals(MeasureSpecMode.AtMost, spec.mode)
-
-    spec = MeasureSpec.from(999.0, MeasureSpecMode.Exactly)
-    assertEquals(999.0, spec.size)
-    assertEquals(MeasureSpecMode.Exactly, spec.mode)
-
-    spec = MeasureSpec.from(0.0, MeasureSpecMode.Unspecified)
-    assertEquals(0.0, spec.size)
-    assertEquals(MeasureSpecMode.Unspecified, spec.mode)
   }
 
   @Test
@@ -330,9 +313,10 @@ class FlexContainerTest {
     container.flexDirection = FlexDirection.Column
     container.flexWrap = FlexWrap.Wrap
     container.alignContent = AlignContent.Stretch
-    val widthMeasureSpec = MeasureSpec.from(1000.0, MeasureSpecMode.Exactly)
-    val heightMeasureSpec = MeasureSpec.from(500.0, MeasureSpecMode.Exactly)
-    val lines = container.calculateFlexLines(widthMeasureSpec, heightMeasureSpec)
+
+    val constraints = Constraints.fixed(1000.0, 500.0)
+    val lines = container.calculateFlexLines(constraints)
+
     assertEquals(3, lines.size)
     assertTrue(lines[0].anyItemsHaveFlexGrow)
     assertFalse(lines[1].anyItemsHaveFlexGrow)

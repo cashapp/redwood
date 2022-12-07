@@ -15,11 +15,20 @@
  */
 package app.cash.redwood.layout.uiview
 
+import app.cash.redwood.flexbox.Constraints
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
+import app.cash.redwood.flexbox.constrain
+import app.cash.redwood.flexbox.constrainHeight
+import app.cash.redwood.flexbox.constrainWidth
+import app.cash.redwood.flexbox.hasBoundedHeight
+import app.cash.redwood.flexbox.hasBoundedWidth
+import app.cash.redwood.flexbox.hasFixedHeight
+import app.cash.redwood.flexbox.hasFixedWidth
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -32,34 +41,26 @@ import platform.UIKit.subviews
 // The cross platform density multiples use iOS as an anchor.
 internal const val DensityMultiplier = 1.0
 
-internal fun CGSize.toSize() = Size(width, height)
-
 internal fun CGSize.toUnsafeSize() = UnsafeSize(width, height)
 
 internal fun Size.toUnsafeSize() = UnsafeSize(width, height)
 
-internal fun UnsafeSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
-  val widthSpec = when (width) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(width, MeasureSpecMode.AtMost)
-  }
-  val heightSpec = when (height) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(height, MeasureSpecMode.AtMost)
-  }
-  return widthSpec to heightSpec
+internal fun UnsafeSize.toConstraints(): Constraints {
+  return Constraints(
+    maxWidth = if (width == UIViewNoIntrinsicMetric) Constraints.Infinity else width,
+    maxHeight = if (height == UIViewNoIntrinsicMetric) Constraints.Infinity else height,
+  )
 }
 
-internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpec): CValue<CGSize> {
-  val width = when (widthSpec.mode) {
-    MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> widthSpec.size
-  }
-  val height = when (heightSpec.mode) {
-    MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> heightSpec.size
-  }
-  return CGSizeMake(width, height)
+internal fun Constraints.toCGSize(): CValue<CGSize> {
+  return CGSizeMake(
+    width = if (hasBoundedWidth) maxWidth else UIViewNoIntrinsicMetric,
+    height = if (hasBoundedHeight) maxHeight else UIViewNoIntrinsicMetric,
+  )
+}
+
+public fun Constraints.constrain(size: CGSize): Size {
+  return Size(constrainWidth(size.width), constrainHeight(size.height))
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -76,14 +77,8 @@ internal class UIViewMeasurable(val view: UIView) : Measurable() {
       if (height == UIViewNoIntrinsicMetric) 0.0 else height
     }
 
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).useContents { toSize() }
-    if (widthSpec.mode == MeasureSpecMode.Exactly) {
-      output = output.copy(width = widthSpec.size)
-    }
-    if (heightSpec.mode == MeasureSpecMode.Exactly) {
-      output = output.copy(height = heightSpec.size)
-    }
-    return output
+  override fun measure(constraints: Constraints): Size {
+    val output = view.sizeThatFits(constraints.toCGSize())
+    return output.useContents { constraints.constrain(this) }
   }
 }

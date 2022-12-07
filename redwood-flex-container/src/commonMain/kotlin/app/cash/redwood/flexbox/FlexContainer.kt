@@ -18,7 +18,6 @@ package app.cash.redwood.flexbox
 import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexBasisPercent
 import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
 import app.cash.redwood.flexbox.FlexItem.Companion.UndefinedFlexShrink
-import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
 import kotlin.math.roundToInt
 
 /**
@@ -83,73 +82,41 @@ public class FlexContainer {
   //region measure
 
   /**
-   * Measures the flexbox's items according to the parent's [widthSpec] and [heightSpec] and returns
+   * Measures the flexbox's items according to the parent's [constraints] and returns
    * the expected size of the container.
-   *
-   * @param widthSpec horizontal space requirements as imposed by the parent.
-   * @param heightSpec vertical space requirements as imposed by the parent.
    */
-  public fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    val width = if (fillWidth && widthSpec.mode != MeasureSpecMode.Exactly && widthSpec.size > 0) {
-      MeasureSpec.from(widthSpec.size, MeasureSpecMode.Exactly)
-    } else {
-      widthSpec
+  public fun measure(constraints: Constraints): Size {
+    var newConstraints = constraints
+    if (fillWidth && constraints.hasBoundedWidth) {
+      newConstraints = newConstraints.copy(minWidth = constraints.maxWidth)
     }
-    val height = if (fillHeight && heightSpec.mode != MeasureSpecMode.Exactly && heightSpec.size > 0) {
-      MeasureSpec.from(heightSpec.size, MeasureSpecMode.Exactly)
-    } else {
-      heightSpec
+    if (fillHeight && constraints.hasBoundedHeight) {
+      newConstraints = newConstraints.copy(minHeight = constraints.maxHeight)
     }
-
     if (flexDirection.isHorizontal) {
-      return measureHorizontal(width, height)
+      return measureHorizontal(newConstraints)
     } else {
-      return measureVertical(width, height)
+      return measureVertical(newConstraints)
     }
   }
 
-  private fun measureHorizontal(
-    widthSpec: MeasureSpec,
-    heightSpec: MeasureSpec,
-  ): Size {
-    val flexLines = calculateFlexLines(widthSpec, heightSpec)
-    determineMainSize(flexLines, widthSpec, heightSpec)
-
-    if (alignItems == AlignItems.Baseline) {
-      flexLines.forEachIndices { flexLine ->
-        // The largest height value that also take the baseline shift into account
-        var largestHeightInLine = Double.MIN_VALUE
-        for (i in flexLine.indices) {
-          val child = items[i]
-          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
-            val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
-            child.height + marginTop + child.margin.bottom
-          } else {
-            val marginBottom = maxOf(flexLine.maxBaseline - child.height + child.baseline, child.margin.bottom)
-            child.height + child.margin.top + marginBottom
-          }
-          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
-        }
-        flexLine.crossSize = largestHeightInLine
-      }
-    }
-
-    determineCrossSize(flexLines, widthSpec, heightSpec)
+  private fun measureHorizontal(constraints: Constraints): Size {
+    val flexLines = calculateFlexLines(constraints)
+    determineMainSize(constraints, flexLines)
+    updateFlexLinesCrossSizeForBaseline(flexLines)
+    determineCrossSize(constraints, flexLines)
     stretchChildren(flexLines)
-    val containerSize = calculateContainerSize(flexLines, widthSpec, heightSpec)
+    val containerSize = calculateContainerSize(constraints, flexLines)
     layout(flexLines, containerSize)
     return containerSize
   }
 
-  private fun measureVertical(
-    widthSpec: MeasureSpec,
-    heightSpec: MeasureSpec,
-  ): Size {
-    val flexLines = calculateFlexLines(widthSpec, heightSpec)
-    determineMainSize(flexLines, widthSpec, heightSpec)
-    determineCrossSize(flexLines, widthSpec, heightSpec)
+  private fun measureVertical(constraints: Constraints): Size {
+    val flexLines = calculateFlexLines(constraints)
+    determineMainSize(constraints, flexLines)
+    determineCrossSize(constraints, flexLines)
     stretchChildren(flexLines)
-    val containerSize = calculateContainerSize(flexLines, widthSpec, heightSpec)
+    val containerSize = calculateContainerSize(constraints, flexLines)
     layout(flexLines, containerSize)
     return containerSize
   }
@@ -160,22 +127,10 @@ public class FlexContainer {
    * attributes are done in a later procedure, so the items' measured width and measured
    * height may be changed in a later process.
    */
-  internal fun calculateFlexLines(
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
-  ): MutableList<FlexLine> {
-    val mainMeasureSpec: MeasureSpec
-    val crossMeasureSpec: MeasureSpec
-    if (flexDirection.isHorizontal) {
-      mainMeasureSpec = widthMeasureSpec
-      crossMeasureSpec = heightMeasureSpec
-    } else {
-      mainMeasureSpec = heightMeasureSpec
-      crossMeasureSpec = widthMeasureSpec
-    }
+  internal fun calculateFlexLines(constraints: Constraints): MutableList<FlexLine> {
     val orientation = flexDirection.toOrientation()
-    val mainMode = mainMeasureSpec.mode
-    val mainSize = mainMeasureSpec.size
+    val mainAxis = with(orientation) { constraints.asMainAxis() }
+    val crossAxis = with(orientation) { constraints.asCrossAxis() }
     val flexLines = ArrayList<FlexLine>(1)
 
     // The largest size in the cross axis.
@@ -189,32 +144,32 @@ public class FlexContainer {
     flexLine.mainSize = orientation.mainPadding(padding)
     for (i in 0 until items.size) {
       val item = items[i]
-      val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
-        roundIfEnabled(item.flexBasisPercent * mainSize)
+      val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainAxis.isFixed) {
+        roundIfEnabled(item.flexBasisPercent * mainAxis.max)
       } else {
-        orientation.mainSize(item)
+        orientation.mainRequestedSize(item)
       }
+      val childCrossSize = orientation.crossRequestedSize(item)
 
-      val childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
-        spec = mainMeasureSpec,
+      val childMainAxis = getChildAxis(
+        axis = mainAxis,
         padding = orientation.mainPadding(padding) + orientation.mainMargin(item),
         childDimension = childMainSize,
       )
-      var childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
-        spec = crossMeasureSpec,
+      val childCrossAxis = getChildAxis(
+        axis = crossAxis,
         padding = orientation.crossPadding(padding) + orientation.crossMargin(item) + sumCrossSize,
-        childDimension = orientation.crossSize(item),
+        childDimension = childCrossSize,
       )
       if (flexDirection.isHorizontal) {
-        item.measure(childMainMeasureSpec, childCrossMeasureSpec)
+        item.measure(Constraints(childMainAxis.min, childMainAxis.max, childCrossAxis.min, childCrossAxis.max))
       } else {
-        item.measure(childCrossMeasureSpec, childMainMeasureSpec)
+        item.measure(Constraints(childCrossAxis.min, childCrossAxis.max, childMainAxis.min, childMainAxis.max))
       }
 
       if (
         isWrapRequired(
-          mode = mainMode,
-          maxSize = mainSize,
+          mainAxis = mainAxis,
           currentLength = flexLine.mainSize,
           childLength = orientation.mainMeasuredSizeWithMargin(item),
           flexItem = item,
@@ -225,22 +180,6 @@ public class FlexContainer {
           flexLine.sumCrossSizeBefore = sumCrossSize
           flexLines += flexLine
           sumCrossSize += flexLine.crossSize
-        }
-        val crossSize = orientation.crossSize(item)
-        if (crossSize == MatchParent) {
-          // This case takes care of the corner case where the cross size of the
-          // child is affected by the just added flex line.
-          // E.g. in a row when the child's layout_height is set to match_parent, the
-          // height of that child needs to be determined taking the total cross size
-          // used so far into account. In that case, the height of the child needs to
-          // be measured again note that we don't need to judge if the wrapping occurs
-          // because it doesn't change the size along the main axis.
-          childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
-            spec = crossMeasureSpec,
-            padding = orientation.crossPadding(padding) + orientation.crossMargin(item) + sumCrossSize,
-            childDimension = crossSize,
-          )
-          item.measure(childMainMeasureSpec, childCrossMeasureSpec)
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
@@ -283,20 +222,8 @@ public class FlexContainer {
     return flexLines
   }
 
-  /**
-   * Determine if a wrap is required (add a new flex line).
-   *
-   * @param mode the width or height mode along the main axis direction
-   * @param maxSize the max size along the main axis direction
-   * @param currentLength the accumulated current length
-   * @param childLength the length of a child which is to be collected to the flex line
-   * @param flexItem the LayoutParams for the view being determined whether a new flex line is needed
-   * @param flexLinesSize the number of the existing flexlines
-   * @return `true` if a wrap is required, `false` otherwise
-   */
   private fun isWrapRequired(
-    mode: MeasureSpecMode,
-    maxSize: Double,
+    mainAxis: Axis,
     currentLength: Double,
     childLength: Double,
     flexItem: FlexItem,
@@ -308,7 +235,7 @@ public class FlexContainer {
     if (flexItem.wrapBefore) {
       return true
     }
-    if (mode == MeasureSpecMode.Unspecified) {
+    if (!mainAxis.isBounded) {
       return false
     }
     // Judge the condition by adding 1 to the current flexLinesSize because the flex line
@@ -316,7 +243,7 @@ public class FlexContainer {
     if (maxLines <= flexLinesSize + 1) {
       return false
     }
-    return maxSize < currentLength + childLength
+    return mainAxis.max < currentLength + childLength
   }
 
   private fun isLastFlexItem(
@@ -327,15 +254,35 @@ public class FlexContainer {
     return childIndex == childCount - 1 && flexLine.itemCount > 0
   }
 
+  private fun updateFlexLinesCrossSizeForBaseline(flexLines: List<FlexLine>) {
+    if (alignItems == AlignItems.Baseline) {
+      flexLines.forEachIndices { flexLine ->
+        // The largest height value that also take the baseline shift into account.
+        var largestHeightInLine = Double.MIN_VALUE
+        for (i in flexLine.indices) {
+          val child = items[i]
+          val heightInLine = if (flexWrap != FlexWrap.WrapReverse) {
+            val marginTop = maxOf(flexLine.maxBaseline - child.baseline, child.margin.top)
+            child.height + marginTop + child.margin.bottom
+          } else {
+            val marginBottom = maxOf(flexLine.maxBaseline - child.height + child.baseline, child.margin.bottom)
+            child.height + child.margin.top + marginBottom
+          }
+          largestHeightInLine = maxOf(largestHeightInLine, heightInLine)
+        }
+        flexLine.crossSize = largestHeightInLine
+      }
+    }
+  }
+
   /**
    * Determine the main size by expanding (shrinking if negative remaining free space is given)
    * an individual child in each flex line if any children's flexGrow (or flexShrink if remaining
    * space is negative) properties are set to non-zero.
    */
   private fun determineMainSize(
+    constraints: Constraints,
     flexLines: List<FlexLine>,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
   ) {
     // Holds the 'frozen' state of children during measure. If an item is frozen it will no longer
     // expand or shrink regardless of flex grow/flex shrink attributes.
@@ -344,26 +291,17 @@ public class FlexContainer {
     val mainSize: Double
     val paddingAlongMainAxis: Double
     if (flexDirection.isHorizontal) {
-      mainSize = if (widthMeasureSpec.mode == MeasureSpecMode.Exactly) {
-        widthMeasureSpec.size
-      } else {
-        minOf(flexLines.getLargestMainSize(), widthMeasureSpec.size)
-      }
+      mainSize = constraints.constrainWidth(flexLines.getLargestMainSize())
       paddingAlongMainAxis = padding.start + padding.end
     } else {
-      mainSize = if (heightMeasureSpec.mode == MeasureSpecMode.Exactly) {
-        heightMeasureSpec.size
-      } else {
-        flexLines.getLargestMainSize()
-      }
+      mainSize = constraints.constrainHeight(flexLines.getLargestMainSize())
       paddingAlongMainAxis = padding.top + padding.bottom
     }
     flexLines.forEachIndices { flexLine ->
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
         expandFlexItems(
           childrenFrozen = childrenFrozen,
-          widthMeasureSpec = widthMeasureSpec,
-          heightMeasureSpec = heightMeasureSpec,
+          constraints = constraints,
           flexLine = flexLine,
           maxMainSize = mainSize,
           paddingAlongMainAxis = paddingAlongMainAxis,
@@ -372,8 +310,7 @@ public class FlexContainer {
       } else if (flexLine.mainSize > mainSize && flexLine.anyItemsHaveFlexShrink) {
         shrinkFlexItems(
           childrenFrozen = childrenFrozen,
-          widthMeasureSpec = widthMeasureSpec,
-          heightMeasureSpec = heightMeasureSpec,
+          constraints = constraints,
           flexLine = flexLine,
           maxMainSize = mainSize,
           paddingAlongMainAxis = paddingAlongMainAxis,
@@ -383,20 +320,10 @@ public class FlexContainer {
     }
   }
 
-  /**
-   * Expand the flex items along the main axis based on the individual [FlexItem.flexGrow] attribute.
-   *
-   * @param widthMeasureSpec the horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec the vertical space requirements as imposed by the parent
-   * @param flexLine the flex line to which flex items belong
-   * @param maxMainSize the maximum main size. Expanded main size will be this size
-   * @param paddingAlongMainAxis the padding value along the main axis
-   * @param calledRecursively true if this method is called recursively, false otherwise
-   */
+  /** Expand the flex items along the main axis based on the individual [FlexItem.flexGrow] attribute. */
   private fun expandFlexItems(
     childrenFrozen: BooleanArray,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
+    constraints: Constraints,
     flexLine: FlexLine,
     maxMainSize: Double,
     paddingAlongMainAxis: Double,
@@ -414,8 +341,8 @@ public class FlexContainer {
     // each flex item may be changed from the initial calculation
     // (in the measureHorizontal/measureVertical method) even this method is part of the main
     // size determination.
-    // E.g. If a TextView's layout_width is set to 0dp, layout_height is set to wrap_content,
-    // and layout_flexGrow is set to 1, the TextView is trying to expand to the vertical
+    // E.g. If an item's width is set to 0, height is set to WrapContent,
+    // and flexGrow is set to 1, the item is trying to expand to the vertical
     // direction to enclose its content (in the measureHorizontal method), but
     // the width will be expanded in this method. In that case, the height needs to be measured
     // again with the expanded width.
@@ -456,16 +383,15 @@ public class FlexContainer {
               accumulatedRoundError += 1.0
             }
           }
-          val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec = heightMeasureSpec,
+          val childHeightAxis = getChildHeightMeasureSpecInternal(
+            heightAxis = constraints.asHeight(),
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.height = when (childHeightMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
-            else -> throw AssertionError()
+          child.height = when {
+            childHeightAxis.isFixed -> childHeightAxis.max
+            childHeightAxis.isBounded -> child.measurable.height(newWidth).coerceAtMost(childHeightAxis.max)
+            else -> child.measurable.height(newWidth)
           }
           child.width = newWidth
         }
@@ -500,16 +426,15 @@ public class FlexContainer {
               accumulatedRoundError += 1.0
             }
           }
-          val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec = widthMeasureSpec,
+          val childWidthAxis = getChildWidthMeasureSpecInternal(
+            widthAxis = constraints.asWidth(),
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.width = when (childWidthMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
-            else -> throw AssertionError()
+          child.width = when {
+            childWidthAxis.isFixed -> childWidthAxis.max
+            childWidthAxis.isBounded -> child.measurable.width(newHeight).coerceAtMost(childWidthAxis.max)
+            else -> child.measurable.width(newHeight)
           }
           child.height = newHeight
         }
@@ -523,8 +448,7 @@ public class FlexContainer {
       // that wasn't fully distributed (because of maximum length constraint)
       expandFlexItems(
         childrenFrozen = childrenFrozen,
-        widthMeasureSpec = widthMeasureSpec,
-        heightMeasureSpec = heightMeasureSpec,
+        constraints = constraints,
         flexLine = flexLine,
         maxMainSize = maxMainSize,
         paddingAlongMainAxis = paddingAlongMainAxis,
@@ -533,20 +457,10 @@ public class FlexContainer {
     }
   }
 
-  /**
-   * Shrink the flex items along the main axis based on the individual [FlexItem.flexShrink] attribute.
-   *
-   * @param widthMeasureSpec the horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec the vertical space requirements as imposed by the parent
-   * @param flexLine the flex line to which flex items belong
-   * @param maxMainSize the maximum main size. Shrank main size will be this size
-   * @param paddingAlongMainAxis the padding value along the main axis
-   * @param calledRecursively true if this method is called recursively, false otherwise
-   */
+  /** Shrink the flex items along the main axis based on the individual [FlexItem.flexShrink] attribute. */
   private fun shrinkFlexItems(
     childrenFrozen: BooleanArray,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
+    constraints: Constraints,
     flexLine: FlexLine,
     maxMainSize: Double,
     paddingAlongMainAxis: Double,
@@ -565,8 +479,8 @@ public class FlexContainer {
     // each flex item may be changed from the initial calculation
     // (in the measureHorizontal/measureVertical method) even this method is part of the main
     // size determination.
-    // E.g. If a TextView's layout_width is set to 0dp, layout_height is set to wrap_content,
-    // and layout_flexGrow is set to 1, the TextView is trying to expand to the vertical
+    // E.g. If an item's width is set to 0, height is set to WrapContent,
+    // and flexGrow is set to 1, the item is trying to expand to the vertical
     // direction to enclose its content (in the measureHorizontal method), but
     // the width will be expanded in this method. In that case, the height needs to be measured
     // again with the expanded width.
@@ -606,16 +520,15 @@ public class FlexContainer {
               accumulatedRoundError += 1
             }
           }
-          val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
-            heightMeasureSpec = heightMeasureSpec,
+          val childHeightAxis = getChildHeightMeasureSpecInternal(
+            heightAxis = constraints.asHeight(),
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.height = when (childHeightMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
-            else -> throw AssertionError()
+          child.height = when {
+            childHeightAxis.isFixed -> childHeightAxis.max
+            childHeightAxis.isBounded -> child.measurable.height(newWidth).coerceAtMost(childHeightAxis.max)
+            else -> child.measurable.height(newWidth)
           }
           child.width = newWidth
         }
@@ -647,16 +560,15 @@ public class FlexContainer {
               accumulatedRoundError += 1
             }
           }
-          val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
-            widthMeasureSpec = widthMeasureSpec,
+          val childWidthAxis = getChildWidthMeasureSpecInternal(
+            widthAxis = constraints.asWidth(),
             flexItem = child,
             padding = flexLine.sumCrossSizeBefore,
           )
-          child.width = when (childWidthMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
-            else -> throw AssertionError()
+          child.width = when {
+            childWidthAxis.isFixed -> childWidthAxis.max
+            childWidthAxis.isBounded -> child.measurable.width(newHeight).coerceAtMost(childWidthAxis.max)
+            else -> child.measurable.width(newHeight)
           }
           child.height = newHeight
         }
@@ -670,8 +582,7 @@ public class FlexContainer {
       // that wasn't fully distributed (because some items length were not enough)
       shrinkFlexItems(
         childrenFrozen = childrenFrozen,
-        widthMeasureSpec = widthMeasureSpec,
-        heightMeasureSpec = heightMeasureSpec,
+        constraints = constraints,
         flexLine = flexLine,
         maxMainSize = maxMainSize,
         paddingAlongMainAxis = paddingAlongMainAxis,
@@ -681,47 +592,47 @@ public class FlexContainer {
   }
 
   private fun getChildWidthMeasureSpecInternal(
-    widthMeasureSpec: MeasureSpec,
+    widthAxis: Axis,
     flexItem: FlexItem,
     padding: Double,
-  ): MeasureSpec {
+  ): Axis {
     val measurable = flexItem.measurable
-    val childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
-      spec = widthMeasureSpec,
+    val childWidthMeasureSpec = getChildAxis(
+      axis = widthAxis,
       padding = this.padding.start + this.padding.end + flexItem.margin.start + flexItem.margin.end + padding,
       childDimension = measurable.requestedWidth,
     )
-    val childWidth = childWidthMeasureSpec.size
+    val childWidth = childWidthMeasureSpec.max
     val maxWidth = measurable.maxWidth
     if (childWidth > maxWidth) {
-      return MeasureSpec.from(maxWidth, childWidthMeasureSpec.mode)
+      return Axis(childWidthMeasureSpec.min, maxWidth)
     }
     val minWidth = measurable.minWidth
     if (childWidth < minWidth) {
-      return MeasureSpec.from(minWidth, childWidthMeasureSpec.mode)
+      return Axis(childWidthMeasureSpec.min, minWidth)
     }
     return childWidthMeasureSpec
   }
 
   private fun getChildHeightMeasureSpecInternal(
-    heightMeasureSpec: MeasureSpec,
+    heightAxis: Axis,
     flexItem: FlexItem,
     padding: Double,
-  ): MeasureSpec {
+  ): Axis {
     val measurable = flexItem.measurable
-    val childHeightMeasureSpec = MeasureSpec.getChildMeasureSpec(
-      spec = heightMeasureSpec,
+    val childHeightMeasureSpec = getChildAxis(
+      axis = heightAxis,
       padding = this.padding.top + this.padding.bottom + flexItem.margin.top + flexItem.margin.bottom + padding,
       childDimension = measurable.requestedHeight,
     )
-    val childHeight = childHeightMeasureSpec.size
+    val childHeight = childHeightMeasureSpec.max
     val maxHeight = measurable.maxHeight
     if (childHeight > maxHeight) {
-      return MeasureSpec.from(maxHeight, childHeightMeasureSpec.mode)
+      return Axis(childHeightMeasureSpec.min, maxHeight)
     }
     val minHeight = measurable.minHeight
     if (childHeight < minHeight) {
-      return MeasureSpec.from(minHeight, childHeightMeasureSpec.mode)
+      return Axis(childHeightMeasureSpec.min, minHeight)
     }
     return childHeightMeasureSpec
   }
@@ -730,30 +641,20 @@ public class FlexContainer {
    * Determines the cross size (Calculate the length along the cross axis).
    * Expand the cross size only if the height mode is [MeasureSpecMode.Exactly], otherwise
    * use the sum of cross sizes of all flex lines.
-   *
-   * @param widthMeasureSpec horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec vertical space requirements as imposed by the parent
    */
   private fun determineCrossSize(
+    constraints: Constraints,
     flexLines: MutableList<FlexLine>,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
   ) {
-    val paddingAlongCrossAxis = flexDirection.toOrientation().crossPadding(padding)
-    val mode: MeasureSpecMode // The MeasureSpec mode along the cross axis
-    val size: Double // The MeasureSpec size along the cross axis
-    if (flexDirection.isHorizontal) {
-      mode = heightMeasureSpec.mode
-      size = heightMeasureSpec.size
-    } else {
-      mode = widthMeasureSpec.mode
-      size = widthMeasureSpec.size
-    }
-    if (mode == MeasureSpecMode.Exactly) {
+    val orientation = flexDirection.toOrientation()
+    val paddingAlongCrossAxis = orientation.crossPadding(padding)
+    val crossAxis = with(orientation) { constraints.asCrossAxis() }
+    if (crossAxis.isFixed) {
+      val size = crossAxis.min
       val totalCrossSize = flexLines.getSumOfCrossSize() + paddingAlongCrossAxis
       if (flexLines.size == 1) {
         flexLines[0].crossSize = size - paddingAlongCrossAxis
-        // alignContent property is valid only if the Flexbox has at least two lines
+        // alignContent property is valid only if the Flexbox has at least two lines.
       } else if (flexLines.size >= 2) {
         when (alignContent) {
           AlignContent.Stretch -> run switch@{
@@ -786,7 +687,7 @@ public class FlexContainer {
           AlignContent.SpaceAround -> run switch@{
             if (totalCrossSize >= size) {
               // If the size of the content is larger than the flex container, the
-              // Flex lines should be aligned center like ALIGN_CONTENT_CENTER
+              // Flex lines should be aligned center like ALIGN_CONTENT_CENTER.
               flexLines.clear()
               flexLines += constructFlexLinesForAlignContentCenter(
                 flexLines = flexLines,
@@ -944,16 +845,11 @@ public class FlexContainer {
   }
 
   /**
-   * Set this flexbox's width and height depending on the calculated size of main axis and
-   * cross axis.
-   *
-   * @param widthMeasureSpec horizontal space requirements as imposed by the parent
-   * @param heightMeasureSpec vertical space requirements as imposed by the parent
+   * Calculate this flexbox's width and height depending on the calculated size of main axis and cross axis.
    */
   private fun calculateContainerSize(
+    constraints: Constraints,
     flexLines: List<FlexLine>,
-    widthMeasureSpec: MeasureSpec,
-    heightMeasureSpec: MeasureSpec,
   ): Size {
     val calculatedMaxWidth: Double
     val calculatedMaxHeight: Double
@@ -964,31 +860,10 @@ public class FlexContainer {
       calculatedMaxWidth = flexLines.getSumOfCrossSize() + padding.start + padding.end
       calculatedMaxHeight = flexLines.getLargestMainSize()
     }
-    val width = when (widthMeasureSpec.mode) {
-      MeasureSpecMode.Exactly -> {
-        MeasureSpec.resolveSize(widthMeasureSpec.size, widthMeasureSpec)
-      }
-      MeasureSpecMode.AtMost -> {
-        MeasureSpec.resolveSize(minOf(widthMeasureSpec.size, calculatedMaxWidth), widthMeasureSpec)
-      }
-      MeasureSpecMode.Unspecified -> {
-        MeasureSpec.resolveSize(calculatedMaxWidth, widthMeasureSpec)
-      }
-      else -> throw AssertionError()
-    }
-    val height = when (heightMeasureSpec.mode) {
-      MeasureSpecMode.Exactly -> {
-        MeasureSpec.resolveSize(heightMeasureSpec.size, heightMeasureSpec)
-      }
-      MeasureSpecMode.AtMost -> {
-        MeasureSpec.resolveSize(minOf(heightMeasureSpec.size, calculatedMaxHeight), heightMeasureSpec)
-      }
-      MeasureSpecMode.Unspecified -> {
-        MeasureSpec.resolveSize(calculatedMaxHeight, heightMeasureSpec)
-      }
-      else -> throw AssertionError()
-    }
-    return Size(width, height)
+    return Size(
+      width = constraints.constrainWidth(calculatedMaxWidth),
+      height = constraints.constrainHeight(calculatedMaxHeight),
+    )
   }
 
   private fun roundIfEnabled(value: Double): Double {

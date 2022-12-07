@@ -129,9 +129,7 @@ internal class ComposeFlexContainer(private val direction: FlexDirection) {
     constraints: Constraints,
   ): MeasureResult = with(scope) {
     syncItems(measurables)
-
-    val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
-    val (width, height) = container.measure(widthSpec, heightSpec)
+    val (width, height) = container.measure(constraints.toRedwoodConstraints())
 
     return layout(width.toInt(), height.toInt()) {
       for (item in container.items) {

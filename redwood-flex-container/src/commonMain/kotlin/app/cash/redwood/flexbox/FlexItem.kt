@@ -82,7 +82,7 @@ public class FlexItem(
   public val wrapBefore: Boolean = false,
 
   /**
-   * The margin of the item.
+   * The spacing around the item.
    */
   public val margin: Spacing = Spacing.Zero,
 
