@@ -32,6 +32,8 @@ internal object Protocol {
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
   val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+  val LayoutModifierElement = ClassName("app.cash.redwood.protocol", "LayoutModifierElement")
+  val LayoutModifierTag = ClassName("app.cash.redwood.protocol", "LayoutModifierTag")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
@@ -94,6 +96,7 @@ internal fun composableLambda(
 internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
   val OptIn = ClassName("kotlin", "OptIn")
+  val buildList = MemberName("kotlin.collections", "buildList")
 }
 
 internal val typeVariableW = TypeVariableName("W", listOf(ANY))
@@ -101,15 +104,8 @@ internal val typeVariableW = TypeVariableName("W", listOf(ANY))
 internal object KotlinxSerialization {
   val Json = ClassName("kotlinx.serialization.json", "Json")
   val JsonDefault = Json.nestedClass("Default")
-  val JsonArray = ClassName("kotlinx.serialization.json", "JsonArray")
-  val JsonElement = ClassName("kotlinx.serialization.json", "JsonElement")
-  val buildJsonArray = MemberName("kotlinx.serialization.json", "buildJsonArray")
-  val buildJsonObject = MemberName("kotlinx.serialization.json", "buildJsonObject")
-  val jsonArray = MemberName("kotlinx.serialization.json", "jsonArray")
-  val jsonObject = MemberName("kotlinx.serialization.json", "jsonObject")
 
   @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
-  val jsonInt = MemberName("kotlinx.serialization.json", "int")
   val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
   val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
   val Contextual = ClassName("kotlinx.serialization", "Contextual")

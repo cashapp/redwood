@@ -20,6 +20,8 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierElement
+import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
@@ -32,7 +34,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
@@ -75,18 +76,14 @@ class DiffProducingWidgetFactoryTest {
       layoutModifiers = listOf(
         LayoutModifiers(
           Id(1),
-          buildJsonArray {
-            add(
-              buildJsonArray {
-                add(JsonPrimitive(3))
-                add(
-                  buildJsonObject {
-                    put("customType", JsonPrimitive("PT10S"))
-                  },
-                )
+          listOf(
+            LayoutModifierElement(
+              LayoutModifierTag(3),
+              buildJsonObject {
+                put("customType", JsonPrimitive("PT10S"))
               },
-            )
-          },
+            ),
+          ),
         ),
       ),
     )
@@ -111,18 +108,14 @@ class DiffProducingWidgetFactoryTest {
       layoutModifiers = listOf(
         LayoutModifiers(
           Id(1),
-          buildJsonArray {
-            add(
-              buildJsonArray {
-                add(JsonPrimitive(5))
-                add(
-                  buildJsonObject {
-                    put("customType", JsonPrimitive("PT10S"))
-                  },
-                )
+          listOf(
+            LayoutModifierElement(
+              LayoutModifierTag(5),
+              buildJsonObject {
+                put("customType", JsonPrimitive("PT10S"))
               },
-            )
-          },
+            ),
+          ),
         ),
       ),
     )

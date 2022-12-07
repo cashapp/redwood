@@ -18,10 +18,10 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
-import kotlinx.serialization.json.JsonArray
 
 /**
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
@@ -40,7 +40,7 @@ public abstract class DiffConsumingNode<W : Any>(
 
   public abstract fun apply(diff: PropertyDiff, eventSink: EventSink)
 
-  public abstract fun updateLayoutModifier(value: JsonArray)
+  public abstract fun updateLayoutModifier(elements: List<LayoutModifierElement>)
 
   /**
    * Return one of this widget's children groups by its [tag].

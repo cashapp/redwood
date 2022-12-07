@@ -17,11 +17,11 @@ package app.cash.redwood.protocol
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
 class ProtocolTest {
@@ -51,14 +51,12 @@ class ProtocolTest {
       layoutModifiers = listOf(
         LayoutModifiers(
           Id(1),
-          buildJsonArray {
-            add(
-              buildJsonArray {
-                add(JsonPrimitive(1))
-                add(buildJsonObject { })
-              },
-            )
-          },
+          listOf(
+            LayoutModifierElement(
+              LayoutModifierTag(1),
+              buildJsonObject { },
+            ),
+          ),
         ),
       ),
       propertyDiffs = listOf(
@@ -88,6 +86,33 @@ class ProtocolTest {
     )
     val json = "{}"
     assertJsonRoundtrip(Diff.serializer(), model, json)
+  }
+
+  @Test fun layoutModifierElementSerialization() {
+    assertJsonRoundtrip(
+      LayoutModifierElement.serializer(),
+      LayoutModifierElement(
+        LayoutModifierTag(1),
+      ),
+      "[1]",
+    )
+    assertJsonRoundtrip(
+      LayoutModifierElement.serializer(),
+      LayoutModifierElement(LayoutModifierTag(1), buildJsonObject { }),
+      "[1,{}]",
+    )
+  }
+
+  @Test fun layoutModifierElementSerializationErrors() {
+    val zero = assertFailsWith<IllegalStateException> {
+      format.decodeFromString(LayoutModifierElement.serializer(), "[]")
+    }
+    assertEquals("LayoutModifierElement array may only have 1 or 2 values. Found: 0", zero.message)
+
+    val three = assertFailsWith<IllegalStateException> {
+      format.decodeFromString(LayoutModifierElement.serializer(), "[1,{},2]")
+    }
+    assertEquals("LayoutModifierElement array may only have 1 or 2 values. Found: 3", three.message)
   }
 
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {

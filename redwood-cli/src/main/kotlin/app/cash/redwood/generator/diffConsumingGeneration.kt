@@ -28,6 +28,7 @@ import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -371,8 +372,8 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
         .addFunction(
           FunSpec.builder("updateLayoutModifier")
             .addModifiers(OVERRIDE)
-            .addParameter("value", KotlinxSerialization.JsonArray)
-            .addStatement("widget.layoutModifiers = value.%M(json, mismatchHandler)", host.toLayoutModifier)
+            .addParameter("elements", LIST.parameterizedBy(Protocol.LayoutModifierElement))
+            .addStatement("widget.layoutModifiers = elements.%M(json, mismatchHandler)", host.toLayoutModifier)
             .build(),
         )
         .build(),
@@ -436,7 +437,7 @@ internal fun generateDiffConsumingLayoutModifiers(schema: Schema, host: Schema =
 private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
   return FunSpec.builder("toLayoutModifier")
     .addModifiers(INTERNAL)
-    .receiver(KotlinxSerialization.JsonArray)
+    .receiver(LIST.parameterizedBy(Protocol.LayoutModifierElement))
     .addParameter("json", KotlinxSerialization.Json)
     .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
     .addStatement(
@@ -445,7 +446,7 @@ private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
       |  modifier then element.%3M(json, mismatchHandler)
       |}
       """.trimMargin(),
-      KotlinxSerialization.JsonElement,
+      Protocol.LayoutModifierElement,
       Redwood.LayoutModifier,
       schema.toLayoutModifier,
     )
@@ -456,18 +457,11 @@ private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
 private fun generateJsonElementToLayoutModifier(schema: Schema): FunSpec {
   return FunSpec.builder("toLayoutModifier")
     .addModifiers(PRIVATE)
-    .receiver(KotlinxSerialization.JsonElement)
+    .receiver(Protocol.LayoutModifierElement)
     .addParameter("json", KotlinxSerialization.Json)
     .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
     .returns(Redwood.LayoutModifier)
-    .addStatement("val array = %M", KotlinxSerialization.jsonArray)
-    .addStatement("require(array.size == 2) { \"Layout modifier JSON array length != 2: \${array.size}\" }")
-    .addStatement("")
-    .beginControlFlow(
-      "val serializer = when (val tag = array[0].%M.%M)",
-      KotlinxSerialization.jsonPrimitive,
-      KotlinxSerialization.jsonInt,
-    )
+    .beginControlFlow("val serializer = when (tag.value)")
     .apply {
       val layoutModifiers = schema.allLayoutModifiers()
       if (layoutModifiers.isEmpty()) {
@@ -492,8 +486,6 @@ private fun generateJsonElementToLayoutModifier(schema: Schema): FunSpec {
     .addStatement("return %T", Redwood.LayoutModifier)
     .endControlFlow()
     .endControlFlow()
-    .addStatement("")
-    .addStatement("val value = array[1].%M", KotlinxSerialization.jsonObject)
     .addStatement("return json.decodeFromJsonElement(serializer, value)")
     .build()
 }
