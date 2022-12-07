@@ -186,33 +186,25 @@ public value class JustifyContent private constructor(private val ordinal: Int) 
  * Each MeasureSpec represents a requirement for either the width or the height.
  * A MeasureSpec is composed of a size and a mode.
  */
-// TODO: Convert MeasureSpec into an inline class.
-public class MeasureSpec private constructor(
-  public val size: Double,
-  public val mode: MeasureSpecMode,
-) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    return other is MeasureSpec &&
-      size == other.size &&
-      mode == other.mode
-  }
+@JvmInline
+public value class MeasureSpec private constructor(private val value: Double) {
+  public val size: Double
+    get() = Double.fromBits(value.toRawBits() and SizeBits)
 
-  override fun hashCode(): Int {
-    var result = size.hashCode()
-    result = 31 * result + mode.hashCode()
-    return result
-  }
+  public val mode: MeasureSpecMode
+    get() = MeasureSpecMode((value.toRawBits() and ModeBits).toInt())
 
-  override fun toString(): String {
-    return "MeasureSpec(size=$size, mode=$mode)"
-  }
+  override fun toString(): String = "MeasureSpec(size=$size, mode=$mode)"
 
   public companion object {
+    private const val ModeBits = 0b11L
+    private const val SizeBits = ModeBits.inv()
+
     public fun from(size: Double, mode: MeasureSpecMode): MeasureSpec {
       require(size >= 0) { "invalid size: $size" }
-      // Use the top 2 bits for the mode and use the bottom 30 bits for the size.
-      return MeasureSpec(size, mode)
+      // The mode is stored in the least significant 2 bits of the fractional part.
+      val value = Double.fromBits((size.toRawBits() and SizeBits) or mode.ordinal.toLong())
+      return MeasureSpec(value)
     }
 
     /** A convenience function to constrain [size] inside a given [measureSpec]. */
