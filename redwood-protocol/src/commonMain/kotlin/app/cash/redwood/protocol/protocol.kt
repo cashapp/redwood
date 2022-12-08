@@ -15,11 +15,18 @@
  */
 package app.cash.redwood.protocol
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.serializer
 
 @Serializable
 public data class Event(
@@ -50,12 +57,50 @@ public data class PropertyDiff(
 public data class LayoutModifiers(
   /** Identifier for the widget whose layout modifier has changed. */
   val id: Id,
-  /**
-   * Array of layout modifiers. Each element of this array is itself a two-element array of the
-   * layout modifier tag and then serialized value.
-   */
-  val elements: JsonArray,
+  val elements: List<LayoutModifierElement> = emptyList(),
 )
+
+@Serializable(with = LayoutModifierElementSerializer::class)
+public data class LayoutModifierElement(
+  val tag: LayoutModifierTag,
+  val value: JsonElement = DefaultValue,
+) {
+  internal companion object {
+    val DefaultValue get() = JsonNull
+  }
+}
+
+private object LayoutModifierElementSerializer : KSerializer<LayoutModifierElement> {
+  private val delegate = serializer<Array<JsonElement>>()
+
+  @OptIn(ExperimentalSerializationApi::class)
+  override val descriptor = SerialDescriptor("LayoutModifierElement", delegate.descriptor)
+
+  override fun deserialize(decoder: Decoder): LayoutModifierElement {
+    val decoded = decoder.decodeSerializableValue(delegate)
+    check(decoded.size in 1..2) {
+      "LayoutModifierElement array may only have 1 or 2 values. Found: ${decoded.size}"
+    }
+    val tag = LayoutModifierTag(decoded[0].jsonPrimitive.content.toInt())
+    val value = decoded.getOrElse(1) { LayoutModifierElement.DefaultValue }
+    return LayoutModifierElement(tag, value)
+  }
+
+  override fun serialize(encoder: Encoder, value: LayoutModifierElement) {
+    encoder.beginStructure(delegate.descriptor).apply {
+      encodeIntElement(Int.serializer().descriptor, 0, value.tag.value)
+      if (value.value != LayoutModifierElement.DefaultValue) {
+        encodeSerializableElement(
+          JsonElement.serializer().descriptor,
+          1,
+          JsonElement.serializer(),
+          value.value,
+        )
+      }
+      endStructure(delegate.descriptor)
+    }
+  }
+}
 
 @Serializable
 public sealed class ChildrenDiff {

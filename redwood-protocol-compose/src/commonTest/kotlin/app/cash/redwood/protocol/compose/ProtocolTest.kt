@@ -41,7 +41,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -93,10 +92,10 @@ class ProtocolTest {
           ChildrenDiff.Insert(Id(3), ChildrenTag(1), Id(4), WidgetTag(3) /* text */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(Id(1), JsonArray(listOf())),
-          LayoutModifiers(Id(2), JsonArray(listOf())),
-          LayoutModifiers(Id(3), JsonArray(listOf())),
-          LayoutModifiers(Id(4), JsonArray(listOf())),
+          LayoutModifiers(Id(1)),
+          LayoutModifiers(Id(2)),
+          LayoutModifiers(Id(3)),
+          LayoutModifiers(Id(4)),
         ),
         propertyDiffs = listOf(
           PropertyDiff(Id(2), PropertyTag(1) /* text */, JsonPrimitive("hey")),
@@ -141,7 +140,7 @@ class ProtocolTest {
           ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(4) /* button */, 0),
         ),
         layoutModifiers = listOf(
-          LayoutModifiers(Id(1), JsonArray(listOf())),
+          LayoutModifiers(Id(1)),
         ),
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 0")),

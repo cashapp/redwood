@@ -21,6 +21,8 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierElement
+import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
@@ -34,7 +36,6 @@ import kotlin.test.assertNull
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
@@ -79,18 +80,14 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
-      buildJsonArray {
-        add(
-          buildJsonArray {
-            add(JsonPrimitive(3))
-            add(
-              buildJsonObject {
-                put("customType", JsonPrimitive("PT10S"))
-              },
-            )
+      listOf(
+        LayoutModifierElement(
+          tag = LayoutModifierTag(3),
+          value = buildJsonObject {
+            put("customType", JsonPrimitive("PT10S"))
           },
-        )
-      },
+        ),
+      ),
     )
 
     with(object : TestScope {}) {
@@ -114,18 +111,14 @@ class DiffConsumingWidgetFactoryTest {
     val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
-      buildJsonArray {
-        add(
-          buildJsonArray {
-            add(JsonPrimitive(5))
-            add(
-              buildJsonObject {
-                put("customType", JsonPrimitive("PT10S"))
-              },
-            )
+      listOf(
+        LayoutModifierElement(
+          tag = LayoutModifierTag(5),
+          value = buildJsonObject {
+            put("customType", JsonPrimitive("PT10S"))
           },
-        )
-      },
+        ),
+      ),
     )
 
     with(object : TestScope {}) {
@@ -139,12 +132,10 @@ class DiffConsumingWidgetFactoryTest {
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.updateLayoutModifier(
-        JsonArray(
-          listOf(
-            buildJsonArray {
-              add(JsonPrimitive(345432))
-              add(JsonObject(mapOf()))
-            },
+        listOf(
+          LayoutModifierElement(
+            tag = LayoutModifierTag(345432),
+            value = JsonObject(mapOf()),
           ),
         ),
       )
@@ -170,20 +161,19 @@ class DiffConsumingWidgetFactoryTest {
 
     val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
     textInput.updateLayoutModifier(
-      buildJsonArray {
-        add(
-          buildJsonArray {
+      listOf(
+        LayoutModifierElement(
+          tag = LayoutModifierTag(345432),
+          value = buildJsonArray {
             add(JsonPrimitive(345432))
             add(JsonObject(mapOf()))
           },
-        )
-        add(
-          buildJsonArray {
-            add(JsonPrimitive(2))
-            add(buildJsonObject { put("value", JsonPrimitive("hi")) })
-          },
-        )
-      },
+        ),
+        LayoutModifierElement(
+          tag = LayoutModifierTag(2),
+          value = buildJsonObject { put("value", JsonPrimitive("hi")) },
+        ),
+      ),
     )
 
     assertEquals("Unknown layout modifier 345432", handler.events.single())

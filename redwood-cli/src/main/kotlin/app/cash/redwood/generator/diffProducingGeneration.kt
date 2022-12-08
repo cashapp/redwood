@@ -28,6 +28,7 @@ import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -327,7 +328,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.LayoutModifier)
-                .addStatement("bridge.append(%T(id, value.%M(json)))", Protocol.LayoutModifiers, host.toJsonArray)
+                .addStatement("bridge.append(%T(id, value.%M(json)))", Protocol.LayoutModifiers, host.toProtocol)
                 .build(),
             )
             .build(),
@@ -341,8 +342,8 @@ internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema =
   return FileSpec.builder(schema.composePackage(host), "layoutModifierSerialization")
     .apply {
       if (schema === host) {
-        addFunction(generateToJsonArray(schema))
-        addFunction(generateToJsonElement(schema))
+        addFunction(generateToProtocolList(schema))
+        addFunction(generateToProtocol(schema))
       }
 
       for (layoutModifier in schema.layoutModifiers) {
@@ -355,15 +356,13 @@ internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema =
               .addModifiers(PRIVATE)
               .addFunction(
                 FunSpec.builder("encode")
-                  .returns(KotlinxSerialization.JsonElement)
-                  .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
+                  .returns(Protocol.LayoutModifierElement)
                   .addStatement(
-                    "add(%M(%L))",
-                    KotlinxSerialization.JsonPrimitive,
+                    "return %T(%T(%L))",
+                    Protocol.LayoutModifierElement,
+                    Protocol.LayoutModifierTag,
                     layoutModifier.tag,
                   )
-                  .addStatement("add(%M {})", KotlinxSerialization.buildJsonObject)
-                  .endControlFlow()
                   .build(),
               )
               .build()
@@ -409,15 +408,14 @@ internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema =
                     FunSpec.builder("encode")
                       .addParameter("json", KotlinxSerialization.Json)
                       .addParameter("value", modifierType)
-                      .returns(KotlinxSerialization.JsonElement)
-                      .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
+                      .returns(Protocol.LayoutModifierElement)
+                      .addStatement("val element = json.encodeToJsonElement(serializer(), %T(value))", surrogateName)
                       .addStatement(
-                        "add(%M(%L))",
-                        KotlinxSerialization.JsonPrimitive,
+                        "return %T(%T(%L), element)",
+                        Protocol.LayoutModifierElement,
+                        Protocol.LayoutModifierTag,
                         layoutModifier.tag,
                       )
-                      .addStatement("add(json.encodeToJsonElement(serializer(), %T(value)))", surrogateName)
-                      .endControlFlow()
                       .build(),
                   )
                   .build(),
@@ -430,24 +428,24 @@ internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema =
     .build()
 }
 
-private fun generateToJsonArray(schema: Schema): FunSpec {
-  return FunSpec.builder("toJsonArray")
+private fun generateToProtocolList(schema: Schema): FunSpec {
+  return FunSpec.builder(schema.toProtocol.simpleName)
     .addModifiers(INTERNAL)
     .receiver(Redwood.LayoutModifier)
     .addParameter("json", KotlinxSerialization.Json)
-    .beginControlFlow("return %M", KotlinxSerialization.buildJsonArray)
-    .addStatement("forEach { element -> add(element.%M(json)) }", schema.toJsonElement)
+    .returns(LIST.parameterizedBy(Protocol.LayoutModifierElement))
+    .beginControlFlow("return %M", Stdlib.buildList)
+    .addStatement("this@%L.forEach { element -> add(element.%M(json)) }", schema.toProtocol.simpleName, schema.toProtocol)
     .endControlFlow()
-    .returns(KotlinxSerialization.JsonArray)
     .build()
 }
 
-private fun generateToJsonElement(schema: Schema): FunSpec {
-  return FunSpec.builder("toJsonElement")
+private fun generateToProtocol(schema: Schema): FunSpec {
+  return FunSpec.builder(schema.toProtocol.simpleName)
     .addModifiers(PRIVATE)
     .receiver(Redwood.LayoutModifierElement)
     .addParameter("json", KotlinxSerialization.Json)
-    .returns(KotlinxSerialization.JsonElement)
+    .returns(Protocol.LayoutModifierElement)
     .beginControlFlow("return when (this)")
     .apply {
       val layoutModifiers = schema.allLayoutModifiers()

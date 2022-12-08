@@ -21,10 +21,10 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.DiffSink
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
-import kotlinx.serialization.json.JsonArray
 
 /**
  * Bridges the serialized Redwood protocol back to widgets on the display side.
@@ -95,8 +95,8 @@ private class DiffConsumingProtocolRoot<W : Any>(
   parentId = Id.Root, // This value is a lie, but it's never accessed on this node.
   parentChildren = children, // This value is a lie, but it's never accessed on this node.
 ) {
-  override fun updateLayoutModifier(value: JsonArray) {
-    throw AssertionError("unexpected: $value")
+  override fun updateLayoutModifier(elements: List<LayoutModifierElement>) {
+    throw AssertionError("unexpected: $elements")
   }
 
   override fun apply(diff: PropertyDiff, eventSink: EventSink) {

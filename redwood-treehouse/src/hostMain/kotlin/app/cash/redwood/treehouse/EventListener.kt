@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Call
@@ -121,7 +122,7 @@ public abstract class EventListener {
    */
   public open fun onUnknownLayoutModifier(
     app: TreehouseApp<*>,
-    tag: Int,
+    tag: LayoutModifierTag,
   ) {
   }
 
