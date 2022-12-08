@@ -32,16 +32,16 @@ private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
-private const val maxSchemaTag = 4_000U
-private const val maxMemberTag = 1_000_000U
+private const val maxSchemaTag = 2_000
+private const val maxMemberTag = 1_000_000
 
 private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
+public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
   val schemaAnnotation = schemaType.schemaAnnotation
-  require(tag in 0U..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
+  require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
 
   val memberTypes = schemaAnnotation.members
 
@@ -145,10 +145,10 @@ public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
 
   val dependencies = schemaAnnotation.dependencies
     .map {
-      require(it.tag in 1..maxSchemaTag.toInt()) {
+      require(it.tag in 1..maxSchemaTag) {
         "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
       }
-      val schema = parseSchema(it.schema, it.tag.toUIntExact())
+      val schema = parseSchema(it.schema, it.tag)
       require(schema.dependencies.isEmpty()) {
         "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
           "For now, only a single level of dependencies is supported."
@@ -186,14 +186,14 @@ public fun parseSchema(schemaType: KClass<*>, tag: UInt = 0U): Schema {
 }
 
 private fun parseWidget(
-  schemaTag: UInt,
+  schemaTag: Int,
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
 ): Widget {
-  require(annotation.tag in 1 until maxMemberTag.toInt()) {
+  require(annotation.tag in 1 until maxMemberTag) {
     "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag.toUIntExact()
+  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
@@ -207,9 +207,9 @@ private fun parseWidget(
           require(arguments.size <= 1) {
             "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
           }
-          Widget.Event(property.tag.toUIntExact(), it.name!!, defaultExpression, arguments.singleOrNull()?.type)
+          Widget.Event(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
         } else {
-          Widget.Property(property.tag.toUIntExact(), it.name!!, it.type, defaultExpression)
+          Widget.Property(property.tag, it.name!!, it.type, defaultExpression)
         }
       } else if (children != null) {
         require(it.type.isSubtypeOf(childrenType)) {
@@ -229,7 +229,7 @@ private fun parseWidget(
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        Widget.Children(children.tag.toUIntExact(), it.name!!, defaultExpression, scope)
+        Widget.Children(children.tag, it.name!!, defaultExpression, scope)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }
@@ -276,17 +276,17 @@ private fun parseWidget(
 }
 
 private fun parseLayoutModifier(
-  schemaTag: UInt,
+  schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): LayoutModifier {
-  require(annotation.tag in 1 until maxMemberTag.toInt()) {
+  require(annotation.tag in 1 until maxMemberTag) {
     "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@LayoutModifier ${memberType.qualifiedName} must have at least one scope."
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag.toUIntExact()
+  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {

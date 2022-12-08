@@ -129,7 +129,7 @@ internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = s
                   for (widget in schema.widgets.sortedBy { it.tag }) {
                     addStatement("%L -> %N(parentId, parentChildren)", widget.tag, widget.type.flatName)
                   }
-                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0U }) {
+                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                     for (widget in dependency.widgets.sortedBy { it.tag }) {
                       addStatement("%L -> %N.%N(parentId, parentChildren)", widget.tag, dependency.name, widget.type.flatName)
                     }
