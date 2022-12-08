@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.Schema
-import app.cash.redwood.schema.parser.Widget
-import app.cash.redwood.schema.parser.Widget.Children
-import app.cash.redwood.schema.parser.Widget.Event
-import app.cash.redwood.schema.parser.Widget.Property
+import app.cash.redwood.schema.parser.ProtocolSchema
+import app.cash.redwood.schema.parser.ProtocolWidget
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolEvent
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -49,7 +49,10 @@ class DiffProducingSunspotWidgetFactory(
   override fun SunspotButton(): SunspotButton<Nothing> = ProtocolSunspotButton(bridge.nextId(), json, mismatchHandler)
 }
 */
-internal fun generateDiffProducingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffProducingWidgetFactory(
+  schema: ProtocolSchema,
+  host: ProtocolSchema = schema,
+): FileSpec {
   val type = schema.diffProducingWidgetFactoryType(host)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
@@ -160,7 +163,11 @@ internal class DiffProducingSunspotButton(
   }
 }
 */
-internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
+internal fun generateDiffProducingWidget(
+  schema: ProtocolSchema,
+  widget: ProtocolWidget,
+  host: ProtocolSchema = schema,
+): FileSpec {
   val type = schema.diffProducingWidgetType(widget, host)
   val widgetName = schema.widgetType(widget)
   return FileSpec.builder(type.packageName, type.simpleName)
@@ -211,7 +218,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
 
           for (trait in widget.traits) {
             when (trait) {
-              is Property -> {
+              is ProtocolProperty -> {
                 val traitTypeName = trait.type.asTypeName()
                 val serializerId = serializerIds.computeIfAbsent(traitTypeName) {
                   nextSerializerId++
@@ -232,7 +239,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .build(),
                 )
               }
-              is Event -> {
+              is ProtocolEvent -> {
                 addProperty(
                   PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
                     .mutable()
@@ -258,7 +265,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
                     .build(),
                 )
               }
-              is Children -> {
+              is ProtocolChildren -> {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
                     .addModifiers(OVERRIDE)
@@ -283,7 +290,7 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
               .addParameter("event", Protocol.Event)
               .beginControlFlow("when (event.tag.value)")
               .apply {
-                for (event in widget.traits.filterIsInstance<Event>()) {
+                for (event in widget.traits.filterIsInstance<ProtocolEvent>()) {
                   val parameterType = event.parameterType?.asTypeName()
                   if (parameterType != null) {
                     val serializerId = serializerIds.computeIfAbsent(parameterType) {
@@ -338,7 +345,10 @@ internal fun generateDiffProducingWidget(schema: Schema, widget: Widget, host: S
     .build()
 }
 
-internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffProducingLayoutModifiers(
+  schema: ProtocolSchema,
+  host: ProtocolSchema = schema,
+): FileSpec {
   return FileSpec.builder(schema.composePackage(host), "layoutModifierSerialization")
     .apply {
       if (schema === host) {
@@ -428,7 +438,7 @@ internal fun generateDiffProducingLayoutModifiers(schema: Schema, host: Schema =
     .build()
 }
 
-private fun generateToProtocolList(schema: Schema): FunSpec {
+private fun generateToProtocolList(schema: ProtocolSchema): FunSpec {
   return FunSpec.builder(schema.toProtocol.simpleName)
     .addModifiers(INTERNAL)
     .receiver(Redwood.LayoutModifier)
@@ -440,7 +450,7 @@ private fun generateToProtocolList(schema: Schema): FunSpec {
     .build()
 }
 
-private fun generateToProtocol(schema: Schema): FunSpec {
+private fun generateToProtocol(schema: ProtocolSchema): FunSpec {
   return FunSpec.builder(schema.toProtocol.simpleName)
     .addModifiers(PRIVATE)
     .receiver(Redwood.LayoutModifierElement)

@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.generator
 
+import app.cash.redwood.schema.parser.ProtocolWidget
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
@@ -47,12 +49,16 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.WidgetFactory.parameterizedBy(typeVariableW))
         .apply {
-          for (node in schema.widgets) {
+          for (widget in schema.widgets) {
             addFunction(
-              FunSpec.builder(node.type.flatName)
+              FunSpec.builder(widget.type.flatName)
                 .addModifiers(PUBLIC, ABSTRACT)
-                .returns(schema.widgetType(node).parameterizedBy(typeVariableW))
-                .addKdoc("{tag=${node.tag}}")
+                .returns(schema.widgetType(widget).parameterizedBy(typeVariableW))
+                .apply {
+                  if (widget is ProtocolWidget) {
+                    addKdoc("{tag=${widget.tag}}")
+                  }
+                }
                 .build(),
             )
           }
@@ -87,7 +93,11 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
-        .addKdoc("{tag=${widget.tag}}")
+        .apply {
+          if (widget is ProtocolWidget) {
+            addKdoc("{tag=${widget.tag}}")
+          }
+        }
         .apply {
           for (trait in widget.traits) {
             when (trait) {
@@ -96,7 +106,11 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
-                    .addKdoc("{tag=${trait.tag}}")
+                    .apply {
+                      if (trait is ProtocolTrait) {
+                        addKdoc("{tag=${trait.tag}}")
+                      }
+                    }
                     .build(),
                 )
               }
@@ -105,7 +119,11 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
-                    .addKdoc("{tag=${trait.tag}}")
+                    .apply {
+                      if (trait is ProtocolTrait) {
+                        addKdoc("{tag=${trait.tag}}")
+                      }
+                    }
                     .build(),
                 )
               }
@@ -113,10 +131,15 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
                     .addModifiers(PUBLIC, ABSTRACT)
-                    .addKdoc("{tag=${trait.tag}}")
+                    .apply {
+                      if (trait is ProtocolTrait) {
+                        addKdoc("{tag=${trait.tag}}")
+                      }
+                    }
                     .build(),
                 )
               }
+              is ProtocolTrait -> throw AssertionError()
             }
           }
         }

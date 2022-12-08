@@ -21,6 +21,8 @@ import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
@@ -39,7 +41,7 @@ private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
+public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchema {
   val schemaAnnotation = schemaType.schemaAnnotation
   require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
 
@@ -58,8 +60,8 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
     )
   }
 
-  val widgets = mutableListOf<Widget>()
-  val layoutModifiers = mutableListOf<LayoutModifier>()
+  val widgets = mutableListOf<ProtocolWidget>()
+  val layoutModifiers = mutableListOf<ProtocolLayoutModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
     val layoutModifierAnnotation = memberType.findAnnotation<LayoutModifierAnnotation>()
@@ -77,7 +79,7 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
     }
   }
 
-  val badWidgets = widgets.groupBy(Widget::tag).filterValues { it.size > 1 }
+  val badWidgets = widgets.groupBy(ProtocolWidget::tag).filterValues { it.size > 1 }
   if (badWidgets.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -90,7 +92,7 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
     )
   }
 
-  val badLayoutModifiers = layoutModifiers.groupBy(LayoutModifier::tag).filterValues { it.size > 1 }
+  val badLayoutModifiers = layoutModifiers.groupBy(ProtocolLayoutModifier::tag).filterValues { it.size > 1 }
   if (badLayoutModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -156,7 +158,7 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): Schema {
       schema
     }
 
-  val schema = Schema(
+  val schema = ParsedProtocolSchema(
     schemaType.simpleName!!,
     schemaType.java.packageName,
     scopes.toList(),
@@ -189,7 +191,7 @@ private fun parseWidget(
   schemaTag: Int,
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
-): Widget {
+): ProtocolWidget {
   require(annotation.tag in 1 until maxMemberTag) {
     "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
@@ -207,9 +209,9 @@ private fun parseWidget(
           require(arguments.size <= 1) {
             "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
           }
-          Widget.Event(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
+          ParsedProtocolEvent(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
         } else {
-          Widget.Property(property.tag, it.name!!, it.type, defaultExpression)
+          ParsedProtocolProperty(property.tag, it.name!!, it.type, defaultExpression)
         }
       } else if (children != null) {
         require(it.type.isSubtypeOf(childrenType)) {
@@ -229,7 +231,7 @@ private fun parseWidget(
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        Widget.Children(children.tag, it.name!!, defaultExpression, scope)
+        ParsedProtocolChildren(children.tag, it.name!!, defaultExpression, scope)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }
@@ -242,8 +244,8 @@ private fun parseWidget(
     )
   }
 
-  val badChildren = traits.filterIsInstance<Widget.Children>()
-    .groupBy(Widget.Children::tag)
+  val badChildren = traits.filterIsInstance<ProtocolChildren>()
+    .groupBy(ProtocolChildren::tag)
     .filterValues { it.size > 1 }
   if (badChildren.isNotEmpty()) {
     throw IllegalArgumentException(
@@ -257,8 +259,8 @@ private fun parseWidget(
     )
   }
 
-  val badProperties = traits.filterIsInstance<Widget.Property>()
-    .groupBy(Widget.Property::tag)
+  val badProperties = traits.filterIsInstance<ProtocolProperty>()
+    .groupBy(ProtocolProperty::tag)
     .filterValues { it.size > 1 }
   if (badProperties.isNotEmpty()) {
     throw IllegalArgumentException(
@@ -272,14 +274,14 @@ private fun parseWidget(
     )
   }
 
-  return Widget(tag, memberType, traits)
+  return ParsedProtocolWidget(tag, memberType, traits)
 }
 
 private fun parseLayoutModifier(
   schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
-): LayoutModifier {
+): ProtocolLayoutModifier {
   require(annotation.tag in 1 until maxMemberTag) {
     "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
@@ -301,7 +303,7 @@ private fun parseLayoutModifier(
     )
   }
 
-  return LayoutModifier(
+  return ParsedProtocolLayoutModifier(
     tag,
     annotation.scopes.toList(),
     memberType,

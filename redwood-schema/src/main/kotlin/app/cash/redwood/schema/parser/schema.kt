@@ -15,64 +15,78 @@
  */
 package app.cash.redwood.schema.parser
 
+import app.cash.redwood.schema.parser.Widget.Trait
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
-public data class Schema(
-  val name: String,
-  val `package`: String,
-  val scopes: List<KClass<*>>,
-  val widgets: List<Widget>,
-  val layoutModifiers: List<LayoutModifier>,
-  val dependencies: List<Schema>,
-)
+public interface Schema {
+  public val name: String
+  public val `package`: String
+  public val scopes: List<KClass<*>>
+  public val widgets: List<Widget>
+  public val layoutModifiers: List<LayoutModifier>
+  public val dependencies: List<Schema>
+}
 
-public data class Widget(
-  val tag: Int,
+public interface Widget {
   /** Either a 'data class' or 'object'. */
-  val type: KClass<*>,
+  public val type: KClass<*>
+
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
-  val traits: List<Trait>,
-) {
+  public val traits: List<Trait>
+
   public sealed interface Trait {
-    public val tag: Int
     public val name: String
     public val defaultExpression: String?
   }
 
-  public data class Property(
-    override val tag: Int,
-    override val name: String,
-    val type: KType,
-    override val defaultExpression: String?,
-  ) : Trait
+  public interface Property : Trait {
+    public val type: KType
+  }
 
-  public data class Event(
-    override val tag: Int,
-    override val name: String,
-    override val defaultExpression: String?,
-    val parameterType: KType?,
-  ) : Trait
+  public interface Event : Trait {
+    public val parameterType: KType?
+  }
 
-  public data class Children(
-    override val tag: Int,
-    override val name: String,
-    override val defaultExpression: String?,
-    val scope: KClass<*>? = null,
-  ) : Trait
+  public interface Children : Trait {
+    public val scope: KClass<*>?
+  }
 }
 
-public data class LayoutModifier(
-  val tag: Int,
-  val scopes: List<KClass<*>>,
+public interface LayoutModifier {
+  public val scopes: List<KClass<*>>
+
   /** Either a 'data class' or 'object'. */
-  val type: KClass<*>,
+  public val type: KClass<*>
+
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
-  val properties: List<Property>,
-) {
+  public val properties: List<Property>
+
   public data class Property(
     val name: String,
     val type: KType,
     val defaultExpression: String?,
   )
+}
+
+public interface ProtocolSchema : Schema {
+  override val widgets: List<ProtocolWidget>
+  override val layoutModifiers: List<ProtocolLayoutModifier>
+  override val dependencies: List<ProtocolSchema>
+}
+
+public interface ProtocolWidget : Widget {
+  public val tag: Int
+  override val traits: List<ProtocolTrait>
+
+  public sealed interface ProtocolTrait : Trait {
+    public val tag: Int
+  }
+  public interface ProtocolProperty : Widget.Property, ProtocolTrait
+  public interface ProtocolEvent : Widget.Event, ProtocolTrait
+  public interface ProtocolChildren : Widget.Children, ProtocolTrait
+}
+
+public interface ProtocolLayoutModifier : LayoutModifier {
+  public val tag: Int
 }

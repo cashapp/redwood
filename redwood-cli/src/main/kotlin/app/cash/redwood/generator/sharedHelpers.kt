@@ -16,6 +16,8 @@
 package app.cash.redwood.generator
 
 import app.cash.redwood.schema.parser.LayoutModifier
+import app.cash.redwood.schema.parser.ProtocolLayoutModifier
+import app.cash.redwood.schema.parser.ProtocolSchema
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Event
@@ -114,7 +116,7 @@ internal val Schema.toLayoutModifier: MemberName get() =
 internal val Schema.toProtocol: MemberName get() =
   MemberName(composePackage(this), "toProtocol")
 
-internal fun Schema.allLayoutModifiers(): List<Pair<Schema, LayoutModifier>> {
+internal fun ProtocolSchema.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
   return (listOf(this) + dependencies).flatMap { schema ->
     schema.layoutModifiers.map { schema to it }
   }
