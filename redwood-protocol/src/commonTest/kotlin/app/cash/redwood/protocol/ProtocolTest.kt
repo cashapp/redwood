@@ -22,6 +22,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
 class ProtocolTest {
@@ -63,6 +64,21 @@ class ProtocolTest {
               LayoutModifierTag(1),
               buildJsonObject { },
             ),
+            LayoutModifierElement(
+              LayoutModifierTag(2),
+              JsonPrimitive(3),
+            ),
+            LayoutModifierElement(
+              LayoutModifierTag(3),
+              buildJsonArray { },
+            ),
+            LayoutModifierElement(
+              LayoutModifierTag(4),
+            ),
+            LayoutModifierElement(
+              LayoutModifierTag(5),
+              JsonNull,
+            ),
           ),
         ),
       ),
@@ -77,7 +93,7 @@ class ProtocolTest {
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
       """],"layoutModifiers":[""" +
-      """{"id":1,"elements":[[1,{}]]}""" +
+      """{"id":1,"elements":[[1,{}],[2,3],[3,[]],[4],[5]]}""" +
       """],"propertyDiffs":[""" +
       """{"id":1,"tag":2,"value":"Hello"},""" +
       """{"id":1,"tag":2}""" +

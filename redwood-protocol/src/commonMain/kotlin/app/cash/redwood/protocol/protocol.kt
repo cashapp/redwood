@@ -15,18 +15,21 @@
  */
 package app.cash.redwood.protocol
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.serializer
 
 @Serializable
 public data class Event(
@@ -71,13 +74,14 @@ public data class LayoutModifierElement(
 }
 
 private object LayoutModifierElementSerializer : KSerializer<LayoutModifierElement> {
-  private val delegate = serializer<Array<JsonElement>>()
-
-  @OptIn(ExperimentalSerializationApi::class)
-  override val descriptor = SerialDescriptor("LayoutModifierElement", delegate.descriptor)
+  override val descriptor = buildClassSerialDescriptor("LayoutModifierElement") {
+    element<LayoutModifierTag>("tag")
+    element<JsonElement>("value")
+  }
 
   override fun deserialize(decoder: Decoder): LayoutModifierElement {
-    val decoded = decoder.decodeSerializableValue(delegate)
+    check(decoder is JsonDecoder) { "Can be deserialized only by JSON" }
+    val decoded = decoder.decodeJsonElement().jsonArray
     check(decoded.size in 1..2) {
       "LayoutModifierElement array may only have 1 or 2 values. Found: ${decoded.size}"
     }
@@ -87,18 +91,15 @@ private object LayoutModifierElementSerializer : KSerializer<LayoutModifierEleme
   }
 
   override fun serialize(encoder: Encoder, value: LayoutModifierElement) {
-    encoder.beginStructure(delegate.descriptor).apply {
-      encodeIntElement(Int.serializer().descriptor, 0, value.tag.value)
-      if (value.value != LayoutModifierElement.DefaultValue) {
-        encodeSerializableElement(
-          JsonElement.serializer().descriptor,
-          1,
-          JsonElement.serializer(),
-          value.value,
-        )
-      }
-      endStructure(delegate.descriptor)
-    }
+    check(encoder is JsonEncoder) { "Can be serialized only by JSON" }
+    encoder.encodeJsonElement(
+      buildJsonArray {
+        add(JsonPrimitive(value.tag.value))
+        if (value.value != LayoutModifierElement.DefaultValue) {
+          add(value.value)
+        }
+      },
+    )
   }
 }
 
