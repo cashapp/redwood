@@ -17,7 +17,7 @@ package app.cash.redwood.generator
 
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Schema
-import app.cash.redwood.schema.parser.parseSchema
+import app.cash.redwood.tooling.schema.parseSchema
 import com.google.common.truth.Truth.assertThat
 import example.redwood.compose.TestScope
 import kotlin.time.Duration.Companion.minutes

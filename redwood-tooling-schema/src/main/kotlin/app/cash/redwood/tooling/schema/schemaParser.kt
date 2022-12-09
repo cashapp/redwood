@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.parser
+package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.schema.Children as ChildrenAnnotation
 import app.cash.redwood.schema.Default as DefaultAnnotation
@@ -21,8 +21,8 @@ import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf

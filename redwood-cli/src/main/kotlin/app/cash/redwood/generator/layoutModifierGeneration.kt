@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.LayoutModifier
-import app.cash.redwood.schema.parser.Schema
+import app.cash.redwood.tooling.schema.LayoutModifier
+import app.cash.redwood.tooling.schema.Schema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
