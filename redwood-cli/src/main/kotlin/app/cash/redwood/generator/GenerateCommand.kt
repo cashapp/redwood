@@ -71,14 +71,7 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     when (type) {
       Compose -> {
         generateComposableTargetMarker(schema).writeTo(out)
-        generateLayoutModifierImpls(schema)?.writeTo(out)
-        for (scope in schema.scopes) {
-          generateScope(schema, scope).writeTo(out)
-        }
-        for (widget in schema.widgets) {
-          generateComposable(schema, widget).writeTo(out)
-        }
-        for (dependency in schema.dependencies) {
+        for (dependency in schema.allSchemas) {
           generateLayoutModifierImpls(dependency)?.writeTo(out)
           for (scope in dependency.scopes) {
             generateScope(dependency, scope).writeTo(out)
@@ -89,12 +82,7 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         }
       }
       ComposeProtocol -> {
-        generateDiffProducingWidgetFactory(schema).writeTo(out)
-        generateDiffProducingLayoutModifiers(schema).writeTo(out)
-        for (widget in schema.widgets) {
-          generateDiffProducingWidget(schema, widget).writeTo(out)
-        }
-        for (dependency in schema.dependencies) {
+        for (dependency in schema.allSchemas) {
           generateDiffProducingWidgetFactory(dependency, host = schema).writeTo(out)
           generateDiffProducingLayoutModifiers(dependency, host = schema).writeTo(out)
           for (widget in dependency.widgets) {
@@ -114,12 +102,7 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         }
       }
       WidgetProtocol -> {
-        generateDiffConsumingWidgetFactory(schema).writeTo(out)
-        generateDiffConsumingLayoutModifiers(schema).writeTo(out)
-        for (widget in schema.widgets) {
-          generateDiffConsumingWidget(schema, widget).writeTo(out)
-        }
-        for (dependency in schema.dependencies) {
+        for (dependency in schema.allSchemas) {
           generateDiffConsumingWidgetFactory(dependency, host = schema).writeTo(out)
           generateDiffConsumingLayoutModifiers(dependency, host = schema).writeTo(out)
           for (widget in dependency.widgets) {

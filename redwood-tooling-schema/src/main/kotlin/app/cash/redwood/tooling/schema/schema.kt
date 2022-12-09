@@ -29,6 +29,12 @@ public interface Schema {
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
   public val dependencies: List<Schema>
+
+  /** This schema and all its [dependencies]. */
+  public val allSchemas: List<Schema> get() = buildList {
+    add(this@Schema)
+    addAll(dependencies)
+  }
 }
 
 public interface Widget {
@@ -76,6 +82,11 @@ public interface ProtocolSchema : Schema {
   override val widgets: List<ProtocolWidget>
   override val layoutModifiers: List<ProtocolLayoutModifier>
   override val dependencies: List<ProtocolSchema>
+
+  override val allSchemas: List<ProtocolSchema> get() = buildList {
+    add(this@ProtocolSchema)
+    addAll(dependencies)
+  }
 }
 
 public interface ProtocolWidget : Widget {
