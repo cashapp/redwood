@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.lint
+package app.cash.redwood.tooling.lint
 
 /**
  * Merges one or more API definitions into a single, merged API definition.

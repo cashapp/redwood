@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.lint
+package app.cash.redwood.tooling.lint
 
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.assertFailsWith

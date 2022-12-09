@@ -79,6 +79,7 @@ test {
   dependsOn(':redwood-protocol-widget:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-runtime:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-schema:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-tooling-lint:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-tooling-schema:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-widget:publishAllPublicationsToLocalMavenRepository')
 
