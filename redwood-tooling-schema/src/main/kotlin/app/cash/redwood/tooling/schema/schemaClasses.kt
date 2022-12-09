@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.parser
+package app.cash.redwood.tooling.schema
 
-import app.cash.redwood.schema.parser.LayoutModifier.Property
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolEvent
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolTrait
+import app.cash.redwood.tooling.schema.LayoutModifier.Property
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 

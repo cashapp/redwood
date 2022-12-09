@@ -1,11 +1,7 @@
-apply plugin: 'java-library'
-apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
-dependencies {
-  api projects.redwoodSchemaAnnotations
-  api libs.kotlin.reflect
-
-  testImplementation libs.junit
-  testImplementation libs.truth
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
 }

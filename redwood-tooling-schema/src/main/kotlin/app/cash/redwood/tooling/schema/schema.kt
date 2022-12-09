@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.parser
+package app.cash.redwood.tooling.schema
 
-import app.cash.redwood.schema.parser.Widget.Trait
+import app.cash.redwood.tooling.schema.Widget.Children
+import app.cash.redwood.tooling.schema.Widget.Event
+import app.cash.redwood.tooling.schema.Widget.Property
+import app.cash.redwood.tooling.schema.Widget.Trait
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
@@ -82,9 +85,9 @@ public interface ProtocolWidget : Widget {
   public sealed interface ProtocolTrait : Trait {
     public val tag: Int
   }
-  public interface ProtocolProperty : Widget.Property, ProtocolTrait
-  public interface ProtocolEvent : Widget.Event, ProtocolTrait
-  public interface ProtocolChildren : Widget.Children, ProtocolTrait
+  public interface ProtocolProperty : Property, ProtocolTrait
+  public interface ProtocolEvent : Event, ProtocolTrait
+  public interface ProtocolChildren : Children, ProtocolTrait
 }
 
 public interface ProtocolLayoutModifier : LayoutModifier {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.parser
+package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.LayoutModifier
@@ -21,7 +21,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.schema.parser.Widget.Event
+import app.cash.redwood.tooling.schema.Widget.Event
 import com.google.common.truth.Truth.assertThat
 import kotlin.reflect.full.createType
 import org.junit.Test
@@ -35,7 +35,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotationSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Schema app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotationSchema missing @Schema annotation",
+      "Schema app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotationSchema missing @Schema annotation",
     )
   }
 
@@ -53,7 +53,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @LayoutModifier",
+      "app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @LayoutModifier",
     )
   }
 
@@ -74,7 +74,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(DoubleAnnotatedWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "app.cash.redwood.schema.parser.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
+      "app.cash.redwood.tooling.schema.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
     )
   }
 
@@ -109,7 +109,7 @@ class SchemaParserTest {
       """
       |Schema @Widget tags must be unique
       |
-      |- @Widget(1): app.cash.redwood.schema.parser.SchemaParserTest.DuplicateWidgetTagA, app.cash.redwood.schema.parser.SchemaParserTest.DuplicateWidgetTagB
+      |- @Widget(1): app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateWidgetTagA, app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateWidgetTagB
       """.trimMargin(),
     )
   }
@@ -145,7 +145,7 @@ class SchemaParserTest {
       """
       |Schema @LayoutModifier tags must be unique
       |
-      |- @LayoutModifier(1): app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagA, app.cash.redwood.schema.parser.SchemaParserTest.DuplicateLayoutModifierTagB
+      |- @LayoutModifier(1): app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateLayoutModifierTagA, app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateLayoutModifierTagB
       """.trimMargin(),
     )
   }
@@ -170,7 +170,7 @@ class SchemaParserTest {
       """
       |Schema contains repeated member
       |
-      |- app.cash.redwood.schema.parser.SchemaParserTest.RepeatedWidget
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.RepeatedWidget
       """.trimMargin(),
     )
   }
@@ -194,7 +194,7 @@ class SchemaParserTest {
       parseSchema(DuplicatePropertyTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |app.cash.redwood.schema.parser.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
+      |app.cash.redwood.tooling.schema.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
       |- @Property(1): name, nickname
       """.trimMargin(),
@@ -220,7 +220,7 @@ class SchemaParserTest {
       parseSchema(DuplicateChildrenTagSchema::class)
     }.hasMessageThat().isEqualTo(
       """
-      |app.cash.redwood.schema.parser.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
+      |app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
       |- @Children(1): childrenA, childrenB
       """.trimMargin(),
@@ -245,7 +245,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnannotatedPrimaryParameterSchema::class)
     }.hasMessageThat().isEqualTo(
-      "Unannotated parameter \"unannotated\" on app.cash.redwood.schema.parser.SchemaParserTest.UnannotatedPrimaryParameterWidget",
+      "Unannotated parameter \"unannotated\" on app.cash.redwood.tooling.schema.SchemaParserTest.UnannotatedPrimaryParameterWidget",
     )
   }
 
@@ -265,7 +265,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
+      "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
     )
   }
 
@@ -285,7 +285,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(NonDataClassLayoutModifierSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.NonDataClassLayoutModifier must be 'data' class or 'object'",
+      "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassLayoutModifier must be 'data' class or 'object'",
     )
   }
 
@@ -305,7 +305,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
     )
   }
 
@@ -325,7 +325,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ChildrenArgumentsInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
         "Found: [kotlin.String]",
     )
   }
@@ -346,7 +346,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ScopedChildrenArgumentsInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
         "Found: [kotlin.Int]",
     )
   }
@@ -367,7 +367,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ScopedChildrenInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
         "Found: kotlin.collections.List<kotlin.Int>",
     )
   }
@@ -388,7 +388,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ScopedChildrenTypeParameterInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Children app.cash.redwood.schema.parser.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a class. " +
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a class. " +
         "Found: T",
     )
   }
@@ -455,7 +455,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(EventArgumentsInvalidSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Property app.cash.redwood.schema.parser.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
+      "@Property app.cash.redwood.tooling.schema.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
         "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]",
     )
   }
@@ -490,7 +490,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(OneMillionWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.OneMillionWidget " +
+      "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionWidget " +
         "tag must be in range [1, 1000000): 1000000",
     )
   }
@@ -509,7 +509,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ZeroWidgetSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@Widget app.cash.redwood.schema.parser.SchemaParserTest.ZeroWidget " +
+      "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.ZeroWidget " +
         "tag must be in range [1, 1000000): 0",
     )
   }
@@ -530,7 +530,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(OneMillionLayoutModifierSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.OneMillionLayoutModifier " +
+      "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionLayoutModifier " +
         "tag must be in range [1, 1000000): 1000000",
     )
   }
@@ -551,7 +551,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(ZeroLayoutModifierSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.ZeroLayoutModifier " +
+      "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.ZeroLayoutModifier " +
         "tag must be in range [1, 1000000): 0",
     )
   }
@@ -629,13 +629,13 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaDependencyTagTooHigh::class)
     }.hasMessageThat().isEqualTo(
-      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 2001",
+      "Dependency app.cash.redwood.tooling.schema.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 2001",
     )
 
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaDependencyTagTooLow::class)
     }.hasMessageThat().isEqualTo(
-      "Dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 0",
+      "Dependency app.cash.redwood.tooling.schema.SchemaParserTest.SchemaTag tag must be in range (0, 2000]: 0",
     )
   }
 
@@ -661,7 +661,7 @@ class SchemaParserTest {
       """
       |Schema dependency tags must be unique
       |
-      |- Dependency tag 1: app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTagA, app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTagB
+      |- Dependency tag 1: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaDuplicateDependencyTagA, app.cash.redwood.tooling.schema.SchemaParserTest.SchemaDuplicateDependencyTagB
       """.trimMargin(),
     )
   }
@@ -685,7 +685,7 @@ class SchemaParserTest {
       """
       |Schema contains repeated dependency
       |
-      |- app.cash.redwood.schema.parser.SchemaParserTest.SchemaDuplicateDependencyTypeOther
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.SchemaDuplicateDependencyTypeOther
       """.trimMargin(),
     )
   }
@@ -713,7 +713,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(SchemaDependencyHasDependency::class)
     }.hasMessageThat().isEqualTo(
-      "Schema dependency app.cash.redwood.schema.parser.SchemaParserTest.SchemaDependencyHasDependencyA also has its own dependencies. " +
+      "Schema dependency app.cash.redwood.tooling.schema.SchemaParserTest.SchemaDependencyHasDependencyA also has its own dependencies. " +
         "For now, only a single level of dependencies is supported.",
     )
   }
@@ -743,7 +743,7 @@ class SchemaParserTest {
       """
       |Schema dependency tree contains duplicated widgets
       |
-      |- app.cash.redwood.schema.parser.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesB
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesB
       """.trimMargin(),
     )
   }
@@ -765,7 +765,7 @@ class SchemaParserTest {
       """
       |Schema dependency tree contains duplicated widgets
       |
-      |- app.cash.redwood.schema.parser.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.schema.parser.SchemaWidgetDuplicateInDependency, app.cash.redwood.schema.parser.SchemaWidgetDuplicateAcrossDependenciesA
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateInDependency, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA
       """.trimMargin(),
     )
   }
@@ -784,7 +784,7 @@ class SchemaParserTest {
     assertThrows<IllegalArgumentException> {
       parseSchema(UnscopedModifierSchema::class)
     }.hasMessageThat().isEqualTo(
-      "@LayoutModifier app.cash.redwood.schema.parser.SchemaParserTest.UnscopedLayoutModifier " +
+      "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedLayoutModifier " +
         "must have at least one scope.",
     )
   }

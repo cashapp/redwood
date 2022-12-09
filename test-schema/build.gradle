@@ -1,6 +1,6 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
-  implementation projects.redwoodSchemaAnnotations
+  implementation projects.redwoodSchema
   implementation projects.redwoodLayoutSchema
 }

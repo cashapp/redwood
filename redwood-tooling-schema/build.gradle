@@ -1,8 +1,11 @@
+apply plugin: 'java-library'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
   api projects.redwoodSchema
-  api projects.redwoodLayoutApi
+  api libs.kotlin.reflect
+
+  testImplementation libs.junit
+  testImplementation libs.truth
 }

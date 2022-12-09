@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.ProtocolSchema
-import app.cash.redwood.schema.parser.ProtocolWidget
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolEvent
-import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolWidget
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec

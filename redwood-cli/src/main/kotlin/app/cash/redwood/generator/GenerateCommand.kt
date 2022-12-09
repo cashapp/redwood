@@ -20,7 +20,7 @@ import app.cash.redwood.generator.GenerateCommand.Type.ComposeProtocol
 import app.cash.redwood.generator.GenerateCommand.Type.LayoutModifiers
 import app.cash.redwood.generator.GenerateCommand.Type.Widget
 import app.cash.redwood.generator.GenerateCommand.Type.WidgetProtocol
-import app.cash.redwood.schema.parser.parseSchema
+import app.cash.redwood.tooling.schema.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.schema.parser
+package app.cash.redwood.tooling.schema
 
 import com.google.common.truth.Subject
 import com.google.common.truth.ThrowableSubject
