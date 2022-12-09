@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
-  api projects.redwoodFlexContainer
+  api projects.redwoodFlexbox
   api projects.redwoodLayoutApi
   api projects.redwoodLayoutSchema.layoutModifiers
   api projects.redwoodRuntime
