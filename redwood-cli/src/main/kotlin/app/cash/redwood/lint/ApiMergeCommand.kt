@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.lint
 
+import app.cash.redwood.tooling.lint.ApiMerger
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
