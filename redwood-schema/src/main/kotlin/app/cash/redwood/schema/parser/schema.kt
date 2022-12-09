@@ -28,34 +28,34 @@ public data class Schema(
 )
 
 public data class Widget(
-  val tag: UInt,
+  val tag: Int,
   /** Either a 'data class' or 'object'. */
   val type: KClass<*>,
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   val traits: List<Trait>,
 ) {
   public sealed interface Trait {
-    public val tag: UInt
+    public val tag: Int
     public val name: String
     public val defaultExpression: String?
   }
 
   public data class Property(
-    override val tag: UInt,
+    override val tag: Int,
     override val name: String,
     val type: KType,
     override val defaultExpression: String?,
   ) : Trait
 
   public data class Event(
-    override val tag: UInt,
+    override val tag: Int,
     override val name: String,
     override val defaultExpression: String?,
     val parameterType: KType?,
   ) : Trait
 
   public data class Children(
-    override val tag: UInt,
+    override val tag: Int,
     override val name: String,
     override val defaultExpression: String?,
     val scope: KClass<*>? = null,
@@ -63,7 +63,7 @@ public data class Widget(
 }
 
 public data class LayoutModifier(
-  val tag: UInt,
+  val tag: Int,
   val scopes: List<KClass<*>>,
   /** Either a 'data class' or 'object'. */
   val type: KClass<*>,
