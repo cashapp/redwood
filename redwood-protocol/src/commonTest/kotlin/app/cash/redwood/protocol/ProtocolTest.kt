@@ -29,6 +29,13 @@ class ProtocolTest {
     useArrayPolymorphism = true
   }
 
+  @Test fun constants() {
+    // This is otherwise a change-detector test, but since these values are included in
+    // the serialized form they must never change.
+    assertEquals(0, Id.Root.value)
+    assertEquals(1, ChildrenTag.Root.value)
+  }
+
   @Test fun eventNonNullValue() {
     val model = Event(Id(1), EventTag(2), JsonPrimitive("Hello"))
     val json = """{"id":1,"tag":2,"value":"Hello"}"""
