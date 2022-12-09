@@ -9,7 +9,7 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
   api projects.redwoodLayoutSchema.widget
-  implementation projects.redwoodFlexContainer
+  implementation projects.redwoodFlexbox
   implementation projects.redwoodWidgetCompose
   implementation libs.androidx.core
   implementation libs.androidx.compose.foundation
