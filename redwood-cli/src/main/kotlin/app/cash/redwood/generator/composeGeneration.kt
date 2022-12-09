@@ -16,6 +16,7 @@
 package app.cash.redwood.generator
 
 import app.cash.redwood.schema.parser.LayoutModifier
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.schema.parser.Schema
 import app.cash.redwood.schema.parser.Widget
 import app.cash.redwood.schema.parser.Widget.Children
@@ -159,6 +160,7 @@ internal fun generateComposable(
                     }
                     .build()
                 }
+                is ProtocolTrait -> throw AssertionError()
               },
             )
             index++
@@ -194,6 +196,7 @@ internal fun generateComposable(
                   add("}\n")
                 }
               }
+              is ProtocolTrait -> throw AssertionError()
             }
           }
 

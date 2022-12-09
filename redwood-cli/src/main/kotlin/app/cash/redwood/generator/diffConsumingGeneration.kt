@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.Schema
-import app.cash.redwood.schema.parser.Widget
-import app.cash.redwood.schema.parser.Widget.Children
-import app.cash.redwood.schema.parser.Widget.Event
-import app.cash.redwood.schema.parser.Widget.Property
+import app.cash.redwood.schema.parser.ProtocolSchema
+import app.cash.redwood.schema.parser.ProtocolWidget
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolEvent
+import app.cash.redwood.schema.parser.ProtocolWidget.ProtocolProperty
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -69,7 +69,10 @@ public class DiffConsumingSunspotWidgetFactory<W : Any>(
   etc.
 }
 */
-internal fun generateDiffConsumingWidgetFactory(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffConsumingWidgetFactory(
+  schema: ProtocolSchema,
+  host: ProtocolSchema = schema,
+): FileSpec {
   val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableW)
   val type = schema.diffConsumingWidgetFactoryType(host)
   return FileSpec.builder(type.packageName, type.simpleName)
@@ -212,7 +215,11 @@ internal class DiffConsumingSunspotButton<W : Any>(
   }
 }
 */
-internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: Schema = schema): FileSpec {
+internal fun generateDiffConsumingWidget(
+  schema: ProtocolSchema,
+  widget: ProtocolWidget,
+  host: ProtocolSchema = schema,
+): FileSpec {
   val type = schema.diffConsumingWidgetType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
@@ -249,7 +256,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
             .build(),
         )
         .apply {
-          val (childrens, properties) = widget.traits.partition { it is Children }
+          val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
           var nextSerializerId = 0
           val serializerIds = mutableMapOf<TypeName, Int>()
 
@@ -262,7 +269,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
               .apply {
                 for (trait in properties) {
                   when (trait) {
-                    is Property -> {
+                    is ProtocolProperty -> {
                       val propertyType = trait.type.asTypeName()
                       val serializerId = serializerIds.computeIfAbsent(propertyType) {
                         nextSerializerId++
@@ -276,7 +283,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       )
                     }
 
-                    is Event -> {
+                    is ProtocolEvent -> {
                       beginControlFlow("%L ->", trait.tag)
                       beginControlFlow(
                         "val %N: %T = if (diff.value.%M.%M)",
@@ -312,7 +319,7 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
                       endControlFlow()
                     }
 
-                    is Children -> throw AssertionError()
+                    is ProtocolChildren -> throw AssertionError()
                   }
                 }
 
@@ -381,7 +388,10 @@ internal fun generateDiffConsumingWidget(schema: Schema, widget: Widget, host: S
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifiers(schema: Schema, host: Schema = schema): FileSpec {
+internal fun generateDiffConsumingLayoutModifiers(
+  schema: ProtocolSchema,
+  host: ProtocolSchema = schema,
+): FileSpec {
   return FileSpec.builder(schema.widgetPackage(host), "layoutModifierSerialization")
     .apply {
       if (schema === host) {
@@ -434,7 +444,7 @@ internal fun generateDiffConsumingLayoutModifiers(schema: Schema, host: Schema =
     .build()
 }
 
-private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
+private fun generateJsonArrayToLayoutModifier(schema: ProtocolSchema): FunSpec {
   return FunSpec.builder("toLayoutModifier")
     .addModifiers(INTERNAL)
     .receiver(LIST.parameterizedBy(Protocol.LayoutModifierElement))
@@ -454,7 +464,7 @@ private fun generateJsonArrayToLayoutModifier(schema: Schema): FunSpec {
     .build()
 }
 
-private fun generateJsonElementToLayoutModifier(schema: Schema): FunSpec {
+private fun generateJsonElementToLayoutModifier(schema: ProtocolSchema): FunSpec {
   return FunSpec.builder("toLayoutModifier")
     .addModifiers(PRIVATE)
     .receiver(Protocol.LayoutModifierElement)
