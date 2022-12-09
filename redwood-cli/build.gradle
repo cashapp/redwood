@@ -10,7 +10,7 @@ application {
 }
 
 dependencies {
-  implementation projects.redwoodSchema
+  implementation projects.redwoodToolingSchema
   implementation libs.kotlinPoet
   implementation libs.lint.core
   implementation libs.clikt

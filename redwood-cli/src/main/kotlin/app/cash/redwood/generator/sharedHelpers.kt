@@ -15,12 +15,12 @@
  */
 package app.cash.redwood.generator
 
-import app.cash.redwood.schema.parser.LayoutModifier
-import app.cash.redwood.schema.parser.ProtocolLayoutModifier
-import app.cash.redwood.schema.parser.ProtocolSchema
-import app.cash.redwood.schema.parser.Schema
-import app.cash.redwood.schema.parser.Widget
-import app.cash.redwood.schema.parser.Widget.Event
+import app.cash.redwood.tooling.schema.LayoutModifier
+import app.cash.redwood.tooling.schema.ProtocolLayoutModifier
+import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.Widget
+import app.cash.redwood.tooling.schema.Widget.Event
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName

@@ -28,5 +28,5 @@ allprojects {
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
-  api "app.cash.redwood:redwood-schema-annotations:$redwoodVersion"
+  api "app.cash.redwood:redwood-schema:$redwoodVersion"
 }

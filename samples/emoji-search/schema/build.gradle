@@ -1,8 +1,8 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
+  api projects.redwoodSchema
   api projects.redwoodLayoutSchema
-  api projects.redwoodSchemaAnnotations
   api projects.redwoodTreehouseLazylayoutSchema
   api projects.samples.emojiSearch.values
 }
