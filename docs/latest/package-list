@@ -3,7 +3,7 @@ $dokka.linkExtension:html
 
 module:redwood-compose
 app.cash.redwood.compose
-module:redwood-flex-container
+module:redwood-flexbox
 app.cash.redwood.flexbox
 module:redwood-layout-api
 app.cash.redwood.layout.api
