@@ -45,7 +45,7 @@ import app.cash.redwood.widget.Widget
  * The hierarchy is maintained by Compose's slot table and is represented by dotted lines above.
  */
 public class WidgetApplier<W : Any>(
-  public val factory: Widget.Factory<W>,
+  public val provider: Widget.Provider<W>,
   root: Widget.Children<W>,
   private val onEndChanges: () -> Unit = {},
 ) : AbstractApplier<Widget<W>>(ChildrenWidget(root)) {

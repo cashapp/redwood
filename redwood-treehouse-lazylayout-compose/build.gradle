@@ -1,0 +1,20 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.compose'
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodTreehouseLazylayoutApi
+        api projects.redwoodTreehouseLazylayoutWidget
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.redwoodTreehouseLazylayoutSchema
+  type = 'app.cash.redwood.treehouse.lazylayout.RedwoodTreehouseLazyLayout'
+}

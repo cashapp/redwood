@@ -24,9 +24,10 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
-import example.schema.compose.DiffProducingEmojiSearchWidgetFactory
+import example.schema.compose.EmojiSearchDiffProducingWidgetFactories
 import example.schema.compose.Image
 import example.schema.compose.Text
 import example.schema.compose.TextInput
@@ -36,8 +37,8 @@ class EmojiSearchTreehouseUi(
   private val initialViewModel: EmojiSearchViewModel,
   private val viewModels: Flow<EmojiSearchViewModel>,
   private val onEvent: (EmojiSearchEvent) -> Unit,
-  override val factory: DiffProducingEmojiSearchWidgetFactory,
-) : TreehouseUi, DiffProducingWidgetFactoryProvider {
+  private val factories: EmojiSearchDiffProducingWidgetFactories,
+) : TreehouseUi, DiffProducingWidget.Provider by factories {
 
   @Composable
   override fun Show() {

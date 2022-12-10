@@ -16,7 +16,6 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import example.redwood.widget.Button
 import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
@@ -26,10 +25,6 @@ import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 
 open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
-  override val RedwoodLayout = object : RedwoodLayoutWidgetFactory<Nothing> {
-    override fun Column() = TODO()
-    override fun Row() = TODO()
-  }
   override fun Row(): Row<Nothing> = TODO()
   override fun ScopedRow(): ScopedRow<Nothing> = TODO()
   override fun Text(): Text<Nothing> = TODO()

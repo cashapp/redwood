@@ -31,7 +31,7 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.Button
-import example.redwood.compose.DiffProducingExampleSchemaWidgetFactory
+import example.redwood.compose.ExampleSchemaDiffProducingWidgetFactories
 import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlin.test.Test
@@ -49,7 +49,7 @@ class ProtocolTest {
     val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
+      provider = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge()),
       diffSink = ::error,
       widgetVersion = 22U,
     )
@@ -68,7 +68,7 @@ class ProtocolTest {
     val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(ProtocolBridge()),
+      provider = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge()),
       diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )
@@ -115,7 +115,7 @@ class ProtocolTest {
     val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      factory = DiffProducingExampleSchemaWidgetFactory(bridge),
+      provider = ExampleSchemaDiffProducingWidgetFactories(bridge),
       diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )

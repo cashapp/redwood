@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch.composeui
+package app.cash.redwood.protocol.widget
 
-import androidx.compose.runtime.Composable
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.TreehouseApp
-import example.schema.widget.EmojiSearchWidgetFactory
+import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 
-class AndroidEmojiSearchWidgetFactory<A : AppService>(
-  private val treehouseApp: TreehouseApp<A>,
-) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
-  override fun TextInput() = ComposeUiTextInput(treehouseApp.dispatchers)
-  override fun Text() = ComposeUiText()
-  override fun Image() = ComposeUiImage()
+class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Nothing> {
+  override fun Column() = TODO()
+  override fun Row() = TODO()
 }

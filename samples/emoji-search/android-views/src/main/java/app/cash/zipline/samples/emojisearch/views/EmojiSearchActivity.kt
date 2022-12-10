@@ -18,16 +18,19 @@ package app.cash.zipline.samples.emojisearch.views
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
+import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseLauncher
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.samples.emojisearch.EmojiSearchAppSpec
 import app.cash.zipline.samples.emojisearch.EmojiSearchPresenter
 import example.schema.widget.EmojiSearchDiffConsumingNodeFactory
+import example.schema.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.serialization.json.Json
@@ -49,10 +52,13 @@ class EmojiSearchActivity : ComponentActivity() {
         protocolMismatchHandler: ProtocolMismatchHandler,
       ): DiffConsumingNode.Factory<*> {
         return EmojiSearchDiffConsumingNodeFactory(
-          widgets = AndroidViewEmojiSearchWidgetFactory(
-            context = this@EmojiSearchActivity,
-            treehouseApp = treehouseApp,
-            widgetSystem = this,
+          provider = EmojiSearchWidgetFactories(
+            EmojiSearch = AndroidViewEmojiSearchWidgetFactory(
+              context = this@EmojiSearchActivity,
+              treehouseApp = treehouseApp,
+            ),
+            RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this@EmojiSearchActivity),
+            RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(this@EmojiSearchActivity, treehouseApp, this),
           ),
           json = json,
           mismatchHandler = protocolMismatchHandler,

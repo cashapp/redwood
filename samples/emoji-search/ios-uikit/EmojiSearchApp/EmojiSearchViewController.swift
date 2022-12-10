@@ -54,7 +54,14 @@ class EmojiSearchContent : Redwood_treehouseTreehouseViewContent {
 class EmojiSearchWidgetSystem : Redwood_treehouseTreehouseViewWidgetSystem {
     func widgetFactory(app: Redwood_treehouseTreehouseApp<Redwood_treehouseAppService>, json: Kotlinx_serialization_jsonJson, protocolMismatchHandler: Redwood_protocol_widgetProtocolMismatchHandler) -> Redwood_protocol_widgetDiffConsumingNodeFactory {
         return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
-            widgets: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
+            provider: WidgetEmojiSearchWidgetFactories<UIView>(
+                EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
+                RedwoodLayout: Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory()),
+                RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
+                    treehouseApp: app,
+                    widgetSystem: self
+                )
+            ),
             json: json,
             mismatchHandler: protocolMismatchHandler
         );

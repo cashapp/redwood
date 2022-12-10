@@ -20,6 +20,7 @@ import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.widget.HTMLElementChildren
 import example.browser.sunspot.HtmlSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.widget.SunspotWidgetFactories
 import kotlinx.browser.document
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -33,7 +34,9 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     container = HTMLElementChildren(content),
-    factory = HtmlSunspotNodeFactory(document),
+    provider = SunspotWidgetFactories(
+      HtmlSunspotNodeFactory(document),
+    ),
   )
   composition.setContent {
     Counter()

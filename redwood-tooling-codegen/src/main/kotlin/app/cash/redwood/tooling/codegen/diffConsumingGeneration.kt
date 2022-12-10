@@ -37,7 +37,7 @@ import com.squareup.kotlinpoet.asTypeName
 
 /*
 public class SunspotDiffConsumingNodeFactory<W : Any>(
-  private val widgets: SunspotWidgetFactory<W>,
+  private val provider: SunspotWidgetFactoryProvider<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : DiffConsumingNode.Factory<W> {
@@ -46,8 +46,8 @@ public class SunspotDiffConsumingNodeFactory<W : Any>(
     parentChildren: Widget.Children<W>,
     tag: WidgetTag,
   ): DiffConsumingNode<W>? = when (tag.value) {
-    1 -> DiffConsumingTextNode(parentId, parentChildren, delegate.Text(), json, mismatchHandler)
-    2 -> DiffConsumingButtonNode(parentId, parentChildren, delegate.Button(), json, mismatchHandler)
+    1 -> DiffConsumingTextNode(parentId, parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
+    2 -> DiffConsumingButtonNode(parentId, parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
     1_000_001 -> DiffConsumingRedwoodLayoutRowNode(parentId, parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
     1_000_002 -> DiffConsumingRedwoodLayoutColumnNode(parentId, parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
     else -> {
@@ -60,7 +60,7 @@ public class SunspotDiffConsumingNodeFactory<W : Any>(
 internal fun generateDiffConsumingNodeFactory(
   schema: ProtocolSchema,
 ): FileSpec {
-  val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableW)
+  val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
   val type = schema.diffConsumingNodeFactoryType()
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
@@ -69,7 +69,7 @@ internal fun generateDiffConsumingNodeFactory(
         .addSuperinterface(WidgetProtocol.DiffConsumingNodeFactory.parameterizedBy(typeVariableW))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("widgets", widgetFactory)
+            .addParameter("provider", provider)
             .addParameter(
               ParameterSpec.builder("json", KotlinxSerialization.Json)
                 .defaultValue("%T", KotlinxSerialization.JsonDefault)
@@ -83,8 +83,8 @@ internal fun generateDiffConsumingNodeFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("widgets", widgetFactory, PRIVATE)
-            .initializer("widgets")
+          PropertySpec.builder("provider", provider, PRIVATE)
+            .initializer("provider")
             .build(),
         )
         .addProperty(
@@ -109,19 +109,10 @@ internal fun generateDiffConsumingNodeFactory(
             )
             .beginControlFlow("return when (tag.value)")
             .apply {
-              for (widget in schema.widgets.sortedBy { it.tag }) {
-                addStatement(
-                  "%L -> %T(parentId, parentChildren, widgets.%N(), json, mismatchHandler)",
-                  widget.tag,
-                  schema.diffConsumingNodeType(widget, schema),
-                  widget.type.flatName,
-                )
-              }
-
-              for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+              for (dependency in schema.allSchemas.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                 for (widget in dependency.widgets.sortedBy { it.tag }) {
                   addStatement(
-                    "%L -> %T(parentId, parentChildren, widgets.%N.%N(), json, mismatchHandler)",
+                    "%L -> %T(parentId, parentChildren, provider.%N.%N(), json, mismatchHandler)",
                     widget.tag,
                     dependency.diffConsumingNodeType(widget, schema),
                     dependency.name,
