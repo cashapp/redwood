@@ -70,7 +70,6 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
 
     when (type) {
       Compose -> {
-        generateComposableTargetMarker(schema).writeTo(out)
         for (dependency in schema.allSchemas) {
           generateLayoutModifierImpls(dependency)?.writeTo(out)
           for (scope in dependency.scopes) {

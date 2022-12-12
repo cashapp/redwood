@@ -40,42 +40,6 @@ import com.squareup.kotlinpoet.joinToCode
 import kotlin.reflect.KClass
 
 /*
-@Retention(AnnotationRetention.BINARY)
-@ComposableTargetMarker(description = "Example Composable")
-@Target(
-  AnnotationTarget.FUNCTION,
-  AnnotationTarget.PROPERTY_GETTER,
-  AnnotationTarget.TYPE,
-  AnnotationTarget.TYPE_PARAMETER,
-)
-public annotation class SunspotComposable
-*/
-internal fun generateComposableTargetMarker(schema: Schema): FileSpec {
-  val name = schema.composeTargetMarker
-  return FileSpec.builder(schema.composePackage(), name.simpleName)
-    .addType(
-      TypeSpec.annotationBuilder(name)
-        .addAnnotation(
-          AnnotationSpec.builder(Retention::class)
-            .addMember("%T.BINARY", AnnotationRetention::class)
-            .build(),
-        )
-        .addAnnotation(
-          AnnotationSpec.builder(ComposeRuntime.ComposableTargetMarker)
-            .addMember("description = %S", schema.name + " Composable")
-            .build(),
-        )
-        .addAnnotation(
-          AnnotationSpec.builder(Target::class)
-            .addMember("%1T.FUNCTION, %1T.PROPERTY_GETTER, %1T.TYPE, %1T.TYPE_PARAMETER", AnnotationTarget::class)
-            .build(),
-        )
-        .build(),
-    )
-    .build()
-}
-
-/*
 @Composable
 @SunspotComposable
 @OptIn(RedwoodCodegenApi::class)
@@ -107,14 +71,12 @@ internal fun generateComposable(
 ): FileSpec {
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
   val widgetFactoryType = host.getWidgetFactoryType().parameterizedBy(STAR)
-  val composeTargetMarker = host.composeTargetMarker
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.composePackage(), flatName)
     .addFunction(
       FunSpec.builder(flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(ComposeRuntime.Composable)
-        .addAnnotation(composeTargetMarker)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.OptIn)
             .addMember("%T::class", Redwood.RedwoodCodegenApi)
@@ -154,7 +116,7 @@ internal fun generateComposable(
                 }
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage(), it.simpleName!!) }
-                  ParameterSpec.builder(trait.name, composableLambda(scope, composeTargetMarker))
+                  ParameterSpec.builder(trait.name, composableLambda(scope))
                     .apply {
                       trait.defaultExpression?.let { defaultValue(it) }
                     }

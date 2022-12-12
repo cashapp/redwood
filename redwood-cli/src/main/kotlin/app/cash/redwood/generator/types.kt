@@ -74,13 +74,11 @@ internal object RedwoodCompose {
 
 internal object ComposeRuntime {
   val Composable = ClassName("androidx.compose.runtime", "Composable")
-  val ComposableTargetMarker = ClassName("androidx.compose.runtime", "ComposableTargetMarker")
   val Stable = ClassName("androidx.compose.runtime", "Stable")
 }
 
 internal fun composableLambda(
   receiver: TypeName?,
-  composeTargetMarker: ClassName,
 ): TypeName {
   return LambdaTypeName.get(
     returnType = UNIT,
@@ -88,7 +86,6 @@ internal fun composableLambda(
   ).copy(
     annotations = listOf(
       AnnotationSpec.builder(ComposeRuntime.Composable).build(),
-      AnnotationSpec.builder(composeTargetMarker).build(),
     ),
   )
 }
