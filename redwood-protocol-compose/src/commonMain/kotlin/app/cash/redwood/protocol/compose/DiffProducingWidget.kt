@@ -23,6 +23,8 @@ import app.cash.redwood.widget.Widget
 /**
  * A [Widget] with no platform-specific representation which instead produces protocol diffs
  * based on its properties.
+ *
+ * @suppress For generated code use only.
  */
 public interface DiffProducingWidget : Widget<Nothing> {
   public val id: Id
@@ -32,9 +34,4 @@ public interface DiffProducingWidget : Widget<Nothing> {
     get() = throw AssertionError()
 
   public fun sendEvent(event: Event)
-
-  /** A [Widget.Provider] whose [Widget]s write to a [ProtocolBridge]. */
-  public interface Provider : Widget.Provider<Nothing> {
-    public val bridge: ProtocolBridge
-  }
 }

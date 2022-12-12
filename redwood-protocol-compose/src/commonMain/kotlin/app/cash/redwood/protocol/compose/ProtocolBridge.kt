@@ -15,84 +15,44 @@
  */
 package app.cash.redwood.protocol.compose
 
-import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifiers
-import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
+import kotlinx.serialization.json.Json
 
-public class ProtocolBridge : EventSink {
-  private var nextValue = Id.Root.value + 1L
-  private val nodes = mutableMapOf<Id, DiffProducingWidget>()
-
-  private var childrenDiffs = mutableListOf<ChildrenDiff>()
-  private var layoutModifiers = mutableListOf<LayoutModifiers>()
-  private var propertyDiffs = mutableListOf<PropertyDiff>()
-
-  public fun nextId(): Id {
-    val value = nextValue
-    nextValue = value + 1L
-    return Id(value)
-  }
-
-  public fun append(childrenDiff: ChildrenDiff) {
-    childrenDiffs += childrenDiff
-  }
-
-  public fun append(layoutModifiers: LayoutModifiers) {
-    this.layoutModifiers += layoutModifiers
-  }
-
-  public fun append(propertyDiff: PropertyDiff) {
-    propertyDiffs += propertyDiff
-  }
+/**
+ * Exposes a [Widget.Children] and [Widget.Provider] whose changes can be captured as a [Diff] to
+ * send to a remote frontend. Incoming [Event]s can also be sent to this instance and will be routed
+ * to the appropriate handler.
+ */
+public interface ProtocolBridge : EventSink {
+  /**
+   * The root of the widget tree onto which [provider]-produced widgets can be added. Changes to
+   * this set of children records changes into the diff as [Id.Root] and [ChildrenTag.Root].
+   */
+  public val root: Widget.Children<Nothing>
 
   /**
-   * If there were any calls to [append] since the last call to this function return them as a
-   * [Diff] and reset the internal lists to be empty. This function returns null if there were
-   * no calls to [append] since the last invocation.
+   * The provider of factories of widgets which record property changes into the diff and whose
+   * children changes are also recorded into the diff. You **must** attach returned widgets to
+   * [root] or the children of a widget in the tree beneath [root] in order for it to be tracked.
    */
-  public fun createDiffOrNull(): Diff? {
-    val existingChildrenDiffs = childrenDiffs
-    val existingLayoutModifierDiffs = layoutModifiers
-    val existingPropertyDiffs = propertyDiffs
-    if (existingPropertyDiffs.isNotEmpty() || existingLayoutModifierDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-      childrenDiffs = mutableListOf()
-      layoutModifiers = mutableListOf()
-      propertyDiffs = mutableListOf()
+  public val provider: Widget.Provider<Nothing>
 
-      return Diff(
-        childrenDiffs = existingChildrenDiffs,
-        layoutModifiers = existingLayoutModifierDiffs,
-        propertyDiffs = existingPropertyDiffs,
-      )
-    }
-    return null
-  }
+  /**
+   * Returns any changes to [root] or [provider]-produced widgets since the last time this function
+   * was called. Returns null if no changes occurred.
+   */
+  public fun createDiffOrNull(): Diff?
 
-  public fun addWidget(widget: DiffProducingWidget) {
-    check(nodes.put(widget.id, widget) == null) {
-      "Attempted to add widget with ID ${widget.id.value} but one already exists"
-    }
-  }
-
-  public fun removeWidget(id: Id) {
-    nodes.remove(id)
-  }
-
-  public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
-    return DiffProducingWidgetChildren(id, tag, this)
-  }
-
-  override fun sendEvent(event: Event) {
-    val node = checkNotNull(nodes[event.id]) {
-      // TODO how to handle race where an incoming event targets this removed node?
-      "Unknown node ${event.id} for event with tag ${event.tag}"
-    }
-    node.sendEvent(event)
+  public interface Factory {
+    /** Create a new [ProtocolBridge] with its own protocol state and set of tracked widgets. */
+    public fun create(
+      json: Json = Json.Default,
+      mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
+    ): ProtocolBridge
   }
 }

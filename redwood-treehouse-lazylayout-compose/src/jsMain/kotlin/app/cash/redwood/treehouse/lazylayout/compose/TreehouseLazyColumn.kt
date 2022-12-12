@@ -17,14 +17,14 @@ package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
-import app.cash.redwood.protocol.compose.DiffProducingWidget
+import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 @Composable
-public fun DiffProducingWidget.Provider.LazyColumn(content: LazyListScope.() -> Unit) {
+public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
   val scope = TreehouseLazyListScope(this)
   content(scope)
   LazyColumn(scope.intervals)
@@ -47,11 +47,11 @@ public inline fun <T> LazyListScope.items(
   }
 }
 
-private class TreehouseLazyListScope(private val provider: DiffProducingWidget.Provider) : LazyListScope {
+private class TreehouseLazyListScope(private val provider: ProtocolBridge) : LazyListScope {
   val intervals = mutableListOf<LazyListIntervalContent>()
 
   private class Item(
-    private val provider: DiffProducingWidget.Provider,
+    private val provider: ProtocolBridge,
     private val content: @Composable (index: Int) -> Unit,
   ) : LazyListIntervalContent.Item {
 

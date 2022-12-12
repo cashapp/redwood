@@ -28,7 +28,7 @@ public enum class ProtocolCodegenType {
 public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path) {
   when (type) {
     Compose -> {
-      generateDiffProducingWidgetFactories(this).writeTo(destination)
+      generateProtocolBridge(this).writeTo(destination)
       for (dependency in allSchemas) {
         generateDiffProducingWidgetFactory(dependency, host = this).writeTo(destination)
         generateDiffProducingLayoutModifiers(dependency, host = this).writeTo(destination)

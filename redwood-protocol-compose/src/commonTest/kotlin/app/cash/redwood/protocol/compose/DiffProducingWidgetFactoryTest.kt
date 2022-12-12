@@ -25,7 +25,7 @@ import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
-import example.redwood.compose.ExampleSchemaDiffProducingWidgetFactories
+import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.TestScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,9 +44,8 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ProtocolBridge()
-    val factory = ExampleSchemaDiffProducingWidgetFactories(bridge, json)
-    val textInput = factory.ExampleSchema.TextInput()
+    val bridge = ExampleSchemaProtocolBridge.create(json)
+    val textInput = bridge.provider.ExampleSchema.TextInput()
 
     textInput.customType(10.seconds)
 
@@ -64,9 +63,8 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ProtocolBridge()
-    val factory = ExampleSchemaDiffProducingWidgetFactories(bridge, json)
-    val button = factory.ExampleSchema.Button()
+    val bridge = ExampleSchemaProtocolBridge.create(json)
+    val button = bridge.provider.ExampleSchema.Button()
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customType(10.seconds)
@@ -96,9 +94,8 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ProtocolBridge()
-    val factory = ExampleSchemaDiffProducingWidgetFactories(bridge, json)
-    val button = factory.ExampleSchema.Button()
+    val bridge = ExampleSchemaProtocolBridge.create(json)
+    val button = bridge.provider.ExampleSchema.Button()
 
     button.layoutModifiers = with(object : TestScope {}) {
       LayoutModifier.customTypeWithDefault(10.seconds, "sup")
@@ -128,8 +125,8 @@ class DiffProducingWidgetFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge(), json)
-    val textInput = factory.ExampleSchema.TextInput()
+    val bridge = ExampleSchemaProtocolBridge.create(json)
+    val textInput = bridge.provider.ExampleSchema.TextInput()
 
     val diffProducingWidget = textInput as DiffProducingWidget
 
@@ -144,8 +141,8 @@ class DiffProducingWidgetFactoryTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val factory = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge())
-    val button = factory.ExampleSchema.Button() as DiffProducingWidget
+    val bridge = ExampleSchemaProtocolBridge.create()
+    val button = bridge.provider.ExampleSchema.Button() as DiffProducingWidget
 
     val event = Event(Id(1), EventTag(3456543))
     val t = assertFailsWith<IllegalArgumentException> {
@@ -157,8 +154,8 @@ class DiffProducingWidgetFactoryTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge(), mismatchHandler = handler)
-    val button = factory.ExampleSchema.Button() as DiffProducingWidget
+    val bridge = ExampleSchemaProtocolBridge.create(mismatchHandler = handler)
+    val button = bridge.provider.ExampleSchema.Button() as DiffProducingWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 
