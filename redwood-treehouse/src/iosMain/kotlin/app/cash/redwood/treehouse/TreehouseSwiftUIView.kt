@@ -22,7 +22,7 @@ import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-public class TreehouseSwiftUIView<A : Any>(
+public class TreehouseSwiftUIView<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : TreehouseView<A>, SwiftUIView {

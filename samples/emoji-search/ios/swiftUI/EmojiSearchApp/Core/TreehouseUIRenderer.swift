@@ -32,7 +32,7 @@ private class ContentWrapper: Redwood_treehouseTreehouseViewContent {
         self.treehouseUI = treehouseUI
     }
     
-    func get(app: Any) -> Redwood_treehouseZiplineTreehouseUi {
+    func get(app: Redwood_treehouseAppService) -> Redwood_treehouseZiplineTreehouseUi {
         return treehouseUI
     }
     
