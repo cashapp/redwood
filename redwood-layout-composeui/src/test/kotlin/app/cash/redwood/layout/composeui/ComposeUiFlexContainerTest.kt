@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ComposeFlexContainerTest : AbstractFlexContainerTest<@Composable () -> Unit>() {
+class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -66,7 +66,7 @@ class ComposeFlexContainerTest : AbstractFlexContainerTest<@Composable () -> Uni
   }
 
   class ComposeTestFlexContainer(direction: FlexDirection) : TestFlexContainer<@Composable () -> Unit> {
-    private val delegate = ComposeFlexContainer(direction)
+    private val delegate = ComposeUiFlexContainer(direction)
     private var childCount = 0
 
     override val value get() = delegate.composable

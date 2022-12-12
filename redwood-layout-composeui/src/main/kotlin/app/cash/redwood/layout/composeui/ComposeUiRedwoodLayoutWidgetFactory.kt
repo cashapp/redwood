@@ -19,8 +19,16 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
+import kotlin.DeprecationLevel.ERROR
 
-public class ComposeRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
-  public override fun Column(): Column<@Composable () -> Unit> = ComposeColumn()
-  public override fun Row(): Row<@Composable () -> Unit> = ComposeRow()
+@Deprecated(
+  message = "Renamed to ComposeUiRedwoodLayoutWidgetFactory",
+  ReplaceWith("ComposeUiRedwoodLayoutWidgetFactory", "app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory"),
+  level = ERROR,
+)
+public typealias ComposeRedwoodLayoutWidgetFactory = ComposeUiRedwoodLayoutWidgetFactory
+
+public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
+  public override fun Column(): Column<@Composable () -> Unit> = ComposeUiColumn()
+  public override fun Row(): Row<@Composable () -> Unit> = ComposeUiRow()
 }

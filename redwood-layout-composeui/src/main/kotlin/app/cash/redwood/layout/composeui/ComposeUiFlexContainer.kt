@@ -40,7 +40,7 @@ import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
-internal class ComposeFlexContainer(private val direction: FlexDirection) {
+internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
   private val container = FlexContainer().apply {
     flexDirection = direction
     roundToInt = true
