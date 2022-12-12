@@ -58,10 +58,16 @@ public class TreehouseWidgetView<A : AppService>(
 
   private var content: TreehouseView.Content<A>? = null
 
+  /**
+   * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
+   * [onAttachedToWindow] returns and true until [onDetachedFromWindow] returns.
+   */
+  private var immediateIsAttachedToWindow = false
+
   override val boundContent: TreehouseView.Content<A>?
     get() {
       return when {
-        isAttachedToWindow -> content
+        immediateIsAttachedToWindow -> content
         else -> null
       }
     }
@@ -89,11 +95,13 @@ public class TreehouseWidgetView<A : AppService>(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+    immediateIsAttachedToWindow = true
     stateChangeListener?.onStateChanged(this)
   }
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
+    immediateIsAttachedToWindow = false
     stateChangeListener?.onStateChanged(this)
   }
 
