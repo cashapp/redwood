@@ -40,27 +40,13 @@ class ComposeGenerationTest {
     @Children(2) val unscoped: () -> Unit,
   )
 
-  @Test fun `function target marker`() {
-    val schema = parseSchema(ScopedAndUnscopedSchema::class)
-
-    val fileSpec = generateComposable(schema, schema.widgets.single())
-    assertThat(fileSpec.toString()).contains(
-      """
-      |@Composable
-      |@ScopedAndUnscopedSchemaComposable
-      |@OptIn(RedwoodCodegenApi::class)
-      |public fun
-      """.trimMargin(),
-    )
-  }
-
-  @Test fun `scoped and unscoped children with target marker`() {
+  @Test fun `scoped and unscoped children`() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
-      contains("scoped: @Composable @ScopedAndUnscopedSchemaComposable RowScope.() -> Unit")
-      contains("unscoped: @Composable @ScopedAndUnscopedSchemaComposable () -> Unit")
+      contains("scoped: @Composable RowScope.() -> Unit")
+      contains("unscoped: @Composable () -> Unit")
     }
   }
 
@@ -100,7 +86,7 @@ class ComposeGenerationTest {
     assertThat(fileSpec.toString()).apply {
       contains("trait: String = \"test\"")
       contains("onEvent: (() -> Unit)? = { error(\"test\") }")
-      contains("block: @Composable @DefaultSchemaComposable () -> Unit = {}")
+      contains("block: @Composable () -> Unit = {}")
     }
   }
 
@@ -124,8 +110,8 @@ class ComposeGenerationTest {
     assertThat(fileSpec.toString()).contains(
       """
       |  layoutModifier: LayoutModifier = LayoutModifier,
-      |  top: @Composable @MultipleChildSchemaComposable () -> Unit,
-      |  bottom: @Composable @MultipleChildSchemaComposable () -> Unit,
+      |  top: @Composable () -> Unit,
+      |  bottom: @Composable () -> Unit,
       """.trimMargin(),
     )
   }

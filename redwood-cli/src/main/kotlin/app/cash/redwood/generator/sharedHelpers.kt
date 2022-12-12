@@ -64,8 +64,6 @@ internal fun Schema.composePackage(host: Schema = this): String {
   }
 }
 
-internal val Schema.composeTargetMarker get() = ClassName(composePackage(this), "${name}Composable")
-
 internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
   return ClassName(composePackage(host), "DiffProducing${name}WidgetFactory")
 }
