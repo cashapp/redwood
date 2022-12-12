@@ -102,8 +102,8 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         }
       }
       WidgetProtocol -> {
+        generateDiffConsumingNodeFactory(schema).writeTo(out)
         for (dependency in schema.allSchemas) {
-          generateDiffConsumingWidgetFactory(dependency, host = schema).writeTo(out)
           generateDiffConsumingLayoutModifiers(dependency, host = schema).writeTo(out)
           for (widget in dependency.widgets) {
             generateDiffConsumingWidget(dependency, widget, host = schema).writeTo(out)

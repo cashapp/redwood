@@ -27,7 +27,7 @@ import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.samples.emojisearch.EmojiSearchAppSpec
 import app.cash.zipline.samples.emojisearch.EmojiSearchPresenter
-import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
+import example.schema.widget.EmojiSearchDiffConsumingNodeFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.serialization.json.Json
@@ -48,8 +48,8 @@ class EmojiSearchActivity : ComponentActivity() {
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
       ): DiffConsumingNode.Factory<*> {
-        return DiffConsumingEmojiSearchWidgetFactory(
-          delegate = AndroidViewEmojiSearchWidgetFactory(
+        return EmojiSearchDiffConsumingNodeFactory(
+          widgets = AndroidViewEmojiSearchWidgetFactory(
             context = this@EmojiSearchActivity,
             treehouseApp = treehouseApp,
             widgetSystem = this,

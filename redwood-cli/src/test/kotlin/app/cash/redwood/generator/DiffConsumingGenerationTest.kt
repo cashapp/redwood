@@ -50,7 +50,7 @@ class DiffConsumingGenerationTest {
   @Test fun `names are sorted by their node tags`() {
     val schema = parseSchema(SortedByTagSchema::class)
 
-    val fileSpec = generateDiffConsumingWidgetFactory(schema)
+    val fileSpec = generateDiffConsumingNodeFactory(schema)
     assertThat(fileSpec.toString()).containsMatch(
       Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE),
     )

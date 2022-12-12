@@ -17,7 +17,6 @@ package app.cash.zipline.samples.emojisearch.composeui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.platform.ComposeView
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
@@ -29,7 +28,7 @@ import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.samples.emojisearch.EmojiSearchAppSpec
 import app.cash.zipline.samples.emojisearch.EmojiSearchPresenter
-import example.schema.widget.DiffConsumingEmojiSearchWidgetFactory
+import example.schema.widget.EmojiSearchDiffConsumingNodeFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.serialization.json.Json
@@ -50,8 +49,8 @@ class EmojiSearchActivity : ComponentActivity() {
         app: TreehouseApp<EmojiSearchPresenter>,
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = DiffConsumingEmojiSearchWidgetFactory<@Composable () -> Unit>(
-        delegate = AndroidEmojiSearchWidgetFactory(app, this),
+      ) = EmojiSearchDiffConsumingNodeFactory(
+        widgets = AndroidEmojiSearchWidgetFactory(app, this),
         json = json,
         mismatchHandler = protocolMismatchHandler,
       )
