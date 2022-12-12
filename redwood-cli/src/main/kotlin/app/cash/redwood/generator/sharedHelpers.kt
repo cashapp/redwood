@@ -72,12 +72,12 @@ internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): Class
   return ClassName(composePackage(host), "DiffProducing${widget.type.flatName}")
 }
 
-internal fun Schema.diffConsumingWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${name}WidgetFactory")
+internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
+  return ClassName(widgetPackage(), "${name}DiffConsumingNodeFactory")
 }
 
-internal fun Schema.diffConsumingWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}")
+internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassName {
+  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}Node")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {

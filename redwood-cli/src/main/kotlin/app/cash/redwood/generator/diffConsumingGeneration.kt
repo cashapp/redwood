@@ -27,7 +27,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -37,52 +36,40 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
-public class DiffConsumingSunspotWidgetFactory<W : Any>(
-  private val delegate: SunspotWidgetFactory<W>,
+public class SunspotDiffConsumingNodeFactory<W : Any>(
+  private val widgets: SunspotWidgetFactory<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : DiffConsumingNode.Factory<W> {
-  override val RedwoodLayout = DiffConsumingRedwoodLayoutWidgetFactory(delegate.RedwoodLayout, json, mismatchHandler)
-
   override fun create(
     parentId: Id,
     parentChildren: Widget.Children<W>,
     tag: WidgetTag,
-  ): DiffConsumingWidget<W>? = when (tag.value) {
-    1 -> SunspotBox(parentId, parentChildren)
-    2 -> SunspotText(parentId, parentChildren)
-    3 -> SunspotButton(parentId, parentChildren)
-    1_000_001 -> RedwoodLayout.Row(parentId, parentChildren)
-    1_000_002 -> RedwoodLayout.Column(parentId, parentChildren)
+  ): DiffConsumingNode<W>? = when (tag.value) {
+    1 -> DiffConsumingTextNode(parentId, parentChildren, delegate.Text(), json, mismatchHandler)
+    2 -> DiffConsumingButtonNode(parentId, parentChildren, delegate.Button(), json, mismatchHandler)
+    1_000_001 -> DiffConsumingRedwoodLayoutRowNode(parentId, parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
+    1_000_002 -> DiffConsumingRedwoodLayoutColumnNode(parentId, parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
     else -> {
       mismatchHandler.onUnknownWidget(tag)
       null
     }
   }
-
-  private fun SunspotBox(
-    parentId: Id,
-    parentChildren: Widget.Children<W>,
-  ): DiffConsumingSunspotBox<W> {
-    return DiffConsumingSunspotBox(parentId, parentChildren, delegate.SunspotBox(), json, mismatchHandler)
-  }
-  etc.
 }
 */
-internal fun generateDiffConsumingWidgetFactory(
+internal fun generateDiffConsumingNodeFactory(
   schema: ProtocolSchema,
-  host: ProtocolSchema = schema,
 ): FileSpec {
   val widgetFactory = schema.getWidgetFactoryType().parameterizedBy(typeVariableW)
-  val type = schema.diffConsumingWidgetFactoryType(host)
+  val type = schema.diffConsumingNodeFactoryType()
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.classBuilder(type)
-        .addModifiers(if (schema === host) PUBLIC else INTERNAL)
         .addTypeVariable(typeVariableW)
+        .addSuperinterface(WidgetProtocol.DiffConsumingNodeFactory.parameterizedBy(typeVariableW))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("delegate", widgetFactory)
+            .addParameter("widgets", widgetFactory)
             .addParameter(
               ParameterSpec.builder("json", KotlinxSerialization.Json)
                 .defaultValue("%T", KotlinxSerialization.JsonDefault)
@@ -96,8 +83,8 @@ internal fun generateDiffConsumingWidgetFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("delegate", widgetFactory, PRIVATE)
-            .initializer("delegate")
+          PropertySpec.builder("widgets", widgetFactory, PRIVATE)
+            .initializer("widgets")
             .build(),
         )
         .addProperty(
@@ -110,74 +97,46 @@ internal fun generateDiffConsumingWidgetFactory(
             .initializer("mismatchHandler")
             .build(),
         )
-        .apply {
-          if (schema === host) {
-            // Only conform to entrypoint interface if we are the host. If we are not the host,
-            // the host will handle the entire transitive dependency set of tags itself.
-            addSuperinterface(
-              WidgetProtocol.DiffConsumingNodeFactory.parameterizedBy(typeVariableW),
+        .addFunction(
+          FunSpec.builder("create")
+            .addModifiers(OVERRIDE)
+            .addParameter("parentId", Protocol.Id)
+            .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
+            .addParameter("tag", Protocol.WidgetTag)
+            .returns(
+              WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
+                .copy(nullable = true),
             )
-            addFunction(
-              FunSpec.builder("create")
-                .addModifiers(OVERRIDE)
-                .addParameter("parentId", Protocol.Id)
-                .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
-                .addParameter("tag", Protocol.WidgetTag)
-                .returns(
-                  WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
-                    .copy(nullable = true),
-                )
-                .beginControlFlow("return when (tag.value)")
-                .apply {
-                  for (widget in schema.widgets.sortedBy { it.tag }) {
-                    addStatement("%L -> %N(parentId, parentChildren)", widget.tag, widget.type.flatName)
-                  }
-                  for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
-                    for (widget in dependency.widgets.sortedBy { it.tag }) {
-                      addStatement("%L -> %N.%N(parentId, parentChildren)", widget.tag, dependency.name, widget.type.flatName)
-                    }
-                  }
-                }
-                .beginControlFlow("else ->")
-                .addStatement("mismatchHandler.onUnknownWidget(tag)")
-                .addStatement("null")
-                .endControlFlow()
-                .endControlFlow()
-                .build(),
-            )
-
-            for (dependency in schema.dependencies.sortedBy { it.name }) {
-              val dependencyType = dependency.diffConsumingWidgetFactoryType(host)
-              addProperty(
-                PropertySpec.builder(dependency.name, dependencyType.parameterizedBy(typeVariableW))
-                  .addModifiers(PRIVATE)
-                  .initializer(
-                    "%T(delegate.%N, json, mismatchHandler)",
-                    dependencyType,
-                    dependency.name,
-                  )
-                  .build(),
-              )
-            }
-          }
-
-          for (widget in schema.widgets.sortedBy { it.type.flatName }) {
-            val diffConsumingWidgetType = schema.diffConsumingWidgetType(widget, host)
-            addFunction(
-              FunSpec.builder(widget.type.flatName)
-                .addModifiers(if (schema === host) PRIVATE else INTERNAL)
-                .addParameter("parentId", Protocol.Id)
-                .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
-                .returns(diffConsumingWidgetType.parameterizedBy(typeVariableW))
-                .addStatement(
-                  "return %T(parentId, parentChildren, delegate.%N(), json, mismatchHandler)",
-                  diffConsumingWidgetType,
+            .beginControlFlow("return when (tag.value)")
+            .apply {
+              for (widget in schema.widgets.sortedBy { it.tag }) {
+                addStatement(
+                  "%L -> %T(parentId, parentChildren, widgets.%N(), json, mismatchHandler)",
+                  widget.tag,
+                  schema.diffConsumingNodeType(widget, schema),
                   widget.type.flatName,
                 )
-                .build(),
-            )
-          }
-        }
+              }
+
+              for (dependency in schema.dependencies.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                for (widget in dependency.widgets.sortedBy { it.tag }) {
+                  addStatement(
+                    "%L -> %T(parentId, parentChildren, widgets.%N.%N(), json, mismatchHandler)",
+                    widget.tag,
+                    dependency.diffConsumingNodeType(widget, schema),
+                    dependency.name,
+                    widget.type.flatName,
+                  )
+                }
+              }
+            }
+            .beginControlFlow("else ->")
+            .addStatement("mismatchHandler.onUnknownWidget(tag)")
+            .addStatement("null")
+            .endControlFlow()
+            .endControlFlow()
+            .build(),
+        )
         .build(),
     )
     .build()
@@ -220,7 +179,7 @@ internal fun generateDiffConsumingWidget(
   widget: ProtocolWidget,
   host: ProtocolSchema = schema,
 ): FileSpec {
-  val type = schema.diffConsumingWidgetType(widget, host)
+  val type = schema.diffConsumingNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
   return FileSpec.builder(type.packageName, type.simpleName)

@@ -27,7 +27,7 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.TestScope
-import example.redwood.widget.DiffConsumingExampleSchemaWidgetFactory
+import example.redwood.widget.ExampleSchemaDiffConsumingNodeFactory
 import example.redwood.widget.TextInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,9 +42,9 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
-class DiffConsumingWidgetFactoryTest {
+class DiffConsumingNodeFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val factory = ExampleSchemaDiffConsumingNodeFactory(EmptyExampleSchemaWidgetFactory())
 
     val t = assertFailsWith<IllegalArgumentException> {
       factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))
@@ -54,8 +54,8 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownWidgetCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = EmptyExampleSchemaWidgetFactory(),
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
 
@@ -71,8 +71,8 @@ class DiffConsumingWidgetFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = object : EmptyExampleSchemaWidgetFactory() {
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = object : EmptyExampleSchemaWidgetFactory() {
         override fun TextInput() = recordingTextInput
       },
       json = json,
@@ -102,8 +102,8 @@ class DiffConsumingWidgetFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = object : EmptyExampleSchemaWidgetFactory() {
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = object : EmptyExampleSchemaWidgetFactory() {
         override fun TextInput() = recordingTextInput
       },
       json = json,
@@ -127,7 +127,7 @@ class DiffConsumingWidgetFactoryTest {
   }
 
   @Test fun unknownLayoutModifierThrowsDefault() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val factory = ExampleSchemaDiffConsumingNodeFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
@@ -151,8 +151,8 @@ class DiffConsumingWidgetFactoryTest {
     }
     val handler = RecordingProtocolMismatchHandler()
     val recordingTextInput = RecordingTextInput()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = object : EmptyExampleSchemaWidgetFactory() {
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = object : EmptyExampleSchemaWidgetFactory() {
         override fun TextInput() = recordingTextInput
       },
       json = json,
@@ -185,7 +185,7 @@ class DiffConsumingWidgetFactoryTest {
   }
 
   @Test fun unknownChildrenThrowsDefault() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val factory = ExampleSchemaDiffConsumingNodeFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
@@ -196,8 +196,8 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownChildrenCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = EmptyExampleSchemaWidgetFactory(),
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
 
@@ -214,8 +214,8 @@ class DiffConsumingWidgetFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = object : EmptyExampleSchemaWidgetFactory() {
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = object : EmptyExampleSchemaWidgetFactory() {
         override fun TextInput() = recordingTextInput
       },
       json = json,
@@ -229,7 +229,7 @@ class DiffConsumingWidgetFactoryTest {
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
-    val factory = DiffConsumingExampleSchemaWidgetFactory(EmptyExampleSchemaWidgetFactory())
+    val factory = ExampleSchemaDiffConsumingNodeFactory(EmptyExampleSchemaWidgetFactory())
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val diff = PropertyDiff(Id(1), PropertyTag(345432))
@@ -242,8 +242,8 @@ class DiffConsumingWidgetFactoryTest {
 
   @Test fun unknownPropertyCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = EmptyExampleSchemaWidgetFactory(),
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = EmptyExampleSchemaWidgetFactory(),
       mismatchHandler = handler,
     )
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
@@ -260,8 +260,8 @@ class DiffConsumingWidgetFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = DiffConsumingExampleSchemaWidgetFactory(
-      delegate = object : EmptyExampleSchemaWidgetFactory() {
+    val factory = ExampleSchemaDiffConsumingNodeFactory(
+      widgets = object : EmptyExampleSchemaWidgetFactory() {
         override fun TextInput() = recordingTextInput
       },
       json = json,
