@@ -16,7 +16,7 @@
 @file:JvmName("Main")
 @file:Suppress("UnstableApiUsage" /* Lint 🙄 */)
 
-package app.cash.redwood.lint
+package app.cash.redwood.cli
 
 import com.android.tools.lint.LintResourceRepository.Companion.EmptyRepository
 import com.android.tools.lint.LintStats
