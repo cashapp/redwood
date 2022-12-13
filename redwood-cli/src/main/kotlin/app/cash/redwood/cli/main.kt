@@ -17,7 +17,6 @@
 
 package app.cash.redwood.cli
 
-import app.cash.redwood.generator.GenerateCommand
 import com.github.ajalt.clikt.core.NoOpCliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import java.nio.file.FileSystems

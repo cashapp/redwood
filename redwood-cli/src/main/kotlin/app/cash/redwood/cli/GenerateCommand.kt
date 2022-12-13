@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.generator
+package app.cash.redwood.cli
 
-import app.cash.redwood.generator.GenerateCommand.Type.Compose
-import app.cash.redwood.generator.GenerateCommand.Type.ComposeProtocol
-import app.cash.redwood.generator.GenerateCommand.Type.LayoutModifiers
-import app.cash.redwood.generator.GenerateCommand.Type.Widget
-import app.cash.redwood.generator.GenerateCommand.Type.WidgetProtocol
+import app.cash.redwood.tooling.codegen.Type.Compose
+import app.cash.redwood.tooling.codegen.Type.ComposeProtocol
+import app.cash.redwood.tooling.codegen.Type.LayoutModifiers
+import app.cash.redwood.tooling.codegen.Type.Widget
+import app.cash.redwood.tooling.codegen.Type.WidgetProtocol
+import app.cash.redwood.tooling.codegen.generate
 import app.cash.redwood.tooling.schema.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -34,14 +35,6 @@ import java.io.File
 import java.net.URLClassLoader
 
 internal class GenerateCommand : CliktCommand(name = "generate") {
-  enum class Type {
-    Compose,
-    ComposeProtocol,
-    LayoutModifiers,
-    Widget,
-    WidgetProtocol,
-  }
-
   private val type by option()
     .switch(
       "--compose" to Compose,
@@ -67,48 +60,6 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
     val schema = parseSchema(schemaType)
-
-    when (type) {
-      Compose -> {
-        for (dependency in schema.allSchemas) {
-          generateLayoutModifierImpls(dependency)?.writeTo(out)
-          for (scope in dependency.scopes) {
-            generateScope(dependency, scope).writeTo(out)
-          }
-          for (widget in dependency.widgets) {
-            generateComposable(dependency, widget, host = schema).writeTo(out)
-          }
-        }
-      }
-      ComposeProtocol -> {
-        for (dependency in schema.allSchemas) {
-          generateDiffProducingWidgetFactory(dependency, host = schema).writeTo(out)
-          generateDiffProducingLayoutModifiers(dependency, host = schema).writeTo(out)
-          for (widget in dependency.widgets) {
-            generateDiffProducingWidget(dependency, widget, host = schema).writeTo(out)
-          }
-        }
-      }
-      LayoutModifiers -> {
-        for (layoutModifier in schema.layoutModifiers) {
-          generateLayoutModifierInterface(schema, layoutModifier).writeTo(out)
-        }
-      }
-      Widget -> {
-        generateWidgetFactory(schema).writeTo(out)
-        for (widget in schema.widgets) {
-          generateWidget(schema, widget).writeTo(out)
-        }
-      }
-      WidgetProtocol -> {
-        generateDiffConsumingNodeFactory(schema).writeTo(out)
-        for (dependency in schema.allSchemas) {
-          generateDiffConsumingLayoutModifiers(dependency, host = schema).writeTo(out)
-          for (widget in dependency.widgets) {
-            generateDiffConsumingWidget(dependency, widget, host = schema).writeTo(out)
-          }
-        }
-      }
-    }
+    schema.generate(type, out)
   }
 }
