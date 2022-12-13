@@ -6,7 +6,7 @@ import SwiftUI
 
 struct TreehouseUIRenderer: View {
     
-    let treehouseUI: any Redwood_treehouseZiplineTreehouseUi
+    let treehouseUI: Redwood_treehouseZiplineTreehouseUi
     
     @Environment(\.treehouseApp) private var treehouseApp
     @Environment(\.treehouseWidgetSystem) private var treehouseWidgetSystem

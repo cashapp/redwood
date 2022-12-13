@@ -8,8 +8,8 @@ struct ContentView: View {
     
     var body: some View {
         TreehouseViewRenderer(treehouseView: viewModel.treehouseView)
-        .environment(\.treehouseApp, viewModel.treehouseApp)
-        .environment(\.treehouseWidgetSystem, viewModel.widgetSystem)
+            .environment(\.treehouseApp, viewModel.anyApp)
+            .environment(\.treehouseWidgetSystem, viewModel.widgetSystem)
     }
 }
 

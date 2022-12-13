@@ -5,13 +5,12 @@ import shared
 import SwiftUI
 
 public struct TreehouseAppKey: EnvironmentKey {
-    // TODO: This type shouldn't be bound to PresentersEmojiSearchPresenter
-    public static var defaultValue: (Redwood_treehouseTreehouseApp<PresentersEmojiSearchPresenter>)? = nil
+    public static var defaultValue: (Redwood_treehouseTreehouseApp<AnyObject>)? = nil
 }
 
 public extension EnvironmentValues {
     
-    var treehouseApp: (Redwood_treehouseTreehouseApp<PresentersEmojiSearchPresenter>)? {
+    var treehouseApp: (Redwood_treehouseTreehouseApp<AnyObject>)? {
         get { self[TreehouseAppKey.self] }
         set { self[TreehouseAppKey.self] = newValue }
     }
@@ -19,12 +18,12 @@ public extension EnvironmentValues {
 
 struct WidgetSystemKey: EnvironmentKey {
     
-    static var defaultValue: (EmojiSearchWidgetSystem)? = nil
+    static var defaultValue: (Redwood_treehouseTreehouseViewWidgetSystem)? = nil
 }
 
 extension EnvironmentValues {
     
-    var treehouseWidgetSystem: (EmojiSearchWidgetSystem)? {
+    var treehouseWidgetSystem: (Redwood_treehouseTreehouseViewWidgetSystem)? {
         get { self[WidgetSystemKey.self] }
         set { self[WidgetSystemKey.self] = newValue }
     }

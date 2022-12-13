@@ -21,9 +21,6 @@ struct LazyColumnView: View {
     
     @ObservedObject var binding: LazyColumnBinding
     
-    @Environment(\.treehouseApp) private var treehouseApp
-    @Environment(\.treehouseWidgetSystem) private var treehouseWidgetSystem
-    
     var body: some View {
         LazyVStack {
             ForEach(Array(binding.intervals.indices), id: \.self) { index in

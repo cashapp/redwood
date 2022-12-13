@@ -10,6 +10,10 @@ final class ContentViewModel: ObservableObject {
     
     let treehouseApp: Redwood_treehouseTreehouseApp<PresentersEmojiSearchPresenter>
     let widgetSystem: EmojiSearchWidgetSystem
+
+    var anyApp: Redwood_treehouseTreehouseApp<AnyObject> {
+        treehouseApp as! Redwood_treehouseTreehouseApp<AnyObject>
+    }
     
     init() {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())

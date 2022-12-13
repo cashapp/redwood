@@ -47,9 +47,7 @@ fun exposedTypes(
   treehouseSwiftUIView: TreehouseSwiftUIView<*>,
   layoutWidgetFactory: RedwoodLayoutWidgetFactory<*>,
   swiftUIView: SwiftUIView,
-  swiftUIChildren: SwiftUIChildren,
-  stateFlow: StateFlow<*>,
-  hostConfiguration: HostConfiguration
+  swiftUIChildren: SwiftUIChildren
 ) {
   throw AssertionError()
 }
