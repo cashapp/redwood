@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.generator
+package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolLayoutModifier

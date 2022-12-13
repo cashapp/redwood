@@ -9,13 +9,12 @@ application {
 }
 
 dependencies {
+  implementation projects.redwoodToolingCodegen
   implementation projects.redwoodToolingLint
   implementation projects.redwoodToolingSchema
-  implementation libs.kotlinPoet
   implementation libs.lint.core
   implementation libs.clikt
 
-  testImplementation projects.testSchema.compose
   testImplementation libs.junit
   testImplementation libs.truth
   testImplementation libs.jimfs
