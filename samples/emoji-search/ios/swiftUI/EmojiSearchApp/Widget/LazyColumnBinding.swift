@@ -47,7 +47,6 @@ struct LazyColumnView: View {
         }
         .id(binding.randomID)
     }
-    
 }
 
 struct LazyCell: View {

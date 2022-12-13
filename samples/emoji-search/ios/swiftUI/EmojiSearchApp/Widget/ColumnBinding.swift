@@ -49,7 +49,6 @@ final class ColumnBinding: BaseWidget, WidgetColumn, SwiftUIViewBinding {
 
 }
 
-
 struct ColumnView: View {
     
     @ObservedObject var binding: ColumnBinding

@@ -62,7 +62,6 @@ final class TextInputBinding: BaseWidget, WidgetTextInput, SwiftUIViewBinding {
             }
         }
     }
-    
 }
 
 struct TextInputView: View {
