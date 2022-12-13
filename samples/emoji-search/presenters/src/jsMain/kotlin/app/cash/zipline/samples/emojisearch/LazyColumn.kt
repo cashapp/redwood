@@ -16,6 +16,7 @@
 package app.cash.zipline.samples.emojisearch
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutScopeMarker
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
@@ -33,6 +34,7 @@ fun DiffProducingWidgetFactoryProvider.LazyColumn(content: LazyListScope.() -> U
   app.cash.redwood.treehouse.lazylayout.compose.LazyColumn(lazyListScope.intervals)
 }
 
+@LayoutScopeMarker
 class LazyListScope(private val factory: DiffProducingWidget.Factory) {
   private val _intervals = mutableListOf<LazyListIntervalContent>()
   val intervals: List<LazyListIntervalContent> = _intervals
