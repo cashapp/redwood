@@ -26,8 +26,8 @@ import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.widget.Widget
 
-internal class ComposeColumn : Column<@Composable () -> Unit> {
-  private val container = ComposeFlexContainer(FlexDirection.Column)
+internal class ComposeUiColumn : Column<@Composable () -> Unit> {
+  private val container = ComposeUiFlexContainer(FlexDirection.Column)
 
   override val children: Widget.Children<@Composable () -> Unit> get() = container.children
 

@@ -16,19 +16,18 @@
 package app.cash.zipline.samples.emojisearch.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.layout.composeui.ComposeRedwoodLayoutWidgetFactory
+import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.lazylayout.composeui.ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.treehouse.lazylayout.composeui.ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
 
 class AndroidEmojiSearchWidgetFactory<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
-  override val RedwoodLayout = ComposeRedwoodLayoutWidgetFactory()
+  override val RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory()
   override val RedwoodTreehouseLazyLayout = ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory(treehouseApp, widgetSystem)
   override fun TextInput() = ComposeUiTextInput(treehouseApp.dispatchers)
   override fun Text() = ComposeUiText()
