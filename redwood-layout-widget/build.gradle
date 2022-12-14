@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutSchema.layoutModifiers
+        api projects.redwoodLayoutLayoutmodifiers
       }
     }
   }

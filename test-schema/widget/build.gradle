@@ -7,7 +7,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutSchema.widget
+        api projects.redwoodLayoutWidget
       }
     }
   }

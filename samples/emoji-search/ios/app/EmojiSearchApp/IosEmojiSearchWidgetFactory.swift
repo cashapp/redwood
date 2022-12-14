@@ -24,9 +24,9 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory
     let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()
 
-    var RedwoodLayout: WidgetRedwoodLayoutWidgetFactory =
+    var RedwoodLayout: Redwood_layout_widgetRedwoodLayoutWidgetFactory =
         Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
-    var RedwoodTreehouseLazyLayout: WidgetRedwoodTreehouseLazyLayoutWidgetFactory
+    var RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_widgetRedwoodTreehouseLazyLayoutWidgetFactory
 
     init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp

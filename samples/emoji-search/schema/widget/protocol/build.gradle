@@ -14,7 +14,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.samples.emojiSearch.schema.widget
-        api projects.redwoodLayoutSchema.widget
+        api projects.redwoodLayoutWidget
       }
     }
   }
