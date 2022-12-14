@@ -64,9 +64,9 @@ jobs:
           api-level: 29
           script: ./gradlew -p samples/counter connectedCheck
 
-      - name: Build Counter iOS
+      - name: Build Counter iOS (UIKit)
         run: |
-          cd samples/counter/ios/app
+          cd samples/counter/ios-uikit
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
@@ -83,9 +83,9 @@ jobs:
 
       - run: ./gradlew -p samples/emoji-search build
 
-      - name: Build Emoji Search iOS
+      - name: Build Emoji Search iOS (UIKit)
         run: |
-          cd samples/emoji-search/ios/app
+          cd samples/emoji-search/ios-uikit
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 

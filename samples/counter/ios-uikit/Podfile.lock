@@ -2,11 +2,11 @@ PODS:
   - shared (1.0)
 
 DEPENDENCIES:
-  - shared (from `../shared`)
+  - shared (from `../ios-shared`)
 
 EXTERNAL SOURCES:
   shared:
-    :path: "../shared"
+    :path: "../ios-shared"
 
 SPEC CHECKSUMS:
   shared: 3995166f6f59d263c37ee34d61043893c0781a11

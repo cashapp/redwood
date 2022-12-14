@@ -8,6 +8,7 @@ kotlin {
 
   cocoapods {
     noPodspec()
+    frameworkName = 'shared'
   }
 
   sourceSets {
