@@ -10,7 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodTreehouseLazylayoutSchema.widget
+        api projects.redwoodTreehouseLazylayoutWidget
         implementation projects.redwoodWidgetCompose
       }
     }

@@ -5,7 +5,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 dependencies {
-  api projects.redwoodTreehouseLazylayoutSchema.widget
+  api projects.redwoodTreehouseLazylayoutWidget
   implementation libs.androidx.core
   implementation libs.androidx.recyclerview
 }
