@@ -31,13 +31,6 @@ jobs:
           path: build/dokka/htmlMultiModule/
           if-no-files-found: error
 
-      # Run the npm install on the full project. Without this, the partial build above updates the
-      # lock file with a subset of the full project's needs (thus making the git index dirty).
-      - run: ./gradlew kotlinNpmInstall
-
-      - name: Ensure git index is clean
-        run: git add -A && git diff --cached --exit-code
-
   paparazzi:
     runs-on: ubuntu-latest
     steps:
@@ -52,9 +45,6 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
-
-      - name: Ensure git index is clean
-        run: git add -A && git diff --cached --exit-code
 
   sample-counter:
     runs-on: macos-latest
@@ -80,9 +70,6 @@ jobs:
           pod install
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
-      - name: Ensure git index is clean
-        run: git add -A && git diff --cached --exit-code
-
   sample-emoji:
     runs-on: macos-latest
     steps:
@@ -101,9 +88,6 @@ jobs:
           cd samples/emoji-search/ios/app
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
-
-      - name: Ensure git index is clean
-        run: git add -A && git diff --cached --exit-code
 
   publish:
     runs-on: macos-latest
