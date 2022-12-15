@@ -15,11 +15,8 @@
  */
 package app.cash.redwood.cli
 
-import app.cash.redwood.tooling.codegen.Type.Compose
-import app.cash.redwood.tooling.codegen.Type.ComposeProtocol
-import app.cash.redwood.tooling.codegen.Type.LayoutModifiers
-import app.cash.redwood.tooling.codegen.Type.Widget
-import app.cash.redwood.tooling.codegen.Type.WidgetProtocol
+import app.cash.redwood.tooling.codegen.CodegenType
+import app.cash.redwood.tooling.codegen.ProtocolCodegenType
 import app.cash.redwood.tooling.codegen.generate
 import app.cash.redwood.tooling.schema.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
@@ -37,11 +34,11 @@ import java.net.URLClassLoader
 internal class GenerateCommand : CliktCommand(name = "generate") {
   private val type by option()
     .switch(
-      "--compose" to Compose,
-      "--compose-protocol" to ComposeProtocol,
-      "--layout-modifiers" to LayoutModifiers,
-      "--widget" to Widget,
-      "--widget-protocol" to WidgetProtocol,
+      "--compose" to CodegenType.Compose,
+      "--compose-protocol" to ProtocolCodegenType.Compose,
+      "--layout-modifiers" to CodegenType.LayoutModifiers,
+      "--widget" to CodegenType.Widget,
+      "--widget-protocol" to ProtocolCodegenType.Widget,
     )
     .help("Type of code to generate")
     .required()
@@ -60,6 +57,10 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
     val schema = parseSchema(schemaType)
-    schema.generate(type, out)
+    when (val type = type) {
+      is CodegenType -> schema.generate(type, out)
+      is ProtocolCodegenType -> schema.generate(type, out)
+      else -> throw AssertionError()
+    }
   }
 }
