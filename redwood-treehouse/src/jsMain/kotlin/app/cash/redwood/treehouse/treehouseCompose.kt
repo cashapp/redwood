@@ -31,17 +31,17 @@ import kotlinx.coroutines.plus
  * The Kotlin/JS side of a treehouse UI.
  */
 public fun TreehouseUi.asZiplineTreehouseUi(
-  factory: DiffProducingWidget.Factory,
+  provider: DiffProducingWidget.Provider,
   widgetVersion: UInt,
 ): ZiplineTreehouseUi {
-  return RedwoodZiplineTreehouseUi(factory, widgetVersion, this)
+  return RedwoodZiplineTreehouseUi(provider, widgetVersion, this)
 }
 
 private class RedwoodZiplineTreehouseUi(
-  private val factory: DiffProducingWidget.Factory,
+  private val provider: DiffProducingWidget.Provider,
   private val widgetVersion: UInt,
   private val treehouseUi: TreehouseUi,
-) : ZiplineTreehouseUi, EventSink by factory.bridge {
+) : ZiplineTreehouseUi, EventSink by provider.bridge {
   private lateinit var diffSinkToClose: DiffSinkService
   private lateinit var composition: RedwoodComposition
 
@@ -54,7 +54,7 @@ private class RedwoodZiplineTreehouseUi(
 
     val composition = ProtocolRedwoodComposition(
       scope = scope + StandardFrameClock,
-      factory = factory,
+      provider = provider,
       widgetVersion = widgetVersion,
       diffSink = diffSink,
     )

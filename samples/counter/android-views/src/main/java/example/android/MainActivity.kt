@@ -23,6 +23,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.ViewGroupChildren
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
+import example.sunspot.widget.SunspotWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -36,7 +37,9 @@ class MainActivity : AppCompatActivity() {
     val composition = RedwoodComposition(
       scope = scope,
       container = ViewGroupChildren(root),
-      factory = AndroidSunspotWidgetFactory(this),
+      provider = SunspotWidgetFactories(
+        AndroidSunspotWidgetFactory(this),
+      ),
     )
     composition.setContent {
       Counter()

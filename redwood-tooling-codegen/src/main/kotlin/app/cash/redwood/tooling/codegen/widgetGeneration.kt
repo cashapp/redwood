@@ -25,6 +25,7 @@ import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
+import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -32,13 +33,60 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 /*
+class SunspotWidgetFactories<W : Any>(
+  override val Sunspot: SunspotWidgetFactory<W>,
+  override val RedwoodLayout: RedwoodLayoutWidgetFactory<W>,
+) : SunspotWidgetFactoryProvider<W>
+
+interface SunspotWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProvider<W> {
+  val Sunspot: SunspotWidgetFactory<W>
+}
+ */
+internal fun generateWidgetFactories(schema: Schema): FileSpec {
+  val widgetFactoriesType = schema.getWidgetFactoriesType()
+  return FileSpec.builder(widgetFactoriesType.packageName, widgetFactoriesType.simpleName)
+    .addType(
+      TypeSpec.classBuilder(widgetFactoriesType)
+        .addTypeVariable(typeVariableW)
+        .addSuperinterface(schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
+        .apply {
+          val constructorBuilder = FunSpec.constructorBuilder()
+
+          for (dependency in listOf(schema) + schema.dependencies) {
+            val dependencyType = dependency.getWidgetFactoryType().parameterizedBy(typeVariableW)
+            addProperty(
+              PropertySpec.builder(dependency.name, dependencyType, OVERRIDE)
+                .initializer(dependency.name)
+                .build(),
+            )
+            constructorBuilder.addParameter(dependency.name, dependencyType)
+          }
+
+          primaryConstructor(constructorBuilder.build())
+        }
+        .build(),
+    )
+    .addType(
+      TypeSpec.interfaceBuilder(schema.getWidgetFactoryProviderType())
+        .addTypeVariable(typeVariableW)
+        .addSuperinterface(RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+        .addProperty(schema.name, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
+        .apply {
+          for (dependency in schema.dependencies) {
+            addSuperinterface(dependency.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
+          }
+        }
+        .build(),
+    )
+    .build()
+}
+
+/*
 interface SunspotWidgetFactory<W : Any> : Widget.Factory<W> {
   /** {tag=1} */
   fun SunspotText(): SunspotText<W>
   /** {tag=2} */
   fun SunspotButton(): SunspotButton<W>
-
-  val RedwoodLayout: RedwoodLayoutWidgetFactory<W>
 }
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
@@ -47,7 +95,6 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(RedwoodWidget.WidgetFactory.parameterizedBy(typeVariableW))
         .apply {
           for (widget in schema.widgets) {
             addFunction(
@@ -60,12 +107,6 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
                   }
                 }
                 .build(),
-            )
-          }
-          for (dependency in schema.dependencies) {
-            addProperty(
-              dependency.name,
-              dependency.getWidgetFactoryType().parameterizedBy(typeVariableW),
             )
           }
         }

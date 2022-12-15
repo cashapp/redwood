@@ -20,6 +20,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.UIViewChildren
 import example.ios.sunspot.IosSunspotNodeFactory
 import example.shared.Counter
+import example.sunspot.widget.SunspotWidgetFactories
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -41,7 +42,9 @@ class CounterViewControllerDelegate(
     val composition = RedwoodComposition(
       scope = scope,
       container = children,
-      factory = IosSunspotNodeFactory,
+      provider = SunspotWidgetFactories(
+        Sunspot = IosSunspotNodeFactory,
+      ),
     )
     composition.setContent {
       Counter()

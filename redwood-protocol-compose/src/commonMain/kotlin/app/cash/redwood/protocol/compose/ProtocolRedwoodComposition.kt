@@ -33,13 +33,13 @@ import kotlinx.coroutines.CoroutineScope
  */
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
-  factory: DiffProducingWidget.Factory,
+  provider: DiffProducingWidget.Provider,
   diffSink: DiffSink,
   widgetVersion: UInt,
 ): RedwoodComposition {
-  val bridge = factory.bridge
+  val bridge = provider.bridge
   val root = DiffProducingWidgetChildren(Id.Root, ChildrenTag.Root, bridge)
-  val applier = WidgetApplier(factory, root) {
+  val applier = WidgetApplier(provider, root) {
     bridge.createDiffOrNull()?.let(diffSink::sendDiff)
   }
   val composition = RedwoodComposition(scope, applier)

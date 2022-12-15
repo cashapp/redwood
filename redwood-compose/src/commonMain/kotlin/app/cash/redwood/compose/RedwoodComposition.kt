@@ -45,9 +45,9 @@ public interface RedwoodComposition {
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
-  factory: Widget.Factory<W>,
+  provider: Widget.Provider<W>,
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, WidgetApplier(factory, container))
+  return WidgetRedwoodComposition(scope, WidgetApplier(provider, container))
 }
 
 public fun RedwoodComposition(
@@ -95,14 +95,14 @@ private class WidgetRedwoodComposition(
 
 /**
  * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
- * we expose the factory type [F] to our factory function so the correct widget can be created.
+ * we expose the provider type [P] to our factory function so the correct widget can be created.
  *
  * @suppress For generated code usage only.
  */
 @Composable
 @RedwoodCodegenApi
-public inline fun <F : Widget.Factory<*>, W : Widget<*>> RedwoodComposeNode(
-  crossinline factory: (F) -> W,
+public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
+  crossinline factory: (P) -> W,
   update: @DisallowComposableCalls Updater<W>.() -> Unit,
   content: @Composable RedwoodComposeContent<W>.() -> Unit,
 ) {
@@ -112,10 +112,10 @@ public inline fun <F : Widget.Factory<*>, W : Widget<*>> RedwoodComposeNode(
 
   if (currentComposer.inserting) {
     @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as WidgetApplier<F>
+    val applier = currentComposer.applier as WidgetApplier<P>
     currentComposer.createNode {
       @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-      factory(applier.factory as F)
+      factory(applier.provider as P)
     }
   } else {
     currentComposer.useNode()

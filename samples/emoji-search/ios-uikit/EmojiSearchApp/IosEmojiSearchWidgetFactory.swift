@@ -24,17 +24,9 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory
     let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()
 
-    var RedwoodLayout: Redwood_layout_widgetRedwoodLayoutWidgetFactory =
-        Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(viewFactory: UIScrollViewFactory())
-    var RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_widgetRedwoodTreehouseLazyLayoutWidgetFactory
-
     init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
         self.widgetSystem = widgetSystem
-        self.RedwoodTreehouseLazyLayout = Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
-          treehouseApp: treehouseApp,
-          widgetSystem: widgetSystem
-        )
     }
 
     func TextInput() -> WidgetTextInput {
@@ -48,7 +40,7 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory
     }
 }
 
-private class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
+class UIScrollViewFactory: Redwood_layout_uiviewRedwoodUIScrollViewFactory {
     func create(delegate: Redwood_layout_uiviewRedwoodUIScrollViewDelegate) -> UIScrollView {
         return DelegateUIScrollView(delegate)
     }

@@ -34,17 +34,16 @@ public enum class Type {
 public fun ProtocolSchema.generate(type: Type, destination: Path) {
   when (type) {
     Compose -> {
-      for (dependency in allSchemas) {
-        generateLayoutModifierImpls(dependency)?.writeTo(destination)
-        for (scope in dependency.scopes) {
-          generateScope(dependency, scope).writeTo(destination)
-        }
-        for (widget in dependency.widgets) {
-          generateComposable(dependency, widget, host = this).writeTo(destination)
-        }
+      generateLayoutModifierImpls(this)?.writeTo(destination)
+      for (scope in scopes) {
+        generateScope(this, scope).writeTo(destination)
+      }
+      for (widget in widgets) {
+        generateComposable(this, widget).writeTo(destination)
       }
     }
     ComposeProtocol -> {
+      generateDiffProducingWidgetFactories(this).writeTo(destination)
       for (dependency in allSchemas) {
         generateDiffProducingWidgetFactory(dependency, host = this).writeTo(destination)
         generateDiffProducingLayoutModifiers(dependency, host = this).writeTo(destination)
@@ -59,6 +58,7 @@ public fun ProtocolSchema.generate(type: Type, destination: Path) {
       }
     }
     Widget -> {
+      generateWidgetFactories(this).writeTo(destination)
       generateWidgetFactory(this).writeTo(destination)
       for (widget in widgets) {
         generateWidget(this, widget).writeTo(destination)

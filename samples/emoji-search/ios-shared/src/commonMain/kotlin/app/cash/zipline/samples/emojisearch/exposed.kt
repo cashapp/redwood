@@ -23,6 +23,7 @@ import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
 import example.schema.widget.EmojiSearchDiffConsumingNodeFactory
+import example.schema.widget.EmojiSearchWidgetFactories
 import example.schema.widget.EmojiSearchWidgetFactory
 import okio.ByteString
 import okio.toByteString
@@ -37,6 +38,7 @@ fun exposedTypes(
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
   widgetSystem: TreehouseView.WidgetSystem<*>,
+  widgetFactories: EmojiSearchWidgetFactories<*>,
   diffConsumingNodeFactory: EmojiSearchDiffConsumingNodeFactory<*>,
 ) {
   throw AssertionError()

@@ -33,10 +33,8 @@ public interface DiffProducingWidget : Widget<Nothing> {
 
   public fun sendEvent(event: Event)
 
-  /**
-   * Marker interface for types whose functions create [DiffProducingWidget]s.
-   */
-  public interface Factory : Widget.Factory<Nothing> {
+  /** A [Widget.Provider] whose [Widget]s write to a [ProtocolBridge]. */
+  public interface Provider : Widget.Provider<Nothing> {
     public val bridge: ProtocolBridge
   }
 }

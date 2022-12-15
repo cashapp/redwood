@@ -23,24 +23,20 @@ import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
-interface DiffProducingWidgetFactoryProvider {
-  val factory: DiffProducingWidget.Factory
-}
-
 @Composable
-fun DiffProducingWidgetFactoryProvider.LazyColumn(content: LazyListScope.() -> Unit) {
-  val lazyListScope = LazyListScope(factory)
+fun DiffProducingWidget.Provider.LazyColumn(content: LazyListScope.() -> Unit) {
+  val lazyListScope = LazyListScope(this)
   content(lazyListScope)
   app.cash.redwood.treehouse.lazylayout.compose.LazyColumn(lazyListScope.intervals)
 }
 
 @LayoutScopeMarker
-class LazyListScope(private val factory: DiffProducingWidget.Factory) {
+class LazyListScope(private val provider: DiffProducingWidget.Provider) {
   private val _intervals = mutableListOf<LazyListIntervalContent>()
   val intervals: List<LazyListIntervalContent> = _intervals
 
   private class Item(
-    private val factory: DiffProducingWidget.Factory,
+    private val provider: DiffProducingWidget.Provider,
     private val content: @Composable (index: Int) -> Unit,
   ) : LazyListIntervalContent.Item {
 
@@ -51,7 +47,7 @@ class LazyListScope(private val factory: DiffProducingWidget.Factory) {
           content(index)
         }
       }
-      return treehouseUi.asZiplineTreehouseUi(factory, widgetVersion = 1u)
+      return treehouseUi.asZiplineTreehouseUi(provider, widgetVersion = 1u)
     }
   }
 
@@ -61,7 +57,7 @@ class LazyListScope(private val factory: DiffProducingWidget.Factory) {
   ) {
     _intervals += LazyListIntervalContent(
       count,
-      itemProvider = Item(factory, itemContent),
+      itemProvider = Item(provider, itemContent),
     )
   }
 }

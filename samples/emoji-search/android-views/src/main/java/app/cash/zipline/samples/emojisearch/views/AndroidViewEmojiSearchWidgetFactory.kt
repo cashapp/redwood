@@ -19,20 +19,14 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
 import example.schema.widget.EmojiSearchWidgetFactory
 
 class AndroidViewEmojiSearchWidgetFactory<A : AppService>(
   private val context: Context,
   private val treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem<A>,
 ) : EmojiSearchWidgetFactory<View> {
-  override val RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context)
-  override val RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, widgetSystem)
   override fun TextInput() = ViewTextInput(context, treehouseApp.dispatchers)
   override fun Text() = ViewText(TextView(context))
   override fun Image() = ViewImage(ImageView(context))

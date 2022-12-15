@@ -49,7 +49,7 @@ fun Row(
   layoutModifier: LayoutModifier = LayoutModifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  _RedwoodComposeNode<SunspotWidgetFactory<*>, Row<*>>(
+  _RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
     factory = { it.RedwoodLayout.Row() },
     update = {
       set(layoutModifier) { layoutModifiers = it }
@@ -67,10 +67,8 @@ fun Row(
 internal fun generateComposable(
   schema: Schema,
   widget: Widget,
-  host: Schema = schema,
 ): FileSpec {
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
-  val widgetFactoryType = host.getWidgetFactoryType().parameterizedBy(STAR)
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.composePackage(), flatName)
     .addFunction(
@@ -128,14 +126,6 @@ internal fun generateComposable(
             index++
           }
 
-          val arguments = mutableListOf<CodeBlock>()
-
-          arguments += if (schema === host) {
-            CodeBlock.of("factory = %T::%N", widgetFactoryType, flatName)
-          } else {
-            CodeBlock.of("factory = { it.%N.%N() }", schema.name, flatName)
-          }
-
           val updateLambda = CodeBlock.builder()
             .add("set(layoutModifier) { layoutModifiers = it }\n")
 
@@ -162,26 +152,28 @@ internal fun generateComposable(
             }
           }
 
-          arguments += CodeBlock.builder()
-            .add("update = {\n")
-            .indent()
-            .add(updateLambda.build())
-            .unindent()
-            .add("}")
-            .build()
-
-          arguments += CodeBlock.builder()
-            .add("content = {\n")
-            .indent()
-            .add(childrenLambda.build())
-            .unindent()
-            .add("}")
-            .build()
+          val arguments = listOf(
+            CodeBlock.of("factory = { it.%N.%N() }", schema.name, flatName),
+            CodeBlock.builder()
+              .add("update = {\n")
+              .indent()
+              .add(updateLambda.build())
+              .unindent()
+              .add("}")
+              .build(),
+            CodeBlock.builder()
+              .add("content = {\n")
+              .indent()
+              .add(childrenLambda.build())
+              .unindent()
+              .add("}")
+              .build(),
+          )
 
           addStatement(
             "%M<%T, %T>(%L)",
             RedwoodCompose.RedwoodComposeNode,
-            widgetFactoryType,
+            schema.getWidgetFactoryProviderType().parameterizedBy(STAR),
             widgetType,
             arguments.joinToCode(",\n", "\n", ",\n"),
           )

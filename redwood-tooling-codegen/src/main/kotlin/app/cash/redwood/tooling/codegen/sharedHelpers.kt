@@ -64,8 +64,12 @@ internal fun Schema.composePackage(host: Schema = this): String {
   }
 }
 
+internal fun Schema.diffProducingWidgetFactoriesType(): ClassName {
+  return ClassName(composePackage(), "${name}DiffProducingWidgetFactories")
+}
+
 internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "DiffProducing${name}WidgetFactory")
+  return ClassName(composePackage(host), "${name}DiffProducingWidgetFactory")
 }
 
 internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): ClassName {
@@ -77,7 +81,7 @@ internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
 }
 
 internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}Node")
+  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
@@ -86,6 +90,14 @@ internal fun Schema.widgetType(widget: Widget): ClassName {
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(this), "${name}WidgetFactory")
+}
+
+internal fun Schema.getWidgetFactoryProviderType(): ClassName {
+  return ClassName(widgetPackage(this), "${name}WidgetFactoryProvider")
+}
+
+internal fun Schema.getWidgetFactoriesType(): ClassName {
+  return ClassName(widgetPackage(this), "${name}WidgetFactories")
 }
 
 internal fun Schema.widgetPackage(host: Schema = this): String {
