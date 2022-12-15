@@ -25,6 +25,7 @@ kotlin {
 
   cocoapods {
     noPodspec()
+    frameworkName = 'CounterKt'
   }
 
   sourceSets {

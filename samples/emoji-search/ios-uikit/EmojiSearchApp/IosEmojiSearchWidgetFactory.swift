@@ -17,7 +17,7 @@
 import Foundation
 
 import UIKit
-import shared
+import EmojiSearchKt
 
 class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory {
     let treehouseApp: Redwood_treehouseTreehouseApp<A>

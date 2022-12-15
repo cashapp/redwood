@@ -15,7 +15,7 @@
  */
 
 import Foundation
-import shared
+import EmojiSearchKt
 import UIKit
 
 class ImageBinding: WidgetImage {
@@ -54,11 +54,11 @@ class ImageBinding: WidgetImage {
 }
 
 private class ImageView: UIImageView {
-    
+
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 48, height: 48)
     }
-    
+
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: 48, height: 48)
     }

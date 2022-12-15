@@ -15,7 +15,7 @@
  */
 
 import Foundation
-import shared
+import EmojiSearchKt
 
 class IosHostApi : PresentersHostApi {
     private let client: URLSession = .init(configuration: .default)

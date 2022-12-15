@@ -43,7 +43,7 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:counter:android-tests'
   include ':samples:counter:android-composeui'
   include ':samples:counter:browser'
-  include ':samples:counter:ios:shared'
+  include ':samples:counter:ios-shared'
   include ':samples:counter:presenter'
   include ':samples:counter:sunspot'
   include ':samples:counter:sunspot:compose'
@@ -51,7 +51,7 @@ if (!hasProperty('redwoodNoSamples')) {
 
   include ':samples:emoji-search:android-composeui'
   include ':samples:emoji-search:android-views'
-  include ':samples:emoji-search:ios:shared'
+  include ':samples:emoji-search:ios-shared'
   include ':samples:emoji-search:launcher'
   include ':samples:emoji-search:presenters'
   include ':samples:emoji-search:schema'

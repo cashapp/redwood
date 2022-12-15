@@ -15,7 +15,7 @@
  */
 
 import Foundation
-import shared
+import EmojiSearchKt
 import UIKit
 
 class TextBinding: WidgetText {
