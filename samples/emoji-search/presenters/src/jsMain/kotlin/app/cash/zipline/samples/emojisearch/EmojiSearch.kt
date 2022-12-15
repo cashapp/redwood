@@ -26,6 +26,8 @@ import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.protocol.compose.DiffProducingWidget
 import app.cash.redwood.treehouse.TreehouseUi
+import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.compose.items
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.EmojiSearchDiffProducingWidgetFactories
 import example.schema.compose.Image
