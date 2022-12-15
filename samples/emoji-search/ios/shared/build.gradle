@@ -13,6 +13,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api projects.redwoodLayoutSchema.widget
         implementation projects.samples.emojiSearch.launcher
         implementation projects.samples.emojiSearch.presenters
         implementation projects.samples.emojiSearch.schema.widget.protocol

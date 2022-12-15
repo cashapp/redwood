@@ -19,9 +19,13 @@ package app.cash.zipline.samples.emojisearch
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
+import app.cash.redwood.treehouse.TreehouseSwiftUIView
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.widget.SwiftUIChildren
+import app.cash.redwood.widget.SwiftUIView
 import example.schema.widget.EmojiSearchDiffConsumingNodeFactory
 import example.schema.widget.EmojiSearchWidgetFactory
 import okio.ByteString
@@ -38,6 +42,10 @@ fun exposedTypes(
   uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
   widgetSystem: TreehouseView.WidgetSystem<*>,
   diffConsumingNodeFactory: EmojiSearchDiffConsumingNodeFactory<*>,
+  treehouseSwiftUIView: TreehouseSwiftUIView<*>,
+  layoutWidgetFactory: RedwoodLayoutWidgetFactory<*>,
+  swiftUIView: SwiftUIView,
+  swiftUIChildren: SwiftUIChildren,
 ) {
   throw AssertionError()
 }
