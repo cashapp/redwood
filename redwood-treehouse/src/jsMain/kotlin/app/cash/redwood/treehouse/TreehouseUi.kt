@@ -17,10 +17,7 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.Composable
 
-public interface TreehouseUi {
+public interface TreehouseUi : AppService {
   @Composable
   public fun Show()
-
-  public fun close() {
-  }
 }
