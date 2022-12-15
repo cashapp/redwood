@@ -11,8 +11,7 @@ dependencies {
   api projects.redwoodLayoutWidget
   implementation projects.redwoodFlexbox
   implementation projects.redwoodWidgetCompose
-  implementation libs.androidx.core
-  implementation libs.androidx.compose.foundation
+  implementation libs.jetbrains.compose.foundation
   testImplementation projects.redwoodLayoutSharedTest
 }
 
