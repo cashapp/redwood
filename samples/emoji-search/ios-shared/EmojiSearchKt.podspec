@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'shared'
+    spec.name                     = 'EmojiSearchKt'
     spec.version                  = '1.0'
     spec.homepage                 = 'https://github.com/cashapp/redwood/'
     spec.source                   = { :git => "Not Published", :tag => "Cocoapods/#{spec.name}/#{spec.version}" }
@@ -7,7 +7,7 @@ Pod::Spec.new do |spec|
     spec.license                  = ''
     spec.summary                  = 'Redwood Sample Emoji Search'
 
-    spec.vendored_frameworks      = "build/cocoapods/framework/shared.framework"
+    spec.vendored_frameworks      = "build/cocoapods/framework/EmojiSearchKt.framework"
     spec.libraries                = "c++", "sqlite3"
     spec.module_name              = "#{spec.name}_umbrella"
 
@@ -18,7 +18,7 @@ Pod::Spec.new do |spec|
 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':samples:emoji-search:ios-shared',
-        'PRODUCT_MODULE_NAME' => 'shared',
+        'PRODUCT_MODULE_NAME' => 'EmojiSearchKt',
     }
 
     spec.prepare_command = <<-SCRIPT
@@ -27,7 +27,7 @@ Pod::Spec.new do |spec|
 
     spec.script_phases = [
         {
-            :name => 'Build shared',
+            :name => 'Build EmojiSearchKt',
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT

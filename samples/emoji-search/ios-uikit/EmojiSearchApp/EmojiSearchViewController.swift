@@ -16,7 +16,7 @@
 
 import Foundation
 import UIKit
-import shared
+import EmojiSearchKt
 
 class EmojiSearchViewController : UIViewController {
 

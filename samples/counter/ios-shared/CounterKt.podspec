@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'shared'
+    spec.name                     = 'CounterKt'
     spec.version                  = '1.0'
     spec.homepage                 = 'https://github.com/cashapp/redwood/'
     spec.source                   = { :git => "Not Published", :tag => "Cocoapods/#{spec.name}/#{spec.version}" }
@@ -7,13 +7,13 @@ Pod::Spec.new do |spec|
     spec.license                  = ''
     spec.summary                  = 'Redwood Sample Counter'
 
-    spec.vendored_frameworks      = "build/cocoapods/framework/shared.framework"
+    spec.vendored_frameworks      = "build/cocoapods/framework/CounterKt.framework"
     spec.libraries                = "c++"
     spec.module_name              = "#{spec.name}_umbrella"
 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':samples:counter:ios-shared',
-        'PRODUCT_MODULE_NAME' => 'shared',
+        'PRODUCT_MODULE_NAME' => 'CounterKt',
     }
 
     spec.prepare_command = <<-SCRIPT
@@ -22,7 +22,7 @@ Pod::Spec.new do |spec|
 
     spec.script_phases = [
         {
-            :name => 'Build shared',
+            :name => 'Build CounterKt',
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT

@@ -8,7 +8,7 @@ kotlin {
 
   cocoapods {
     noPodspec()
-    frameworkName = 'shared'
+    frameworkName = "EmojiSearchKt"
   }
 
   sourceSets {

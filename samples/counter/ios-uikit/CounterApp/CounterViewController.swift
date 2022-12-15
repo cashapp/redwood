@@ -1,6 +1,6 @@
 import Foundation
 import UIKit
-import shared
+import CounterKt
 
 class CounterViewController : UIViewController {
     private var displayLink: CADisplayLink!
@@ -12,13 +12,13 @@ class CounterViewController : UIViewController {
         container.alignment = .center
         container.distribution = .fillEqually
         container.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(container)
         container.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         container.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         container.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         container.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        
+
         let delegate = CounterViewControllerDelegate(root: container)
         self.delegate = delegate
     }

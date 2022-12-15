@@ -1,11 +1,11 @@
 PODS:
-  - shared (1.0)
+  - CounterKt (1.0)
 
 DEPENDENCIES:
-  - shared (from `../ios-shared`)
+  - CounterKt (from `../ios-shared`)
 
 EXTERNAL SOURCES:
-  shared:
+  CounterKt:
     :path: "../ios-shared"
 
 SPEC CHECKSUMS:

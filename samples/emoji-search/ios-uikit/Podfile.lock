@@ -1,11 +1,11 @@
 PODS:
-  - shared (1.0)
+  - EmojiSearchKt (1.0)
 
 DEPENDENCIES:
-  - shared (from `../ios-shared`)
+  - EmojiSearchKt (from `../ios-shared`)
 
 EXTERNAL SOURCES:
-  shared:
+  EmojiSearchKt:
     :path: "../ios-shared"
 
 SPEC CHECKSUMS:

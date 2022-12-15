@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import shared
+import EmojiSearchKt
 import UIKit
 
 class TextInputBinding: WidgetTextInput {
