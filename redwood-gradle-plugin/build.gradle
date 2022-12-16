@@ -83,6 +83,7 @@ test {
   dependsOn(':redwood-tooling-lint:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-tooling-schema:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-widget:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-widget-compose:publishAllPublicationsToLocalMavenRepository')
 
   inputs.dir(project.file('src/test/fixture'))
 }

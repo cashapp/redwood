@@ -13,6 +13,7 @@ kotlin {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
         api projects.redwoodWidget
+        implementation projects.redwoodWidgetCompose
         api libs.jetbrains.compose.runtime
       }
     }
