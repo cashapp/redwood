@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.zipline.samples.emojisearch
+package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
@@ -24,16 +24,31 @@ import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 @Composable
-fun DiffProducingWidget.Provider.LazyColumn(content: LazyListScope.() -> Unit) {
-  val lazyListScope = LazyListScope(this)
-  content(lazyListScope)
-  app.cash.redwood.treehouse.lazylayout.compose.LazyColumn(lazyListScope.intervals)
+public fun DiffProducingWidget.Provider.LazyColumn(content: LazyListScope.() -> Unit) {
+  val scope = TreehouseLazyListScope(this)
+  content(scope)
+  LazyColumn(scope.intervals)
 }
 
 @LayoutScopeMarker
-class LazyListScope(private val provider: DiffProducingWidget.Provider) {
-  private val _intervals = mutableListOf<LazyListIntervalContent>()
-  val intervals: List<LazyListIntervalContent> = _intervals
+public interface LazyListScope {
+  public fun items(
+    count: Int,
+    itemContent: @Composable (index: Int) -> Unit,
+  )
+}
+
+public inline fun <T> LazyListScope.items(
+  items: List<T>,
+  crossinline itemContent: @Composable (item: T) -> Unit,
+) {
+  items(items.size) {
+    itemContent(items[it])
+  }
+}
+
+private class TreehouseLazyListScope(private val provider: DiffProducingWidget.Provider) : LazyListScope {
+  val intervals = mutableListOf<LazyListIntervalContent>()
 
   private class Item(
     private val provider: DiffProducingWidget.Provider,
@@ -41,32 +56,28 @@ class LazyListScope(private val provider: DiffProducingWidget.Provider) {
   ) : LazyListIntervalContent.Item {
 
     override fun get(index: Int): ZiplineTreehouseUi {
-      val treehouseUi = object : TreehouseUi {
-        @Composable
-        override fun Show() {
-          content(index)
-        }
-      }
+      val treehouseUi = IndexedTreehouseUi(content, index)
       return treehouseUi.asZiplineTreehouseUi(provider, widgetVersion = 1u)
     }
   }
 
-  fun items(
+  override fun items(
     count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
-    _intervals += LazyListIntervalContent(
+    intervals += LazyListIntervalContent(
       count,
       itemProvider = Item(provider, itemContent),
     )
   }
 }
 
-inline fun <T> LazyListScope.items(
-  items: List<T>,
-  crossinline itemContent: @Composable (item: T) -> Unit,
-) = items(
-  count = items.size,
-) {
-  itemContent(items[it])
+private class IndexedTreehouseUi(
+  private val content: @Composable (index: Int) -> Unit,
+  private val index: Int,
+) : TreehouseUi {
+  @Composable
+  override fun Show() {
+    content(index)
+  }
 }

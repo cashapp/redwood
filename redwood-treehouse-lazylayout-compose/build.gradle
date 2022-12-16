@@ -11,6 +11,11 @@ kotlin {
         api projects.redwoodTreehouseLazylayoutWidget
       }
     }
+    jsMain {
+      dependencies {
+        api projects.redwoodTreehouse
+      }
+    }
   }
 }
 
