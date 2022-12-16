@@ -6,6 +6,7 @@ buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
     classpath libs.kotlin.serializationPlugin
+    classpath libs.jetbrains.compose.gradlePlugin
     classpath libs.androidGradlePlugin
     classpath libs.gradleMavenPublishPlugin
     classpath libs.dokkaPlugin

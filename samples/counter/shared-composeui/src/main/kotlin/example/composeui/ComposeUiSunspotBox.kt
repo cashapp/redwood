@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.android.sunspot
+package example.composeui
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
-import example.sunspot.widget.SunspotText
-import androidx.compose.material.Text
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import example.sunspot.widget.SunspotBox
 
-
-class AndroidSunspotText : SunspotText<@Composable () -> Unit> {
-  private var text by mutableStateOf("")
-
+class ComposeUiSunspotBox : SunspotBox<@Composable () -> Unit> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override val value = @Composable {
-    Text(
-      text = text,
-      color = MaterialTheme.colors.onBackground,
-    )
-  }
+  override val children = ComposeWidgetChildren()
 
-  override fun text(text: String?) {
-    this.text = text ?: ""
+  override val value = @Composable {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = Modifier.padding(16.dp),
+    ) {
+      children.render()
+    }
   }
 }

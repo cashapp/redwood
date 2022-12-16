@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.android.sunspot
+package example.composeui
 
 import androidx.compose.runtime.Composable
 import example.sunspot.widget.SunspotWidgetFactory
 
-class AndroidSunspotWidgetFactory : SunspotWidgetFactory<@Composable () -> Unit> {
-  override fun SunspotBox() = AndroidSunspotBox()
-  override fun SunspotText() = AndroidSunspotText()
-  override fun SunspotButton() = AndroidSunspotButton()
+class ComposeUiSunspotWidgetFactory : SunspotWidgetFactory<@Composable () -> Unit> {
+  override fun SunspotBox() = ComposeUiSunspotBox()
+  override fun SunspotText() = ComposeUiSunspotText()
+  override fun SunspotButton() = ComposeUiSunspotButton()
 }

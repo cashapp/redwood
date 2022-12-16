@@ -13,50 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.android.sunspot
+package example.composeui
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import app.cash.redwood.LayoutModifier
-import example.sunspot.widget.SunspotButton
+import example.sunspot.widget.SunspotText
 
-class AndroidSunspotButton : SunspotButton<@Composable () -> Unit> {
+class ComposeUiSunspotText : SunspotText<@Composable () -> Unit> {
   private var text by mutableStateOf("")
-  private var isEnabled by mutableStateOf(false)
-  private var onClick by mutableStateOf({})
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value = @Composable {
-    Button(
-      onClick = onClick,
-      enabled = isEnabled,
-      modifier = Modifier.fillMaxWidth(),
-    ) {
-      Text(text)
-    }
+    Text(
+      text = text,
+      color = MaterialTheme.colors.onBackground,
+    )
   }
-
 
   override fun text(text: String?) {
     this.text = text ?: ""
-  }
-
-  override fun enabled(enabled: Boolean) {
-    this.isEnabled = enabled
-  }
-
-  override fun onClick(onClick: (() -> Unit)?) {
-    this.onClick = onClick ?: {}
   }
 }
