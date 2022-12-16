@@ -1,20 +1,35 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build.compose'
 
-dependencies {
-  api projects.redwoodTreehouseComposeui
-  api projects.redwoodTreehouseLazylayoutWidget
-  implementation projects.redwoodWidgetCompose
-  implementation libs.androidx.core
-  implementation libs.jetbrains.compose.foundation
+kotlin {
+  android {
+    publishLibraryVariants('release')
+  }
+
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  jvm()
+
+  macosArm64()
+  macosX64()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodTreehouseComposeui
+        api projects.redwoodTreehouseLazylayoutWidget
+        implementation projects.redwoodWidgetCompose
+        implementation libs.jetbrains.compose.foundation
+      }
+    }
+  }
 }
 
 android {
   namespace 'app.cash.redwood.treehouse.lazylayout.composeui'
-
-  buildFeatures {
-    compose = true
-  }
 }
