@@ -18,7 +18,6 @@ package app.cash.redwood.protocol.compose
 import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
@@ -84,15 +83,9 @@ public class ProtocolState {
     nodes.remove(id)
   }
 
+  public fun getWidget(id: Id): DiffProducingWidget? = nodes[id]
+
   public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
     return DiffProducingWidgetChildren(id, tag, this)
-  }
-
-  public fun sendEvent(event: Event) {
-    val node = checkNotNull(nodes[event.id]) {
-      // TODO how to handle race where an incoming event targets this removed node?
-      "Unknown node ${event.id} for event with tag ${event.tag}"
-    }
-    node.sendEvent(event)
   }
 }
