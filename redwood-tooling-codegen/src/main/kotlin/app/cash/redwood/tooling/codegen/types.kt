@@ -71,6 +71,7 @@ internal object RedwoodWidget {
 }
 
 internal object RedwoodCompose {
+  val RedwoodComposable = ClassName("app.cash.redwood.compose", "RedwoodComposable")
   val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
 }
 
@@ -88,6 +89,7 @@ internal fun composableLambda(
   ).copy(
     annotations = listOf(
       AnnotationSpec.builder(ComposeRuntime.Composable).build(),
+      AnnotationSpec.builder(RedwoodCompose.RedwoodComposable).build(),
     ),
   )
 }

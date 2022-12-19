@@ -41,13 +41,13 @@ import kotlin.reflect.KClass
 
 /*
 @Composable
-@SunspotComposable
+@RedwoodComposable
 @OptIn(RedwoodCodegenApi::class)
 fun Row(
   padding: Padding = Padding.Zero,
   overflow: Overflow = Overflow.Clip,
   layoutModifier: LayoutModifier = LayoutModifier,
-  children: @Composable @SunspotComposable RowScope.() -> Unit,
+  children: @Composable @RedwoodComposable RowScope.() -> Unit,
 ): Unit {
   _RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
     factory = { it.RedwoodLayout.Row() },
@@ -75,6 +75,7 @@ internal fun generateComposable(
       FunSpec.builder(flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(ComposeRuntime.Composable)
+        .addAnnotation(RedwoodCompose.RedwoodComposable)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.OptIn)
             .addMember("%T::class", Redwood.RedwoodCodegenApi)

@@ -17,6 +17,7 @@ package app.cash.redwood.compose
 
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposableTargetMarker
 import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.DisallowComposableCalls
@@ -32,10 +33,26 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import kotlin.annotation.AnnotationRetention.BINARY
+import kotlin.annotation.AnnotationTarget.FILE
+import kotlin.annotation.AnnotationTarget.FUNCTION
+import kotlin.annotation.AnnotationTarget.PROPERTY_GETTER
+import kotlin.annotation.AnnotationTarget.TYPE
+import kotlin.annotation.AnnotationTarget.TYPE_PARAMETER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+
+/**
+ * Annotates a [@Composable][Composable] function or function type which can only be used
+ * with Redwood. This annotation is used explicitly on Redwood's library APIs and generated code,
+ * but user code should not need to include it as it will be inferred.
+ */
+@Retention(BINARY)
+@ComposableTargetMarker("Redwood Composable")
+@Target(FILE, FUNCTION, PROPERTY_GETTER, TYPE, TYPE_PARAMETER)
+public annotation class RedwoodComposable
 
 /**
  * Render a Redwood composition inside of a different composition such as Compose UI.
@@ -43,7 +60,7 @@ import kotlinx.coroutines.launch
 @Composable
 public fun RedwoodContent(
   provider: Widget.Provider<@Composable () -> Unit>,
-  content: @Composable () -> Unit,
+  content: @Composable @RedwoodComposable () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
   val children = remember(provider, content) { ComposeWidgetChildren() }
@@ -59,7 +76,7 @@ public fun RedwoodContent(
 }
 
 public interface RedwoodComposition {
-  public fun setContent(content: @Composable () -> Unit)
+  public fun setContent(content: @Composable @RedwoodComposable () -> Unit)
   public fun cancel()
 }
 
@@ -106,7 +123,7 @@ private class WidgetRedwoodComposition(
     recomposer.runRecomposeAndApplyChanges()
   }
 
-  override fun setContent(content: @Composable () -> Unit) {
+  override fun setContent(content: @Composable @RedwoodComposable () -> Unit) {
     composition.setContent(content)
   }
 
@@ -125,6 +142,7 @@ private class WidgetRedwoodComposition(
  * @suppress For generated code usage only.
  */
 @Composable
+@RedwoodComposable
 @RedwoodCodegenApi
 public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
   crossinline factory: (P) -> W,
@@ -158,9 +176,10 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
 @RedwoodCodegenApi
 public class RedwoodComposeContent<out W : Widget<*>> {
   @Composable
+  @RedwoodComposable
   public fun into(
     accessor: (W) -> Widget.Children<*>,
-    content: @Composable () -> Unit,
+    content: @Composable @RedwoodComposable () -> Unit,
   ) {
     ComposeNode<ChildrenWidget<*>, Applier<*>>(
       factory = {
