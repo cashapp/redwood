@@ -18,42 +18,24 @@ package example.android
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.redwood.compose.AndroidUiDispatcher
-import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import app.cash.redwood.compose.RedwoodContent
 import example.android.sunspot.AndroidSunspotWidgetFactory
 import example.shared.Counter
 import example.sunspot.widget.SunspotWidgetFactories
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 
 class MainActivity : AppCompatActivity() {
-  private val scope = CoroutineScope(AndroidUiDispatcher.Main)
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val children = ComposeWidgetChildren()
-    val composition = RedwoodComposition(
-      scope = scope,
-      container = children,
-      provider = SunspotWidgetFactories(
-        AndroidSunspotWidgetFactory(),
-      ),
+    val factories = SunspotWidgetFactories(
+      AndroidSunspotWidgetFactory(),
     )
-    composition.setContent {
-      Counter()
-    }
-
     setContent {
       CounterTheme {
-        children.render()
+        RedwoodContent(factories) {
+          Counter()
+        }
       }
     }
-  }
-
-  override fun onDestroy() {
-    scope.cancel()
-    super.onDestroy()
   }
 }
