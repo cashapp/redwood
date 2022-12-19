@@ -15,23 +15,19 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.Type.Compose
-import app.cash.redwood.tooling.codegen.Type.ComposeProtocol
-import app.cash.redwood.tooling.codegen.Type.LayoutModifiers
-import app.cash.redwood.tooling.codegen.Type.Widget
-import app.cash.redwood.tooling.codegen.Type.WidgetProtocol
-import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.codegen.CodegenType.Compose
+import app.cash.redwood.tooling.codegen.CodegenType.LayoutModifiers
+import app.cash.redwood.tooling.codegen.CodegenType.Widget
+import app.cash.redwood.tooling.schema.Schema
 import java.nio.file.Path
 
-public enum class Type {
+public enum class CodegenType {
   Compose,
-  ComposeProtocol,
   LayoutModifiers,
   Widget,
-  WidgetProtocol,
 }
 
-public fun ProtocolSchema.generate(type: Type, destination: Path) {
+public fun Schema.generate(type: CodegenType, destination: Path) {
   when (type) {
     Compose -> {
       generateLayoutModifierImpls(this)?.writeTo(destination)
@@ -40,16 +36,6 @@ public fun ProtocolSchema.generate(type: Type, destination: Path) {
       }
       for (widget in widgets) {
         generateComposable(this, widget).writeTo(destination)
-      }
-    }
-    ComposeProtocol -> {
-      generateDiffProducingWidgetFactories(this).writeTo(destination)
-      for (dependency in allSchemas) {
-        generateDiffProducingWidgetFactory(dependency, host = this).writeTo(destination)
-        generateDiffProducingLayoutModifiers(dependency, host = this).writeTo(destination)
-        for (widget in dependency.widgets) {
-          generateDiffProducingWidget(dependency, widget, host = this).writeTo(destination)
-        }
       }
     }
     LayoutModifiers -> {
@@ -62,15 +48,6 @@ public fun ProtocolSchema.generate(type: Type, destination: Path) {
       generateWidgetFactory(this).writeTo(destination)
       for (widget in widgets) {
         generateWidget(this, widget).writeTo(destination)
-      }
-    }
-    WidgetProtocol -> {
-      generateDiffConsumingNodeFactory(this).writeTo(destination)
-      for (dependency in allSchemas) {
-        generateDiffConsumingLayoutModifiers(dependency, host = this).writeTo(destination)
-        for (widget in dependency.widgets) {
-          generateDiffConsumingWidget(dependency, widget, host = this).writeTo(destination)
-        }
       }
     }
   }
