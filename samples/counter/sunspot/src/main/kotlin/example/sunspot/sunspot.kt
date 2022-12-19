@@ -43,7 +43,8 @@ data class SunspotText(
 @Widget(3)
 data class SunspotButton(
   @Property(1) val text: String?,
-  @Property(2) @Default("true")
+  @Property(2)
+  @Default("true")
   val enabled: Boolean = true,
   @Property(3) val onClick: (() -> Unit)? = null,
 )
