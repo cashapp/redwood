@@ -22,9 +22,7 @@ import androidx.compose.runtime.currentComposer
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WidgetApplier
-import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.DiffSink
-import app.cash.redwood.protocol.Id
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -33,13 +31,11 @@ import kotlinx.coroutines.CoroutineScope
  */
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
-  provider: DiffProducingWidget.Provider,
+  bridge: ProtocolBridge,
   diffSink: DiffSink,
   widgetVersion: UInt,
 ): RedwoodComposition {
-  val bridge = provider.bridge
-  val root = DiffProducingWidgetChildren(Id.Root, ChildrenTag.Root, bridge)
-  val applier = WidgetApplier(provider, root) {
+  val applier = WidgetApplier(bridge.provider, bridge.root) {
     bridge.createDiffOrNull()?.let(diffSink::sendDiff)
   }
   val composition = RedwoodComposition(scope, applier)

@@ -31,7 +31,7 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.Button
-import example.redwood.compose.ExampleSchemaDiffProducingWidgetFactories
+import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlin.test.Test
@@ -49,7 +49,7 @@ class ProtocolTest {
     val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      provider = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge()),
+      bridge = ExampleSchemaProtocolBridge.create(),
       diffSink = ::error,
       widgetVersion = 22U,
     )
@@ -68,7 +68,7 @@ class ProtocolTest {
     val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      provider = ExampleSchemaDiffProducingWidgetFactories(ProtocolBridge()),
+      bridge = ExampleSchemaProtocolBridge.create(),
       diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )
@@ -111,11 +111,11 @@ class ProtocolTest {
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
-    val bridge = ProtocolBridge()
+    val bridge = ExampleSchemaProtocolBridge.create()
     val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
       scope = this + clock,
-      provider = ExampleSchemaDiffProducingWidgetFactories(bridge),
+      bridge = bridge,
       diffSink = { diff -> diffs += diff },
       widgetVersion = 1U,
     )

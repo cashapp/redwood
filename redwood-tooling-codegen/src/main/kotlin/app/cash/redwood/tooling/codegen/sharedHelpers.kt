@@ -64,12 +64,12 @@ internal fun Schema.composePackage(host: Schema = this): String {
   }
 }
 
-internal fun Schema.diffProducingWidgetFactoriesType(): ClassName {
-  return ClassName(composePackage(), "${name}DiffProducingWidgetFactories")
+internal fun Schema.protocolBridgeType(): ClassName {
+  return ClassName(composePackage(), "${name}ProtocolBridge")
 }
 
 internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "${name}DiffProducingWidgetFactory")
+  return ClassName(composePackage(host), "DiffProducing${name}WidgetFactory")
 }
 
 internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): ClassName {

@@ -15,11 +15,10 @@
  */
 package app.cash.zipline.samples.emojisearch
 
-import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
-import example.schema.compose.EmojiSearchDiffProducingWidgetFactories
+import example.schema.compose.EmojiSearchProtocolBridge
 import example.values.TextFieldState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,15 +42,15 @@ class RealEmojiSearchPresenter(
 
   override fun launch(): ZiplineTreehouseUi {
     val events = MutableSharedFlow<EmojiSearchEvent>(extraBufferCapacity = Int.MAX_VALUE)
-    val factories = EmojiSearchDiffProducingWidgetFactories(ProtocolBridge(), json)
+    val bridge = EmojiSearchProtocolBridge.create(json)
     val treehouseUi = EmojiSearchTreehouseUi(
       initialViewModel = initialViewModel,
       viewModels = produceModels(events),
       onEvent = events::tryEmit,
-      factories = factories,
+      bridge = bridge,
     )
     return treehouseUi.asZiplineTreehouseUi(
-      provider = factories,
+      bridge = bridge,
       widgetVersion = 0U,
     )
   }
