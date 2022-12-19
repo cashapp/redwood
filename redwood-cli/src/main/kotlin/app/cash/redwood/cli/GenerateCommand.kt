@@ -18,6 +18,7 @@ package app.cash.redwood.cli
 import app.cash.redwood.tooling.codegen.CodegenType
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType
 import app.cash.redwood.tooling.codegen.generate
+import app.cash.redwood.tooling.schema.parseProtocolSchema
 import app.cash.redwood.tooling.schema.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -56,10 +57,16 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
-    val schema = parseSchema(schemaType)
+
     when (val type = type) {
-      is CodegenType -> schema.generate(type, out)
-      is ProtocolCodegenType -> schema.generate(type, out)
+      is CodegenType -> {
+        val schema = parseSchema(schemaType)
+        schema.generate(type, out)
+      }
+      is ProtocolCodegenType -> {
+        val schema = parseProtocolSchema(schemaType)
+        schema.generate(type, out)
+      }
       else -> throw AssertionError()
     }
   }
