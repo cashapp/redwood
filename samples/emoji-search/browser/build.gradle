@@ -1,0 +1,21 @@
+apply plugin: 'org.jetbrains.kotlin.js'
+apply plugin: 'app.cash.redwood'
+
+archivesBaseName = 'emoji-search'
+
+kotlin {
+  js {
+    browser()
+    binaries.executable()
+  }
+
+  sourceSets {
+    main {
+      dependencies {
+        implementation projects.samples.emojiSearch.schema.widget
+        implementation projects.samples.emojiSearch.presenter
+        implementation libs.kotlinx.coroutines.core
+      }
+    }
+  }
+}
