@@ -41,12 +41,20 @@ import com.squareup.kotlinpoet.joinToCode
 
 /*
 class SunspotProtocolBridge(
-  private val bridge: ProtocolBridge,
+  private val state: ProtocolState,
+  private val mismatchHandler: ProtocolMismatchHandler,
   override val root: Widget.Children<Nothing>,
   override val provider: SunspotWidgetFactoryProvider<Nothing>,
 ) : ProtocolBridge {
-  override fun createDiffOrNull(): Diff? = bridge.createDiffOrNull()
-  override fun sendEvent(event: Event) = bridge.sendEvent(event)
+  override fun createDiffOrNull(): Diff? = state.createDiffOrNull()
+  override fun sendEvent(event: Event) {
+    val node = state.getWidget(event.id)
+    if (node != null) {
+      node.sendEvent(event)
+    } else {
+      mismatchHandler.onUnknownEventNode(event.id, event.tag)
+    }
+  }
 
   companion object : ProtocolBridge.Factory {
     override fun create(
@@ -59,7 +67,7 @@ class SunspotProtocolBridge(
           Sunspot = DiffProducingSunspotWidgetFactory(bridge, json, mismatchHandler),
           RedwoodLayout = DiffProducingRedwoodLayoutWidgetFactory(bridge, json, mismatchHandler),
       )
-      return SunspotProtocolBridge(bridge, root, factories)
+      return SunspotProtocolBridge(bridge, mismatchHandler, root, factories)
     }
   }
 }
@@ -75,14 +83,20 @@ internal fun generateProtocolBridge(
         .addSuperinterface(ComposeProtocol.ProtocolBridge)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("bridge", ComposeProtocol.ProtocolState)
+            .addParameter("state", ComposeProtocol.ProtocolState)
+            .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
             .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
             .addParameter("provider", providerType)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("bridge", ComposeProtocol.ProtocolState, PRIVATE)
-            .initializer("bridge")
+          PropertySpec.builder("state", ComposeProtocol.ProtocolState, PRIVATE)
+            .initializer("state")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
             .build(),
         )
         .addProperty(
@@ -99,7 +113,7 @@ internal fun generateProtocolBridge(
           FunSpec.builder("createDiffOrNull")
             .addModifiers(OVERRIDE)
             .returns(Protocol.Diff.copy(nullable = true))
-            .addStatement("return bridge.createDiffOrNull()")
+            .addStatement("return state.createDiffOrNull()")
             .build(),
         )
         .addFunction(
@@ -107,7 +121,12 @@ internal fun generateProtocolBridge(
             .addModifiers(OVERRIDE)
             .returns(UNIT)
             .addParameter("event", Protocol.Event)
-            .addStatement("return bridge.sendEvent(event)")
+            .addStatement("val node = state.getWidget(event.id)")
+            .beginControlFlow("if (node != null)")
+            .addStatement("node.sendEvent(event)")
+            .nextControlFlow("else")
+            .addStatement("mismatchHandler.onUnknownEventNode(event.id, event.tag)")
+            .endControlFlow()
             .build(),
         )
         .addType(
@@ -129,7 +148,7 @@ internal fun generateProtocolBridge(
                   }
                   addStatement("val factories = %T(\n%L)", schema.getWidgetFactoriesType(), arguments.joinToCode(separator = ",\n"))
                 }
-                .addStatement("return %T(bridge, root, factories)", type)
+                .addStatement("return %T(bridge, mismatchHandler, root, factories)", type)
                 .build(),
             )
             .build(),
