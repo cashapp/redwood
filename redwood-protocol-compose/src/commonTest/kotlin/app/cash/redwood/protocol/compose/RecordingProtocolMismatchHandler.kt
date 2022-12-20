@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
 
 class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
@@ -23,5 +24,9 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
 
   override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
     events += "Unknown event ${tag.value} for ${widgetTag.value}"
+  }
+
+  override fun onUnknownEventNode(id: Id, tag: EventTag) {
+    events += "Unknown ID ${id.value} for event tag ${tag.value}"
   }
 }

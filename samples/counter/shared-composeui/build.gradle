@@ -1,0 +1,10 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood'
+
+dependencies {
+  api projects.samples.counter.sunspot.widget
+  implementation projects.redwoodWidgetCompose
+  implementation libs.jetbrains.compose.material
+  implementation libs.jetbrains.compose.ui
+  implementation libs.jetbrains.compose.ui.tooling.preview
+}

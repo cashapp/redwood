@@ -4,7 +4,7 @@ apply plugin: 'app.cash.redwood'
 
 dependencies {
   implementation project(':presenters')
-  implementation libs.androidx.compose.material
+  implementation libs.jetbrains.compose.material
 }
 
 android {

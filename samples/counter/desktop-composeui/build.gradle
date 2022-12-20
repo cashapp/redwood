@@ -1,0 +1,16 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.compose'
+
+compose {
+  desktop {
+    application {
+      mainClass = "example.desktop.Main"
+    }
+  }
+}
+
+dependencies {
+  implementation compose.desktop.currentOs
+  implementation projects.samples.counter.presenter
+  implementation projects.samples.counter.sharedComposeui
+}
