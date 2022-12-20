@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.android
+package example.composeui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 val Purple200 = Color(0xFFBB86FC)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
@@ -39,8 +38,8 @@ val Typography = Typography(
   h3 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
-    fontSize = 36.sp
-  )
+    fontSize = 36.sp,
+  ),
 )
 
 private val DarkColorPalette = darkColors(
@@ -58,13 +57,13 @@ private val LightColorPalette = lightColors(
 private val Shapes = Shapes(
   small = RoundedCornerShape(4.dp),
   medium = RoundedCornerShape(4.dp),
-  large = RoundedCornerShape(0.dp)
+  large = RoundedCornerShape(0.dp),
 )
 
 @Composable
 fun CounterTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
-  content: @Composable () -> Unit
+  content: @Composable () -> Unit,
 ) {
   val colors = if (darkTheme) {
     DarkColorPalette
@@ -75,6 +74,6 @@ fun CounterTheme(
     colors = colors,
     typography = Typography,
     shapes = Shapes,
-    content = content
+    content = content,
   )
 }
