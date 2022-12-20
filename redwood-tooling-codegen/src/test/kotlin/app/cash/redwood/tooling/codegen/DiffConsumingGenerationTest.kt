@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseSchema
+import app.cash.redwood.tooling.schema.parseProtocolSchema
 import com.google.common.truth.Truth.assertThat
 import java.util.regex.Pattern
 import java.util.regex.Pattern.MULTILINE
@@ -48,7 +48,7 @@ class DiffConsumingGenerationTest {
   data class Node12(@Property(1) val text: String)
 
   @Test fun `names are sorted by their node tags`() {
-    val schema = parseSchema(SortedByTagSchema::class)
+    val schema = parseProtocolSchema(SortedByTagSchema::class)
 
     val fileSpec = generateDiffConsumingNodeFactory(schema)
     assertThat(fileSpec.toString()).containsMatch(
@@ -57,7 +57,7 @@ class DiffConsumingGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schema = parseSchema(PrimarySchema::class)
+    val schema = parseProtocolSchema(PrimarySchema::class)
 
     val fileSpec = generateDiffConsumingLayoutModifiers(schema)
     assertThat(fileSpec.toString()).apply {
