@@ -13,7 +13,7 @@ dependencies {
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
-  implementation projects.samples.emojiSearch.presenters
+  implementation projects.samples.emojiSearch.presenterTreehouse
   implementation projects.samples.emojiSearch.schema.widget.protocol
   implementation libs.androidx.appCompat
   implementation libs.androidx.core

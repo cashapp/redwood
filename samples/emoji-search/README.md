@@ -1,11 +1,12 @@
 Emoji Search
 ============
 
-This is a mobile app demo of Zipline. It has two modules:
+This is a mobile app demo of Zipline.
 
- * **presenters** is a Kotlin/Multiplatform library that searches a set of emoji images.
- * **android** is an Android application that downloads the presenters JavaScript and displays it.
- * **ios** is an iOS application that downloads the presenters JavaScript and displays it.
+ * **presenter** is a Kotlin/JS @Composable which searches a set of emoji images.
+ * **presenter-treehouse** is a Kotlin/Multiplatform library which exposes the presenter to a host application.
+ * **android** is an Android application that downloads the presenter JavaScript and displays it.
+ * **ios** is an iOS application that downloads the presenter JavaScript and displays it.
 
 Prerequisites
 -------------
@@ -14,16 +15,16 @@ In order to build and run these applications you'll need to:
 - Have Android Studio installed
 
 
-Serving presenters.js
----------------------
+Serving the JS
+--------------
 
 Run this:
 
 ```
-./gradlew :samples:emoji-search:presenters:serveDevelopmentZipline --info --continuous
+./gradlew :samples:emoji-search:presenter-treehouse:serveDevelopmentZipline --info --continuous
 ```
 
-This will compile Kotlin/JS and serve it at [[http://localhost:8080/presenters.js]]. The server will
+This will compile Kotlin/JS and serve it at [[http://localhost:8080/presenter-treehouse.js]]. The server will
 run until you CTRL+C the process.
 
 

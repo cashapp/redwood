@@ -12,7 +12,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.emojiSearch.presenters
+        implementation projects.samples.emojiSearch.presenterTreehouse
         api projects.redwoodTreehouse
       }
     }

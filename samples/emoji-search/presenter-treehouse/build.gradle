@@ -20,13 +20,12 @@ kotlin {
       dependencies {
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseLazylayoutApi
-        api projects.samples.emojiSearch.values
       }
     }
 
     jsMain {
       dependencies {
-        api projects.samples.emojiSearch.schema.compose
+        api projects.samples.emojiSearch.presenter
         implementation projects.samples.emojiSearch.schema.compose.protocol
       }
     }
