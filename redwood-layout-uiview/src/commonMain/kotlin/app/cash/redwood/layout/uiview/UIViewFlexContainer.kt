@@ -23,10 +23,14 @@ import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.uiview.cinterop.HostView
+import app.cash.redwood.layout.uiview.cinterop.RedwoodScrollViewDelegateProtocol
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
@@ -34,9 +38,9 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
 import platform.UIKit.superview
+import platform.darwin.NSObject
 
 internal class UIViewFlexContainer(
-  viewFactory: RedwoodUIScrollViewFactory,
   private val direction: FlexDirection,
 ) {
   private val container = FlexContainer().apply {
@@ -44,7 +48,7 @@ internal class UIViewFlexContainer(
     roundToInt = false
   }
 
-  private val _view: UIScrollView = viewFactory.create(UIViewDelegate())
+  private val _view: UIScrollView = HostView().apply { kotlinDelegate = UIViewDelegate() }
   val view: UIView get() = _view
 
   private val _children: UIViewChildren = UIViewChildren(_view)
@@ -89,14 +93,13 @@ internal class UIViewFlexContainer(
     _view.setNeedsLayout()
   }
 
-  private inner class UIViewDelegate : RedwoodUIScrollViewDelegate {
+  private inner class UIViewDelegate : NSObject(), RedwoodScrollViewDelegateProtocol {
     private var needsLayout = true
 
-    override val intrinsicContentSize get() = noIntrinsicSize
+    override fun intrinsicContentSize(): CValue<CGSize> = CGSizeMake(noIntrinsicSize.width, noIntrinsicSize.height)
 
-    override fun sizeThatFits(size: UnsafeSize): UnsafeSize {
-      return measure(size).toUnsafeSize()
-    }
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> =
+      measure(size.useContents { toUnsafeSize() }).let { us -> CGSizeMake(us.width, us.height) }
 
     override fun setNeedsLayout() {
       needsLayout = true
@@ -150,3 +153,8 @@ internal class UIViewFlexContainer(
 }
 
 private val noIntrinsicSize = UnsafeSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+
+internal data class UnsafeSize(
+  val width: Double,
+  val height: Double,
+)

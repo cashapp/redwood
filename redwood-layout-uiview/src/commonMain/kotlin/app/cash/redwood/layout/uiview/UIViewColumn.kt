@@ -26,8 +26,8 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.widget.Widget
 import platform.UIKit.UIView
 
-internal class UIViewColumn(viewFactory: RedwoodUIScrollViewFactory) : Column<UIView> {
-  private val container = UIViewFlexContainer(viewFactory, FlexDirection.Column)
+internal class UIViewColumn() : Column<UIView> {
+  private val container = UIViewFlexContainer(FlexDirection.Column)
 
   override val children: Widget.Children<UIView> get() = container.children
 

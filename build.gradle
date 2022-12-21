@@ -14,6 +14,7 @@ buildscript {
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
     classpath libs.paparazzi.gradlePlugin
+    classpath libs.cklib.gradle.plugin
     classpath 'app.cash.redwood.build:gradle-plugin'
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }

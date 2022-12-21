@@ -26,8 +26,8 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.Widget
 import platform.UIKit.UIView
 
-internal class UIViewRow(viewFactory: RedwoodUIScrollViewFactory) : Row<UIView> {
-  private val container = UIViewFlexContainer(viewFactory, FlexDirection.Row)
+internal class UIViewRow() : Row<UIView> {
+  private val container = UIViewFlexContainer(FlexDirection.Row)
 
   override val children: Widget.Children<UIView> get() = container.children
 
