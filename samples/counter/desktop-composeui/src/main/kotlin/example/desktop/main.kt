@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.android
+@file:JvmName("Main")
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
+package example.desktop
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import app.cash.redwood.compose.RedwoodContent
 import example.composeui.ComposeUiSunspotWidgetFactory
 import example.composeui.CounterTheme
 import example.shared.Counter
 import example.sunspot.widget.SunspotWidgetFactories
 
-class MainActivity : AppCompatActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+fun main() {
+  val factories = SunspotWidgetFactories(
+    ComposeUiSunspotWidgetFactory(),
+  )
 
-    val factories = SunspotWidgetFactories(
-      ComposeUiSunspotWidgetFactory(),
-    )
-    setContent {
+  application {
+    Window(
+      onCloseRequest = ::exitApplication,
+      title = "Counter",
+      state = rememberWindowState(width = 300.dp, height = 300.dp),
+    ) {
       CounterTheme {
         RedwoodContent(factories) {
           Counter()

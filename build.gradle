@@ -6,6 +6,7 @@ buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
     classpath libs.kotlin.serializationPlugin
+    classpath libs.jetbrains.compose.gradlePlugin
     classpath libs.androidGradlePlugin
     classpath libs.gradleMavenPublishPlugin
     classpath libs.dokkaPlugin
@@ -199,8 +200,8 @@ allprojects {
       target("src/*/kotlin/**/*.kt")
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
       // Spotless doesn't read .editorconfig yet: https://github.com/diffplug/spotless/issues/142
-      ktlint('0.46.1').editorConfigOverride([
-        'disabled_rules': 'filename',
+      ktlint('0.47.1').editorConfigOverride([
+        'ktlint_disabled_rules': 'filename',
         'insert_final_newline': 'true',
         'end_of_line': 'lf',
         'charset': 'utf-8',

@@ -39,11 +39,14 @@ interface EmojiSearch
 
 @Widget(1)
 data class TextInput(
-  @Property(1) @Default("TextFieldState()")
+  @Property(1)
+  @Default("TextFieldState()")
   val state: TextFieldState,
-  @Property(2) @Default("\"\"")
+  @Property(2)
+  @Default("\"\"")
   val hint: String,
-  @Property(3) @Default("null")
+  @Property(3)
+  @Default("null")
   val onChange: (TextFieldState) -> Unit,
 )
 

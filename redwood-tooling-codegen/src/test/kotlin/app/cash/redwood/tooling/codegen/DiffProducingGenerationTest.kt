@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseSchema
+import app.cash.redwood.tooling.schema.parseProtocolSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -37,7 +37,7 @@ class DiffProducingGenerationTest {
   )
 
   @Test fun `id property does not collide`() {
-    val schema = parseSchema(IdPropertyNameCollisionSchema::class)
+    val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class)
 
     val fileSpec = generateDiffProducingWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
@@ -51,7 +51,7 @@ class DiffProducingGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schema = parseSchema(PrimarySchema::class)
+    val schema = parseProtocolSchema(PrimarySchema::class)
 
     val fileSpec = generateDiffProducingLayoutModifiers(schema)
     assertThat(fileSpec.toString()).apply {

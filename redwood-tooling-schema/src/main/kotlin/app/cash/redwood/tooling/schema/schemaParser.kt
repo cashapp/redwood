@@ -41,7 +41,11 @@ private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchema {
+public fun parseSchema(schemaType: KClass<*>): Schema {
+  return parseProtocolSchema(schemaType)
+}
+
+public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchema {
   val schemaAnnotation = schemaType.schemaAnnotation
   require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
 
@@ -150,7 +154,7 @@ public fun parseSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchema {
       require(it.tag in 1..maxSchemaTag) {
         "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
       }
-      val schema = parseSchema(it.schema, it.tag)
+      val schema = parseProtocolSchema(it.schema, it.tag)
       require(schema.dependencies.isEmpty()) {
         "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
           "For now, only a single level of dependencies is supported."

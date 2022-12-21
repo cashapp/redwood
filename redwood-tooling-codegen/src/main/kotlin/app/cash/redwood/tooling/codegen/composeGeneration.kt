@@ -133,7 +133,8 @@ internal fun generateComposable(
           for (trait in widget.traits) {
             when (trait) {
               is Property,
-              is Event, -> {
+              is Event,
+              -> {
                 updateLambda.add("set(%1N, %2T::%1N)\n", trait.name, widgetType)
               }
               is Children -> {

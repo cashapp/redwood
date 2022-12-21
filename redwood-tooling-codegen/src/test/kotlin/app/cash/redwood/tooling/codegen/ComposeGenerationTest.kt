@@ -71,11 +71,14 @@ class ComposeGenerationTest {
 
   @Widget(1)
   data class DefaultTestWidget(
-    @Property(1) @Default("\"test\"")
+    @Property(1)
+    @Default("\"test\"")
     val trait: String,
-    @Property(2) @Default("{ error(\"test\") }")
+    @Property(2)
+    @Default("{ error(\"test\") }")
     val onEvent: () -> Unit,
-    @Children(1) @Default("{}")
+    @Children(1)
+    @Default("{}")
     val block: () -> Unit,
   )
 

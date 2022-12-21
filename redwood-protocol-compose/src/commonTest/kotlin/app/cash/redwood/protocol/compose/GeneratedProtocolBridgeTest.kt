@@ -37,7 +37,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
-class DiffProducingWidgetFactoryTest {
+class GeneratedProtocolBridgeTest {
   @Test fun propertyUsesSerializersModule() {
     val json = Json {
       serializersModule = SerializersModule {
@@ -144,9 +144,8 @@ class DiffProducingWidgetFactoryTest {
     val bridge = ExampleSchemaProtocolBridge.create()
     val button = bridge.provider.ExampleSchema.Button() as DiffProducingWidget
 
-    val event = Event(Id(1), EventTag(3456543))
     val t = assertFailsWith<IllegalArgumentException> {
-      button.sendEvent(event)
+      button.sendEvent(Event(Id(1), EventTag(3456543)))
     }
 
     assertEquals("Unknown event tag 3456543 for widget tag 4", t.message)
@@ -160,5 +159,22 @@ class DiffProducingWidgetFactoryTest {
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 
     assertEquals("Unknown event 3456543 for 4", handler.events.single())
+  }
+
+  @Test fun unknownEventNodeThrowsDefault() {
+    val bridge = ExampleSchemaProtocolBridge.create()
+    val t = assertFailsWith<IllegalArgumentException> {
+      bridge.sendEvent(Event(Id(3456543), EventTag(1)))
+    }
+    assertEquals("Unknown node ID 3456543 for event with tag 1", t.message)
+  }
+
+  @Test fun unknownEventNodeCallsHandler() {
+    val handler = RecordingProtocolMismatchHandler()
+    val bridge = ExampleSchemaProtocolBridge.create(mismatchHandler = handler)
+
+    bridge.sendEvent(Event(Id(3456543), EventTag(1)))
+
+    assertEquals("Unknown ID 3456543 for event tag 1", handler.events.single())
   }
 }
