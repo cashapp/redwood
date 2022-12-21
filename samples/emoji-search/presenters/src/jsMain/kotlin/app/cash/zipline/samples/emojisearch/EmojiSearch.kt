@@ -16,8 +16,13 @@
 package app.cash.zipline.samples.emojisearch
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -28,22 +33,51 @@ import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.compose.items
-import app.cash.zipline.samples.emojisearch.EmojiSearchEvent.SearchTermEvent
 import example.schema.compose.Image
 import example.schema.compose.Text
 import example.schema.compose.TextInput
-import kotlinx.coroutines.flow.Flow
+import example.values.TextFieldState
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+
+private data class EmojiImage(
+  val label: String,
+  val url: String,
+)
 
 class EmojiSearchTreehouseUi(
-  private val initialViewModel: EmojiSearchViewModel,
-  private val viewModels: Flow<EmojiSearchViewModel>,
-  private val onEvent: (EmojiSearchEvent) -> Unit,
+  private val hostApi: HostApi,
   private val bridge: ProtocolBridge,
 ) : TreehouseUi, ProtocolBridge by bridge {
 
   @Composable
   override fun Show() {
-    val viewModel by viewModels.collectAsState(initialViewModel)
+    val allEmojis = remember {
+      mutableStateListOf(
+        EmojiImage(
+          label = "loading…",
+          url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+        ),
+      )
+    }
+    LaunchedEffect(Unit) {
+      val emojisJson = hostApi.httpCall(
+        url = "https://api.github.com/emojis",
+        headers = mapOf("Accept" to "application/vnd.github.v3+json"),
+      )
+      val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
+
+      allEmojis.clear()
+      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+    }
+
+    var searchTerm by remember { mutableStateOf(TextFieldState()) }
+    val filteredEmojis by derivedStateOf {
+      val searchTerms = searchTerm.text.split(" ")
+      allEmojis.filter { image ->
+        searchTerms.all { image.label.contains(it, ignoreCase = true) }
+      }
+    }
 
     Column(
       width = Constraint.Fill,
@@ -51,14 +85,12 @@ class EmojiSearchTreehouseUi(
       padding = Padding(horizontal = 24),
     ) {
       TextInput(
-        state = viewModel.searchTerm,
+        state = searchTerm,
         hint = "Search",
-        onChange = {
-          onEvent(SearchTermEvent(it))
-        },
+        onChange = { searchTerm = it },
       )
       LazyColumn {
-        items(viewModel.images) { image ->
+        items(filteredEmojis) { image ->
           Row(
             width = Constraint.Fill,
             verticalAlignment = CrossAxisAlignment.Center,

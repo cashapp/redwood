@@ -32,7 +32,6 @@ import platform.Foundation.NSData
 // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
-  emojiSearchEvent: EmojiSearchEvent,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   treehouseUIKitView: TreehouseUIKitView<*>,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
