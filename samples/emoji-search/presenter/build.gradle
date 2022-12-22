@@ -1,0 +1,16 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood'
+
+kotlin {
+  js {
+    browser()
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.samples.emojiSearch.schema.compose
+      }
+    }
+  }
+}
