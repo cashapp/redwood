@@ -33,6 +33,9 @@ allprojects {
     google()
   }
 
+  group = project.property("GROUP") as String
+  version = project.property("VERSION_NAME") as String
+
   tasks.withType(AbstractTestTask).configureEach {
     testLogging {
       if (System.getenv("CI") == "true") {
@@ -156,10 +159,7 @@ allprojects {
     }
   }
 
-  plugins.withId('com.vanniktech.maven.publish.base') {
-    group = project.property("GROUP") as String
-    version = project.property("VERSION_NAME") as String
-
+  plugins.withId('maven-publish') {
     publishing {
       repositories {
         maven {
@@ -191,6 +191,14 @@ allprojects {
           }
         }
       }
+    }
+  }
+
+  plugins.withId('signing') {
+    signing {
+      def signingKey = findProperty('signingKey')
+      def signingPassword = ''
+      useInMemoryPgpKeys(signingKey, signingPassword)
     }
   }
 
