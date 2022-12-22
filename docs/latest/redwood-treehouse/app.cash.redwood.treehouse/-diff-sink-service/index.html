@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>DiffSinkService</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -26,8 +18,7 @@
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
@@ -50,10 +41,12 @@
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="redwood-treehouse::app.cash.redwood.treehouse/DiffSinkService///PointingToDeclaration//-1231513070">
-  <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><span class="current">DiffSinkService</span></div>
+  <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><a href="index.html">DiffSinkService</a></div>
   <div class="cover ">
     <h1 class="cover"><span>Diff</span><wbr><span>Sink</span><wbr><span><span>Service</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">DiffSinkService</a> : <span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span>, <a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff-sink/index.html">DiffSink</a></div><p class="paragraph">Redwood's <a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff-sink/index.html">DiffSink</a> but implementing <span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span>.</p></div></div>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">DiffSinkService</a> : <span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span>, <a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff-sink/index.html">DiffSink</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Redwood's <a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff-sink/index.html">DiffSink</a> but implementing <span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span>.</p></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
@@ -69,7 +62,9 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-zipline-treehouse-ui/index.html#-1327564884%2FFunctions%2F-1231513070"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-zipline-treehouse-ui/index.html#-1327564884%2FFunctions%2F-1231513070"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
@@ -84,7 +79,9 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-368705291%2FFunctions%2F-1231513070"><span class="token function">sendDiff</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">diff<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff/index.html">Diff</a></span></span><span class="token punctuation">)</span></div></div></div>
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-368705291%2FFunctions%2F-1231513070"><span class="token function">sendDiff</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">diff<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff/index.html">Diff</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>

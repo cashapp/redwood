@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Companion</title>
 <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../../styles/style.css" rel="Stylesheet">
 <link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -26,8 +18,7 @@
 <script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
@@ -47,10 +38,10 @@
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="redwood-flexbox::app.cash.redwood.flexbox/FlexItem.Companion///PointingToDeclaration//474728738">
-  <div class="breadcrumbs"><a href="../../../index.html">redwood-flexbox</a><span class="delimiter">/</span><a href="../../index.html">app.cash.redwood.flexbox</a><span class="delimiter">/</span><a href="../index.html">FlexItem</a><span class="delimiter">/</span><span class="current">Companion</span></div>
+  <div class="breadcrumbs"><a href="../../../index.html">redwood-flexbox</a><span class="delimiter">/</span><a href="../../index.html">app.cash.redwood.flexbox</a><span class="delimiter">/</span><a href="../index.html">FlexItem</a><span class="delimiter">/</span><a href="index.html">Companion</a></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Companion</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button></div>
@@ -66,7 +57,7 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-253399423%2FProperties%2F474728738" anchor-label="DefaultBaseline" id="-253399423%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-baseline.html">DefaultBaseline</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><a data-name="-253399423%2FProperties%2F474728738" anchor-label="DefaultBaseline" id="-253399423%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the baseline attribute</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-253399423%2FProperties%2F474728738" anchor-label="DefaultBaseline" id="-253399423%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-baseline.html">DefaultBaseline</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-253399423%2FProperties%2F474728738" anchor-label="DefaultBaseline" id="-253399423%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the baseline attribute</p></div></div></div>
               </div>
             </div>
           </div>
@@ -81,7 +72,7 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="1985732454%2FProperties%2F474728738" anchor-label="DefaultFlexBasisPercent" id="1985732454%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-basis-percent.html">DefaultFlexBasisPercent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div><div class="brief "><a data-name="1985732454%2FProperties%2F474728738" anchor-label="DefaultFlexBasisPercent" id="1985732454%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex basis percent attribute</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="1985732454%2FProperties%2F474728738" anchor-label="DefaultFlexBasisPercent" id="1985732454%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-basis-percent.html">DefaultFlexBasisPercent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1985732454%2FProperties%2F474728738" anchor-label="DefaultFlexBasisPercent" id="1985732454%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex basis percent attribute</p></div></div></div>
               </div>
             </div>
           </div>
@@ -96,7 +87,7 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-2083321094%2FProperties%2F474728738" anchor-label="DefaultFlexGrow" id="-2083321094%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-grow.html">DefaultFlexGrow</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">0.0</span></div><div class="brief "><a data-name="-2083321094%2FProperties%2F474728738" anchor-label="DefaultFlexGrow" id="-2083321094%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex grow attribute</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-2083321094%2FProperties%2F474728738" anchor-label="DefaultFlexGrow" id="-2083321094%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-grow.html">DefaultFlexGrow</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">0.0</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-2083321094%2FProperties%2F474728738" anchor-label="DefaultFlexGrow" id="-2083321094%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex grow attribute</p></div></div></div>
               </div>
             </div>
           </div>
@@ -111,7 +102,7 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-1645406780%2FProperties%2F474728738" anchor-label="DefaultFlexShrink" id="-1645406780%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-shrink.html">DefaultFlexShrink</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">1.0</span></div><div class="brief "><a data-name="-1645406780%2FProperties%2F474728738" anchor-label="DefaultFlexShrink" id="-1645406780%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex shrink attribute</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-1645406780%2FProperties%2F474728738" anchor-label="DefaultFlexShrink" id="-1645406780%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-default-flex-shrink.html">DefaultFlexShrink</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">1.0</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1645406780%2FProperties%2F474728738" anchor-label="DefaultFlexShrink" id="-1645406780%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The default value for the flex shrink attribute</p></div></div></div>
               </div>
             </div>
           </div>
@@ -126,7 +117,7 @@
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-1064151595%2FProperties%2F474728738" anchor-label="UndefinedFlexShrink" id="-1064151595%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-undefined-flex-shrink.html">UndefinedFlexShrink</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">0.0</span></div><div class="brief "><a data-name="-1064151595%2FProperties%2F474728738" anchor-label="UndefinedFlexShrink" id="-1064151595%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The value representing the flex shrink attribute is not set</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-flexbox:dokkaHtmlPartial/commonMain"><a data-name="-1064151595%2FProperties%2F474728738" anchor-label="UndefinedFlexShrink" id="-1064151595%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-undefined-flex-shrink.html">UndefinedFlexShrink</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span><span class="token constant">0.0</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1064151595%2FProperties%2F474728738" anchor-label="UndefinedFlexShrink" id="-1064151595%2FProperties%2F474728738" data-filterable-set=":redwood-flexbox:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The value representing the flex shrink attribute is not set</p></div></div></div>
               </div>
             </div>
           </div>

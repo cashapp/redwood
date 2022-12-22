@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>TreehouseLauncher</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -26,8 +18,7 @@
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
@@ -50,12 +41,12 @@
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="redwood-treehouse::app.cash.redwood.treehouse/TreehouseLauncher///PointingToDeclaration//934991794">
-  <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><span class="current">TreehouseLauncher</span></div>
+  <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><a href="index.html">TreehouseLauncher</a></div>
   <div class="cover ">
     <h1 class="cover"><span>Treehouse</span><wbr><span><span>Launcher</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreehouseLauncher</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span></div><p class="paragraph">This manages a cache that should be shared by all launched applications.</p><p class="paragraph">This class holds a stateful disk cache. At most one instance with each <a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-launcher/cache-name.html">cacheName</a> should be open at any time. Most callers should use a single <a href="index.html">TreehouseLauncher</a> for best caching.</p></div>    </div>
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreehouseLauncher</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This manages a cache that should be shared by all launched applications.</p><p class="paragraph">This class holds a stateful disk cache. At most one instance with each <a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-launcher/cache-name.html">cacheName</a> should be open at any time. Most callers should use a single <a href="index.html">TreehouseLauncher</a> for best caching.</p></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
@@ -72,8 +63,8 @@
             <div>
               <div class="title">
                 <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div>                </div>
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
@@ -89,8 +80,8 @@
             <div>
               <div class="title">
                 <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator"> : </span><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-app-service/index.html">AppService</a><span class="token operator">&gt; </span><a href="launch.html"><span class="token function">launch</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">spec<span class="token operator">: </span><a href="../-treehouse-app/-spec/index.html">TreehouseApp.Spec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-treehouse-app/index.html">TreehouseApp</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator">&gt;</span></div></div>                </div>
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator"> : </span><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-app-service/index.html">AppService</a><span class="token operator">&gt; </span><a href="launch.html"><span class="token function">launch</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">spec<span class="token operator">: </span><a href="../-treehouse-app/-spec/index.html">TreehouseApp.Spec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-treehouse-app/index.html">TreehouseApp</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch.html">A</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
@@ -108,8 +99,8 @@
             <div>
               <div class="title">
                 <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><a data-name="-2047442039%2FProperties%2F934991794" anchor-label="dispatchers" id="-2047442039%2FProperties%2F934991794" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a></div></div>                </div>
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain" data-active="" data-toggle=":redwood-treehouse:dokkaHtmlPartial/hostMain">host</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-treehouse:dokkaHtmlPartial/hostMain"><a data-name="-2047442039%2FProperties%2F934991794" anchor-label="dispatchers" id="-2047442039%2FProperties%2F934991794" data-filterable-set=":redwood-treehouse:dokkaHtmlPartial/hostMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>

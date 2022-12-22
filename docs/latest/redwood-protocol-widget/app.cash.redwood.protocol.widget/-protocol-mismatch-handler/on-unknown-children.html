@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>onUnknownChildren</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -26,8 +18,7 @@
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
@@ -47,11 +38,11 @@
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="redwood-protocol-widget::app.cash.redwood.protocol.widget/ProtocolMismatchHandler/onUnknownChildren/#app.cash.redwood.protocol.WidgetTag#app.cash.redwood.protocol.ChildrenTag/PointingToDeclaration//-2095591781">
-  <div class="breadcrumbs"><a href="../../index.html">redwood-protocol-widget</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.protocol.widget</a><span class="delimiter">/</span><a href="index.html">ProtocolMismatchHandler</a><span class="delimiter">/</span><span class="current">onUnknownChildren</span></div>
+  <div class="breadcrumbs"><a href="../../index.html">redwood-protocol-widget</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.protocol.widget</a><span class="delimiter">/</span><a href="index.html">ProtocolMismatchHandler</a><span class="delimiter">/</span><a href="on-unknown-children.html">onUnknownChildren</a></div>
   <div class="cover ">
     <h1 class="cover"><span>on</span><wbr><span>Unknown</span><wbr><span><span>Children</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-unknown-children.html"><span class="token function">onUnknownChildren</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/index.html">ChildrenTag</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Handle a request to manipulate unknown children <a href="on-unknown-children.html">tag</a> for the specified <a href="on-unknown-children.html">widgetTag</a>.</p></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-protocol-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-unknown-children.html"><span class="token function">onUnknownChildren</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/index.html">ChildrenTag</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Handle a request to manipulate unknown children <a href="on-unknown-children.html">tag</a> for the specified <a href="on-unknown-children.html">widgetTag</a>.</p></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>

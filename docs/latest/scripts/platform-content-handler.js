@@ -31,10 +31,9 @@ window.addEventListener('load', () => {
 const darkModeSwitch = () => {
     const localStorageKey = "dokka-dark-mode"
     const storage = localStorage.getItem(localStorageKey)
-    const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    const darkModeEnabled = storage ? JSON.parse(storage) : osDarkSchemePreferred
+    const savedDarkMode = storage ? JSON.parse(storage) : false
     const element = document.getElementById("theme-toggle-button")
-    initPlayground(darkModeEnabled ? samplesDarkThemeName : samplesLightThemeName)
+    initPlayground(savedDarkMode ? samplesDarkThemeName : samplesLightThemeName)
 
     element.addEventListener('click', () => {
         const enabledClasses = document.getElementsByTagName("html")[0].classList
