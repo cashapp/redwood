@@ -36,26 +36,50 @@ class HTMLElementEmojiSearchWidgetFactory(private val document: Document) : Emoj
 private class HtmlTextInput(
   override val value: HTMLInputElement,
 ) : TextInput<HTMLElement> {
-  // TODO This user edit logic is not correct!
-  private var userEditCount = 0
+  private var onChange: ((TextFieldState) -> Unit)? = null
+  private var state = TextFieldState()
+  private var updating = false
 
-  override fun onChange(onChange: ((TextFieldState) -> Unit)?) {
-    if (onChange != null) {
-      value.oninput = { event ->
-        val state = TextFieldState(value.value, userEditCount++)
-        onChange(state)
-      }
-    } else {
-      value.onchange = null
+  init {
+    value.oninput = { stateChanged() }
+    value.addEventListener("selectionchange", { stateChanged() })
+  }
+
+  private fun stateChanged() {
+    if (updating) return
+
+    val newState = state.userEdit(
+      text = value.value,
+      selectionStart = value.selectionStart ?: 0,
+      selectionEnd = value.selectionEnd ?: 0,
+    )
+    if (!state.contentEquals(newState)) {
+      state = newState
+      onChange?.invoke(newState)
     }
   }
 
+  override fun onChange(onChange: ((TextFieldState) -> Unit)?) {
+    this.onChange = onChange
+  }
+
   override fun state(state: TextFieldState) {
-    if (state.userEditCount < userEditCount) return
-    value.value = state.text
+    if (state.userEditCount < this.state.userEditCount) return
+
+    if (!updating) {
+      updating = true
+      try {
+        value.value = state.text
+        value.selectionStart = state.selectionStart
+        value.selectionEnd = state.selectionEnd
+      } finally {
+        updating = false
+      }
+    }
   }
 
   override fun hint(hint: String) {
+    value.placeholder = hint
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
