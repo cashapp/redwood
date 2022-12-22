@@ -20,7 +20,7 @@ apply plugin: 'app.cash.redwood.lint'
 
 android {
   namespace 'example.android'
-  compileSdk 32
+  compileSdk 33
 }
 
 repositories {
