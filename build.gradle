@@ -129,14 +129,14 @@ allprojects {
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
     project.android {
-      compileSdk 32
+      compileSdk 33
       compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
       }
       defaultConfig {
         minSdk 21
-        targetSdk 30
+        targetSdk 33
       }
       lint {
         checkDependencies true

@@ -25,7 +25,7 @@ kotlin {
 
 android {
   namespace 'example.android'
-  compileSdk 32
+  compileSdk 33
 }
 
 repositories {
