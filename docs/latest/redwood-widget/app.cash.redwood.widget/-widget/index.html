@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Widget</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,7 +26,8 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
@@ -41,12 +50,10 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="redwood-widget::app.cash.redwood.widget/Widget///PointingToDeclaration//1081896384">
-  <div class="breadcrumbs"><a href="../../index.html">redwood-widget</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.widget</a><span class="delimiter">/</span><a href="index.html">Widget</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">redwood-widget</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.widget</a><span class="delimiter">/</span><span class="current">Widget</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Widget</span></span></h1>
-    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Widget</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>    </div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Widget</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
@@ -62,9 +69,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-children/index.html">Children</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-children/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An interface for manipulating a widget's list of children.</p></div></div>                </div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-children/index.html">Children</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-children/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">An interface for manipulating a widget's list of children.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -79,9 +84,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-provider/index.html">Provider</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-provider/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Marker interface for types whose properties expose factories of <a href="index.html">Widget</a>s.</p></div></div>                </div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-provider/index.html">Provider</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-provider/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Marker interface for types whose properties expose factories of <a href="index.html">Widget</a>s.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -98,9 +101,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><a data-name="305142537%2FProperties%2F1081896384" anchor-label="layoutModifiers" id="305142537%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="layout-modifiers.html">layoutModifiers</a><span class="token operator">: </span><a href="../../../redwood-runtime/app.cash.redwood/-layout-modifier/index.html">LayoutModifier</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="305142537%2FProperties%2F1081896384" anchor-label="layoutModifiers" id="305142537%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><p class="paragraph">A collection of elements that change how a widget is laid out.</p></div></div>                </div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><a data-name="305142537%2FProperties%2F1081896384" anchor-label="layoutModifiers" id="305142537%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="layout-modifiers.html">layoutModifiers</a><span class="token operator">: </span><a href="../../../redwood-runtime/app.cash.redwood/-layout-modifier/index.html">LayoutModifier</a></div><div class="brief "><a data-name="305142537%2FProperties%2F1081896384" anchor-label="layoutModifiers" id="305142537%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><p class="paragraph">A collection of elements that change how a widget is laid out.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -115,9 +116,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><a data-name="-1934104470%2FProperties%2F1081896384" anchor-label="value" id="-1934104470%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="value.html">value</a><span class="token operator">: </span><a href="index.html">W</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1934104470%2FProperties%2F1081896384" anchor-label="value" id="-1934104470%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The underlying platform-specific representation of this widget. This value will be supplied to another widget's <a href="-children/index.html">Children</a> for display.</p></div></div>                </div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><a data-name="-1934104470%2FProperties%2F1081896384" anchor-label="value" id="-1934104470%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="value.html">value</a><span class="token operator">: </span><a href="index.html">W</a></div><div class="brief "><a data-name="-1934104470%2FProperties%2F1081896384" anchor-label="value" id="-1934104470%2FProperties%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The underlying platform-specific representation of this widget. This value will be supplied to another widget's <a href="-children/index.html">Children</a> for display.</p></div></div></div>
               </div>
             </div>
           </div>
