@@ -70,4 +70,4 @@ turbine = "app.cash.turbine:turbine:0.12.1"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
 
-cklib-gradle-plugin = { module = "co.touchlab:cklib-gradle-plugin", version = "0.2.4" }
+cklib-gradle-plugin = { module = "co.touchlab:cklib-gradle-plugin", version = "1.5.31.4" }
