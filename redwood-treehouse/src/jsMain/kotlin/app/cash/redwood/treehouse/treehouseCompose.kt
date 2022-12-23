@@ -22,6 +22,8 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.zipline.ZiplineScope
+import app.cash.zipline.ZiplineScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -41,19 +43,22 @@ private class RedwoodZiplineTreehouseUi(
   private val bridge: ProtocolBridge,
   private val widgetVersion: UInt,
   private val treehouseUi: TreehouseUi,
-) : ZiplineTreehouseUi, EventSink by bridge {
-  private lateinit var diffSinkToClose: DiffSinkService
+) : ZiplineTreehouseUi, ZiplineScoped, EventSink by bridge {
+  /**
+   * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
+   * and will all be closed when the scope is closed. This is the only mechanism that can close the
+   * host configurations flow.
+   */
+  override val scope = (treehouseUi as? ZiplineScoped)?.scope ?: ZiplineScope()
+
   private lateinit var composition: RedwoodComposition
 
   override fun start(
     diffSink: DiffSinkService,
     hostConfigurations: FlowWithInitialValue<HostConfiguration>,
   ) {
-    check(!::diffSinkToClose.isInitialized) { "start() can only be called once." }
-    diffSinkToClose = diffSink
-
     val composition = ProtocolRedwoodComposition(
-      scope = scope + StandardFrameClock,
+      scope = coroutineScope + StandardFrameClock,
       bridge = bridge,
       widgetVersion = widgetVersion,
       diffSink = diffSink,
@@ -71,10 +76,10 @@ private class RedwoodZiplineTreehouseUi(
 
   override fun close() {
     composition.cancel()
-    diffSinkToClose.close()
     treehouseUi.close()
+    scope.close()
   }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
-private val scope: CoroutineScope = GlobalScope
+private val coroutineScope: CoroutineScope = GlobalScope
