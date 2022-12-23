@@ -2,10 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-  namespace "app.cash.zipline.samples.emojisearch.views"
-  defaultConfig {
-    applicationId = "com.example.zipline.emojisearch.views"
-  }
+  namespace "com.example.redwood.emojisearch.android.views"
 }
 
 dependencies {

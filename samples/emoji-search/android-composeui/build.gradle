@@ -3,10 +3,8 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.redwood'
 
 android {
-  namespace "app.cash.zipline.samples.emojisearch.composeui"
-  defaultConfig {
-    applicationId = "com.example.zipline.emojisearch.composeui"
-  }
+  namespace 'com.example.redwood.emojisearch.android.composeui'
+
   buildFeatures {
     compose = true
   }
