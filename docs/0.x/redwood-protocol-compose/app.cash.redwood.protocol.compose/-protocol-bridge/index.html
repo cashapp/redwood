@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ProtocolBridge</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>redwood</span>            </a>    </div>
+    <div>0.1.0
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="redwood-protocol-compose::app.cash.redwood.protocol.compose/ProtocolBridge///PointingToDeclaration//119569735">
+  <div class="breadcrumbs"><a href="../../index.html">redwood-protocol-compose</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.protocol.compose</a><span class="delimiter">/</span><span class="current">ProtocolBridge</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Protocol</span><wbr><span><span>Bridge</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ProtocolBridge</a> : <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-sink/index.html">EventSink</a></div><p class="paragraph">Exposes a <a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a> and <a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-provider/index.html">Widget.Provider</a> whose changes can be captured as a <a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff/index.html">Diff</a> to send to a remote frontend. Incoming <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a>s can also be sent to this instance and will be routed to the appropriate handler.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="-1950207713%2FClasslikes%2F119569735" anchor-label="Factory" id="-1950207713%2FClasslikes%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-protocol-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-factory/index.html"><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1950207713%2FClasslikes%2F119569735"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-factory/index.html">Factory</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-305705703%2FFunctions%2F119569735" anchor-label="createDiffOrNull" id="-305705703%2FFunctions%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-protocol-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="create-diff-or-null.html"><span>create</span><wbr><span>Diff</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-305705703%2FFunctions%2F119569735"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="create-diff-or-null.html"><span class="token function">createDiffOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-diff/index.html">Diff</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns any changes to <a href="root.html">root</a> or <a href="provider.html">provider</a>-produced widgets since the last time this function was called. Returns null if no changes occurred.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="721272346%2FFunctions%2F119569735" anchor-label="sendEvent" id="721272346%2FFunctions%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-protocol-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#721272346%2FFunctions%2F119569735"><span>send</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="721272346%2FFunctions%2F119569735"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#721272346%2FFunctions%2F119569735"><span class="token function">sendEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="1645915507%2FProperties%2F119569735" anchor-label="provider" id="1645915507%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-protocol-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="provider.html"><span><span>provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1645915507%2FProperties%2F119569735"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><a data-name="1645915507%2FProperties%2F119569735" anchor-label="provider" id="1645915507%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="provider.html">provider</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-provider/index.html">Widget.Provider</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><a data-name="1645915507%2FProperties%2F119569735" anchor-label="provider" id="1645915507%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The provider of factories of widgets which record property changes into the diff and whose children changes are also recorded into the diff. You <strong>must</strong> attach returned widgets to <a href="root.html">root</a> or the children of a widget in the tree beneath <a href="root.html">root</a> in order for it to be tracked.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-481292510%2FProperties%2F119569735" anchor-label="root" id="-481292510%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redwood-protocol-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="root.html"><span><span>root</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-481292510%2FProperties%2F119569735"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"><a data-name="-481292510%2FProperties%2F119569735" anchor-label="root" id="-481292510%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="root.html">root</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><a data-name="-481292510%2FProperties%2F119569735" anchor-label="root" id="-481292510%2FProperties%2F119569735" data-filterable-set=":redwood-protocol-compose:dokkaHtmlPartial/commonMain"></a><p class="paragraph">The root of the widget tree onto which <a href="provider.html">provider</a>-produced widgets can be added. Changes to this set of children records changes into the diff as <a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/-companion/-root.html">Id.Root</a> and <a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/-companion/-root.html">ChildrenTag.Root</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
