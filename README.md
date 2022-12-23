@@ -1,5 +1,4 @@
-Redwood
-=======
+# Redwood
 
 Redwood is a library for building reactive Android, iOS, and web UIs using Kotlin.
 
@@ -49,7 +48,7 @@ complementary modules:
    It addresses longstanding technical debt with Android's view system.
 
 A Kotlin function that is rewritten by the Compose compiler is called a _composable function_.
-Partial re-evaluation of a composable function is called _recomposing_. 
+Partial re-evaluation of a composable function is called _recomposing_.
 
 Note that the Compose compiler can be used without Compose UI. For example, [compose-server-side]
 renders HTML components on a server that are sent to a browser over a WebSocket.
@@ -57,7 +56,7 @@ renders HTML components on a server that are sent to a browser over a WebSocket.
 
 ### Design Systems
 
-In Cash App we use a design system. It specifies our UI in detail and names its elements: 
+In Cash App we use a design system. It specifies our UI in detail and names its elements:
 
  * Names for our standard colors, fonts, icons, dimensions
  * Named text blocks, specified using the names above
@@ -74,11 +73,11 @@ Each Redwood project is implemented in three parts:
 
  * **A design system.** Redwood includes a sample design system called ‘Sunspot’. Most
    applications should customize this to match their product needs.
-   
+
  * **Displays for UI platforms.** The display draws the pixels of the design system on-screen.
    Displays can be implemented for any UI platform. Redwood includes sample displays for Sunspot
    for Android, iOS, and web.
-   
+
  * **Composable Functions.** This is client logic that accepts application state and returns
    elements of the design system. These have similar responsibilities to presenters in an MVP
    system.
@@ -113,13 +112,13 @@ classes to generate type-safe APIs for the displays and composable functions.
 
 ```kotlin
 @Widget(1)
-data class SunspotText(
+data class Text(
   @Property(1) val text: String?,
   @Property(2) @Default("\"black\"") val color: String,
 )
 
 @Widget(2)
-data class SunspotButton(
+data class Button(
   @Property(1) val text: String?,
   @Property(2) @Default("true") val enabled: Boolean,
   @Property(3) val onClick: () -> Unit,
@@ -129,9 +128,9 @@ data class SunspotButton(
 Displays implement the design system using native UI components.
 
 ```kotlin
-class AndroidSunspotText(
+class AndroidText(
   override val value: TextView,
-) : SunspotText<View> {
+) : Text<View> {
   override fun text(text: String?) {
     value.text = text
   }
@@ -150,9 +149,9 @@ API features like `remember()`.
 fun Counter(value: Int = 0) {
   var count by remember { mutableStateOf(value) }
 
-  SunspotButton("-1", onClick = { count-- })
-  SunspotText(count.toString())
-  SunspotButton("+1", onClick = { count++ })
+  Button("-1", onClick = { count-- })
+  Text(count.toString())
+  Button("+1", onClick = { count++ })
 }
 ```
 
