@@ -17,6 +17,12 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.Composable
 
+/**
+ * Drives a UI on the host platform.
+ *
+ * Implementing classes may also implement [app.cash.zipline.ZiplineScoped], in which case the scope
+ * object will be closed immediately after this is closed.
+ */
 public interface TreehouseUi {
   @Composable
   public fun Show()

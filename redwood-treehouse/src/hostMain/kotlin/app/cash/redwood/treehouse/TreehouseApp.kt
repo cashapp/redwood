@@ -22,6 +22,8 @@ import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineScope
+import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -81,7 +83,7 @@ public class TreehouseApp<A : AppService> internal constructor(
    *
    * This function may only be invoked on [TreehouseDispatchers.zipline].
    */
-  public fun onCodeChanged(zipline: Zipline, context: A) {
+  public fun onCodeChanged(zipline: Zipline, appService: A) {
     dispatchers.checkZipline()
     check(!closed)
 
@@ -90,7 +92,7 @@ public class TreehouseApp<A : AppService> internal constructor(
     val cancelableScope = CoroutineScope(supervisorJob + dispatchers.zipline)
 
     cancelableScope.launch(dispatchers.zipline) {
-      val clockService = context.frameClockService
+      val clockService = appService.frameClockService
       coroutineContext.job.invokeOnCompletion {
         clockService.close()
       }
@@ -108,9 +110,9 @@ public class TreehouseApp<A : AppService> internal constructor(
       val previous = ziplineSession
 
       val next = ZiplineSession(
-        scope = cancelableScope,
+        sessionScope = cancelableScope,
         zipline = zipline,
-        context = context,
+        appService = appService,
         isInitialLaunch = previous == null,
       )
 
@@ -189,14 +191,14 @@ public class TreehouseApp<A : AppService> internal constructor(
 
   /** The host state for a single code load. We get a new session each time we get new code. */
   private inner class ZiplineSession(
-    val scope: CoroutineScope,
-    val context: A,
+    val sessionScope: CoroutineScope,
+    val appService: A,
     val zipline: Zipline,
     val isInitialLaunch: Boolean,
   ) {
     fun cancel() {
       this@TreehouseApp.scope.launch(dispatchers.zipline) {
-        scope.cancel()
+        sessionScope.cancel()
         zipline.close()
       }
     }
@@ -219,7 +221,8 @@ public class TreehouseApp<A : AppService> internal constructor(
    * screen.
    *
    * This aggressively manages the lifecycle of the widget, breaking widget reachability when the
-   * binding is canceled.
+   * binding is canceled. It uses a single [ZiplineScope] for all Zipline services consumed by this
+   * binding.
    */
   private inner class RealBinding(
     val content: TreehouseView.Content<A>,
@@ -241,6 +244,9 @@ public class TreehouseApp<A : AppService> internal constructor(
       ) as DiffConsumingNode.Factory<Any>,
       eventSink = this,
     )
+
+    /** Only accessed on [TreehouseDispatchers.zipline]. */
+    private val ziplineScope = ZiplineScope()
 
     /** Only accessed on [TreehouseDispatchers.zipline]. Null after [cancel]. */
     private var treehouseUiOrNull: ZiplineTreehouseUi? = null
@@ -279,7 +285,8 @@ public class TreehouseApp<A : AppService> internal constructor(
       view: TreehouseView<A>,
     ) {
       scope.launch(dispatchers.zipline) {
-        val treehouseUi = content.get(session.context)
+        val scopedAppService = session.appService.withScope(ziplineScope)
+        val treehouseUi = content.get(scopedAppService)
         treehouseUiOrNull = treehouseUi
         treehouseUi.start(
           diffSink = this@RealBinding,
@@ -292,9 +299,8 @@ public class TreehouseApp<A : AppService> internal constructor(
       viewOrNull = null
       bridgeOrNull = null
       scope.launch(dispatchers.zipline) {
-        val treehouseUi = treehouseUiOrNull ?: return@launch
-        treehouseUi.close()
         treehouseUiOrNull = null
+        ziplineScope.close()
       }
     }
   }
