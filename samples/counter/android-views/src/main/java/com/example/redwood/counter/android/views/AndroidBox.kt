@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.redwood.counter.android.views
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
-apply plugin: 'app.cash.redwood'
+import android.view.View
+import android.widget.LinearLayout
+import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.ViewGroupChildren
+import com.example.redwood.counter.widget.Box
 
-kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  cocoapods {
-    noPodspec()
-    frameworkName = 'CounterKt'
-  }
-
-  sourceSets {
-    commonMain {
-      dependencies {
-        implementation projects.samples.counter.schema.widget
-        implementation projects.samples.counter.presenter
-      }
-    }
-  }
+internal class AndroidBox(
+  override val value: LinearLayout,
+) : Box<View> {
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override val children = ViewGroupChildren(value)
 }

@@ -12,7 +12,7 @@ kotlin {
   sourceSets {
     main {
       dependencies {
-        implementation projects.samples.counter.sunspot.widget
+        implementation projects.samples.counter.schema.widget
         implementation projects.samples.counter.presenter
         implementation libs.kotlinx.coroutines.core
       }

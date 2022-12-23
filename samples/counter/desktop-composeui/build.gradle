@@ -4,7 +4,7 @@ apply plugin: 'org.jetbrains.compose'
 compose {
   desktop {
     application {
-      mainClass = "example.desktop.Main"
+      mainClass = "com.example.redwood.counter.desktop.Main"
     }
   }
 }

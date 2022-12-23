@@ -2,7 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'app.cash.redwood'
 
 dependencies {
-  api projects.samples.counter.sunspot.widget
+  api projects.samples.counter.schema.widget
   implementation projects.redwoodWidgetCompose
   implementation libs.jetbrains.compose.material
   implementation libs.jetbrains.compose.ui

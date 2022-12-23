@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.redwood.counter.ios
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
-apply plugin: 'app.cash.redwood'
+import com.example.redwood.counter.widget.Box
+import com.example.redwood.counter.widget.Button
+import com.example.redwood.counter.widget.SchemaWidgetFactory
+import com.example.redwood.counter.widget.Text
+import platform.UIKit.UIView
 
-kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  cocoapods {
-    noPodspec()
-    frameworkName = 'CounterKt'
-  }
-
-  sourceSets {
-    commonMain {
-      dependencies {
-        implementation projects.samples.counter.schema.widget
-        implementation projects.samples.counter.presenter
-      }
-    }
-  }
+object IosWidgetFactory : SchemaWidgetFactory<UIView> {
+  override fun Box(): Box<UIView> = IosBox()
+  override fun Text(): Text<UIView> = IosText()
+  override fun Button(): Button<UIView> = IosButton()
 }

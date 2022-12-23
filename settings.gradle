@@ -48,10 +48,10 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:counter:desktop-composeui'
   include ':samples:counter:ios-shared'
   include ':samples:counter:presenter'
+  include ':samples:counter:schema'
+  include ':samples:counter:schema:compose'
+  include ':samples:counter:schema:widget'
   include ':samples:counter:shared-composeui'
-  include ':samples:counter:sunspot'
-  include ':samples:counter:sunspot:compose'
-  include ':samples:counter:sunspot:widget'
 
   include ':samples:emoji-search:android-composeui'
   include ':samples:emoji-search:android-views'
