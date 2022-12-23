@@ -6,7 +6,7 @@ on:
       - '**'
 
 env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 
 jobs:
   publish:
@@ -29,7 +29,7 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ARTIFACT_SIGNING_PRIVATE_KEY }}
-        run: ./gradlew build publish
+        run: ./gradlew publish dokkaHtmlMultiModule --parallel
 
       - name: Extract release notes
         id: release_notes
@@ -41,9 +41,6 @@ jobs:
           body: ${{ steps.release_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate docs
-        run: ./gradlew dokkaHtml
 
       - name: Deploy docs to website
         uses: JamesIves/github-pages-deploy-action@releases/v3
