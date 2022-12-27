@@ -2,7 +2,7 @@
   <application
     android:label="Counter: Views"
     android:theme="@style/Theme.Counter.NoActionBar">
-    <activity android:name="example.android.MainActivity">
+    <activity android:name=".MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>

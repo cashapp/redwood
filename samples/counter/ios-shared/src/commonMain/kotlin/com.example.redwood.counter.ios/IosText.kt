@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.redwood.counter.ios
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
-apply plugin: 'app.cash.redwood'
+import app.cash.redwood.LayoutModifier
+import com.example.redwood.counter.widget.Text
+import platform.UIKit.NSTextAlignmentCenter
+import platform.UIKit.UIColor
+import platform.UIKit.UILabel
+import platform.UIKit.UIView
 
-kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  cocoapods {
-    noPodspec()
-    frameworkName = 'CounterKt'
+class IosText : Text<UIView> {
+  override val value = UILabel().apply {
+    textColor = UIColor.whiteColor // TODO why is this needed?
+    textAlignment = NSTextAlignmentCenter
   }
 
-  sourceSets {
-    commonMain {
-      dependencies {
-        implementation projects.samples.counter.schema.widget
-        implementation projects.samples.counter.presenter
-      }
-    }
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override fun text(text: String?) {
+    value.text = text
   }
 }

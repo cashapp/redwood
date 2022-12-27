@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.redwood.counter.composeui
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
-apply plugin: 'app.cash.redwood'
+import androidx.compose.runtime.Composable
+import com.example.redwood.counter.widget.Box
+import com.example.redwood.counter.widget.Button
+import com.example.redwood.counter.widget.SchemaWidgetFactory
+import com.example.redwood.counter.widget.Text
 
-kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  cocoapods {
-    noPodspec()
-    frameworkName = 'CounterKt'
-  }
-
-  sourceSets {
-    commonMain {
-      dependencies {
-        implementation projects.samples.counter.schema.widget
-        implementation projects.samples.counter.presenter
-      }
-    }
-  }
+object ComposeUiWidgetFactory : SchemaWidgetFactory<@Composable () -> Unit> {
+  override fun Box(): Box<@Composable () -> Unit> = ComposeUiBox()
+  override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
+  override fun Button(): Button<@Composable () -> Unit> = ComposeUiButton()
 }
