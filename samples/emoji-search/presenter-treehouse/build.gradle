@@ -43,5 +43,5 @@ kotlin {
 }
 
 zipline {
-  mainFunction = 'app.cash.zipline.samples.emojisearch.preparePresenters'
+  mainFunction = 'com.example.redwood.emojisearch.treehouse.preparePresenters'
 }
