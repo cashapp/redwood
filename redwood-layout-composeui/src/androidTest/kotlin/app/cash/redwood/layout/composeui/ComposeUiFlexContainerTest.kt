@@ -69,7 +69,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
     private val delegate = ComposeUiFlexContainer(direction)
     private var childCount = 0
 
-    override val value get() = delegate.composable
+    override val value get() = delegate.value
 
     override fun width(constraint: Constraint) {
       delegate.width(constraint)
