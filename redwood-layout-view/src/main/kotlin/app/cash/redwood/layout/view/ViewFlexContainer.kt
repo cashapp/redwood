@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
@@ -29,15 +30,18 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.widget.Widget
 
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
-) {
+) : Row<View>, Column<View> {
   private val container = FlexContainer().apply {
     flexDirection = direction
     roundToInt = true
@@ -45,32 +49,48 @@ internal class ViewFlexContainer(
   private val density = DensityMultiplier * context.resources.displayMetrics.density
 
   private val hostView = HostView(context)
-  private val scrollView = newScrollView()
-  val view: View get() = scrollView
+  override val value = newScrollView()
 
-  private val _children = ViewGroupChildren(hostView)
-  val children: Widget.Children<View> get() = _children
+  override val children = ViewGroupChildren(hostView)
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private var scrollEnabled = false
 
-  fun width(width: Constraint) {
+  override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
     invalidate()
   }
 
-  fun height(height: Constraint) {
+  override fun height(height: Constraint) {
     container.fillHeight = height == Constraint.Fill
     invalidate()
   }
 
-  fun padding(padding: Padding) {
+  override fun padding(padding: Padding) {
     container.padding = padding.toSpacing(density)
     invalidate()
   }
 
-  fun overflow(overflow: Overflow) {
+  override fun overflow(overflow: Overflow) {
     scrollEnabled = overflow == Overflow.Scroll
     invalidate()
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    justifyContent(horizontalAlignment.toJustifyContent())
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    alignItems(horizontalAlignment.toAlignItems())
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    justifyContent(verticalAlignment.toJustifyContent())
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   fun alignItems(alignItems: AlignItems) {
@@ -84,8 +104,8 @@ internal class ViewFlexContainer(
   }
 
   private fun invalidate() {
-    scrollView.invalidate()
-    scrollView.requestLayout()
+    value.invalidate()
+    value.requestLayout()
   }
 
   @SuppressLint("ClickableViewAccessibility")
@@ -137,7 +157,7 @@ internal class ViewFlexContainer(
 
     private fun syncItems() {
       container.items.clear()
-      _children.widgets.forEach { widget ->
+      children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
           density = density,
