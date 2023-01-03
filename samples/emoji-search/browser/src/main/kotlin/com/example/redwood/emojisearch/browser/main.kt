@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.compose.Column
+import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
