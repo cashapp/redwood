@@ -67,10 +67,16 @@ public abstract class RedwoodGeneratorPlugin(
       RedwoodGeneratorExtension::class.java,
     )
 
-    val cliConfiguration = project.configurations.create("redwoodCli")
+    val cliConfiguration = project.configurations.create("redwoodCli").apply {
+      isCanBeConsumed = false
+      isVisible = false
+    }
     project.dependencies.add(cliConfiguration.name, project.redwoodDependency("redwood-cli"))
 
-    val schemaConfiguration = project.configurations.create("redwoodSchema")
+    val schemaConfiguration = project.configurations.create("redwoodSchema").apply {
+      isCanBeConsumed = false
+      isVisible = false
+    }
     val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
       it.group = BUILD_GROUP
       it.description = "Generate Redwood sources"
