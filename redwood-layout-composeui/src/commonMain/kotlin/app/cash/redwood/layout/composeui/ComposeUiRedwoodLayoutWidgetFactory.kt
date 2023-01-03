@@ -16,19 +16,12 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
-import kotlin.DeprecationLevel.ERROR
-
-@Deprecated(
-  message = "Renamed to ComposeUiRedwoodLayoutWidgetFactory",
-  ReplaceWith("ComposeUiRedwoodLayoutWidgetFactory", "app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory"),
-  level = ERROR,
-)
-public typealias ComposeRedwoodLayoutWidgetFactory = ComposeUiRedwoodLayoutWidgetFactory
 
 public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
-  public override fun Column(): Column<@Composable () -> Unit> = ComposeUiColumn()
-  public override fun Row(): Row<@Composable () -> Unit> = ComposeUiRow()
+  public override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
+  public override fun Row(): Row<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Row)
 }

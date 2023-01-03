@@ -29,25 +29,32 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
-internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
+internal class ComposeUiFlexContainer(
+  private val direction: FlexDirection,
+) : Row<@Composable () -> Unit>, Column<@Composable () -> Unit> {
   private val container = FlexContainer().apply {
     flexDirection = direction
     roundToInt = true
   }
 
-  private val _children = ComposeWidgetChildren()
-  val children: Widget.Children<@Composable () -> Unit> get() = _children
+  override val children = ComposeWidgetChildren()
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
@@ -58,23 +65,39 @@ internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
 
   var modifier: Modifier by mutableStateOf(Modifier)
 
-  fun width(width: Constraint) {
+  override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
     invalidate()
   }
 
-  fun height(height: Constraint) {
+  override fun height(height: Constraint) {
     container.fillHeight = height == Constraint.Fill
     invalidate()
   }
 
-  fun padding(padding: Padding) {
+  override fun padding(padding: Padding) {
     this.paddingUpdated = true
     this.padding = padding
   }
 
-  fun overflow(overflow: Overflow) {
+  override fun overflow(overflow: Overflow) {
     this.overflow = overflow
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    justifyContent(horizontalAlignment.toJustifyContent())
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    alignItems(horizontalAlignment.toAlignItems())
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    justifyContent(verticalAlignment.toJustifyContent())
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   fun alignItems(alignItems: AlignItems) {
@@ -91,7 +114,7 @@ internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
     recomposeTick++
   }
 
-  val composable: @Composable () -> Unit = {
+  override val value = @Composable {
     Layout(
       content = {
         // Observe this so we can manually trigger recomposition.
@@ -100,7 +123,7 @@ internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
         // Read the density for use in 'measure'.
         updateDensity(DensityMultiplier * LocalDensity.current.density)
 
-        _children.render()
+        children.render()
       },
       modifier = if (overflow == Overflow.Scroll) {
         if (direction.isHorizontal) {
@@ -147,7 +170,7 @@ internal class ComposeUiFlexContainer(private val direction: FlexDirection) {
       container.items += newFlexItem(
         direction = direction,
         density = density,
-        layoutModifiers = _children.widgets[index].layoutModifiers,
+        layoutModifiers = children.widgets[index].layoutModifiers,
         measurable = ComposeMeasurable(measurable),
       )
     }
