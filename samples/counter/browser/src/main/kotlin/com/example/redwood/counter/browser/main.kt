@@ -17,6 +17,7 @@ package com.example.redwood.counter.browser
 
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.counter.presenter.Counter
 import com.example.redwood.counter.widget.SchemaWidgetFactories
@@ -34,7 +35,8 @@ fun main() {
     scope = GlobalScope + WindowAnimationFrameClock,
     container = HTMLElementChildren(content),
     provider = SchemaWidgetFactories(
-      HtmlWidgetFactory(document),
+      Schema = HtmlWidgetFactory(document),
+      RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
     ),
   )
   composition.setContent {

@@ -2,4 +2,5 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
   api projects.redwoodSchema
+  api projects.redwoodLayoutSchema
 }

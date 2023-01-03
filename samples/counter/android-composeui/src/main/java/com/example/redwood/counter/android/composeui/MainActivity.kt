@@ -19,6 +19,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.RedwoodContent
+import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
 import com.example.redwood.counter.composeui.CounterTheme
 import com.example.redwood.counter.presenter.Counter
@@ -29,8 +30,10 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     val factories = SchemaWidgetFactories(
-      ComposeUiWidgetFactory,
+      Schema = ComposeUiWidgetFactory,
+      RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     )
+
     setContent {
       CounterTheme {
         RedwoodContent(factories) {

@@ -18,9 +18,7 @@ package com.example.redwood.counter.android.views
 import android.widget.Button as WidgetButton
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.redwood.counter.widget.Box
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.SchemaWidgetFactory
 import com.example.redwood.counter.widget.Text
@@ -28,13 +26,6 @@ import com.example.redwood.counter.widget.Text
 class AndroidWidgetFactory(
   private val context: Context,
 ) : SchemaWidgetFactory<View> {
-  override fun Box(): Box<View> {
-    val view = LinearLayout(context).apply {
-      orientation = LinearLayout.VERTICAL
-    }
-    return AndroidBox(view)
-  }
-
   override fun Text(): Text<View> {
     val view = TextView(context)
     return AndroidText(view)

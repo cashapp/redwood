@@ -33,6 +33,7 @@ kotlin {
       dependencies {
         implementation projects.samples.counter.schema.widget
         implementation projects.samples.counter.presenter
+        implementation projects.redwoodLayoutUiview
       }
     }
   }

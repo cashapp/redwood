@@ -20,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.redwood.counter.compose.Box
+import app.cash.redwood.layout.compose.Column
 import com.example.redwood.counter.compose.Button
 import com.example.redwood.counter.compose.Text
 
@@ -28,7 +28,7 @@ import com.example.redwood.counter.compose.Text
 fun Counter(value: Int = 0) {
   var count by remember { mutableStateOf(value) }
 
-  Box {
+  Column {
     Button("-1", onClick = { count-- })
     Text("Count: $count")
     Button("+1", onClick = { count++ })
