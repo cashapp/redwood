@@ -36,11 +36,10 @@ jobs:
         uses: ffurrer2/extract-release-notes@v1
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
           body: ${{ steps.release_notes.outputs.release_notes }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          discussionCategory: Announcements
 
       - name: Deploy docs to website
         uses: JamesIves/github-pages-deploy-action@releases/v3
