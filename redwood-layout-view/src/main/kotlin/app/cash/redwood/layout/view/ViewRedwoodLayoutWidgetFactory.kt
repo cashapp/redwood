@@ -17,6 +17,7 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
+import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
@@ -24,6 +25,6 @@ import app.cash.redwood.layout.widget.Row
 public class ViewRedwoodLayoutWidgetFactory(
   private val context: Context,
 ) : RedwoodLayoutWidgetFactory<View> {
-  public override fun Column(): Column<View> = ViewColumn(context)
-  public override fun Row(): Row<View> = ViewRow(context)
+  public override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
+  public override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
 }

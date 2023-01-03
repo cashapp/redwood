@@ -64,7 +64,7 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
     private val delegate = ViewFlexContainer(context, direction)
     private var childCount = 0
 
-    override val value get() = delegate.view
+    override val value get() = delegate.value
 
     override fun width(constraint: Constraint) {
       delegate.width(constraint)
