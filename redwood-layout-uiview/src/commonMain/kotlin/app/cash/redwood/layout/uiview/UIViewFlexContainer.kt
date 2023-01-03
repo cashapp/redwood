@@ -15,24 +15,27 @@
  */
 package app.cash.redwood.layout.uiview
 
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.uiview.cinterop.HostView
 import app.cash.redwood.layout.uiview.cinterop.RedwoodScrollViewDelegateProtocol
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
-import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.setFrame
@@ -42,55 +45,70 @@ import platform.darwin.NSObject
 
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
-) {
+) : Row<UIView>, Column<UIView> {
   private val container = FlexContainer().apply {
     flexDirection = direction
     roundToInt = false
   }
 
-  private val _view: UIScrollView = HostView().apply { kotlinDelegate = UIViewDelegate() }
-  val view: UIView get() = _view
-
-  private val _children: UIViewChildren = UIViewChildren(_view)
-  val children: Widget.Children<UIView> get() = _children
-
-  init {
-    _view.showsHorizontalScrollIndicator = false
-    _view.showsVerticalScrollIndicator = false
+  override val value = HostView().apply {
+    kotlinDelegate = UIViewDelegate()
+    showsHorizontalScrollIndicator = false
+    showsVerticalScrollIndicator = false
   }
 
-  fun width(width: Constraint) {
+  override val children = UIViewChildren(value)
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
     invalidate()
   }
 
-  fun height(height: Constraint) {
+  override fun height(height: Constraint) {
     container.fillHeight = height == Constraint.Fill
     invalidate()
   }
 
-  fun padding(padding: Padding) {
+  override fun padding(padding: Padding) {
     container.padding = padding.toSpacing(DensityMultiplier)
     invalidate()
   }
 
-  fun overflow(overflow: Overflow) {
-    _view.setScrollEnabled(overflow == Overflow.Scroll)
+  override fun overflow(overflow: Overflow) {
+    value.setScrollEnabled(overflow == Overflow.Scroll)
     invalidate()
   }
 
-  fun alignItems(alignItems: AlignItems) {
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    justifyContent(horizontalAlignment.toJustifyContent())
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    alignItems(horizontalAlignment.toAlignItems())
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    justifyContent(verticalAlignment.toJustifyContent())
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    alignItems(verticalAlignment.toAlignItems())
+  }
+
+  private fun alignItems(alignItems: AlignItems) {
     container.alignItems = alignItems
     invalidate()
   }
 
-  fun justifyContent(justifyContent: JustifyContent) {
+  private fun justifyContent(justifyContent: JustifyContent) {
     container.justifyContent = justifyContent
     invalidate()
   }
 
   private fun invalidate() {
-    _view.setNeedsLayout()
+    value.setNeedsLayout()
   }
 
   private inner class UIViewDelegate : NSObject(), RedwoodScrollViewDelegateProtocol {
@@ -109,19 +127,19 @@ internal class UIViewFlexContainer(
       if (!needsLayout) return
       needsLayout = false
 
-      val bounds = _view.bounds.useContents { size.toUnsafeSize() }
+      val bounds = value.bounds.useContents { size.toUnsafeSize() }
       measure(bounds)
 
-      _view.setContentSize(
+      value.setContentSize(
         CGSizeMake(
           width = container.items.maxOfOrNull { it.right } ?: 0.0,
           height = container.items.maxOfOrNull { it.top } ?: 0.0,
         ),
       )
-      _view.superview?.setNeedsLayout()
+      value.superview?.setNeedsLayout()
 
       container.items.forEachIndexed { index, item ->
-        _view.typedSubviews[index].setFrame(
+        value.typedSubviews[index].setFrame(
           CGRectMake(
             x = item.left,
             y = item.top,
@@ -140,7 +158,7 @@ internal class UIViewFlexContainer(
 
     private fun syncItems() {
       container.items.clear()
-      _children.widgets.forEach { widget ->
+      children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
           density = DensityMultiplier,

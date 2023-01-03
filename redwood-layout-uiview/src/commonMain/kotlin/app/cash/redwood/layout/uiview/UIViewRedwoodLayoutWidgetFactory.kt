@@ -15,12 +15,13 @@
  */
 package app.cash.redwood.layout.uiview
 
+import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import platform.UIKit.UIView
 
-public class UIViewRedwoodLayoutWidgetFactory() : RedwoodLayoutWidgetFactory<UIView> {
-  override fun Column(): Column<UIView> = UIViewColumn()
-  override fun Row(): Row<UIView> = UIViewRow()
+public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
+  override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
+  override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)
 }
