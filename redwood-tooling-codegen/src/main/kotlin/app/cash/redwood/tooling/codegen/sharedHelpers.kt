@@ -56,8 +56,8 @@ internal val Event.lambdaType: TypeName
 
 private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
 
-internal fun Schema.composePackage(host: Schema = this): String {
-  return if (this === host) {
+internal fun Schema.composePackage(host: Schema? = null): String {
+  return if (host == null) {
     "$`package`.compose"
   } else {
     "${host.`package`}.compose.${name.lowercase()}"
@@ -68,12 +68,12 @@ internal fun Schema.protocolBridgeType(): ClassName {
   return ClassName(composePackage(), "${name}ProtocolBridge")
 }
 
-internal fun Schema.diffProducingWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "DiffProducing${name}WidgetFactory")
+internal fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
+  return ClassName(composePackage(host), "Protocol${name}WidgetFactory")
 }
 
-internal fun Schema.diffProducingWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(composePackage(host), "DiffProducing${widget.type.flatName}")
+internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
+  return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
 }
 
 internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
@@ -123,8 +123,8 @@ internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassNam
 internal val Schema.toLayoutModifier: MemberName get() =
   MemberName(widgetPackage(this), "toLayoutModifier")
 
-internal val Schema.toProtocol: MemberName get() =
-  MemberName(composePackage(this), "toProtocol")
+internal val Schema.layoutModifierToProtocol: MemberName get() =
+  MemberName(composePackage(), "toProtocol")
 
 internal fun ProtocolSchema.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
   return (listOf(this) + dependencies).flatMap { schema ->

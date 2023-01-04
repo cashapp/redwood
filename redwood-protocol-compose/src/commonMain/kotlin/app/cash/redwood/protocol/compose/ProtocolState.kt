@@ -26,7 +26,7 @@ import app.cash.redwood.widget.Widget
 /** @suppress For generated code use only. */
 public class ProtocolState {
   private var nextValue = Id.Root.value + 1L
-  private val nodes = mutableMapOf<Id, DiffProducingWidget>()
+  private val widgets = mutableMapOf<Id, ProtocolWidget>()
 
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var layoutModifiers = mutableListOf<LayoutModifiers>()
@@ -73,19 +73,19 @@ public class ProtocolState {
     return null
   }
 
-  public fun addWidget(widget: DiffProducingWidget) {
-    check(nodes.put(widget.id, widget) == null) {
+  public fun addWidget(widget: ProtocolWidget) {
+    check(widgets.put(widget.id, widget) == null) {
       "Attempted to add widget with ID ${widget.id.value} but one already exists"
     }
   }
 
   public fun removeWidget(id: Id) {
-    nodes.remove(id)
+    widgets.remove(id)
   }
 
-  public fun getWidget(id: Id): DiffProducingWidget? = nodes[id]
+  public fun getWidget(id: Id): ProtocolWidget? = widgets[id]
 
   public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
-    return DiffProducingWidgetChildren(id, tag, this)
+    return ProtocolWidgetChildren(id, tag, this)
   }
 }
