@@ -9,6 +9,8 @@ module:redwood-layout-api
 app.cash.redwood.layout.api
 module:redwood-layout-composeui
 app.cash.redwood.layout.composeui
+module:redwood-layout-dom
+app.cash.redwood.layout.dom
 module:redwood-layout-schema
 app.cash.redwood.layout
 module:redwood-layout-uiview
