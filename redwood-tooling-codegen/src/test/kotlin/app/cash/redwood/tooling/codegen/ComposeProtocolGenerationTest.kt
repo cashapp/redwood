@@ -22,7 +22,7 @@ import app.cash.redwood.tooling.schema.parseProtocolSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class DiffProducingGenerationTest {
+class ComposeProtocolGenerationTest {
   @Schema(
     [
       IdPropertyNameCollisionNode::class,
@@ -39,13 +39,11 @@ class DiffProducingGenerationTest {
   @Test fun `id property does not collide`() {
     val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class)
 
-    val fileSpec = generateDiffProducingWidget(schema, schema.widgets.single())
+    val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
       |  public override fun id(id: String): Unit {
-      |    bridge.append(PropertyDiff(this.id, PropertyTag(2), json.encodeToJsonElement(serializer_0, id)))
-      |  }
-      |
+      |    this.state.append(PropertyDiff(this.id,
       """.trimMargin(),
     )
   }
@@ -53,7 +51,7 @@ class DiffProducingGenerationTest {
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schema = parseProtocolSchema(PrimarySchema::class)
 
-    val fileSpec = generateDiffProducingLayoutModifiers(schema)
+    val fileSpec = generateProtocolLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
       contains("is PrimaryModifier -> PrimaryModifierSurrogate.encode(json, this)")
       contains("is SecondaryModifier -> SecondaryModifierSurrogate.encode(json, this)")

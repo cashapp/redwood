@@ -26,7 +26,7 @@ import app.cash.redwood.widget.Widget
  *
  * @suppress For generated code use only.
  */
-public interface DiffProducingWidget : Widget<Nothing> {
+public interface ProtocolWidget : Widget<Nothing> {
   public val id: Id
   public val tag: WidgetTag
 

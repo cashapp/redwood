@@ -20,7 +20,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
-internal class DiffProducingWidgetChildren(
+internal class ProtocolWidgetChildren(
   private val id: Id,
   private val tag: ChildrenTag,
   private val state: ProtocolState,
@@ -28,7 +28,7 @@ internal class DiffProducingWidgetChildren(
   private val ids = mutableListOf<Id>()
 
   override fun insert(index: Int, widget: Widget<Nothing>) {
-    widget as DiffProducingWidget
+    widget as ProtocolWidget
     ids.add(index, widget.id)
     state.addWidget(widget)
     state.append(ChildrenDiff.Insert(id, tag, widget.id, widget.tag, index))

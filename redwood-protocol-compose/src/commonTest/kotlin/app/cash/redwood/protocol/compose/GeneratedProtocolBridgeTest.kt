@@ -128,21 +128,21 @@ class GeneratedProtocolBridgeTest {
     val bridge = ExampleSchemaProtocolBridge.create(json)
     val textInput = bridge.provider.ExampleSchema.TextInput()
 
-    val diffProducingWidget = textInput as DiffProducingWidget
+    val protocolWidget = textInput as ProtocolWidget
 
     var argument: Duration? = null
     textInput.onChangeCustomType {
       argument = it
     }
 
-    diffProducingWidget.sendEvent(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
+    protocolWidget.sendEvent(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
 
     assertEquals(10.seconds, argument)
   }
 
   @Test fun unknownEventThrowsDefault() {
     val bridge = ExampleSchemaProtocolBridge.create()
-    val button = bridge.provider.ExampleSchema.Button() as DiffProducingWidget
+    val button = bridge.provider.ExampleSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -154,7 +154,7 @@ class GeneratedProtocolBridgeTest {
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
     val bridge = ExampleSchemaProtocolBridge.create(mismatchHandler = handler)
-    val button = bridge.provider.ExampleSchema.Button() as DiffProducingWidget
+    val button = bridge.provider.ExampleSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 

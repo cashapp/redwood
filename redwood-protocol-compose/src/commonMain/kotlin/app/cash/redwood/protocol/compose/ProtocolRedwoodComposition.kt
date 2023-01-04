@@ -39,10 +39,10 @@ public fun ProtocolRedwoodComposition(
     bridge.createDiffOrNull()?.let(diffSink::sendDiff)
   }
   val composition = RedwoodComposition(scope, applier)
-  return DiffProducingRedwoodComposition(composition, widgetVersion)
+  return ProtocolRedwoodComposition(composition, widgetVersion)
 }
 
-private class DiffProducingRedwoodComposition(
+private class ProtocolRedwoodComposition(
   private val composition: RedwoodComposition,
   private val widgetVersion: UInt,
 ) : RedwoodComposition by composition {

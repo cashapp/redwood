@@ -29,11 +29,12 @@ public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path)
   when (type) {
     Compose -> {
       generateProtocolBridge(this).writeTo(destination)
+      generateProtocolLayoutModifierSerialization(this).writeTo(destination)
       for (dependency in allSchemas) {
-        generateDiffProducingWidgetFactory(dependency, host = this).writeTo(destination)
-        generateDiffProducingLayoutModifiers(dependency, host = this).writeTo(destination)
+        generateProtocolWidgetFactory(dependency, host = this).writeTo(destination)
+        generateProtocolLayoutModifierSurrogates(dependency, host = this).writeTo(destination)
         for (widget in dependency.widgets) {
-          generateDiffProducingWidget(dependency, widget, host = this).writeTo(destination)
+          generateProtocolWidget(dependency, widget, host = this).writeTo(destination)
         }
       }
     }
