@@ -37,7 +37,7 @@ androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.3.1
 androidx-core = { module = "androidx.core:core-ktx", version = "1.8.0" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
-androidx-test-runner = "androidx.test:runner:1.5.1"
+androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 
 google-material = { module = "com.google.android.material:material", version = "1.4.0" }
