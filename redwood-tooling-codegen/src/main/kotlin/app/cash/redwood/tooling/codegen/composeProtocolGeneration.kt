@@ -445,144 +445,132 @@ internal fun generateProtocolWidget(
     .build()
 }
 
-internal fun generateProtocolLayoutModifierSerialization(
-  schema: ProtocolSchema,
-): FileSpec {
-  return FileSpec.builder(schema.composePackage(), "layoutModifierSerialization")
-    .addFunction(generateToProtocolList(schema))
-    .addFunction(generateToProtocol(schema))
-    .build()
-}
-
 internal fun generateProtocolLayoutModifierSurrogates(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec {
   return FileSpec.builder(schema.composePackage(host), "layoutModifierSurrogates")
     .apply {
-      for (layoutModifier in schema.layoutModifiers) {
+      for (layoutModifier in schema.layoutModifiers.filter { it.properties.isNotEmpty() }) {
         val surrogateName = schema.layoutModifierSurrogate(layoutModifier, host)
         val modifierType = schema.layoutModifierType(layoutModifier)
 
         addType(
-          if (layoutModifier.properties.isEmpty()) {
-            TypeSpec.objectBuilder(surrogateName)
-              .addModifiers(INTERNAL)
-              .addFunction(
-                FunSpec.builder("encode")
-                  .returns(Protocol.LayoutModifierElement)
-                  .addStatement(
-                    "return %T(%T(%L))",
-                    Protocol.LayoutModifierElement,
-                    Protocol.LayoutModifierTag,
-                    layoutModifier.tag,
-                  )
-                  .build(),
-              )
-              .build()
-          } else {
-            TypeSpec.classBuilder(surrogateName)
-              .addAnnotation(KotlinxSerialization.Serializable)
-              .addModifiers(INTERNAL)
-              .addSuperinterface(modifierType)
-              .apply {
-                val primaryConstructor = FunSpec.constructorBuilder()
+          TypeSpec.classBuilder(surrogateName)
+            .addAnnotation(KotlinxSerialization.Serializable)
+            .addModifiers(INTERNAL)
+            .addSuperinterface(modifierType)
+            .apply {
+              val primaryConstructor = FunSpec.constructorBuilder()
 
-                for (property in layoutModifier.properties) {
-                  val propertyType = property.type.asTypeName()
+              for (property in layoutModifier.properties) {
+                val propertyType = property.type.asTypeName()
 
-                  primaryConstructor.addParameter(
-                    ParameterSpec.builder(property.name, propertyType)
-                      .apply {
-                        property.defaultExpression?.let { defaultValue(it) }
-                      }
-                      .build(),
-                  )
+                primaryConstructor.addParameter(
+                  ParameterSpec.builder(property.name, propertyType)
+                    .apply {
+                      property.defaultExpression?.let { defaultValue(it) }
+                    }
+                    .build(),
+                )
 
-                  addProperty(
-                    PropertySpec.builder(property.name, propertyType)
-                      .addModifiers(OVERRIDE)
-                      .addAnnotation(KotlinxSerialization.Contextual)
-                      .initializer("%N", property.name)
-                      .build(),
-                  )
-                }
-
-                primaryConstructor(primaryConstructor.build())
+                addProperty(
+                  PropertySpec.builder(property.name, propertyType)
+                    .addModifiers(OVERRIDE)
+                    .addAnnotation(KotlinxSerialization.Contextual)
+                    .initializer("%N", property.name)
+                    .build(),
+                )
               }
-              .addFunction(
-                FunSpec.constructorBuilder()
-                  .addParameter("delegate", modifierType)
-                  .callThisConstructor(layoutModifier.properties.map { CodeBlock.of("delegate.${it.name}") })
-                  .build(),
-              )
-              .addType(
-                TypeSpec.companionObjectBuilder()
-                  .addFunction(
-                    FunSpec.builder("encode")
-                      .addParameter("json", KotlinxSerialization.Json)
-                      .addParameter("value", modifierType)
-                      .returns(Protocol.LayoutModifierElement)
-                      .addStatement("val element = json.encodeToJsonElement(serializer(), %T(value))", surrogateName)
-                      .addStatement(
-                        "return %T(%T(%L), element)",
-                        Protocol.LayoutModifierElement,
-                        Protocol.LayoutModifierTag,
-                        layoutModifier.tag,
-                      )
-                      .build(),
-                  )
-                  .build(),
-              )
-              .build()
-          },
-        )
-      }
-    }
-    .build()
-}
 
-private fun generateToProtocolList(schema: ProtocolSchema): FunSpec {
-  val name = schema.layoutModifierToProtocol.simpleName
-  return FunSpec.builder(name)
-    .addModifiers(INTERNAL)
-    .receiver(Redwood.LayoutModifier)
-    .addParameter("json", KotlinxSerialization.Json)
-    .returns(LIST.parameterizedBy(Protocol.LayoutModifierElement))
-    .beginControlFlow("return %M", Stdlib.buildList)
-    .addStatement("this@%L.forEach { element -> add(element.%M(json)) }", name, schema.layoutModifierToProtocol)
-    .endControlFlow()
-    .build()
-}
-
-private fun generateToProtocol(schema: ProtocolSchema): FunSpec {
-  return FunSpec.builder(schema.layoutModifierToProtocol.simpleName)
-    .addModifiers(PRIVATE)
-    .receiver(Redwood.LayoutModifierElement)
-    .addParameter("json", KotlinxSerialization.Json)
-    .returns(Protocol.LayoutModifierElement)
-    .beginControlFlow("return when (this)")
-    .apply {
-      val layoutModifiers = schema.allLayoutModifiers()
-      if (layoutModifiers.isEmpty()) {
-        addAnnotation(
-          AnnotationSpec.builder(Suppress::class)
-            .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+              primaryConstructor(primaryConstructor.build())
+            }
+            .addType(
+              TypeSpec.companionObjectBuilder()
+                .addFunction(
+                  FunSpec.builder("encode")
+                    .addParameter("json", KotlinxSerialization.Json)
+                    .addParameter("value", modifierType)
+                    .returns(Protocol.LayoutModifierElement)
+                    .addStatement(
+                      "val surrogate = %T(%L)",
+                      surrogateName,
+                      layoutModifier.properties.map { CodeBlock.of("value.${it.name}") }.joinToCode(),
+                    )
+                    .addStatement("val element = json.encodeToJsonElement(serializer(), surrogate)")
+                    .addStatement(
+                      "return %T(%T(%L), element)",
+                      Protocol.LayoutModifierElement,
+                      Protocol.LayoutModifierTag,
+                      layoutModifier.tag,
+                    )
+                    .build(),
+                )
+                .build(),
+            )
             .build(),
         )
-      } else {
-        for ((localSchema, layoutModifier) in layoutModifiers) {
-          val modifierType = localSchema.layoutModifierType(layoutModifier)
-          val surrogate = localSchema.layoutModifierSurrogate(layoutModifier, schema)
-          if (layoutModifier.properties.isEmpty()) {
-            addStatement("is %T -> %T.encode()", modifierType, surrogate)
-          } else {
-            addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
-          }
-        }
       }
     }
-    .addStatement("else -> throw %T()", Stdlib.AssertionError)
-    .endControlFlow()
+    .build()
+}
+
+internal fun generateProtocolLayoutModifierSerialization(
+  schema: ProtocolSchema,
+): FileSpec {
+  val name = schema.layoutModifierToProtocol.simpleName
+  return FileSpec.builder(schema.composePackage(), "layoutModifierSerialization")
+    .addFunction(
+      FunSpec.builder(name)
+        .addModifiers(INTERNAL)
+        .receiver(Redwood.LayoutModifier)
+        .addParameter("json", KotlinxSerialization.Json)
+        .returns(LIST.parameterizedBy(Protocol.LayoutModifierElement))
+        .beginControlFlow("return %M", Stdlib.buildList)
+        .addStatement(
+          "this@%L.forEach { element -> add(element.%M(json)) }",
+          name,
+          schema.layoutModifierToProtocol,
+        )
+        .endControlFlow()
+        .build(),
+    )
+    .addFunction(
+      FunSpec.builder(schema.layoutModifierToProtocol.simpleName)
+        .addModifiers(PRIVATE)
+        .receiver(Redwood.LayoutModifierElement)
+        .addParameter("json", KotlinxSerialization.Json)
+        .returns(Protocol.LayoutModifierElement)
+        .beginControlFlow("return when (this)")
+        .apply {
+          val layoutModifiers = schema.allLayoutModifiers()
+          if (layoutModifiers.isEmpty()) {
+            addAnnotation(
+              AnnotationSpec.builder(Suppress::class)
+                .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+                .build(),
+            )
+          } else {
+            for ((localSchema, layoutModifier) in layoutModifiers) {
+              val modifierType = localSchema.layoutModifierType(layoutModifier)
+              val surrogate = localSchema.layoutModifierSurrogate(layoutModifier, schema)
+              if (layoutModifier.properties.isEmpty()) {
+                addStatement(
+                  "is %T -> %T(%T(%L))",
+                  modifierType,
+                  Protocol.LayoutModifierElement,
+                  Protocol.LayoutModifierTag,
+                  layoutModifier.tag,
+                )
+              } else {
+                addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
+              }
+            }
+          }
+        }
+        .addStatement("else -> throw %T()", Stdlib.AssertionError)
+        .endControlFlow()
+        .build(),
+    )
     .build()
 }
