@@ -12,6 +12,14 @@ kotlin {
     browser()
   }
   jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutWidget
+      }
+    }
+  }
 }
 
 redwoodSchema {

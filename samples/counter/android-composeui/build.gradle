@@ -5,7 +5,7 @@ apply plugin: 'app.cash.redwood'
 dependencies {
   implementation projects.samples.counter.presenter
   implementation projects.samples.counter.sharedComposeui
-  implementation projects.redwoodWidgetCompose
+  implementation projects.redwoodLayoutComposeui
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material
   implementation libs.androidx.activity.compose

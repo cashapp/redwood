@@ -16,21 +16,11 @@
 package com.example.redwood.counter.browser
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.widget.HTMLElementChildren
-import com.example.redwood.counter.widget.Box
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.Text
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
-
-class HtmlBox(
-  override val value: HTMLElement,
-) : Box<HTMLElement> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
-
-  override val children = HTMLElementChildren(value)
-}
 
 class HtmlText(
   override val value: HTMLSpanElement,

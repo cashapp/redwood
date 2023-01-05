@@ -15,24 +15,17 @@
  */
 package com.example.redwood.counter.browser
 
-import com.example.redwood.counter.widget.Box
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.SchemaWidgetFactory
 import com.example.redwood.counter.widget.Text
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 
 class HtmlWidgetFactory(
   private val document: Document,
 ) : SchemaWidgetFactory<HTMLElement> {
-  override fun Box(): Box<HTMLElement> {
-    val div = document.createElement("div") as HTMLDivElement
-    return HtmlBox(div)
-  }
-
   override fun Text(): Text<HTMLElement> {
     val span = document.createElement("span") as HTMLSpanElement
     return HtmlText(span)

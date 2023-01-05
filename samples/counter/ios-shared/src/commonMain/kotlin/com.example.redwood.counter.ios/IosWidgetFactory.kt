@@ -15,14 +15,12 @@
  */
 package com.example.redwood.counter.ios
 
-import com.example.redwood.counter.widget.Box
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.SchemaWidgetFactory
 import com.example.redwood.counter.widget.Text
 import platform.UIKit.UIView
 
 object IosWidgetFactory : SchemaWidgetFactory<UIView> {
-  override fun Box(): Box<UIView> = IosBox()
   override fun Text(): Text<UIView> = IosText()
   override fun Button(): Button<UIView> = IosButton()
 }

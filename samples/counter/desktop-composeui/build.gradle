@@ -13,4 +13,5 @@ dependencies {
   implementation compose.desktop.currentOs
   implementation projects.samples.counter.presenter
   implementation projects.samples.counter.sharedComposeui
+  implementation projects.redwoodLayoutComposeui
 }

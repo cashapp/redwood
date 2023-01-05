@@ -16,13 +16,11 @@
 package com.example.redwood.counter.composeui
 
 import androidx.compose.runtime.Composable
-import com.example.redwood.counter.widget.Box
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.SchemaWidgetFactory
 import com.example.redwood.counter.widget.Text
 
 object ComposeUiWidgetFactory : SchemaWidgetFactory<@Composable () -> Unit> {
-  override fun Box(): Box<@Composable () -> Unit> = ComposeUiBox()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Button(): Button<@Composable () -> Unit> = ComposeUiButton()
 }

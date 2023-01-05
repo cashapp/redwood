@@ -15,25 +15,23 @@
  */
 package com.example.redwood.counter
 
-import app.cash.redwood.schema.Children
+import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
+import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 
 @Schema(
   [
-    Box::class,
     Text::class,
     Button::class,
   ],
+  dependencies = [
+    Dependency(1, RedwoodLayout::class),
+  ],
 )
 interface Schema
-
-@Widget(1)
-data class Box(
-  @Children(1) val children: () -> Unit,
-)
 
 @Widget(2)
 data class Text(
