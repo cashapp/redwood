@@ -112,8 +112,8 @@ internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassNam
   return ClassName(`package`, layoutModifier.type.flatName)
 }
 
-internal fun Schema.layoutModifierSurrogate(layoutModifier: LayoutModifier, host: Schema): ClassName {
-  return ClassName(composePackage(host), layoutModifier.type.flatName + "Surrogate")
+internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, host: Schema): ClassName {
+  return ClassName(composePackage(host), layoutModifier.type.flatName + "Serializer")
 }
 
 internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassName {
