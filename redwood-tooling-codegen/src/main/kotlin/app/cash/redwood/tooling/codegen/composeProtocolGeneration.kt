@@ -454,7 +454,7 @@ internal fun generateProtocolWidget(
 }
 
 /*
-internal class GrowSerializer : KSerializer<Grow> {
+internal object GrowSerializer : KSerializer<Grow> {
   override val descriptor =
     buildClassSerialDescriptor("app.cash.redwood.layout.Grow") {
       element<Double>("value")
