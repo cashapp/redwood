@@ -101,14 +101,25 @@ internal object Stdlib {
 internal val typeVariableW = TypeVariableName("W", listOf(ANY))
 
 internal object KotlinxSerialization {
-  val Json = ClassName("kotlinx.serialization.json", "Json")
-  val JsonDefault = Json.nestedClass("Default")
-
-  @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
-  val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
-  val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
   val Contextual = ClassName("kotlinx.serialization", "Contextual")
+  val ContextualSerializer = ClassName("kotlinx.serialization", "ContextualSerializer")
+  val ExperimentalSerializationApi = ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
+  val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
   val Serializable = ClassName("kotlinx.serialization", "Serializable")
   val serializer = MemberName("kotlinx.serialization", "serializer")
-  val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
+
+  val SerialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")
+  val buildClassSerialDescriptor = MemberName("kotlinx.serialization.descriptors", "buildClassSerialDescriptor")
+  val element = MemberName("kotlinx.serialization.descriptors", "element")
+
+  val Decoder = ClassName("kotlinx.serialization.encoding", "Decoder")
+  val Encoder = ClassName("kotlinx.serialization.encoding", "Encoder")
+  val encodeStructure = MemberName("kotlinx.serialization.encoding", "encodeStructure")
+
+  val Json = ClassName("kotlinx.serialization.json", "Json")
+  val JsonDefault = Json.nestedClass("Default")
+  val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
+  val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
+
+  @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
 }

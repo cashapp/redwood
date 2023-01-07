@@ -53,8 +53,8 @@ class ComposeProtocolGenerationTest {
 
     val fileSpec = generateProtocolLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
-      contains("is PrimaryModifier -> PrimaryModifierSurrogate.encode(json, this)")
-      contains("is SecondaryModifier -> SecondaryModifierSurrogate.encode(json, this)")
+      contains("is PrimaryModifier -> PrimaryModifierSerializer.encode(json, this)")
+      contains("is SecondaryModifier -> SecondaryModifierSerializer.encode(json, this)")
     }
   }
 }

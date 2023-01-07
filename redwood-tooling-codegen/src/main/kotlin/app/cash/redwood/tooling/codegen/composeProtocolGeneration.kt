@@ -21,18 +21,26 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.BYTE
+import com.squareup.kotlinpoet.CHAR
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.DOUBLE
+import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.NOTHING
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.SHORT
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
@@ -445,66 +453,193 @@ internal fun generateProtocolWidget(
     .build()
 }
 
+/*
+internal object GrowSerializer : KSerializer<Grow> {
+  override val descriptor =
+    buildClassSerialDescriptor("app.cash.redwood.layout.Grow") {
+      element<Double>("value")
+    }
+
+  override fun serialize(encoder: Encoder, value: Grow) {
+    encoder.encodeStructure(descriptor) {
+      encodeDoubleElement(descriptor, 0, value.value)
+    }
+  }
+
+  override fun deserialize(decoder: Decoder): Grow {
+    throw AssertionError()
+  }
+
+  fun encode(json: Json, value: Grow): LayoutModifierElement {
+    val element = json.encodeToJsonElement(this, value)
+    return LayoutModifierElement(LayoutModifierTag(3), element)
+  }
+}
+*/
 internal fun generateProtocolLayoutModifierSurrogates(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec {
-  return FileSpec.builder(schema.composePackage(host), "layoutModifierSurrogates")
+  return FileSpec.builder(schema.composePackage(host), "layoutModifierSerializers")
     .apply {
       for (layoutModifier in schema.layoutModifiers.filter { it.properties.isNotEmpty() }) {
-        val surrogateName = schema.layoutModifierSurrogate(layoutModifier, host)
+        val serializerType = schema.layoutModifierSerializer(layoutModifier, host)
         val modifierType = schema.layoutModifierType(layoutModifier)
 
+        var nextSerializerId = 0
+        val serializerIds = mutableMapOf<TypeName, Int>()
+
+        val descriptorBody = CodeBlock.builder()
+        val serializerBody = CodeBlock.builder()
+        for ((index, property) in layoutModifier.properties.withIndex()) {
+          val propertyType = property.type.asTypeName()
+          descriptorBody.addStatement("%M<%T>(%S)", KotlinxSerialization.element, propertyType, property.name)
+
+          if (property.defaultExpression != null) {
+            serializerBody.beginControlFlow(
+              "if (shouldEncodeElementDefault(descriptor, %L) || value.%N != %L)",
+              index,
+              property.name,
+              property.defaultExpression,
+            )
+          }
+          when (propertyType) {
+            BOOLEAN -> serializerBody.addStatement(
+              "encodeBooleanElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            BYTE -> serializerBody.addStatement(
+              "encodeByteElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            CHAR -> serializerBody.addStatement(
+              "encodeCharElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            SHORT -> serializerBody.addStatement(
+              "encodeShortElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            INT -> serializerBody.addStatement(
+              "encodeIntElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            LONG -> serializerBody.addStatement(
+              "encodeLongElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            FLOAT -> serializerBody.addStatement(
+              "encodeFloatElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            DOUBLE -> serializerBody.addStatement(
+              "encodeDoubleElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            STRING -> serializerBody.addStatement(
+              "encodeStringElement(descriptor, %L, value.%N)",
+              index,
+              property.name,
+            )
+            else -> {
+              val serializerId = serializerIds.computeIfAbsent(propertyType) {
+                nextSerializerId++
+              }
+              serializerBody.addStatement(
+                "encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
+                index,
+                serializerId,
+                property.name,
+              )
+            }
+          }
+          if (property.defaultExpression != null) {
+            serializerBody.endControlFlow()
+          }
+        }
+
         addType(
-          TypeSpec.classBuilder(surrogateName)
-            .addAnnotation(KotlinxSerialization.Serializable)
+          TypeSpec.objectBuilder(serializerType)
             .addModifiers(INTERNAL)
-            .addSuperinterface(modifierType)
-            .apply {
-              val primaryConstructor = FunSpec.constructorBuilder()
-
-              for (property in layoutModifier.properties) {
-                val propertyType = property.type.asTypeName()
-
-                primaryConstructor.addParameter(
-                  ParameterSpec.builder(property.name, propertyType)
-                    .apply {
-                      property.defaultExpression?.let { defaultValue(it) }
-                    }
+            .addSuperinterface(KotlinxSerialization.KSerializer.parameterizedBy(modifierType))
+            .addProperty(
+              PropertySpec.builder("descriptor", KotlinxSerialization.SerialDescriptor)
+                .addModifiers(OVERRIDE)
+                .initializer(
+                  CodeBlock.builder()
+                    .beginControlFlow(
+                      "%M(%S)",
+                      KotlinxSerialization.buildClassSerialDescriptor,
+                      modifierType.toString(),
+                    )
+                    .add(descriptorBody.build())
+                    .endControlFlow()
                     .build(),
                 )
-
+                .build(),
+            )
+            .apply {
+              for ((typeName, id) in serializerIds) {
+                val typeSerializer = KotlinxSerialization.KSerializer.parameterizedBy(typeName)
                 addProperty(
-                  PropertySpec.builder(property.name, propertyType)
-                    .addModifiers(OVERRIDE)
-                    .addAnnotation(KotlinxSerialization.Contextual)
-                    .initializer("%N", property.name)
+                  PropertySpec.builder("serializer_$id", typeSerializer)
+                    .addAnnotation(
+                      AnnotationSpec.builder(Stdlib.OptIn)
+                        .addMember("%T::class", KotlinxSerialization.ExperimentalSerializationApi)
+                        .build(),
+                    )
+                    .addModifiers(PRIVATE)
+                    .initializer("%T(%T::class)", KotlinxSerialization.ContextualSerializer, typeName)
                     .build(),
                 )
               }
-
-              primaryConstructor(primaryConstructor.build())
             }
-            .addType(
-              TypeSpec.companionObjectBuilder()
-                .addFunction(
-                  FunSpec.builder("encode")
-                    .addParameter("json", KotlinxSerialization.Json)
-                    .addParameter("value", modifierType)
-                    .returns(Protocol.LayoutModifierElement)
-                    .addStatement(
-                      "val surrogate = %T(%L)",
-                      surrogateName,
-                      layoutModifier.properties.map { CodeBlock.of("value.${it.name}") }.joinToCode(),
+            .addFunction(
+              FunSpec.builder("serialize")
+                .addModifiers(OVERRIDE)
+                .addParameter("encoder", KotlinxSerialization.Encoder)
+                .addParameter("value", modifierType)
+                .apply {
+                  if (layoutModifier.properties.any { it.defaultExpression != null }) {
+                    addAnnotation(
+                      AnnotationSpec.builder(Stdlib.OptIn)
+                        .addMember("%T::class", KotlinxSerialization.ExperimentalSerializationApi)
+                        .build(),
                     )
-                    .addStatement("val element = json.encodeToJsonElement(serializer(), surrogate)")
-                    .addStatement(
-                      "return %T(%T(%L), element)",
-                      Protocol.LayoutModifierElement,
-                      Protocol.LayoutModifierTag,
-                      layoutModifier.tag,
-                    )
-                    .build(),
+                  }
+                }
+                .beginControlFlow("encoder.%M(descriptor)", KotlinxSerialization.encodeStructure)
+                .addCode(serializerBody.build())
+                .endControlFlow()
+                .build(),
+            )
+            .addFunction(
+              FunSpec.builder("deserialize")
+                .addModifiers(OVERRIDE)
+                .addParameter("decoder", KotlinxSerialization.Decoder)
+                .returns(NOTHING)
+                .addStatement("throw %T()", Stdlib.AssertionError)
+                .build(),
+            )
+            .addFunction(
+              FunSpec.builder("encode")
+                .addParameter("json", KotlinxSerialization.Json)
+                .addParameter("value", modifierType)
+                .returns(Protocol.LayoutModifierElement)
+                .addStatement("val element = json.encodeToJsonElement(this, value)")
+                .addStatement(
+                  "return %T(%T(%L), element)",
+                  Protocol.LayoutModifierElement,
+                  Protocol.LayoutModifierTag,
+                  layoutModifier.tag,
                 )
                 .build(),
             )
@@ -553,7 +688,7 @@ internal fun generateProtocolLayoutModifierSerialization(
           } else {
             for ((localSchema, layoutModifier) in layoutModifiers) {
               val modifierType = localSchema.layoutModifierType(layoutModifier)
-              val surrogate = localSchema.layoutModifierSurrogate(layoutModifier, schema)
+              val surrogate = localSchema.layoutModifierSerializer(layoutModifier, schema)
               if (layoutModifier.properties.isEmpty()) {
                 addStatement(
                   "is %T -> %T(%T(%L))",
