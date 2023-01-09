@@ -476,13 +476,17 @@ internal object GrowSerializer : KSerializer<Grow> {
   }
 }
 */
-internal fun generateProtocolLayoutModifierSurrogates(
+internal fun generateProtocolLayoutModifierSerializers(
   schema: ProtocolSchema,
   host: ProtocolSchema,
-): FileSpec {
+): FileSpec? {
+  val serializableLayoutModifiers = schema.layoutModifiers.filter { it.properties.isNotEmpty() }
+  if (serializableLayoutModifiers.isEmpty()) {
+    return null
+  }
   return FileSpec.builder(schema.composePackage(host), "layoutModifierSerializers")
     .apply {
-      for (layoutModifier in schema.layoutModifiers.filter { it.properties.isNotEmpty() }) {
+      for (layoutModifier in serializableLayoutModifiers) {
         val serializerType = schema.layoutModifierSerializer(layoutModifier, host)
         val modifierType = schema.layoutModifierType(layoutModifier)
 
