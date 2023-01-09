@@ -114,7 +114,6 @@ internal object KotlinxSerialization {
 
   val Decoder = ClassName("kotlinx.serialization.encoding", "Decoder")
   val Encoder = ClassName("kotlinx.serialization.encoding", "Encoder")
-  val encodeStructure = MemberName("kotlinx.serialization.encoding", "encodeStructure")
 
   val Json = ClassName("kotlinx.serialization.json", "Json")
   val JsonDefault = Json.nestedClass("Default")

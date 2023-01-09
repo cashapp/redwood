@@ -497,7 +497,7 @@ internal fun generateProtocolLayoutModifierSurrogates(
 
           if (property.defaultExpression != null) {
             serializerBody.beginControlFlow(
-              "if (shouldEncodeElementDefault(descriptor, %L) || value.%N != %L)",
+              "if (composite.shouldEncodeElementDefault(descriptor, %L) || value.%N != %L)",
               index,
               property.name,
               property.defaultExpression,
@@ -505,47 +505,47 @@ internal fun generateProtocolLayoutModifierSurrogates(
           }
           when (propertyType) {
             BOOLEAN -> serializerBody.addStatement(
-              "encodeBooleanElement(descriptor, %L, value.%N)",
+              "composite.encodeBooleanElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             BYTE -> serializerBody.addStatement(
-              "encodeByteElement(descriptor, %L, value.%N)",
+              "composite.encodeByteElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             CHAR -> serializerBody.addStatement(
-              "encodeCharElement(descriptor, %L, value.%N)",
+              "composite.encodeCharElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             SHORT -> serializerBody.addStatement(
-              "encodeShortElement(descriptor, %L, value.%N)",
+              "composite.encodeShortElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             INT -> serializerBody.addStatement(
-              "encodeIntElement(descriptor, %L, value.%N)",
+              "composite.encodeIntElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             LONG -> serializerBody.addStatement(
-              "encodeLongElement(descriptor, %L, value.%N)",
+              "composite.encodeLongElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             FLOAT -> serializerBody.addStatement(
-              "encodeFloatElement(descriptor, %L, value.%N)",
+              "composite.encodeFloatElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             DOUBLE -> serializerBody.addStatement(
-              "encodeDoubleElement(descriptor, %L, value.%N)",
+              "composite.encodeDoubleElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
             STRING -> serializerBody.addStatement(
-              "encodeStringElement(descriptor, %L, value.%N)",
+              "composite.encodeStringElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
@@ -554,7 +554,7 @@ internal fun generateProtocolLayoutModifierSurrogates(
                 nextSerializerId++
               }
               serializerBody.addStatement(
-                "encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
+                "composite.encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
                 index,
                 serializerId,
                 property.name,
@@ -616,9 +616,9 @@ internal fun generateProtocolLayoutModifierSurrogates(
                     )
                   }
                 }
-                .beginControlFlow("encoder.%M(descriptor)", KotlinxSerialization.encodeStructure)
+                .addStatement("val composite = encoder.beginStructure(descriptor)")
                 .addCode(serializerBody.build())
-                .endControlFlow()
+                .addStatement("composite.endStructure(descriptor)")
                 .build(),
             )
             .addFunction(
