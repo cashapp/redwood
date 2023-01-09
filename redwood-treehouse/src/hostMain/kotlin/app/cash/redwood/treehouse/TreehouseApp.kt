@@ -87,11 +87,10 @@ public class TreehouseApp<A : AppService> internal constructor(
     dispatchers.checkZipline()
     check(!closed)
 
-    // This job lets us cancel the Android Treehouse job without canceling its sibling jobs.
-    val supervisorJob = SupervisorJob(scope.coroutineContext.job)
-    val cancelableScope = CoroutineScope(supervisorJob + dispatchers.zipline)
-
-    cancelableScope.launch(dispatchers.zipline) {
+    val sessionScope = CoroutineScope(
+      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline
+    )
+    sessionScope.launch(dispatchers.zipline) {
       val clockService = appService.frameClockService
       coroutineContext.job.invokeOnCompletion {
         clockService.close()
@@ -106,11 +105,11 @@ public class TreehouseApp<A : AppService> internal constructor(
       }
     }
 
-    cancelableScope.launch(dispatchers.ui) {
+    sessionScope.launch(dispatchers.ui) {
       val previous = ziplineSession
 
       val next = ZiplineSession(
-        sessionScope = cancelableScope,
+        sessionScope = sessionScope,
         zipline = zipline,
         appService = appService,
         isInitialLaunch = previous == null,
@@ -122,7 +121,7 @@ public class TreehouseApp<A : AppService> internal constructor(
       }
 
       if (previous != null) {
-        cancelableScope.launch(dispatchers.zipline) {
+        sessionScope.launch(dispatchers.zipline) {
           previous.cancel()
         }
       }
@@ -230,6 +229,10 @@ public class TreehouseApp<A : AppService> internal constructor(
     session: ZiplineSession,
     view: TreehouseView<A>,
   ) : Binding, EventSink, DiffSinkService {
+    private val bindingScope = CoroutineScope(
+      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline
+    )
+
     /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
     private var viewOrNull: TreehouseView<A>? = view
 
@@ -257,7 +260,7 @@ public class TreehouseApp<A : AppService> internal constructor(
     /** Send an event from the UI to Zipline. */
     override fun sendEvent(event: Event) {
       // Send UI events on the zipline dispatcher.
-      scope.launch(dispatchers.zipline) {
+      bindingScope.launch(dispatchers.zipline) {
         val treehouseUi = treehouseUiOrNull ?: return@launch
         treehouseUi.sendEvent(event)
       }
@@ -266,7 +269,7 @@ public class TreehouseApp<A : AppService> internal constructor(
     /** Send a diff from Zipline to the UI. */
     override fun sendDiff(diff: Diff) {
       // Receive UI updates on the UI dispatcher.
-      scope.launch(dispatchers.ui) {
+      bindingScope.launch(dispatchers.ui) {
         val view = viewOrNull ?: return@launch
         val bridge = bridgeOrNull ?: return@launch
 
@@ -284,7 +287,7 @@ public class TreehouseApp<A : AppService> internal constructor(
       session: ZiplineSession,
       view: TreehouseView<A>,
     ) {
-      scope.launch(dispatchers.zipline) {
+      bindingScope.launch(dispatchers.zipline) {
         val scopedAppService = session.appService.withScope(ziplineScope)
         val treehouseUi = content.get(scopedAppService)
         treehouseUiOrNull = treehouseUi
@@ -300,6 +303,7 @@ public class TreehouseApp<A : AppService> internal constructor(
       bridgeOrNull = null
       scope.launch(dispatchers.zipline) {
         treehouseUiOrNull = null
+        bindingScope.cancel()
         ziplineScope.close()
       }
     }
