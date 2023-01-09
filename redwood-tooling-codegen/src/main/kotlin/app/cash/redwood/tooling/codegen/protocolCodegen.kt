@@ -32,7 +32,7 @@ public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path)
       generateProtocolLayoutModifierSerialization(this).writeTo(destination)
       for (dependency in allSchemas) {
         generateProtocolWidgetFactory(dependency, host = this).writeTo(destination)
-        generateProtocolLayoutModifierSurrogates(dependency, host = this).writeTo(destination)
+        generateProtocolLayoutModifierSerializers(dependency, host = this)?.writeTo(destination)
         for (widget in dependency.widgets) {
           generateProtocolWidget(dependency, widget, host = this).writeTo(destination)
         }
