@@ -88,7 +88,7 @@ public class TreehouseApp<A : AppService> internal constructor(
     check(!closed)
 
     val sessionScope = CoroutineScope(
-      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline
+      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline,
     )
     sessionScope.launch(dispatchers.zipline) {
       val clockService = appService.frameClockService
@@ -230,7 +230,7 @@ public class TreehouseApp<A : AppService> internal constructor(
     view: TreehouseView<A>,
   ) : Binding, EventSink, DiffSinkService {
     private val bindingScope = CoroutineScope(
-      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline
+      SupervisorJob(scope.coroutineContext.job) + dispatchers.zipline,
     )
 
     /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
