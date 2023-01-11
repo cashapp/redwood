@@ -8,7 +8,7 @@ dependencies {
 
 android {
   namespace 'example.presenters'
-  compileSdk 32
+  compileSdk 33
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -21,6 +21,6 @@ android {
 
   defaultConfig {
     minSdk 21
-    targetSdk 30
+    targetSdk 33
   }
 }

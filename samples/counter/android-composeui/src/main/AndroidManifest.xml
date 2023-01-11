@@ -3,7 +3,10 @@
     android:label="Counter: ComposeUI"
     android:theme="@style/Theme.Counter.NoActionBar"
     >
-    <activity android:name=".MainActivity">
+    <activity
+      android:name=".MainActivity"
+      android:exported="true"
+      >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
