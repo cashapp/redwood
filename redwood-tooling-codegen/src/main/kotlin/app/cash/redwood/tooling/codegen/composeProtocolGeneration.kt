@@ -46,6 +46,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
+import kotlin.reflect.jvm.jvmErasure
 
 /*
 class ExampleProtocolBridge(
@@ -492,6 +493,7 @@ internal fun generateProtocolLayoutModifierSerializers(
 
         var nextSerializerId = 0
         val serializerIds = mutableMapOf<TypeName, Int>()
+        val serializables = mutableSetOf<TypeName>()
 
         val descriptorBody = CodeBlock.builder()
         val serializerBody = CodeBlock.builder()
@@ -557,6 +559,15 @@ internal fun generateProtocolLayoutModifierSerializers(
               val serializerId = serializerIds.computeIfAbsent(propertyType) {
                 nextSerializerId++
               }
+              val isSerializable = property.type
+                .jvmErasure
+                .annotations
+                .any {
+                  it.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
+                }
+              if (isSerializable) {
+                serializables += propertyType
+              }
               serializerBody.addStatement(
                 "composite.encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
                 index,
@@ -601,7 +612,15 @@ internal fun generateProtocolLayoutModifierSerializers(
                         .build(),
                     )
                     .addModifiers(PRIVATE)
-                    .initializer("%T(%T::class)", KotlinxSerialization.ContextualSerializer, typeName)
+                    .apply {
+                      val parameters = mutableListOf(CodeBlock.of("%T::class", typeName))
+                      if (typeName in serializables) {
+                        parameters += CodeBlock.of("%T.serializer()", typeName)
+                        parameters += CodeBlock.of("emptyArray()")
+                      }
+
+                      initializer("%T(%L)", KotlinxSerialization.ContextualSerializer, parameters.joinToCode())
+                    }
                     .build(),
                 )
               }
