@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.Zipline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
