@@ -80,7 +80,7 @@ public class TreehouseApp<A : AppService> private constructor(
   }
 
   public fun start() {
-    require(!started)
+    if (started) return
     started = true
 
     eventPublisher.appStart(this)
