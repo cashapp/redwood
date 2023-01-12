@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.widget.addTextChangedListener
 import app.cash.redwood.LayoutModifier
@@ -41,7 +42,7 @@ internal class ViewTextInput(
   private val textInputEditText = object : TextInputEditText(textInputLayout.context) {
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
       super.onSelectionChanged(selStart, selEnd)
-      stateChanged()
+      stateChanged(this)
     }
   }
 
@@ -54,7 +55,7 @@ internal class ViewTextInput(
 
     textInputEditText.addTextChangedListener(
       onTextChanged = { _, _, _, _ ->
-        stateChanged()
+        stateChanged(textInputEditText)
       }
     )
     textInputEditText.maxLines = 2
@@ -92,11 +93,10 @@ internal class ViewTextInput(
    * new [TextFieldState.userEditCount]. That way we can ignore updates that are based on stale
    * data.
    */
-  private fun stateChanged() {
+  private fun stateChanged(editText: EditText) {
     // Ignore this update if it isn't a user edit.
     if (updating) return
 
-    val editText = textInputEditText
     val newState = state.userEdit(
       text = editText.text?.toString().orEmpty(),
       selectionStart = editText.selectionStart,
