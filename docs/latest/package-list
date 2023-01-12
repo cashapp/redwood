@@ -31,8 +31,12 @@ module:redwood-treehouse
 app.cash.redwood.treehouse
 module:redwood-treehouse-lazylayout-api
 app.cash.redwood.treehouse.lazylayout.api
+module:redwood-treehouse-lazylayout-compose
+app.cash.redwood.treehouse.lazylayout.compose
 module:redwood-treehouse-lazylayout-composeui
 app.cash.redwood.treehouse.lazylayout.composeui
+module:redwood-treehouse-lazylayout-schema
+app.cash.redwood.treehouse.lazylayout
 module:redwood-treehouse-lazylayout-uiview
 app.cash.redwood.treehouse.lazylayout.uiview
 module:redwood-treehouse-lazylayout-view
