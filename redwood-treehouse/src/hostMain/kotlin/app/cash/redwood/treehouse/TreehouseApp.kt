@@ -15,18 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.DiffConsumingNode
-import app.cash.redwood.protocol.widget.ProtocolBridge
-import app.cash.redwood.widget.Widget
 import app.cash.zipline.Zipline
-import app.cash.zipline.ZiplineScope
-import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
@@ -41,7 +32,7 @@ import kotlinx.serialization.modules.SerializersModule
  * new code is available in [onCodeChanged].
  */
 public class TreehouseApp<A : AppService> internal constructor(
-  private val scope: CoroutineScope,
+  private val appScope: CoroutineScope,
   public val spec: Spec<A>,
   public val dispatchers: TreehouseDispatchers,
   private val eventPublisher: EventPublisher,
@@ -50,7 +41,7 @@ public class TreehouseApp<A : AppService> internal constructor(
   private var closed = false
 
   /** Only accessed on [TreehouseDispatchers.ui]. */
-  private var ziplineSession: ZiplineSession? = null
+  private var ziplineSession: ZiplineSession<A>? = null
 
   /**
    * Keys are views currently attached on-screen with non-null contents.
@@ -87,31 +78,20 @@ public class TreehouseApp<A : AppService> internal constructor(
     dispatchers.checkZipline()
     check(!closed)
 
-    val sessionScope = CoroutineScope(SupervisorJob(scope.coroutineContext.job))
-    sessionScope.launch(dispatchers.zipline) {
-      val clockService = appService.frameClockService
-      coroutineContext.job.invokeOnCompletion {
-        clockService.close()
-      }
-      val ticksPerSecond = 60
-      var now = 0L
-      val delayNanos = 1_000_000_000L / ticksPerSecond
-      while (true) {
-        clockService.sendFrame(now)
-        delay(delayNanos / 1_000_000)
-        now += delayNanos
-      }
-    }
-
+    val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
     sessionScope.launch(dispatchers.ui) {
       val previous = ziplineSession
 
       val next = ZiplineSession(
+        app = this@TreehouseApp,
+        appScope = appScope,
         sessionScope = sessionScope,
         zipline = zipline,
         appService = appService,
         isInitialLaunch = previous == null,
       )
+
+      next.startFrameClock()
 
       val viewsToRebind = bindings.keys.toTypedArray() // Defensive copy 'cause bind() mutates.
       for (treehouseView in viewsToRebind) {
@@ -129,13 +109,17 @@ public class TreehouseApp<A : AppService> internal constructor(
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  private fun bind(view: TreehouseView<A>, ziplineSession: ZiplineSession?, codeChanged: Boolean) {
+  private fun bind(
+    view: TreehouseView<A>,
+    ziplineSession: ZiplineSession<A>?,
+    codeChanged: Boolean,
+  ) {
     dispatchers.checkUi()
 
     // Make sure we're tracking this view, so we can update it when the code changes.
     val content = view.boundContent
     val previous = bindings[view]
-    if (!codeChanged && previous is TreehouseApp<*>.RealBinding && content == previous.content) {
+    if (!codeChanged && previous is RealBinding<*> && content == previous.content) {
       return // Nothing has changed.
     }
 
@@ -143,10 +127,12 @@ public class TreehouseApp<A : AppService> internal constructor(
       // We have content and code. Launch the treehouse UI.
       content != null && ziplineSession != null -> {
         RealBinding(
-          content,
-          ziplineSession.isInitialLaunch,
-          ziplineSession,
-          view,
+          app = this@TreehouseApp,
+          appScope = appScope,
+          eventPublisher = eventPublisher,
+          content = content,
+          session = ziplineSession,
+          view = view,
         ).apply {
           start(ziplineSession, view)
         }
@@ -178,131 +164,12 @@ public class TreehouseApp<A : AppService> internal constructor(
   public fun cancel() {
     dispatchers.checkZipline()
     closed = true
-    scope.launch(dispatchers.ui) {
+    appScope.launch(dispatchers.ui) {
       val session = ziplineSession ?: return@launch
       session.cancel()
       ziplineSession = null
     }
     eventPublisher.appCanceled(this)
-  }
-
-  /** The host state for a single code load. We get a new session each time we get new code. */
-  private inner class ZiplineSession(
-    val sessionScope: CoroutineScope,
-    val appService: A,
-    val zipline: Zipline,
-    val isInitialLaunch: Boolean,
-  ) {
-    fun cancel() {
-      this@TreehouseApp.scope.launch(dispatchers.zipline) {
-        sessionScope.cancel()
-        zipline.close()
-      }
-    }
-  }
-
-  private interface Binding {
-    fun cancel()
-  }
-
-  /** A widget awaiting a [ZiplineSession]. */
-  private object LoadingBinding : Binding {
-    override fun cancel() {
-    }
-  }
-
-  /**
-   * Connects a widget, its current [TreehouseView.boundContent], and the current [ZiplineSession].
-   *
-   * Canceled if the code changes, the widget's content changes, or the widget is detached from
-   * screen.
-   *
-   * This aggressively manages the lifecycle of the widget, breaking widget reachability when the
-   * binding is canceled. It uses a single [ZiplineScope] for all Zipline services consumed by this
-   * binding.
-   */
-  private inner class RealBinding(
-    val content: TreehouseView.Content<A>,
-    private val isInitialLaunch: Boolean,
-    session: ZiplineSession,
-    view: TreehouseView<A>,
-  ) : Binding, EventSink, DiffSinkService {
-    private val bindingScope = CoroutineScope(SupervisorJob(scope.coroutineContext.job))
-
-    /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
-    private var viewOrNull: TreehouseView<A>? = view
-
-    /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
-    @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-    private var bridgeOrNull: ProtocolBridge<*>? = ProtocolBridge(
-      container = view.children as Widget.Children<Any>,
-      factory = view.widgetSystem.widgetFactory(
-        app = this@TreehouseApp,
-        json = session.zipline.json,
-        protocolMismatchHandler = eventPublisher.protocolMismatchHandler(this@TreehouseApp),
-      ) as DiffConsumingNode.Factory<Any>,
-      eventSink = this,
-    )
-
-    /** Only accessed on [TreehouseDispatchers.zipline]. */
-    private val ziplineScope = ZiplineScope()
-
-    /** Only accessed on [TreehouseDispatchers.zipline]. Null after [cancel]. */
-    private var treehouseUiOrNull: ZiplineTreehouseUi? = null
-
-    /** Only accessed on [TreehouseDispatchers.ui]. */
-    private var firstDiff = true
-
-    /** Send an event from the UI to Zipline. */
-    override fun sendEvent(event: Event) {
-      // Send UI events on the zipline dispatcher.
-      bindingScope.launch(dispatchers.zipline) {
-        val treehouseUi = treehouseUiOrNull ?: return@launch
-        treehouseUi.sendEvent(event)
-      }
-    }
-
-    /** Send a diff from Zipline to the UI. */
-    override fun sendDiff(diff: Diff) {
-      // Receive UI updates on the UI dispatcher.
-      bindingScope.launch(dispatchers.ui) {
-        val view = viewOrNull ?: return@launch
-        val bridge = bridgeOrNull ?: return@launch
-
-        if (firstDiff) {
-          firstDiff = false
-          view.reset()
-          view.codeListener.onCodeLoaded(isInitialLaunch)
-        }
-
-        bridge.sendDiff(diff)
-      }
-    }
-
-    fun start(
-      session: ZiplineSession,
-      view: TreehouseView<A>,
-    ) {
-      bindingScope.launch(dispatchers.zipline) {
-        val scopedAppService = session.appService.withScope(ziplineScope)
-        val treehouseUi = content.get(scopedAppService)
-        treehouseUiOrNull = treehouseUi
-        treehouseUi.start(
-          diffSink = this@RealBinding,
-          hostConfigurations = view.hostConfiguration.toFlowWithInitialValue(),
-        )
-      }
-    }
-
-    override fun cancel() {
-      viewOrNull = null
-      bridgeOrNull = null
-      scope.launch(dispatchers.zipline) {
-        treehouseUiOrNull = null
-        bindingScope.cancel()
-        ziplineScope.close()
-      }
-    }
   }
 
   /**

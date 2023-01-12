@@ -56,7 +56,7 @@ public class TreehouseLauncher internal constructor(
     spec: TreehouseApp.Spec<A>,
   ): TreehouseApp<A> {
     val treehouseApp = TreehouseApp(
-      scope = scope,
+      appScope = scope,
       dispatchers = dispatchers,
       spec = spec,
       eventPublisher = eventPublisher,
