@@ -31,9 +31,9 @@ internal class EventPublisher(
 ) {
   private var nameToApplication = mapOf<String, TreehouseApp<*>>()
 
-  fun appCreated(app: TreehouseApp<*>) {
+  fun appStart(app: TreehouseApp<*>) {
     nameToApplication = nameToApplication + (app.spec.name to app)
-    listener.appCreated(app)
+    listener.appStart(app)
   }
 
   fun appCanceled(app: TreehouseApp<*>) {

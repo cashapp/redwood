@@ -16,7 +16,7 @@
 package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseLauncher
+import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
@@ -35,17 +35,21 @@ class EmojiSearchLauncher(
 
   @Suppress("unused") // Invoked in Swift.
   fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
-    val treehouseLauncher = TreehouseLauncher(
+    val treehouseAppFactory = TreehouseAppFactory(
       httpClient = nsurlSession.asZiplineHttpClient(),
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
     )
 
-    return treehouseLauncher.launch(
-      scope = coroutineScope,
+    val treehouseApp = treehouseAppFactory.create(
+      appScope = coroutineScope,
       spec = EmojiSearchAppSpec(
         manifestUrlString = manifestUrl,
         hostApi = hostApi,
       ),
     )
+
+    treehouseApp.start()
+
+    return treehouseApp
   }
 }

@@ -31,7 +31,7 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
 
-public fun TreehouseLauncher(
+public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
@@ -40,7 +40,7 @@ public fun TreehouseLauncher(
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
-): TreehouseLauncher = TreehouseLauncher(
+): TreehouseApp.Factory = TreehouseApp.Factory(
   platform = AndroidTreehousePlatform(context),
   dispatchers = AndroidTreehouseDispatchers(),
   eventListener = eventListener,

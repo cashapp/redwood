@@ -27,7 +27,7 @@ import platform.Foundation.NSLog
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSThread
 
-public fun TreehouseLauncher(
+public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
   eventListener: EventListener = EventListener.NONE,
@@ -35,7 +35,7 @@ public fun TreehouseLauncher(
   embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
-): TreehouseLauncher = TreehouseLauncher(
+): TreehouseApp.Factory = TreehouseApp.Factory(
   platform = IosTreehousePlatform(),
   dispatchers = IosTreehouseDispatchers(),
   eventListener = eventListener,

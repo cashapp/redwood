@@ -22,7 +22,7 @@ import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseLauncher
+import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
@@ -77,19 +77,23 @@ class EmojiSearchActivity : ComponentActivity() {
   private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
     val httpClient = OkHttpClient()
 
-    val treehouseLauncher = TreehouseLauncher(
+    val treehouseAppFactory = TreehouseAppFactory(
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
     )
 
-    return treehouseLauncher.launch(
-      scope = scope,
+    val treehouseApp = treehouseAppFactory.create(
+      appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
         hostApi = RealHostApi(httpClient),
       ),
     )
+
+    treehouseApp.start()
+
+    return treehouseApp
   }
 
   override fun onDestroy() {
