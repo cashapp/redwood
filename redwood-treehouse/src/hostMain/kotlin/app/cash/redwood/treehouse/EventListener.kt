@@ -29,7 +29,7 @@ public abstract class EventListener {
    * Invoked each time a [TreehouseApp] is created. When this is triggered the app may not yet have
    * any code loaded; but it will always attempt to load code.
    */
-  public open fun appCreated(
+  public open fun appStart(
     app: TreehouseApp<*>,
   ) {
   }
