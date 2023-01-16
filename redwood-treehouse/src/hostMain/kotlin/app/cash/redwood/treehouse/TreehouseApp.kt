@@ -114,6 +114,8 @@ public class TreehouseApp<A : AppService> private constructor(
       eventListener = eventPublisher.ziplineEventListener(this),
     )
 
+    ziplineLoaderNetworkOnly.concurrentDownloads = factory.concurrentDownloads
+
     val ziplineLoaderForLoad = when (spec.freshCodePolicy) {
       FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> {
         ziplineLoaderNetworkOnly
@@ -263,6 +265,7 @@ public class TreehouseApp<A : AppService> private constructor(
     internal val embeddedFileSystem: FileSystem,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
+    internal val concurrentDownloads: Int,
   ) : Closeable {
     internal val eventPublisher = EventPublisher(eventListener)
 
