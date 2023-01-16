@@ -74,11 +74,24 @@ public class TreehouseApp<A : AppService> private constructor(
     bind(view, ziplineSession, codeChanged = false)
   }
 
+  /**
+   * Connect this app to drive the content for [view].
+   *
+   * Calls to this function will [start] this app if it isn't already started.
+   */
   public fun renderTo(view: TreehouseView<A>) {
+    start()
+
     view.stateChangeListener = stateChangeListener
     stateChangeListener.onStateChanged(view)
   }
 
+  /**
+   * Initiate the initial code download and load, and start driving the views that are rendered by
+   * this app.
+   *
+   * This function returns immediately if this app is already started.
+   */
   public fun start() {
     if (started) return
     started = true
