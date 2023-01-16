@@ -186,6 +186,34 @@ public abstract class EventListener {
   }
 
   /**
+   * Invoked when a module load starts. This is the process of loading code into QuickJS.
+   *
+   * @return any object. This value will be passed back to [moduleLoadEnd] when the call is
+   *   completed. The base function always returns null.
+   */
+  public open fun moduleLoadStart(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    moduleId: String,
+  ): Any? {
+    return null
+  }
+
+  /**
+   * Invoked when a module load completes.
+   *
+   * @param startValue the value returned by [moduleLoadStart] for the start of this call. This is
+   *   null unless [moduleLoadStart] is overridden to return something else.
+   */
+  public open fun moduleLoadEnd(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    moduleId: String,
+    startValue: Any?,
+  ) {
+  }
+
+  /**
    * Invoked when the manifest couldn't be decoded as JSON. For example, this might occur if there's
    * a captive portal on the network.
    */

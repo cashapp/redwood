@@ -101,6 +101,14 @@ internal class EventPublisher(
       listener.downloadFailed(app, url, exception, startValue)
     }
 
+    override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
+      return listener.moduleLoadStart(app, zipline, moduleId)
+    }
+
+    override fun moduleLoadEnd(zipline: Zipline, moduleId: String, startValue: Any?) {
+      listener.moduleLoadEnd(app, zipline, moduleId, startValue)
+    }
+
     override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
       listener.manifestParseFailed(app, url, exception)
     }
