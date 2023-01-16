@@ -207,7 +207,7 @@ allprojects {
     kotlin {
       target("src/*/kotlin/**/*.kt")
       ktlint('0.48.1').editorConfigOverride([
-        'ktlint_filename': 'disabled',
+        'ktlint_standard_filename': 'disabled',
       ])
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
     }
