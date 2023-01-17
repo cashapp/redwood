@@ -270,7 +270,7 @@ public class TreehouseApp<A : AppService> private constructor(
    */
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
-    internal val dispatchers: TreehouseDispatchers,
+    public val dispatchers: TreehouseDispatchers,
     eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
     internal val manifestVerifier: ManifestVerifier,
