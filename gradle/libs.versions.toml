@@ -7,7 +7,7 @@ androidx-activity = "1.3.1"
 jbCompose = "1.2.2"
 jbComposeCompiler = "1.3.2.2"
 lint = "30.4.0"
-zipline = "0.9.13"
+zipline = "0.9.14"
 coil = "2.2.2"
 
 [libraries]
