@@ -21,9 +21,9 @@ import kotlinx.serialization.Serializable
 /** Identifies a widget instance. */
 @JvmInline
 @Serializable
-public value class Id(public val value: Long) {
+public value class Id(public val value: Int) {
   public companion object {
-    public val Root: Id = Id(0L)
+    public val Root: Id = Id(0)
   }
 }
 
