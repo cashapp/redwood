@@ -25,7 +25,7 @@ import app.cash.redwood.widget.Widget
 
 /** @suppress For generated code use only. */
 public class ProtocolState {
-  private var nextValue = Id.Root.value + 1L
+  private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Id, ProtocolWidget>()
 
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
@@ -34,7 +34,7 @@ public class ProtocolState {
 
   public fun nextId(): Id {
     val value = nextValue
-    nextValue = value + 1L
+    nextValue = value + 1
     return Id(value)
   }
 
