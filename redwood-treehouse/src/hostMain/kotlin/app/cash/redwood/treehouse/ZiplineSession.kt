@@ -16,10 +16,11 @@
 package app.cash.redwood.treehouse
 
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineScope
+import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 /** The host state for a single code load. We get a new session each time we get new code. */
@@ -31,12 +32,11 @@ internal class ZiplineSession<A : AppService>(
   val zipline: Zipline,
   val isInitialLaunch: Boolean,
 ) {
+  private val ziplineScope = ZiplineScope()
+
   fun startFrameClock() {
     sessionScope.launch(app.dispatchers.zipline) {
-      val clockService = appService.frameClockService
-      coroutineContext.job.invokeOnCompletion {
-        clockService.close()
-      }
+      val clockService = appService.withScope(ziplineScope).frameClockService
       val ticksPerSecond = 60
       var now = 0L
       val delayNanos = 1_000_000_000L / ticksPerSecond
@@ -51,6 +51,7 @@ internal class ZiplineSession<A : AppService>(
   fun cancel() {
     appScope.launch(app.dispatchers.zipline) {
       sessionScope.cancel()
+      ziplineScope.close()
       zipline.close()
     }
   }
