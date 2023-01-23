@@ -68,7 +68,7 @@ kotlin {
     commonJvmTest {
       dependsOn(hostTest)
     }
-    androidTest {
+    androidInstrumentedTest {
       dependsOn(commonJvmTest)
       dependencies {
         implementation libs.robolectric

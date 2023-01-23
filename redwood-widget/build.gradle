@@ -21,7 +21,7 @@ kotlin {
         implementation libs.kotlin.test
       }
     }
-    androidTest {
+    androidUnitTest {
       dependencies {
         implementation libs.robolectric
       }

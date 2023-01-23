@@ -34,6 +34,7 @@ import example.redwood.compose.Button
 import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -108,7 +109,8 @@ class ProtocolTest {
     composition.cancel()
   }
 
-  @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
+  @Test
+  fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
     val bridge = ExampleSchemaProtocolBridge.create()
