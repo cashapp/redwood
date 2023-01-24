@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class ComposePlugin : KotlinCompilerPluginSupportPlugin {
@@ -36,6 +37,13 @@ class ComposePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun apply(target: Project) {
     extension = target.extensions.create("redwoodBuildCompose", ComposeExtension::class.java)
+
+    target.tasks.withType(KotlinCompile::class.java).configureEach {
+      it.kotlinOptions.apply {
+        freeCompilerArgs = freeCompilerArgs +
+          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.10-407")
+      }
+    }
   }
 
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
@@ -51,9 +59,11 @@ class ComposePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun getCompilerPluginId() = "app.cash.redwood.tools.compose"
 
-  override fun getPluginArtifact(): SubpluginArtifact {
-    return SubpluginArtifact("org.jetbrains.compose.compiler", "compiler", jbComposeCompiler)
-  }
+  override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
+    "org.jetbrains.compose.compiler",
+    "compiler",
+    jbComposeCompiler,
+  )
 
   override fun applyToCompilation(
     kotlinCompilation: KotlinCompilation<*>

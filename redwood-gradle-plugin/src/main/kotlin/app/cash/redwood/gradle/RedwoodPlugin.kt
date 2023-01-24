@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
   override fun apply(target: Project) {
@@ -34,6 +35,13 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
 
     // Automatically run lint on usages of our Compose plugin.
     target.plugins.apply("app.cash.redwood.lint")
+
+    target.tasks.withType(KotlinCompile::class.java).configureEach {
+      it.kotlinOptions.apply {
+        freeCompilerArgs = freeCompilerArgs +
+          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.10-407")
+      }
+    }
   }
 
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
