@@ -46,7 +46,7 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:counter:android-views'
   include ':samples:counter:android-tests'
   include ':samples:counter:browser'
-  include ':samples:counter:desktop-composeui'
+  //include ':samples:counter:desktop-composeui'
   include ':samples:counter:ios-shared'
   include ':samples:counter:presenter'
   include ':samples:counter:schema'
