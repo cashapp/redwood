@@ -214,6 +214,62 @@ public abstract class EventListener {
   }
 
   /**
+   * Invoked before Zipline runs the host-side initializer for an application.
+   *
+   * @return any object. This value will be passed back to [initializerEnd] when the call is
+   *   completed. The base function always returns null.
+   */
+  public open fun initializerStart(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    applicationName: String,
+  ): Any? {
+    return null
+  }
+
+  /**
+   * Invoked after the host-side initializer completes.
+   *
+   * @param startValue the value returned by [initializerStart] for the start of this call. This is
+   *   null unless [initializerStart] is overridden to return something else.
+   */
+  public open fun initializerEnd(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    applicationName: String,
+    startValue: Any?,
+  ) {
+  }
+
+  /**
+   * Invoked before Zipline runs the downloaded code's main function.
+   *
+   * @return any object. This value will be passed back to [mainFunctionStart] when the call is
+   *   completed. The base function always returns null.
+   */
+  public open fun mainFunctionStart(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    applicationName: String,
+  ): Any? {
+    return null
+  }
+
+  /**
+   * Invoked after Zipline runs the downloaded code's main function.
+   *
+   * @param startValue the value returned by [mainFunctionStart] for the start of this call. This is
+   *   null unless [mainFunctionStart] is overridden to return something else.
+   */
+  public open fun mainFunctionEnd(
+    app: TreehouseApp<*>,
+    zipline: Zipline,
+    applicationName: String,
+    startValue: Any?,
+  ) {
+  }
+
+  /**
    * Invoked when the manifest couldn't be decoded as JSON. For example, this might occur if there's
    * a captive portal on the network.
    */
