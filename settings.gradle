@@ -1,5 +1,27 @@
 rootProject.name = 'redwood'
 
+dependencyResolutionManagement {
+  repositories {
+    // e.g. ./gradlew assemble -DenableMavenLocal=true
+    if (System.getProperty('enableMavenLocal', 'false').toBoolean()) {
+      mavenLocal()
+    }
+    mavenCentral()
+    google()
+  }
+}
+
+pluginManagement {
+  repositories {
+    if (System.getProperty("enableMavenLocal", "false").toBoolean()) {
+      mavenLocal()
+    }
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+  }
+}
+
 include ':redwood-cli'
 include ':redwood-compose'
 include ':redwood-flexbox'

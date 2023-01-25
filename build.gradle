@@ -18,21 +18,11 @@ buildscript {
     classpath 'app.cash.redwood.build:gradle-plugin'
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }
-  repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-  }
 }
 
 apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
-  repositories {
-    mavenCentral()
-    google()
-  }
-
   group = project.property("GROUP") as String
   version = project.property("VERSION_NAME") as String
 
@@ -166,6 +156,8 @@ allprojects {
           name = "LocalMaven"
           url = file("${rootProject.buildDir}/localMaven").toURI().toString()
         }
+
+        mavenLocal()
 
         /**
          * Want to push to an internal repository for testing?
