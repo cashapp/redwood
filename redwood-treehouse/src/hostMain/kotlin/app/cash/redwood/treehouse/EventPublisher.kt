@@ -109,6 +109,22 @@ internal class EventPublisher(
       listener.moduleLoadEnd(app, zipline, moduleId, startValue)
     }
 
+    override fun initializerStart(zipline: Zipline, applicationName: String): Any? {
+      return listener.initializerStart(app, zipline, applicationName)
+    }
+
+    override fun initializerEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
+      listener.initializerEnd(app, zipline, applicationName, startValue)
+    }
+
+    override fun mainFunctionStart(zipline: Zipline, applicationName: String): Any? {
+      return listener.mainFunctionStart(app, zipline, applicationName)
+    }
+
+    override fun mainFunctionEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
+      listener.mainFunctionEnd(app, zipline, applicationName, startValue)
+    }
+
     override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
       listener.manifestParseFailed(app, url, exception)
     }
