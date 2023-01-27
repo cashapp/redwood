@@ -31,6 +31,7 @@ public class ProtocolState {
   private var childrenDiffs = mutableListOf<ChildrenDiff>()
   private var layoutModifiers = mutableListOf<LayoutModifiers>()
   private var propertyDiffs = mutableListOf<PropertyDiff>()
+  private var hasDiffs = false
 
   public fun nextId(): Id {
     val value = nextValue
@@ -40,14 +41,17 @@ public class ProtocolState {
 
   public fun append(childrenDiff: ChildrenDiff) {
     childrenDiffs += childrenDiff
+    hasDiffs = true
   }
 
   public fun append(layoutModifiers: LayoutModifiers) {
     this.layoutModifiers += layoutModifiers
+    hasDiffs = true
   }
 
   public fun append(propertyDiff: PropertyDiff) {
     propertyDiffs += propertyDiff
+    hasDiffs = true
   }
 
   /**
@@ -56,21 +60,19 @@ public class ProtocolState {
    * no calls to [append] since the last invocation.
    */
   public fun createDiffOrNull(): Diff? {
-    val existingChildrenDiffs = childrenDiffs
-    val existingLayoutModifierDiffs = layoutModifiers
-    val existingPropertyDiffs = propertyDiffs
-    if (existingPropertyDiffs.isNotEmpty() || existingLayoutModifierDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-      childrenDiffs = mutableListOf()
-      layoutModifiers = mutableListOf()
-      propertyDiffs = mutableListOf()
+    if (!hasDiffs) return null
 
-      return Diff(
-        childrenDiffs = existingChildrenDiffs,
-        layoutModifiers = existingLayoutModifierDiffs,
-        propertyDiffs = existingPropertyDiffs,
-      )
-    }
-    return null
+    val diff = Diff(
+      childrenDiffs = childrenDiffs,
+      layoutModifiers = layoutModifiers,
+      propertyDiffs = propertyDiffs,
+    )
+
+    childrenDiffs = mutableListOf()
+    layoutModifiers = mutableListOf()
+    propertyDiffs = mutableListOf()
+
+    return diff
   }
 
   public fun addWidget(widget: ProtocolWidget) {
