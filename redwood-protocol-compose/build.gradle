@@ -25,6 +25,18 @@ kotlin {
         implementation projects.testSchema.compose.protocol
       }
     }
+    nonJsMain {
+      dependsOn(commonMain)
+    }
+    androidMain {
+      dependsOn(nonJsMain)
+    }
+    jvmMain {
+      dependsOn(nonJsMain)
+    }
+    nativeMain {
+      dependsOn(nonJsMain)
+    }
   }
 }
 
