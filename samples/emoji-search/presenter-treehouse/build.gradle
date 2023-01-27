@@ -36,7 +36,7 @@ kotlin {
     targets.all { target ->
       // Some Kotlin targets do not have this property, but native ones always will.
       if (target.hasProperty('platformType') && target.platformType.name == "native") {
-        target.compilations.main.source(sourceSets.iosMain)
+        target.compilations.main.defaultSourceSet.dependsOn(sourceSets.iosMain)
       }
     }
   }
