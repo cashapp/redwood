@@ -46,11 +46,11 @@ plugins.withId('org.jetbrains.kotlin.multiplatform') {
       // Some Kotlin targets do not have this property, but native ones always will.
       if (target.hasProperty('platformType') && target.platformType.name == "native") {
         if (target.name.startsWith('ios')) {
-          target.compilations.main.source(sourceSets.iosMain)
-          target.compilations.test.source(sourceSets.iosTest)
+          target.compilations.main.defaultSourceSet.dependsOn(sourceSets.iosMain)
+          target.compilations.test.defaultSourceSet.dependsOn(sourceSets.iosTest)
         } else if (target.name.startsWith('macos')) {
-          target.compilations.main.source(sourceSets.macosMain)
-          target.compilations.test.source(sourceSets.macosTest)
+          target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
+          target.compilations.test.defaultSourceSet.dependsOn(sourceSets.macosTest)
         } else {
           throw new AssertionError("Unknown target ${target.name}")
         }
