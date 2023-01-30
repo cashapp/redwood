@@ -17,6 +17,12 @@ kotlin {
         api libs.jetbrains.compose.runtime
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+      }
+    }
     androidMain {
       dependencies {
         implementation libs.androidx.core
