@@ -60,9 +60,6 @@ class ComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun applyToCompilation(
     kotlinCompilation: KotlinCompilation<*>
   ): Provider<List<SubpluginOption>> {
-    kotlinCompilation.kotlinOptions.freeCompilerArgs +=
-      listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.10-407")
-
     when (kotlinCompilation.platformType) {
       js -> {
         // This enables a workaround for Compose lambda generation to function correctly in JS.
