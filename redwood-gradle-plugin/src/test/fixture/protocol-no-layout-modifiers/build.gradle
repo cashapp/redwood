@@ -11,7 +11,6 @@ buildscript {
       url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
     }
     mavenCentral()
-    maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()
   }
 }
@@ -22,7 +21,6 @@ allprojects {
       url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
     }
     mavenCentral()
-    maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()
   }
 }
