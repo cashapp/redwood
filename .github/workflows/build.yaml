@@ -142,5 +142,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
           FOLDER: site
-          TARGET_FOLDER: docs/latest/
+          TARGET_FOLDER: latest/docs/
+          CLEAN: true
+
+      - name: Build sample web apps
+        run: ./gradlew -p samples browserProductionWebpack
+
+      - name: Deploy counter sample to website
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: samples/counter/browser/build/distributions
+          TARGET_FOLDER: latest/counter/
+          CLEAN: true
+
+      - name: Deploy counter sample to website
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: samples/emoji-search/browser/build/distributions
+          TARGET_FOLDER: latest/emoji-search/
           CLEAN: true
