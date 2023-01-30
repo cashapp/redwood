@@ -66,12 +66,7 @@ private class RedwoodZiplineTreehouseUi(
     this.composition = composition
 
     val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
-    composition.setContent {
-      val hostConfiguration by hostConfigurationFlow.collectAsState(initialHostConfiguration)
-      CompositionLocalProvider(LocalHostConfiguration provides hostConfiguration) {
-        treehouseUi.Show()
-      }
-    }
+    composition.bind(treehouseUi, initialHostConfiguration, hostConfigurationFlow)
   }
 
   override fun close() {
