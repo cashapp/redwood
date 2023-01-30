@@ -23,7 +23,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
 
       - uses: actions/upload-artifact@v3
         with:
