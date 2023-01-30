@@ -19,7 +19,7 @@ buildscript {
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }
   repositories {
-    mavenCentral(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
+    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()
@@ -31,7 +31,7 @@ apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
   repositories {
-    mavenCentral(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
+    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()

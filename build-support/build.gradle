@@ -4,7 +4,7 @@ buildscript {
     classpath libs.buildConfigPlugin
   }
   repositories {
-    mavenCentral(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
+    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     gradlePluginPortal()
   }
@@ -12,7 +12,7 @@ buildscript {
 
 allprojects {
   repositories {
-    mavenCentral(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
+    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     google()
   }
