@@ -5,11 +5,18 @@ kotlin {
   js {
     browser()
   }
+  jvm {
+  }
 
   sourceSets {
     commonMain {
       dependencies {
         api projects.samples.emojiSearch.schema.compose
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
       }
     }
   }
