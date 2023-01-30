@@ -10,8 +10,7 @@ buildscript {
     maven {
       url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
     }
-    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    mavenCentral()
     maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()
   }
@@ -22,8 +21,7 @@ allprojects {
     maven {
       url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
     }
-    mavenCentral(); mavenLocal(); maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/" }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    mavenCentral()
     maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     google()
   }
