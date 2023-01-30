@@ -26,11 +26,12 @@ import app.cash.redwood.widget.Widget
 /** @suppress For generated code use only. */
 public class ProtocolState {
   private var nextValue = Id.Root.value + 1
-  private val widgets = mutableMapOf<Id, ProtocolWidget>()
+  private val widgets = PlatformMap<Int, ProtocolWidget>()
 
-  private var childrenDiffs = mutableListOf<ChildrenDiff>()
-  private var layoutModifiers = mutableListOf<LayoutModifiers>()
-  private var propertyDiffs = mutableListOf<PropertyDiff>()
+  private var childrenDiffs = PlatformList<ChildrenDiff>()
+  private var layoutModifiers = PlatformList<LayoutModifiers>()
+  private var propertyDiffs = PlatformList<PropertyDiff>()
+  private var hasDiffs = false
 
   public fun nextId(): Id {
     val value = nextValue
@@ -39,15 +40,18 @@ public class ProtocolState {
   }
 
   public fun append(childrenDiff: ChildrenDiff) {
-    childrenDiffs += childrenDiff
+    childrenDiffs.add(childrenDiff)
+    hasDiffs = true
   }
 
   public fun append(layoutModifiers: LayoutModifiers) {
-    this.layoutModifiers += layoutModifiers
+    this.layoutModifiers.add(layoutModifiers)
+    hasDiffs = true
   }
 
   public fun append(propertyDiff: PropertyDiff) {
-    propertyDiffs += propertyDiff
+    propertyDiffs.add(propertyDiff)
+    hasDiffs = true
   }
 
   /**
@@ -56,34 +60,34 @@ public class ProtocolState {
    * no calls to [append] since the last invocation.
    */
   public fun createDiffOrNull(): Diff? {
-    val existingChildrenDiffs = childrenDiffs
-    val existingLayoutModifierDiffs = layoutModifiers
-    val existingPropertyDiffs = propertyDiffs
-    if (existingPropertyDiffs.isNotEmpty() || existingLayoutModifierDiffs.isNotEmpty() || existingChildrenDiffs.isNotEmpty()) {
-      childrenDiffs = mutableListOf()
-      layoutModifiers = mutableListOf()
-      propertyDiffs = mutableListOf()
+    if (!hasDiffs) return null
 
-      return Diff(
-        childrenDiffs = existingChildrenDiffs,
-        layoutModifiers = existingLayoutModifierDiffs,
-        propertyDiffs = existingPropertyDiffs,
-      )
-    }
-    return null
+    val diff = Diff(
+      childrenDiffs = childrenDiffs.asList(),
+      layoutModifiers = layoutModifiers.asList(),
+      propertyDiffs = propertyDiffs.asList(),
+    )
+
+    childrenDiffs = PlatformList()
+    layoutModifiers = PlatformList()
+    propertyDiffs = PlatformList()
+
+    return diff
   }
 
   public fun addWidget(widget: ProtocolWidget) {
-    check(widgets.put(widget.id, widget) == null) {
-      "Attempted to add widget with ID ${widget.id.value} but one already exists"
+    val idValue = widget.id.value
+    check(idValue !in widgets) {
+      "Attempted to add widget with ID $idValue but one already exists"
     }
+    widgets[idValue] = widget
   }
 
   public fun removeWidget(id: Id) {
-    widgets.remove(id)
+    widgets.remove(id.value)
   }
 
-  public fun getWidget(id: Id): ProtocolWidget? = widgets[id]
+  public fun getWidget(id: Id): ProtocolWidget? = widgets[id.value]
 
   public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
     return ProtocolWidgetChildren(id, tag, this)

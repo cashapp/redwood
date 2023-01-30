@@ -32,8 +32,8 @@ public class RedwoodPlugin : KotlinCompilerPluginSupportPlugin {
   override fun apply(target: Project) {
     super.apply(target)
 
-    // Automatically run lint on usages of our Compose plugin.
-    target.plugins.apply("app.cash.redwood.lint")
+    // TODO Automatically run lint on usages of our Compose plugin once the check works.
+    //  target.plugins.apply(RedwoodLintPlugin::class.java)
   }
 
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
