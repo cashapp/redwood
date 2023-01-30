@@ -1,0 +1,16 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.kotlinx.serialization.core
+      }
+    }
+  }
+}

@@ -4,11 +4,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 apply plugin: 'app.cash.zipline'
-apply plugin: 'app.cash.redwood.build.compose'
-
-redwoodBuildCompose {
-  targetCompilations = ['jsMain']
-}
 
 kotlin {
   apply from: "${rootDir}/addAllTargets.gradle"
@@ -17,6 +12,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocol
+        api projects.redwoodTreehouseCompose
         api libs.zipline
       }
     }

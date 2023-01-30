@@ -1,0 +1,22 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build.compose'
+
+redwoodBuildCompose {
+  targetCompilations = ['jsMain']
+}
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodProtocolCompose
+        api projects.redwoodTreehouseConfiguration
+        api libs.jetbrains.compose.runtime
+      }
+    }
+  }
+}

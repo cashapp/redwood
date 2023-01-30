@@ -42,7 +42,7 @@ private data class EmojiImage(
 )
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
-interface HttpClient {
+fun interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
 }
 

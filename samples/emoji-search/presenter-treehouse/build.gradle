@@ -1,7 +1,6 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.zipline'
-apply plugin: 'app.cash.redwood'
 
 kotlin {
   iosArm64()
