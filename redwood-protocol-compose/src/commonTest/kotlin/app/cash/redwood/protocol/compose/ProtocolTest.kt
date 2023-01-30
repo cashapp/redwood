@@ -108,8 +108,7 @@ class ProtocolTest {
     composition.cancel()
   }
 
-  @Test
-  fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
+  @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
     val clock = BroadcastFrameClock()
     var state by mutableStateOf(0)
     val bridge = ExampleSchemaProtocolBridge.create()
