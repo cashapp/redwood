@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 
+## [0.2.1] - 2023-01-31
+
+Changed:
+- Do not use a `ScrollView`/`HorizontalScrollView` as the parent container for View-based `Row` and
+  `Column` display when the container is not scrollable (the default). Use a `FrameLayout` instead.
+
+Fixed:
+- Actually publish the `redwood-treehouse-composeui` artifact.
+
+This version only works with Kotlin 1.7.20.
+
+
 ## [0.2.0] - 2023-01-30
 
 New:
@@ -40,6 +52,7 @@ This version only works with Kotlin 1.7.20.
 
 
 
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.2.1...HEAD
+[0.2.0]: https://github.com/cashapp/redwood/releases/tag/0.2.1
 [0.2.0]: https://github.com/cashapp/redwood/releases/tag/0.2.0
 [0.1.0]: https://github.com/cashapp/redwood/releases/tag/0.1.0
