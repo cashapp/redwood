@@ -25,11 +25,17 @@ import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 @Composable
-public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
+public fun ProtocolBridge.LazyColumn(
+  placeholder: @Composable () -> Unit,
+  content: LazyListScope.() -> Unit,
+) {
   val widgetVersion = LocalWidgetVersion.current
   val scope = TreehouseLazyListScope(this, widgetVersion)
   content(scope)
-  LazyColumn(scope.intervals)
+  LazyColumn(
+    intervals = scope.intervals,
+    placeholder = placeholder,
+  )
 }
 
 @LayoutScopeMarker

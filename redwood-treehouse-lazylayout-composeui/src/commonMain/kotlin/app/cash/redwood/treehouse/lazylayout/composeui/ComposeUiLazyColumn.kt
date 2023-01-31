@@ -15,17 +15,15 @@
  */
 package app.cash.redwood.treehouse.lazylayout.composeui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
@@ -33,6 +31,7 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 internal class ComposeUiLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
@@ -41,6 +40,8 @@ internal class ComposeUiLazyColumn<A : AppService>(
   private var intervals by mutableStateOf<List<LazyListIntervalContent>>(emptyList())
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override val placeholder = ComposeWidgetChildren()
 
   override fun intervals(intervals: List<LazyListIntervalContent>) {
     this.intervals = intervals
@@ -54,9 +55,20 @@ internal class ComposeUiLazyColumn<A : AppService>(
     ) {
       intervals.forEach { interval ->
         items(interval.count) { index ->
-          Box(Modifier.height(64.dp)) {
-            TreehouseContent(treehouseApp, widgetSystem) { interval.itemProvider.get(index) }
+          var isPlaceholderVisible by remember { mutableStateOf(true) }
+          if (isPlaceholderVisible) {
+            placeholder.render()
           }
+          val codeListener by remember {
+            mutableStateOf(
+              object : TreehouseView.CodeListener() {
+                override fun onCodeLoaded(initial: Boolean) {
+                  isPlaceholderVisible = false
+                }
+              },
+            )
+          }
+          TreehouseContent(treehouseApp, widgetSystem, codeListener) { interval.itemProvider.get(index) }
         }
       }
     }

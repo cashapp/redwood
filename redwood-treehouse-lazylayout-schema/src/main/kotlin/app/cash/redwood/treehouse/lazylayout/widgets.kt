@@ -15,11 +15,13 @@
  */
 package app.cash.redwood.treehouse.lazylayout
 
+import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 @Widget(1)
 public data class LazyColumn(
+  @Children(1) val placeholder: () -> Unit,
   @Property(1) val intervals: List<LazyListIntervalContent>,
 )

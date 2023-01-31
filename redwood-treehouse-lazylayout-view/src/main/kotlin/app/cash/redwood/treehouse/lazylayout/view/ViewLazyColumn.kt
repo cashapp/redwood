@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.treehouse.lazylayout.view
 
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +32,8 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.Widget
 
 private data class LazyContentItem(
   val index: Int,
@@ -46,14 +47,12 @@ internal class ViewLazyColumn<A : AppService>(
 ) : LazyColumn<View> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
+  override val placeholder = MutableListChildren<View>()
+
   private val adapter = LazyContentItemListAdapter(
     treehouseApp,
     widgetSystem,
-    contentHeight = TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      64F,
-      value.resources.displayMetrics,
-    ).toInt(),
+    placeholder,
   )
 
   init {
@@ -77,12 +76,12 @@ internal class ViewLazyColumn<A : AppService>(
   private class LazyContentItemListAdapter<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
     private val widgetSystem: TreehouseView.WidgetSystem<A>,
-    private val contentHeight: Int,
+    private val placeholder: List<Widget<View>>,
   ) : ListAdapter<LazyContentItem, ViewHolder<A>>(LazyContentItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<A> {
-      val container = FrameLayout(parent.context).apply {
-        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
-      }
+      val container = FrameLayout(parent.context)
+      // TODO Clone placeholder.
+      placeholder.forEachIndexed { index, child -> container.addView(child.value, index) }
       return ViewHolder(container, treehouseApp, widgetSystem)
     }
 

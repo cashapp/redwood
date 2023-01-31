@@ -56,6 +56,7 @@ interface ColumnProvider {
   @Composable
   fun <T> create(
     items: List<T>,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -65,14 +66,11 @@ fun EmojiSearch(
   httpClient: HttpClient,
   columnProvider: ColumnProvider,
 ) {
-  val allEmojis = remember {
-    mutableStateListOf(
-      EmojiImage(
-        label = "loading…",
-        url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
-      ),
-    )
-  }
+  val loadingImage = EmojiImage(
+    label = "loading…",
+    url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+  )
+  val allEmojis = remember { mutableStateListOf(loadingImage) }
   LaunchedEffect(Unit) {
     val emojisJson = httpClient.call(
       url = "https://api.github.com/emojis",
@@ -102,7 +100,12 @@ fun EmojiSearch(
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    columnProvider.create(filteredEmojis) { image ->
+    columnProvider.create(
+      filteredEmojis,
+      placeholder = {
+        Image(url = loadingImage.url)
+      },
+    ) { image ->
       Row(
         width = Constraint.Fill,
         verticalAlignment = CrossAxisAlignment.Center,

@@ -63,9 +63,10 @@ private class LazyColumnProvider(
   @Composable
   override fun <T> create(
     items: List<T>,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    bridge.LazyColumn {
+    bridge.LazyColumn(placeholder) {
       items(items) { item ->
         itemContent(item)
       }
