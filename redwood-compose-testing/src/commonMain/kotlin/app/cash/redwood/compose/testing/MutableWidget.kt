@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.redwood.emojisearch.presenter
+package app.cash.redwood.compose.testing
 
-/**
- * A widget that's implemented as a value class, appropriate for use in tests.
- *
- * Implementations of this interface may have lambda properties that trigger application behavior.
- * These lambda properties are **excluded** from [Any.equals], [Any.hashCode], and [Any.toString].
- */
-interface WidgetValue
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.widget.Widget
+
+@RedwoodCodegenApi
+public interface MutableWidget : Widget<MutableWidget> {
+  public fun snapshot(): WidgetValue
+}

@@ -27,6 +27,7 @@ import example.values.TextFieldState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 
 /**
  * This test demonstrates typical use of [RedwoodTester].
@@ -34,40 +35,42 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 class EmojiSearchTest {
   @Test
-  fun recomposed() = testEmojiSearch {
-    setContent {
-      BasicEmojiSearch()
+  fun recomposed() = runTest {
+    EmojiSearchTester(this).test {
+      setContent {
+        BasicEmojiSearch()
+      }
+
+      val snapshot0 = awaitSnapshot()
+      assertEquals(
+        listOf(
+          TextInputValue(
+            state = TextFieldState(text = ""),
+            hint = "Search",
+          ),
+        ),
+        snapshot0,
+      )
+
+      (snapshot0.single() as TextInputValue).onChange!!.invoke(TextFieldState(text = "tree"))
+
+      val snapshot1 = awaitSnapshot()
+      assertEquals(
+        listOf(
+          TextInputValue(
+            state = TextFieldState(text = "tree"),
+            hint = "Search",
+          ),
+          TextValue(
+            text = "🌲",
+          ),
+          TextValue(
+            text = "🌳",
+          ),
+        ),
+        snapshot1,
+      )
     }
-
-    val snapshot0 = awaitSnapshot()
-    assertEquals(
-      listOf(
-        TextInputValue(
-          state = TextFieldState(text = ""),
-          hint = "Search",
-        ),
-      ),
-      snapshot0,
-    )
-
-    (snapshot0.single() as TextInputValue).onChange!!.invoke(TextFieldState(text = "tree"))
-
-    val snapshot1 = awaitSnapshot()
-    assertEquals(
-      listOf(
-        TextInputValue(
-          state = TextFieldState(text = "tree"),
-          hint = "Search",
-        ),
-        TextValue(
-          text = "🌲",
-        ),
-        TextValue(
-          text = "🌳",
-        ),
-      ),
-      snapshot1,
-    )
   }
 
   /** A simplified sample to demonstrate the test harness. */

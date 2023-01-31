@@ -16,6 +16,7 @@ kotlin {
     }
     commonTest {
       dependencies {
+        api projects.redwoodComposeTesting
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
       }

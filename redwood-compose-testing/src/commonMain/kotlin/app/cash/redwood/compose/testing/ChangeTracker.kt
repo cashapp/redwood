@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.redwood.emojisearch.presenter
+package app.cash.redwood.compose.testing
 
+import app.cash.redwood.RedwoodCodegenApi
 import kotlinx.coroutines.sync.Semaphore
 
-internal fun Semaphore.acquireAll(): Int {
-  var result = 0
-  while (tryAcquire()) {
-    result++
+@RedwoodCodegenApi
+public class ChangeTracker {
+  internal val changes = Semaphore(Int.MAX_VALUE, Int.MAX_VALUE)
+
+  public fun widgetChanged() {
+    changes.release()
   }
-  return result
 }

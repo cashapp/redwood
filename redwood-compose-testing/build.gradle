@@ -1,0 +1,25 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build.compose'
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.jetbrains.compose.runtime
+        api libs.kotlin.test
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodCompose
+        api projects.redwoodRuntime
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.compose.testing'
+}

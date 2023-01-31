@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.redwood.emojisearch.presenter
+package app.cash.redwood.compose.testing
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
@@ -37,7 +37,7 @@ import kotlinx.coroutines.withTimeout
  * Create an instance with a generated `AppNameTester()` function.
  */
 @OptIn(RedwoodCodegenApi::class)
-class RedwoodTester @RedwoodCodegenApi constructor(
+public class RedwoodTester @RedwoodCodegenApi constructor(
   scope: CoroutineScope,
   private val changeTracker: ChangeTracker,
   provider: Widget.Provider<MutableWidget>,
@@ -56,7 +56,16 @@ class RedwoodTester @RedwoodCodegenApi constructor(
     provider = provider,
   )
 
-  fun setContent(content: @Composable () -> Unit) {
+  /** Execute [testBody] and then cancel this tester. */
+  public suspend fun test(testBody: suspend RedwoodTester.() -> Unit) {
+    try {
+      testBody()
+    } finally {
+      cancel()
+    }
+  }
+
+  public fun setContent(content: @Composable () -> Unit) {
     composition.setContent(content)
   }
 
@@ -65,7 +74,7 @@ class RedwoodTester @RedwoodCodegenApi constructor(
    *
    * @throws TimeoutCancellationException if no new snapshot is produced before [timeoutMillis].
    */
-  suspend fun awaitSnapshot(timeoutMillis: Long = 1_000): List<WidgetValue> {
+  public suspend fun awaitSnapshot(timeoutMillis: Long = 1_000): List<WidgetValue> {
     // Await at least one change, sending frames while we wait.
     withTimeout(timeoutMillis) {
       val sendFramesJob = sendFrames()
@@ -93,7 +102,7 @@ class RedwoodTester @RedwoodCodegenApi constructor(
     }
   }
 
-  fun cancel() {
+  public fun cancel() {
     composition.cancel()
   }
 }

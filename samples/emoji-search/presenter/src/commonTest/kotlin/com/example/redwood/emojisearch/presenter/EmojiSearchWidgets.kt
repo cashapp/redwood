@@ -18,6 +18,10 @@ package com.example.redwood.emojisearch.presenter
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.compose.testing.ChangeTracker
+import app.cash.redwood.compose.testing.MutableWidget
+import app.cash.redwood.compose.testing.RedwoodTester
+import app.cash.redwood.compose.testing.WidgetValue
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
@@ -29,16 +33,12 @@ import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 import example.values.TextFieldState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.CoroutineScope
 
 // TODO(swankjesse): GENERATE THIS.
 
-@OptIn(
-  ExperimentalCoroutinesApi::class,
-  RedwoodCodegenApi::class,
-)
-fun testEmojiSearch(testBody: suspend RedwoodTester.() -> Unit) = runTest {
+@OptIn(RedwoodCodegenApi::class)
+fun EmojiSearchTester(testScope: CoroutineScope): RedwoodTester {
   val changeTracker = ChangeTracker()
 
   val provider = EmojiSearchWidgetFactories(
@@ -47,17 +47,11 @@ fun testEmojiSearch(testBody: suspend RedwoodTester.() -> Unit) = runTest {
     RedwoodTreehouseLazyLayout = MutableRedwoodTreehouseLazyLayoutWidgetFactory(changeTracker),
   )
 
-  val redwoodTester = RedwoodTester(
-    scope = this@runTest,
+  return RedwoodTester(
+    scope = testScope,
     changeTracker = changeTracker,
     provider = provider,
   )
-
-  try {
-    redwoodTester.testBody()
-  } finally {
-    redwoodTester.cancel()
-  }
 }
 
 @RedwoodCodegenApi
