@@ -56,8 +56,11 @@ class RedwoodTester @RedwoodCodegenApi constructor(
   }
 
   fun snapshot(): List<WidgetValue> {
+    // Run queued jobs, send a frame, then run queued jobs created by that frame.
+    coroutineDispatcher.executeQueuedJobs()
     clock.sendFrame(timeNanos)
     coroutineDispatcher.executeQueuedJobs()
+
     return mutableChildren.map { it.value.snapshot() }
   }
 }
