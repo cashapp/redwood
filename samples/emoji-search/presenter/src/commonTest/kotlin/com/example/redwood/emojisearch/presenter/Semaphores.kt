@@ -16,22 +16,12 @@
 
 package com.example.redwood.emojisearch.presenter
 
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.sync.Semaphore
 
-/** Extremely basic dispatcher that requires [executeQueuedJobs] to be invoked manually. */
-internal class ManualCoroutineDispatcher : CoroutineDispatcher() {
-  private val queue = ArrayDeque<Runnable>()
-
-  override fun dispatch(context: CoroutineContext, block: Runnable) {
-    queue += block
+internal fun Semaphore.acquireAll(): Int {
+  var result = 0
+  while (tryAcquire()) {
+    result++
   }
-
-  fun executeQueuedJobs() {
-    while (true) {
-      val runnable = queue.removeFirstOrNull() ?: return
-      runnable.run()
-    }
-  }
+  return result
 }

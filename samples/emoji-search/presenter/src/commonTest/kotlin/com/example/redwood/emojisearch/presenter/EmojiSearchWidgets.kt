@@ -29,35 +29,60 @@ import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 import example.values.TextFieldState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 
 // TODO(swankjesse): GENERATE THIS.
 
-@OptIn(RedwoodCodegenApi::class)
-fun EmojiSearchTester(): RedwoodTester {
-  return RedwoodTester(
-    EmojiSearchWidgetFactories(
-      EmojiSearch = MutableEmojiSearchWidgetFactory,
-      RedwoodLayout = MutableRedwoodLayoutWidgetFactory,
-      RedwoodTreehouseLazyLayout = MutableRedwoodTreehouseLazyLayoutWidgetFactory,
-    ),
+@OptIn(
+  ExperimentalCoroutinesApi::class,
+  RedwoodCodegenApi::class,
+)
+fun testEmojiSearch(testBody: suspend RedwoodTester.() -> Unit) = runTest {
+  val changeTracker = ChangeTracker()
+
+  val provider = EmojiSearchWidgetFactories(
+    EmojiSearch = MutableEmojiSearchWidgetFactory(changeTracker),
+    RedwoodLayout = MutableRedwoodLayoutWidgetFactory(changeTracker),
+    RedwoodTreehouseLazyLayout = MutableRedwoodTreehouseLazyLayoutWidgetFactory(changeTracker),
   )
+
+  val redwoodTester = RedwoodTester(
+    scope = this@runTest,
+    changeTracker = changeTracker,
+    provider = provider,
+  )
+
+  try {
+    redwoodTester.testBody()
+  } finally {
+    redwoodTester.cancel()
+  }
 }
 
 @RedwoodCodegenApi
-private object MutableEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<MutableWidget> {
-  override fun TextInput(): TextInput<MutableWidget> = MutableTextInput()
+private class MutableEmojiSearchWidgetFactory(
+  val changeTracker: ChangeTracker,
+) : EmojiSearchWidgetFactory<MutableWidget> {
+  override fun TextInput(): TextInput<MutableWidget> = MutableTextInput(changeTracker)
 
-  override fun Text(): Text<MutableWidget> = MutableText()
+  override fun Text(): Text<MutableWidget> = MutableText(changeTracker)
 
-  override fun Image(): Image<MutableWidget> = MutableImage()
+  override fun Image(): Image<MutableWidget> = MutableImage(changeTracker)
 }
 
 @RedwoodCodegenApi
-private class MutableTextInput : TextInput<MutableWidget>, MutableWidget {
+private class MutableTextInput(
+  private val changeTracker: ChangeTracker,
+) : TextInput<MutableWidget>, MutableWidget {
   override val value: MutableWidget
     get() = this
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+    set(value) {
+      field = value
+      changeTracker.widgetChanged()
+    }
 
   var state: TextFieldState? = null
   var hint: String? = null
@@ -65,60 +90,81 @@ private class MutableTextInput : TextInput<MutableWidget>, MutableWidget {
 
   override fun state(state: TextFieldState) {
     this.state = state
+    changeTracker.widgetChanged()
   }
 
   override fun hint(hint: String) {
     this.hint = hint
+    changeTracker.widgetChanged()
   }
 
   override fun onChange(onChange: ((TextFieldState) -> Unit)?) {
     this.onChange = onChange
+    changeTracker.widgetChanged()
   }
 
   override fun snapshot() = TextInputValue(layoutModifiers, state, hint, onChange)
 }
 
 @RedwoodCodegenApi
-private class MutableText : Text<MutableWidget>, MutableWidget {
+private class MutableText(
+  val changeTracker: ChangeTracker,
+) : Text<MutableWidget>, MutableWidget {
   override val value: MutableWidget
     get() = this
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+    set(value) {
+      field = value
+      changeTracker.widgetChanged()
+    }
 
   var text: String? = null
 
   override fun text(text: String) {
     this.text = text
+    changeTracker.widgetChanged()
   }
 
   override fun snapshot() = TextValue(layoutModifiers, text)
 }
 
 @RedwoodCodegenApi
-private class MutableImage : Image<MutableWidget>, MutableWidget {
+private class MutableImage(
+  val changeTracker: ChangeTracker,
+) : Image<MutableWidget>, MutableWidget {
   override val value: MutableWidget
     get() = this
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+    set(value) {
+      field = value
+      changeTracker.widgetChanged()
+    }
 
   var url: String? = null
 
   override fun url(url: String) {
     this.url = url
+    changeTracker.widgetChanged()
   }
 
   override fun snapshot() = ImageValue(layoutModifiers, url)
 }
 
 @RedwoodCodegenApi
-private object MutableRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<MutableWidget> {
+private class MutableRedwoodLayoutWidgetFactory(
+  val changeTracker: ChangeTracker,
+) : RedwoodLayoutWidgetFactory<MutableWidget> {
   override fun Column(): Column<MutableWidget> = error("TODO")
 
   override fun Row(): Row<MutableWidget> = error("TODO")
 }
 
 @RedwoodCodegenApi
-private object MutableRedwoodTreehouseLazyLayoutWidgetFactory : RedwoodTreehouseLazyLayoutWidgetFactory<MutableWidget> {
+private class MutableRedwoodTreehouseLazyLayoutWidgetFactory(
+  val changeTracker: ChangeTracker,
+) : RedwoodTreehouseLazyLayoutWidgetFactory<MutableWidget> {
   override fun LazyColumn(): LazyColumn<MutableWidget> = error("TODO")
 }
 

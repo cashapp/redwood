@@ -26,19 +26,20 @@ import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * This test demonstrates typical use of [RedwoodTester].
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class EmojiSearchTest {
   @Test
-  fun recomposed() {
-    val tester = EmojiSearchTester()
-    tester.setContent {
+  fun recomposed() = testEmojiSearch {
+    setContent {
       BasicEmojiSearch()
     }
 
-    val snapshot0 = tester.snapshot()
+    val snapshot0 = awaitSnapshot()
     assertEquals(
       listOf(
         TextInputValue(
@@ -51,7 +52,7 @@ class EmojiSearchTest {
 
     (snapshot0.single() as TextInputValue).onChange!!.invoke(TextFieldState(text = "tree"))
 
-    val snapshot1 = tester.snapshot()
+    val snapshot1 = awaitSnapshot()
     assertEquals(
       listOf(
         TextInputValue(

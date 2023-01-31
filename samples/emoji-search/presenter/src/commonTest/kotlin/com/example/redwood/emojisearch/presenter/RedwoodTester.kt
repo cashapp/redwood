@@ -22,7 +22,14 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.withTimeout
 
 /**
  * Performs Redwood composition strictly for testing.
@@ -31,22 +38,20 @@ import kotlinx.coroutines.CoroutineScope
  */
 @OptIn(RedwoodCodegenApi::class)
 class RedwoodTester @RedwoodCodegenApi constructor(
+  scope: CoroutineScope,
+  private val changeTracker: ChangeTracker,
   provider: Widget.Provider<MutableWidget>,
 ) {
-  /** Run enqueued jobs synchronously by manually kicking this. */
-  private val coroutineDispatcher = ManualCoroutineDispatcher()
-
-  /** Emit frames manually. */
+  /** Emit frames manually in [sendFrames]. */
   private val clock = BroadcastFrameClock()
-  private val timeNanos = 0L
-
-  private val scope = CoroutineScope(coroutineDispatcher + clock)
+  private var timeNanos = 0L
+  private val frameDelay = 1.seconds / 60
 
   /** Top-level children of the composition. */
   private val mutableChildren = mutableListOf<Widget<MutableWidget>>()
 
   private val composition = RedwoodComposition(
-    scope = scope,
+    scope = scope + clock,
     container = MutableListChildren(mutableChildren),
     provider = provider,
   )
@@ -55,12 +60,40 @@ class RedwoodTester @RedwoodCodegenApi constructor(
     composition.setContent(content)
   }
 
-  fun snapshot(): List<WidgetValue> {
-    // Run queued jobs, send a frame, then run queued jobs created by that frame.
-    coroutineDispatcher.executeQueuedJobs()
-    clock.sendFrame(timeNanos)
-    coroutineDispatcher.executeQueuedJobs()
+  /**
+   * Returns a snapshot, waiting if necessary for changes to occur since the previous snapshot.
+   *
+   * @throws TimeoutCancellationException if no new snapshot is produced before [timeoutMillis].
+   */
+  suspend fun awaitSnapshot(timeoutMillis: Long = 1_000): List<WidgetValue> {
+    // Await at least one change, sending frames while we wait.
+    withTimeout(timeoutMillis) {
+      val sendFramesJob = sendFrames()
 
-    return mutableChildren.map { it.value.snapshot() }
+      changeTracker.changes.acquire()
+      sendFramesJob.cancel()
+    }
+
+    val snapshot = mutableChildren.map { it.value.snapshot() }
+
+    // Consume any extra changes on the returned snapshot.
+    changeTracker.changes.acquireAll()
+
+    return snapshot
+  }
+
+  /** Launches a job that sends a frame immediately and again every 16 ms until it's canceled. */
+  private fun CoroutineScope.sendFrames(): Job {
+    return launch {
+      while (true) {
+        clock.sendFrame(timeNanos)
+        timeNanos += frameDelay.inWholeNanoseconds
+        delay(frameDelay)
+      }
+    }
+  }
+
+  fun cancel() {
+    composition.cancel()
   }
 }
