@@ -127,7 +127,7 @@ internal val Schema.layoutModifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
 
 internal fun ProtocolSchema.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
-  return (listOf(this) + dependencies).flatMap { schema ->
+  return allSchemas.flatMap { schema ->
     schema.layoutModifiers.map { schema to it }
   }
 }
