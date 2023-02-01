@@ -48,11 +48,11 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
   private val frameDelay = 1.seconds / 60
 
   /** Top-level children of the composition. */
-  private val mutableChildren = mutableListOf<Widget<MutableWidget>>()
+  private val mutableChildren = MutableListChildren<Widget<MutableWidget>>()
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
-    container = MutableListChildren(mutableChildren),
+    container = mutableChildren,
     provider = provider,
   )
 
