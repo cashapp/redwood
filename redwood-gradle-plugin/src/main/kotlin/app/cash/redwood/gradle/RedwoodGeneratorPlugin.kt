@@ -99,7 +99,7 @@ public abstract class RedwoodGeneratorPlugin(
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.sourceSets.getByName(COMMON_MAIN_SOURCE_SET_NAME) { sourceSet ->
-        sourceSet.kotlin.srcDir(generate.map { it.outputDir })
+        sourceSet.kotlin.srcDir(generate)
         sourceSet.dependencies {
           api(project.redwoodDependency(strategy.dependencyArtifactId))
         }
