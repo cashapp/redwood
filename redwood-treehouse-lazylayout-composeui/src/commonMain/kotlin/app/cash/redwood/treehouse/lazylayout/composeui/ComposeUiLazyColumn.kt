@@ -59,14 +59,12 @@ internal class ComposeUiLazyColumn<A : AppService>(
           if (isPlaceholderVisible) {
             placeholder.render()
           }
-          val codeListener by remember {
-            mutableStateOf(
-              object : TreehouseView.CodeListener() {
-                override fun onCodeLoaded(initial: Boolean) {
-                  isPlaceholderVisible = false
-                }
-              },
-            )
+          val codeListener = remember {
+            object : TreehouseView.CodeListener() {
+              override fun onCodeLoaded(initial: Boolean) {
+                isPlaceholderVisible = false
+              }
+            }
           }
           TreehouseContent(treehouseApp, widgetSystem, codeListener) { interval.itemProvider.get(index) }
         }
