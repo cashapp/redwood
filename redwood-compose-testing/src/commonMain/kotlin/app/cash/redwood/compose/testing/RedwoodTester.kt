@@ -74,7 +74,7 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
    *
    * @throws TimeoutCancellationException if no new snapshot is produced before [timeoutMillis].
    */
-  public suspend fun awaitSnapshot(timeoutMillis: Long = 1_000): List<WidgetValue> {
+  public suspend fun awaitSnapshot(timeout: Duration = 1.seconds): List<WidgetValue> {
     // Await at least one change, sending frames while we wait.
     withTimeout(timeoutMillis) {
       val sendFramesJob = sendFrames()
