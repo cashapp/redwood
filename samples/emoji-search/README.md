@@ -52,7 +52,7 @@ Running Emoji-Search on iOS
 
 Run this:
 ```
-cd samples/emoji-search/ios/app
+cd samples/emoji-search/ios-uikit
 pod install
 open EmojiSearchApp.xcworkspace
 ```

@@ -20,12 +20,15 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.compose.WidgetApplier
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -39,7 +42,6 @@ import kotlinx.coroutines.withTimeout
 @OptIn(RedwoodCodegenApi::class)
 public class RedwoodTester @RedwoodCodegenApi constructor(
   scope: CoroutineScope,
-  private val changeTracker: ChangeTracker,
   provider: Widget.Provider<MutableWidget>,
 ) {
   /** Emit frames manually in [sendFrames]. */
@@ -47,13 +49,20 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
   private var timeNanos = 0L
   private val frameDelay = 1.seconds / 60
 
+  /** Channel with the most recent snapshot, if any. */
+  private val snapshots = Channel<List<WidgetValue>>(Channel.CONFLATED)
+
   /** Top-level children of the composition. */
-  private val mutableChildren = MutableListChildren<Widget<MutableWidget>>()
+  private val mutableChildren = MutableListChildren<MutableWidget>()
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
-    container = mutableChildren,
-    provider = provider,
+    applier = WidgetApplier(provider, mutableChildren) {
+      val newSnapshot = mutableChildren.map { it.value.snapshot() }
+
+      // trySend always succeeds on a CONFLATED channel.
+      check(snapshots.trySend(newSnapshot).isSuccess)
+    },
   )
 
   /** Execute [testBody] and then cancel this tester. */
@@ -76,19 +85,14 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
    */
   public suspend fun awaitSnapshot(timeout: Duration = 1.seconds): List<WidgetValue> {
     // Await at least one change, sending frames while we wait.
-    withTimeout(timeoutMillis) {
+    return withTimeout(timeout) {
       val sendFramesJob = sendFrames()
-
-      changeTracker.changes.acquire()
-      sendFramesJob.cancel()
+      try {
+        snapshots.receive()
+      } finally {
+        sendFramesJob.cancel()
+      }
     }
-
-    val snapshot = mutableChildren.map { it.value.snapshot() }
-
-    // Consume any extra changes on the returned snapshot.
-    changeTracker.changes.acquireAll()
-
-    return snapshot
   }
 
   /** Launches a job that sends a frame immediately and again every 16 ms until it's canceled. */
