@@ -52,7 +52,7 @@ internal fun generateWidgetFactories(schema: Schema): FileSpec {
         .apply {
           val constructorBuilder = FunSpec.constructorBuilder()
 
-          for (dependency in listOf(schema) + schema.dependencies) {
+          for (dependency in schema.allSchemas) {
             val dependencyType = dependency.getWidgetFactoryType().parameterizedBy(typeVariableW)
             addProperty(
               PropertySpec.builder(dependency.name, dependencyType, OVERRIDE)
