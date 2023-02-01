@@ -25,8 +25,6 @@ module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
-module:redwood-schema
-app.cash.redwood.schema
 module:redwood-treehouse
 app.cash.redwood.treehouse
 module:redwood-treehouse-composeui
