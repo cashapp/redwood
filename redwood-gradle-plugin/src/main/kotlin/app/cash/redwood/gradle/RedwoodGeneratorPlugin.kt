@@ -24,6 +24,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_SOURCE_SET_NAME
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodComposeGeneratorPlugin : RedwoodGeneratorPlugin(Compose)
@@ -97,7 +98,7 @@ public abstract class RedwoodGeneratorPlugin(
       project.dependencies.add(schemaConfiguration.name, schemaProject)
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-      kotlin.sourceSets.getByName("commonMain") { sourceSet ->
+      kotlin.sourceSets.getByName(COMMON_MAIN_SOURCE_SET_NAME) { sourceSet ->
         sourceSet.kotlin.srcDir(generate.map { it.outputDir })
         sourceSet.dependencies {
           api(project.redwoodDependency(strategy.dependencyArtifactId))
