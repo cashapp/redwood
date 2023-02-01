@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.example.redwood.emojisearch.presenter
 
 import app.cash.redwood.LayoutModifier
@@ -123,8 +122,8 @@ private class MutableRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Mut
 }
 
 @RedwoodCodegenApi
-private class MutableRedwoodTreehouseLazyLayoutWidgetFactory
-  : RedwoodTreehouseLazyLayoutWidgetFactory<MutableWidget> {
+private class MutableRedwoodTreehouseLazyLayoutWidgetFactory :
+  RedwoodTreehouseLazyLayoutWidgetFactory<MutableWidget> {
   override fun LazyColumn(): LazyColumn<MutableWidget> = error("TODO")
 }
 
@@ -133,13 +132,13 @@ class TextInputValue(
   val state: TextFieldState? = null,
   val hint: String? = null,
   /** Note lambdas are omitted from equals() and hashCode(). */
-  val onChange: ((TextFieldState) -> Unit)? = {}
+  val onChange: ((TextFieldState) -> Unit)? = {},
 ) : WidgetValue {
   override fun equals(other: Any?): Boolean {
-    return other is TextInputValue
-      && other.layoutModifiers == layoutModifiers
-      && other.state == state
-      && other.hint == hint
+    return other is TextInputValue &&
+      other.layoutModifiers == layoutModifiers &&
+      other.state == state &&
+      other.hint == hint
   }
 
   override fun hashCode(): Int {
@@ -156,9 +155,9 @@ class TextValue(
   val text: String? = null,
 ) : WidgetValue {
   override fun equals(other: Any?): Boolean {
-    return other is TextValue
-      && other.layoutModifiers == layoutModifiers
-      && other.text == text
+    return other is TextValue &&
+      other.layoutModifiers == layoutModifiers &&
+      other.text == text
   }
 
   override fun hashCode(): Int {
@@ -175,9 +174,9 @@ class ImageValue(
   val url: String? = null,
 ) : WidgetValue {
   override fun equals(other: Any?): Boolean {
-    return other is ImageValue
-      && other.layoutModifiers == layoutModifiers
-      && other.url == url
+    return other is ImageValue &&
+      other.layoutModifiers == layoutModifiers &&
+      other.url == url
   }
 
   override fun hashCode(): Int {
@@ -188,5 +187,3 @@ class ImageValue(
     return "ImageValue(layoutModifiers=$layoutModifiers, url=$url)"
   }
 }
-
-
