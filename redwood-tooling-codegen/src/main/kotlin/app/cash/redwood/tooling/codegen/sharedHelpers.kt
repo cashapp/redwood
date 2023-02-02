@@ -92,6 +92,18 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(this), "${name}WidgetFactory")
 }
 
+internal fun Schema.getMutableWidgetFactoryType(): ClassName {
+  return ClassName(widgetPackage(this), "Mutable${name}WidgetFactory")
+}
+
+internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
+  return ClassName(widgetPackage(this), "Mutable${widget.type.flatName}")
+}
+
+internal fun Schema.widgetValueType(widget: Widget): ClassName {
+  return ClassName(widgetPackage(this), "${widget.type.flatName}Value")
+}
+
 internal fun Schema.getWidgetFactoryProviderType(): ClassName {
   return ClassName(widgetPackage(this), "${name}WidgetFactoryProvider")
 }
@@ -118,6 +130,10 @@ internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, hos
 
 internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassName {
   return ClassName(composePackage(), layoutModifier.type.simpleName!! + "Impl")
+}
+
+internal fun Schema.getTesterFunction(): MemberName {
+  return MemberName(widgetPackage(this), "${name}Tester")
 }
 
 internal val Schema.toLayoutModifier: MemberName get() =

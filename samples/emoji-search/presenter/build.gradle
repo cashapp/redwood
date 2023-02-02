@@ -17,6 +17,7 @@ kotlin {
     commonTest {
       dependencies {
         api projects.redwoodComposeTesting
+        api projects.samples.emojiSearch.schema.testing
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
       }

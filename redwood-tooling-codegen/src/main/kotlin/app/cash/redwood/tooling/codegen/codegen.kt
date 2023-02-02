@@ -17,6 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.CodegenType.Compose
 import app.cash.redwood.tooling.codegen.CodegenType.LayoutModifiers
+import app.cash.redwood.tooling.codegen.CodegenType.Testing
 import app.cash.redwood.tooling.codegen.CodegenType.Widget
 import app.cash.redwood.tooling.schema.Schema
 import java.nio.file.Path
@@ -24,6 +25,7 @@ import java.nio.file.Path
 public enum class CodegenType {
   Compose,
   LayoutModifiers,
+  Testing,
   Widget,
 }
 
@@ -41,6 +43,14 @@ public fun Schema.generate(type: CodegenType, destination: Path) {
     LayoutModifiers -> {
       for (layoutModifier in layoutModifiers) {
         generateLayoutModifierInterface(this, layoutModifier).writeTo(destination)
+      }
+    }
+    Testing -> {
+      generateTester(this).writeTo(destination)
+      generateMutableWidgetFactory(this).writeTo(destination)
+      for (widget in widgets) {
+        generateMutableWidget(this, widget).writeTo(destination)
+        generateWidgetValue(this, widget).writeTo(destination)
       }
     }
     Widget -> {

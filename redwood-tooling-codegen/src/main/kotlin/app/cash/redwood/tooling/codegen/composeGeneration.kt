@@ -22,7 +22,6 @@ import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -75,11 +74,7 @@ internal fun generateComposable(
       FunSpec.builder(flatName)
         .addModifiers(PUBLIC)
         .addAnnotation(ComposeRuntime.Composable)
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Redwood.RedwoodCodegenApi)
-            .build(),
-        )
+        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .apply {
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.

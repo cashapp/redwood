@@ -61,6 +61,15 @@ internal object Redwood {
   val LayoutModifierElement = LayoutModifier.nestedClass("Element")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
+  val OptInToRedwoodCodegenApi = AnnotationSpec.builder(Stdlib.OptIn)
+    .addMember("%T::class", RedwoodCodegenApi)
+    .build()
+}
+
+internal object RedwoodTesting {
+  val MutableWidget = ClassName("app.cash.redwood.compose.testing", "MutableWidget")
+  val RedwoodTester = ClassName("app.cash.redwood.compose.testing", "RedwoodTester")
+  val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
 }
 
 internal object RedwoodWidget {
@@ -68,6 +77,7 @@ internal object RedwoodWidget {
   val WidgetChildren = Widget.nestedClass("Children")
   val WidgetChildrenOfW = WidgetChildren.parameterizedBy(typeVariableW)
   val WidgetProvider = Widget.nestedClass("Provider")
+  val MutableListChildren = ClassName("app.cash.redwood.widget", "MutableListChildren")
 }
 
 internal object RedwoodCompose {
@@ -94,8 +104,10 @@ internal fun composableLambda(
 
 internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
+  val List = ClassName("kotlin.collections", "List")
   val OptIn = ClassName("kotlin", "OptIn")
   val buildList = MemberName("kotlin.collections", "buildList")
+  val listOf = MemberName("kotlin.collections", "listOf")
 }
 
 internal val typeVariableW = TypeVariableName("W", listOf(ANY))
@@ -121,4 +133,8 @@ internal object KotlinxSerialization {
   val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
 
   @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
+}
+
+internal object KotlinxCoroutines {
+  val CoroutineScope = ClassName("kotlinx.coroutines", "CoroutineScope")
 }

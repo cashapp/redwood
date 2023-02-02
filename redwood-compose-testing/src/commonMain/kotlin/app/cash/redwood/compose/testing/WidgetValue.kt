@@ -15,10 +15,66 @@
  */
 package app.cash.redwood.compose.testing
 
+import app.cash.redwood.LayoutModifier
+
 /**
  * A widget that's implemented as a value class, appropriate for use in tests.
  *
  * Implementations of this interface may have lambda properties that trigger application behavior.
  * These lambda properties are **excluded** from [Any.equals], [Any.hashCode], and [Any.toString].
  */
-public interface WidgetValue
+public interface WidgetValue {
+  public val layoutModifiers: LayoutModifier
+
+  /** Returns all of the direct children of this widget, grouped by slot. */
+  public val childrenLists: List<List<WidgetValue>>
+    get() = listOf()
+}
+
+/**
+ * Returns a sequence that does a depth-first preorder traversal of the entire widget tree whose
+ * roots are this list. This is the same order elements occur in code.
+ *
+ * For example, given the following structure:
+ *
+ * ```
+ * Column {
+ *   Toolbar {
+ *     Icon(...)
+ *     Title(...)
+ *   }
+ *   Row {
+ *     Text(...)
+ *     Button(...)
+ *   }
+ * }
+ * ```
+ *
+ * The flattened elements are returned in this order:
+ *
+ * ```
+ * Column,
+ * Toolbar,
+ * Icon,
+ * Title,
+ * Row,
+ * Text,
+ * Button
+ * ```
+ */
+public fun List<WidgetValue>.flatten(): Sequence<WidgetValue> {
+  return sequence {
+    for (widget in this@flatten) {
+      flattenRecursive(widget)
+    }
+  }
+}
+
+private suspend fun SequenceScope<WidgetValue>.flattenRecursive(widgetValue: WidgetValue) {
+  yield(widgetValue)
+  for (children in widgetValue.childrenLists) {
+    for (child in children) {
+      flattenRecursive(child)
+    }
+  }
+}

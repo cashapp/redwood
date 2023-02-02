@@ -1,0 +1,34 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.testing'
+
+archivesBaseName = 'schema-testing'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  js {
+    browser()
+  }
+
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutWidget
+        api projects.redwoodLayoutTesting
+        api projects.redwoodTreehouseLazylayoutWidget
+        api projects.redwoodTreehouseLazylayoutTesting
+        api projects.samples.emojiSearch.values
+        api projects.samples.emojiSearch.schema.widget
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.samples.emojiSearch.schema
+  type = 'com.example.redwood.emojisearch.EmojiSearch'
+}
