@@ -162,7 +162,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
       schema
     }
 
-  val schema = ParsedProtocolSchema(
+  return ParsedProtocolSchema(
     schemaType.simpleName!!,
     schemaType.java.packageName,
     scopes.toList(),
@@ -170,25 +170,6 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     layoutModifiers,
     dependencies,
   )
-
-  val duplicatedWidgets = (listOf(schema) + dependencies)
-    .flatMap { it.widgets.map { widget -> widget to it } }
-    .groupBy { it.first.type }
-    .filterValues { it.size > 1 }
-    .mapValues { it.value.map(Pair<*, Schema>::second) }
-  if (duplicatedWidgets.isNotEmpty()) {
-    throw IllegalArgumentException(
-      buildString {
-        appendLine("Schema dependency tree contains duplicated widgets")
-        for ((widget, schemas) in duplicatedWidgets) {
-          append("\n- ${widget.qualifiedName}: ")
-          schemas.joinTo(this) { "${it.`package`}.${it.name}" }
-        }
-      },
-    )
-  }
-
-  return schema
 }
 
 private fun parseWidget(

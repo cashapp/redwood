@@ -719,58 +719,6 @@ class SchemaParserTest {
   }
 
   @Schema(
-    members = [],
-    dependencies = [
-      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
-      Dependency(2, SchemaWidgetDuplicateAcrossDependenciesB::class),
-    ],
-  )
-  object SchemaWidgetDuplicateAcrossDependencies
-
-  @Widget(1)
-  object WidgetDuplicateAcrossDependencies
-
-  @Schema([WidgetDuplicateAcrossDependencies::class])
-  object SchemaWidgetDuplicateAcrossDependenciesA
-
-  @Schema([WidgetDuplicateAcrossDependencies::class])
-  object SchemaWidgetDuplicateAcrossDependenciesB
-
-  @Test fun schemaWidgetDuplicateAcrossDependenciesThrows() {
-    assertThrows<IllegalArgumentException> {
-      parseProtocolSchema(SchemaWidgetDuplicateAcrossDependencies::class)
-    }.hasMessageThat().isEqualTo(
-      """
-      |Schema dependency tree contains duplicated widgets
-      |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesB
-      """.trimMargin(),
-    )
-  }
-
-  @Schema(
-    members = [
-      WidgetDuplicateAcrossDependencies::class,
-    ],
-    dependencies = [
-      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
-    ],
-  )
-  object SchemaWidgetDuplicateInDependency
-
-  @Test fun schemaWidgetDuplicateInDependencyThrows() {
-    assertThrows<IllegalArgumentException> {
-      parseProtocolSchema(SchemaWidgetDuplicateInDependency::class)
-    }.hasMessageThat().isEqualTo(
-      """
-      |Schema dependency tree contains duplicated widgets
-      |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateInDependency, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA
-      """.trimMargin(),
-    )
-  }
-
-  @Schema(
     members = [
       UnscopedLayoutModifier::class,
     ],
