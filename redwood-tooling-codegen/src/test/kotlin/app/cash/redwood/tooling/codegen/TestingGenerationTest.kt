@@ -76,7 +76,7 @@ class TestingGenerationTest {
     assertThat(mutableWidgetSpec.toString()).contains(
       """
       |@RedwoodCodegenApi
-      |public class MutableTestingGenerationTestBasicWidget :
+      |internal class MutableTestingGenerationTestBasicWidget :
       |    TestingGenerationTestBasicWidget<MutableWidget>, MutableWidget {
       |  public override val `value`: MutableWidget
       |    get() = this

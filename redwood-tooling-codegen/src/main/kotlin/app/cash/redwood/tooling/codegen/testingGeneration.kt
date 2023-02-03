@@ -170,6 +170,8 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                     .apply {
                       if (trait.defaultExpression != null) {
                         initializer(trait.defaultExpression!!)
+                      } else if (type.isNullable) {
+                        initializer("null")
                       } else {
                         addModifiers(LATEINIT)
                       }
