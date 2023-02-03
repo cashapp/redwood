@@ -1,0 +1,39 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.testing'
+
+kotlin {
+  apply from: "${rootDir}/addAllTargets.gradle"
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutWidget
+        api projects.redwoodLayoutTesting
+        api projects.testSchema.widget
+      }
+    }
+  }
+
+  // Ensure our codegen correctly works in explicit API mode.
+  explicitApi()
+
+  targets.all {
+    compilations.all {
+      kotlinOptions {
+        // Ensure our codegen does not produce any warnings.
+        allWarningsAsErrors = true
+
+        freeCompilerArgs += [
+          // Ensure our codegen can handle the latest language semantics.
+          // https://kotlinlang.org/docs/compiler-reference.html#progressive
+          '-progressive'
+        ]
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.testSchema
+  type = 'example.redwood.ExampleSchema'
+}

@@ -18,6 +18,7 @@ package app.cash.redwood.gradle
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Compose
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ComposeProtocol
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.LayoutModifiers
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Testing
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Widget
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.WidgetProtocol
 import org.gradle.api.Plugin
@@ -36,6 +37,9 @@ public class RedwoodComposeProtocolGeneratorPlugin : RedwoodGeneratorPlugin(Comp
 public class RedwoodLayoutModifiersGeneratorPlugin : RedwoodGeneratorPlugin(LayoutModifiers)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
+public class RedwoodTestingGeneratorPlugin : RedwoodGeneratorPlugin(Testing)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodWidgetGeneratorPlugin : RedwoodGeneratorPlugin(Widget)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -51,6 +55,7 @@ public abstract class RedwoodGeneratorPlugin(
     Compose("--compose", "redwood-compose"),
     ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
     LayoutModifiers("--layout-modifiers", "redwood-runtime"),
+    Testing("--testing", "redwood-compose-testing"),
     Widget("--widget", "redwood-widget"),
     WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),
   }
