@@ -58,7 +58,8 @@ class TestingGenerationTest {
       |    HappyPathSchema = MutableHappyPathSchemaWidgetFactory(),
       |  ),
       |)
-      """.trimMargin())
+      """.trimMargin(),
+    )
 
     val mutableWidgetFactorySpec = generateMutableWidgetFactory(schema)
     assertThat(mutableWidgetFactorySpec.toString()).contains(
@@ -68,7 +69,8 @@ class TestingGenerationTest {
       |  public override fun TestingGenerationTestBasicWidget():
       |      TestingGenerationTestBasicWidget<MutableWidget> = MutableTestingGenerationTestBasicWidget()
       |}
-      """.trimMargin())
+      """.trimMargin(),
+    )
 
     val mutableWidgetSpec = generateMutableWidget(schema, schema.widgets.single())
     assertThat(mutableWidgetSpec.toString()).contains(
@@ -104,7 +106,8 @@ class TestingGenerationTest {
       |    block = block.map { it.`value`.snapshot() },
       |  )
       |}
-      """.trimMargin())
+      """.trimMargin(),
+    )
 
     val widgetValueSpec = generateWidgetValue(schema, schema.widgets.single())
     assertThat(widgetValueSpec.toString()).contains(
@@ -135,6 +138,7 @@ class TestingGenerationTest {
       |  public override fun toString(): String =
       |      "${'"'}"TestingGenerationTestBasicWidgetValue(layoutModifiers=${'$'}layoutModifiers, trait=${'$'}trait, block=${'$'}block)"${'"'}"
       |}
-      """.trimMargin())
+      """.trimMargin(),
+    )
   }
 }

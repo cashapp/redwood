@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.LayoutModifier
@@ -76,6 +75,6 @@ class WidgetValueTest {
 
   class SimpleWidgetValue(
     override val layoutModifiers: LayoutModifier = LayoutModifier,
-    override val childrenLists: List<List<WidgetValue>> = listOf()
+    override val childrenLists: List<List<WidgetValue>> = listOf(),
   ) : WidgetValue
 }

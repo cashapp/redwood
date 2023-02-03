@@ -26,6 +26,7 @@ import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.LATEINIT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -52,21 +53,23 @@ public fun SunspotTester(scope: CoroutineScope): RedwoodTester {
 internal fun generateTester(schema: Schema): FileSpec {
   val testerFunction = schema.getTesterFunction()
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
-    .addFunction(FunSpec.builder(testerFunction.simpleName)
-      .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
-      .addParameter("scope", KotlinxCoroutines.CoroutineScope)
-      .returns(RedwoodTesting.RedwoodTester)
-      .addCode("return %T(⇥\n", RedwoodTesting.RedwoodTester)
-      .addCode("scope = scope,\n")
-      .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
-      .apply {
-        for (dependency in schema.allSchemas) {
-          addCode("%N = %T(),\n", dependency.name, dependency.getMutableWidgetFactoryType())
+    .addFunction(
+      FunSpec.builder(testerFunction.simpleName)
+        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
+        .addParameter("scope", KotlinxCoroutines.CoroutineScope)
+        .returns(RedwoodTesting.RedwoodTester)
+        .addCode("return %T(⇥\n", RedwoodTesting.RedwoodTester)
+        .addCode("scope = scope,\n")
+        .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
+        .apply {
+          for (dependency in schema.allSchemas) {
+            addCode("%N = %T(),\n", dependency.name, dependency.getMutableWidgetFactoryType())
+          }
         }
-      }
-      .addCode("⇤),\n")
-      .addCode("⇤)\n", RedwoodTesting.RedwoodTester)
-      .build())
+        .addCode("⇤),\n")
+        .addCode("⇤)\n", RedwoodTesting.RedwoodTester)
+        .build(),
+    )
     .build()
 }
 
@@ -103,7 +106,7 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
 
 /*
 @RedwoodCodegenApi
-public class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidget {
+internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidget {
   public override val value: MutableWidget
     get() = this
 
@@ -131,16 +134,18 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
   return FileSpec.builder(mutableWidgetType.packageName, mutableWidgetType.simpleName)
     .addType(
       TypeSpec.classBuilder(mutableWidgetType)
-        .addModifiers(PUBLIC)
+        .addModifiers(INTERNAL)
         .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.MutableWidget))
         .addSuperinterface(RedwoodTesting.MutableWidget)
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .addProperty(
           PropertySpec.builder("value", RedwoodTesting.MutableWidget)
             .addModifiers(PUBLIC, OVERRIDE)
-            .getter(FunSpec.getterBuilder()
-              .addCode("return this")
-              .build())
+            .getter(
+              FunSpec.getterBuilder()
+                .addCode("return this")
+                .build(),
+            )
             .build(),
         )
         .addProperty(
@@ -159,17 +164,19 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                   is Event -> trait.lambdaType
                   else -> throw AssertionError()
                 }
-                addProperty(PropertySpec.builder(trait.name, type)
-                  .addModifiers(PRIVATE)
-                  .apply {
-                    if (trait.defaultExpression != null) {
-                      initializer(trait.defaultExpression!!)
-                    } else {
-                      addModifiers(LATEINIT)
+                addProperty(
+                  PropertySpec.builder(trait.name, type)
+                    .addModifiers(PRIVATE)
+                    .apply {
+                      if (trait.defaultExpression != null) {
+                        initializer(trait.defaultExpression!!)
+                      } else {
+                        addModifiers(LATEINIT)
+                      }
                     }
-                  }
-                  .mutable(true)
-                  .build())
+                    .mutable(true)
+                    .build(),
+                )
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(PUBLIC, OVERRIDE)
@@ -243,15 +250,19 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   val classBuilder = TypeSpec.classBuilder(widgetValueType)
     .addModifiers(PUBLIC)
     .addSuperinterface(RedwoodTesting.WidgetValue)
-    .addProperty(PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
-      .addModifiers(PUBLIC, OVERRIDE)
-      .initializer("layoutModifiers")
-      .build())
+    .addProperty(
+      PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
+        .addModifiers(PUBLIC, OVERRIDE)
+        .initializer("layoutModifiers")
+        .build(),
+    )
 
   val constructorBuilder = FunSpec.constructorBuilder()
-    .addParameter(ParameterSpec.builder("layoutModifiers", Redwood.LayoutModifier)
-      .defaultValue("%T", Redwood.LayoutModifier)
-      .build())
+    .addParameter(
+      ParameterSpec.builder("layoutModifiers", Redwood.LayoutModifier)
+        .defaultValue("%T", Redwood.LayoutModifier)
+        .build(),
+    )
 
   val childrenListsBuilder = CodeBlock.builder()
     .add("return %M(⇥\n", Stdlib.listOf)
@@ -321,33 +332,45 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   toStringBuilder.append(")")
 
   return FileSpec.builder(widgetValueType.packageName, widgetValueType.simpleName)
-    .addType(classBuilder
-      .primaryConstructor(constructorBuilder.build())
-      .addProperty(PropertySpec.builder(
-        "childrenLists",
-        LIST.parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
-      )
-        .addModifiers(PUBLIC, OVERRIDE)
-        .getter(FunSpec.getterBuilder()
-          .addCode(childrenListsBuilder.build())
-          .build())
-        .build())
-      .addFunction(FunSpec.builder("equals")
-        .addModifiers(PUBLIC, OVERRIDE)
-        .addParameter("other", ANY.copy(nullable = true))
-        .returns(BOOLEAN)
-        .addCode(equalsBuilder.build())
-        .build())
-      .addFunction(FunSpec.builder("hashCode")
-        .addModifiers(PUBLIC, OVERRIDE)
-        .returns(Int::class)
-        .addCode(hashCodeBuilder.build())
-        .build())
-      .addFunction(FunSpec.builder("toString")
-        .addModifiers(PUBLIC, OVERRIDE)
-        .returns(String::class)
-        .addCode("return %P", toStringBuilder.toString())
-        .build())
-      .build())
+    .addType(
+      classBuilder
+        .primaryConstructor(constructorBuilder.build())
+        .addProperty(
+          PropertySpec.builder(
+            "childrenLists",
+            LIST.parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
+          )
+            .addModifiers(PUBLIC, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addCode(childrenListsBuilder.build())
+                .build(),
+            )
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("equals")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .addParameter("other", ANY.copy(nullable = true))
+            .returns(BOOLEAN)
+            .addCode(equalsBuilder.build())
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("hashCode")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .returns(Int::class)
+            .addCode(hashCodeBuilder.build())
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("toString")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .returns(String::class)
+            .addCode("return %P", toStringBuilder.toString())
+            .build(),
+        )
+        .build(),
+    )
     .build()
 }
