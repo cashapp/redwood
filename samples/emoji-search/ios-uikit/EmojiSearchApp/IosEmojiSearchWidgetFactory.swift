@@ -20,11 +20,11 @@ import UIKit
 import EmojiSearchKt
 
 class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory {
-    let treehouseApp: Redwood_treehouseTreehouseApp<A>
-    let widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem
+    let treehouseApp: Redwood_treehouse_hostTreehouseApp<A>
+    let widgetSystem: Redwood_treehouse_hostTreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()
 
-    init(treehouseApp: Redwood_treehouseTreehouseApp<A>, widgetSystem: Redwood_treehouseTreehouseViewWidgetSystem) {
+    init(treehouseApp: Redwood_treehouse_hostTreehouseApp<A>, widgetSystem: Redwood_treehouse_hostTreehouseViewWidgetSystem) {
         self.treehouseApp = treehouseApp
         self.widgetSystem = widgetSystem
     }
