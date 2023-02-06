@@ -15,8 +15,12 @@
  */
 package app.cash.redwood.treehouse
 
-public actual val StandardFrameClockService: FrameClockService = object : FrameClockService {
+import androidx.compose.runtime.BroadcastFrameClock
+
+internal val StandardFrameClock = BroadcastFrameClock()
+
+public val StandardFrameClockService: FrameClockService = object : FrameClockService {
   override fun sendFrame(timeNanos: Long) {
-    error("unexpected call to sendFrame() on the host")
+    StandardFrameClock.sendFrame(timeNanos)
   }
 }

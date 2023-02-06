@@ -17,6 +17,7 @@ package com.example.redwood.emojisearch.treehouse
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.treehouse.StandardFrameClockService
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
@@ -32,6 +33,8 @@ class RealEmojiSearchPresenter(
   private val hostApi: HostApi,
   private val json: Json,
 ) : EmojiSearchPresenter {
+  override val frameClockService = StandardFrameClockService
+
   override fun launch(): ZiplineTreehouseUi {
     val bridge = EmojiSearchProtocolBridge.create(json)
     val httpClient = HostHttpClient(hostApi)

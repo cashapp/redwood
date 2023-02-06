@@ -26,5 +26,4 @@ import app.cash.zipline.ZiplineService
  */
 public interface AppService : ZiplineService {
   public val frameClockService: FrameClockService
-    get() = StandardFrameClockService
 }
