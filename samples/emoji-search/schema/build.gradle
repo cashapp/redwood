@@ -1,8 +1,12 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood.schema'
 
 dependencies {
-  api projects.redwoodSchema
   api projects.redwoodLayoutSchema
   api projects.redwoodTreehouseLazylayoutSchema
   api projects.samples.emojiSearch.values
+}
+
+redwoodSchema {
+  type = 'com.example.redwood.emojisearch.EmojiSearch'
 }

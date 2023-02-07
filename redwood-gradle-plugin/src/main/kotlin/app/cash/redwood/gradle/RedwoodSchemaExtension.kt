@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,9 @@
  */
 package app.cash.redwood.gradle
 
-import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.provider.Property
 
-public abstract class RedwoodGeneratorExtension : RedwoodSchemaExtension() {
-  /**
-   * Reference to the project or dependency which contains the Redwood schema.
-   * This value must be a type supported by [DependencyHandler].
-   */
-  public abstract val source: Property<Any>
+public abstract class RedwoodSchemaExtension {
+  /** The fully-qualified name of the `@Schema`-annotated interface. */
+  public abstract val type: Property<String>
 }
