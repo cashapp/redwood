@@ -28,7 +28,7 @@ Run this:
 ./gradlew :samples:emoji-search:presenter-treehouse:serveDevelopmentZipline --info --continuous
 ```
 
-This will compile Kotlin/JS and serve it at [[http://localhost:8080/presenter-treehouse.js]]. The server will
+This will compile Kotlin/JS and serve it at http://localhost:8080/presenter-treehouse.js. The server will
 run until you CTRL+C the process.
 
 
