@@ -36,6 +36,12 @@ gradlePlugin {
       description = "Redwood lint Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodLintPlugin"
     }
+    redwoodSchema {
+      id = "app.cash.redwood.schema"
+      displayName = "Redwood schema"
+      description = "Redwood Schema Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaPlugin"
+    }
     redwoodComposeGenerator {
       id = "app.cash.redwood.generator.compose"
       displayName = "Redwood generator (Compose)"

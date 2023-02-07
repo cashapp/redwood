@@ -1,6 +1,10 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood.schema'
 
 dependencies {
-  implementation projects.redwoodSchema
   implementation projects.redwoodLayoutSchema
+}
+
+redwoodSchema {
+  type = 'example.redwood.ExampleSchema'
 }

@@ -1,8 +1,12 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.schema'
 
 dependencies {
-  api projects.redwoodSchema
   api projects.redwoodTreehouseLazylayoutApi
+}
+
+redwoodSchema {
+  type = 'app.cash.redwood.treehouse.lazylayout.RedwoodTreehouseLazyLayout'
 }

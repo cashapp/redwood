@@ -16,12 +16,17 @@
 package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
+import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Json
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.toEmbeddedSchema
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.writeText
 
 public enum class ProtocolCodegenType {
   Compose,
+  Json,
   Widget,
 }
 
@@ -37,6 +42,12 @@ public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path)
           generateProtocolWidget(dependency, widget, host = this).writeTo(destination)
         }
       }
+    }
+    Json -> {
+      val embeddedSchema = toEmbeddedSchema()
+      val path = destination.resolve(embeddedSchema.path)
+      path.parent.createDirectories()
+      path.writeText(embeddedSchema.json)
     }
     Widget -> {
       generateDiffConsumingNodeFactory(this).writeTo(destination)
