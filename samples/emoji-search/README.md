@@ -7,12 +7,16 @@ This is a mobile app demo of Zipline.
  * **presenter-treehouse** is a Kotlin/Multiplatform library which exposes the presenter to a host application.
  * **android** is an Android application that downloads the presenter JavaScript and displays it.
  * **ios** is an iOS application that downloads the presenter JavaScript and displays it.
+ * **browser** is a web application that downloads the presenter JavaScript and displays it.
+
 
 Prerequisites
 -------------
 
-In order to build and run these applications you'll need to:
-- Have Android Studio installed
+In order to build and run these applications you'll need to have the following installed:
+- Android Studio
+- gradle
+- git-lfs
 
 
 Serving the JS
@@ -60,6 +64,21 @@ open EmojiSearchApp.xcworkspace
 Then build and run the app. The shared Kotlin code will be built automatically as part of building the iOS app, and also rebuilt as needed.
 
 The app pulls the JavaScript from the presenters server and requires it to be running in order to work.
+
+
+Running Emoji-Search on Web
+---------------------------
+
+To simply view the sample app, open: https://cashapp.github.io/redwood/latest/emoji-search/
+
+To build and modify the app locally, run this:
+```
+./gradlew samples:emoji-search:browser:browserRun
+```
+
+If successful, the command will load the app at http://localhost:8080/ in your default web browser.
+
+Note: only one app instance can be loaded at a time, so if you already have another app instance open, this will clobber that.
 
 
 Live Edits
