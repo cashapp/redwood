@@ -144,7 +144,7 @@ private data class FqType(
       append(names[0])
       append('.')
     }
-    names[1]
+    append(names[1])
     for (i in 2 until names.size) {
       append('.')
       append(names[i])
