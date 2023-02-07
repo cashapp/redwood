@@ -69,7 +69,7 @@ The app pulls the JavaScript from the presenters server and requires it to be ru
 Running Emoji-Search on Web
 ---------------------------
 
-To simply view the sample app, open: [[https://cashapp.github.io/redwood/latest/emoji-search/]]
+To simply view the sample app, open: https://cashapp.github.io/redwood/latest/emoji-search/
 
 To build and modify the app locally, run this:
 ```
