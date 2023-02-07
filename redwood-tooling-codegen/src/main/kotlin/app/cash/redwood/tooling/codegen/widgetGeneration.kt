@@ -30,7 +30,6 @@ import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 /*
 class SunspotWidgetFactories<W : Any>(
@@ -55,11 +54,11 @@ internal fun generateWidgetFactories(schema: Schema): FileSpec {
           for (dependency in schema.allSchemas) {
             val dependencyType = dependency.getWidgetFactoryType().parameterizedBy(typeVariableW)
             addProperty(
-              PropertySpec.builder(dependency.name, dependencyType, OVERRIDE)
-                .initializer(dependency.name)
+              PropertySpec.builder(dependency.type.flatName, dependencyType, OVERRIDE)
+                .initializer(dependency.type.flatName)
                 .build(),
             )
-            constructorBuilder.addParameter(dependency.name, dependencyType)
+            constructorBuilder.addParameter(dependency.type.flatName, dependencyType)
           }
 
           primaryConstructor(constructorBuilder.build())
@@ -70,7 +69,7 @@ internal fun generateWidgetFactories(schema: Schema): FileSpec {
       TypeSpec.interfaceBuilder(schema.getWidgetFactoryProviderType())
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
-        .addProperty(schema.name, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
+        .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
         .apply {
           for (dependency in schema.dependencies) {
             addSuperinterface(dependency.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))

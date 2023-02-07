@@ -19,13 +19,10 @@ import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import app.cash.redwood.tooling.schema.Widget.Trait
-import kotlin.reflect.KClass
-import kotlin.reflect.KType
 
 public interface Schema {
-  public val name: String
-  public val `package`: String
-  public val scopes: List<KClass<*>>
+  public val type: FqType
+  public val scopes: List<FqType>
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
   public val dependencies: List<Schema>
@@ -39,7 +36,7 @@ public interface Schema {
 
 public interface Widget {
   /** Either a 'data class' or 'object'. */
-  public val type: KClass<*>
+  public val type: FqType
 
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val traits: List<Trait>
@@ -50,30 +47,31 @@ public interface Widget {
   }
 
   public interface Property : Trait {
-    public val type: KType
+    public val type: FqType
   }
 
   public interface Event : Trait {
-    public val parameterType: KType?
+    public val parameterType: FqType?
   }
 
   public interface Children : Trait {
-    public val scope: KClass<*>?
+    public val scope: FqType?
   }
 }
 
 public interface LayoutModifier {
-  public val scopes: List<KClass<*>>
+  public val scopes: List<FqType>
 
   /** Either a 'data class' or 'object'. */
-  public val type: KClass<*>
+  public val type: FqType
 
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val properties: List<Property>
 
   public data class Property(
     val name: String,
-    val type: KType,
+    val type: FqType,
+    val isSerializable: Boolean,
     val defaultExpression: String?,
   )
 }

@@ -52,10 +52,12 @@ class TestingGenerationTest {
     assertThat(testerFileSpec.toString()).contains(
       """
       |@OptIn(RedwoodCodegenApi::class)
-      |public fun HappyPathSchemaTester(scope: CoroutineScope): RedwoodTester = RedwoodTester(
+      |public fun TestingGenerationTestHappyPathSchemaTester(scope: CoroutineScope): RedwoodTester =
+      |    RedwoodTester(
       |  scope = scope,
-      |  provider = HappyPathSchemaWidgetFactories(
-      |    HappyPathSchema = MutableHappyPathSchemaWidgetFactory(),
+      |  provider = TestingGenerationTestHappyPathSchemaWidgetFactories(
+      |    TestingGenerationTestHappyPathSchema =
+      |        MutableTestingGenerationTestHappyPathSchemaWidgetFactory(),
       |  ),
       |)
       """.trimMargin(),
@@ -65,7 +67,8 @@ class TestingGenerationTest {
     assertThat(mutableWidgetFactorySpec.toString()).contains(
       """
       |@RedwoodCodegenApi
-      |public class MutableHappyPathSchemaWidgetFactory : HappyPathSchemaWidgetFactory<MutableWidget> {
+      |public class MutableTestingGenerationTestHappyPathSchemaWidgetFactory :
+      |    TestingGenerationTestHappyPathSchemaWidgetFactory<MutableWidget> {
       |  public override fun TestingGenerationTestBasicWidget():
       |      TestingGenerationTestBasicWidget<MutableWidget> = MutableTestingGenerationTestBasicWidget()
       |}

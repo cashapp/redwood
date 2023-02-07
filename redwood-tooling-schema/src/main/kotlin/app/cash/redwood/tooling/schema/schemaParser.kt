@@ -90,7 +90,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
         appendLine("Schema @Widget tags must be unique")
         for ((widgetTag, group) in badWidgets) {
           append("\n- @Widget($widgetTag): ")
-          group.joinTo(this) { it.type.qualifiedName!! }
+          group.joinTo(this) { it.type.toString() }
         }
       },
     )
@@ -103,7 +103,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
         appendLine("Schema @LayoutModifier tags must be unique")
         for ((modifierTag, group) in badLayoutModifiers) {
           append("\n- @LayoutModifier($modifierTag): ")
-          group.joinTo(this) { it.type.qualifiedName!! }
+          group.joinTo(this) { it.type.toString() }
         }
       },
     )
@@ -163,8 +163,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     }
 
   val schema = ParsedProtocolSchema(
-    schemaType.simpleName!!,
-    schemaType.java.packageName,
+    schemaType.toFqType(),
     scopes.toList(),
     widgets,
     layoutModifiers,
@@ -181,8 +180,8 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
       buildString {
         appendLine("Schema dependency tree contains duplicated widgets")
         for ((widget, schemas) in duplicatedWidgets) {
-          append("\n- ${widget.qualifiedName}: ")
-          schemas.joinTo(this) { "${it.`package`}.${it.name}" }
+          append("\n- $widget: ")
+          schemas.joinTo(this) { it.type.toString() }
         }
       },
     )
@@ -213,15 +212,15 @@ private fun parseWidget(
           require(arguments.size <= 1) {
             "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
           }
-          ParsedProtocolEvent(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type)
+          ParsedProtocolEvent(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type?.toFqType())
         } else {
-          ParsedProtocolProperty(property.tag, it.name!!, it.type, defaultExpression)
+          ParsedProtocolProperty(property.tag, it.name!!, it.type.toFqType(), defaultExpression)
         }
       } else if (children != null) {
         require(it.type.isSubtypeOf(childrenType)) {
           "@Children ${memberType.qualifiedName}#${it.name} must be of type '() -> Unit'"
         }
-        var scope: KClass<*>? = null
+        var scope: FqType? = null
         var arguments = it.type.arguments.dropLast(1) // Drop return type.
         if (it.type.annotations.any(ExtensionFunctionType::class::isInstance)) {
           val receiverType = it.type.arguments.first().type
@@ -229,7 +228,7 @@ private fun parseWidget(
           require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty()) {
             "@Children ${memberType.qualifiedName}#${it.name} lambda receiver can only be a class. Found: $receiverType"
           }
-          scope = receiverClassifier
+          scope = receiverClassifier.toFqType()
           arguments = arguments.drop(1)
         }
         require(arguments.isEmpty()) {
@@ -278,7 +277,7 @@ private fun parseWidget(
     )
   }
 
-  return ParsedProtocolWidget(tag, memberType, traits)
+  return ParsedProtocolWidget(tag, memberType.toFqType(), traits)
 }
 
 private fun parseLayoutModifier(
@@ -297,7 +296,13 @@ private fun parseLayoutModifier(
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map {
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
-      LayoutModifier.Property(it.name!!, it.type, defaultExpression)
+      val isSerializable = (it.type.classifier as? KClass<*>)
+        ?.annotations
+        ?.any { annotation ->
+          annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
+        }
+        ?: false
+      LayoutModifier.Property(it.name!!, it.type.toFqType(), isSerializable, defaultExpression)
     }
   } else if (memberType.objectInstance != null) {
     emptyList()
@@ -309,8 +314,8 @@ private fun parseLayoutModifier(
 
   return ParsedProtocolLayoutModifier(
     tag,
-    annotation.scopes.toList(),
-    memberType,
+    annotation.scopes.map { it.toFqType() },
+    memberType.toFqType(),
     properties,
   )
 }

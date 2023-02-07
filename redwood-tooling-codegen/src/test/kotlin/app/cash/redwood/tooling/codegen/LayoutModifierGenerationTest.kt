@@ -46,11 +46,11 @@ class LayoutModifierGenerationTest {
   @Test fun `simple names do not collide`() {
     val schema = parseSchema(SimpleNameCollisionSchema::class)
 
-    val topType = schema.layoutModifiers.single { it.type == ContentDescription::class }
+    val topType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestContentDescription" }
     val topTypeSpec = generateLayoutModifierInterface(schema, topType)
     assertThat(topTypeSpec.toString()).contains("interface LayoutModifierGenerationTestContentDescription")
 
-    val nestedType = schema.layoutModifiers.single { it.type == NavigationBar.ContentDescription::class }
+    val nestedType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestNavigationBarContentDescription" }
     val nestedTypeSpec = generateLayoutModifierInterface(schema, nestedType)
     assertThat(nestedTypeSpec.toString()).contains("interface LayoutModifierGenerationTestNavigationBarContentDescription")
   }
@@ -70,13 +70,13 @@ class LayoutModifierGenerationTest {
   @Test fun `layout modifier functions are stable`() {
     val schema = parseSchema(ScopedModifierSchema::class)
 
-    val modifier = schema.layoutModifiers.single { it.type == ScopedLayoutModifier::class }
-    val scope = modifier.scopes.single { it == LayoutModifierScope::class }
+    val modifier = schema.layoutModifiers.single { it.type.names.last() == "ScopedLayoutModifier" }
+    val scope = modifier.scopes.single { it.names.last() == "LayoutModifierScope" }
     val scopeSpec = generateScope(schema, scope)
     assertThat(scopeSpec.toString()).contains(
       """
       |  @Stable
-      |  public fun LayoutModifier.scopedLayoutModifier(): LayoutModifier
+      |  public fun LayoutModifier.layoutModifierGenerationTestScopedLayoutModifier(): LayoutModifier
       """.trimMargin(),
     )
   }
