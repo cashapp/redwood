@@ -15,7 +15,7 @@ In order to build and run these applications you'll need to have the following i
 Running Counter on Web
 ----------------------
 
-To simply view the sample app, open: [[https://cashapp.github.io/redwood/latest/counter/]]
+To simply view the sample app, open: https://cashapp.github.io/redwood/latest/counter/
 
 To build and modify the app locally, run this:
 ```
