@@ -1,0 +1,57 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.zipline'
+
+kotlin {
+  KmpTargets.addAllTargets(project, true /* skipJs */)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
+        api libs.okio
+        api libs.zipline
+        api libs.zipline.loader
+        api projects.redwoodProtocol
+        api projects.redwoodProtocolWidget
+        api projects.redwoodTreehouse
+      }
+    }
+
+    commonJvmMain {
+      dependencies {
+        api libs.okHttp
+      }
+    }
+    androidMain {
+      dependsOn(commonJvmMain)
+    }
+    jvmMain {
+      dependsOn(commonJvmMain)
+    }
+
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation libs.turbine
+      }
+    }
+    androidTest {
+      dependsOn(commonTest)
+      dependencies {
+        implementation libs.robolectric
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.treehouse.host'
+}

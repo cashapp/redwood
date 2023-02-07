@@ -1,21 +1,24 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.compose'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
-  apply from: "${rootDir}/addAllTargets.gradle"
+  KmpTargets.addAllTargets(project)
 
   sourceSets {
     commonMain {
       dependencies {
+        api projects.redwoodTreehouse
         api projects.redwoodTreehouseLazylayoutApi
         api projects.redwoodTreehouseLazylayoutWidget
       }
     }
     jsMain {
       dependencies {
-        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseGuest
       }
     }
   }

@@ -1,10 +1,12 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.testing'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
-  apply from: "${rootDir}/addAllTargets.gradle"
+  KmpTargets.addAllTargets(project)
 
   sourceSets {
     commonMain {

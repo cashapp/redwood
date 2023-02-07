@@ -22,6 +22,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodTreehouse
+        api projects.redwoodTreehouseHost
         implementation libs.jetbrains.compose.foundation
         implementation projects.redwoodWidgetCompose
       }

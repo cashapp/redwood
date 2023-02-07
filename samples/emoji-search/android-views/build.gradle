@@ -17,4 +17,5 @@ dependencies {
   implementation projects.redwoodLayoutView
   implementation projects.redwoodTreehouseLazylayoutView
   implementation projects.redwoodTreehouse
+  implementation projects.redwoodTreehouseHost
 }
