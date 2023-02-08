@@ -337,17 +337,21 @@ internal fun generateDiffConsumingWidget(
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifiers(
+internal fun generateDiffConsumingLayoutModifierSerialization(
+  schema: ProtocolSchema,
+): FileSpec {
+  return FileSpec.builder(schema.widgetPackage(), "layoutModifierSerialization")
+    .addFunction(generateJsonArrayToLayoutModifier(schema))
+    .addFunction(generateJsonElementToLayoutModifier(schema))
+    .build()
+}
+
+internal fun generateDiffConsumingLayoutModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec {
-  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierSerialization")
+  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierImpls")
     .apply {
-      if (schema === host) {
-        addFunction(generateJsonArrayToLayoutModifier(schema))
-        addFunction(generateJsonElementToLayoutModifier(schema))
-      }
-
       for (layoutModifier in schema.layoutModifiers) {
         val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.flatName + "Impl")
         val typeBuilder = if (layoutModifier.properties.isEmpty()) {
@@ -381,7 +385,7 @@ internal fun generateDiffConsumingLayoutModifiers(
         }
         addType(
           typeBuilder
-            .addModifiers(if (schema === host) PRIVATE else INTERNAL)
+            .addModifiers(INTERNAL)
             .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))

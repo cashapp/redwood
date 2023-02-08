@@ -51,8 +51,9 @@ public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path)
     }
     Widget -> {
       generateDiffConsumingNodeFactory(this).writeTo(destination)
+      generateDiffConsumingLayoutModifierSerialization(this).writeTo(destination)
       for (dependency in allSchemas) {
-        generateDiffConsumingLayoutModifiers(dependency, host = this).writeTo(destination)
+        generateDiffConsumingLayoutModifierImpls(dependency, host = this).writeTo(destination)
         for (widget in dependency.widgets) {
           generateDiffConsumingWidget(dependency, widget, host = this).writeTo(destination)
         }
