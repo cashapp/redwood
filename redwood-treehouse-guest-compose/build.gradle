@@ -12,7 +12,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocolCompose
-        api projects.redwoodTreehouseConfiguration
+        api projects.redwoodTreehouseGuestConfiguration
         api libs.jetbrains.compose.runtime
       }
     }

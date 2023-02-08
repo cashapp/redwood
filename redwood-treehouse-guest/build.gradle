@@ -19,7 +19,7 @@ kotlin {
         api projects.redwoodProtocol
         api projects.redwoodProtocolCompose
         api projects.redwoodTreehouse
-        api projects.redwoodTreehouseCompose
+        api projects.redwoodTreehouseGuestCompose
       }
     }
   }
