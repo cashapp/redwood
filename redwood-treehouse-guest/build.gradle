@@ -6,7 +6,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 apply plugin: 'app.cash.zipline'
-apply plugin: 'app.cash.redwood.build.compose'
 
 kotlin {
   KmpTargets.addAllTargets(project)
@@ -20,6 +19,7 @@ kotlin {
         api projects.redwoodProtocol
         api projects.redwoodProtocolCompose
         api projects.redwoodTreehouse
+        api projects.redwoodTreehouseCompose
       }
     }
   }
