@@ -13,7 +13,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation projects.samples.emojiSearch.presenterTreehouse
-        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseHost
       }
     }
   }

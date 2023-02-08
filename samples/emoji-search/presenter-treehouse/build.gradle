@@ -24,6 +24,7 @@ kotlin {
 
     jsMain {
       dependencies {
+        api projects.redwoodTreehouseGuest
         api projects.samples.emojiSearch.presenter
         implementation projects.samples.emojiSearch.schema.compose.protocol
       }

@@ -1,0 +1,31 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build.compose'
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodCompose
+        api projects.redwoodRuntime
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.compose.testing'
+}

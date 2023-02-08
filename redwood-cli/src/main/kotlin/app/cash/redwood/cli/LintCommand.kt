@@ -46,14 +46,15 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import com.intellij.pom.java.LanguageLevel
 import com.intellij.pom.java.LanguageLevel.JDK_1_7
 import java.io.File
+import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.config.languageVersionSettings
+import org.jetbrains.kotlin.utils.PathUtil.getJdkClassesRootsFromCurrentJre
 
 internal class LintCommand : CliktCommand(name = "lint") {
   private val projectDirectory by argument("PROJECT_DIR")
@@ -64,9 +65,6 @@ internal class LintCommand : CliktCommand(name = "lint") {
   private val classpath by option("-cp", "--class-path")
     .convert { it.split(File.pathSeparator).map(::File) }
     .default(emptyList())
-  private val jdkHome by option("--jdk", envvar = "JAVA_HOME")
-    .file()
-    .required()
 
   override fun run() {
     val uastConfig = UastEnvironment.Configuration.create().apply {
@@ -74,7 +72,7 @@ internal class LintCommand : CliktCommand(name = "lint") {
       // UAST warns when you give it a directory that does not exist.
       addSourceRoots(sourceDirectories.filter(File::exists))
       addClasspathRoots(classpath)
-      kotlinCompilerConfig.put(JVMConfigurationKeys.JDK_HOME, jdkHome)
+      kotlinCompilerConfig.addJvmClasspathRoots(getJdkClassesRootsFromCurrentJre())
       kotlinCompilerConfig.put(JVMConfigurationKeys.NO_JDK, false)
     }
     val uastEnvironment = UastEnvironment.create(uastConfig)

@@ -5,6 +5,8 @@ kotlin {
   js {
     browser()
   }
+  jvm {
+  }
 
   sourceSets {
     commonMain {
@@ -12,6 +14,14 @@ kotlin {
         api projects.samples.emojiSearch.schema.compose
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseLazylayoutApi
+      }
+    }
+    commonTest {
+      dependencies {
+        api projects.redwoodComposeTesting
+        api projects.samples.emojiSearch.schema.testing
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
       }
     }
   }

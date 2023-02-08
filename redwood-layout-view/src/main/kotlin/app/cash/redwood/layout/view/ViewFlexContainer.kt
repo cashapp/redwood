@@ -17,9 +17,9 @@ package app.cash.redwood.layout.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.LayoutModifier
@@ -49,7 +49,9 @@ internal class ViewFlexContainer(
   private val density = DensityMultiplier * context.resources.displayMetrics.density
 
   private val hostView = HostView(context)
-  override val value = newScrollView()
+
+  private val _value = Container()
+  override val value: View = _value
 
   override val children = ViewGroupChildren(hostView)
 
@@ -73,8 +75,9 @@ internal class ViewFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
+    val oldScrollEnabled = scrollEnabled
     scrollEnabled = overflow == Overflow.Scroll
-    invalidate()
+    invalidate(overflowChanged = oldScrollEnabled != scrollEnabled)
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -103,39 +106,43 @@ internal class ViewFlexContainer(
     invalidate()
   }
 
-  private fun invalidate() {
+  private fun invalidate(overflowChanged: Boolean = false) {
+    if (overflowChanged) {
+      _value.updateViewHierarchy()
+    }
     value.invalidate()
     value.requestLayout()
   }
 
-  @SuppressLint("ClickableViewAccessibility")
-  private fun newScrollView(): ViewGroup {
-    return if (direction.isHorizontal) {
-      object : HorizontalScrollView(context) {
-        override fun onTouchEvent(ev: MotionEvent): Boolean {
-          return scrollEnabled && super.onTouchEvent(ev)
+  private inner class Container : FrameLayout(context) {
+    init {
+      updateViewHierarchy()
+    }
+
+    fun updateViewHierarchy() {
+      removeAllViews()
+      hostView.parent?.let { (it as ViewGroup).removeView(hostView) }
+      if (scrollEnabled) {
+        addView(newScrollView().apply { addView(hostView) })
+      } else {
+        addView(hostView)
+      }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun newScrollView(): ViewGroup {
+      return if (direction.isHorizontal) {
+        HorizontalScrollView(context).apply {
+          isFillViewport = true
         }
-        override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-          return scrollEnabled && super.onInterceptTouchEvent(ev)
+      } else {
+        NestedScrollView(context).apply {
+          isFillViewport = true
         }
       }.apply {
-        isFillViewport = true
+        isHorizontalScrollBarEnabled = false
+        isVerticalScrollBarEnabled = false
       }
-    } else {
-      object : NestedScrollView(context) {
-        override fun onTouchEvent(ev: MotionEvent): Boolean {
-          return scrollEnabled && super.onTouchEvent(ev)
-        }
-        override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-          return scrollEnabled && super.onInterceptTouchEvent(ev)
-        }
-      }.apply {
-        isFillViewport = true
-      }
-    }.apply {
-      isHorizontalScrollBarEnabled = false
-      isVerticalScrollBarEnabled = false
-      addView(hostView)
     }
   }
 

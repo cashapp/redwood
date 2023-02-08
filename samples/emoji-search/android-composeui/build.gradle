@@ -27,5 +27,6 @@ dependencies {
   implementation projects.redwoodLayoutComposeui
   implementation projects.redwoodTreehouseLazylayoutComposeui
   implementation projects.redwoodTreehouseComposeui
+  implementation projects.redwoodTreehouseHost
   implementation projects.redwoodWidgetCompose
 }

@@ -36,6 +36,12 @@ gradlePlugin {
       description = "Redwood lint Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodLintPlugin"
     }
+    redwoodSchema {
+      id = "app.cash.redwood.schema"
+      displayName = "Redwood schema"
+      description = "Redwood Schema Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodSchemaPlugin"
+    }
     redwoodComposeGenerator {
       id = "app.cash.redwood.generator.compose"
       displayName = "Redwood generator (Compose)"
@@ -53,6 +59,12 @@ gradlePlugin {
       displayName = "Redwood generator (layout modifiers)"
       description = "Redwood schema layout modifier code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodLayoutModifiersGeneratorPlugin"
+    }
+    redwoodTestingGenerator {
+      id = "app.cash.redwood.generator.testing"
+      displayName = "Redwood generator (testing)"
+      description = "Redwood schema testing code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodTestingGeneratorPlugin"
     }
     redwoodWidgetGenerator {
       id = "app.cash.redwood.generator.widget"

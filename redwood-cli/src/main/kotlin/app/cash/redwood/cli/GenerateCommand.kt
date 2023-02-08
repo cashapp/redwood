@@ -37,7 +37,9 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     .switch(
       "--compose" to CodegenType.Compose,
       "--compose-protocol" to ProtocolCodegenType.Compose,
+      "--json" to ProtocolCodegenType.Json,
       "--layout-modifiers" to CodegenType.LayoutModifiers,
+      "--testing" to CodegenType.Testing,
       "--widget" to CodegenType.Widget,
       "--widget-protocol" to ProtocolCodegenType.Widget,
     )

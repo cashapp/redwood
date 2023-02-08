@@ -20,5 +20,3 @@ import app.cash.zipline.ZiplineService
 public interface FrameClockService : ZiplineService {
   public fun sendFrame(timeNanos: Long)
 }
-
-public expect val StandardFrameClockService: FrameClockService

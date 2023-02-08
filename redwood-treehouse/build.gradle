@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.android.library'
@@ -6,7 +8,7 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 apply plugin: 'app.cash.zipline'
 
 kotlin {
-  apply from: "${rootDir}/addAllTargets.gradle"
+  KmpTargets.addAllTargets(project)
 
   sourceSets {
     commonMain {
@@ -15,63 +17,6 @@ kotlin {
         api projects.redwoodTreehouseCompose
         api libs.zipline
       }
-    }
-
-    jsMain {
-      dependencies {
-        api projects.redwoodProtocolCompose
-        api libs.kotlinx.coroutines.core
-        api libs.jetbrains.compose.runtime
-      }
-    }
-
-    hostMain {
-      dependsOn(commonMain)
-      dependencies {
-        api libs.zipline.loader
-        api libs.kotlinx.coroutines.core
-        api libs.kotlinx.serialization.json
-        api libs.okio
-        api projects.redwoodProtocolWidget
-      }
-    }
-    nativeMain {
-      dependsOn(hostMain)
-    }
-    commonJvmMain {
-      dependsOn(hostMain)
-      dependencies {
-        api libs.okHttp
-      }
-    }
-    androidMain {
-      dependsOn(commonJvmMain)
-    }
-    jvmMain {
-      dependsOn(commonJvmMain)
-    }
-
-    hostTest {
-      dependencies {
-        implementation libs.kotlin.test
-        implementation libs.kotlinx.coroutines.test
-        implementation libs.turbine
-      }
-    }
-    nativeTest {
-      dependsOn(hostTest)
-    }
-    commonJvmTest {
-      dependsOn(hostTest)
-    }
-    androidInstrumentedTest {
-      dependsOn(commonJvmTest)
-      dependencies {
-        implementation libs.robolectric
-      }
-    }
-    jvmTest {
-      dependsOn(commonJvmTest)
     }
   }
 }

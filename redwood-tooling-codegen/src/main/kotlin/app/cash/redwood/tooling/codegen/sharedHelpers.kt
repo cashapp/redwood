@@ -92,6 +92,18 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(this), "${name}WidgetFactory")
 }
 
+internal fun Schema.getMutableWidgetFactoryType(): ClassName {
+  return ClassName(widgetPackage(this), "Mutable${name}WidgetFactory")
+}
+
+internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
+  return ClassName(widgetPackage(this), "Mutable${widget.type.flatName}")
+}
+
+internal fun Schema.widgetValueType(widget: Widget): ClassName {
+  return ClassName(widgetPackage(this), "${widget.type.flatName}Value")
+}
+
 internal fun Schema.getWidgetFactoryProviderType(): ClassName {
   return ClassName(widgetPackage(this), "${name}WidgetFactoryProvider")
 }
@@ -120,6 +132,10 @@ internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassNam
   return ClassName(composePackage(), layoutModifier.type.simpleName!! + "Impl")
 }
 
+internal fun Schema.getTesterFunction(): MemberName {
+  return MemberName(widgetPackage(this), "${name}Tester")
+}
+
 internal val Schema.toLayoutModifier: MemberName get() =
   MemberName(widgetPackage(this), "toLayoutModifier")
 
@@ -127,7 +143,7 @@ internal val Schema.layoutModifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
 
 internal fun ProtocolSchema.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
-  return (listOf(this) + dependencies).flatMap { schema ->
+  return allSchemas.flatMap { schema ->
     schema.layoutModifiers.map { schema to it }
   }
 }
