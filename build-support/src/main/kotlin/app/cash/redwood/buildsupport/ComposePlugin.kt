@@ -15,9 +15,6 @@
  */
 package app.cash.redwood.buildsupport
 
-import java.util.Locale
-import org.gradle.api.Project
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -32,22 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class ComposePlugin : KotlinCompilerPluginSupportPlugin {
-  private lateinit var extension: ComposeExtension
-
-  override fun apply(target: Project) {
-    extension = target.extensions.create("redwoodBuildCompose", ComposeExtension::class.java)
-  }
-
-  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-    val name = kotlinCompilation.target.name +
-      kotlinCompilation.name.replaceFirstChar { it.titlecase(Locale.ROOT) }
-
-    val targetCompilations = extension.targetCompilations.get()
-    return when {
-      targetCompilations.isEmpty() -> true
-      else -> name in targetCompilations
-    }
-  }
+  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>) = true
 
   override fun getCompilerPluginId() = "app.cash.redwood.tools.compose"
 
@@ -72,8 +54,4 @@ class ComposePlugin : KotlinCompilerPluginSupportPlugin {
 
     return kotlinCompilation.target.project.provider { emptyList() }
   }
-}
-
-interface ComposeExtension {
-  val targetCompilations: ListProperty<String>
 }
