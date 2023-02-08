@@ -19,7 +19,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -42,6 +41,7 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val context = this
     val treehouseApp = createTreehouseApp()
     val treehouseContent = TreehouseView.Content(EmojiSearchPresenter::launch)
 
@@ -50,20 +50,18 @@ class EmojiSearchActivity : ComponentActivity() {
         app: TreehouseApp<EmojiSearchPresenter>,
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ): DiffConsumingNode.Factory<*> {
-        return EmojiSearchDiffConsumingNodeFactory(
-          provider = EmojiSearchWidgetFactories(
-            EmojiSearch = AndroidEmojiSearchWidgetFactory(
-              context = this@EmojiSearchActivity,
-              treehouseApp = treehouseApp,
-            ),
-            RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this@EmojiSearchActivity),
-            RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(this@EmojiSearchActivity, treehouseApp, this),
+      ) = EmojiSearchDiffConsumingNodeFactory(
+        provider = EmojiSearchWidgetFactories(
+          EmojiSearch = AndroidEmojiSearchWidgetFactory(
+            context = context,
+            treehouseApp = treehouseApp,
           ),
-          json = json,
-          mismatchHandler = protocolMismatchHandler,
-        )
-      }
+          RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
+          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, this),
+        ),
+        json = json,
+        mismatchHandler = protocolMismatchHandler,
+      )
     }
 
     setContentView(
