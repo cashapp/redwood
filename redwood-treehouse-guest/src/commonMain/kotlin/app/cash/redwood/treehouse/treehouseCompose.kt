@@ -15,9 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.ProtocolBridge
