@@ -20,13 +20,10 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
-import kotlin.reflect.KClass
-import kotlin.reflect.KType
 
 internal data class ParsedProtocolSchema(
-  override val name: String,
-  override val `package`: String,
-  override val scopes: List<KClass<*>>,
+  override val type: FqType,
+  override val scopes: List<FqType>,
   override val widgets: List<ProtocolWidget>,
   override val layoutModifiers: List<ProtocolLayoutModifier>,
   override val dependencies: List<ProtocolSchema>,
@@ -34,14 +31,14 @@ internal data class ParsedProtocolSchema(
 
 internal data class ParsedProtocolWidget(
   override val tag: Int,
-  override val type: KClass<*>,
+  override val type: FqType,
   override val traits: List<ProtocolTrait>,
 ) : ProtocolWidget
 
 internal data class ParsedProtocolProperty(
   override val tag: Int,
   override val name: String,
-  override val type: KType,
+  override val type: FqType,
   override val defaultExpression: String?,
 ) : ProtocolProperty
 
@@ -49,19 +46,19 @@ internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
   override val defaultExpression: String?,
-  override val parameterType: KType?,
+  override val parameterType: FqType?,
 ) : ProtocolEvent
 
 internal data class ParsedProtocolChildren(
   override val tag: Int,
   override val name: String,
   override val defaultExpression: String?,
-  override val scope: KClass<*>?,
+  override val scope: FqType?,
 ) : ProtocolChildren
 
 internal data class ParsedProtocolLayoutModifier(
   override val tag: Int,
-  override val scopes: List<KClass<*>>,
-  override val type: KClass<*>,
+  override val scopes: List<FqType>,
+  override val type: FqType,
   override val properties: List<Property>,
 ) : ProtocolLayoutModifier

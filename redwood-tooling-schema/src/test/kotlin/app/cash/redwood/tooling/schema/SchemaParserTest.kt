@@ -23,7 +23,6 @@ import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
 import com.google.common.truth.Truth.assertThat
-import kotlin.reflect.full.createType
 import org.junit.Test
 
 class SchemaParserTest {
@@ -434,9 +433,9 @@ class SchemaParserTest {
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
     assertThat(noArguments.parameterType).isNull()
     val argument = widget.traits.single { it.name == "argument" } as Event
-    assertThat(argument.parameterType).isEqualTo(String::class.createType())
+    assertThat(argument.parameterType).isEqualTo(String::class.toFqType())
     val argumentOptionalLambda = widget.traits.single { it.name == "argumentOptionalLambda" } as Event
-    assertThat(argumentOptionalLambda.parameterType).isEqualTo(String::class.createType())
+    assertThat(argumentOptionalLambda.parameterType).isEqualTo(String::class.toFqType())
   }
 
   @Schema(
@@ -743,7 +742,7 @@ class SchemaParserTest {
       """
       |Schema dependency tree contains duplicated widgets
       |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesB
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesB
       """.trimMargin(),
     )
   }
@@ -765,7 +764,7 @@ class SchemaParserTest {
       """
       |Schema dependency tree contains duplicated widgets
       |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaWidgetDuplicateInDependency, app.cash.redwood.tooling.schema.SchemaWidgetDuplicateAcrossDependenciesA
+      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateInDependency, app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesA
       """.trimMargin(),
     )
   }

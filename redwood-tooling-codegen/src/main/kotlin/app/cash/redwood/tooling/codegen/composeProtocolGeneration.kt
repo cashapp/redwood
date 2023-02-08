@@ -44,9 +44,7 @@ import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import kotlin.reflect.jvm.jvmErasure
 
 /*
 class ExampleProtocolBridge(
@@ -150,9 +148,9 @@ internal fun generateProtocolBridge(
                 .addStatement("val bridge = %T()", ComposeProtocol.ProtocolState)
                 .addStatement("val root = bridge.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
                 .apply {
-                  val arguments = buildList<CodeBlock> {
+                  val arguments = buildList {
                     for (dependency in schema.allSchemas) {
-                      add(CodeBlock.of("%N = %T(bridge, json, mismatchHandler)", dependency.name, dependency.protocolWidgetFactoryType(schema)))
+                      add(CodeBlock.of("%N = %T(bridge, json, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                     }
                   }
                   addStatement("val factories = %T(\n%L)", schema.getWidgetFactoriesType(), arguments.joinToCode(separator = ",\n"))
@@ -559,13 +557,7 @@ internal fun generateProtocolLayoutModifierSerializers(
               val serializerId = serializerIds.computeIfAbsent(propertyType) {
                 nextSerializerId++
               }
-              val isSerializable = property.type
-                .jvmErasure
-                .annotations
-                .any {
-                  it.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
-                }
-              if (isSerializable) {
+              if (property.isSerializable) {
                 serializables += propertyType
               }
               serializerBody.addStatement(

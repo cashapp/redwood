@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
@@ -34,9 +35,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import kotlin.reflect.KClass
 
 /*
 @Composable
@@ -108,7 +107,7 @@ internal fun generateComposable(
                     .build()
                 }
                 is Children -> {
-                  val scope = trait.scope?.let { ClassName(schema.composePackage(), it.simpleName!!) }
+                  val scope = trait.scope?.let { ClassName(schema.composePackage(), it.flatName) }
                   ParameterSpec.builder(trait.name, composableLambda(scope))
                     .apply {
                       trait.defaultExpression?.let { defaultValue(it) }
@@ -137,7 +136,7 @@ internal fun generateComposable(
                   add("into(%T::%N) {\n", widgetType, trait.name)
                   indent()
                   trait.scope?.let { scope ->
-                    add("%T.", ClassName(schema.composePackage(), scope.simpleName!! + "Impl"))
+                    add("%T.", ClassName(schema.composePackage(), scope.flatName + "Impl"))
                   }
                   add("%N()\n", trait.name)
                   unindent()
@@ -149,7 +148,7 @@ internal fun generateComposable(
           }
 
           val arguments = listOf(
-            CodeBlock.of("factory = { it.%N.%N() }", schema.name, flatName),
+            CodeBlock.of("factory = { it.%N.%N() }", schema.type.flatName, flatName),
             CodeBlock.builder()
               .add("update = {\n")
               .indent()
@@ -189,8 +188,8 @@ interface RowScope {
 
 internal object RowScopeImpl : RowScope
 */
-internal fun generateScope(schema: Schema, scope: KClass<*>): FileSpec {
-  val scopeName = scope.simpleName!!
+internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
+  val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
   return FileSpec.builder(scopeType.packageName, scopeType.simpleName)
     .apply {
@@ -239,7 +238,7 @@ private fun generateLayoutModifierFunction(
   schema: Schema,
   layoutModifier: LayoutModifier,
 ): FunSpec {
-  val simpleName = layoutModifier.type.simpleName!!
+  val simpleName = layoutModifier.type.flatName
   return FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
     .addAnnotation(ComposeRuntime.Stable)
     .receiver(Redwood.LayoutModifier)
