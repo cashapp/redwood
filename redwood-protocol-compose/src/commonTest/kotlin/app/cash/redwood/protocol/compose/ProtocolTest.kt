@@ -117,6 +117,7 @@ class ProtocolTest {
 
     composition.setContent {
       // TODO This test will fail if you inline the when. Bug in Compose compiler?
+      //  https://issuetracker.google.com/issues/268248361
       val onClick = when (state) {
         0 -> { { state = 1 } }
         1 -> { { state = 2 } }
