@@ -108,6 +108,14 @@ allprojects {
     }
   }
 
+  // DokkaTaskPartial configures subprojects for multimodule docs
+  // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
+  tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial) {
+    dokkaSourceSets.configureEach {
+      suppressGeneratedFiles.set(false) // document generated code
+    }
+  }
+
   // Disable the release linking tasks because we never need it for iOS sample applications.
   // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
