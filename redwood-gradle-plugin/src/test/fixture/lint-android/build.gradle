@@ -9,7 +9,7 @@ buildscript {
     maven {
       url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
     }
-    mavenCentral()
+    mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     google()
   }
 }
@@ -27,6 +27,6 @@ repositories {
   maven {
     url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
   }
-  mavenCentral()
+  mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
   google()
 }
