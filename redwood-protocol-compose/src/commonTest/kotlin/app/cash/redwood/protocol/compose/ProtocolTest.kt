@@ -40,15 +40,13 @@ import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
 import kotlinx.serialization.json.JsonPrimitive
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProtocolTest {
   @Test fun widgetVersionPropagated() = runTest {
-    val clock = BroadcastFrameClock()
     val composition = ProtocolRedwoodComposition(
-      scope = this + clock,
+      scope = this + BroadcastFrameClock(),
       bridge = ExampleSchemaProtocolBridge.create(),
       diffSink = ::error,
       widgetVersion = 22U,
@@ -64,12 +62,11 @@ class ProtocolTest {
   }
 
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
-    val clock = BroadcastFrameClock()
-    val diffs = ArrayDeque<Diff>()
+    val diffClock = DiffAwaitingFrameClock()
     val composition = ProtocolRedwoodComposition(
-      scope = this + clock,
+      scope = this + diffClock,
       bridge = ExampleSchemaProtocolBridge.create(),
-      diffSink = { diff -> diffs += diff },
+      diffSink = diffClock,
       widgetVersion = 1U,
     )
 
@@ -82,7 +79,6 @@ class ProtocolTest {
       }
     }
 
-    clock.awaitFrame()
     assertEquals(
       Diff(
         childrenDiffs = listOf(
@@ -102,21 +98,20 @@ class ProtocolTest {
           PropertyDiff(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
         ),
       ),
-      diffs.removeFirst(),
+      diffClock.awaitDiff(),
     )
 
     composition.cancel()
   }
 
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
-    val clock = BroadcastFrameClock()
+    val diffClock = DiffAwaitingFrameClock()
     var state by mutableStateOf(0)
     val bridge = ExampleSchemaProtocolBridge.create()
-    val diffs = ArrayDeque<Diff>()
     val composition = ProtocolRedwoodComposition(
-      scope = this + clock,
+      scope = this + diffClock,
       bridge = bridge,
-      diffSink = { diff -> diffs += diff },
+      diffSink = diffClock,
       widgetVersion = 1U,
     )
 
@@ -133,7 +128,6 @@ class ProtocolTest {
       )
     }
 
-    clock.awaitFrame()
     assertEquals(
       Diff(
         childrenDiffs = listOf(
@@ -147,28 +141,24 @@ class ProtocolTest {
           PropertyDiff(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
         ),
       ),
-      diffs.removeFirst(),
+      diffClock.awaitDiff(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
-    yield() // Allow state change to be handled.
 
-    clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
         ),
       ),
-      diffs.removeFirst(),
+      diffClock.awaitDiff(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
-    yield() // Allow state change to be handled.
 
-    clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
@@ -176,21 +166,19 @@ class ProtocolTest {
           PropertyDiff(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
         ),
       ),
-      diffs.removeFirst(),
+      diffClock.awaitDiff(),
     )
 
     // Manually advance state from 2 to 3 to test null to null case.
     state = 3
-    yield() // Allow state change to be handled.
 
-    clock.awaitFrame()
     assertEquals(
       Diff(
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
         ),
       ),
-      diffs.removeFirst(),
+      diffClock.awaitDiff(),
     )
 
     composition.cancel()
