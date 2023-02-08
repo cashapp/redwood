@@ -14,6 +14,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocol
+        api projects.redwoodTreehouseConfiguration
         api libs.zipline
       }
     }
