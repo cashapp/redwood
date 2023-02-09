@@ -44,7 +44,7 @@ class LayoutModifierGenerationTest {
   data class ContentDescription(val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class)
+    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
 
     val topType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestContentDescription" }
     val topTypeSpec = generateLayoutModifierInterface(schema, topType)
@@ -68,7 +68,7 @@ class LayoutModifierGenerationTest {
   object ScopedLayoutModifier
 
   @Test fun `layout modifier functions are stable`() {
-    val schema = parseSchema(ScopedModifierSchema::class)
+    val schema = parseSchema(ScopedModifierSchema::class).schema
 
     val modifier = schema.layoutModifiers.single { it.type.names.last() == "ScopedLayoutModifier" }
     val scope = modifier.scopes.single { it.names.last() == "LayoutModifierScope" }

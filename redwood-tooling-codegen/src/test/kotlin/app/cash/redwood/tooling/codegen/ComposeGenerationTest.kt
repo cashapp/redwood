@@ -43,7 +43,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `scoped and unscoped children`() {
-    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+    val schema = parseSchema(ScopedAndUnscopedSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
@@ -53,7 +53,7 @@ class ComposeGenerationTest {
   }
 
   @Test fun `scope is annotated with layout scope marker`() {
-    val schema = parseSchema(ScopedAndUnscopedSchema::class)
+    val schema = parseSchema(ScopedAndUnscopedSchema::class).schema
 
     val fileSpec = generateScope(schema, FqType(listOf("example", "RowScope")))
     assertThat(fileSpec.toString()).contains(
@@ -85,7 +85,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `default is supported for all property types`() {
-    val schema = parseSchema(DefaultSchema::class)
+    val schema = parseSchema(DefaultSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
@@ -109,7 +109,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `layout modifier is the last non child parameter`() {
-    val schema = parseSchema(MultipleChildSchema::class)
+    val schema = parseSchema(MultipleChildSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(

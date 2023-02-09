@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Json
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
-import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.toEmbeddedSchema
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -30,21 +30,21 @@ public enum class ProtocolCodegenType {
   Widget,
 }
 
-public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path) {
+public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Path) {
   when (type) {
     Compose -> {
       generateProtocolBridge(this).writeTo(destination)
       generateProtocolLayoutModifierSerialization(this).writeTo(destination)
-      for (dependency in allSchemas) {
-        generateProtocolWidgetFactory(dependency, host = this).writeTo(destination)
-        generateProtocolLayoutModifierSerializers(dependency, host = this)?.writeTo(destination)
+      for (dependency in all) {
+        generateProtocolWidgetFactory(dependency, host = schema).writeTo(destination)
+        generateProtocolLayoutModifierSerializers(dependency, host = schema)?.writeTo(destination)
         for (widget in dependency.widgets) {
-          generateProtocolWidget(dependency, widget, host = this).writeTo(destination)
+          generateProtocolWidget(dependency, widget, host = schema).writeTo(destination)
         }
       }
     }
     Json -> {
-      val embeddedSchema = toEmbeddedSchema()
+      val embeddedSchema = schema.toEmbeddedSchema()
       val path = destination.resolve(embeddedSchema.path)
       path.parent.createDirectories()
       path.writeText(embeddedSchema.json)
@@ -52,10 +52,10 @@ public fun ProtocolSchema.generate(type: ProtocolCodegenType, destination: Path)
     Widget -> {
       generateDiffConsumingNodeFactory(this).writeTo(destination)
       generateDiffConsumingLayoutModifierSerialization(this).writeTo(destination)
-      for (dependency in allSchemas) {
-        generateDiffConsumingLayoutModifierImpls(dependency, host = this).writeTo(destination)
+      for (dependency in all) {
+        generateDiffConsumingLayoutModifierImpls(dependency, host = schema).writeTo(destination)
         for (widget in dependency.widgets) {
-          generateDiffConsumingWidget(dependency, widget, host = this).writeTo(destination)
+          generateDiffConsumingWidget(dependency, widget, host = schema).writeTo(destination)
         }
       }
     }

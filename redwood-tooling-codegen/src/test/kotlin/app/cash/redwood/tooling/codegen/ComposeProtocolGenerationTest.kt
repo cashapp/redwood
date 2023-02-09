@@ -37,7 +37,7 @@ class ComposeProtocolGenerationTest {
   )
 
   @Test fun `id property does not collide`() {
-    val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class)
+    val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class).schema
 
     val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
@@ -49,9 +49,9 @@ class ComposeProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schema = parseProtocolSchema(PrimarySchema::class)
+    val schemaSet = parseProtocolSchema(PrimarySchema::class)
 
-    val fileSpec = generateProtocolLayoutModifierSerialization(schema)
+    val fileSpec = generateProtocolLayoutModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).apply {
       contains("is PrimaryModifier -> PrimaryModifierSerializer.encode(json, this)")
       contains("is SecondaryModifier -> SecondaryModifierSerializer.encode(json, this)")

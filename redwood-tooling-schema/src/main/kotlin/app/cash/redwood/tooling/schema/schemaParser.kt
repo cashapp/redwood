@@ -41,11 +41,11 @@ private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>): Schema {
+public fun parseSchema(schemaType: KClass<*>): SchemaSet {
   return parseProtocolSchema(schemaType)
 }
 
-public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchema {
+public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchemaSet {
   val schemaAnnotation = schemaType.schemaAnnotation
   require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
 
@@ -154,7 +154,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
       require(it.tag in 1..maxSchemaTag) {
         "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
       }
-      val schema = parseProtocolSchema(it.schema, it.tag)
+      val schema = parseProtocolSchema(it.schema, it.tag).schema
       require(schema.dependencies.isEmpty()) {
         "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
           "For now, only a single level of dependencies is supported."
@@ -167,10 +167,14 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     scopes.toList(),
     widgets,
     layoutModifiers,
-    dependencies,
+    dependencies.map { it.type },
+  )
+  val schemaSet = ParsedProtocolSchemaSet(
+    schema,
+    dependencies.associateBy { it.type },
   )
 
-  val duplicatedWidgets = (listOf(schema) + dependencies)
+  val duplicatedWidgets = schemaSet.all
     .flatMap { it.widgets.map { widget -> widget to it } }
     .groupBy { it.first.type }
     .filterValues { it.size > 1 }
@@ -187,7 +191,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     )
   }
 
-  return schema
+  return schemaSet
 }
 
 private fun parseWidget(

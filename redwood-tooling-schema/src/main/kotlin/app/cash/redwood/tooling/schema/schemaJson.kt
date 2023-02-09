@@ -86,7 +86,7 @@ public fun ProtocolSchema.toEmbeddedSchema(): EmbeddedSchema {
         },
       )
     },
-    dependencies = dependencies.map { it.type },
+    dependencies = dependencies,
   )
   val json = json.encodeToString(SchemaJsonV1.serializer(), schemaJson)
 

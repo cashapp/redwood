@@ -46,9 +46,10 @@ class TestingGenerationTest {
   )
 
   @Test fun `tester happy path`() {
-    val schema = parseSchema(HappyPathSchema::class)
+    val schemaSet = parseSchema(HappyPathSchema::class)
+    val schema = schemaSet.schema
 
-    val testerFileSpec = generateTester(schema)
+    val testerFileSpec = generateTester(schemaSet)
     assertThat(testerFileSpec.toString()).contains(
       """
       |@OptIn(RedwoodCodegenApi::class)

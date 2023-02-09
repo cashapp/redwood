@@ -406,7 +406,7 @@ class SchemaParserTest {
   )
 
   @Test fun eventTypes() {
-    val schema = parseProtocolSchema(EventTypeSchema::class)
+    val schema = parseProtocolSchema(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
     assertThat(widget.traits.single { it.name == "optionalEvent" }).isInstanceOf<Event>()
@@ -427,7 +427,7 @@ class SchemaParserTest {
   )
 
   @Test fun eventArguments() {
-    val schema = parseProtocolSchema(EventArgumentsSchema::class)
+    val schema = parseProtocolSchema(EventArgumentsSchema::class).schema
     val widget = schema.widgets.single()
 
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
@@ -470,7 +470,7 @@ class SchemaParserTest {
   object ObjectWidget
 
   @Test fun objectWidget() {
-    val schema = parseProtocolSchema(ObjectSchema::class)
+    val schema = parseProtocolSchema(ObjectSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
   }
@@ -570,7 +570,7 @@ class SchemaParserTest {
   )
 
   @Test fun schemaTagDefault() {
-    val schema = parseProtocolSchema(SchemaTag::class)
+    val schema = parseProtocolSchema(SchemaTag::class).schema
 
     val widget = schema.widgets.single()
     assertThat(widget.tag).isEqualTo(1)
@@ -591,7 +591,7 @@ class SchemaParserTest {
 
   @Test fun schemaTagOffsetsMemberTags() {
     val schema = parseProtocolSchema(SchemaDependencyTagOffsetsMemberTags::class)
-    val dependency = schema.dependencies.single()
+    val dependency = schema.dependencies.values.single()
 
     val widget = dependency.widgets.single()
     assertThat(widget.tag).isEqualTo(4_000_001)

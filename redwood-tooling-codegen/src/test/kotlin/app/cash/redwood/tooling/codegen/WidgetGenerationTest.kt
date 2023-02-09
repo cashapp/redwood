@@ -39,7 +39,7 @@ class WidgetGenerationTest {
   data class Button(@Property(1) val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class)
+    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).apply {
@@ -49,7 +49,7 @@ class WidgetGenerationTest {
   }
 
   @Test fun tagInWidgetFactoryKDoc() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class)
+    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).contains(
@@ -62,7 +62,7 @@ class WidgetGenerationTest {
   }
 
   @Test fun tagInWidgetKdoc() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class)
+    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
     val button = schema.widgets.single { it.type.flatName == "WidgetGenerationTestButton" }
 
     val fileSpec = generateWidget(schema, button)

@@ -21,12 +21,17 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 
+internal data class ParsedProtocolSchemaSet(
+  override val schema: ProtocolSchema,
+  override val dependencies: Map<FqType, ProtocolSchema>,
+) : ProtocolSchemaSet
+
 internal data class ParsedProtocolSchema(
   override val type: FqType,
   override val scopes: List<FqType>,
   override val widgets: List<ProtocolWidget>,
   override val layoutModifiers: List<ProtocolLayoutModifier>,
-  override val dependencies: List<ProtocolSchema>,
+  override val dependencies: List<FqType>,
 ) : ProtocolSchema
 
 internal data class ParsedProtocolWidget(

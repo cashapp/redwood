@@ -19,7 +19,7 @@ import app.cash.redwood.tooling.codegen.CodegenType.Compose
 import app.cash.redwood.tooling.codegen.CodegenType.LayoutModifiers
 import app.cash.redwood.tooling.codegen.CodegenType.Testing
 import app.cash.redwood.tooling.codegen.CodegenType.Widget
-import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.SchemaSet
 import java.nio.file.Path
 
 public enum class CodegenType {
@@ -29,35 +29,35 @@ public enum class CodegenType {
   Widget,
 }
 
-public fun Schema.generate(type: CodegenType, destination: Path) {
+public fun SchemaSet.generate(type: CodegenType, destination: Path) {
   when (type) {
     Compose -> {
-      generateLayoutModifierImpls(this)?.writeTo(destination)
-      for (scope in scopes) {
-        generateScope(this, scope).writeTo(destination)
+      generateLayoutModifierImpls(schema)?.writeTo(destination)
+      for (scope in schema.scopes) {
+        generateScope(schema, scope).writeTo(destination)
       }
-      for (widget in widgets) {
-        generateComposable(this, widget).writeTo(destination)
+      for (widget in schema.widgets) {
+        generateComposable(schema, widget).writeTo(destination)
       }
     }
     LayoutModifiers -> {
-      for (layoutModifier in layoutModifiers) {
-        generateLayoutModifierInterface(this, layoutModifier).writeTo(destination)
+      for (layoutModifier in schema.layoutModifiers) {
+        generateLayoutModifierInterface(schema, layoutModifier).writeTo(destination)
       }
     }
     Testing -> {
       generateTester(this).writeTo(destination)
-      generateMutableWidgetFactory(this).writeTo(destination)
-      for (widget in widgets) {
-        generateMutableWidget(this, widget).writeTo(destination)
-        generateWidgetValue(this, widget).writeTo(destination)
+      generateMutableWidgetFactory(schema).writeTo(destination)
+      for (widget in schema.widgets) {
+        generateMutableWidget(schema, widget).writeTo(destination)
+        generateWidgetValue(schema, widget).writeTo(destination)
       }
     }
     Widget -> {
       generateWidgetFactories(this).writeTo(destination)
-      generateWidgetFactory(this).writeTo(destination)
-      for (widget in widgets) {
-        generateWidget(this, widget).writeTo(destination)
+      generateWidgetFactory(schema).writeTo(destination)
+      for (widget in schema.widgets) {
+        generateWidget(schema, widget).writeTo(destination)
       }
     }
   }

@@ -20,18 +20,23 @@ import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import app.cash.redwood.tooling.schema.Widget.Trait
 
+/** A [Schema] and its dependencies. */
+public interface SchemaSet {
+  public val schema: Schema
+  public val dependencies: Map<FqType, Schema>
+
+  public val all: List<Schema> get() = buildList {
+    add(schema)
+    addAll(dependencies.values)
+  }
+}
+
 public interface Schema {
   public val type: FqType
   public val scopes: List<FqType>
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
-  public val dependencies: List<Schema>
-
-  /** This schema and all its [dependencies]. */
-  public val allSchemas: List<Schema> get() = buildList {
-    add(this@Schema)
-    addAll(dependencies)
-  }
+  public val dependencies: List<FqType>
 }
 
 public interface Widget {
@@ -76,15 +81,20 @@ public interface LayoutModifier {
   )
 }
 
+/** A [ProtocolSchema] and its dependencies. */
+public interface ProtocolSchemaSet : SchemaSet {
+  override val schema: ProtocolSchema
+  override val dependencies: Map<FqType, ProtocolSchema>
+
+  override val all: List<ProtocolSchema> get() = buildList {
+    add(schema)
+    addAll(dependencies.values)
+  }
+}
+
 public interface ProtocolSchema : Schema {
   override val widgets: List<ProtocolWidget>
   override val layoutModifiers: List<ProtocolLayoutModifier>
-  override val dependencies: List<ProtocolSchema>
-
-  override val allSchemas: List<ProtocolSchema> get() = buildList {
-    add(this@ProtocolSchema)
-    addAll(dependencies)
-  }
 }
 
 public interface ProtocolWidget : Widget {
