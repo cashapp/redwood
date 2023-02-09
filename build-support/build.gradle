@@ -4,14 +4,14 @@ buildscript {
     classpath libs.buildConfigPlugin
   }
   repositories {
-    mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
     gradlePluginPortal()
   }
 }
 
 allprojects {
   repositories {
-    mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
     google()
   }
 }

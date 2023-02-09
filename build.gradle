@@ -19,7 +19,7 @@ buildscript {
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }
   repositories {
-    mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
     google()
     gradlePluginPortal()
   }
@@ -29,7 +29,7 @@ apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
   repositories {
-    mavenCentral(); maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
     google()
   }
 
