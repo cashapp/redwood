@@ -85,35 +85,35 @@ internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassNa
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), widget.type.flatName)
+  return ClassName(widgetPackage(), widget.type.flatName)
 }
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(this), "${type.flatName}WidgetFactory")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactory")
 }
 
 internal fun Schema.getMutableWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(this), "Mutable${type.flatName}WidgetFactory")
+  return ClassName(widgetPackage(), "Mutable${type.flatName}WidgetFactory")
 }
 
 internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), "Mutable${widget.type.flatName}")
+  return ClassName(widgetPackage(), "Mutable${widget.type.flatName}")
 }
 
 internal fun Schema.widgetValueType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), "${widget.type.flatName}Value")
+  return ClassName(widgetPackage(), "${widget.type.flatName}Value")
 }
 
 internal fun Schema.getWidgetFactoryProviderType(): ClassName {
-  return ClassName(widgetPackage(this), "${type.flatName}WidgetFactoryProvider")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryProvider")
 }
 
 internal fun Schema.getWidgetFactoriesType(): ClassName {
-  return ClassName(widgetPackage(this), "${type.flatName}WidgetFactories")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactories")
 }
 
-internal fun Schema.widgetPackage(host: Schema = this): String {
-  return if (this === host) {
+internal fun Schema.widgetPackage(host: Schema? = null): String {
+  return if (host == null) {
     val `package` = type.names[0]
     "$`package`.widget"
   } else {
@@ -135,11 +135,11 @@ internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassNam
 }
 
 internal fun Schema.getTesterFunction(): MemberName {
-  return MemberName(widgetPackage(this), "${type.flatName}Tester")
+  return MemberName(widgetPackage(), "${type.flatName}Tester")
 }
 
 internal val Schema.toLayoutModifier: MemberName get() =
-  MemberName(widgetPackage(this), "toLayoutModifier")
+  MemberName(widgetPackage(), "toLayoutModifier")
 
 internal val Schema.layoutModifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
