@@ -16,9 +16,8 @@
 package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.InternalComposeApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
-import androidx.compose.runtime.currentComposer
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WidgetApplier
@@ -46,24 +45,11 @@ private class ProtocolRedwoodComposition(
   private val composition: RedwoodComposition,
   private val widgetVersion: UInt,
 ) : RedwoodComposition by composition {
-  @OptIn(InternalComposeApi::class) // See internal function comment below.
   override fun setContent(content: @Composable () -> Unit) {
-    // TODO using CompositionLocalProvider fails to link in release mode with:
-    //  inlinable function call in a function with debug info must have a !dbg location
-    //    %16 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %15)
-    //  inlinable function call in a function with debug info must have a !dbg location
-    //    call void @"kfun:kotlin.Array#<init>(kotlin.Int){}"(%struct.ObjHeader* %18, i32 %17)
-    //  inlinable function call in a function with debug info must have a !dbg location
-    //    %20 = call i32 @"kfun:kotlin.Array#<get-size>(){}kotlin.Int"(%struct.ObjHeader* %19)
-    //  inlinable function call in a function with debug info must have a !dbg location
-    //    %24 = call %struct.ObjHeader* @"kfun:kotlin.collections#copyInto__at__kotlin.Array<out|0:0>(kotlin.Array<0:0>;kotlin.Int;kotlin.Int;kotlin.Int){0\C2\A7<kotlin.Any?>}kotlin.Array<0:0>"(%struct.ObjHeader* %21, %struct.ObjHeader* %22, i32 %23, i32 0, i32 %20, %struct.ObjHeader** %13)
-    //  inlinable function call in a function with debug info must have a !dbg location
-    //    call void @"kfun:androidx.compose.runtime#CompositionLocalProvider(kotlin.Array<out|androidx.compose.runtime.ProvidedValue<*>>...;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}"(%struct.ObjHeader* %27, %struct.ObjHeader* %1, %struct.ObjHeader* %3, i32 %28)
-    val providers = arrayOf(LocalWidgetVersion provides widgetVersion)
     composition.setContent {
-      currentComposer.startProviders(providers)
-      content()
-      currentComposer.endProviders()
+      CompositionLocalProvider(LocalWidgetVersion provides widgetVersion) {
+        content()
+      }
     }
   }
 }

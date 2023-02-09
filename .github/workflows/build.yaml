@@ -22,14 +22,9 @@ jobs:
           distribution: 'zulu'
           java-version: 19
 
-      # For cinterop issues. Remove with Kotlin 1.8.
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '13.4.1'
-
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
 
       # If we're on the integration branch, save the site to deploy from the publish job.
       - uses: actions/upload-artifact@v3
@@ -62,11 +57,6 @@ jobs:
           distribution: 'zulu'
           java-version: 19
 
-      # For cinterop issues. Remove with Kotlin 1.8.
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '13.4.1'
-
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew -p samples/counter build
@@ -90,11 +80,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 19
-
-      # For cinterop issues. Remove with Kotlin 1.8.
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '13.4.1'
 
       - uses: gradle/gradle-build-action@v2
 
@@ -126,11 +111,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 19
-
-      # For cinterop issues. Remove with Kotlin 1.8.
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '13.4.1'
 
       - uses: gradle/gradle-build-action@v2
 

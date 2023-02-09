@@ -26,7 +26,7 @@ import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactor
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import okio.ByteString
-import okio.toByteString
+import okio.ByteString.Companion.toByteString
 import platform.Foundation.NSData
 
 // Used to export types to Objective-C / Swift.

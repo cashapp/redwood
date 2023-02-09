@@ -12,6 +12,8 @@ kotlin {
     commonMain {
       dependencies {
         api projects.samples.emojiSearch.schema.compose
+        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseLazylayoutApi
       }
     }
     commonTest {

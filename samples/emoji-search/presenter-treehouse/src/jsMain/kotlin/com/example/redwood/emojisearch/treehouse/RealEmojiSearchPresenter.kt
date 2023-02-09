@@ -15,18 +15,11 @@
  */
 package com.example.redwood.emojisearch.treehouse
 
-import androidx.compose.runtime.Composable
-import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.StandardFrameClockService
-import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
-import app.cash.redwood.treehouse.lazylayout.compose.items
 import com.example.redwood.emojisearch.compose.EmojiSearchProtocolBridge
-import com.example.redwood.emojisearch.presenter.ColumnProvider
-import com.example.redwood.emojisearch.presenter.EmojiSearch
-import com.example.redwood.emojisearch.presenter.HttpClient
+import com.example.redwood.emojisearch.presenter.EmojiSearchTreehouseUi
 import kotlinx.serialization.json.Json
 
 class RealEmojiSearchPresenter(
@@ -37,41 +30,10 @@ class RealEmojiSearchPresenter(
 
   override fun launch(): ZiplineTreehouseUi {
     val bridge = EmojiSearchProtocolBridge.create(json)
-    val httpClient = HostHttpClient(hostApi)
-    val lazyColumnProvider = LazyColumnProvider(bridge)
-    val treehouseUi = object : TreehouseUi {
-      @Composable
-      override fun Show() {
-        EmojiSearch(httpClient, lazyColumnProvider)
-      }
-    }
+    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall, bridge)
     return treehouseUi.asZiplineTreehouseUi(
       bridge = bridge,
       widgetVersion = 0U,
     )
-  }
-}
-
-private class HostHttpClient(
-  private val hostApi: HostApi,
-) : HttpClient {
-  override suspend fun call(url: String, headers: Map<String, String>): String {
-    return hostApi.httpCall(url, headers)
-  }
-}
-
-private class LazyColumnProvider(
-  private val bridge: ProtocolBridge,
-) : ColumnProvider {
-  @Composable
-  override fun <T> create(
-    items: List<T>,
-    itemContent: @Composable (item: T) -> Unit,
-  ) {
-    bridge.LazyColumn {
-      items(items) { item ->
-        itemContent(item)
-      }
-    }
   }
 }

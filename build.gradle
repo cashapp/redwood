@@ -126,6 +126,9 @@ allprojects {
             it.linkTask.enabled = false
           }
         }
+        binaries.withType(org.jetbrains.kotlin.gradle.plugin.mpp.Framework) {
+          linkerOpts += "-lsqlite3"
+        }
       }
     }
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask).configureEach {
