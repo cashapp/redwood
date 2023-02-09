@@ -16,6 +16,7 @@
 package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
@@ -80,8 +81,9 @@ class ExampleProtocolBridge(
 }
 */
 internal fun generateProtocolBridge(
-  schema: ProtocolSchema,
+  schemaSet: ProtocolSchemaSet,
 ): FileSpec {
+  val schema = schemaSet.schema
   val type = schema.protocolBridgeType()
   val providerType = schema.getWidgetFactoryProviderType().parameterizedBy(NOTHING)
   return FileSpec.builder(type.packageName, type.simpleName)
@@ -149,7 +151,7 @@ internal fun generateProtocolBridge(
                 .addStatement("val root = bridge.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
-                    for (dependency in schema.allSchemas) {
+                    for (dependency in schemaSet.all) {
                       add(CodeBlock.of("%N = %T(bridge, json, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                     }
                   }
@@ -666,8 +668,9 @@ internal fun generateProtocolLayoutModifierSerializers(
 }
 
 internal fun generateProtocolLayoutModifierSerialization(
-  schema: ProtocolSchema,
+  schemaSet: ProtocolSchemaSet,
 ): FileSpec {
+  val schema = schemaSet.schema
   val name = schema.layoutModifierToProtocol.simpleName
   return FileSpec.builder(schema.composePackage(), "layoutModifierSerialization")
     .addFunction(
@@ -693,7 +696,7 @@ internal fun generateProtocolLayoutModifierSerialization(
         .returns(Protocol.LayoutModifierElement)
         .beginControlFlow("return when (this)")
         .apply {
-          val layoutModifiers = schema.allLayoutModifiers()
+          val layoutModifiers = schemaSet.allLayoutModifiers()
           if (layoutModifiers.isEmpty()) {
             addAnnotation(
               AnnotationSpec.builder(Suppress::class)

@@ -17,6 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.SchemaSet
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
@@ -49,7 +50,8 @@ public fun SunspotTester(scope: CoroutineScope): RedwoodTester {
   )
 }
 */
-internal fun generateTester(schema: Schema): FileSpec {
+internal fun generateTester(schemaSet: SchemaSet): FileSpec {
+  val schema = schemaSet.schema
   val testerFunction = schema.getTesterFunction()
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
     .addFunction(
@@ -61,7 +63,7 @@ internal fun generateTester(schema: Schema): FileSpec {
         .addCode("scope = scope,\n")
         .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
-          for (dependency in schema.allSchemas) {
+          for (dependency in schemaSet.all) {
             addCode("%N = %T(),\n", dependency.type.flatName, dependency.getMutableWidgetFactoryType())
           }
         }

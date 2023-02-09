@@ -62,12 +62,12 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
 
     when (val type = type) {
       is CodegenType -> {
-        val schema = parseSchema(schemaType)
-        schema.generate(type, out)
+        val schemaSet = parseSchema(schemaType)
+        schemaSet.generate(type, out)
       }
       is ProtocolCodegenType -> {
-        val schema = parseProtocolSchema(schemaType)
-        schema.generate(type, out)
+        val schemaSet = parseProtocolSchema(schemaType)
+        schemaSet.generate(type, out)
       }
       else -> throw AssertionError()
     }

@@ -18,6 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.SchemaSet
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
@@ -41,7 +42,8 @@ interface SunspotWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProv
   val Sunspot: SunspotWidgetFactory<W>
 }
  */
-internal fun generateWidgetFactories(schema: Schema): FileSpec {
+internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
+  val schema = schemaSet.schema
   val widgetFactoriesType = schema.getWidgetFactoriesType()
   return FileSpec.builder(widgetFactoriesType.packageName, widgetFactoriesType.simpleName)
     .addType(
@@ -51,7 +53,7 @@ internal fun generateWidgetFactories(schema: Schema): FileSpec {
         .apply {
           val constructorBuilder = FunSpec.constructorBuilder()
 
-          for (dependency in schema.allSchemas) {
+          for (dependency in schemaSet.all) {
             val dependencyType = dependency.getWidgetFactoryType().parameterizedBy(typeVariableW)
             addProperty(
               PropertySpec.builder(dependency.type.flatName, dependencyType, OVERRIDE)
@@ -71,7 +73,7 @@ internal fun generateWidgetFactories(schema: Schema): FileSpec {
         .addSuperinterface(RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
         .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
         .apply {
-          for (dependency in schema.dependencies) {
+          for (dependency in schemaSet.dependencies.values) {
             addSuperinterface(dependency.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
           }
         }

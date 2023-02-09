@@ -16,6 +16,7 @@
 package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
@@ -57,8 +58,9 @@ public class SunspotDiffConsumingNodeFactory<W : Any>(
 }
 */
 internal fun generateDiffConsumingNodeFactory(
-  schema: ProtocolSchema,
+  schemaSet: ProtocolSchemaSet,
 ): FileSpec {
+  val schema = schemaSet.schema
   val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
   val type = schema.diffConsumingNodeFactoryType()
   return FileSpec.builder(type.packageName, type.simpleName)
@@ -108,7 +110,7 @@ internal fun generateDiffConsumingNodeFactory(
             )
             .beginControlFlow("return when (tag.value)")
             .apply {
-              for (dependency in schema.allSchemas.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+              for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                 for (widget in dependency.widgets.sortedBy { it.tag }) {
                   addStatement(
                     "%L -> %T(parentId, parentChildren, provider.%N.%N(), json, mismatchHandler)",
@@ -338,11 +340,11 @@ internal fun generateDiffConsumingWidget(
 }
 
 internal fun generateDiffConsumingLayoutModifierSerialization(
-  schema: ProtocolSchema,
+  schemaSet: ProtocolSchemaSet,
 ): FileSpec {
-  return FileSpec.builder(schema.widgetPackage(), "layoutModifierSerialization")
-    .addFunction(generateJsonArrayToLayoutModifier(schema))
-    .addFunction(generateJsonElementToLayoutModifier(schema))
+  return FileSpec.builder(schemaSet.schema.widgetPackage(), "layoutModifierSerialization")
+    .addFunction(generateJsonArrayToLayoutModifier(schemaSet.schema))
+    .addFunction(generateJsonElementToLayoutModifier(schemaSet))
     .build()
 }
 
@@ -417,7 +419,7 @@ private fun generateJsonArrayToLayoutModifier(schema: ProtocolSchema): FunSpec {
     .build()
 }
 
-private fun generateJsonElementToLayoutModifier(schema: ProtocolSchema): FunSpec {
+private fun generateJsonElementToLayoutModifier(schemaSet: ProtocolSchemaSet): FunSpec {
   return FunSpec.builder("toLayoutModifier")
     .addModifiers(PRIVATE)
     .receiver(Protocol.LayoutModifierElement)
@@ -426,7 +428,7 @@ private fun generateJsonElementToLayoutModifier(schema: ProtocolSchema): FunSpec
     .returns(Redwood.LayoutModifier)
     .beginControlFlow("val serializer = when (tag.value)")
     .apply {
-      val layoutModifiers = schema.allLayoutModifiers()
+      val layoutModifiers = schemaSet.allLayoutModifiers()
       if (layoutModifiers.isEmpty()) {
         addAnnotation(
           AnnotationSpec.builder(Suppress::class)
@@ -434,8 +436,9 @@ private fun generateJsonElementToLayoutModifier(schema: ProtocolSchema): FunSpec
             .build(),
         )
       } else {
+        val host = schemaSet.schema
         for ((localSchema, layoutModifier) in layoutModifiers) {
-          val typeName = ClassName(localSchema.widgetPackage(schema), layoutModifier.type.flatName + "Impl")
+          val typeName = ClassName(localSchema.widgetPackage(host), layoutModifier.type.flatName + "Impl")
           if (layoutModifier.properties.isEmpty()) {
             addStatement("%L -> return %T", layoutModifier.tag, typeName)
           } else {

@@ -19,6 +19,7 @@ import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolLayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
@@ -144,8 +145,8 @@ internal val Schema.toLayoutModifier: MemberName get() =
 internal val Schema.layoutModifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
 
-internal fun ProtocolSchema.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
-  return allSchemas.flatMap { schema ->
+internal fun ProtocolSchemaSet.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
+  return all.flatMap { schema ->
     schema.layoutModifiers.map { schema to it }
   }
 }
