@@ -36,7 +36,6 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 /*
 @OptIn(RedwoodCodegenApi::class)
@@ -63,7 +62,7 @@ internal fun generateTester(schema: Schema): FileSpec {
         .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schema.allSchemas) {
-            addCode("%N = %T(),\n", dependency.name, dependency.getMutableWidgetFactoryType())
+            addCode("%N = %T(),\n", dependency.type.flatName, dependency.getMutableWidgetFactoryType())
           }
         }
         .addCode("⇤),\n")

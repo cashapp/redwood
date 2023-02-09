@@ -21,9 +21,12 @@ import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.parseSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+
+object RowScope
 
 class ComposeGenerationTest {
   @Schema(
@@ -32,7 +35,6 @@ class ComposeGenerationTest {
     ],
   )
   interface ScopedAndUnscopedSchema
-  object RowScope
 
   @Widget(1)
   data class Row(
@@ -53,7 +55,7 @@ class ComposeGenerationTest {
   @Test fun `scope is annotated with layout scope marker`() {
     val schema = parseSchema(ScopedAndUnscopedSchema::class)
 
-    val fileSpec = generateScope(schema, RowScope::class)
+    val fileSpec = generateScope(schema, FqType(listOf("example", "RowScope")))
     assertThat(fileSpec.toString()).contains(
       """
       |@LayoutScopeMarker

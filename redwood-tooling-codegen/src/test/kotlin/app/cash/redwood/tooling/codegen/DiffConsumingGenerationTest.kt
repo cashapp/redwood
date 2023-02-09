@@ -59,7 +59,7 @@ class DiffConsumingGenerationTest {
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schema = parseProtocolSchema(PrimarySchema::class)
 
-    val fileSpec = generateDiffConsumingLayoutModifiers(schema)
+    val fileSpec = generateDiffConsumingLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
       contains("1 -> PrimaryModifierImpl.serializer()")
       contains("1000001 -> SecondaryModifierImpl.serializer()")

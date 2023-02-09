@@ -33,7 +33,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 /*
 public class SunspotDiffConsumingNodeFactory<W : Any>(
@@ -115,7 +114,7 @@ internal fun generateDiffConsumingNodeFactory(
                     "%L -> %T(parentId, parentChildren, provider.%N.%N(), json, mismatchHandler)",
                     widget.tag,
                     dependency.diffConsumingNodeType(widget, schema),
-                    dependency.name,
+                    dependency.type.flatName,
                     widget.type.flatName,
                   )
                 }
@@ -338,19 +337,23 @@ internal fun generateDiffConsumingWidget(
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifiers(
+internal fun generateDiffConsumingLayoutModifierSerialization(
+  schema: ProtocolSchema,
+): FileSpec {
+  return FileSpec.builder(schema.widgetPackage(), "layoutModifierSerialization")
+    .addFunction(generateJsonArrayToLayoutModifier(schema))
+    .addFunction(generateJsonElementToLayoutModifier(schema))
+    .build()
+}
+
+internal fun generateDiffConsumingLayoutModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec {
-  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierSerialization")
+  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierImpls")
     .apply {
-      if (schema === host) {
-        addFunction(generateJsonArrayToLayoutModifier(schema))
-        addFunction(generateJsonElementToLayoutModifier(schema))
-      }
-
       for (layoutModifier in schema.layoutModifiers) {
-        val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.simpleName!! + "Impl")
+        val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.flatName + "Impl")
         val typeBuilder = if (layoutModifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
         } else {
@@ -382,7 +385,7 @@ internal fun generateDiffConsumingLayoutModifiers(
         }
         addType(
           typeBuilder
-            .addModifiers(if (schema === host) PRIVATE else INTERNAL)
+            .addModifiers(INTERNAL)
             .addSuperinterface(schema.layoutModifierType(layoutModifier))
             .addFunction(layoutModifierEquals(schema, layoutModifier))
             .addFunction(layoutModifierHashCode(layoutModifier))
@@ -432,7 +435,7 @@ private fun generateJsonElementToLayoutModifier(schema: ProtocolSchema): FunSpec
         )
       } else {
         for ((localSchema, layoutModifier) in layoutModifiers) {
-          val typeName = ClassName(localSchema.widgetPackage(schema), layoutModifier.type.simpleName!! + "Impl")
+          val typeName = ClassName(localSchema.widgetPackage(schema), layoutModifier.type.flatName + "Impl")
           if (layoutModifier.properties.isEmpty()) {
             addStatement("%L -> return %T", layoutModifier.tag, typeName)
           } else {

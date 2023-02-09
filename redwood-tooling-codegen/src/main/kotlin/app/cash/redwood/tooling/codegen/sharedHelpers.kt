@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolLayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
@@ -33,17 +34,14 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.UNIT
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import kotlin.reflect.KClass
 
 /**
  * Returns a single string that is likely to be unique within a schema, like `MapEntry` or
  * `NavigationBarButton`.
  */
-internal val KClass<*>.flatName: String
-  get() = asClassName().simpleNames.joinToString(separator = "")
+internal val FqType.flatName: String
+  get() = names.drop(1).joinToString("")
 
 internal val Event.lambdaType: TypeName
   get() {
@@ -58,18 +56,20 @@ private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(n
 
 internal fun Schema.composePackage(host: Schema? = null): String {
   return if (host == null) {
+    val `package` = type.names[0]
     "$`package`.compose"
   } else {
-    "${host.`package`}.compose.${name.lowercase()}"
+    val hostPackage = host.type.names[0]
+    "$hostPackage.compose.${type.flatName.lowercase()}"
   }
 }
 
 internal fun Schema.protocolBridgeType(): ClassName {
-  return ClassName(composePackage(), "${name}ProtocolBridge")
+  return ClassName(composePackage(), "${type.flatName}ProtocolBridge")
 }
 
 internal fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "Protocol${name}WidgetFactory")
+  return ClassName(composePackage(host), "Protocol${type.flatName}WidgetFactory")
 }
 
 internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
@@ -77,7 +77,7 @@ internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName 
 }
 
 internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${name}DiffConsumingNodeFactory")
+  return ClassName(widgetPackage(), "${type.flatName}DiffConsumingNodeFactory")
 }
 
 internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassName {
@@ -85,43 +85,45 @@ internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassNa
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), widget.type.flatName)
+  return ClassName(widgetPackage(), widget.type.flatName)
 }
 
 internal fun Schema.getWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(this), "${name}WidgetFactory")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactory")
 }
 
 internal fun Schema.getMutableWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(this), "Mutable${name}WidgetFactory")
+  return ClassName(widgetPackage(), "Mutable${type.flatName}WidgetFactory")
 }
 
 internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), "Mutable${widget.type.flatName}")
+  return ClassName(widgetPackage(), "Mutable${widget.type.flatName}")
 }
 
 internal fun Schema.widgetValueType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(this), "${widget.type.flatName}Value")
+  return ClassName(widgetPackage(), "${widget.type.flatName}Value")
 }
 
 internal fun Schema.getWidgetFactoryProviderType(): ClassName {
-  return ClassName(widgetPackage(this), "${name}WidgetFactoryProvider")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryProvider")
 }
 
 internal fun Schema.getWidgetFactoriesType(): ClassName {
-  return ClassName(widgetPackage(this), "${name}WidgetFactories")
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactories")
 }
 
-internal fun Schema.widgetPackage(host: Schema = this): String {
-  return if (this === host) {
+internal fun Schema.widgetPackage(host: Schema? = null): String {
+  return if (host == null) {
+    val `package` = type.names[0]
     "$`package`.widget"
   } else {
-    "${host.`package`}.widget.${name.lowercase()}"
+    val hostPackage = host.type.names[0]
+    "$hostPackage.widget.${type.flatName.lowercase()}"
   }
 }
 
 internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(`package`, layoutModifier.type.flatName)
+  return ClassName(type.names[0], layoutModifier.type.flatName)
 }
 
 internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, host: Schema): ClassName {
@@ -129,15 +131,15 @@ internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, hos
 }
 
 internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(composePackage(), layoutModifier.type.simpleName!! + "Impl")
+  return ClassName(composePackage(), layoutModifier.type.flatName + "Impl")
 }
 
 internal fun Schema.getTesterFunction(): MemberName {
-  return MemberName(widgetPackage(this), "${name}Tester")
+  return MemberName(widgetPackage(), "${type.flatName}Tester")
 }
 
 internal val Schema.toLayoutModifier: MemberName get() =
-  MemberName(widgetPackage(this), "toLayoutModifier")
+  MemberName(widgetPackage(), "toLayoutModifier")
 
 internal val Schema.layoutModifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
@@ -170,7 +172,7 @@ internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
     .returns(INT)
     .apply {
       if (layoutModifier.properties.isEmpty()) {
-        addStatement("return %L", layoutModifier.type.simpleName!!.hashCode())
+        addStatement("return %L", layoutModifier.type.flatName.hashCode())
       } else {
         addStatement("var hash = 17")
         for (property in layoutModifier.properties) {
@@ -183,7 +185,7 @@ internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
 }
 
 internal fun layoutModifierToString(layoutModifier: LayoutModifier): FunSpec {
-  val simpleName = layoutModifier.type.simpleName!!
+  val simpleName = layoutModifier.type.flatName
   return FunSpec.builder("toString")
     .addModifiers(KModifier.OVERRIDE)
     .returns(STRING)
