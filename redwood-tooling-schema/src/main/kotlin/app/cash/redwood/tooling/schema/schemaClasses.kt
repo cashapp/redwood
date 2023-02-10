@@ -20,57 +20,95 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 internal data class ParsedProtocolSchemaSet(
   override val schema: ProtocolSchema,
   override val dependencies: Map<FqType, ProtocolSchema>,
 ) : ProtocolSchemaSet
 
+@Serializable
 internal data class ParsedProtocolSchema(
   override val type: FqType,
-  override val scopes: List<FqType>,
-  override val widgets: List<ProtocolWidget>,
-  override val layoutModifiers: List<ProtocolLayoutModifier>,
-  override val dependencies: List<FqType>,
-) : ProtocolSchema
+  override val scopes: List<FqType> = emptyList(),
+  override val widgets: List<ParsedProtocolWidget> = emptyList(),
+  override val layoutModifiers: List<ParsedProtocolLayoutModifier> = emptyList(),
+  override val dependencies: List<FqType> = emptyList(),
+) : ProtocolSchema {
+  override fun toEmbeddedSchema(): EmbeddedSchema {
+    return EmbeddedSchema(
+      path = type.names[0].replace('.', '/') + "/" + type.names.drop(1).joinToString(".") + ".json",
+      json = json.encodeToString(serializer(), this),
+    )
+  }
 
+  companion object {
+    private val json = Json {
+      prettyPrint = true
+      prettyPrintIndent = "\t"
+      classDiscriminator = "kind"
+      serializersModule = SerializersModule {
+        polymorphic(ProtocolTrait::class) {
+          subclass(ParsedProtocolChildren::class)
+          subclass(ParsedProtocolEvent::class)
+          subclass(ParsedProtocolProperty::class)
+        }
+      }
+    }
+  }
+}
+
+@Serializable
 internal data class ParsedProtocolWidget(
   override val tag: Int,
   override val type: FqType,
-  override val traits: List<ProtocolTrait>,
+  override val traits: List<ProtocolTrait> = emptyList(),
 ) : ProtocolWidget
 
+@Serializable
+@SerialName("property")
 internal data class ParsedProtocolProperty(
   override val tag: Int,
   override val name: String,
   override val type: FqType,
-  override val defaultExpression: String?,
+  override val defaultExpression: String? = null,
 ) : ProtocolProperty
 
+@Serializable
+@SerialName("event")
 internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
-  override val defaultExpression: String?,
   override val parameterType: FqType?,
+  override val defaultExpression: String? = null,
 ) : ProtocolEvent
 
+@Serializable
+@SerialName("children")
 internal data class ParsedProtocolChildren(
   override val tag: Int,
   override val name: String,
-  override val defaultExpression: String?,
-  override val scope: FqType?,
+  override val scope: FqType? = null,
+  override val defaultExpression: String? = null,
 ) : ProtocolChildren
 
+@Serializable
 internal data class ParsedProtocolLayoutModifier(
   override val tag: Int,
   override val scopes: List<FqType>,
   override val type: FqType,
-  override val properties: List<Property>,
+  override val properties: List<ParsedProtocolLayoutModifierProperty> = emptyList(),
 ) : ProtocolLayoutModifier
 
+@Serializable
 internal data class ParsedProtocolLayoutModifierProperty(
   override val name: String,
   override val type: FqType,
   override val isSerializable: Boolean,
-  override val defaultExpression: String?,
+  override val defaultExpression: String? = null,
 ) : Property

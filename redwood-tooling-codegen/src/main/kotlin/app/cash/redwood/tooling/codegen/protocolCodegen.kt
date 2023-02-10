@@ -19,7 +19,6 @@ import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Json
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import app.cash.redwood.tooling.schema.toEmbeddedSchema
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
