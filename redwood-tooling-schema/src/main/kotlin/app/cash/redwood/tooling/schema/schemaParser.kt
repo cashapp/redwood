@@ -306,7 +306,7 @@ private fun parseLayoutModifier(
           annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
         }
         ?: false
-      LayoutModifier.Property(it.name!!, it.type.toFqType(), isSerializable, defaultExpression)
+      ParsedProtocolLayoutModifierProperty(it.name!!, it.type.toFqType(), isSerializable, defaultExpression)
     }
   } else if (memberType.objectInstance != null) {
     emptyList()

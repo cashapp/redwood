@@ -73,12 +73,12 @@ public interface LayoutModifier {
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val properties: List<Property>
 
-  public data class Property(
-    val name: String,
-    val type: FqType,
-    val isSerializable: Boolean,
-    val defaultExpression: String?,
-  )
+  public interface Property {
+    public val name: String
+    public val type: FqType
+    public val isSerializable: Boolean
+    public val defaultExpression: String?
+  }
 }
 
 /** A [ProtocolSchema] and its dependencies. */

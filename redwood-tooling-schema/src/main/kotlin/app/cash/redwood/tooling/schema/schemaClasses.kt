@@ -67,3 +67,10 @@ internal data class ParsedProtocolLayoutModifier(
   override val type: FqType,
   override val properties: List<Property>,
 ) : ProtocolLayoutModifier
+
+internal data class ParsedProtocolLayoutModifierProperty(
+  override val name: String,
+  override val type: FqType,
+  override val isSerializable: Boolean,
+  override val defaultExpression: String?,
+) : Property

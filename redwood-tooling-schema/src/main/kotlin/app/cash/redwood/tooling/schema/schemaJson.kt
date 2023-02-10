@@ -81,6 +81,7 @@ public fun ProtocolSchema.toEmbeddedSchema(): EmbeddedSchema {
           LayoutModifierPropertyJson(
             name = it.name,
             type = it.type,
+            isSerializable = it.isSerializable,
             defaultExpression = it.defaultExpression,
           )
         },
@@ -172,5 +173,6 @@ private data class LayoutModifierJson(
 private data class LayoutModifierPropertyJson(
   val name: String,
   val type: FqType,
+  val isSerializable: Boolean,
   val defaultExpression: String? = null,
 )
