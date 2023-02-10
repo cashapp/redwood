@@ -19,11 +19,6 @@ jobs:
           distribution: 'zulu'
           java-version: 19
 
-      # For cinterop issues. Remove with Kotlin 1.8.
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '13.4.1'
-
       - name: Build and publish artifacts
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
