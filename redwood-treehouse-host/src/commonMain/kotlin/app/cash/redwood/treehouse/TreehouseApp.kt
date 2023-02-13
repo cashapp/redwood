@@ -144,14 +144,9 @@ public class TreehouseApp<A : AppService> private constructor(
       }
     }
 
-    val manifestUrlFlowForLoad = when (spec.freshCodePolicy) {
-      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> hotReloadFlow(spec.manifestUrl)
-      else -> spec.manifestUrl
-    }
-
     return ziplineLoaderForLoad.load(
       applicationName = spec.name,
-      manifestUrlFlow = manifestUrlFlowForLoad,
+      manifestUrlFlow = spec.manifestUrl,
       serializersModule = spec.serializersModule,
     ) { zipline ->
       spec.bindServices(zipline)
@@ -302,6 +297,19 @@ public class TreehouseApp<A : AppService> private constructor(
    */
   public abstract class Spec<A : AppService> {
     public abstract val name: String
+
+
+    /**
+     * The URL of the Zipline manifest file to load this app's code from.
+     *
+     * This flow should emit each time that a code load should be attempted. No code will be loaded
+     * until this flow's first emit.
+     *
+     * The flow may make subsequent emits to trigger a hot reload attempt. Hot reloads will be
+     * attempted even if the URL is unchanged. This is typically most useful during development.
+     * Consider using [app.cash.zipline.loader.withDevelopmentServerPush] to turn the Zipline
+     * development server URL flow into one that emits each time that server's code is updated.
+     */
     public abstract val manifestUrl: Flow<String>
 
     public open val serializersModule: SerializersModule

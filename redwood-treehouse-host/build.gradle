@@ -24,16 +24,10 @@ kotlin {
       }
     }
 
-    commonJvmMain {
+    androidMain {
       dependencies {
         api libs.okHttp
       }
-    }
-    androidMain {
-      dependsOn(commonJvmMain)
-    }
-    jvmMain {
-      dependsOn(commonJvmMain)
     }
 
     commonTest {
