@@ -37,7 +37,18 @@ public interface Schema {
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
   public val dependencies: List<FqType>
+
+  /**
+   * Convert this schema to JSON which can be embedded inside the schema artifact.
+   * This JSON will be read when the schema is used as a dependency.
+   */
+  public fun toEmbeddedSchema(): EmbeddedSchema
 }
+
+public data class EmbeddedSchema(
+  val path: String,
+  val json: String,
+)
 
 public interface Widget {
   /** Either a 'data class' or 'object'. */

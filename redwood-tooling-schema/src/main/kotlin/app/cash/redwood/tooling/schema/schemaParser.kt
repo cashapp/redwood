@@ -64,8 +64,8 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     )
   }
 
-  val widgets = mutableListOf<ProtocolWidget>()
-  val layoutModifiers = mutableListOf<ProtocolLayoutModifier>()
+  val widgets = mutableListOf<ParsedProtocolWidget>()
+  val layoutModifiers = mutableListOf<ParsedProtocolLayoutModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
     val layoutModifierAnnotation = memberType.findAnnotation<LayoutModifierAnnotation>()
@@ -198,7 +198,7 @@ private fun parseWidget(
   schemaTag: Int,
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
-): ProtocolWidget {
+): ParsedProtocolWidget {
   require(annotation.tag in 1 until maxMemberTag) {
     "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
@@ -216,7 +216,7 @@ private fun parseWidget(
           require(arguments.size <= 1) {
             "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
           }
-          ParsedProtocolEvent(property.tag, it.name!!, defaultExpression, arguments.singleOrNull()?.type?.toFqType())
+          ParsedProtocolEvent(property.tag, it.name!!, arguments.singleOrNull()?.type?.toFqType(), defaultExpression)
         } else {
           ParsedProtocolProperty(property.tag, it.name!!, it.type.toFqType(), defaultExpression)
         }
@@ -238,7 +238,7 @@ private fun parseWidget(
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        ParsedProtocolChildren(children.tag, it.name!!, defaultExpression, scope)
+        ParsedProtocolChildren(children.tag, it.name!!, scope, defaultExpression)
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }
@@ -288,7 +288,7 @@ private fun parseLayoutModifier(
   schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
-): ProtocolLayoutModifier {
+): ParsedProtocolLayoutModifier {
   require(annotation.tag in 1 until maxMemberTag) {
     "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
   }
