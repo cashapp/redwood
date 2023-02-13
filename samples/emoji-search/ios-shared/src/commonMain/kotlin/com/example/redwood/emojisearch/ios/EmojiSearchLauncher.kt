@@ -19,11 +19,13 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
+import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.HostApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.flowOf
 import platform.Foundation.NSURLSession
 
 class EmojiSearchLauncher(
@@ -35,15 +37,20 @@ class EmojiSearchLauncher(
 
   @Suppress("unused") // Invoked in Swift.
   fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+    val ziplineHttpClient = nsurlSession.asZiplineHttpClient()
+
     val treehouseAppFactory = TreehouseAppFactory(
-      httpClient = nsurlSession.asZiplineHttpClient(),
+      httpClient = ziplineHttpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
     )
+
+    val manifestUrlFlow = flowOf(manifestUrl)
+      .withDevelopmentServerPush(ziplineHttpClient)
 
     val treehouseApp = treehouseAppFactory.create(
       appScope = coroutineScope,
       spec = EmojiSearchAppSpec(
-        manifestUrlString = manifestUrl,
+        manifestUrl = manifestUrlFlow,
         hostApi = hostApi,
       ),
     )

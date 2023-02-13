@@ -29,12 +29,15 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.composeui.ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.zipline.loader.ManifestVerifier
+import app.cash.zipline.loader.asZiplineHttpClient
+import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 
@@ -75,6 +78,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
   private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
     val httpClient = OkHttpClient()
+    val ziplineHttpClient = httpClient.asZiplineHttpClient()
 
     val treehouseAppFactory = TreehouseAppFactory(
       context = applicationContext,
@@ -82,10 +86,13 @@ class EmojiSearchActivity : ComponentActivity() {
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
     )
 
+    val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
+      .withDevelopmentServerPush(ziplineHttpClient)
+
     val treehouseApp = treehouseAppFactory.create(
       appScope = scope,
       spec = EmojiSearchAppSpec(
-        manifestUrlString = "http://10.0.2.2:8080/manifest.zipline.json",
+        manifestUrl = manifestUrlFlow,
         hostApi = RealHostApi(httpClient),
       )
     )
