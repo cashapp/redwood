@@ -298,7 +298,6 @@ public class TreehouseApp<A : AppService> private constructor(
   public abstract class Spec<A : AppService> {
     public abstract val name: String
 
-
     /**
      * The URL of the Zipline manifest file to load this app's code from.
      *
