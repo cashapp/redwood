@@ -24,19 +24,30 @@ import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.BYTE
+import com.squareup.kotlinpoet.CHAR
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.DOUBLE
+import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.LATEINIT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.SHORT
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.U_BYTE
+import com.squareup.kotlinpoet.U_INT
+import com.squareup.kotlinpoet.U_LONG
+import com.squareup.kotlinpoet.U_SHORT
 
 /*
 @OptIn(RedwoodCodegenApi::class)
@@ -169,12 +180,13 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                   PropertySpec.builder(trait.name, type)
                     .addModifiers(PRIVATE)
                     .apply {
-                      if (trait.defaultExpression != null) {
-                        initializer(trait.defaultExpression!!)
-                      } else if (type.isNullable) {
-                        initializer("null")
-                      } else {
-                        addModifiers(LATEINIT)
+                      val defaultExpressionForTrait = trait.defaultExpression
+                      val defaultValueForType = primitiveTypeToDefaultValue[type]
+                      when {
+                        defaultExpressionForTrait != null -> initializer(defaultExpressionForTrait)
+                        type.isNullable -> initializer("null")
+                        defaultValueForType != null -> initializer(defaultValueForType)
+                        else -> addModifiers(LATEINIT)
                       }
                     }
                     .mutable(true)
@@ -377,3 +389,19 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     )
     .build()
 }
+
+/** These types can't have lateinit. */
+private val primitiveTypeToDefaultValue = mapOf(
+  U_BYTE to CodeBlock.of("0U"),
+  U_SHORT to CodeBlock.of("0U"),
+  U_INT to CodeBlock.of("0U"),
+  U_LONG to CodeBlock.of("0UL"),
+  BOOLEAN to CodeBlock.of("false"),
+  BYTE to CodeBlock.of("0"),
+  SHORT to CodeBlock.of("0"),
+  INT to CodeBlock.of("0"),
+  LONG to CodeBlock.of("0L"),
+  CHAR to CodeBlock.of("'\u0000'"),
+  FLOAT to CodeBlock.of("%T.NaN", Float::class),
+  DOUBLE to CodeBlock.of("%T.NaN", Double::class),
+)
