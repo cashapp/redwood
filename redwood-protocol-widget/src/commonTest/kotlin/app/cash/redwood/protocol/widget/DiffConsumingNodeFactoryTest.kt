@@ -352,5 +352,12 @@ class DiffConsumingNodeFactoryTest {
     override fun onChangeCustomType(onChangeCustomType: ((Duration) -> Unit)?) {
       this.onChangeCustomType = onChangeCustomType
     }
+
+    var maxLength: Int? = null
+      private set
+
+    override fun maxLength(maxLength: Int) {
+      this.maxLength = maxLength
+    }
   }
 }

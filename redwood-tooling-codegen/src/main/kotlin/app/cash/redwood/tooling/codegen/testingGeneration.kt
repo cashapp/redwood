@@ -28,7 +28,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
-import com.squareup.kotlinpoet.KModifier.LATEINIT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
@@ -114,7 +113,8 @@ internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidge
   public override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private var text: String? = null
-  private var enabled: Boolean = false
+  private var enabled: Boolean? = null
+  private var maxLength: Int? = null
 
   public override fun text(text: String?) {
     this.text = text
@@ -125,7 +125,7 @@ internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidge
   }
 
   public override fun snapshot() : SunspotButtonValue {
-    return SunspotButtonValue(layoutModifiers, text, enabled)
+    return SunspotButtonValue(layoutModifiers, text, enabled!!, maxLength!!)
   }
 }
 */
@@ -166,17 +166,9 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                   else -> throw AssertionError()
                 }
                 addProperty(
-                  PropertySpec.builder(trait.name, type)
+                  PropertySpec.builder(trait.name, type.copy(nullable = true))
                     .addModifiers(PRIVATE)
-                    .apply {
-                      if (trait.defaultExpression != null) {
-                        initializer(trait.defaultExpression!!)
-                      } else if (type.isNullable) {
-                        initializer("null")
-                      } else {
-                        addModifiers(LATEINIT)
-                      }
-                    }
+                    .initializer("null")
                     .mutable(true)
                     .build(),
                 )
@@ -211,7 +203,18 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .apply {
               for (trait in widget.traits) {
                 when (trait) {
-                  is Property, is Event -> addCode("%N = %N,\n", trait.name, trait.name)
+                  is Event, is Property -> {
+                    val nullable = when (trait) {
+                      is Property -> trait.type.nullable
+                      is Event -> trait.lambdaType.isNullable
+                      else -> false
+                    }
+                    if (nullable) {
+                      addCode("%N = %N,\n", trait.name, trait.name)
+                    } else {
+                      addCode("%N = %N!!,\n", trait.name, trait.name)
+                    }
+                  }
                   is Children -> addCode("%N = %N.map { it.`value`.snapshot() },\n", trait.name, trait.name)
                   is ProtocolTrait -> throw AssertionError()
                 }

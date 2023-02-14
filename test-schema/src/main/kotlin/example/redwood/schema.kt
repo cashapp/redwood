@@ -75,6 +75,7 @@ public data class TextInput(
   @Property(2) val customType: Duration?,
   @Property(3) val onChange: (String) -> Unit,
   @Property(4) val onChangeCustomType: (Duration) -> Unit,
+  @Property(5) val maxLength: Int,
 )
 
 @Widget(6)
