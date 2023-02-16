@@ -87,9 +87,9 @@ class TestingGenerationTest {
       |
       |  public override var layoutModifiers: LayoutModifier = LayoutModifier
       |
-      |  private var trait: String = "test"
+      |  private var trait: String? = null
       |
-      |  private var onEvent: (() -> Unit)? = { error("test") }
+      |  private var onEvent: (() -> Unit)? = null
       |
       |  public override val block: MutableListChildren<MutableWidget> =
       |      MutableListChildren<MutableWidget>()
@@ -105,7 +105,7 @@ class TestingGenerationTest {
       |  public override fun snapshot(): TestingGenerationTestBasicWidgetValue =
       |      TestingGenerationTestBasicWidgetValue(
       |    layoutModifiers = layoutModifiers,
-      |    trait = trait,
+      |    trait = trait!!,
       |    onEvent = onEvent,
       |    block = block.map { it.`value`.snapshot() },
       |  )
