@@ -107,6 +107,8 @@ buildConfig {
   }
 
   packageName('app.cash.redwood.gradle')
-  buildConfigField("String", "jbComposeCompiler", "\"${libs.versions.jbComposeCompiler.get()}\"")
+  buildConfigField("String", "composeCompilerGroupId", "\"${libs.jetbrains.compose.compiler.get().module.group}\"")
+  buildConfigField("String", "composeCompilerArtifactId", "\"${libs.jetbrains.compose.compiler.get().module.name}\"")
+  buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
 }
