@@ -129,8 +129,8 @@ public class TreehouseApp<A : AppService> private constructor(
 
     ziplineLoaderNetworkOnly.concurrentDownloads = factory.concurrentDownloads
 
-    val ziplineLoaderForLoad = when (spec.freshCodePolicy) {
-      FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY -> {
+    val ziplineLoaderForLoad = when {
+      spec.loadCodeFromNetworkOnly -> {
         ziplineLoaderNetworkOnly
       }
       else -> {
@@ -314,8 +314,15 @@ public class TreehouseApp<A : AppService> private constructor(
     public open val serializersModule: SerializersModule
       get() = EmptySerializersModule()
 
-    public open val freshCodePolicy: FreshCodePolicy
-      get() = FreshCodePolicy.ALWAYS_REFRESH_IMMEDIATELY
+    /**
+     * Returns true to only load code from the network. Otherwise this will recover from
+     * unreachable network code by loading code from the cache or the embedded file system.
+     *
+     * This is false by default. Override it to return true in development, where loading code from
+     * a source other than the network may be surprising.
+     */
+    public open val loadCodeFromNetworkOnly: Boolean
+      get() = false
 
     public abstract fun bindServices(zipline: Zipline)
     public abstract fun create(zipline: Zipline): A
