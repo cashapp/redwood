@@ -34,9 +34,9 @@ class ComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun getCompilerPluginId() = "app.cash.redwood.tools.compose"
 
   override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-    "org.jetbrains.compose.compiler",
-    "compiler",
-    jbComposeCompiler,
+    composeCompilerGroupId,
+    composeCompilerArtifactId,
+    composeCompilerVersion,
   )
 
   override fun applyToCompilation(
