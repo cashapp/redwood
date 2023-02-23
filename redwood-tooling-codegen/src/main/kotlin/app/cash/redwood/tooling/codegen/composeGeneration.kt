@@ -50,7 +50,7 @@ fun Row(
   _RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
     factory = { it.RedwoodLayout.Row() },
     update = {
-      set(layoutModifier) { layoutModifiers = it }
+      set(layoutModifier, Widget.SetLayoutModifiers)
       set(padding, Row<*>::padding)
       set(overflow, Row<*>::overflow)
     },
@@ -121,7 +121,7 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(layoutModifier) { layoutModifiers = it }\n")
+            .add("set(layoutModifier, %T.SetLayoutModifiers)\n", RedwoodWidget.Widget)
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
