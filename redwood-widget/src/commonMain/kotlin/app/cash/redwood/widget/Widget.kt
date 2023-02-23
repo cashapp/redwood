@@ -16,6 +16,7 @@
 package app.cash.redwood.widget
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.RedwoodCodegenApi
 
 public interface Widget<W : Any> {
   /**
@@ -28,6 +29,12 @@ public interface Widget<W : Any> {
    * A collection of elements that change how a widget is laid out.
    */
   public var layoutModifiers: LayoutModifier
+
+  public companion object {
+    /** @suppress Optimization for generated code to avoid generating/allocating many lambdas. */
+    @RedwoodCodegenApi
+    public val SetLayoutModifiers: Widget<*>.(LayoutModifier) -> Unit = { layoutModifiers = it }
+  }
 
   /** Marker interface for types whose properties expose factories of [Widget]s. */
   @Suppress("unused") // This type parameter used to match against other types like Children.
