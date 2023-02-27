@@ -17,8 +17,11 @@ package app.cash.redwood.treehouse.lazylayout.api
 
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.zipline.ZiplineService
+import app.cash.zipline.ziplineServiceSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 
 @Serializable
 public class LazyListIntervalContent(
@@ -29,4 +32,8 @@ public class LazyListIntervalContent(
   public interface Item : ZiplineService {
     public fun get(index: Int): ZiplineTreehouseUi
   }
+}
+
+public val treehouseLazyLayoutSerializersModule: SerializersModule = SerializersModule {
+  contextual(ziplineServiceSerializer<LazyListIntervalContent.Item>())
 }

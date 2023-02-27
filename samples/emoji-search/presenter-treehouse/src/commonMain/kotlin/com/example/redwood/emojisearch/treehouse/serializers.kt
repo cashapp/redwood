@@ -15,11 +15,9 @@
  */
 package com.example.redwood.emojisearch.treehouse
 
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
-import app.cash.zipline.ziplineServiceSerializer
+import app.cash.redwood.treehouse.lazylayout.api.treehouseLazyLayoutSerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 
 val treehouseSerializersModule = SerializersModule {
-  contextual(ziplineServiceSerializer<LazyListIntervalContent.Item>())
+  include(treehouseLazyLayoutSerializersModule)
 }
