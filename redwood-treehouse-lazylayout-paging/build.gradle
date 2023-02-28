@@ -1,0 +1,18 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  js {
+    browser()
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api(projects.redwoodTreehouseLazylayoutCompose)
+        api(libs.paging.compose.common)
+      }
+    }
+  }
+}
