@@ -19,6 +19,16 @@ import androidx.compose.runtime.Composable
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.redwood.treehouse.lazylayout.compose.LazyListScope
 
+/**
+ * Adds the [LazyPagingItems] and their content to the scope. The range from 0 (inclusive) to
+ * [LazyPagingItems.itemCount] (exclusive) always represents the full range of presentable items,
+ * because every event from [PagingDataDiffer] will trigger a recomposition.
+ *
+ * @param items the items received from a [Flow] of [PagingData].
+ * @param itemContent the content displayed by a single item. In case the item is `null`, the
+ * [itemContent] method should handle the logic of displaying a placeholder instead of the main
+ * content displayed by an item which is not `null`.
+ */
 public fun <T : Any> LazyListScope.items(
   items: LazyPagingItems<T>,
   itemContent: @Composable (value: T?) -> Unit,
@@ -30,6 +40,17 @@ public fun <T : Any> LazyListScope.items(
   }
 }
 
+/**
+ * Adds the [LazyPagingItems] and their content to the scope where the content of an item is
+ * aware of its local index. The range from 0 (inclusive) to [LazyPagingItems.itemCount] (exclusive)
+ * always represents the full range of presentable items, because every event from
+ * [PagingDataDiffer] will trigger a recomposition.
+ *
+ * @param items the items received from a [Flow] of [PagingData].
+ * @param itemContent the content displayed by a single item. In case the item is `null`, the
+ * [itemContent] method should handle the logic of displaying a placeholder instead of the main
+ * content displayed by an item which is not `null`.
+ */
 public fun <T : Any> LazyListScope.itemsIndexed(
   items: LazyPagingItems<T>,
   itemContent: @Composable (index: Int, value: T?) -> Unit,
