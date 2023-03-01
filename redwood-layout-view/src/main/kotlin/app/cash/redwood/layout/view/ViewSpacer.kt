@@ -17,6 +17,7 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
+import android.widget.Space
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.widget.Spacer
 import kotlin.math.roundToInt
@@ -26,7 +27,7 @@ internal class ViewSpacer(
 ) : Spacer<View> {
   private val density = DensityMultiplier * context.resources.displayMetrics.density
 
-  override val value = View(context)
+  override val value = Space(context)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 

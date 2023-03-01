@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,12 +31,7 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
   private var height by mutableStateOf(0)
 
   override val value = @Composable {
-    Layout(
-      modifier = Modifier.defaultMinSize(unitsToDp(width), unitsToDp(height)),
-      measurePolicy = { _, constraints ->
-        layout(constraints.minWidth, constraints.minHeight) {}
-      },
-    )
+    Spacer(Modifier.defaultMinSize(unitsToDp(width), unitsToDp(height)))
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
