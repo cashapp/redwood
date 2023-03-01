@@ -19,8 +19,9 @@ import app.cash.redwood.schema.Schema
 
 @Schema(
   [
-    Column::class,
     Row::class,
+    Column::class,
+    Spacer::class,
     Grow::class,
     Shrink::class,
     Padding::class,

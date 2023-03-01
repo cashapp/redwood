@@ -18,6 +18,8 @@ package app.cash.redwood.layout.composeui
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
@@ -27,6 +29,10 @@ import app.cash.redwood.flexbox.Size
 // uses 3. This aligns the two so the generic values used by Redwood layout are
 // visually similar on both platforms.
 internal const val DensityMultiplier = 1.1
+
+internal fun unitsToDp(units: Int): Dp {
+  return (units / DensityMultiplier).dp
+}
 
 internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
   val widthSpec = when {

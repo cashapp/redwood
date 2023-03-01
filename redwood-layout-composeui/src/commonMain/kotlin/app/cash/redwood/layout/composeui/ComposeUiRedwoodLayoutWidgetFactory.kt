@@ -20,8 +20,10 @@ import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 
 public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
-  public override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
-  public override fun Row(): Row<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Row)
+  override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
+  override fun Row(): Row<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Row)
+  override fun Spacer(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
 }

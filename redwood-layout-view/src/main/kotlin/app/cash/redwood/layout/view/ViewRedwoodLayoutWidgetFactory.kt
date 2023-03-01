@@ -21,10 +21,12 @@ import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 
 public class ViewRedwoodLayoutWidgetFactory(
   private val context: Context,
 ) : RedwoodLayoutWidgetFactory<View> {
-  public override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
-  public override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
+  override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
+  override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
+  override fun Spacer(): Spacer<View> = ViewSpacer(context)
 }

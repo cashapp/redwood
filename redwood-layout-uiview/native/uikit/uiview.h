@@ -16,8 +16,13 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "RedwoodViewDelegate.h"
 #import "RedwoodScrollViewDelegate.h"
 
-@interface HostView : UIScrollView
+@interface FlexContainerHostView : UIScrollView
 @property id <RedwoodScrollViewDelegate> kotlinDelegate;
+@end
+
+@interface SpacerHostView : UIView
+@property id <RedwoodViewDelegate> kotlinDelegate;
 @end

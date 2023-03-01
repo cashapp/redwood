@@ -26,7 +26,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.api.Padding
-import app.cash.redwood.layout.uiview.cinterop.HostView
+import app.cash.redwood.layout.uiview.cinterop.FlexContainerHostView
 import app.cash.redwood.layout.uiview.cinterop.RedwoodScrollViewDelegateProtocol
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
@@ -51,7 +51,7 @@ internal class UIViewFlexContainer(
     roundToInt = false
   }
 
-  override val value = HostView().apply {
+  override val value = FlexContainerHostView().apply {
     kotlinDelegate = UIViewDelegate()
     showsHorizontalScrollIndicator = false
     showsVerticalScrollIndicator = false
@@ -117,7 +117,7 @@ internal class UIViewFlexContainer(
     override fun intrinsicContentSize(): CValue<CGSize> = CGSizeMake(noIntrinsicSize.width, noIntrinsicSize.height)
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> =
-      measure(size.useContents { toUnsafeSize() }).let { us -> CGSizeMake(us.width, us.height) }
+      measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
 
     override fun setNeedsLayout() {
       needsLayout = true

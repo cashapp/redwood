@@ -25,6 +25,7 @@ import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.widget.HTMLElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
@@ -46,6 +47,8 @@ class HTMLElementRedwoodLayoutWidgetFactory(
       direction = "row",
       overflowSetter = { style.overflowX = it },
     )
+
+  override fun Spacer(): Spacer<HTMLElement> = TODO("Not yet implemented")
 }
 
 private class HTMLFlexContainer(
