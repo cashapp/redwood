@@ -15,13 +15,13 @@
  */
 package app.cash.redwood.layout.composeui
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.widget.Spacer
 
@@ -30,8 +30,14 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
   private var height by mutableStateOf(0)
 
   override val value = @Composable {
-    Spacer(
-      modifier = Modifier.defaultMinSize(unitsToDp(width), unitsToDp(height)),
+    Layout(
+      modifier = Modifier.defaultMinSize(
+        minWidth = unitsToDp(width),
+        minHeight = unitsToDp(height),
+      ),
+      measurePolicy = { _, constraints ->
+        layout(constraints.minWidth, constraints.minHeight) {}
+      },
     )
   }
 
