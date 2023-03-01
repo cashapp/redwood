@@ -31,10 +31,7 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
 
   override val value = @Composable {
     Layout(
-      modifier = Modifier.defaultMinSize(
-        minWidth = unitsToDp(width),
-        minHeight = unitsToDp(height),
-      ),
+      modifier = Modifier.defaultMinSize(unitsToDp(width), unitsToDp(height)),
       measurePolicy = { _, constraints ->
         layout(constraints.minWidth, constraints.minHeight) {}
       },
