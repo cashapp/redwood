@@ -53,6 +53,8 @@ module:redwood-treehouse-lazylayout-compose
 app.cash.redwood.treehouse.lazylayout.compose
 module:redwood-treehouse-lazylayout-composeui
 app.cash.redwood.treehouse.lazylayout.composeui
+module:redwood-treehouse-lazylayout-paging
+app.cash.redwood.treehouse.lazylayout.paging
 module:redwood-treehouse-lazylayout-schema
 app.cash.redwood.treehouse.lazylayout
 module:redwood-treehouse-lazylayout-testing
