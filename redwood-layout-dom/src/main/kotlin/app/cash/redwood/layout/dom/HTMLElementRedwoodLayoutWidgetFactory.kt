@@ -83,13 +83,7 @@ private class HTMLFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
-    value.overflowSetter(
-      when (overflow) {
-        Overflow.Clip -> "hidden"
-        Overflow.Scroll -> "scroll"
-        else -> throw AssertionError()
-      },
-    )
+    value.overflowSetter(overflow.toCss())
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -106,24 +100,6 @@ private class HTMLFlexContainer(
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
     value.style.alignItems = verticalAlignment.toCss()
-  }
-
-  private fun MainAxisAlignment.toCss() = when (this) {
-    MainAxisAlignment.Start -> "start"
-    MainAxisAlignment.Center -> "center"
-    MainAxisAlignment.End -> "end"
-    MainAxisAlignment.SpaceBetween -> "space-between"
-    MainAxisAlignment.SpaceAround -> "space-around"
-    MainAxisAlignment.SpaceEvenly -> "space-evenly"
-    else -> throw AssertionError()
-  }
-
-  private fun CrossAxisAlignment.toCss() = when (this) {
-    CrossAxisAlignment.Start -> "start"
-    CrossAxisAlignment.Center -> "center"
-    CrossAxisAlignment.End -> "end"
-    CrossAxisAlignment.Stretch -> "stretch"
-    else -> throw AssertionError()
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
