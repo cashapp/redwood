@@ -66,11 +66,11 @@ private class HTMLFlexContainer(
   override val children = HTMLElementChildren(value)
 
   override fun width(width: Constraint) {
-    // TODO Determine how to map to CSS.
+    value.style.width = width.toCss()
   }
 
   override fun height(height: Constraint) {
-    // TODO Determine how to map to CSS.
+    value.style.height = height.toCss()
   }
 
   override fun padding(padding: Padding) {

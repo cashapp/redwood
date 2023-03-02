@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.dom
 
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
@@ -25,6 +26,12 @@ internal const val DensityMultiplier = 1.0
 
 internal fun unitsToPx(units: Int): String {
   return "${(DensityMultiplier * units).roundToInt()}px"
+}
+
+internal fun Constraint.toCss() = when (this) {
+  Constraint.Wrap -> "auto"
+  Constraint.Fill -> "100%"
+  else -> throw AssertionError()
 }
 
 internal fun MainAxisAlignment.toCss() = when (this) {
