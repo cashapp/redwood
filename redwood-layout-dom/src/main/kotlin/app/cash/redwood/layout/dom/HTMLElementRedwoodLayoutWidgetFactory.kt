@@ -20,7 +20,6 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Overflow.Companion
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
@@ -48,7 +47,10 @@ class HTMLElementRedwoodLayoutWidgetFactory(
       overflowSetter = { style.overflowX = it },
     )
 
-  override fun Spacer(): Spacer<HTMLElement> = TODO("Not yet implemented")
+  override fun Spacer(): Spacer<HTMLElement> =
+    HTMLSpacer(
+      value = document.createElement("div") as HTMLDivElement,
+    )
 }
 
 private class HTMLFlexContainer(
@@ -73,10 +75,10 @@ private class HTMLFlexContainer(
 
   override fun padding(padding: Padding) {
     value.style.apply {
-      paddingLeft = padding.start.toString()
-      paddingRight = padding.end.toString()
-      paddingTop = padding.top.toString()
-      paddingBottom = padding.bottom.toString()
+      paddingLeft = unitsToPx(padding.start)
+      paddingRight = unitsToPx(padding.end)
+      paddingTop = unitsToPx(padding.top)
+      paddingBottom = unitsToPx(padding.bottom)
     }
   }
 
@@ -84,7 +86,7 @@ private class HTMLFlexContainer(
     value.overflowSetter(
       when (overflow) {
         Overflow.Clip -> "hidden"
-        Companion.Scroll -> "scroll"
+        Overflow.Scroll -> "scroll"
         else -> throw AssertionError()
       },
     )
@@ -122,6 +124,20 @@ private class HTMLFlexContainer(
     CrossAxisAlignment.End -> "end"
     CrossAxisAlignment.Stretch -> "stretch"
     else -> throw AssertionError()
+  }
+
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+}
+
+private class HTMLSpacer(
+  override val value: HTMLDivElement,
+) : Spacer<HTMLElement> {
+  override fun width(width: Int) {
+    value.style.width = unitsToPx(width)
+  }
+
+  override fun height(height: Int) {
+    value.style.height = unitsToPx(height)
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
