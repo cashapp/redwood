@@ -15,7 +15,7 @@
  */
 #import "uiview.h"
 
-@implementation HostView
+@implementation FlexContainerHostView
 
 - (id)initWithFrame :(CGRect)frame :(id <RedwoodScrollViewDelegate>)kotlinDelegate
 {
@@ -44,6 +44,22 @@
 {
   [super layoutSubviews];
   [self.kotlinDelegate layoutSubviews];
+}
+
+@end
+
+@implementation SpacerHostView
+
+- (id)initWithFrame :(CGRect)frame :(id <RedwoodViewDelegate>)kotlinDelegate
+{
+  self = [super initWithFrame:frame];
+  self.kotlinDelegate = kotlinDelegate;
+    return self;
+}
+
+- (CGSize)intrinsicContentSize
+{
+  return [self.kotlinDelegate intrinsicContentSize];
 }
 
 @end

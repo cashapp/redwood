@@ -20,11 +20,11 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Overflow.Companion
 import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.widget.HTMLElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
@@ -45,6 +45,11 @@ class HTMLElementRedwoodLayoutWidgetFactory(
       value = document.createElement("div") as HTMLDivElement,
       direction = "row",
       overflowSetter = { style.overflowX = it },
+    )
+
+  override fun Spacer(): Spacer<HTMLElement> =
+    HTMLSpacer(
+      value = document.createElement("div") as HTMLDivElement,
     )
 }
 
@@ -70,21 +75,15 @@ private class HTMLFlexContainer(
 
   override fun padding(padding: Padding) {
     value.style.apply {
-      paddingLeft = padding.start.toString()
-      paddingRight = padding.end.toString()
-      paddingTop = padding.top.toString()
-      paddingBottom = padding.bottom.toString()
+      paddingLeft = unitsToPx(padding.start)
+      paddingRight = unitsToPx(padding.end)
+      paddingTop = unitsToPx(padding.top)
+      paddingBottom = unitsToPx(padding.bottom)
     }
   }
 
   override fun overflow(overflow: Overflow) {
-    value.overflowSetter(
-      when (overflow) {
-        Overflow.Clip -> "hidden"
-        Companion.Scroll -> "scroll"
-        else -> throw AssertionError()
-      },
-    )
+    value.overflowSetter(overflow.toCss())
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -103,22 +102,18 @@ private class HTMLFlexContainer(
     value.style.alignItems = verticalAlignment.toCss()
   }
 
-  private fun MainAxisAlignment.toCss() = when (this) {
-    MainAxisAlignment.Start -> "start"
-    MainAxisAlignment.Center -> "center"
-    MainAxisAlignment.End -> "end"
-    MainAxisAlignment.SpaceBetween -> "space-between"
-    MainAxisAlignment.SpaceAround -> "space-around"
-    MainAxisAlignment.SpaceEvenly -> "space-evenly"
-    else -> throw AssertionError()
+  override var layoutModifiers: LayoutModifier = LayoutModifier
+}
+
+private class HTMLSpacer(
+  override val value: HTMLDivElement,
+) : Spacer<HTMLElement> {
+  override fun width(width: Int) {
+    value.style.width = unitsToPx(width)
   }
 
-  private fun CrossAxisAlignment.toCss() = when (this) {
-    CrossAxisAlignment.Start -> "start"
-    CrossAxisAlignment.Center -> "center"
-    CrossAxisAlignment.End -> "end"
-    CrossAxisAlignment.Stretch -> "stretch"
-    else -> throw AssertionError()
+  override fun height(height: Int) {
+    value.style.height = unitsToPx(height)
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier

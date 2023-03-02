@@ -74,3 +74,13 @@ public data class Column(
 )
 
 public object ColumnScope
+
+@Widget(3)
+public data class Spacer(
+  @Property(1)
+  @Default("0")
+  val width: Int,
+  @Property(2)
+  @Default("0")
+  val height: Int,
+)
