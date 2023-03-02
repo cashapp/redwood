@@ -21,5 +21,5 @@ import kotlin.math.roundToInt
 internal const val DensityMultiplier = 1.0
 
 internal fun unitsToPx(units: Int): String {
-  return (DensityMultiplier * units).roundToInt().toString()
+  return "${(DensityMultiplier * units).roundToInt()}px"
 }
