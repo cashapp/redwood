@@ -26,8 +26,13 @@ import kotlinx.serialization.modules.contextual
 @Serializable
 public class LazyListIntervalContent(
   @Contextual public val count: Int,
+  @Contextual public val placeholderProvider: Placeholder,
   @Contextual public val itemProvider: Item,
 ) {
+
+  public interface Placeholder : ZiplineService {
+    public fun get(): ZiplineTreehouseUi
+  }
 
   public interface Item : ZiplineService {
     public fun get(index: Int): ZiplineTreehouseUi
@@ -35,5 +40,6 @@ public class LazyListIntervalContent(
 }
 
 public val treehouseLazyLayoutSerializersModule: SerializersModule = SerializersModule {
+  contextual(ziplineServiceSerializer<LazyListIntervalContent.Placeholder>())
   contextual(ziplineServiceSerializer<LazyListIntervalContent.Item>())
 }

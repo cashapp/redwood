@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -33,11 +34,7 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
-
-private data class LazyContentItem(
-  val index: Int,
-  val item: LazyListIntervalContent.Item,
-)
+import app.cash.zipline.ZiplineScope
 
 internal class ViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
@@ -46,14 +43,9 @@ internal class ViewLazyColumn<A : AppService>(
 ) : LazyColumn<View> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  private val adapter = LazyContentItemListAdapter(
+  private val adapter = LazyListIntervalContentAdapter(
     treehouseApp,
     widgetSystem,
-    contentHeight = TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      64F,
-      value.resources.displayMetrics,
-    ).toInt(),
   )
 
   init {
@@ -62,64 +54,141 @@ internal class ViewLazyColumn<A : AppService>(
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
     }
     value.adapter = adapter
+    value.recycledViewPool.setMaxRecycledViews(adapter.getItemViewType(RecyclerView.NO_POSITION), 100)
   }
 
   override fun intervals(intervals: List<LazyListIntervalContent>) {
-    adapter.submitList(
-      intervals.flatMap { interval ->
-        List(interval.count) { index ->
-          LazyContentItem(index, interval.itemProvider)
-        }
-      },
-    )
+    adapter.submitList(intervals.flatMap { interval -> List(interval.count) { interval } })
   }
 
-  private class LazyContentItemListAdapter<A : AppService>(
+  private class LazyListIntervalContentAdapter<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
     private val widgetSystem: TreehouseView.WidgetSystem<A>,
-    private val contentHeight: Int,
-  ) : ListAdapter<LazyContentItem, ViewHolder<A>>(LazyContentItemDiffCallback) {
+  ) : ListAdapter<LazyListIntervalContent, LazyListIntervalContentAdapter.ViewHolder<A>>(LazyListIntervalContentDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<A> {
       val container = FrameLayout(parent.context).apply {
-        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
+        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
       }
       return ViewHolder(container, treehouseApp, widgetSystem)
     }
 
     override fun onBindViewHolder(holder: ViewHolder<A>, position: Int) {
-      val itemContent = currentList[position]
-      holder.treehouseWidgetView.setContent {
-        itemContent.item.get(itemContent.index)
+      holder.itemTreehouseWidgetViewLoadState = LoadState.Loading
+      holder.interval = getItem(position)!!
+      holder.onLoadStateChange()
+    }
+
+    override fun onViewRecycled(holder: ViewHolder<A>) {
+      holder.ziplineScope.close()
+    }
+
+    private class ViewHolder<A : AppService>(
+      val container: FrameLayout,
+      treehouseApp: TreehouseApp<A>,
+      widgetSystem: TreehouseView.WidgetSystem<A>,
+    ) : RecyclerView.ViewHolder(container) {
+
+      val ziplineScope = ZiplineScope()
+
+      var interval: LazyListIntervalContent? = null
+
+      val blankView = FrameLayout(itemView.context).apply {
+        layoutParams = FrameLayout.LayoutParams(
+          MATCH_PARENT,
+          TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1000F, itemView.resources.displayMetrics).toInt(),
+        )
       }
+
+      var placeholderTreehouseWidgetViewLoadState = LoadState.Loading
+      val placeholderTreehouseWidgetViewCodeListener = object : TreehouseView.CodeListener() {
+        override fun onCodeLoaded(initial: Boolean) {
+          val newState = LoadState.Loaded
+          if (placeholderTreehouseWidgetViewLoadState == newState) return
+          placeholderTreehouseWidgetViewLoadState = newState
+          onLoadStateChange()
+        }
+      }
+      val placeholderTreehouseWidgetView: TreehouseWidgetView<A> = TreehouseWidgetView(container.context, widgetSystem, placeholderTreehouseWidgetViewCodeListener)
+        .apply {
+          treehouseApp.renderTo(this)
+
+          layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+          }
+        }
+
+      var itemTreehouseWidgetViewLoadState = LoadState.Loading
+      val itemTreehouseWidgetViewCodeListener = object : TreehouseView.CodeListener() {
+        override fun onCodeLoaded(initial: Boolean) {
+          val newState = LoadState.Loaded
+          if (itemTreehouseWidgetViewLoadState == newState) return
+          itemTreehouseWidgetViewLoadState = newState
+          onLoadStateChange()
+        }
+      }
+      val itemTreehouseWidgetView: TreehouseWidgetView<A> = TreehouseWidgetView(container.context, widgetSystem, itemTreehouseWidgetViewCodeListener)
+        .apply {
+          treehouseApp.renderTo(this)
+
+          layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+          }
+        }
+
+      fun onLoadStateChange() {
+        val interval = checkNotNull(interval)
+
+        val holder: ViewHolder<A> = this
+        holder.container.removeAllViews()
+        when {
+          holder.itemTreehouseWidgetViewLoadState == LoadState.Loaded -> {
+            // Show the item
+            holder.itemTreehouseWidgetView.isVisible = true
+            holder.container.addView(holder.itemTreehouseWidgetView)
+          }
+          holder.placeholderTreehouseWidgetViewLoadState == LoadState.Loading -> {
+            // Show the blank
+            holder.container.addView(holder.blankView)
+
+            // Start loading the placeholder
+            holder.placeholderTreehouseWidgetView.isVisible = false
+            holder.container.addView(holder.placeholderTreehouseWidgetView)
+            holder.placeholderTreehouseWidgetView.setContent {
+              interval.placeholderProvider.get()
+            }
+          }
+          holder.placeholderTreehouseWidgetViewLoadState == LoadState.Loaded -> {
+            // Show the placeholder.
+            holder.placeholderTreehouseWidgetView.isVisible = true
+            holder.container.addView(holder.placeholderTreehouseWidgetView)
+
+            // Start loading the item
+            holder.itemTreehouseWidgetView.isVisible = false
+            holder.container.addView(holder.itemTreehouseWidgetView)
+            val position = bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: return
+            holder.itemTreehouseWidgetView.setContent {
+              interval.itemProvider.get(position)
+            }
+          }
+        }
+      }
+    }
+
+    enum class LoadState {
+      Loading,
+      Loaded,
     }
   }
 
-  private class ViewHolder<A : AppService>(
-    container: FrameLayout,
-    treehouseApp: TreehouseApp<A>,
-    widgetSystem: TreehouseView.WidgetSystem<A>,
-  ) : RecyclerView.ViewHolder(container) {
-    val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
-      .apply {
-        treehouseApp.renderTo(this)
-
-        layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-          gravity = Gravity.CENTER_HORIZONTAL
-        }
-
-        container.addView(this)
-      }
-  }
-
-  private object LazyContentItemDiffCallback : DiffUtil.ItemCallback<LazyContentItem>() {
+  private object LazyListIntervalContentDiffCallback : DiffUtil.ItemCallback<LazyListIntervalContent>() {
     override fun areItemsTheSame(
-      oldItem: LazyContentItem,
-      newItem: LazyContentItem,
+      oldItem: LazyListIntervalContent,
+      newItem: LazyListIntervalContent,
     ) = oldItem === newItem
 
     override fun areContentsTheSame(
-      oldItem: LazyContentItem,
-      newItem: LazyContentItem,
+      oldItem: LazyListIntervalContent,
+      newItem: LazyListIntervalContent,
     ) = oldItem == newItem
   }
 }

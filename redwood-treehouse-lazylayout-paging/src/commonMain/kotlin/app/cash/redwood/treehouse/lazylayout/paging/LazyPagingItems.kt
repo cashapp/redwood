@@ -31,10 +31,12 @@ import app.cash.redwood.treehouse.lazylayout.compose.LazyListScope
  */
 public fun <T : Any> LazyListScope.items(
   items: LazyPagingItems<T>,
+  placeholderContent: @Composable () -> Unit,
   itemContent: @Composable (value: T?) -> Unit,
 ) {
   items(
     count = items.itemCount,
+    placeholderContent = placeholderContent,
   ) { index ->
     itemContent(items[index])
   }
@@ -53,10 +55,12 @@ public fun <T : Any> LazyListScope.items(
  */
 public fun <T : Any> LazyListScope.itemsIndexed(
   items: LazyPagingItems<T>,
+  placeholderContent: @Composable () -> Unit,
   itemContent: @Composable (index: Int, value: T?) -> Unit,
 ) {
   items(
     count = items.itemCount,
+    placeholderContent = placeholderContent,
   ) { index ->
     itemContent(index, items[index])
   }

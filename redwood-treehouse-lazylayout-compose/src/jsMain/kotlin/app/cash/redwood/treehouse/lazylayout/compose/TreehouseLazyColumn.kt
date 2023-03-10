@@ -36,15 +36,17 @@ public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
 public interface LazyListScope {
   public fun items(
     count: Int,
+    placeholderContent: @Composable () -> Unit,
     itemContent: @Composable (index: Int) -> Unit,
   )
 }
 
 public inline fun <T> LazyListScope.items(
   items: List<T>,
+  noinline placeholderContent: @Composable () -> Unit,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ) {
-  items(items.size) {
+  items(items.size, placeholderContent) {
     itemContent(items[it])
   }
 }
@@ -54,6 +56,18 @@ private class TreehouseLazyListScope(
   private val widgetVersion: UInt,
 ) : LazyListScope {
   val intervals = mutableListOf<LazyListIntervalContent>()
+
+  private class Placeholder(
+    private val provider: ProtocolBridge,
+    private val widgetVersion: UInt,
+    private val content: @Composable () -> Unit,
+  ) : LazyListIntervalContent.Placeholder {
+
+    override fun get(): ZiplineTreehouseUi {
+      val treehouseUi = PlaceholderTreehouseUi(content)
+      return treehouseUi.asZiplineTreehouseUi(provider, widgetVersion)
+    }
+  }
 
   private class Item(
     private val provider: ProtocolBridge,
@@ -69,12 +83,23 @@ private class TreehouseLazyListScope(
 
   override fun items(
     count: Int,
+    placeholderContent: @Composable () -> Unit,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
     intervals += LazyListIntervalContent(
       count,
+      placeholderProvider = Placeholder(provider, widgetVersion, placeholderContent),
       itemProvider = Item(provider, widgetVersion, itemContent),
     )
+  }
+}
+
+private class PlaceholderTreehouseUi(
+  private val content: @Composable () -> Unit,
+) : TreehouseUi {
+  @Composable
+  override fun Show() {
+    content()
   }
 }
 

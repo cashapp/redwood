@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseWidgetView<A : AppService>(
   context: Context,
   override val widgetSystem: TreehouseView.WidgetSystem<A>,
+  override val codeListener: CodeListener = CodeListener(),
 ) : FrameLayout(context), TreehouseView<A> {
   @Deprecated(
     message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
@@ -48,7 +49,6 @@ public class TreehouseWidgetView<A : AppService>(
     widgetSystem: TreehouseView.WidgetSystem<A>,
   ) : this(context, widgetSystem)
 
-  public override var codeListener: CodeListener = CodeListener()
   public override var stateChangeListener: OnStateChangeListener<A>? = null
     set(value) {
       check(value != null) { "Views cannot be unbound from a listener at this time" }

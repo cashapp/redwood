@@ -56,6 +56,7 @@ interface ColumnProvider {
   @Composable
   fun <T> create(
     items: List<T>,
+    placeholderContent: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -102,7 +103,25 @@ fun EmojiSearch(
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    columnProvider.create(filteredEmojis) { image ->
+    columnProvider.create(
+      filteredEmojis,
+      placeholderContent = {
+        val image = EmojiImage(
+          label = "loading…",
+          url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+        )
+        Row(
+          width = Constraint.Fill,
+          verticalAlignment = CrossAxisAlignment.Center,
+        ) {
+          Image(
+            url = image.url,
+            layoutModifier = LayoutModifier.padding(Padding(8)),
+          )
+          Text(text = image.label)
+        }
+      },
+    ) { image ->
       Row(
         width = Constraint.Fill,
         verticalAlignment = CrossAxisAlignment.Center,

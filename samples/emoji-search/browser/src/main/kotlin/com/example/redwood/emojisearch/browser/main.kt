@@ -78,6 +78,7 @@ private object TruncatingColumnProvider : ColumnProvider {
   @Composable
   override fun <T> create(
     items: List<T>,
+    placeholderContent: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
     Column {
