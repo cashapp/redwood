@@ -15,49 +15,48 @@
  */
 package app.cash.redwood.treehouse.lazylayout.view
 
-import android.util.TypedValue
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingDataAdapter
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
+import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
+import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
-import okio.Closeable
-
-private data class LazyContentItem(
-  val index: Int,
-  val item: LazyListIntervalContent.Item,
-)
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 internal class ViewLazyColumn<A : AppService>(
-  treehouseApp: TreehouseApp<A>,
-  widgetSystem: WidgetSystem,
+  private val treehouseApp: TreehouseApp<A>,
+  private val widgetSystem: WidgetSystem,
   override val value: RecyclerView,
 ) : LazyColumn<View> {
+  private val scope = MainScope()
+
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  private val adapter = LazyContentItemListAdapter(
-    treehouseApp,
-    widgetSystem,
-    contentHeight = TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      64F,
-      value.resources.displayMetrics,
-    ).toInt(),
-  )
+  private val adapter = LazyContentItemListAdapter()
 
   init {
     value.apply {
@@ -68,65 +67,103 @@ internal class ViewLazyColumn<A : AppService>(
   }
 
   override fun intervals(intervals: List<LazyListIntervalContent>) {
-    adapter.submitList(
-      intervals.flatMap { interval ->
-        List(interval.count) { index ->
-          LazyContentItem(index, interval.itemProvider)
-        }
-      },
-    )
+    // TODO Don't hardcode pageSizes
+    // TODO Enable placeholder support
+    // TODO Set a maxSize so we don't keep _too_ many views in memory
+    val pager = Pager(PagingConfig(pageSize = 30, initialLoadSize = 30, enablePlaceholders = false), initialKey = 0) {
+      ItemPagingSource(treehouseApp, widgetSystem, value.context, intervals.single())
+    }
+    scope.launch {
+      pager.flow.collectLatest { pagingData ->
+        adapter.submitData(pagingData)
+      }
+    }
   }
 
-  private class LazyContentItemListAdapter<A : AppService>(
+  private class ItemPagingSource<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
     private val widgetSystem: WidgetSystem,
-    private val contentHeight: Int,
-  ) : ListAdapter<LazyContentItem, ViewHolder>(LazyContentItemDiffCallback) {
+    private val context: Context,
+    private val interval: LazyListIntervalContent,
+  ) : PagingSource<Int, TreehouseWidgetView>() {
+
+    override suspend fun load(
+      params: LoadParams<Int>,
+    ): LoadResult<Int, TreehouseWidgetView> {
+      val key = params.key ?: 0
+      val count = interval.count
+      val limit = when (params) {
+        is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
+        else -> params.loadSize
+      }.coerceAtMost(count)
+      val offset = when (params) {
+        is LoadParams.Prepend<*> -> maxOf(0, key - params.loadSize)
+        is LoadParams.Append<*> -> key
+        is LoadParams.Refresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
+      }
+      val nextPosToLoad = offset + limit
+      val loadResult = LoadResult.Page(
+        data = List(limit) { index ->
+          suspendCoroutine<TreehouseWidgetView> { continuation ->
+            // TODO Put TreehouseWidgetView in the ViewHolder
+            TreehouseWidgetView(context, widgetSystem, alwaysReadyForContent = true).apply {
+              layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+              }
+              val itemContentSource = TreehouseContentSource<A> {
+                interval.itemProvider.get(index + offset)
+              }
+              itemContentSource.bindWhenReady(
+                view = this,
+                app = treehouseApp,
+                codeListener = object : CodeListener() {
+                  override fun onCodeLoaded(view: TreehouseView, initial: Boolean) {
+                    continuation.resume(this@apply)
+                  }
+                },
+              )
+            }
+          }
+        },
+        prevKey = offset.takeIf { it > 0 && limit > 0 },
+        nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
+        itemsBefore = offset,
+        itemsAfter = maxOf(0, count - nextPosToLoad),
+      )
+      return if (invalid) LoadResult.Invalid() else loadResult
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, TreehouseWidgetView>) =
+      state.anchorPosition?.let { maxOf(0, it - (state.config.initialLoadSize / 2)) }
+  }
+
+  private class LazyContentItemListAdapter : PagingDataAdapter<TreehouseWidgetView, ViewHolder>(TreehouseWidgetViewDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val container = FrameLayout(parent.context).apply {
-        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
+        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
       }
-      return ViewHolder(container, widgetSystem)
+      return ViewHolder(container)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      val itemContent = currentList[position]
-      val itemContentSource = TreehouseContentSource<A> {
-        itemContent.item.get(itemContent.index)
-      }
-
-      holder.widgetContentBinding?.close()
-      holder.widgetContentBinding = itemContentSource.bindWhenReady(
-        view = holder.treehouseWidgetView,
-        app = treehouseApp,
-      )
+      val treehouseWidgetView = getItem(position)!!
+      (treehouseWidgetView.parent as? ViewGroup)?.removeView(treehouseWidgetView)
+      holder.container.removeAllViews()
+      holder.container.addView(treehouseWidgetView)
     }
   }
 
-  private class ViewHolder(
-    container: FrameLayout,
-    widgetSystem: WidgetSystem,
-  ) : RecyclerView.ViewHolder(container) {
-    var widgetContentBinding: Closeable? = null
-    val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
-      .apply {
-        layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-          gravity = Gravity.CENTER_HORIZONTAL
-        }
+  private class ViewHolder(val container: FrameLayout) : RecyclerView.ViewHolder(container)
 
-        container.addView(this)
-      }
-  }
-
-  private object LazyContentItemDiffCallback : DiffUtil.ItemCallback<LazyContentItem>() {
+  private object TreehouseWidgetViewDiffCallback : DiffUtil.ItemCallback<TreehouseWidgetView>() {
     override fun areItemsTheSame(
-      oldItem: LazyContentItem,
-      newItem: LazyContentItem,
+      oldItem: TreehouseWidgetView,
+      newItem: TreehouseWidgetView,
     ) = oldItem === newItem
 
     override fun areContentsTheSame(
-      oldItem: LazyContentItem,
-      newItem: LazyContentItem,
+      oldItem: TreehouseWidgetView,
+      newItem: TreehouseWidgetView,
     ) = oldItem == newItem
   }
 }

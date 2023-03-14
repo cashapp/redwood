@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseWidgetView(
   context: Context,
   override val widgetSystem: WidgetSystem,
+  private val alwaysReadyForContent: Boolean = false,
 ) : FrameLayout(context), TreehouseView {
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
@@ -46,6 +47,7 @@ public class TreehouseWidgetView(
    * [onAttachedToWindow] returns and true until [onDetachedFromWindow] returns.
    */
   override var readyForContent: Boolean = false
+    get() = alwaysReadyForContent || field
     private set
 
   private val _children = ViewGroupChildren(this)
