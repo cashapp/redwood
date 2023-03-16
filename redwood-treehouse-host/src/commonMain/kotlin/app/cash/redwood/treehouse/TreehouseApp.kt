@@ -58,7 +58,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * Keys are views currently attached on-screen with non-null contents.
    * Only accessed on [TreehouseDispatchers.ui].
    */
-  private val bindings = mutableMapOf<TreehouseView<A>, Binding>()
+  private val bindings = mutableMapOf<TreehouseView<A>, HotReloadingBinding<A>>()
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -84,6 +84,10 @@ public class TreehouseApp<A : AppService> private constructor(
 
     view.stateChangeListener = stateChangeListener
     stateChangeListener.onStateChanged(view)
+  }
+
+  public fun newBinding(content: TreehouseView.Content<A>): Binding<A> {
+
   }
 
   /**
@@ -204,41 +208,40 @@ public class TreehouseApp<A : AppService> private constructor(
     // Make sure we're tracking this view, so we can update it when the code changes.
     val content = view.boundContent
     val previous = bindings[view]
-    if (!codeChanged && previous is RealBinding<*> && content == previous.content) {
+    if (!codeChanged && previous is HotReloadingBinding<*> && content == previous.content) {
       return // Nothing has changed.
     }
 
-    val next = when {
+    val binding: HotReloadingBinding<A>
+    if (previous == null) {
+      binding = HotReloadingBinding(
+        app = this@TreehouseApp,
+        appScope = appScope,
+        eventPublisher = eventPublisher,
+        content = content,
+      )
+      bindings[view] = binding
+    } else {
+      binding = previous
+    }
+
+    if (content != null && ziplineSession != null) {
       // We have content and code. Launch the treehouse UI.
-      content != null && ziplineSession != null -> {
-        RealBinding(
-          app = this@TreehouseApp,
-          appScope = appScope,
-          eventPublisher = eventPublisher,
-          content = content,
-          session = ziplineSession,
-          view = view,
-        ).apply {
-          start(ziplineSession, view)
-        }
-      }
-
+      binding.bind(view)
+      binding.start(ziplineSession, view.hostConfiguration)
+    } else if (content != null) {
       // We have content but no code. Keep track of it for later.
-      content != null -> {
-        LoadingBinding.also {
-          if (previous == null) {
-            view.codeListener.onInitialCodeLoading()
-          }
-        }
+      if (previous == null) {
+        view.codeListener.onInitialCodeLoading()
       }
-
+    } else {
       // No content.
-      else -> null
+      bindings.remove(view)
     }
 
     // Replace the previous binding, if any.
     when {
-      next != null -> bindings[view] = next
+      next != null ->
       else -> bindings.remove(view)
     }
 
