@@ -24,7 +24,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
-import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
+import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import kotlin.DeprecationLevel.ERROR
@@ -49,28 +49,19 @@ public class TreehouseWidgetView<A : AppService>(
   ) : this(context, widgetSystem)
 
   public override var codeListener: CodeListener = CodeListener()
-  public override var stateChangeListener: OnStateChangeListener<A>? = null
+
+  override var readyForContentChangeListener: ReadyForContentChangeListener<A>? = null
     set(value) {
-      check(value != null) { "Views cannot be unbound from a listener at this time" }
-      check(field == null) { "View already bound to a listener" }
+      check(value == null || field == null) { "View already bound to a listener" }
       field = value
     }
-
-  private var contentSource: TreehouseContentSource<A>? = null
 
   /**
    * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
    * [onAttachedToWindow] returns and true until [onDetachedFromWindow] returns.
    */
-  private var immediateIsAttachedToWindow = false
-
-  override val boundContentSource: TreehouseContentSource<A>?
-    get() {
-      return when {
-        immediateIsAttachedToWindow -> contentSource
-        else -> null
-      }
-    }
+  override var readyForContent: Boolean = false
+    private set
 
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
@@ -88,21 +79,16 @@ public class TreehouseWidgetView<A : AppService>(
     removeAllViews()
   }
 
-  public fun setContentSource(contentSource: TreehouseContentSource<A>) {
-    this.contentSource = contentSource
-    stateChangeListener?.onStateChanged(this)
-  }
-
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    immediateIsAttachedToWindow = true
-    stateChangeListener?.onStateChanged(this)
+    readyForContent = true
+    readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    immediateIsAttachedToWindow = false
-    stateChangeListener?.onStateChanged(this)
+    readyForContent = false
+    readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

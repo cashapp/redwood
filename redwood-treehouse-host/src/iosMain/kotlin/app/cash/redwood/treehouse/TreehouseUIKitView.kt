@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
-import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
+import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlin.DeprecationLevel.ERROR
@@ -46,22 +46,15 @@ public class TreehouseUIKitView<A : AppService>(
 
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()
-  public override var stateChangeListener: OnStateChangeListener<A>? = null
+
+  override var readyForContentChangeListener: ReadyForContentChangeListener<A>? = null
     set(value) {
-      check(value != null) { "Views cannot be unbound from a listener at this time" }
-      check(field == null) { "View already bound to a listener" }
+      check(value == null || field == null) { "View already bound to a listener" }
       field = value
     }
 
-  private var contentSource: TreehouseContentSource<A>? = null
-
-  override val boundContentSource: TreehouseContentSource<A>?
-    get() {
-      return when {
-        view.superview != null -> contentSource
-        else -> null
-      }
-    }
+  override val readyForContent: Boolean
+    get() = view.superview != null
 
   private val _children = UIViewChildren(view)
   override val children: Widget.Children<UIView> get() = _children
@@ -80,13 +73,8 @@ public class TreehouseUIKitView<A : AppService>(
     (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
-  public fun setContent(contentSource: TreehouseContentSource<A>) {
-    this.contentSource = contentSource
-    stateChangeListener?.onStateChanged(this)
-  }
-
   internal fun superviewChanged() {
-    stateChangeListener?.onStateChanged(this)
+    readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
   internal fun updateHostConfiguration() {

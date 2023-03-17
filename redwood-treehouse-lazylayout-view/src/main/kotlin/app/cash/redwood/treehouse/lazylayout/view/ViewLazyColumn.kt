@@ -31,8 +31,10 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import okio.Closeable
 
 private data class LazyContentItem(
   val index: Int,
@@ -83,26 +85,25 @@ internal class ViewLazyColumn<A : AppService>(
       val container = FrameLayout(parent.context).apply {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
       }
-      return ViewHolder(container, treehouseApp, widgetSystem)
+      return ViewHolder(container, widgetSystem)
     }
 
     override fun onBindViewHolder(holder: ViewHolder<A>, position: Int) {
       val itemContent = currentList[position]
-      holder.treehouseWidgetView.setContentSource {
+      holder.widgetContentBinding?.close()
+      holder.widgetContentBinding = {
         itemContent.item.get(itemContent.index)
-      }
+      }.bindWhenReady(holder.treehouseWidgetView, treehouseApp)
     }
   }
 
   private class ViewHolder<A : AppService>(
     container: FrameLayout,
-    treehouseApp: TreehouseApp<A>,
     widgetSystem: TreehouseView.WidgetSystem<A>,
   ) : RecyclerView.ViewHolder(container) {
+    var widgetContentBinding: Closeable? = null
     val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
       .apply {
-        treehouseApp.renderTo(this)
-
         layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
           gravity = Gravity.CENTER_HORIZONTAL
         }

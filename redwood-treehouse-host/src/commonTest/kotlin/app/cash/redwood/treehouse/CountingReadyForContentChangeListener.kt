@@ -15,10 +15,12 @@
  */
 package app.cash.redwood.treehouse
 
-class CountingStateChangeListener : TreehouseView.OnStateChangeListener<Nothing> {
+import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+
+class CountingReadyForContentChangeListener : ReadyForContentChangeListener<Nothing> {
   var count = 0
 
-  override fun onStateChanged(view: TreehouseView<Nothing>) {
+  override fun onReadyForContentChanged(view: TreehouseView<Nothing>) {
     count++
   }
 }

@@ -54,9 +54,9 @@ class TreehouseWidgetViewTest {
     val activity = Robolectric.buildActivity(Activity::class.java).resume().visible().get()
     val parent = activity.findViewById<ViewGroup>(android.R.id.content)
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
-    val listener = CountingStateChangeListener()
+    val listener = CountingReadyForContentChangeListener()
 
-    layout.stateChangeListener = listener
+    layout.readyForContentChangeListener = listener
     assertEquals(0, listener.count)
 
     parent.addView(layout)
@@ -64,16 +64,6 @@ class TreehouseWidgetViewTest {
 
     parent.removeView(layout)
     assertEquals(2, listener.count)
-  }
-
-  @Test fun contentSendsStateChange() {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
-    val listener = CountingStateChangeListener()
-    layout.stateChangeListener = listener
-    assertEquals(0, listener.count)
-
-    layout.setContentSource { throw UnsupportedOperationException() }
-    assertEquals(1, listener.count)
   }
 
   @Test fun resetClearsUntrackedChildren() {

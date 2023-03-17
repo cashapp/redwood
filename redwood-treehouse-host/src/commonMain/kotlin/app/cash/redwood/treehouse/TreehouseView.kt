@@ -22,22 +22,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
 public interface TreehouseView<A : AppService> {
-  /** This is the actual content, or null if not attached to the screen. */
-  public val boundContentSource: TreehouseContentSource<A>?
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem<A>
   public val codeListener: CodeListener
-  public var stateChangeListener: OnStateChangeListener<A>?
+  public val readyForContent: Boolean
+  public var readyForContentChangeListener: ReadyForContentChangeListener<A>?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
-  public fun interface OnStateChangeListener<A : AppService> {
-    /**
-     * Called when [TreehouseView.boundContentSource] has changed.
-     */
-    public fun onStateChanged(view: TreehouseView<A>)
+  public fun interface ReadyForContentChangeListener<A : AppService> {
+    /** Called when [TreehouseView.readyForContent] has changed. */
+    public fun onReadyForContentChanged(view: TreehouseView<A>)
   }
 
   public fun interface WidgetSystem<A : AppService> {
