@@ -38,13 +38,13 @@ class EmojiSearchViewController : UIViewController {
         let widgetSystem = EmojiSearchWidgetSystem()
         let treehouseView = Redwood_treehouse_hostTreehouseUIKitView<Presenter_treehouseEmojiSearchPresenter>(widgetSystem: widgetSystem)
         treehouseApp.renderTo(view: treehouseView)
-        treehouseView.setContent(content: EmojiSearchContent())
+        treehouseView.setContent(contentSource: EmojiSearchContent())
 
         view = treehouseView.view
     }
 }
 
-class EmojiSearchContent : Redwood_treehouse_hostTreehouseViewContent {
+class EmojiSearchContent : Redwood_treehouse_hostTreehouseContentSource {
     func get(app: Redwood_treehouseAppService) -> Redwood_treehouseZiplineTreehouseUi {
         let treehouesUi = (app as! Presenter_treehouseEmojiSearchPresenter)
         return treehouesUi.launch()
