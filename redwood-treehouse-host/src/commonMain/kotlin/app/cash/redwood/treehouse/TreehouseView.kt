@@ -23,7 +23,7 @@ import kotlinx.serialization.json.Json
 
 public interface TreehouseView<A : AppService> {
   /** This is the actual content, or null if not attached to the screen. */
-  public val boundContent: Content<A>?
+  public val boundContentSource: TreehouseContentSource<A>?
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem<A>
@@ -35,13 +35,9 @@ public interface TreehouseView<A : AppService> {
 
   public fun interface OnStateChangeListener<A : AppService> {
     /**
-     * Called when [TreehouseView.boundContent] has changed.
+     * Called when [TreehouseView.boundContentSource] has changed.
      */
     public fun onStateChanged(view: TreehouseView<A>)
-  }
-
-  public fun interface Content<A : AppService> {
-    public fun get(app: A): ZiplineTreehouseUi
   }
 
   public fun interface WidgetSystem<A : AppService> {

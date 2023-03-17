@@ -53,12 +53,12 @@ public class TreehouseUIKitView<A : AppService>(
       field = value
     }
 
-  private var content: TreehouseView.Content<A>? = null
+  private var contentSource: TreehouseContentSource<A>? = null
 
-  override val boundContent: TreehouseView.Content<A>?
+  override val boundContentSource: TreehouseContentSource<A>?
     get() {
       return when {
-        view.superview != null -> content
+        view.superview != null -> contentSource
         else -> null
       }
     }
@@ -80,8 +80,8 @@ public class TreehouseUIKitView<A : AppService>(
     (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
-  public fun setContent(content: TreehouseView.Content<A>) {
-    this.content = content
+  public fun setContent(contentSource: TreehouseContentSource<A>) {
+    this.contentSource = contentSource
     stateChangeListener?.onStateChanged(this)
   }
 

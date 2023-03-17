@@ -40,7 +40,8 @@ internal object LoadingBinding : Binding {
 }
 
 /**
- * Connects a single widget, a single [TreehouseView.boundContent], and a single [ZiplineSession].
+ * Connects a single widget, a single [TreehouseView.boundContentSource], and a single
+ * [ZiplineSession].
  *
  * Canceled if the code changes, the widget's content changes, or the widget is detached from
  * screen.
@@ -53,7 +54,7 @@ internal class RealBinding<A : AppService>(
   val app: TreehouseApp<A>,
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
-  val content: TreehouseView.Content<A>,
+  val contentSource: TreehouseContentSource<A>,
   session: ZiplineSession<A>,
   view: TreehouseView<A>,
 ) : Binding, EventSink, DiffSinkService {
@@ -114,7 +115,7 @@ internal class RealBinding<A : AppService>(
   fun start(session: ZiplineSession<A>, view: TreehouseView<A>) {
     bindingScope.launch(app.dispatchers.zipline) {
       val scopedAppService = session.appService.withScope(ziplineScope)
-      val treehouseUi = content.get(scopedAppService)
+      val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
       treehouseUi.start(
         diffSink = this@RealBinding,
