@@ -56,7 +56,7 @@ public class TreehouseWidgetView<A : AppService>(
       field = value
     }
 
-  private var content: TreehouseView.Content<A>? = null
+  private var contentSource: TreehouseContentSource<A>? = null
 
   /**
    * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
@@ -64,10 +64,10 @@ public class TreehouseWidgetView<A : AppService>(
    */
   private var immediateIsAttachedToWindow = false
 
-  override val boundContent: TreehouseView.Content<A>?
+  override val boundContentSource: TreehouseContentSource<A>?
     get() {
       return when {
-        immediateIsAttachedToWindow -> content
+        immediateIsAttachedToWindow -> contentSource
         else -> null
       }
     }
@@ -88,8 +88,8 @@ public class TreehouseWidgetView<A : AppService>(
     removeAllViews()
   }
 
-  public fun setContent(content: TreehouseView.Content<A>) {
-    this.content = content
+  public fun setContentSource(contentSource: TreehouseContentSource<A>) {
+    this.contentSource = contentSource
     stateChangeListener?.onStateChanged(this)
   }
 

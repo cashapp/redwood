@@ -25,6 +25,7 @@ import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
+import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.composeui.ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory
@@ -49,7 +50,7 @@ class EmojiSearchActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 
     val treehouseApp = createTreehouseApp()
-    val treehouseContent = TreehouseView.Content(EmojiSearchPresenter::launch)
+    val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val widgetSystem = object : TreehouseView.WidgetSystem<EmojiSearchPresenter> {
       override fun widgetFactory(
@@ -70,7 +71,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val view = ComposeView(this)
     view.setContent {
       EmojiSearchTheme {
-        TreehouseContent(treehouseApp, widgetSystem, content = treehouseContent)
+        TreehouseContent(treehouseApp, widgetSystem, contentSource = treehouseContentSource)
       }
     }
     setContentView(view)

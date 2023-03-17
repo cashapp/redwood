@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse.lazylayout.uiview
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
@@ -72,22 +73,28 @@ private class TableViewDataSource<A : AppService>(
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
     val treehouseView = TreehouseUIKitView(widgetSystem)
     treehouseApp.renderTo(treehouseView)
-    treehouseView.setContent(CellContent(intervals[cellForRowAtIndexPath.section.toInt()].itemProvider, cellForRowAtIndexPath.row.toInt()))
+    treehouseView.setContent(
+      CellContentSource(
+        intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
+        cellForRowAtIndexPath.row.toInt(),
+      ),
+    )
     return TableViewCell(treehouseView.view)
   }
 }
 
-private class CellContent<A : AppService>(
+private class CellContentSource<A : AppService>(
   private val itemProvider: LazyListIntervalContent.Item,
   private val index: Int,
-) : TreehouseView.Content<A> {
+) : TreehouseContentSource<A> {
 
   override fun get(app: A): ZiplineTreehouseUi {
     return itemProvider.get(index)
   }
 }
 
-private class TableViewCell(private val view: UIView) : UITableViewCell(UITableViewCellStyle.UITableViewCellStyleDefault, null) {
+private class TableViewCell(private val view: UIView) :
+  UITableViewCell(UITableViewCellStyle.UITableViewCellStyleDefault, null) {
   init {
     addSubview(view)
   }

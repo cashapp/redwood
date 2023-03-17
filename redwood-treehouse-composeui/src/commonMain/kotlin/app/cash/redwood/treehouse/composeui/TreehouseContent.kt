@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.OnStateChangeListener
@@ -35,19 +36,19 @@ public fun <A : AppService> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: TreehouseView.WidgetSystem<A>,
   codeListener: CodeListener = CodeListener(),
-  content: TreehouseView.Content<A>,
+  contentSource: TreehouseContentSource<A>,
 ) {
   val hostConfiguration = HostConfiguration(
     darkMode = isSystemInDarkTheme(),
   )
 
   val rememberedCodeListener = rememberUpdatedState(codeListener)
-  val rememberedContent = rememberUpdatedState(content)
+  val rememberedContent = rememberUpdatedState(contentSource)
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView<A> {
       override val codeListener get() = rememberedCodeListener.value
       override var stateChangeListener: OnStateChangeListener<A>? = null
-      override val boundContent: TreehouseView.Content<A> get() = rememberedContent.value
+      override val boundContentSource: TreehouseContentSource<A> get() = rememberedContent.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
       override val widgetSystem = widgetSystem
@@ -60,7 +61,7 @@ public fun <A : AppService> TreehouseContent(
   LaunchedEffect(treehouseApp, treehouseView) {
     treehouseApp.renderTo(treehouseView)
   }
-  LaunchedEffect(treehouseView, content) {
+  LaunchedEffect(treehouseView, contentSource) {
     treehouseView.stateChangeListener?.onStateChanged(treehouseView)
   }
 

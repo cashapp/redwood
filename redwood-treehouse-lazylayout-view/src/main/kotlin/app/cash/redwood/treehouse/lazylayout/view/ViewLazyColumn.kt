@@ -88,7 +88,7 @@ internal class ViewLazyColumn<A : AppService>(
 
     override fun onBindViewHolder(holder: ViewHolder<A>, position: Int) {
       val itemContent = currentList[position]
-      holder.treehouseWidgetView.setContent {
+      holder.treehouseWidgetView.setContentSource {
         itemContent.item.get(itemContent.index)
       }
     }

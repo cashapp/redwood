@@ -202,20 +202,20 @@ public class TreehouseApp<A : AppService> private constructor(
     dispatchers.checkUi()
 
     // Make sure we're tracking this view, so we can update it when the code changes.
-    val content = view.boundContent
+    val contentSource = view.boundContentSource
     val previous = bindings[view]
-    if (!codeChanged && previous is RealBinding<*> && content == previous.content) {
+    if (!codeChanged && previous is RealBinding<*> && contentSource == previous.contentSource) {
       return // Nothing has changed.
     }
 
     val next = when {
       // We have content and code. Launch the treehouse UI.
-      content != null && ziplineSession != null -> {
+      contentSource != null && ziplineSession != null -> {
         RealBinding(
           app = this@TreehouseApp,
           appScope = appScope,
           eventPublisher = eventPublisher,
-          content = content,
+          contentSource = contentSource,
           session = ziplineSession,
           view = view,
         ).apply {
@@ -224,7 +224,7 @@ public class TreehouseApp<A : AppService> private constructor(
       }
 
       // We have content but no code. Keep track of it for later.
-      content != null -> {
+      contentSource != null -> {
         LoadingBinding.also {
           if (previous == null) {
             view.codeListener.onInitialCodeLoading()

@@ -72,7 +72,7 @@ class TreehouseWidgetViewTest {
     layout.stateChangeListener = listener
     assertEquals(0, listener.count)
 
-    layout.setContent { throw UnsupportedOperationException() }
+    layout.setContentSource { throw UnsupportedOperationException() }
     assertEquals(1, listener.count)
   }
 
