@@ -19,7 +19,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.DisposableEffectResult
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -62,8 +61,8 @@ public fun <A : AppService> TreehouseContent(
   }
   DisposableEffect(treehouseView, contentSource) {
     val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp)
-    return@DisposableEffect object : DisposableEffectResult {
-      override fun dispose() = closeable.close()
+    onDispose {
+      closeable.close()
     }
   }
 
