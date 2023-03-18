@@ -50,9 +50,9 @@ class TreehouseUIKitViewTest {
   @Test fun attachAndDetachSendsStateChange() {
     val parent = UIView()
     val layout = TreehouseUIKitView(throwingWidgetSystem)
-    val listener = CountingStateChangeListener()
+    val listener = CountingReadyForContentChangeListener()
 
-    layout.stateChangeListener = listener
+    layout.readyForContentChangeListener = listener
     assertEquals(0, listener.count)
 
     parent.addSubview(layout.view)
@@ -60,16 +60,6 @@ class TreehouseUIKitViewTest {
 
     layout.view.removeFromSuperview()
     assertEquals(2, listener.count)
-  }
-
-  @Test fun contentSendsStateChange() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
-    val listener = CountingStateChangeListener()
-    layout.stateChangeListener = listener
-    assertEquals(0, listener.count)
-
-    layout.setContent { throw UnsupportedOperationException() }
-    assertEquals(1, listener.count)
   }
 
   @Test fun resetClearsUntrackedChildren() {

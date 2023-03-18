@@ -19,14 +19,18 @@ package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.treehouse.AppService
+import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import okio.Closeable
 import platform.Foundation.NSData
 
 // Used to export types to Objective-C / Swift.
@@ -46,3 +50,8 @@ fun exposedTypes(
 fun byteStringOf(data: NSData): ByteString = data.toByteString()
 
 fun layoutModifier(): LayoutModifier = LayoutModifier
+
+fun <A : AppService> bindWhenReady(
+  content: Content<A>,
+  view: TreehouseView<A>,
+): Closeable = content.bindWhenReady(view)

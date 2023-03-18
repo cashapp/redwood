@@ -40,11 +40,11 @@ import okio.Path
  */
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
-  private val appScope: CoroutineScope,
+  internal val appScope: CoroutineScope,
   public val spec: Spec<A>,
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
-  private val eventPublisher: EventPublisher = factory.eventPublisher
+  internal val eventPublisher: EventPublisher = factory.eventPublisher
 
   private var started = false
 
@@ -52,13 +52,14 @@ public class TreehouseApp<A : AppService> private constructor(
   private var closed = false
 
   /** Only accessed on [TreehouseDispatchers.ui]. */
-  private var ziplineSession: ZiplineSession<A>? = null
+  internal var ziplineSession: ZiplineSession<A>? = null
 
   /**
-   * Keys are views currently attached on-screen with non-null contents.
+   * Contents that this app is currently responsible for.
+   *
    * Only accessed on [TreehouseDispatchers.ui].
    */
-  private val bindings = mutableMapOf<TreehouseView<A>, Binding>()
+  internal val boundContents = mutableListOf<TreehouseContent<A>>()
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -70,20 +71,15 @@ public class TreehouseApp<A : AppService> private constructor(
   public val zipline: Zipline?
     get() = ziplineSession?.zipline
 
-  private val stateChangeListener = TreehouseView.OnStateChangeListener { view ->
-    bind(view, ziplineSession, codeChanged = false)
-  }
-
   /**
-   * Connect this app to drive the content for [view].
+   * Create content for [source].
    *
    * Calls to this function will [start] this app if it isn't already started.
    */
-  public fun renderTo(view: TreehouseView<A>) {
+  public fun createContent(source: TreehouseContentSource<A>): Content<A> {
     start()
 
-    view.stateChangeListener = stateChangeListener
-    stateChangeListener.onStateChanged(view)
+    return TreehouseContent(this, source)
   }
 
   /**
@@ -178,9 +174,8 @@ public class TreehouseApp<A : AppService> private constructor(
 
       next.startFrameClock()
 
-      val viewsToRebind = bindings.keys.toTypedArray() // Defensive copy 'cause bind() mutates.
-      for (treehouseView in viewsToRebind) {
-        bind(treehouseView, next, codeChanged = true)
+      for (content in boundContents) {
+        content.receiveZiplineSession(next, codeChanged = true)
       }
 
       if (previous != null) {
@@ -191,58 +186,6 @@ public class TreehouseApp<A : AppService> private constructor(
 
       ziplineSession = next
     }
-  }
-
-  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  private fun bind(
-    view: TreehouseView<A>,
-    ziplineSession: ZiplineSession<A>?,
-    codeChanged: Boolean,
-  ) {
-    dispatchers.checkUi()
-
-    // Make sure we're tracking this view, so we can update it when the code changes.
-    val contentSource = view.boundContentSource
-    val previous = bindings[view]
-    if (!codeChanged && previous is RealBinding<*> && contentSource == previous.contentSource) {
-      return // Nothing has changed.
-    }
-
-    val next = when {
-      // We have content and code. Launch the treehouse UI.
-      contentSource != null && ziplineSession != null -> {
-        RealBinding(
-          app = this@TreehouseApp,
-          appScope = appScope,
-          eventPublisher = eventPublisher,
-          contentSource = contentSource,
-          session = ziplineSession,
-          view = view,
-        ).apply {
-          start(ziplineSession, view)
-        }
-      }
-
-      // We have content but no code. Keep track of it for later.
-      contentSource != null -> {
-        LoadingBinding.also {
-          if (previous == null) {
-            view.codeListener.onInitialCodeLoading()
-          }
-        }
-      }
-
-      // No content.
-      else -> null
-    }
-
-    // Replace the previous binding, if any.
-    when {
-      next != null -> bindings[view] = next
-      else -> bindings.remove(view)
-    }
-
-    previous?.cancel()
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */

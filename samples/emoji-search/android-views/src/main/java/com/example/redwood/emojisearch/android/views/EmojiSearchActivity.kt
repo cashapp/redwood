@@ -25,6 +25,7 @@ import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
@@ -70,8 +71,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     setContentView(
       TreehouseWidgetView(this, widgetSystem).apply {
-        treehouseApp.renderTo(this)
-        setContentSource(treehouseContentSource)
+        treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )
   }
