@@ -119,6 +119,7 @@
 				635661CD21F12B7E00DD7240 /* Sources */,
 				635661CE21F12B7E00DD7240 /* Frameworks */,
 				635661CF21F12B7E00DD7240 /* Resources */,
+				596E05BFED0D5D6968D3601E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -177,6 +178,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		596E05BFED0D5D6968D3601E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C0A74553EE688F26124F6281 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
