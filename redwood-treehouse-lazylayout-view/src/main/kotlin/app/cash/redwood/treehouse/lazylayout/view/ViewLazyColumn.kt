@@ -30,8 +30,8 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.TreehouseWidgetView
+import app.cash.redwood.treehouse.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
@@ -86,7 +86,7 @@ internal class ViewLazyColumn<A : AppService>(
       val container = FrameLayout(parent.context).apply {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, contentHeight)
       }
-      return ViewHolder(container, widgetSystem)
+      return ViewHolder(container)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -99,16 +99,16 @@ internal class ViewLazyColumn<A : AppService>(
       holder.widgetContentBinding = itemContentSource.bindWhenReady(
         view = holder.treehouseWidgetView,
         app = treehouseApp,
+        widgetSystem = widgetSystem,
       )
     }
   }
 
   private class ViewHolder(
     container: FrameLayout,
-    widgetSystem: WidgetSystem,
   ) : RecyclerView.ViewHolder(container) {
     var widgetContentBinding: Closeable? = null
-    val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
+    val treehouseWidgetView = TreehouseWidgetView(container.context)
       .apply {
         layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
           gravity = Gravity.CENTER_HORIZONTAL

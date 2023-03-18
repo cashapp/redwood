@@ -25,7 +25,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +33,6 @@ import kotlinx.coroutines.flow.StateFlow
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView(
   context: Context,
-  override val widgetSystem: WidgetSystem,
 ) : FrameLayout(context), TreehouseView {
   public override var codeListener: CodeListener = CodeListener()
 

@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.treehouse.WidgetSystem
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn

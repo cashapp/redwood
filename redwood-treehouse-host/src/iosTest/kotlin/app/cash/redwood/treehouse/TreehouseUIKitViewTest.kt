@@ -16,7 +16,6 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
@@ -39,7 +38,7 @@ import platform.UIKit.subviews
 @OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseUIKitViewTest {
   @Test fun widgetsAddChildViews() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
 
     val view = UIView()
     layout.children.insert(0, viewWidget(view))
@@ -50,7 +49,7 @@ class TreehouseUIKitViewTest {
 
   @Test fun attachAndDetachSendsStateChange() {
     val parent = UIView()
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
     val listener = CountingReadyForContentChangeListener()
 
     layout.readyForContentChangeListener = listener
@@ -64,7 +63,7 @@ class TreehouseUIKitViewTest {
   }
 
   @Test fun resetClearsUntrackedChildren() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
 
     layout.view.addSubview(UIView())
     assertEquals(1, layout.view.subviews.size)
@@ -74,7 +73,7 @@ class TreehouseUIKitViewTest {
   }
 
   @Test fun resetClearsTrackedWidgets() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
 
     // Needed to access internal state which cannot be reasonably observed through the public API.
     val children = layout.children as UIViewChildren
@@ -91,7 +90,7 @@ class TreehouseUIKitViewTest {
     val parent = UIWindow()
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
     parent.addSubview(layout.view)
 
     assertEquals(HostConfiguration(darkMode = true), layout.hostConfiguration.value)
@@ -100,7 +99,7 @@ class TreehouseUIKitViewTest {
   @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
     val parent = UIWindow()
 
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIKitView()
     parent.addSubview(layout.view)
 
     layout.hostConfiguration.test {
@@ -118,7 +117,4 @@ class TreehouseUIKitViewTest {
     override val value: UIView get() = view
     override var layoutModifiers: LayoutModifier = LayoutModifier
   }
-
-  private val throwingWidgetSystem =
-    WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
 }

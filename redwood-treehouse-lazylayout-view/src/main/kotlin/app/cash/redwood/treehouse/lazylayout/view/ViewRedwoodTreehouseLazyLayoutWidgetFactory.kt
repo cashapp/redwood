@@ -20,7 +20,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.treehouse.WidgetSystem
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 

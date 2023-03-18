@@ -54,6 +54,7 @@ internal class RealBinding<A : AppService>(
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
+  val widgetSystem: WidgetSystem,
   session: ZiplineSession<A>,
   view: TreehouseView,
 ) : Binding, EventSink, DiffSinkService {
@@ -68,7 +69,7 @@ internal class RealBinding<A : AppService>(
   @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
   private var bridgeOrNull: ProtocolBridge<*>? = ProtocolBridge(
     container = view.children as Widget.Children<Any>,
-    factory = view.widgetSystem.widgetFactory(
+    factory = widgetSystem.widgetFactory(
       app = app,
       json = session.zipline.json,
       protocolMismatchHandler = eventPublisher.protocolMismatchHandler(app),

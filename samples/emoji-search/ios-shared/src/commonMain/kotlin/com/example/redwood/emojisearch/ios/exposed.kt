@@ -23,7 +23,7 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.treehouse.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
