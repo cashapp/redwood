@@ -35,8 +35,7 @@ import okio.Path
 /**
  * This class binds downloaded code to on-screen views.
  *
- * It updates the binding when the views change via [TreehouseView.OnStateChangeListener], and when
- * new code is available in [onCodeChanged].
+ * It updates the content when new code is available in [onCodeChanged].
  */
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,

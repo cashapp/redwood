@@ -40,8 +40,7 @@ internal object LoadingBinding : Binding {
 }
 
 /**
- * Connects a single widget, a single [TreehouseView.boundContentSource], and a single
- * [ZiplineSession].
+ * Connects a [TreehouseView], a single [TreehouseContentSource], and a single [ZiplineSession].
  *
  * Canceled if the code changes, the widget's content changes, or the widget is detached from
  * screen.
@@ -56,14 +55,14 @@ internal class RealBinding<A : AppService>(
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
   session: ZiplineSession<A>,
-  view: TreehouseView<A>,
+  view: TreehouseView,
 ) : Binding, EventSink, DiffSinkService {
   private val isInitialLaunch: Boolean = session.isInitialLaunch
 
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
-  private var viewOrNull: TreehouseView<A>? = view
+  private var viewOrNull: TreehouseView? = view
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
   @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
@@ -112,7 +111,7 @@ internal class RealBinding<A : AppService>(
     }
   }
 
-  fun start(session: ZiplineSession<A>, view: TreehouseView<A>) {
+  fun start(session: ZiplineSession<A>, view: TreehouseView) {
     bindingScope.launch(app.dispatchers.zipline) {
       val scopedAppService = session.appService.withScope(ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)

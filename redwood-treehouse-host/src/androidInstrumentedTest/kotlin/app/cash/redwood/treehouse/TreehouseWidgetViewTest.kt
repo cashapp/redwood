@@ -22,6 +22,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.view.ViewGroup
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
@@ -118,5 +119,5 @@ class TreehouseWidgetViewTest {
   }
 
   private val throwingWidgetSystem =
-    TreehouseView.WidgetSystem<Nothing> { _, _, _ -> throw UnsupportedOperationException() }
+    WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
 }

@@ -17,9 +17,9 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
-import kotlin.DeprecationLevel.ERROR
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,21 +33,13 @@ import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
 
-public class TreehouseUIKitView<A : AppService>(
-  override val widgetSystem: TreehouseView.WidgetSystem<A>,
-) : TreehouseView<A> {
-  @Deprecated(
-    message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
-    replaceWith = ReplaceWith("TreehouseUIKitView(widgetSystem).also(treehouseApp::renderTo)"),
-    level = ERROR,
-  )
-  @Suppress("UNUSED_PARAMETER")
-  public constructor(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseView.WidgetSystem<A>) : this(widgetSystem)
-
+public class TreehouseUIKitView(
+  override val widgetSystem: WidgetSystem,
+) : TreehouseView {
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()
 
-  override var readyForContentChangeListener: ReadyForContentChangeListener<A>? = null
+  override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
       field = value
@@ -92,7 +84,7 @@ private fun computeHostConfiguration(
 
 @Suppress("unused") // cinterop erroneously exposes these as extension functions.
 private class RootUiView(
-  private val treehouseView: TreehouseUIKitView<*>,
+  private val treehouseView: TreehouseUIKitView,
 ) : UIView(cValue { CGRectZero }) {
   @ObjCAction fun layoutSubviews() {
     subviews.forEach {

@@ -25,32 +25,20 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
-import kotlin.DeprecationLevel.ERROR
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
-public class TreehouseWidgetView<A : AppService>(
+public class TreehouseWidgetView(
   context: Context,
-  override val widgetSystem: TreehouseView.WidgetSystem<A>,
-) : FrameLayout(context), TreehouseView<A> {
-  @Deprecated(
-    message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
-    replaceWith = ReplaceWith("TreehouseWidgetView(context, widgetSystem).also(treehouseApp::renderTo)"),
-    level = ERROR,
-  )
-  @Suppress("UNUSED_PARAMETER")
-  public constructor(
-    context: Context,
-    treehouseApp: TreehouseApp<A>,
-    widgetSystem: TreehouseView.WidgetSystem<A>,
-  ) : this(context, widgetSystem)
-
+  override val widgetSystem: WidgetSystem,
+) : FrameLayout(context), TreehouseView {
   public override var codeListener: CodeListener = CodeListener()
 
-  override var readyForContentChangeListener: ReadyForContentChangeListener<A>? = null
+  override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
       field = value
