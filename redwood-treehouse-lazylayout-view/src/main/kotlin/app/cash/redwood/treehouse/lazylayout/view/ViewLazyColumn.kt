@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
+import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
@@ -90,10 +91,15 @@ internal class ViewLazyColumn<A : AppService>(
 
     override fun onBindViewHolder(holder: ViewHolder<A>, position: Int) {
       val itemContent = currentList[position]
-      holder.widgetContentBinding?.close()
-      holder.widgetContentBinding = {
+      val itemContentSource = TreehouseContentSource<A> {
         itemContent.item.get(itemContent.index)
-      }.bindWhenReady(holder.treehouseWidgetView, treehouseApp)
+      }
+
+      holder.widgetContentBinding?.close()
+      holder.widgetContentBinding = itemContentSource.bindWhenReady(
+        view = holder.treehouseWidgetView,
+        app = treehouseApp,
+      )
     }
   }
 
