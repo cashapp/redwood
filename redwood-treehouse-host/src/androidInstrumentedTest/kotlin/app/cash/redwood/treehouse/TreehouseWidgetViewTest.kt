@@ -42,7 +42,7 @@ class TreehouseWidgetViewTest {
   private val context = RuntimeEnvironment.getApplication()!!
 
   @Test fun widgetsAddChildViews() {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(context, throwingWidgetSystem)
 
     val view = View(context)
     layout.children.insert(0, viewWidget(view))
@@ -53,7 +53,7 @@ class TreehouseWidgetViewTest {
   @Test fun attachAndDetachSendsStateChange() {
     val activity = Robolectric.buildActivity(Activity::class.java).resume().visible().get()
     val parent = activity.findViewById<ViewGroup>(android.R.id.content)
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(context, throwingWidgetSystem)
     val listener = CountingReadyForContentChangeListener()
 
     layout.readyForContentChangeListener = listener
@@ -67,7 +67,7 @@ class TreehouseWidgetViewTest {
   }
 
   @Test fun resetClearsUntrackedChildren() {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(context, throwingWidgetSystem)
 
     layout.addView(View(context))
     assertEquals(1, layout.childCount)
@@ -77,7 +77,7 @@ class TreehouseWidgetViewTest {
   }
 
   @Test fun resetClearsTrackedWidgets() {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(context, throwingWidgetSystem)
 
     // Needed to access internal state which cannot be reasonably observed through the public API.
     val children = layout.children as ViewGroupChildren
@@ -95,12 +95,12 @@ class TreehouseWidgetViewTest {
     val newConfig = Configuration(context.resources.configuration)
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = context.createConfigurationContext(newConfig) // Needs API 26.
-    val layout = TreehouseWidgetView(newContext, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(newContext, throwingWidgetSystem)
     assertEquals(HostConfiguration(darkMode = true), layout.hostConfiguration.value)
   }
 
   @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    val layout = TreehouseWidgetView<Nothing>(context, throwingWidgetSystem)
     layout.hostConfiguration.test {
       assertEquals(HostConfiguration(darkMode = false), awaitItem())
 
@@ -118,5 +118,5 @@ class TreehouseWidgetViewTest {
   }
 
   private val throwingWidgetSystem =
-    TreehouseView.WidgetSystem<Nothing> { _, _, _ -> throw UnsupportedOperationException() }
+    TreehouseView.WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
 }

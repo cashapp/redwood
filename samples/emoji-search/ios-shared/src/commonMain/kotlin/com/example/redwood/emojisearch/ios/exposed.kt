@@ -40,7 +40,7 @@ fun exposedTypes(
   treehouseUIKitView: TreehouseUIKitView<*>,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
-  widgetSystem: TreehouseView.WidgetSystem<*>,
+  widgetSystem: TreehouseView.WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
   diffConsumingNodeFactory: EmojiSearchDiffConsumingNodeFactory<*>,
 ) {

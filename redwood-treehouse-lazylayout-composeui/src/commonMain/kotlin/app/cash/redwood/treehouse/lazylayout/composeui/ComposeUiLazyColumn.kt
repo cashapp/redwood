@@ -36,7 +36,7 @@ import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 
 internal class ComposeUiLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem<A>,
+  widgetSystem: TreehouseView.WidgetSystem,
 ) : LazyColumn<@Composable () -> Unit> {
   private var intervals by mutableStateOf<List<LazyListIntervalContent>>(emptyList())
 

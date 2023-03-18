@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.StateFlow
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView<A : AppService>(
   context: Context,
-  override val widgetSystem: TreehouseView.WidgetSystem<A>,
+  override val widgetSystem: TreehouseView.WidgetSystem,
 ) : FrameLayout(context), TreehouseView<A> {
   @Deprecated(
     message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
@@ -45,7 +45,7 @@ public class TreehouseWidgetView<A : AppService>(
   public constructor(
     context: Context,
     treehouseApp: TreehouseApp<A>,
-    widgetSystem: TreehouseView.WidgetSystem<A>,
+    widgetSystem: TreehouseView.WidgetSystem,
   ) : this(context, widgetSystem)
 
   public override var codeListener: CodeListener = CodeListener()

@@ -27,7 +27,7 @@ import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWi
 public class ViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private val context: Context,
   private val treehouseApp: TreehouseApp<A>,
-  private val widgetSystem: TreehouseView.WidgetSystem<A>,
+  private val widgetSystem: TreehouseView.WidgetSystem,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<View> {
   public override fun LazyColumn(): LazyColumn<View> = ViewLazyColumn(treehouseApp, widgetSystem, RecyclerView(context))
 }

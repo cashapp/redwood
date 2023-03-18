@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 public fun <A : AppService> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem<A>,
+  widgetSystem: TreehouseView.WidgetSystem,
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
 ) {

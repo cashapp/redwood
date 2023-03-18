@@ -40,7 +40,7 @@ import platform.darwin.NSInteger
 
 internal class UIViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem<A>,
+  widgetSystem: TreehouseView.WidgetSystem,
 ) : LazyColumn<UIView> {
   private val dataSource = TableViewDataSource(treehouseApp, widgetSystem)
   private val root = UITableView().apply {
@@ -59,7 +59,7 @@ internal class UIViewLazyColumn<A : AppService>(
 
 private class TableViewDataSource<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
-  private val widgetSystem: TreehouseView.WidgetSystem<A>,
+  private val widgetSystem: TreehouseView.WidgetSystem,
 ) : UITableViewDiffableDataSource() {
   var intervals = emptyList<LazyListIntervalContent>()
 
@@ -72,7 +72,7 @@ private class TableViewDataSource<A : AppService>(
   }
 
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
-    val treehouseView = TreehouseUIKitView(widgetSystem)
+    val treehouseView = TreehouseUIKitView<A>(widgetSystem)
     val cellContentSource = CellContentSource<A>(
       intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
       cellForRowAtIndexPath.row.toInt(),

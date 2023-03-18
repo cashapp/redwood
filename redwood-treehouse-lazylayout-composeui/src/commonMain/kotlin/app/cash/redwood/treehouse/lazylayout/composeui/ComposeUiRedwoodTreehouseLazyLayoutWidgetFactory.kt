@@ -24,7 +24,7 @@ import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWi
 
 public class ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
-  private val widgetSystem: TreehouseView.WidgetSystem<A>,
+  private val widgetSystem: TreehouseView.WidgetSystem,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<@Composable () -> Unit> {
   override fun LazyColumn(): LazyColumn<@Composable () -> Unit> = ComposeUiLazyColumn(treehouseApp, widgetSystem)
 }

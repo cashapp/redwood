@@ -44,7 +44,7 @@ private data class LazyContentItem(
 
 internal class ViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem<A>,
+  widgetSystem: TreehouseView.WidgetSystem,
   override val value: RecyclerView,
 ) : LazyColumn<View> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
@@ -79,7 +79,7 @@ internal class ViewLazyColumn<A : AppService>(
 
   private class LazyContentItemListAdapter<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
-    private val widgetSystem: TreehouseView.WidgetSystem<A>,
+    private val widgetSystem: TreehouseView.WidgetSystem,
     private val contentHeight: Int,
   ) : ListAdapter<LazyContentItem, ViewHolder<A>>(LazyContentItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<A> {
@@ -105,10 +105,10 @@ internal class ViewLazyColumn<A : AppService>(
 
   private class ViewHolder<A : AppService>(
     container: FrameLayout,
-    widgetSystem: TreehouseView.WidgetSystem<A>,
+    widgetSystem: TreehouseView.WidgetSystem,
   ) : RecyclerView.ViewHolder(container) {
     var widgetContentBinding: Closeable? = null
-    val treehouseWidgetView = TreehouseWidgetView(container.context, widgetSystem)
+    val treehouseWidgetView = TreehouseWidgetView<A>(container.context, widgetSystem)
       .apply {
         layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
           gravity = Gravity.CENTER_HORIZONTAL

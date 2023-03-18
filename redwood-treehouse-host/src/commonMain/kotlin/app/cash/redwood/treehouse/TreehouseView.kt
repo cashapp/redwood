@@ -24,7 +24,7 @@ import kotlinx.serialization.json.Json
 public interface TreehouseView<A : AppService> {
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
-  public val widgetSystem: WidgetSystem<A>
+  public val widgetSystem: WidgetSystem
   public val codeListener: CodeListener
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener<A>?
@@ -37,10 +37,10 @@ public interface TreehouseView<A : AppService> {
     public fun onReadyForContentChanged(view: TreehouseView<A>)
   }
 
-  public fun interface WidgetSystem<A : AppService> {
+  public fun interface WidgetSystem {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
-      app: TreehouseApp<A>,
+      app: TreehouseApp<*>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingNode.Factory<*>

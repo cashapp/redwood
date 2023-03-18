@@ -34,7 +34,7 @@ import platform.UIKit.subviews
 import platform.UIKit.superview
 
 public class TreehouseUIKitView<A : AppService>(
-  override val widgetSystem: TreehouseView.WidgetSystem<A>,
+  override val widgetSystem: TreehouseView.WidgetSystem,
 ) : TreehouseView<A> {
   @Deprecated(
     message = "TreehouseView no longer owns a TreehouseApp. Instead, call app.renderTo(view).",
@@ -42,7 +42,7 @@ public class TreehouseUIKitView<A : AppService>(
     level = ERROR,
   )
   @Suppress("UNUSED_PARAMETER")
-  public constructor(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseView.WidgetSystem<A>) : this(widgetSystem)
+  public constructor(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseView.WidgetSystem) : this(widgetSystem)
 
   public val view: UIView = RootUiView(this)
   public override var codeListener: CodeListener = CodeListener()
