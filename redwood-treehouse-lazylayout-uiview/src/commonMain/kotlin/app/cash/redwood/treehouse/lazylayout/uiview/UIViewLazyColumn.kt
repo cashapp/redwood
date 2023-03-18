@@ -22,6 +22,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
+import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import platform.Foundation.NSIndexPath
@@ -72,13 +73,11 @@ private class TableViewDataSource<A : AppService>(
 
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
     val treehouseView = TreehouseUIKitView(widgetSystem)
-    treehouseApp.renderTo(treehouseView)
-    treehouseView.setContent(
-      CellContentSource(
-        intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
-        cellForRowAtIndexPath.row.toInt(),
-      ),
+    val cellContentSource = CellContentSource<A>(
+      intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
+      cellForRowAtIndexPath.row.toInt(),
     )
+    cellContentSource.bindWhenReady(treehouseView, treehouseApp)
     return TableViewCell(treehouseView.view)
   }
 }
