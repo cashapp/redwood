@@ -21,10 +21,10 @@ internal class TreehouseContent<A : AppService>(
 ) : Content<A> {
   private val dispatchers = treehouseApp.dispatchers
 
-  private var view: TreehouseView<A>? = null
+  private var view: TreehouseView? = null
   private var binding: Binding? = null
 
-  override fun bind(view: TreehouseView<A>) {
+  override fun bind(view: TreehouseView) {
     treehouseApp.dispatchers.checkUi()
 
     // Binding the bound view does nothing. This is necessary so that listeners don't need to

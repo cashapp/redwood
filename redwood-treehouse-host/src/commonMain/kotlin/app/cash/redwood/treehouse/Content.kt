@@ -37,7 +37,7 @@ public interface Content<A : AppService> {
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun bind(view: TreehouseView<A>)
+  public fun bind(view: TreehouseView)
 
   /**
    * Calling [unbind] without a bound view is safe.

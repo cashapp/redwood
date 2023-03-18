@@ -20,7 +20,7 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseUIKitView
-import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
@@ -40,7 +40,7 @@ import platform.darwin.NSInteger
 
 internal class UIViewLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem,
+  widgetSystem: WidgetSystem,
 ) : LazyColumn<UIView> {
   private val dataSource = TableViewDataSource(treehouseApp, widgetSystem)
   private val root = UITableView().apply {
@@ -59,7 +59,7 @@ internal class UIViewLazyColumn<A : AppService>(
 
 private class TableViewDataSource<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
-  private val widgetSystem: TreehouseView.WidgetSystem,
+  private val widgetSystem: WidgetSystem,
 ) : UITableViewDiffableDataSource() {
   var intervals = emptyList<LazyListIntervalContent>()
 
@@ -72,7 +72,7 @@ private class TableViewDataSource<A : AppService>(
   }
 
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
-    val treehouseView = TreehouseUIKitView<A>(widgetSystem)
+    val treehouseView = TreehouseUIKitView(widgetSystem)
     val cellContentSource = CellContentSource<A>(
       intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
       cellForRowAtIndexPath.row.toInt(),

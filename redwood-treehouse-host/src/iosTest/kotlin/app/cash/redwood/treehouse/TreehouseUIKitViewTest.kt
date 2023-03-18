@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
@@ -119,5 +120,5 @@ class TreehouseUIKitViewTest {
   }
 
   private val throwingWidgetSystem =
-    TreehouseView.WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
+    WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
 }

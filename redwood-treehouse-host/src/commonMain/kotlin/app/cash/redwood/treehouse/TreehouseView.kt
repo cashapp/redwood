@@ -21,20 +21,20 @@ import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
-public interface TreehouseView<A : AppService> {
+public interface TreehouseView {
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem
   public val codeListener: CodeListener
   public val readyForContent: Boolean
-  public var readyForContentChangeListener: ReadyForContentChangeListener<A>?
+  public var readyForContentChangeListener: ReadyForContentChangeListener?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
-  public fun interface ReadyForContentChangeListener<A : AppService> {
+  public fun interface ReadyForContentChangeListener {
     /** Called when [TreehouseView.readyForContent] has changed. */
-    public fun onReadyForContentChanged(view: TreehouseView<A>)
+    public fun onReadyForContentChanged(view: TreehouseView)
   }
 
   public fun interface WidgetSystem {

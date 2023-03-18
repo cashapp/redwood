@@ -29,6 +29,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 public fun <A : AppService> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: TreehouseView.WidgetSystem,
+  widgetSystem: WidgetSystem,
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
 ) {
@@ -46,13 +47,13 @@ public fun <A : AppService> TreehouseContent(
 
   val rememberedCodeListener = rememberUpdatedState(codeListener)
   val treehouseView = remember(widgetSystem) {
-    object : TreehouseView<A> {
+    object : TreehouseView {
       override val codeListener get() = rememberedCodeListener.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
       override val widgetSystem = widgetSystem
       override val readyForContent = true
-      override var readyForContentChangeListener: ReadyForContentChangeListener<A>? = null
+      override var readyForContentChangeListener: ReadyForContentChangeListener? = null
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }

@@ -23,6 +23,7 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
@@ -37,10 +38,10 @@ import platform.Foundation.NSData
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  treehouseUIKitView: TreehouseUIKitView<*>,
+  treehouseUIKitView: TreehouseUIKitView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
-  widgetSystem: TreehouseView.WidgetSystem,
+  widgetSystem: WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
   diffConsumingNodeFactory: EmojiSearchDiffConsumingNodeFactory<*>,
 ) {
@@ -53,5 +54,5 @@ fun layoutModifier(): LayoutModifier = LayoutModifier
 
 fun <A : AppService> bindWhenReady(
   content: Content<A>,
-  view: TreehouseView<A>,
+  view: TreehouseView,
 ): Closeable = content.bindWhenReady(view)

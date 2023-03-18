@@ -70,7 +70,7 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     setContentView(
-      TreehouseWidgetView<EmojiSearchPresenter>(this, widgetSystem).apply {
+      TreehouseWidgetView(this, widgetSystem).apply {
         treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )
