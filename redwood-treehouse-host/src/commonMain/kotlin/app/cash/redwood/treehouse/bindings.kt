@@ -54,6 +54,7 @@ internal class RealBinding<A : AppService>(
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
+  val codeListener: CodeListener,
   session: ZiplineSession<A>,
   view: TreehouseView,
 ) : Binding, EventSink, DiffSinkService {
@@ -104,7 +105,7 @@ internal class RealBinding<A : AppService>(
       if (firstDiff) {
         firstDiff = false
         view.reset()
-        view.codeListener.onCodeLoaded(isInitialLaunch)
+        codeListener.onCodeLoaded(isInitialLaunch)
       }
 
       bridge.sendDiff(diff)

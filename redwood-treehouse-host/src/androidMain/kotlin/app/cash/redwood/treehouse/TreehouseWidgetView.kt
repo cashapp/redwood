@@ -23,7 +23,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
@@ -36,8 +35,6 @@ public class TreehouseWidgetView(
   context: Context,
   override val widgetSystem: WidgetSystem,
 ) : FrameLayout(context), TreehouseView {
-  public override var codeListener: CodeListener = CodeListener()
-
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }

@@ -75,10 +75,13 @@ public class TreehouseApp<A : AppService> private constructor(
    *
    * Calls to this function will [start] this app if it isn't already started.
    */
-  public fun createContent(source: TreehouseContentSource<A>): Content<A> {
+  public fun createContent(
+    source: TreehouseContentSource<A>,
+    codeListener: CodeListener = CodeListener(),
+  ): Content<A> {
     start()
 
-    return TreehouseContent(this, source)
+    return TreehouseContent(this, source, codeListener)
   }
 
   /**

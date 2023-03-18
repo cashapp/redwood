@@ -37,7 +37,10 @@ class EmojiSearchViewController : UIViewController {
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
         let widgetSystem = EmojiSearchWidgetSystem()
         let treehouseView = Redwood_treehouse_hostTreehouseUIKitView(widgetSystem: widgetSystem)
-        let content = treehouseApp.createContent(source: EmojiSearchContent())
+        let content = treehouseApp.createContent(
+            source: EmojiSearchContent(),
+            codeListener: Redwood_treehouse_hostCodeListener()
+        )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
         view = treehouseView.view
     }
