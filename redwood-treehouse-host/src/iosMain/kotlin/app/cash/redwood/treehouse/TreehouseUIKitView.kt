@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
@@ -37,7 +36,6 @@ public class TreehouseUIKitView(
   override val widgetSystem: WidgetSystem,
 ) : TreehouseView {
   public val view: UIView = RootUiView(this)
-  public override var codeListener: CodeListener = CodeListener()
 
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {

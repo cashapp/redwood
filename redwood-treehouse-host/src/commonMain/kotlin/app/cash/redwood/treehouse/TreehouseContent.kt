@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 internal class TreehouseContent<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   private val source: TreehouseContentSource<A>,
+  private val codeListener: CodeListener,
 ) : Content<A> {
   private val dispatchers = treehouseApp.dispatchers
 
@@ -71,6 +72,7 @@ internal class TreehouseContent<A : AppService>(
           appScope = treehouseApp.appScope,
           eventPublisher = treehouseApp.eventPublisher,
           contentSource = source,
+          codeListener = codeListener,
           session = ziplineSession,
           view = view,
         ).apply {
@@ -82,7 +84,7 @@ internal class TreehouseContent<A : AppService>(
       else -> {
         LoadingBinding.also {
           if (previous == null) {
-            view.codeListener.onInitialCodeLoading()
+            codeListener.onInitialCodeLoading()
           }
         }
       }

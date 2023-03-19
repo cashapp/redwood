@@ -21,13 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import app.cash.redwood.treehouse.AppService
+import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseView.CodeListener
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
@@ -45,10 +44,8 @@ public fun <A : AppService> TreehouseContent(
     darkMode = isSystemInDarkTheme(),
   )
 
-  val rememberedCodeListener = rememberUpdatedState(codeListener)
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView {
-      override val codeListener get() = rememberedCodeListener.value
       override val children = ComposeWidgetChildren()
       override val hostConfiguration = MutableStateFlow(hostConfiguration)
       override val widgetSystem = widgetSystem
@@ -60,8 +57,8 @@ public fun <A : AppService> TreehouseContent(
   LaunchedEffect(treehouseView, hostConfiguration) {
     treehouseView.hostConfiguration.value = hostConfiguration
   }
-  DisposableEffect(treehouseView, contentSource) {
-    val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp)
+  DisposableEffect(treehouseView, contentSource, codeListener) {
+    val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp, codeListener)
     onDispose {
       closeable.close()
     }

@@ -25,7 +25,6 @@ public interface TreehouseView {
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
   public val widgetSystem: WidgetSystem
-  public val codeListener: CodeListener
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener?
 
@@ -44,19 +43,5 @@ public interface TreehouseView {
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingNode.Factory<*>
-  }
-
-  public open class CodeListener {
-    /**
-     * Invoked when the initial code is still loading. This can be used to signal a loading state
-     * in the UI before there is anything to display.
-     */
-    public open fun onInitialCodeLoading() {}
-
-    /**
-     * Invoked each time new code is loaded. This is called after the view's old children have
-     * been cleared but before the children of the new code have been added.
-     */
-    public open fun onCodeLoaded(initial: Boolean) {}
   }
 }
