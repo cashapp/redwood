@@ -88,7 +88,7 @@ allprojects {
     }
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach { task ->
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach {
     compilerOptions {
       freeCompilerArgs.addAll([
         '-progressive', // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
