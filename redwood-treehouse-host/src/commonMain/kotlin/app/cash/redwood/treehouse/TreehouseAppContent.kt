@@ -29,27 +29,92 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
-internal interface Binding {
-  fun cancel()
-}
+internal class TreehouseAppContent<A : AppService>(
+  private val treehouseApp: TreehouseApp<A>,
+  private val source: TreehouseContentSource<A>,
+  private val codeListener: CodeListener,
+) : Content {
+  private val dispatchers = treehouseApp.dispatchers
 
-/** A widget awaiting a [ZiplineSession]. */
-internal object LoadingBinding : Binding {
-  override fun cancel() {
+  /** How many times this content has received fresh code. */
+  private var codeLoadCount = 0
+
+  private var view: TreehouseView? = null
+  private var viewContentCodeBinding: ViewContentCodeBinding<A>? = null
+
+  override fun bind(view: TreehouseView) {
+    treehouseApp.dispatchers.checkUi()
+
+    // Binding the bound view does nothing. This is necessary so that listeners don't need to
+    // independently track the bound/unbound state.
+    if (this.view == view) return
+
+    require(this.view == null)
+    this.view = view
+
+    treehouseApp.boundContents += this
+    receiveZiplineSession(treehouseApp.ziplineSession, false)
+  }
+
+  override fun unbind() {
+    treehouseApp.dispatchers.checkUi()
+
+    if (view == null) return // unbind() is idempotent.
+
+    treehouseApp.boundContents.remove(this)
+    viewContentCodeBinding?.cancel()
+    view = null
+    viewContentCodeBinding = null
+  }
+
+  /** This function may only be invoked on [TreehouseDispatchers.ui]. */
+  internal fun receiveZiplineSession(
+    ziplineSession: ZiplineSession<A>?,
+    codeChanged: Boolean,
+  ) {
+    dispatchers.checkUi()
+
+    val previous = viewContentCodeBinding
+    if (!codeChanged && previous != null) return // No change.
+
+    if (ziplineSession != null) {
+      // We have code. Launch the treehouse UI.
+      val view = this.view!!
+      viewContentCodeBinding = ViewContentCodeBinding(
+        app = treehouseApp,
+        appScope = treehouseApp.appScope,
+        eventPublisher = treehouseApp.eventPublisher,
+        contentSource = source,
+        codeListener = codeListener,
+        session = ziplineSession,
+        view = view,
+      ).apply {
+        start(ziplineSession, view)
+      }
+    } else {
+      // We don't have code yet. Let the CodeListener show a loading spinner or something.
+      if (codeLoadCount == 0) {
+        codeListener.onInitialCodeLoading()
+      }
+      viewContentCodeBinding = null
+    }
+
+    codeLoadCount++
+    previous?.cancel()
   }
 }
 
 /**
- * Connects a [TreehouseView], a single [TreehouseContentSource], and a single [ZiplineSession].
+ * Connects a [TreehouseView], a [TreehouseContentSource], and a [ZiplineSession].
  *
- * Canceled if the code changes, the widget's content changes, or the widget is detached from
- * screen.
+ * Canceled by [TreehouseAppContent] if the view is unbound from its content, or if the code is
+ * updated.
  *
  * This aggressively manages the lifecycle of the widget, breaking widget reachability when the
  * binding is canceled. It uses a single [ZiplineScope] for all Zipline services consumed by this
  * binding.
  */
-internal class RealBinding<A : AppService>(
+private class ViewContentCodeBinding<A : AppService>(
   val app: TreehouseApp<A>,
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
@@ -57,7 +122,7 @@ internal class RealBinding<A : AppService>(
   val codeListener: CodeListener,
   session: ZiplineSession<A>,
   view: TreehouseView,
-) : Binding, EventSink, DiffSinkService {
+) : EventSink, DiffSinkService {
   private val isInitialLaunch: Boolean = session.isInitialLaunch
 
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
@@ -84,7 +149,7 @@ internal class RealBinding<A : AppService>(
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
 
   /** Only accessed on [TreehouseDispatchers.ui]. */
-  private var firstDiff = true
+  private var diffCount = 0
 
   /** Send an event from the UI to Zipline. */
   override fun sendEvent(event: Event) {
@@ -102,8 +167,7 @@ internal class RealBinding<A : AppService>(
       val view = viewOrNull ?: return@launch
       val bridge = bridgeOrNull ?: return@launch
 
-      if (firstDiff) {
-        firstDiff = false
+      if (diffCount++ == 0) {
         view.reset()
         codeListener.onCodeLoaded(isInitialLaunch)
       }
@@ -118,13 +182,13 @@ internal class RealBinding<A : AppService>(
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
       treehouseUi.start(
-        diffSink = this@RealBinding,
+        diffSink = this@ViewContentCodeBinding,
         hostConfigurations = view.hostConfiguration.toFlowWithInitialValue(),
       )
     }
   }
 
-  override fun cancel() {
+  fun cancel() {
     viewOrNull = null
     bridgeOrNull = null
     appScope.launch(app.dispatchers.zipline) {

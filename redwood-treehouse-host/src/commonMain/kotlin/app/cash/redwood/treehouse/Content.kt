@@ -31,7 +31,7 @@ package app.cash.redwood.treehouse
  *
  * Content must be unbound after use.
  */
-public interface Content<A : AppService> {
+public interface Content {
   /**
    * It is an error to bind multiple views simultaneously.
    *

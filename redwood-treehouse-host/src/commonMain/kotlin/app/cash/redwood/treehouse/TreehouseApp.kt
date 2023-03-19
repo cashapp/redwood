@@ -58,7 +58,7 @@ public class TreehouseApp<A : AppService> private constructor(
    *
    * Only accessed on [TreehouseDispatchers.ui].
    */
-  internal val boundContents = mutableListOf<TreehouseContent<A>>()
+  internal val boundContents = mutableListOf<TreehouseAppContent<A>>()
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -78,10 +78,10 @@ public class TreehouseApp<A : AppService> private constructor(
   public fun createContent(
     source: TreehouseContentSource<A>,
     codeListener: CodeListener = CodeListener(),
-  ): Content<A> {
+  ): Content {
     start()
 
-    return TreehouseContent(this, source, codeListener)
+    return TreehouseAppContent(this, source, codeListener)
   }
 
   /**

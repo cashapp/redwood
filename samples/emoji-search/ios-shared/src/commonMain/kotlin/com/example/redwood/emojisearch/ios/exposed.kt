@@ -53,6 +53,6 @@ fun byteStringOf(data: NSData): ByteString = data.toByteString()
 fun layoutModifier(): LayoutModifier = LayoutModifier
 
 fun <A : AppService> bindWhenReady(
-  content: Content<A>,
+  content: Content,
   view: TreehouseView,
 ): Closeable = content.bindWhenReady(view)
