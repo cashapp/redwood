@@ -73,11 +73,6 @@ allprojects {
     plugins.withId('org.jetbrains.kotlin.multiplatform') {
       kotlin {
         explicitApi()
-        sourceSets {
-          all {
-            languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
-          }
-        }
       }
     }
 
@@ -88,6 +83,16 @@ allprojects {
           freeCompilerArgs.addAll([
             '-Xexplicit-api=strict',
           ])
+        }
+      }
+    }
+  }
+
+  plugins.withId('org.jetbrains.kotlin.multiplatform') {
+    kotlin {
+      sourceSets {
+        all {
+          languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
         }
       }
     }

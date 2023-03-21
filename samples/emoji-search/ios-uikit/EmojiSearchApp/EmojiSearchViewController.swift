@@ -48,15 +48,15 @@ class EmojiSearchViewController : UIViewController {
 
 class EmojiSearchContent : TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
-        let treehouesUi = (app as! Presenter_treehouseEmojiSearchPresenter)
+        let treehouesUi = (app as! EmojiSearchPresenter)
         return treehouesUi.launch()
     }
 }
 
 class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
-    let treehouseApp: TreehouseApp<Presenter_treehouseEmojiSearchPresenter>
+    let treehouseApp: TreehouseApp<EmojiSearchPresenter>
 
-    init(treehouseApp: TreehouseApp<Presenter_treehouseEmojiSearchPresenter>) {
+    init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {
         self.treehouseApp = treehouseApp
     }
 
