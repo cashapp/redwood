@@ -135,7 +135,6 @@ private class ViewContentCodeBinding<A : AppService>(
   private var bridgeOrNull: ProtocolBridge<*>? = ProtocolBridge(
     container = view.children as Widget.Children<Any>,
     factory = view.widgetSystem.widgetFactory(
-      app = app,
       json = session.zipline.json,
       protocolMismatchHandler = eventPublisher.protocolMismatchHandler(app),
     ) as DiffConsumingNode.Factory<Any>,
