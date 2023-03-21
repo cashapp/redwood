@@ -54,14 +54,13 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val widgetSystem = object : WidgetSystem {
       override fun widgetFactory(
-        app: TreehouseApp<*>,
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
       ) = EmojiSearchDiffConsumingNodeFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(app),
+          EmojiSearch = AndroidEmojiSearchWidgetFactory(treehouseApp),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
-          RedwoodTreehouseLazyLayout = ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory(app, this),
+          RedwoodTreehouseLazyLayout = ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory(treehouseApp, this),
         ),
         json = json,
         mismatchHandler = protocolMismatchHandler,

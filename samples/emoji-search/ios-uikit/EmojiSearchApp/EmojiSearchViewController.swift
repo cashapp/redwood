@@ -35,7 +35,7 @@ class EmojiSearchViewController : UIViewController {
     override func loadView() {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
-        let widgetSystem = EmojiSearchWidgetSystem()
+        let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
         let treehouseView = Redwood_treehouse_hostTreehouseUIKitView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: EmojiSearchContent(),
@@ -54,14 +54,18 @@ class EmojiSearchContent : Redwood_treehouse_hostTreehouseContentSource {
 }
 
 class EmojiSearchWidgetSystem : Redwood_treehouse_hostTreehouseViewWidgetSystem {
-    func widgetFactory(app: Redwood_treehouse_hostTreehouseApp<AnyObject>, json: Kotlinx_serialization_jsonJson, protocolMismatchHandler:
+    let treehouseApp: Redwood_treehouse_hostTreehouseApp<Presenter_treehouseEmojiSearchPresenter>
+    init(treehouseApp: Redwood_treehouse_hostTreehouseApp<Presenter_treehouseEmojiSearchPresenter>) {
+        self.treehouseApp = treehouseApp
+    }
+    func widgetFactory(json: Kotlinx_serialization_jsonJson, protocolMismatchHandler:
         Redwood_protocol_widgetProtocolMismatchHandler) -> Redwood_protocol_widgetDiffConsumingNodeFactory {
         return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
             provider: WidgetEmojiSearchWidgetFactories<UIView>(
-                EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
+                EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
                 RedwoodLayout: Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(),
                 RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
-                    treehouseApp: app,
+                    treehouseApp: treehouseApp,
                     widgetSystem: self
                 )
             ),

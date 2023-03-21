@@ -120,5 +120,5 @@ class TreehouseUIKitViewTest {
   }
 
   private val throwingWidgetSystem =
-    WidgetSystem { _, _, _ -> throw UnsupportedOperationException() }
+    WidgetSystem { _, _ -> throw UnsupportedOperationException() }
 }
