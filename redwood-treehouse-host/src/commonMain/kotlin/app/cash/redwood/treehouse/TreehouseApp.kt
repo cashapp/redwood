@@ -21,6 +21,7 @@ import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
+import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +38,7 @@ import okio.Path
  *
  * It updates the content when new code is available in [onCodeChanged].
  */
+@ObjCName("TreehouseApp")
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   internal val appScope: CoroutineScope,
@@ -208,6 +210,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * This class holds a stateful disk cache. At most one instance with each [cacheName] should be
    * open at any time. Most callers should use a single [Factory] for best caching.
    */
+  @ObjCName("Factory")
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,

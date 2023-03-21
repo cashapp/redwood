@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
+@ObjCName("FlowWithInitialValue")
 public data class FlowWithInitialValue<T>(
   val initial: T,
   @Contextual val flow: Flow<T>,

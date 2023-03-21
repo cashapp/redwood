@@ -73,6 +73,11 @@ allprojects {
     plugins.withId('org.jetbrains.kotlin.multiplatform') {
       kotlin {
         explicitApi()
+        sourceSets {
+          all {
+            languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
+          }
+        }
       }
     }
 

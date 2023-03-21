@@ -32,6 +32,7 @@ import platform.UIKit.setFrame
 import platform.UIKit.subviews
 import platform.UIKit.superview
 
+@ObjCName("TreehouseUIKitView")
 public class TreehouseUIKitView(
   override val widgetSystem: WidgetSystem,
 ) : TreehouseView {

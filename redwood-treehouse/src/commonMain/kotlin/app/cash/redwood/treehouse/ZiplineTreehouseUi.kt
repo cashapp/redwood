@@ -17,12 +17,14 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
 import app.cash.zipline.ZiplineService
+import kotlin.native.ObjCName
 
 /**
  * Adapt TreehouseComposition to conform the limitations of Zipline interfaces.
  *
  * Most callers shouldn't use this directly; instead use `TreehouseUi`.
  */
+@ObjCName("ZiplineTreehouseUi")
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     diffSink: DiffSinkService,

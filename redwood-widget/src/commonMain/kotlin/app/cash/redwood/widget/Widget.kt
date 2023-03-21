@@ -17,7 +17,9 @@ package app.cash.redwood.widget
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.RedwoodCodegenApi
+import kotlin.native.ObjCName
 
+@ObjCName("Widget")
 public interface Widget<W : Any> {
   /**
    * The underlying platform-specific representation of this widget. This value will be supplied to

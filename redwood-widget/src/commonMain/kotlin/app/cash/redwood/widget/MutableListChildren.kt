@@ -15,11 +15,14 @@
  */
 package app.cash.redwood.widget
 
+import kotlin.native.ObjCName
+
 /**
  * A [MutableList] that is also a [Widget.Children].
  *
  * @param list Optional existing [MutableList] instance to wrap.
  */
+@ObjCName("MutableListChildren")
 public class MutableListChildren<W : Any>(
   private val list: MutableList<Widget<W>> = mutableListOf(),
 ) : Widget.Children<W>, MutableList<Widget<W>> by list {

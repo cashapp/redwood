@@ -22,6 +22,7 @@ import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 import platform.UIKit.UIView
 
+@ObjCName("UIViewRedwoodTreehouseLazyLayoutWidgetFactory")
 public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private var treehouseApp: TreehouseApp<A>,
   private var widgetSystem: WidgetSystem,

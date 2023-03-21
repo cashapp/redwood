@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlin.native.ObjCName
+
+@ObjCName("TreehouseContentSource")
 public fun interface TreehouseContentSource<A : AppService> {
   public fun get(app: A): ZiplineTreehouseUi
 }
