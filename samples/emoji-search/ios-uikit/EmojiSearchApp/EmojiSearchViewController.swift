@@ -36,31 +36,34 @@ class EmojiSearchViewController : UIViewController {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
         let widgetSystem = EmojiSearchWidgetSystem()
-        let treehouseView = Redwood_treehouse_hostTreehouseUIKitView(widgetSystem: widgetSystem)
+        let treehouseView = TreehouseUIKitView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: EmojiSearchContent(),
-            codeListener: Redwood_treehouse_hostCodeListener()
+            codeListener: CodeListener()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
         view = treehouseView.view
     }
 }
 
-class EmojiSearchContent : Redwood_treehouse_hostTreehouseContentSource {
-    func get(app: Redwood_treehouseAppService) -> Redwood_treehouseZiplineTreehouseUi {
+class EmojiSearchContent : TreehouseContentSource {
+    func get(app: AppService) -> ZiplineTreehouseUi {
         let treehouesUi = (app as! Presenter_treehouseEmojiSearchPresenter)
         return treehouesUi.launch()
     }
 }
 
-class EmojiSearchWidgetSystem : Redwood_treehouse_hostTreehouseViewWidgetSystem {
-    func widgetFactory(app: Redwood_treehouse_hostTreehouseApp<AnyObject>, json: Kotlinx_serialization_jsonJson, protocolMismatchHandler:
-        Redwood_protocol_widgetProtocolMismatchHandler) -> Redwood_protocol_widgetDiffConsumingNodeFactory {
+class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
+    func widgetFactory(
+        app: TreehouseApp<AnyObject>,
+        json: Kotlinx_serialization_jsonJson,
+        protocolMismatchHandler: ProtocolMismatchHandler
+    ) -> DiffConsumingNodeFactory {
         return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
             provider: WidgetEmojiSearchWidgetFactories<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: app, widgetSystem: self),
-                RedwoodLayout: Redwood_layout_uiviewUIViewRedwoodLayoutWidgetFactory(),
-                RedwoodTreehouseLazyLayout: Redwood_treehouse_lazylayout_uiviewUIViewRedwoodTreehouseLazyLayoutWidgetFactory(
+                RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
+                RedwoodTreehouseLazyLayout: UIViewRedwoodTreehouseLazyLayoutWidgetFactory(
                     treehouseApp: app,
                     widgetSystem: self
                 )

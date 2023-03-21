@@ -20,5 +20,5 @@ import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
 /** Redwood's [DiffSink] but implementing [ZiplineService]. */
-@ObjCName("DiffSinkService")
+@ObjCName("DiffSinkService", exact = true)
 public interface DiffSinkService : ZiplineService, DiffSink

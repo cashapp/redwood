@@ -27,7 +27,6 @@ import platform.Foundation.NSLog
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSThread
 
-@ObjCName("TreehouseAppFactory")
 public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,

@@ -38,7 +38,7 @@ import okio.Path
  *
  * It updates the content when new code is available in [onCodeChanged].
  */
-@ObjCName("TreehouseApp")
+@ObjCName("TreehouseApp", exact = true)
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   internal val appScope: CoroutineScope,
@@ -210,7 +210,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * This class holds a stateful disk cache. At most one instance with each [cacheName] should be
    * open at any time. Most callers should use a single [Factory] for best caching.
    */
-  @ObjCName("Factory")
+  @ObjCName("TreehouseAppFactory", exact = true)
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,

@@ -26,7 +26,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
-@ObjCName("TreehouseDispatchers")
+@ObjCName("TreehouseDispatchers", exact = true)
 public interface TreehouseDispatchers {
   public val ui: CoroutineDispatcher
   public val zipline: CoroutineDispatcher

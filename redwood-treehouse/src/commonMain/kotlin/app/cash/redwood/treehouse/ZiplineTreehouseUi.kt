@@ -24,7 +24,7 @@ import kotlin.native.ObjCName
  *
  * Most callers shouldn't use this directly; instead use `TreehouseUi`.
  */
-@ObjCName("ZiplineTreehouseUi")
+@ObjCName("ZiplineTreehouseUi", exact = true)
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     diffSink: DiffSinkService,

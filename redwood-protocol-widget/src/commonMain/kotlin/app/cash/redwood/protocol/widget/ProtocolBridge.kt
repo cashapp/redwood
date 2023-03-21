@@ -34,7 +34,7 @@ import kotlin.native.ObjCName
  * [PropertyDiff]s and [LayoutModifiers]s are forwarded to their respective widgets. Events from
  * widgets are forwarded to [eventSink].
  */
-@ObjCName("ProtocolBridge")
+@ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
   private val factory: DiffConsumingNode.Factory<W>,

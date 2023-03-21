@@ -27,7 +27,7 @@ import kotlin.native.ObjCName
  * entities. This usually occurs when either the Compose-side or the widget-side was generated from
  * a newer schema than the other, or if their schemas were changed in an incompatible way.
  */
-@ObjCName("ProtocolMismatchHandler")
+@ObjCName("ProtocolMismatchHandler", exact = true)
 public interface ProtocolMismatchHandler {
   /** Handle a request to create an unknown widget [tag]. */
   public fun onUnknownWidget(tag: WidgetTag)

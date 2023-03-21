@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
-@ObjCName("FrameClockService")
+@ObjCName("FrameClockService", exact = true)
 public interface FrameClockService : ZiplineService {
   public fun sendFrame(timeNanos: Long)
 }

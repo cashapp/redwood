@@ -17,7 +17,7 @@ package app.cash.redwood.treehouse
 
 import kotlin.native.ObjCName
 
-@ObjCName("CodeListener")
+@ObjCName("CodeListener", exact = true)
 public open class CodeListener {
   /**
    * Invoked when the initial code is still loading. This can be used to signal a loading state

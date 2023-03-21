@@ -22,7 +22,7 @@ import kotlin.native.ObjCName
  *
  * @param list Optional existing [MutableList] instance to wrap.
  */
-@ObjCName("MutableListChildren")
+@ObjCName("MutableListChildren", exact = true)
 public class MutableListChildren<W : Any>(
   private val list: MutableList<Widget<W>> = mutableListOf(),
 ) : Widget.Children<W>, MutableList<Widget<W>> by list {

@@ -22,7 +22,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import platform.UIKit.UIView
 
-@ObjCName("UIViewRedwoodLayoutWidgetFactory")
+@ObjCName("UIViewRedwoodLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
   override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
   override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)

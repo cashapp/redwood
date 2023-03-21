@@ -33,7 +33,7 @@ import kotlin.native.ObjCName
  *
  * Content must be unbound after use.
  */
-@ObjCName("Content")
+@ObjCName("Content", exact = true)
 public interface Content {
   /**
    * It is an error to bind multiple views simultaneously.

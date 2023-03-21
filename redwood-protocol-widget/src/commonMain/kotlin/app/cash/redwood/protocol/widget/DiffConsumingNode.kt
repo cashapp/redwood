@@ -29,7 +29,7 @@ import kotlin.native.ObjCName
  *
  * @suppress
  */
-@ObjCName("DiffConsumingNode")
+@ObjCName("DiffConsumingNode", exact = true)
 public abstract class DiffConsumingNode<W : Any>(
   public val parentId: Id,
   public val parentChildren: Widget.Children<W>,
@@ -53,7 +53,7 @@ public abstract class DiffConsumingNode<W : Any>(
    */
   public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 
-  @ObjCName("Factory")
+  @ObjCName("DiffConsumingNodeFactory", exact = true)
   public interface Factory<W : Any> {
     /**
      * Create a new protocol-consuming widget of the specified [tag].

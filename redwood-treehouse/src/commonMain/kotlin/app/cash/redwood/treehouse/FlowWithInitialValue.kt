@@ -22,7 +22,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
-@ObjCName("FlowWithInitialValue")
+@ObjCName("FlowWithInitialValue", exact = true)
 public data class FlowWithInitialValue<T>(
   val initial: T,
   @Contextual val flow: Flow<T>,

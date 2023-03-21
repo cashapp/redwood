@@ -23,7 +23,7 @@ import kotlin.native.ObjCName
  * An ordered, immutable collection of elements that change how a widget is laid out.
  */
 @Stable
-@ObjCName("LayoutModifier")
+@ObjCName("LayoutModifier", exact = true)
 public interface LayoutModifier {
 
   /**
@@ -96,7 +96,7 @@ public interface LayoutModifier {
    */
   // The companion object implements `LayoutModifier` so that it may be used as the start of a
   // modifier extension factory expression.
-  @ObjCName("Companion")
+  @ObjCName("EmptyLayoutModifier", exact = true)
   public companion object : LayoutModifier {
     override fun <R> foldIn(initial: R, operation: (R, Element) -> R): R = initial
     override fun <R> foldOut(initial: R, operation: (Element, R) -> R): R = initial
@@ -112,7 +112,7 @@ public interface LayoutModifier {
  * A node in a [LayoutModifier] chain. A CombinedModifier always contains at least two elements;
  * a LayoutModifier [outer] that wraps around the LayoutModifier [inner].
  */
-@ObjCName("CombinedLayoutModifier")
+@ObjCName("CombinedLayoutModifier", exact = true)
 public class CombinedLayoutModifier(
   private val outer: LayoutModifier,
   private val inner: LayoutModifier,
