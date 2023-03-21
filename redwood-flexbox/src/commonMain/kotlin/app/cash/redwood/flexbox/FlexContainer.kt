@@ -61,9 +61,9 @@ public class FlexContainer {
   public var alignContent: AlignContent = AlignContent.FlexStart
 
   /**
-   * The padding of the container.
+   * The margin of the container.
    */
-  public var padding: Spacing = Spacing.Zero
+  public var margin: Spacing = Spacing.Zero
 
   /**
    * The current value of the maximum number of flex lines.
@@ -186,7 +186,7 @@ public class FlexContainer {
     var indexInFlexLine = 0
 
     var flexLine = FlexLine()
-    flexLine.mainSize = orientation.mainPadding(padding)
+    flexLine.mainSize = orientation.mainMargin(margin)
     for (i in 0 until items.size) {
       val item = items[i]
       val childMainSize = if (item.flexBasisPercent != DefaultFlexBasisPercent && mainMode == MeasureSpecMode.Exactly) {
@@ -197,12 +197,12 @@ public class FlexContainer {
 
       val childMainMeasureSpec = MeasureSpec.getChildMeasureSpec(
         spec = mainMeasureSpec,
-        padding = orientation.mainPadding(padding) + orientation.mainMargin(item),
+        margin = orientation.mainMargin(margin) + orientation.mainMargin(item),
         childDimension = childMainSize,
       )
       var childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
         spec = crossMeasureSpec,
-        padding = orientation.crossPadding(padding) + orientation.crossMargin(item) + sumCrossSize,
+        margin = orientation.crossMargin(margin) + orientation.crossMargin(item) + sumCrossSize,
         childDimension = orientation.crossSize(item),
       )
       if (flexDirection.isHorizontal) {
@@ -237,14 +237,14 @@ public class FlexContainer {
           // because it doesn't change the size along the main axis.
           childCrossMeasureSpec = MeasureSpec.getChildMeasureSpec(
             spec = crossMeasureSpec,
-            padding = orientation.crossPadding(padding) + orientation.crossMargin(item) + sumCrossSize,
+            margin = orientation.crossMargin(margin) + orientation.crossMargin(item) + sumCrossSize,
             childDimension = crossSize,
           )
           item.measure(childMainMeasureSpec, childCrossMeasureSpec)
         }
         flexLine = FlexLine()
         flexLine.itemCount = 1
-        flexLine.mainSize = orientation.mainPadding(padding)
+        flexLine.mainSize = orientation.mainMargin(margin)
         flexLine.firstIndex = i
         indexInFlexLine = 0
         maxCrossSize = Double.MIN_VALUE
@@ -342,21 +342,21 @@ public class FlexContainer {
     val childrenFrozen = BooleanArray(items.size)
 
     val mainSize: Double
-    val paddingAlongMainAxis: Double
+    val marginAlongMainAxis: Double
     if (flexDirection.isHorizontal) {
       mainSize = if (widthMeasureSpec.mode == MeasureSpecMode.Exactly) {
         widthMeasureSpec.size
       } else {
         minOf(flexLines.getLargestMainSize(), widthMeasureSpec.size)
       }
-      paddingAlongMainAxis = padding.start + padding.end
+      marginAlongMainAxis = margin.left + margin.right
     } else {
       mainSize = if (heightMeasureSpec.mode == MeasureSpecMode.Exactly) {
         heightMeasureSpec.size
       } else {
         flexLines.getLargestMainSize()
       }
-      paddingAlongMainAxis = padding.top + padding.bottom
+      marginAlongMainAxis = margin.top + margin.bottom
     }
     flexLines.forEachIndices { flexLine ->
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
@@ -366,7 +366,7 @@ public class FlexContainer {
           heightMeasureSpec = heightMeasureSpec,
           flexLine = flexLine,
           maxMainSize = mainSize,
-          paddingAlongMainAxis = paddingAlongMainAxis,
+          marginAlongMainAxis = marginAlongMainAxis,
           calledRecursively = false,
         )
       } else if (flexLine.mainSize > mainSize && flexLine.anyItemsHaveFlexShrink) {
@@ -376,7 +376,7 @@ public class FlexContainer {
           heightMeasureSpec = heightMeasureSpec,
           flexLine = flexLine,
           maxMainSize = mainSize,
-          paddingAlongMainAxis = paddingAlongMainAxis,
+          marginAlongMainAxis = marginAlongMainAxis,
           calledRecursively = false,
         )
       }
@@ -390,7 +390,7 @@ public class FlexContainer {
    * @param heightMeasureSpec the vertical space requirements as imposed by the parent
    * @param flexLine the flex line to which flex items belong
    * @param maxMainSize the maximum main size. Expanded main size will be this size
-   * @param paddingAlongMainAxis the padding value along the main axis
+   * @param marginAlongMainAxis the margin value along the main axis
    * @param calledRecursively true if this method is called recursively, false otherwise
    */
   private fun expandFlexItems(
@@ -399,7 +399,7 @@ public class FlexContainer {
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
     maxMainSize: Double,
-    paddingAlongMainAxis: Double,
+    marginAlongMainAxis: Double,
     calledRecursively: Boolean,
   ) {
     if (flexLine.totalFlexGrow <= 0 || maxMainSize < flexLine.mainSize) {
@@ -408,7 +408,7 @@ public class FlexContainer {
     val sizeBeforeExpand = flexLine.mainSize
     var needsReexpand = false
     val unitSpace = (maxMainSize - flexLine.mainSize) / flexLine.totalFlexGrow
-    flexLine.mainSize = paddingAlongMainAxis
+    flexLine.mainSize = marginAlongMainAxis
 
     // Setting the cross size of the flex line as the temporal value since the cross size of
     // each flex item may be changed from the initial calculation
@@ -459,7 +459,7 @@ public class FlexContainer {
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
             heightMeasureSpec = heightMeasureSpec,
             flexItem = child,
-            padding = flexLine.sumCrossSizeBefore,
+            margin = flexLine.sumCrossSizeBefore,
           )
           child.height = when (childHeightMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
@@ -470,7 +470,7 @@ public class FlexContainer {
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
-        flexLine.mainSize += (child.width + child.margin.start + child.margin.end)
+        flexLine.mainSize += (child.width + child.margin.left + child.margin.right)
       } else {
         // The direction of the main axis is vertical
         if (!childrenFrozen[i] && child.flexGrow > 0) {
@@ -503,7 +503,7 @@ public class FlexContainer {
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
             widthMeasureSpec = widthMeasureSpec,
             flexItem = child,
-            padding = flexLine.sumCrossSizeBefore,
+            margin = flexLine.sumCrossSizeBefore,
           )
           child.width = when (childWidthMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
@@ -513,7 +513,7 @@ public class FlexContainer {
           }
           child.height = newHeight
         }
-        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.start + child.margin.end)
+        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.left + child.margin.right)
         flexLine.mainSize += (child.height + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
@@ -527,7 +527,7 @@ public class FlexContainer {
         heightMeasureSpec = heightMeasureSpec,
         flexLine = flexLine,
         maxMainSize = maxMainSize,
-        paddingAlongMainAxis = paddingAlongMainAxis,
+        marginAlongMainAxis = marginAlongMainAxis,
         calledRecursively = true,
       )
     }
@@ -540,7 +540,7 @@ public class FlexContainer {
    * @param heightMeasureSpec the vertical space requirements as imposed by the parent
    * @param flexLine the flex line to which flex items belong
    * @param maxMainSize the maximum main size. Shrank main size will be this size
-   * @param paddingAlongMainAxis the padding value along the main axis
+   * @param marginAlongMainAxis the margin value along the main axis
    * @param calledRecursively true if this method is called recursively, false otherwise
    */
   private fun shrinkFlexItems(
@@ -549,7 +549,7 @@ public class FlexContainer {
     heightMeasureSpec: MeasureSpec,
     flexLine: FlexLine,
     maxMainSize: Double,
-    paddingAlongMainAxis: Double,
+    marginAlongMainAxis: Double,
     calledRecursively: Boolean,
   ) {
     val sizeBeforeShrink = flexLine.mainSize
@@ -559,7 +559,7 @@ public class FlexContainer {
     var needsReshrink = false
     val unitShrink = (flexLine.mainSize - maxMainSize) / flexLine.totalFlexShrink
     var accumulatedRoundError = 0.0
-    flexLine.mainSize = paddingAlongMainAxis
+    flexLine.mainSize = marginAlongMainAxis
 
     // Setting the cross size of the flex line as the temporal value since the cross size of
     // each flex item may be changed from the initial calculation
@@ -609,7 +609,7 @@ public class FlexContainer {
           val childHeightMeasureSpec = getChildHeightMeasureSpecInternal(
             heightMeasureSpec = heightMeasureSpec,
             flexItem = child,
-            padding = flexLine.sumCrossSizeBefore,
+            margin = flexLine.sumCrossSizeBefore,
           )
           child.height = when (childHeightMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
@@ -620,7 +620,7 @@ public class FlexContainer {
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
-        flexLine.mainSize += child.width + child.margin.start + child.margin.end
+        flexLine.mainSize += child.width + child.margin.left + child.margin.right
       } else {
         // The direction of main axis is vertical
         if (!childrenFrozen[i] && child.flexShrink > 0) {
@@ -650,7 +650,7 @@ public class FlexContainer {
           val childWidthMeasureSpec = getChildWidthMeasureSpecInternal(
             widthMeasureSpec = widthMeasureSpec,
             flexItem = child,
-            padding = flexLine.sumCrossSizeBefore,
+            margin = flexLine.sumCrossSizeBefore,
           )
           child.width = when (childWidthMeasureSpec.mode) {
             MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
@@ -660,7 +660,7 @@ public class FlexContainer {
           }
           child.height = newHeight
         }
-        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.start + child.margin.end)
+        largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.left + child.margin.right)
         flexLine.mainSize += (child.height + child.margin.top + child.margin.bottom)
       }
       flexLine.crossSize = maxOf(flexLine.crossSize, largestCrossSize)
@@ -674,7 +674,7 @@ public class FlexContainer {
         heightMeasureSpec = heightMeasureSpec,
         flexLine = flexLine,
         maxMainSize = maxMainSize,
-        paddingAlongMainAxis = paddingAlongMainAxis,
+        marginAlongMainAxis = marginAlongMainAxis,
         calledRecursively = true,
       )
     }
@@ -683,12 +683,12 @@ public class FlexContainer {
   private fun getChildWidthMeasureSpecInternal(
     widthMeasureSpec: MeasureSpec,
     flexItem: FlexItem,
-    padding: Double,
+    margin: Double,
   ): MeasureSpec {
     val measurable = flexItem.measurable
     val childWidthMeasureSpec = MeasureSpec.getChildMeasureSpec(
       spec = widthMeasureSpec,
-      padding = this.padding.start + this.padding.end + flexItem.margin.start + flexItem.margin.end + padding,
+      margin = this.margin.left + this.margin.right + flexItem.margin.left + flexItem.margin.right + margin,
       childDimension = measurable.requestedWidth,
     )
     val childWidth = childWidthMeasureSpec.size
@@ -706,12 +706,12 @@ public class FlexContainer {
   private fun getChildHeightMeasureSpecInternal(
     heightMeasureSpec: MeasureSpec,
     flexItem: FlexItem,
-    padding: Double,
+    margin: Double,
   ): MeasureSpec {
     val measurable = flexItem.measurable
     val childHeightMeasureSpec = MeasureSpec.getChildMeasureSpec(
       spec = heightMeasureSpec,
-      padding = this.padding.top + this.padding.bottom + flexItem.margin.top + flexItem.margin.bottom + padding,
+      margin = this.margin.top + this.margin.bottom + flexItem.margin.top + flexItem.margin.bottom + margin,
       childDimension = measurable.requestedHeight,
     )
     val childHeight = childHeightMeasureSpec.size
@@ -739,7 +739,7 @@ public class FlexContainer {
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
   ) {
-    val paddingAlongCrossAxis = flexDirection.toOrientation().crossPadding(padding)
+    val marginAlongCrossAxis = flexDirection.toOrientation().crossMargin(margin)
     val mode: MeasureSpecMode // The MeasureSpec mode along the cross axis
     val size: Double // The MeasureSpec size along the cross axis
     if (flexDirection.isHorizontal) {
@@ -750,9 +750,9 @@ public class FlexContainer {
       size = widthMeasureSpec.size
     }
     if (mode == MeasureSpecMode.Exactly) {
-      val totalCrossSize = flexLines.getSumOfCrossSize() + paddingAlongCrossAxis
+      val totalCrossSize = flexLines.getSumOfCrossSize() + marginAlongCrossAxis
       if (flexLines.size == 1) {
-        flexLines[0].crossSize = size - paddingAlongCrossAxis
+        flexLines[0].crossSize = size - marginAlongCrossAxis
         // alignContent property is valid only if the Flexbox has at least two lines
       } else if (flexLines.size >= 2) {
         when (alignContent) {
@@ -939,7 +939,7 @@ public class FlexContainer {
    * Expand the item horizontally to the size of the crossSize (considering [item]'s margins).
    */
   private fun stretchItemHorizontally(item: FlexItem, crossSize: Double) {
-    item.width = (crossSize - item.margin.start - item.margin.end)
+    item.width = (crossSize - item.margin.left - item.margin.right)
       .coerceIn(item.measurable.minWidth, item.measurable.maxWidth)
   }
 
@@ -959,9 +959,9 @@ public class FlexContainer {
     val calculatedMaxHeight: Double
     if (flexDirection.isHorizontal) {
       calculatedMaxWidth = flexLines.getLargestMainSize()
-      calculatedMaxHeight = flexLines.getSumOfCrossSize() + padding.top + padding.bottom
+      calculatedMaxHeight = flexLines.getSumOfCrossSize() + margin.top + margin.bottom
     } else {
-      calculatedMaxWidth = flexLines.getSumOfCrossSize() + padding.start + padding.end
+      calculatedMaxWidth = flexLines.getSumOfCrossSize() + margin.left + margin.right
       calculatedMaxHeight = flexLines.getLargestMainSize()
     }
     val width = when (widthMeasureSpec.mode) {
@@ -1048,54 +1048,54 @@ public class FlexContainer {
     height: Double,
     rightToLeft: Boolean,
   ) {
-    val paddingLeft = padding.start
-    val paddingRight = padding.end
-    var childBottom = height - padding.bottom
-    var childTop = padding.top
+    val marginLeft = margin.left
+    val marginRight = margin.right
+    var childBottom = height - margin.bottom
+    var childTop = margin.top
     var childLeft: Double
     var childRight: Double
     flexLines.forEachIndices { flexLine ->
       var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
-          childLeft = paddingLeft
-          childRight = width - paddingRight
+          childLeft = marginLeft
+          childRight = width - marginRight
         }
         JustifyContent.FlexEnd -> {
-          childLeft = width - flexLine.mainSize + paddingRight
-          childRight = flexLine.mainSize - paddingLeft
+          childLeft = width - flexLine.mainSize + marginRight
+          childRight = flexLine.mainSize - marginLeft
         }
         JustifyContent.Center -> {
-          childLeft = paddingLeft + (width - flexLine.mainSize) / 2
-          childRight = width - paddingRight - (width - flexLine.mainSize) / 2
+          childLeft = marginLeft + (width - flexLine.mainSize) / 2
+          childRight = width - marginRight - (width - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
           if (flexLine.itemCount != 0) {
             spaceBetweenItem = ((width - flexLine.mainSize) / flexLine.itemCount)
           }
-          childLeft = paddingLeft + spaceBetweenItem / 2
-          childRight = width - paddingRight - spaceBetweenItem / 2
+          childLeft = marginLeft + spaceBetweenItem / 2
+          childRight = width - marginRight - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
-          childLeft = paddingLeft
+          childLeft = marginLeft
           val denominator = if (flexLine.itemCount != 1) flexLine.itemCount - 1 else 1
           spaceBetweenItem = (width - flexLine.mainSize) / denominator
-          childRight = width - paddingRight
+          childRight = width - marginRight
         }
         JustifyContent.SpaceEvenly -> {
           if (flexLine.itemCount != 0) {
             spaceBetweenItem = (width - flexLine.mainSize) / (flexLine.itemCount + 1)
           }
-          childLeft = paddingLeft + spaceBetweenItem
-          childRight = width - paddingRight - spaceBetweenItem
+          childLeft = marginLeft + spaceBetweenItem
+          childRight = width - marginRight - spaceBetweenItem
         }
         else -> throw AssertionError()
       }
       spaceBetweenItem = maxOf(spaceBetweenItem, 0.0)
       for (i in flexLine.indices) {
         val child = items[i]
-        childLeft += child.margin.start
-        childRight -= child.margin.end
+        childLeft += child.margin.left
+        childRight -= child.margin.right
         if (flexWrap == FlexWrap.WrapReverse) {
           if (rightToLeft) {
             layoutSingleChildHorizontal(
@@ -1137,8 +1137,8 @@ public class FlexContainer {
             )
           }
         }
-        childLeft += child.width + spaceBetweenItem + child.margin.end
-        childRight -= child.width + spaceBetweenItem + child.margin.start
+        childLeft += child.width + spaceBetweenItem + child.margin.right
+        childRight -= child.width + spaceBetweenItem + child.margin.left
       }
       childTop += flexLine.crossSize
       childBottom -= flexLine.crossSize
@@ -1153,47 +1153,47 @@ public class FlexContainer {
     rightToLeft: Boolean,
     bottomToTop: Boolean,
   ) {
-    val paddingTop = padding.top
-    val paddingBottom = padding.bottom
-    val paddingRight = padding.end
-    var childLeft = padding.start
-    var childRight = width - paddingRight
+    val marginTop = margin.top
+    val marginBottom = margin.bottom
+    val marginRight = margin.right
+    var childLeft = margin.left
+    var childRight = width - marginRight
     var childTop: Double
     var childBottom: Double
     flexLines.forEachIndices { flexLine ->
       var spaceBetweenItem = 0.0
       when (justifyContent) {
         JustifyContent.FlexStart -> {
-          childTop = paddingTop
-          childBottom = height - paddingBottom
+          childTop = marginTop
+          childBottom = height - marginBottom
         }
         JustifyContent.FlexEnd -> {
-          childTop = height - flexLine.mainSize + paddingBottom
-          childBottom = flexLine.mainSize - paddingTop
+          childTop = height - flexLine.mainSize + marginBottom
+          childBottom = flexLine.mainSize - marginTop
         }
         JustifyContent.Center -> {
-          childTop = paddingTop + (height - flexLine.mainSize) / 2
-          childBottom = height - paddingBottom - (height - flexLine.mainSize) / 2
+          childTop = marginTop + (height - flexLine.mainSize) / 2
+          childBottom = height - marginBottom - (height - flexLine.mainSize) / 2
         }
         JustifyContent.SpaceAround -> {
           if (flexLine.itemCount != 0) {
             spaceBetweenItem = ((height - flexLine.mainSize) / flexLine.itemCount)
           }
-          childTop = paddingTop + spaceBetweenItem / 2
-          childBottom = height - paddingBottom - spaceBetweenItem / 2
+          childTop = marginTop + spaceBetweenItem / 2
+          childBottom = height - marginBottom - spaceBetweenItem / 2
         }
         JustifyContent.SpaceBetween -> {
-          childTop = paddingTop
+          childTop = marginTop
           val denominator = if (flexLine.itemCount != 1) flexLine.itemCount - 1 else 1
           spaceBetweenItem = (height - flexLine.mainSize) / denominator
-          childBottom = height - paddingBottom
+          childBottom = height - marginBottom
         }
         JustifyContent.SpaceEvenly -> {
           if (flexLine.itemCount != 0) {
             spaceBetweenItem = ((height - flexLine.mainSize) / (flexLine.itemCount + 1))
           }
-          childTop = paddingTop + spaceBetweenItem
-          childBottom = height - paddingBottom - spaceBetweenItem
+          childTop = marginTop + spaceBetweenItem
+          childBottom = height - marginBottom - spaceBetweenItem
         }
         else -> throw AssertionError()
       }
@@ -1336,36 +1336,36 @@ public class FlexContainer {
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!rightToLeft) {
         item.layout(
-          left = left + item.margin.start,
+          left = left + item.margin.left,
           top = top,
-          right = right + item.margin.start,
+          right = right + item.margin.left,
           bottom = bottom,
         )
       } else {
         item.layout(
-          left = left - item.margin.end,
+          left = left - item.margin.right,
           top = top,
-          right = right - item.margin.end,
+          right = right - item.margin.right,
           bottom = bottom,
         )
       }
       AlignItems.FlexEnd -> if (!rightToLeft) {
         item.layout(
-          left = left + crossSize - item.width - item.margin.end,
+          left = left + crossSize - item.width - item.margin.right,
           top = top,
-          right = right + crossSize - item.width - item.margin.end,
+          right = right + crossSize - item.width - item.margin.right,
           bottom = bottom,
         )
       } else {
         item.layout(
-          left = left - crossSize + item.width + item.margin.start,
+          left = left - crossSize + item.width + item.margin.left,
           top = top,
-          right = right - crossSize + item.width + item.margin.start,
+          right = right - crossSize + item.width + item.margin.left,
           bottom = bottom,
         )
       }
       AlignItems.Center -> {
-        val leftFromCrossAxis = (crossSize - item.width + item.margin.start - item.margin.end) / 2
+        val leftFromCrossAxis = (crossSize - item.width + item.margin.left - item.margin.right) / 2
         if (!rightToLeft) {
           item.layout(left + leftFromCrossAxis, top, right + leftFromCrossAxis, bottom)
         } else {

@@ -16,7 +16,7 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.schema.LayoutModifier
 
 /**
@@ -47,8 +47,8 @@ public data class Shrink(
  * Add additional space around the item.
  */
 @LayoutModifier(3, RowScope::class, ColumnScope::class)
-public data class Padding(
-  val padding: Padding,
+public data class Margin(
+  val margin: Margin,
 )
 
 /**

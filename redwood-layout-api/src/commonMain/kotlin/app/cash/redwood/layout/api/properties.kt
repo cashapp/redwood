@@ -107,42 +107,42 @@ public value class Overflow internal constructor(internal val ordinal: Int) {
 
 @Immutable
 @Serializable
-public data class Padding(
-  val start: Int = 0,
-  val end: Int = 0,
+public data class Margin(
+  val left: Int = 0,
+  val right: Int = 0,
   val top: Int = 0,
   val bottom: Int = 0,
 ) {
   init {
-    require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
-      "Invalid Padding: [$start, $end, $top, $bottom]"
+    require(left >= 0 && right >= 0 && top >= 0 && bottom >= 0) {
+      "Invalid Margin: [$left, $right, $top, $bottom]"
     }
   }
 
   override fun toString(): String {
-    return if (start == end && top == bottom) {
-      if (start == top) {
-        "Padding(all=$start)"
+    return if (left == right && top == bottom) {
+      if (left == top) {
+        "Margin(all=$left)"
       } else {
-        "Padding(horizontal=$start, vertical=$top)"
+        "Margin(horizontal=$left, vertical=$top)"
       }
     } else {
-      "Padding(start=$start, end=$end, top=$top, bottom=$bottom)"
+      "Margin(left=$left, right=$right, top=$top, bottom=$bottom)"
     }
   }
 
   public companion object {
-    public val Zero: Padding = Padding()
+    public val Zero: Margin = Margin()
   }
 }
 
 @Stable
-public fun Padding(
+public fun Margin(
   horizontal: Int = 0,
   vertical: Int = 0,
-): Padding = Padding(horizontal, horizontal, vertical, vertical)
+): Margin = Margin(horizontal, horizontal, vertical, vertical)
 
 @Stable
-public fun Padding(
+public fun Margin(
   all: Int = 0,
-): Padding = Padding(all, all, all, all)
+): Margin = Margin(all, all, all, all)

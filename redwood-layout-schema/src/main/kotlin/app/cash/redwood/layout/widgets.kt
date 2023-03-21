@@ -18,8 +18,8 @@ package app.cash.redwood.layout
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
@@ -34,8 +34,8 @@ public data class Row(
   @Default("Constraint.Wrap")
   val height: Constraint,
   @Property(3)
-  @Default("Padding.Zero")
-  val padding: Padding,
+  @Default("Margin.Zero")
+  val margin: Margin,
   @Property(4)
   @Default("Overflow.Clip")
   val overflow: Overflow,
@@ -59,8 +59,8 @@ public data class Column(
   @Default("Constraint.Wrap")
   val height: Constraint,
   @Property(3)
-  @Default("Padding.Zero")
-  val padding: Padding,
+  @Default("Margin.Zero")
+  val margin: Margin,
   @Property(4)
   @Default("Overflow.Clip")
   val overflow: Overflow,

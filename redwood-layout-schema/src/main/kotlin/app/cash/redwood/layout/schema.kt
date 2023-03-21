@@ -24,7 +24,7 @@ import app.cash.redwood.schema.Schema
     Spacer::class,
     Grow::class,
     Shrink::class,
-    Padding::class,
+    Margin::class,
     HorizontalAlignment::class,
     VerticalAlignment::class,
   ],

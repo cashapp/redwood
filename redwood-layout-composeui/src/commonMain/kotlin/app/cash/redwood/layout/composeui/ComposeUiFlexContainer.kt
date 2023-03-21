@@ -38,8 +38,8 @@ import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -58,10 +58,10 @@ internal class ComposeUiFlexContainer(
 
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
-  private var padding by mutableStateOf(Padding.Zero)
+  private var margin by mutableStateOf(Margin.Zero)
 
   private var density = -1.0
-  private var paddingUpdated = false
+  private var marginUpdated = false
 
   var modifier: Modifier by mutableStateOf(Modifier)
 
@@ -75,9 +75,9 @@ internal class ComposeUiFlexContainer(
     invalidate()
   }
 
-  override fun padding(padding: Padding) {
-    this.paddingUpdated = true
-    this.padding = padding
+  override fun margin(margin: Margin) {
+    this.marginUpdated = true
+    this.margin = margin
   }
 
   override fun overflow(overflow: Overflow) {
@@ -139,10 +139,10 @@ internal class ComposeUiFlexContainer(
   }
 
   private fun updateDensity(density: Double) {
-    if (density != this.density || paddingUpdated) {
+    if (density != this.density || marginUpdated) {
       this.density = density
-      this.paddingUpdated = false
-      container.padding = padding.toSpacing(density)
+      this.marginUpdated = false
+      container.margin = margin.toSpacing(density)
     }
   }
 

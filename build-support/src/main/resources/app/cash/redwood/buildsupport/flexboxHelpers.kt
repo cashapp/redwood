@@ -29,12 +29,12 @@ import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.Grow as GrowModifier
 import app.cash.redwood.layout.HorizontalAlignment as HorizontalAlignmentModifier
-import app.cash.redwood.layout.Padding as PaddingModifier
+import app.cash.redwood.layout.Margin as MarginModifier
 import app.cash.redwood.layout.Shrink as ShrinkModifier
 import app.cash.redwood.layout.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.api.Margin
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -62,9 +62,9 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Padding.toSpacing(density: Double) = Spacing(
-  start = density * start.toDouble(),
-  end = density * end.toDouble(),
+internal fun Margin.toSpacing(density: Double) = Spacing(
+  left = density * left.toDouble(),
+  right = density * right.toDouble(),
   top = density * top.toDouble(),
   bottom = density * bottom.toDouble(),
 )
@@ -87,8 +87,8 @@ internal fun newFlexItem(
       is ShrinkModifier -> {
         flexShrink = modifier.value
       }
-      is PaddingModifier -> {
-        spacing = modifier.padding.toSpacing(density)
+      is MarginModifier -> {
+        spacing = modifier.margin.toSpacing(density)
       }
       is HorizontalAlignmentModifier -> if (direction.isVertical) {
         alignSelf = modifier.alignment.toAlignSelf()

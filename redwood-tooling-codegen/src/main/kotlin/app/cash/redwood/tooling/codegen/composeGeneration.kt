@@ -42,7 +42,7 @@ import com.squareup.kotlinpoet.joinToCode
 @SunspotComposable
 @OptIn(RedwoodCodegenApi::class)
 fun Row(
-  padding: Padding = Padding.Zero,
+  margin: Margin = Margin.Zero,
   overflow: Overflow = Overflow.Clip,
   layoutModifier: LayoutModifier = LayoutModifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
@@ -51,7 +51,7 @@ fun Row(
     factory = { it.RedwoodLayout.Row() },
     update = {
       set(layoutModifier, Widget.SetLayoutModifiers)
-      set(padding, Row<*>::padding)
+      set(margin, Row<*>::margin)
       set(overflow, Row<*>::overflow)
     },
     content = {
