@@ -53,6 +53,7 @@ public abstract class DiffConsumingNode<W : Any>(
    */
   public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 
+  @ObjCName("Factory")
   public interface Factory<W : Any> {
     /**
      * Create a new protocol-consuming widget of the specified [tag].
