@@ -43,7 +43,6 @@ public interface TreehouseView {
   public fun interface WidgetSystem {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
-      app: TreehouseApp<*>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingNode.Factory<*>
