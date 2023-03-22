@@ -32,8 +32,8 @@ import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
@@ -69,8 +69,8 @@ internal class ViewFlexContainer(
     invalidate()
   }
 
-  override fun padding(padding: Padding) {
-    container.padding = padding.toSpacing(density)
+  override fun margin(margin: Margin) {
+    container.margin = margin.toSpacing(density)
     invalidate()
   }
 

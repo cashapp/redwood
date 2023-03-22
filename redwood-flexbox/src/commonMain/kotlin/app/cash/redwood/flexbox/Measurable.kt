@@ -85,14 +85,14 @@ public open class Measurable {
 
   public companion object {
     /**
-     * A special constant for [requestedWidth] or [requestedHeight] that means that the item wants to be as big as its
-     * parent.
+     * A special constant for [requestedWidth] or [requestedHeight] that means that the item wants
+     * to be as big as its parent.
      */
     public const val MatchParent: Double = -1.0
 
     /**
-     * A special constant for [requestedWidth] or [requestedHeight] that the item wants to be just large enough to fit
-     * its own internal content, taking its own padding into account.
+     * A special constant for [requestedWidth] or [requestedHeight] that the item wants to be just
+     * large enough to fit its own internal content.
      */
     public const val WrapContent: Double = -2.0
   }

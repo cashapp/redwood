@@ -19,8 +19,8 @@ import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.api.Padding
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
@@ -73,12 +73,12 @@ private class HTMLFlexContainer(
     value.style.height = height.toCss()
   }
 
-  override fun padding(padding: Padding) {
+  override fun margin(margin: Margin) {
     value.style.apply {
-      paddingLeft = unitsToPx(padding.start)
-      paddingRight = unitsToPx(padding.end)
-      paddingTop = unitsToPx(padding.top)
-      paddingBottom = unitsToPx(padding.bottom)
+      marginLeft = unitsToPx(margin.left)
+      marginRight = unitsToPx(margin.right)
+      marginTop = unitsToPx(margin.top)
+      marginBottom = unitsToPx(margin.bottom)
     }
   }
 

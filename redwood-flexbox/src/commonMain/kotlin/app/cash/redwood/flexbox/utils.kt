@@ -64,10 +64,10 @@ internal fun List<FlexLine>.getSumOfCrossSize(): Double {
 
 internal fun MeasureSpec.Companion.getChildMeasureSpec(
   spec: MeasureSpec,
-  padding: Double,
+  margin: Double,
   childDimension: Double,
 ): MeasureSpec {
-  val size = maxOf(0.0, spec.size - padding)
+  val size = maxOf(0.0, spec.size - margin)
   var resultSize = 0.0
   var resultMode = MeasureSpecMode.Unspecified
   when (spec.mode) {

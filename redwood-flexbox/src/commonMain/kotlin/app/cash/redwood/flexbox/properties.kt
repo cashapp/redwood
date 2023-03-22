@@ -252,17 +252,17 @@ public value class MeasureSpecMode internal constructor(internal val ordinal: In
 }
 
 /**
- * Describes the padding/margin to apply to an item/container.
+ * Describes the space around an item.
  */
 public data class Spacing(
-  val start: Double = 0.0,
-  val end: Double = 0.0,
+  val left: Double = 0.0,
+  val right: Double = 0.0,
   val top: Double = 0.0,
   val bottom: Double = 0.0,
 ) {
   init {
-    require(start >= 0 && end >= 0 && top >= 0 && bottom >= 0) {
-      "Invalid Spacing: [$start, $end, $top, $bottom]"
+    require(left >= 0 && right >= 0 && top >= 0 && bottom >= 0) {
+      "Invalid Spacing: [$left, $right, $top, $bottom]"
     }
   }
 

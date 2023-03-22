@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Padding
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import com.example.redwood.emojisearch.compose.Image
@@ -95,7 +95,7 @@ fun EmojiSearch(
   Column(
     width = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    padding = Padding(horizontal = 24),
+    margin = Margin(horizontal = 24),
   ) {
     TextInput(
       state = searchTerm,
@@ -109,7 +109,7 @@ fun EmojiSearch(
       ) {
         Image(
           url = image.url,
-          layoutModifier = LayoutModifier.padding(Padding(8)),
+          layoutModifier = LayoutModifier.margin(Margin(8)),
         )
         Text(text = image.label)
       }

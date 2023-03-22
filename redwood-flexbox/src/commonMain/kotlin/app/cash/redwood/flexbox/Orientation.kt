@@ -30,8 +30,8 @@ internal fun Orientation.crossMeasuredSizeWithMargin(node: FlexItem): Double =
  * of the underlying [FlexDirection].
  */
 internal sealed interface Orientation {
-  fun mainPadding(padding: Spacing): Double
-  fun crossPadding(padding: Spacing): Double
+  fun mainMargin(margin: Spacing): Double
+  fun crossMargin(margin: Spacing): Double
 
   fun mainMargin(item: FlexItem): Double
   fun crossMargin(item: FlexItem): Double
@@ -42,9 +42,9 @@ internal sealed interface Orientation {
   fun crossMeasuredSize(item: FlexItem): Double
 
   object Horizontal : Orientation {
-    override fun mainPadding(padding: Spacing) = padding.start + padding.end
-    override fun crossPadding(padding: Spacing) = padding.top + padding.bottom
-    override fun mainMargin(item: FlexItem) = item.margin.start + item.margin.end
+    override fun mainMargin(margin: Spacing) = margin.left + margin.right
+    override fun crossMargin(margin: Spacing) = margin.top + margin.bottom
+    override fun mainMargin(item: FlexItem) = item.margin.left + item.margin.right
     override fun crossMargin(item: FlexItem) = item.margin.top + item.margin.bottom
     override fun mainSize(item: FlexItem) = item.measurable.requestedWidth
     override fun crossSize(item: FlexItem) = item.measurable.requestedHeight
@@ -53,10 +53,10 @@ internal sealed interface Orientation {
   }
 
   object Vertical : Orientation {
-    override fun mainPadding(padding: Spacing) = padding.top + padding.bottom
-    override fun crossPadding(padding: Spacing) = padding.start + padding.end
+    override fun mainMargin(margin: Spacing) = margin.top + margin.bottom
+    override fun crossMargin(margin: Spacing) = margin.left + margin.right
     override fun mainMargin(item: FlexItem) = item.margin.top + item.margin.bottom
-    override fun crossMargin(item: FlexItem) = item.margin.start + item.margin.end
+    override fun crossMargin(item: FlexItem) = item.margin.left + item.margin.right
     override fun mainSize(item: FlexItem) = item.measurable.requestedHeight
     override fun crossSize(item: FlexItem) = item.measurable.requestedWidth
     override fun mainMeasuredSize(item: FlexItem) = item.height
