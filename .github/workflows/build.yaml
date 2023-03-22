@@ -11,6 +11,7 @@ on:
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 60
 
 jobs:
   build:
@@ -64,6 +65,7 @@ jobs:
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
+          emulator-boot-timeout: 20000
           script: ./gradlew -p samples/counter connectedCheck
 
       - name: Build Counter iOS (UIKit)
