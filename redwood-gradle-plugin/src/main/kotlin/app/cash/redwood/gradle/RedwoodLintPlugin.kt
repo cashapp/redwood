@@ -206,7 +206,7 @@ private fun Project.createRedwoodLintTask(
     task.description = taskDescription(descriptionTarget)
 
     task.toolClasspath.setFrom(configuration.incoming.artifacts.artifactFiles)
-    task.projectDirectory.set(project.projectDir)
+    task.projectDirectoryPath.set(project.projectDir.absolutePath)
     task.sourceDirectories.set(sourceDirs())
     task.classpath.setFrom(
       classpath().incoming.artifactView {
