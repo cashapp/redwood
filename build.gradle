@@ -88,6 +88,16 @@ allprojects {
     }
   }
 
+  plugins.withId('org.jetbrains.kotlin.multiplatform') {
+    kotlin {
+      sourceSets {
+        all {
+          languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
+        }
+      }
+    }
+  }
+
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach {
     compilerOptions {
       freeCompilerArgs.addAll([

@@ -20,12 +20,14 @@ import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import kotlin.jvm.JvmField
+import kotlin.native.ObjCName
 
 /**
  * Handler invoked when the protocol sent from Compose to the widget display encounters unknown
  * entities. This usually occurs when either the Compose-side or the widget-side was generated from
  * a newer schema than the other, or if their schemas were changed in an incompatible way.
  */
+@ObjCName("ProtocolMismatchHandler", exact = true)
 public interface ProtocolMismatchHandler {
   /** Handle a request to create an unknown widget [tag]. */
   public fun onUnknownWidget(tag: WidgetTag)

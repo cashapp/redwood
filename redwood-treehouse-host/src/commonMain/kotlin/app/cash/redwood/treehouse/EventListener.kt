@@ -23,7 +23,9 @@ import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
+import kotlin.native.ObjCName
 
+@ObjCName("EventListener", exact = true)
 public abstract class EventListener {
   /**
    * Invoked each time a [TreehouseApp] is created. When this is triggered the app may not yet have

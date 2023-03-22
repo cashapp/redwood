@@ -22,12 +22,14 @@ import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
+import kotlin.native.ObjCName
 
 /**
  * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
  *
  * @suppress
  */
+@ObjCName("DiffConsumingNode", exact = true)
 public abstract class DiffConsumingNode<W : Any>(
   public val parentId: Id,
   public val parentChildren: Widget.Children<W>,
@@ -51,6 +53,7 @@ public abstract class DiffConsumingNode<W : Any>(
    */
   public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 
+  @ObjCName("DiffConsumingNodeFactory", exact = true)
   public interface Factory<W : Any> {
     /**
      * Create a new protocol-consuming widget of the specified [tag].
