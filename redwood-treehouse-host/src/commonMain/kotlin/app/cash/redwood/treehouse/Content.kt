@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import kotlin.native.ObjCName
+import kotlinx.coroutines.CancellationException
 
 /**
  * A UI built as an interactive widget tree, that may or may not be actively running, or bound to an
@@ -36,11 +37,24 @@ import kotlin.native.ObjCName
 @ObjCName("Content", exact = true)
 public interface Content {
   /**
+   * Immediately begins preparing the widget tree.
+   */
+  public fun preload(hostConfiguration: HostConfiguration)
+
+  /**
    * It is an error to bind multiple views simultaneously.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun bind(view: TreehouseView)
+
+  /**
+   * Suspends until content is available; either it is already in the view or it is preloaded and a call to [bind]
+   * will immediately show this content.
+   *
+   * @throws [CancellationException] if it's unbound before it returns.
+   */
+  public suspend fun awaitContent()
 
   /**
    * Calling [unbind] without a bound view is safe.
