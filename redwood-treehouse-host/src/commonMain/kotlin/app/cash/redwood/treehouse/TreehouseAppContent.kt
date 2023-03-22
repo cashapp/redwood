@@ -318,6 +318,14 @@ private class ViewContentCodeBinding<A : AppService>(
     }
 
     if (view == null || bridge == null) {
+      if (diffsAwaitingInitView.isEmpty()) {
+        // Update the TreehouseAppContent's ViewState on the first diff.
+        val currentState = stateFlow.value
+        if (currentState.codeState is CodeState.Running && currentState.codeState.viewContentCodeBinding == this) {
+          stateFlow.value = State(currentState.viewState, CodeState.Running(this, hasDiffs = true))
+        }
+      }
+
       diffsAwaitingInitView += diff
       return
     }
@@ -325,12 +333,6 @@ private class ViewContentCodeBinding<A : AppService>(
     if (diffCount++ == 0) {
       view.reset()
       codeListener.onCodeLoaded(view, isInitialLaunch)
-
-      // Update the TreehouseAppContent's ViewState on the first diff.
-      val currentState = stateFlow.value
-      if (currentState.codeState is CodeState.Running && currentState.codeState.viewContentCodeBinding == this) {
-        stateFlow.value = State(currentState.viewState, CodeState.Running(this, hasDiffs = true))
-      }
     }
 
     bridge.sendDiff(diff)
