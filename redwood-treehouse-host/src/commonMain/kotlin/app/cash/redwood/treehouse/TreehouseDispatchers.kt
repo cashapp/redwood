@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -25,6 +26,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
+@ObjCName("TreehouseDispatchers", exact = true)
 public interface TreehouseDispatchers {
   public val ui: CoroutineDispatcher
   public val zipline: CoroutineDispatcher

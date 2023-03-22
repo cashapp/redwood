@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.zipline.ZiplineService
+import kotlin.native.ObjCName
 
 /**
  * Base interface for Treehouse applications. Each application should extend this interface to
@@ -24,6 +25,7 @@ import app.cash.zipline.ZiplineService
  * Note that due to a Zipline limitation it's necessary for implementing classes to declare a direct
  * dependency on [ZiplineService]. https://github.com/cashapp/zipline/issues/765
  */
+@ObjCName("AppService", exact = true)
 public interface AppService : ZiplineService {
   public val frameClockService: FrameClockService
 }

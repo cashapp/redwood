@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlin.native.ObjCName
+
 /**
  * A UI built as an interactive widget tree, that may or may not be actively running, or bound to an
  * on-screen display.
@@ -31,6 +33,7 @@ package app.cash.redwood.treehouse
  *
  * Content must be unbound after use.
  */
+@ObjCName("Content", exact = true)
 public interface Content {
   /**
    * It is an error to bind multiple views simultaneously.

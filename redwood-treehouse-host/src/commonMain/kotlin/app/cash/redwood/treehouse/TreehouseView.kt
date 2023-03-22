@@ -18,9 +18,11 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.widget.Widget
+import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
+@ObjCName("TreehouseView", exact = true)
 public interface TreehouseView {
   public val children: Widget.Children<*>
   public val hostConfiguration: StateFlow<HostConfiguration>
@@ -31,15 +33,16 @@ public interface TreehouseView {
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
+  @ObjCName("TreehouseViewReadyForContentChangeListener", exact = true)
   public fun interface ReadyForContentChangeListener {
     /** Called when [TreehouseView.readyForContent] has changed. */
     public fun onReadyForContentChanged(view: TreehouseView)
   }
 
+  @ObjCName("TreehouseViewWidgetSystem", exact = true)
   public fun interface WidgetSystem {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
-      app: TreehouseApp<*>,
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
     ): DiffConsumingNode.Factory<*>

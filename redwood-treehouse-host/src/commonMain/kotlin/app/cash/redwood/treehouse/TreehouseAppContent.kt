@@ -77,9 +77,9 @@ internal class TreehouseAppContent<A : AppService>(
     val previous = viewContentCodeBinding
     if (!codeChanged && previous != null) return // No change.
 
+    val view = this.view!!
     if (ziplineSession != null) {
       // We have code. Launch the treehouse UI.
-      val view = this.view!!
       viewContentCodeBinding = ViewContentCodeBinding(
         app = treehouseApp,
         appScope = treehouseApp.appScope,
@@ -94,7 +94,7 @@ internal class TreehouseAppContent<A : AppService>(
     } else {
       // We don't have code yet. Let the CodeListener show a loading spinner or something.
       if (codeLoadCount == 0) {
-        codeListener.onInitialCodeLoading()
+        codeListener.onInitialCodeLoading(view)
       }
       viewContentCodeBinding = null
     }
@@ -135,7 +135,6 @@ private class ViewContentCodeBinding<A : AppService>(
   private var bridgeOrNull: ProtocolBridge<*>? = ProtocolBridge(
     container = view.children as Widget.Children<Any>,
     factory = view.widgetSystem.widgetFactory(
-      app = app,
       json = session.zipline.json,
       protocolMismatchHandler = eventPublisher.protocolMismatchHandler(app),
     ) as DiffConsumingNode.Factory<Any>,
@@ -169,7 +168,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
       if (diffCount++ == 0) {
         view.reset()
-        codeListener.onCodeLoaded(isInitialLaunch)
+        codeListener.onCodeLoaded(view, isInitialLaunch)
       }
 
       bridge.sendDiff(diff)

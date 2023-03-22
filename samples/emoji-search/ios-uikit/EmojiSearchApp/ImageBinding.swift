@@ -32,7 +32,7 @@ class ImageBinding: WidgetImage {
         self.imageLoader = imageLoader
     }
 
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
+    var layoutModifiers: LayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 
     func url(url: String) {

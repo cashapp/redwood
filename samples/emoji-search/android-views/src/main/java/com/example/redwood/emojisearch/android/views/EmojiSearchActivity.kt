@@ -52,7 +52,6 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val widgetSystem = object : TreehouseView.WidgetSystem {
       override fun widgetFactory(
-        app: TreehouseApp<*>,
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
       ) = EmojiSearchDiffConsumingNodeFactory(

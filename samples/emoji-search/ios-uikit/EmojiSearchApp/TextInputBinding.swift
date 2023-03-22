@@ -42,6 +42,6 @@ class TextInputBinding: WidgetTextInput {
         }), for: .editingChanged)
     }
 
-    var layoutModifiers: Redwood_runtimeLayoutModifier = ExposedKt.layoutModifier()
+    var layoutModifiers: LayoutModifier = ExposedKt.layoutModifier()
     var value: Any { root }
 }

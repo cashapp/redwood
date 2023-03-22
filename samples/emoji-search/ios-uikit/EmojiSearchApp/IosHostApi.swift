@@ -17,7 +17,7 @@
 import Foundation
 import EmojiSearchKt
 
-class IosHostApi : Presenter_treehouseHostApi {
+class IosHostApi : HostApi {
     private let client: URLSession = .init(configuration: .default)
 
     func httpCall(url: String, headers: [String : String], completionHandler: @escaping (String?, Error?) -> Void) {

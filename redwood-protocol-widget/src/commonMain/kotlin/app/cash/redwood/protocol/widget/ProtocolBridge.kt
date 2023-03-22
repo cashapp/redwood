@@ -25,6 +25,7 @@ import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.widget.Widget
+import kotlin.native.ObjCName
 
 /**
  * Bridges the serialized Redwood protocol back to widgets on the display side.
@@ -33,6 +34,7 @@ import app.cash.redwood.widget.Widget
  * [PropertyDiff]s and [LayoutModifiers]s are forwarded to their respective widgets. Events from
  * widgets are forwarded to [eventSink].
  */
+@ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
   private val factory: DiffConsumingNode.Factory<W>,

@@ -23,6 +23,7 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.setNeedsDisplay
 import platform.darwin.NSInteger
 
+@ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
   private val parent: UIView,
   private val insert: (UIView, Int) -> Unit = { view, index ->
