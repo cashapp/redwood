@@ -179,7 +179,7 @@ public class TreehouseApp<A : AppService> private constructor(
       next.startFrameClock()
 
       for (content in boundContents) {
-        content.receiveZiplineSession(next, codeChanged = true)
+        content.receiveZiplineSession(next)
       }
 
       if (previous != null) {
@@ -263,7 +263,7 @@ public class TreehouseApp<A : AppService> private constructor(
       get() = EmptySerializersModule()
 
     /**
-     * Returns true to only load code from the network. Otherwise this will recover from
+     * Returns true to only load code from the network. Otherwise, this will recover from
      * unreachable network code by loading code from the cache or the embedded file system.
      *
      * This is false by default. Override it to return true in development, where loading code from
