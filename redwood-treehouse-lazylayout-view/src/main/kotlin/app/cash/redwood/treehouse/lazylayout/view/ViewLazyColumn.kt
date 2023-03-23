@@ -146,11 +146,14 @@ internal class ViewLazyColumn<A : AppService>(
       },
     )
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      getItem(position)!!.apply {
-        unbind()
-        bind(holder.treehouseWidgetView)
+    override fun onViewRecycled(holder: ViewHolder) {
+      if (holder.bindingAdapterPosition != RecyclerView.NO_POSITION) {
+        getItem(holder.bindingAdapterPosition)!!.unbind()
       }
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+      getItem(position)!!.bind(holder.treehouseWidgetView)
     }
   }
 
