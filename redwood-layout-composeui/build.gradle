@@ -33,7 +33,7 @@ kotlin {
       }
     }
 
-    androidInstrumentedTest {
+    androidUnitTest {
       dependencies {
         implementation projects.redwoodLayoutSharedTest
       }
