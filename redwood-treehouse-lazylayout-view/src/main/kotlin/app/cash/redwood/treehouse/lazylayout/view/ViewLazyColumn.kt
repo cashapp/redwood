@@ -78,8 +78,7 @@ internal class ViewLazyColumn<A : AppService>(
     // TODO Enable placeholder support
     // TODO Set a maxSize so we don't keep _too_ many views in memory
     val pager = Pager(PagingConfig(pageSize = 30, initialLoadSize = 30, enablePlaceholders = false)) {
-      // TODO Support all intervals, not just the first one.
-      ItemPagingSource(treehouseApp, intervals.single())
+      ItemPagingSource(treehouseApp, intervals)
     }
     scope.launch {
       pager.flow.collectLatest { pagingData ->
@@ -90,14 +89,14 @@ internal class ViewLazyColumn<A : AppService>(
 
   private class ItemPagingSource<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
-    private val interval: LazyListIntervalContent,
+    private val intervals: List<LazyListIntervalContent>,
   ) : PagingSource<Int, Content>() {
 
     override suspend fun load(
       params: LoadParams<Int>,
     ): LoadResult<Int, Content> {
       val key = params.key ?: 0
-      val count = interval.count
+      val count = intervals.sumOf(LazyListIntervalContent::count)
       val limit = when (params) {
         is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
         else -> params.loadSize
@@ -111,7 +110,12 @@ internal class ViewLazyColumn<A : AppService>(
       val loadResult = LoadResult.Page(
         data = List(limit) { index ->
           val itemContentSource = TreehouseContentSource<A> {
-            interval.itemProvider.get(index + offset)
+            var interval = IndexedValue(index + offset, intervals.first())
+            for (nextInterval in intervals.drop(1)) {
+              if (interval.index < interval.value.count) break
+              interval = IndexedValue(interval.index - interval.value.count, nextInterval)
+            }
+            interval.value.itemProvider.get(interval.index)
           }
           treehouseApp.createContent(itemContentSource).apply {
             // TODO Pass in actual HostConfiguration
