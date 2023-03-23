@@ -40,6 +40,7 @@ import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -60,6 +61,16 @@ internal class ViewLazyColumn<A : AppService>(
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
     }
     value.adapter = adapter
+    value.addOnAttachStateChangeListener(
+      object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(view: View) {}
+
+        override fun onViewDetachedFromWindow(view: View) {
+          view.removeOnAttachStateChangeListener(this)
+          scope.cancel()
+        }
+      },
+    )
   }
 
   override fun intervals(intervals: List<LazyListIntervalContent>) {
