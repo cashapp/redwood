@@ -118,7 +118,7 @@ internal class ViewLazyColumn<A : AppService>(
             interval.value.itemProvider.get(interval.index)
           }
           treehouseApp.createContent(itemContentSource).apply {
-            // TODO Pass in actual HostConfiguration
+            // TODO Create a public API that accepts an Android Context and returns the corresponding HostConfiguration
             preload(HostConfiguration(darkMode = true))
             awaitContent()
           }
@@ -131,8 +131,7 @@ internal class ViewLazyColumn<A : AppService>(
       return if (invalid) LoadResult.Invalid() else loadResult
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Content>) =
-      state.anchorPosition?.let { maxOf(0, it - (state.config.initialLoadSize / 2)) }
+    override fun getRefreshKey(state: PagingState<Int, Content>) = state.anchorPosition
   }
 
   private class LazyContentItemListAdapter(
