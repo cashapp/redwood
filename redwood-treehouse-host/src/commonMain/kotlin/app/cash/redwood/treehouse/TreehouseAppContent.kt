@@ -71,29 +71,26 @@ internal class TreehouseAppContent<A : AppService>(
   override fun preload(hostConfiguration: HostConfiguration) {
     treehouseApp.dispatchers.checkUi()
     val previousState = stateFlow.value
-    val previousViewState = previousState.viewState
 
     check(previousState.viewState is ViewState.None)
 
-    if (previousViewState !is ViewState.Preloading) {
-      val nextViewState = ViewState.Preloading(hostConfiguration)
+    val nextViewState = ViewState.Preloading(hostConfiguration)
 
-      // Start the code if necessary.
-      val ziplineSession = treehouseApp.ziplineSession
-      val nextCodeState = when {
-        previousState.codeState is CodeState.Idle && ziplineSession != null -> {
-          CodeState.Running(
-            startViewCodeContentBinding(ziplineSession, MutableStateFlow(nextViewState.hostConfiguration)),
-          )
-        }
-        else -> previousState.codeState
+    // Start the code if necessary.
+    val ziplineSession = treehouseApp.ziplineSession
+    val nextCodeState = when {
+      previousState.codeState is CodeState.Idle && ziplineSession != null -> {
+        CodeState.Running(
+          startViewCodeContentBinding(ziplineSession, MutableStateFlow(nextViewState.hostConfiguration)),
+        )
       }
-
-      // Ask to get notified when code is ready.
-      treehouseApp.boundContents += this
-
-      stateFlow.value = State(nextViewState, nextCodeState)
+      else -> previousState.codeState
     }
+
+    // Ask to get notified when code is ready.
+    treehouseApp.boundContents += this
+
+    stateFlow.value = State(nextViewState, nextCodeState)
   }
 
   override fun bind(view: TreehouseView) {
