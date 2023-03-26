@@ -47,8 +47,6 @@ module:redwood-treehouse-guest-compose
 app.cash.redwood.treehouse
 module:redwood-treehouse-host
 app.cash.redwood.treehouse
-module:redwood-treehouse-lazylayout-api
-app.cash.redwood.treehouse.lazylayout.api
 module:redwood-treehouse-lazylayout-compose
 app.cash.redwood.treehouse.lazylayout.compose
 module:redwood-treehouse-lazylayout-composeui
