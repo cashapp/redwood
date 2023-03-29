@@ -108,7 +108,7 @@ internal class ViewLazyColumn<A : AppService>(
       }
       val nextPosToLoad = offset + limit
       val loadResult = LoadResult.Page(
-        data = List(limit) { index ->
+        data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
           val itemContentSource = TreehouseContentSource<A> {
             var interval = IndexedValue(index + offset, intervals.first())
             for (nextInterval in intervals.drop(1)) {
