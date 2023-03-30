@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.5.0"
 androidxComposeCompiler = "1.4.3"
