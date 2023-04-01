@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse.composeui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import app.cash.redwood.treehouse.AppService
@@ -57,11 +56,9 @@ public fun <A : AppService> TreehouseContent(
   LaunchedEffect(treehouseView, hostConfiguration) {
     treehouseView.hostConfiguration.value = hostConfiguration
   }
-  DisposableEffect(treehouseView, contentSource, codeListener) {
+  LaunchedEffect(treehouseView, contentSource, codeListener) {
     val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp, codeListener)
-    onDispose {
-      closeable.close()
-    }
+    closeable.close()
   }
 
   Box {
