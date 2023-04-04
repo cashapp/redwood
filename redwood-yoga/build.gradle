@@ -1,0 +1,22 @@
+import app.cash.redwood.buildsupport.KmpTargets
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'kotlinx-atomicfu'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  // TODO: Re-enable JS when updating to Kotlin 1.8.20.
+  KmpTargets.addAllTargets(project, true /* skipJs */)
+
+  explicitApi(ExplicitApiMode.Disabled)
+
+  sourceSets {
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+      }
+    }
+  }
+}
