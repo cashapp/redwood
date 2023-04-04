@@ -360,7 +360,7 @@ public class FlexContainer {
     }
     flexLines.forEachIndices { flexLine ->
       if (flexLine.mainSize < mainSize && flexLine.anyItemsHaveFlexGrow) {
-        expandFlexItems(
+        growFlexItems(
           childrenFrozen = childrenFrozen,
           widthMeasureSpec = widthMeasureSpec,
           heightMeasureSpec = heightMeasureSpec,
@@ -393,7 +393,7 @@ public class FlexContainer {
    * @param marginAlongMainAxis the margin value along the main axis
    * @param calledRecursively true if this method is called recursively, false otherwise
    */
-  private fun expandFlexItems(
+  private fun growFlexItems(
     childrenFrozen: BooleanArray,
     widthMeasureSpec: MeasureSpec,
     heightMeasureSpec: MeasureSpec,
@@ -461,12 +461,10 @@ public class FlexContainer {
             flexItem = child,
             margin = flexLine.sumCrossSizeBefore,
           )
-          child.height = when (childHeightMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
-            else -> throw AssertionError()
-          }
+          child.height = child.measurable.measure(
+            widthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly),
+            heightSpec = childHeightMeasureSpec,
+          ).width
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
@@ -505,12 +503,10 @@ public class FlexContainer {
             flexItem = child,
             margin = flexLine.sumCrossSizeBefore,
           )
-          child.width = when (childWidthMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
-            else -> throw AssertionError()
-          }
+          child.width = child.measurable.measure(
+            widthSpec = childWidthMeasureSpec,
+            heightSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly),
+          ).width
           child.height = newHeight
         }
         largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.left + child.margin.right)
@@ -521,7 +517,7 @@ public class FlexContainer {
     if (needsReexpand && sizeBeforeExpand != flexLine.mainSize) {
       // Re-invoke the method with the same flex line to distribute the positive free space
       // that wasn't fully distributed (because of maximum length constraint)
-      expandFlexItems(
+      growFlexItems(
         childrenFrozen = childrenFrozen,
         widthMeasureSpec = widthMeasureSpec,
         heightMeasureSpec = heightMeasureSpec,
@@ -611,12 +607,10 @@ public class FlexContainer {
             flexItem = child,
             margin = flexLine.sumCrossSizeBefore,
           )
-          child.height = when (childHeightMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childHeightMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.height(newWidth).coerceAtMost(childHeightMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.height(newWidth)
-            else -> throw AssertionError()
-          }
+          child.height = child.measurable.measure(
+            widthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly),
+            heightSpec = childHeightMeasureSpec,
+          ).width
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
@@ -652,12 +646,10 @@ public class FlexContainer {
             flexItem = child,
             margin = flexLine.sumCrossSizeBefore,
           )
-          child.width = when (childWidthMeasureSpec.mode) {
-            MeasureSpecMode.Exactly -> childWidthMeasureSpec.size
-            MeasureSpecMode.AtMost -> child.measurable.width(newHeight).coerceAtMost(childWidthMeasureSpec.size)
-            MeasureSpecMode.Unspecified -> child.measurable.width(newHeight)
-            else -> throw AssertionError()
-          }
+          child.width = child.measurable.measure(
+            widthSpec = childWidthMeasureSpec,
+            heightSpec = MeasureSpec.from(newHeight, MeasureSpecMode.Exactly),
+          ).width
           child.height = newHeight
         }
         largestCrossSize = maxOf(largestCrossSize, child.width + child.margin.left + child.margin.right)
@@ -897,30 +889,16 @@ public class FlexContainer {
    * [AlignItems.Stretch] or [FlexItem.alignSelf] is set as [AlignItems.Stretch].
    */
   private fun stretchChildren(flexLines: List<FlexLine>) {
-    if (alignItems == AlignItems.Stretch) {
-      for (flexLine in flexLines) {
-        for (i in flexLine.indices) {
-          val item = items[i]
-          if (item.alignSelf != AlignSelf.Auto && item.alignSelf != AlignSelf.Stretch) {
-            continue
-          }
+    for (flexLine in flexLines) {
+      for (i in flexLine.indices) {
+        val item = items[i]
+        val stretchItem = item.alignSelf == AlignSelf.Stretch ||
+          (alignItems == AlignItems.Stretch && item.alignSelf == AlignSelf.Auto)
+        if (stretchItem) {
           if (flexDirection.isHorizontal) {
             stretchItemVertically(item, flexLine.crossSize)
           } else {
             stretchItemHorizontally(item, flexLine.crossSize)
-          }
-        }
-      }
-    } else {
-      flexLines.forEachIndices { flexLine ->
-        for (index in flexLine.indices) {
-          val item = items[index]
-          if (item.alignSelf == AlignSelf.Stretch) {
-            if (flexDirection.isHorizontal) {
-              stretchItemVertically(item, flexLine.crossSize)
-            } else {
-              stretchItemHorizontally(item, flexLine.crossSize)
-            }
           }
         }
       }

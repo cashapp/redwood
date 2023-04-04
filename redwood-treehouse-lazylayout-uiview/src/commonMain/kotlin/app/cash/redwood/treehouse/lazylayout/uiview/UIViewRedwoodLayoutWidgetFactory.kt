@@ -24,8 +24,8 @@ import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodTreehouseLazyLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
-  private var treehouseApp: TreehouseApp<A>,
-  private var widgetSystem: WidgetSystem,
+  private val treehouseApp: TreehouseApp<A>,
+  private val widgetSystem: WidgetSystem,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<UIView> {
   override fun LazyColumn(): LazyColumn<UIView> = UIViewLazyColumn(treehouseApp, widgetSystem)
 }

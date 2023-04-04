@@ -16,7 +16,6 @@
 package app.cash.redwood.layout.view
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.TextView
@@ -27,9 +26,11 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.AbstractFlexContainerTest
+import app.cash.redwood.layout.Color
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.toInt
 import app.cash.redwood.widget.Widget
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -48,9 +49,9 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
 
   override fun widget(text: String, layoutModifier: LayoutModifier) = object : Widget<View> {
     override val value = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.GREEN)
+      background = ColorDrawable(Color.Green.toInt())
       textSize = 18f
-      setTextColor(Color.BLACK)
+      setTextColor(Color.Black.toInt())
       this.text = text
     }
     override var layoutModifiers = layoutModifier
@@ -84,6 +85,10 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
 
     override fun margin(margin: Margin) {
       delegate.margin(margin)
+    }
+
+    override fun background(color: Color) {
+      value.background = ColorDrawable(color.toInt())
     }
 
     override fun add(widget: Widget<View>) {
