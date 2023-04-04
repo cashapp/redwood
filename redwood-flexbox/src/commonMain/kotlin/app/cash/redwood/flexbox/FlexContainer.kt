@@ -1242,10 +1242,7 @@ public class FlexContainer {
     right: Double,
     bottom: Double,
   ) {
-    var alignItems = alignItems
-    if (item.alignSelf != AlignSelf.Auto) {
-      alignItems = item.alignSelf.toAlignItems()
-    }
+    val alignItems = item.alignSelf.toAlignItems(alignItems)
     val crossSize = line.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch -> if (flexWrap != FlexWrap.WrapReverse) {
@@ -1306,10 +1303,7 @@ public class FlexContainer {
     bottom: Double,
     rightToLeft: Boolean,
   ) {
-    var alignItems = alignItems
-    if (item.alignSelf != AlignSelf.Auto) {
-      alignItems = item.alignSelf.toAlignItems()
-    }
+    val alignItems = item.alignSelf.toAlignItems(alignItems)
     val crossSize = line.crossSize
     when (alignItems) {
       AlignItems.FlexStart, AlignItems.Stretch, AlignItems.Baseline -> if (!rightToLeft) {

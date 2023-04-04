@@ -18,12 +18,13 @@ package app.cash.redwood.flexbox
 import app.cash.redwood.flexbox.Measurable.Companion.MatchParent
 import app.cash.redwood.flexbox.Measurable.Companion.WrapContent
 
-internal fun AlignSelf.toAlignItems() = when (this) {
+internal fun AlignSelf.toAlignItems(alignItems: AlignItems) = when (this) {
   AlignSelf.FlexStart -> AlignItems.FlexStart
   AlignSelf.FlexEnd -> AlignItems.FlexEnd
   AlignSelf.Center -> AlignItems.Center
   AlignSelf.Baseline -> AlignItems.Baseline
   AlignSelf.Stretch -> AlignItems.Stretch
+  AlignSelf.Auto -> alignItems
   else -> throw AssertionError()
 }
 
