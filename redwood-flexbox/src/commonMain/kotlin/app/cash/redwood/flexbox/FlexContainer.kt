@@ -464,7 +464,7 @@ public class FlexContainer {
           child.height = child.measurable.measure(
             widthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly),
             heightSpec = childHeightMeasureSpec,
-          ).width
+          ).height
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
@@ -610,7 +610,7 @@ public class FlexContainer {
           child.height = child.measurable.measure(
             widthSpec = MeasureSpec.from(newWidth, MeasureSpecMode.Exactly),
             heightSpec = childHeightMeasureSpec,
-          ).width
+          ).height
           child.width = newWidth
         }
         largestCrossSize = maxOf(largestCrossSize, child.height + child.margin.top + child.margin.bottom)
