@@ -43,6 +43,7 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
   val paparazzi = Paparazzi(
     deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
+    showSystemUi = false,
   )
 
   override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
