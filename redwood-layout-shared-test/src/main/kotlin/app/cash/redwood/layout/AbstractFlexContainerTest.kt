@@ -109,6 +109,48 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
     verifySnapshot(container)
   }
+
+  /** Regression test: https://github.com/cashapp/redwood/issues/852 */
+  @Test open fun stretchedColumn() {
+    val outerContainer = Column {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      background(Color.Red)
+      add(widget("Outer column text"))
+    }
+    val innerContainer = Column {
+      width(Constraint.Fill)
+      background(Color.Blue)
+      add(
+        widget(
+          text = "Inner column text",
+          layoutModifier = LayoutModifier
+            .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Center)),
+        ),
+      )
+    }
+    outerContainer.add(
+      widget(
+        container = innerContainer,
+        layoutModifier = LayoutModifier
+          .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch))
+          .then(GrowImpl(1.0)),
+      ),
+    )
+    verifySnapshot(outerContainer)
+  }
+
+  private fun Column(block: TestFlexContainer<T>.() -> Unit): TestFlexContainer<T> {
+    return flexContainer(FlexDirection.Column).apply(block)
+  }
+
+  private fun widget(
+    container: TestFlexContainer<T>,
+    layoutModifier: LayoutModifier = LayoutModifier,
+  ) = object : Widget<T> {
+    override val value: T get() = container.value
+    override var layoutModifiers = layoutModifier
+  }
 }
 
 interface TestFlexContainer<T : Any> {
@@ -118,8 +160,22 @@ interface TestFlexContainer<T : Any> {
   fun alignItems(alignItems: AlignItems)
   fun justifyContent(justifyContent: JustifyContent)
   fun margin(margin: Margin)
+  fun background(color: Color) {}
   fun add(widget: Widget<T>)
 }
+
+@JvmInline
+value class Color(val hexValue: UInt) {
+  companion object {
+    val White = Color(0xFFFFFFFFU)
+    val Black = Color(0xFF000000U)
+    val Red = Color(0xFFFF0000U)
+    val Green = Color(0xFF00FF00U)
+    val Blue = Color(0xFF0000FFU)
+  }
+}
+
+fun Color.toInt() = hexValue.toInt()
 
 private val movies = listOf(
   "The Shawshank Redemption",
@@ -147,3 +203,7 @@ private val movies = listOf(
 private data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment, VerticalAlignment
+
+private data class GrowImpl(
+  override val value: Double,
+) : Grow
