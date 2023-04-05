@@ -1,15 +1,16 @@
 package app.cash.redwood.yoga.internal.enums
 
 enum class YGDisplay {
-    YGDisplayFlex, YGDisplayNone;
+  YGDisplayFlex,
+  YGDisplayNone;
 
-    fun getValue(): Int {
-        return ordinal
-    }
+  fun getValue(): Int {
+    return ordinal
+  }
 
-    companion object {
-        fun forValue(value: Int): YGDisplay {
-            return values()[value]
-        }
+  companion object {
+    fun forValue(value: Int): YGDisplay {
+      return values()[value]
     }
+  }
 }

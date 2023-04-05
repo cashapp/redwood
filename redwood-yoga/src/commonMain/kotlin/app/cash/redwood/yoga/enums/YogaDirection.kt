@@ -7,7 +7,9 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaDirection(private val mIntValue: Int) {
-  INHERIT(0), LTR(1), RTL(2);
+  INHERIT(0),
+  LTR(1),
+  RTL(2);
 
   fun intValue(): Int {
     return mIntValue

@@ -2,15 +2,17 @@ package app.cash.redwood.yoga.internal.enums
 
 enum class YGWrap //Type originates from: YGEnums.h
 {
-    YGWrapNoWrap, YGWrapWrap, YGWrapWrapReverse;
+  YGWrapNoWrap,
+  YGWrapWrap,
+  YGWrapWrapReverse;
 
-    fun getValue(): Int {
-        return ordinal
-    }
+  fun getValue(): Int {
+    return ordinal
+  }
 
-    companion object {
-        fun forValue(value: Int): YGWrap {
-            return values()[value]
-        }
+  companion object {
+    fun forValue(value: Int): YGWrap {
+      return values()[value]
     }
+  }
 }

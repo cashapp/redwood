@@ -7,19 +7,20 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaNodeType(private val mIntValue: Int) {
-    DEFAULT(0), TEXT(1);
+  DEFAULT(0),
+  TEXT(1);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaNodeType {
-            return when (value) {
-                0 -> DEFAULT
-                1 -> TEXT
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaNodeType {
+      return when (value) {
+        0 -> DEFAULT
+        1 -> TEXT
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

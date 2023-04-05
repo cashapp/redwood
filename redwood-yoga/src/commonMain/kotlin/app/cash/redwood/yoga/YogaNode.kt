@@ -29,7 +29,7 @@ import app.cash.redwood.yoga.interfaces.YogaMeasureFunction
 import app.cash.redwood.yoga.interfaces.YogaProps
 
 abstract class YogaNode : YogaProps {
-    /** The interface the [.getData] object can optionally implement.  */
+    /** The interface the [getData] object can optionally implement.  */
     interface Inputs {
         /** Requests the data object to disable mutations of its inputs.  */
         fun freeze(node: YogaNode?, parent: YogaNode?)

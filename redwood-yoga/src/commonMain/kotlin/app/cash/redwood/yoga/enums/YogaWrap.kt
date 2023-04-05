@@ -7,20 +7,22 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaWrap(private val mIntValue: Int) {
-    NO_WRAP(0), WRAP(1), WRAP_REVERSE(2);
+  NO_WRAP(0),
+  WRAP(1),
+  WRAP_REVERSE(2);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaWrap {
-            return when (value) {
-                0 -> NO_WRAP
-                1 -> WRAP
-                2 -> WRAP_REVERSE
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaWrap {
+      return when (value) {
+        0 -> NO_WRAP
+        1 -> WRAP
+        2 -> WRAP_REVERSE
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

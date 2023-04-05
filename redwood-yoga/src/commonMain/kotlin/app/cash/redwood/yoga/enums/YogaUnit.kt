@@ -7,21 +7,24 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaUnit(private val mIntValue: Int) {
-    UNDEFINED(0), POINT(1), PERCENT(2), AUTO(3);
+  UNDEFINED(0),
+  POINT(1),
+  PERCENT(2),
+  AUTO(3);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaUnit {
-            return when (value) {
-                0 -> UNDEFINED
-                1 -> POINT
-                2 -> PERCENT
-                3 -> AUTO
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaUnit {
+      return when (value) {
+        0 -> UNDEFINED
+        1 -> POINT
+        2 -> PERCENT
+        3 -> AUTO
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

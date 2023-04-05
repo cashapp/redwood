@@ -7,20 +7,22 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaPositionType(private val mIntValue: Int) {
-    STATIC(0), RELATIVE(1), ABSOLUTE(2);
+  STATIC(0),
+  RELATIVE(1),
+  ABSOLUTE(2);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaPositionType {
-            return when (value) {
-                0 -> STATIC
-                1 -> RELATIVE
-                2 -> ABSOLUTE
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaPositionType {
+      return when (value) {
+        0 -> STATIC
+        1 -> RELATIVE
+        2 -> ABSOLUTE
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

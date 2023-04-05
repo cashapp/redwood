@@ -7,20 +7,22 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaPrintOptions(private val mIntValue: Int) {
-    LAYOUT(1), STYLE(2), CHILDREN(4);
+  LAYOUT(1),
+  STYLE(2),
+  CHILDREN(4);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaPrintOptions {
-            return when (value) {
-                1 -> LAYOUT
-                2 -> STYLE
-                4 -> CHILDREN
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaPrintOptions {
+      return when (value) {
+        1 -> LAYOUT
+        2 -> STYLE
+        4 -> CHILDREN
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

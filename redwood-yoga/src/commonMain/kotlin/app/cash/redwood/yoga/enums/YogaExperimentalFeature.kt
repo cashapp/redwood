@@ -7,18 +7,18 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaExperimentalFeature(private val mIntValue: Int) {
-    WEB_FLEX_BASIS(0);
+  WEB_FLEX_BASIS(0);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaExperimentalFeature {
-            return when (value) {
-                0 -> WEB_FLEX_BASIS
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaExperimentalFeature {
+      return when (value) {
+        0 -> WEB_FLEX_BASIS
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

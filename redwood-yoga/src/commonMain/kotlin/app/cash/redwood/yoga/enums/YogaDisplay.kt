@@ -7,19 +7,20 @@
 package app.cash.redwood.yoga.enums
 
 enum class YogaDisplay(private val mIntValue: Int) {
-    FLEX(0), NONE(1);
+  FLEX(0),
+  NONE(1);
 
-    fun intValue(): Int {
-        return mIntValue
-    }
+  fun intValue(): Int {
+    return mIntValue
+  }
 
-    companion object {
-        fun fromInt(value: Int): YogaDisplay {
-            return when (value) {
-                0 -> FLEX
-                1 -> NONE
-                else -> throw IllegalArgumentException("Unknown enum value: $value")
-            }
-        }
+  companion object {
+    fun fromInt(value: Int): YogaDisplay {
+      return when (value) {
+        0 -> FLEX
+        1 -> NONE
+        else -> throw IllegalArgumentException("Unknown enum value: $value")
+      }
     }
+  }
 }

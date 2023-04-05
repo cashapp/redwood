@@ -18,6 +18,7 @@ import app.cash.redwood.yoga.internal.interfaces.YGLogger
  */
 interface YogaLogger : YGLogger {
     fun log(level: YogaLogLevel?, message: String?)
+
     override fun invoke(
       config: YGConfig?,
       node: YGNode?,

@@ -13,5 +13,5 @@ fun interface YogaBaselineFunction {
      * Return the baseline of the node in points. When no baseline function is set the baseline
      * default to the computed height of the node.
      */
-    fun baseline(node: YogaNode?, width: Float, height: Float): Float
+    fun baseline(node: YogaNode, width: Float, height: Float): Float
 }
