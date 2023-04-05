@@ -150,8 +150,8 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = CodeState.Idle<A>()
 
     // Cancel the code if necessary.
+    treehouseApp.boundContents.remove(this)
     if (previousState.codeState is CodeState.Running) {
-      treehouseApp.boundContents.remove(this)
       previousState.codeState.viewContentCodeBinding.cancel()
     }
 
