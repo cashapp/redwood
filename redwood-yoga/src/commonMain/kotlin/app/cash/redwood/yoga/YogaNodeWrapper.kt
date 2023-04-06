@@ -33,10 +33,10 @@ import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 import app.cash.redwood.yoga.internal.enums.YGOverflow
 import app.cash.redwood.yoga.internal.enums.YGPositionType
 import app.cash.redwood.yoga.internal.enums.YGWrap
+import app.cash.redwood.yoga.internal.interfaces.YGBaselineFunc
 import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 
-class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) :
-    YogaNode() {
+class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : YogaNode() {
     private var mOwner: YogaNodeWrapper? = null
     private var mChildren: ArrayList<YogaNodeWrapper>? = null
     private var mMeasureFunction: YogaMeasureFunction? = null
@@ -44,13 +44,9 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
     private var mData: Any? = null
     private val mLayoutDirection = 0
 
-    internal constructor() : this(GlobalMembers.YGNodeNew()) {}
-    internal constructor(config: YogaConfig) : this(
-        GlobalMembers.YGNodeNewWithConfig(
-            (config as YogaConfigWrapper).mNativePointer
-        )
-    ) {
-    }
+    internal constructor() : this(GlobalMembers.YGNodeNew())
+    internal constructor(config: YogaConfig) :
+    this(GlobalMembers.YGNodeNewWithConfig((config as YogaConfigWrapper).mNativePointer))
 
     override fun reset() {
         mMeasureFunction = null
@@ -68,18 +64,16 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
         return mChildren!![i]
     }
 
-    override fun addChildAt(c: YogaNode?, i: Int) {
-        if (c !is YogaNodeWrapper) {
-            return
-        }
-        val child = c
-        check(child.mOwner == null) { "Child already has a parent, it must be removed first." }
-        if (mChildren == null) {
-            mChildren = ArrayList(4)
-        }
-        mChildren!!.add(i, child)
-        child.mOwner = this
-        GlobalMembers.YGNodeInsertChild(mNativePointer, child.mNativePointer, i)
+    override fun addChildAt(child: YogaNode, i: Int) {
+      if (child !is YogaNodeWrapper) return
+      check(child.mOwner == null) { "Child already has a parent, it must be removed first." }
+
+      if (mChildren == null) {
+        mChildren = ArrayList(4)
+      }
+      mChildren!!.add(i, child)
+      child.mOwner = this
+      GlobalMembers.YGNodeInsertChild(mNativePointer, child.mNativePointer, i)
     }
 
     override fun setIsReferenceBaseline(isReferenceBaseline: Boolean) {
@@ -91,14 +85,11 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
     }
 
     fun swapChildAt(newChild: YogaNode?, position: Int) {
-        if (newChild !is YogaNodeWrapper) {
-            return
-        }
-        val child = newChild
-        mChildren!!.removeAt(position)
-        mChildren!!.add(position, child)
-        child.mOwner = this
-        GlobalMembers.YGNodeSwapChild(mNativePointer, child.mNativePointer, position)
+      if (newChild !is YogaNodeWrapper) return
+      mChildren!!.removeAt(position)
+      mChildren!!.add(position, newChild)
+      newChild.mOwner = this
+      GlobalMembers.YGNodeSwapChild(mNativePointer, newChild.mNativePointer, position)
     }
 
     private fun clearChildren() {
@@ -159,7 +150,7 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
     private fun freeze(parent: YogaNode?) {
         val data = getData()
         if (data is Inputs) {
-            (data as Inputs).freeze(this, parent)
+            data.freeze(this, parent)
         }
     }
 
@@ -289,10 +280,10 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
         )
     }
 
-    override fun setWrap(flexWrap: YogaWrap) {
+    override fun setWrap(wrap: YogaWrap) {
         GlobalMembers.YGNodeStyleSetFlexWrap(
             mNativePointer,
-            YGWrap.forValue(flexWrap.intValue())
+            YGWrap.forValue(wrap.intValue())
         )
     }
 
@@ -561,8 +552,8 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
         )
     }
 
-    override fun setMaxHeight(maxheight: Float) {
-        GlobalMembers.YGNodeStyleSetMaxHeight(mNativePointer, maxheight)
+    override fun setMaxHeight(maxHeight: Float) {
+        GlobalMembers.YGNodeStyleSetMaxHeight(mNativePointer, maxHeight)
     }
 
     override fun setMaxHeightPercent(percent: Float) {
@@ -577,26 +568,16 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
         GlobalMembers.YGNodeStyleSetAspectRatio(mNativePointer, aspectRatio)
     }
 
-    override fun setMeasureFunction(measureFunction: YogaMeasureFunction?) {
-        mMeasureFunction = measureFunction
-        mNativePointer.getMeasure().noContext =
-            YGMeasureFunc { node: YGNode?, width: Float, widthMode: YGMeasureMode?, height: Float, heightMode: YGMeasureMode? ->
-                measure(
-                    width,
-                    widthMode!!.getValue(), height, heightMode!!.getValue()
-                )!!
-            }
+  override fun setMeasureFunction(measureFunction: YogaMeasureFunction?) {
+    mMeasureFunction = measureFunction
+    mNativePointer.getMeasure().noContext = measureFunction?.let {
+      YGMeasureFunc { _: YGNode, width: Float, widthMode: YGMeasureMode, height: Float, heightMode: YGMeasureMode ->
+        measure(width, widthMode.getValue(), height, heightMode.getValue())
+      }
     }
+  }
 
-    // Implementation Note: Why this method needs to stay final
-    //
-    // We cache the jmethodid for this method in Yoga code. This means that even if a subclass
-    // were to override measure, we'd still call this implementation from layout code since the
-    // overriding method will have a different jmethodid. This is final to prevent that mistake.
-    fun measure(width: Float, widthMode: Int, height: Float, heightMode: Int): YGSize? {
-        if (!isMeasureDefined()) {
-            throw RuntimeException("Measure function isn't defined!")
-        }
+    fun measure(width: Float, widthMode: Int, height: Float, heightMode: Int): YGSize {
         return mMeasureFunction!!.measure(
             this,
             width,
@@ -608,12 +589,13 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
 
     override fun setBaselineFunction(baselineFunction: YogaBaselineFunction?) {
         mBaselineFunction = baselineFunction
-        mNativePointer.setBaselineFunc { node: YGNode?, width: Float, height: Float ->
-            baseline(
-                width,
-                height
-            )
+      mNativePointer.setBaselineFunc(
+        baselineFunction?.let {
+          YGBaselineFunc { _: YGNode, width: Float, height: Float ->
+            baseline(width, height)
+          }
         }
+      )
     }
 
     fun baseline(width: Float, height: Float): Float {
@@ -735,7 +717,7 @@ class YogaNodeWrapper private constructor(protected var mNativePointer: YGNode) 
         private fun valueFromNative(value: YGValue?): YogaValue {
             return YogaValue(
                 value!!.value,
-                YogaUnit.fromInt(value.unit!!.getValue())
+                YogaUnit.fromInt(value.unit.getValue())
             )
         }
     }

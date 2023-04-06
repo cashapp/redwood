@@ -20,11 +20,18 @@ import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
+import app.cash.redwood.yoga.enums.YogaMeasureMode
 
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are
 // visually similar on both platforms.
-internal const val DensityMultiplier = 1.1
+internal const val DensityMultiplier = 1.1f
+
+internal fun YogaMeasureMode.toAndroid() = when (this) {
+  YogaMeasureMode.AT_MOST -> View.MeasureSpec.AT_MOST
+  YogaMeasureMode.EXACTLY -> View.MeasureSpec.EXACTLY
+  YogaMeasureMode.UNDEFINED -> View.MeasureSpec.UNSPECIFIED
+}
 
 internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
   size = View.MeasureSpec.getSize(measureSpec).toDouble(),

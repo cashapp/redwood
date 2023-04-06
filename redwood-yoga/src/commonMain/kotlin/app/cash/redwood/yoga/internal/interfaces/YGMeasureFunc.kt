@@ -6,10 +6,10 @@ import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 
 fun interface YGMeasureFunc {
     operator fun invoke(
-      node: YGNode?,
+      node: YGNode,
       width: Float,
-      widthMode: YGMeasureMode?,
+      widthMode: YGMeasureMode,
       height: Float,
-      heightMode: YGMeasureMode?
+      heightMode: YGMeasureMode
     ): YGSize
 }

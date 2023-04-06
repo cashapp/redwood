@@ -20,5 +20,5 @@ interface YogaMeasureFunction {
       widthMode: YogaMeasureMode,
       height: Float,
       heightMode: YogaMeasureMode
-    ): YGSize?
+    ): YGSize
 }

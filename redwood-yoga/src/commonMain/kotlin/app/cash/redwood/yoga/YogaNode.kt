@@ -29,7 +29,7 @@ abstract class YogaNode : YogaProps {
     abstract fun reset()
     abstract fun getChildCount(): Int
     abstract fun getChildAt(i: Int): YogaNode
-    abstract fun addChildAt(child: YogaNode?, i: Int)
+    abstract fun addChildAt(child: YogaNode, i: Int)
     abstract override fun setIsReferenceBaseline(isReferenceBaseline: Boolean)
     abstract fun isReferenceBaseline(): Boolean
     abstract fun removeChildAt(i: Int): YogaNode

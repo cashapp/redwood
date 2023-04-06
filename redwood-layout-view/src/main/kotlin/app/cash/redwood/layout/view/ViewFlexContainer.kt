@@ -19,15 +19,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -37,40 +38,60 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
+import app.cash.redwood.yoga.enums.YogaAlign
+import app.cash.redwood.yoga.enums.YogaEdge
+import app.cash.redwood.yoga.enums.YogaFlexDirection
+import app.cash.redwood.yoga.enums.YogaJustify
 
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : Row<View>, Column<View> {
-  private val container = FlexContainer().apply {
-    flexDirection = direction
-    roundToInt = true
-  }
   private val density = DensityMultiplier * context.resources.displayMetrics.density
-
-  private val hostView = HostView(context)
+  private val hostView = YogaLayout(context).apply {
+    rootNode.setFlexDirection(when (direction) {
+      FlexDirection.Row -> YogaFlexDirection.ROW
+      FlexDirection.RowReverse -> YogaFlexDirection.ROW_REVERSE
+      FlexDirection.Column -> YogaFlexDirection.COLUMN
+      FlexDirection.ColumnReverse -> YogaFlexDirection.COLUMN_REVERSE
+      else -> throw AssertionError()
+    })
+  }
+  private var scrollEnabled = false
 
   private val _value = Container()
   override val value: View = _value
 
   override val children = ViewGroupChildren(hostView)
-
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  private var scrollEnabled = false
-
   override fun width(width: Constraint) {
-    container.fillWidth = width == Constraint.Fill
+    hostView.updateLayoutParams {
+      this.height = when (width) {
+        Constraint.Wrap -> WRAP_CONTENT
+        Constraint.Fill -> MATCH_PARENT
+        else -> throw AssertionError()
+      }
+    }
     invalidate()
   }
 
   override fun height(height: Constraint) {
-    container.fillHeight = height == Constraint.Fill
+    hostView.updateLayoutParams {
+      this.height = when (height) {
+        Constraint.Wrap -> WRAP_CONTENT
+        Constraint.Fill -> MATCH_PARENT
+        else -> throw AssertionError()
+      }
+    }
     invalidate()
   }
 
   override fun margin(margin: Margin) {
-    container.margin = margin.toSpacing(density)
+    hostView.rootNode.setMargin(YogaEdge.LEFT, density * margin.left)
+    hostView.rootNode.setMargin(YogaEdge.RIGHT, density * margin.right)
+    hostView.rootNode.setMargin(YogaEdge.TOP, density * margin.top)
+    hostView.rootNode.setMargin(YogaEdge.BOTTOM, density * margin.bottom)
     invalidate()
   }
 
@@ -97,12 +118,27 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    container.alignItems = alignItems
+    hostView.rootNode.setAlignItems(when (alignItems) {
+      AlignItems.FlexStart -> YogaAlign.FLEX_START
+      AlignItems.FlexEnd -> YogaAlign.FLEX_END
+      AlignItems.Center -> YogaAlign.CENTER
+      AlignItems.Baseline -> YogaAlign.BASELINE
+      AlignItems.Stretch -> YogaAlign.STRETCH
+      else -> throw AssertionError()
+    })
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    container.justifyContent = justifyContent
+    hostView.rootNode.setJustifyContent(when (justifyContent) {
+      JustifyContent.FlexStart -> YogaJustify.FLEX_START
+      JustifyContent.FlexEnd -> YogaJustify.FLEX_END
+      JustifyContent.Center -> YogaJustify.CENTER
+      JustifyContent.SpaceBetween -> YogaJustify.SPACE_BETWEEN
+      JustifyContent.SpaceAround -> YogaJustify.SPACE_AROUND
+      JustifyContent.SpaceEvenly -> YogaJustify.SPACE_EVENLY
+      else -> throw AssertionError()
+    })
     invalidate()
   }
 
@@ -142,35 +178,6 @@ internal class ViewFlexContainer(
       }.apply {
         isHorizontalScrollBarEnabled = false
         isVerticalScrollBarEnabled = false
-      }
-    }
-  }
-
-  private inner class HostView(context: Context) : ViewGroup(context) {
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-      syncItems()
-      val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
-      val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      val (width, height) = container.measure(widthSpec, heightSpec)
-      setMeasuredDimension(width.toInt(), height.toInt())
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      for (item in container.items) {
-        val view = (item.measurable as ViewMeasurable).view
-        view.layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
-      }
-    }
-
-    private fun syncItems() {
-      container.items.clear()
-      children.widgets.forEach { widget ->
-        container.items += newFlexItem(
-          direction = direction,
-          density = density,
-          layoutModifiers = widget.layoutModifiers,
-          measurable = ViewMeasurable(widget.value),
-        )
       }
     }
   }
