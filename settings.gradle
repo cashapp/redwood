@@ -42,6 +42,7 @@ include ':redwood-treehouse-lazylayout-widget'
 include ':redwood-widget'
 include ':redwood-widget-compose'
 include ':redwood-yoga'
+include ':redwood-yoga-java'
 
 include ':test-schema'
 include ':test-schema:compose'
