@@ -11,8 +11,9 @@ kotlin {
     iosX64(),
     iosSimulatorArm64()
   ].forEach { target ->
-    target.binaries.configureEach {
-      linkerOpts += ["-ObjC"]
+    target.binaries.configureEach { lib ->
+      if (lib instanceof org.jetbrains.kotlin.gradle.plugin.mpp.Framework) lib.isStatic = false
+      lib.linkerOpts += ["-ObjC"]
     }
   }
 

@@ -20,6 +20,7 @@ import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import com.example.redwood.emojisearch.compose.EmojiSearchProtocolBridge
 import com.example.redwood.emojisearch.presenter.EmojiSearchTreehouseUi
+import com.example.redwood.emojisearch.presenter.HttpClient
 import kotlinx.serialization.json.Json
 
 class RealEmojiSearchPresenter(
@@ -30,7 +31,14 @@ class RealEmojiSearchPresenter(
 
   override fun launch(): ZiplineTreehouseUi {
     val bridge = EmojiSearchProtocolBridge.create(json)
-    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall, bridge)
+    val treehouseUi = EmojiSearchTreehouseUi(
+      httpClient = object : HttpClient {
+        override suspend fun call(url: String, headers: Map<String, String>): String {
+          return hostApi.httpCall(url, headers)
+        }
+      },
+      bridge = bridge
+    )
     return treehouseUi.asZiplineTreehouseUi(
       bridge = bridge,
       widgetVersion = 0U,
