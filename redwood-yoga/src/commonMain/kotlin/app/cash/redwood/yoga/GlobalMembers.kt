@@ -4900,6 +4900,6 @@ object GlobalMembers {
   }
 
   fun interface NodeTraverseDelegate {
-    operator fun invoke(node: YGNode?)
+    operator fun invoke(node: YGNode)
   }
 }
