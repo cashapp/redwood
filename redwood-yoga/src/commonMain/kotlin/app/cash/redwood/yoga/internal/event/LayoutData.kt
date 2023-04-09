@@ -8,7 +8,7 @@ class LayoutData : CallableEvent() //Type originates from: event.h
     var cachedLayouts = 0
     var cachedMeasures = 0
     var measureCallbacks = 0
-    val measureCallbackReasonsCount = ArrayList<Int?>()
+    val measureCallbackReasonsCount = mutableListOf<Int?>()
 
     init {
         for (i in 0 until LayoutPassReason.COUNT.getValue()) {

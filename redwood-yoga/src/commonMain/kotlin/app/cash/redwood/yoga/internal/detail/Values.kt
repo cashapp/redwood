@@ -5,7 +5,7 @@ import app.cash.redwood.yoga.internal.enums.YGEdge
 
 class Values<T> //Type originates from: Yoga-internal.h
 {
-    private val values_: ArrayList<CompactValue>
+    private val values_: MutableList<CompactValue>
 
     constructor() {
         values_ = ArrayList()
@@ -13,17 +13,17 @@ class Values<T> //Type originates from: Yoga-internal.h
 
     constructor(defaultValue: YGValue) {
         values_ = ArrayList()
-        values_.add(CompactValue.Companion.createCompactValue(defaultValue))
+        values_.add(CompactValue.createCompactValue(defaultValue))
     }
 
     constructor(defaultValue: YGValue, size: Int) {
         values_ = ArrayList(size)
-        values_.add(CompactValue.Companion.createCompactValue(defaultValue))
+        values_.add(CompactValue.createCompactValue(defaultValue))
     }
 
     private fun getValue(i: Int): CompactValue {
         while (values_.size < i + 1) {
-            values_.add(CompactValue.Companion.ofUndefined())
+            values_.add(CompactValue.ofUndefined())
         }
         return values_[i]
     }
@@ -37,7 +37,7 @@ class Values<T> //Type originates from: Yoga-internal.h
     }
 
     fun getCompactValue(i: Int): CompactValue {
-        return CompactValue.Companion.createCompactValue(getValue(i).convertToYgValue())
+        return CompactValue.createCompactValue(getValue(i).convertToYgValue())
     }
 
     operator fun get(i: Int): YGValue {
@@ -45,7 +45,7 @@ class Values<T> //Type originates from: Yoga-internal.h
     }
 
     operator fun set(i: Int, value: YGValue) {
-        values_[i] = CompactValue.Companion.createCompactValue(value)
+        values_[i] = CompactValue.createCompactValue(value)
     }
 
     fun equalsTo(other: Values<T>): Boolean {

@@ -22,7 +22,7 @@ import app.cash.redwood.yoga.internal.detail.Values
 
 class YGNode {
     private var context_: Any? = null
-    private var flags: MutableMap<Any?, Any> = HashMap()
+    private var flags: MutableMap<Any?, Any> = mutableMapOf()
     private var reserved_: Byte = 0
     private var measure_ = measure_Struct()
     private var baseline_ = baseline_Struct()

@@ -3,7 +3,7 @@ package app.cash.redwood.yoga.internal
 import app.cash.redwood.yoga.internal.enums.YGDirection
 
 class YGLayout {
-    private val flags: MutableMap<Any?, Any> = HashMap()
+    private val flags: MutableMap<Any?, Any> = mutableMapOf()
     val position = createEmptyFloatArray()
     val dimensions = ArrayList(listOf(GlobalMembers.YGUndefined, GlobalMembers.YGUndefined))
     val margin = createEmptyFloatArray()

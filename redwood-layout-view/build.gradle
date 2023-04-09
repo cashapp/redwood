@@ -12,8 +12,7 @@ dependencies {
   implementation projects.redwoodFlexbox
   implementation projects.redwoodYoga
   implementation libs.androidx.core
-  implementation 'com.facebook.soloader:soloader:0.10.5'
-  implementation 'com.facebook.yoga.android:yoga-layout:1.19.0'
+  //implementation projects.redwoodYogaJava
   testImplementation projects.redwoodLayoutSharedTest
 }
 
