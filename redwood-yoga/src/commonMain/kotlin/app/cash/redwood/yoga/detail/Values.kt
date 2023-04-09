@@ -3,8 +3,7 @@ package app.cash.redwood.yoga.detail
 import app.cash.redwood.yoga.YGValue
 import app.cash.redwood.yoga.enums.YGEdge
 
-class Values<T> //Type originates from: Yoga-internal.h
-{
+class Values<T> {
   private val values_: MutableList<CompactValue>
 
   constructor() {
