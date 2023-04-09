@@ -34,12 +34,12 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.yoga.internal.GlobalMembers
-import app.cash.redwood.yoga.internal.enums.YGAlign
-import app.cash.redwood.yoga.internal.enums.YGEdge
-import app.cash.redwood.yoga.internal.enums.YGFlexDirection
-import app.cash.redwood.yoga.internal.enums.YGJustify
-import app.cash.redwood.yoga.internal.enums.YGOverflow
+import app.cash.redwood.yoga.GlobalMembers
+import app.cash.redwood.yoga.enums.YGAlign
+import app.cash.redwood.yoga.enums.YGEdge
+import app.cash.redwood.yoga.enums.YGFlexDirection
+import app.cash.redwood.yoga.enums.YGJustify
+import app.cash.redwood.yoga.enums.YGOverflow
 
 internal class ViewFlexContainer(
   private val context: Context,

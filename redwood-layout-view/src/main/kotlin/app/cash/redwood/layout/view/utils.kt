@@ -20,8 +20,7 @@ import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.yoga.enums.YogaMeasureMode
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.enums.YGMeasureMode
 
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are

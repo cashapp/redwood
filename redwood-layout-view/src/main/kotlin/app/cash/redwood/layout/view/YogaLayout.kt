@@ -10,12 +10,11 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import app.cash.redwood.yoga.YogaConstants
-import app.cash.redwood.yoga.internal.GlobalMembers
-import app.cash.redwood.yoga.internal.YGNode
-import app.cash.redwood.yoga.internal.YGSize
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode
-import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.GlobalMembers
+import app.cash.redwood.yoga.YGNode
+import app.cash.redwood.yoga.YGSize
+import app.cash.redwood.yoga.enums.YGMeasureMode
+import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import kotlin.math.roundToInt
 
 /**
@@ -104,8 +103,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     if (inLayout) {
       GlobalMembers.YGNodeCalculateLayoutWithContext(
         node = rootNode,
-        ownerWidth = YogaConstants.UNDEFINED,
-        ownerHeight = YogaConstants.UNDEFINED,
+        ownerWidth = Float.NaN,
+        ownerHeight = Float.NaN,
         ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode)!!,
         layoutContext = null,
       )
@@ -174,8 +173,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     }
     GlobalMembers.YGNodeCalculateLayoutWithContext(
       node = rootNode,
-      ownerWidth = YogaConstants.UNDEFINED,
-      ownerHeight = YogaConstants.UNDEFINED,
+      ownerWidth = Float.NaN,
+      ownerHeight = Float.NaN,
       ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode)!!,
       layoutContext = null,
     )
