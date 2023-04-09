@@ -8,9 +8,9 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
+import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import app.cash.redwood.yoga.YogaConstants
-import app.cash.redwood.yoga.YogaMeasureOutput.make
 import app.cash.redwood.yoga.YogaNode
 import app.cash.redwood.yoga.YogaNodeFactory
 import app.cash.redwood.yoga.enums.YogaMeasureMode
@@ -39,14 +39,9 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     super.addView(child, index, params)
 
-    val childNode: YogaNode
-    if (child is YogaLayout) {
-      childNode = child.rootNode
-    } else {
-      childNode = YogaNodeFactory.create()
-      childNode.setData(child)
-      childNode.setMeasureFunction(ViewMeasureFunction())
-    }
+    val childNode = YogaNodeFactory.create()
+    childNode.setData(child)
+    childNode.setMeasureFunction(ViewMeasureFunction())
     nodes[child] = childNode
     rootNode.addChildAt(childNode, rootNode.getChildCount())
   }
@@ -121,44 +116,29 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       val left = (xOffset + node.getLayoutX()).roundToInt()
       val top = (yOffset + node.getLayoutY()).roundToInt()
       view.measure(
-        MeasureSpec.makeMeasureSpec(
-          node.getLayoutWidth().roundToInt(),
-          MeasureSpec.EXACTLY,
-        ),
-        MeasureSpec.makeMeasureSpec(
-          node.getLayoutHeight().roundToInt(),
-          MeasureSpec.EXACTLY,
-        ),
+        MeasureSpec.makeMeasureSpec(node.getLayoutWidth().roundToInt(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(node.getLayoutHeight().roundToInt(), MeasureSpec.EXACTLY),
       )
       view.layout(left, top, left + view.measuredWidth, top + view.measuredHeight)
     }
 
     val childCount = node.getChildCount()
     for (i in 0 until childCount) {
-      when (view) {
-        this -> applyLayoutRecursive(
-          node = node.getChildAt(i),
-          xOffset = xOffset,
-          yOffset = yOffset,
-        )
-        !is YogaLayout -> applyLayoutRecursive(
-          node = node.getChildAt(i),
-          xOffset = xOffset + node.getLayoutX(),
-          yOffset = yOffset + node.getLayoutY(),
-        )
-      }
+      applyLayoutRecursive(
+        node = node.getChildAt(i),
+        xOffset = xOffset,
+        yOffset = yOffset,
+      )
     }
   }
 
-  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     // Either we are a root of a tree, or this function is called by our owner's onLayout, in which
     // case our r-l and b-t are the size of our node.
-    if (parent !is YogaLayout) {
-      createLayout(
-        MeasureSpec.makeMeasureSpec(r - l, MeasureSpec.EXACTLY),
-        MeasureSpec.makeMeasureSpec(b - t, MeasureSpec.EXACTLY),
-      )
-    }
+    createLayout(
+      MeasureSpec.makeMeasureSpec(right - left, MeasureSpec.EXACTLY),
+      MeasureSpec.makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY),
+    )
     applyLayoutRecursive(rootNode, 0f, 0f)
   }
 
@@ -166,46 +146,33 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
    * This function is mostly unneeded, because Yoga is doing the measuring. Hence we only need to
    * return accurate results if we are the root.
    */
-  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    if (parent !is YogaLayout) {
-      createLayout(widthMeasureSpec, heightMeasureSpec)
-    }
+  override fun onMeasure(widthSpec: Int, heightSpec: Int) {
+    createLayout(widthSpec, heightSpec)
     setMeasuredDimension(
       rootNode.getLayoutWidth().roundToInt(),
       rootNode.getLayoutHeight().roundToInt(),
     )
   }
 
-  private fun createLayout(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-    val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-    val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-    val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-    if (heightMode == MeasureSpec.EXACTLY) {
-      rootNode.setHeight(heightSize.toFloat())
+  private fun createLayout(widthSpec: Int, heightSpec: Int) {
+    val widthSize = MeasureSpec.getSize(widthSpec)
+    when (MeasureSpec.getMode(widthSpec)) {
+      MeasureSpec.EXACTLY -> rootNode.setWidth(widthSize.toFloat())
+      MeasureSpec.AT_MOST -> rootNode.setMaxWidth(widthSize.toFloat())
+      MeasureSpec.UNSPECIFIED -> {}
     }
-    if (widthMode == MeasureSpec.EXACTLY) {
-      rootNode.setWidth(widthSize.toFloat())
-    }
-    if (heightMode == MeasureSpec.AT_MOST) {
-      rootNode.setMaxHeight(heightSize.toFloat())
-    }
-    if (widthMode == MeasureSpec.AT_MOST) {
-      rootNode.setMaxWidth(widthSize.toFloat())
+    val heightSize = MeasureSpec.getSize(heightSpec)
+    when (MeasureSpec.getMode(heightSpec)) {
+      MeasureSpec.EXACTLY -> rootNode.setHeight(heightSize.toFloat())
+      MeasureSpec.AT_MOST -> rootNode.setMaxHeight(heightSize.toFloat())
+      MeasureSpec.UNSPECIFIED -> {}
     }
     rootNode.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
   }
 }
 
-/**
- * Wrapper around measure function for yoga leaves.
- */
+/** Wrapper around a view's measure function for yoga. */
 private class ViewMeasureFunction : YogaMeasureFunction {
-  /**
-   * A function to measure leaves of the Yoga tree. Yoga needs some way to know how large
-   * elements want to be. This function passes that question directly through to the relevant
-   * `View`'s measure function.
-   */
   override fun measure(
     node: YogaNode,
     width: Float,
@@ -213,19 +180,11 @@ private class ViewMeasureFunction : YogaMeasureFunction {
     height: Float,
     heightMode: YogaMeasureMode,
   ): YGSize {
-    val view = node.getData() as View?
-    if (view == null || view is YogaLayout) {
-      return make(0, 0)
-    }
-    val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-      width.toInt(),
-      widthMode.toAndroid(),
-    )
-    val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-      height.toInt(),
-      heightMode.toAndroid(),
-    )
-    view.measure(widthMeasureSpec, heightMeasureSpec)
-    return make(view.measuredWidth, view.measuredHeight)
+    val view = node.getData() as View? ?: return YGSize(0, 0)
+    val layoutParams = view.layoutParams
+    val widthSpec = MeasureSpec.makeMeasureSpec(width.toInt(), widthMode.toAndroid())
+    val heightSpec = MeasureSpec.makeMeasureSpec(height.toInt(), heightMode.toAndroid())
+    view.measure(widthSpec, heightSpec)
+    return YGSize(view.measuredWidth, view.measuredHeight)
   }
 }

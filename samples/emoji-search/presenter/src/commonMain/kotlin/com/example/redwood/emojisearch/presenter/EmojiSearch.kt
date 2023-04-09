@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import com.example.redwood.emojisearch.compose.Image
@@ -42,7 +44,7 @@ private data class EmojiImage(
 )
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
-fun interface HttpClient {
+interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
 }
 
@@ -93,7 +95,6 @@ fun EmojiSearch(
   }
 
   Column(
-    width = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     margin = Margin(horizontal = 24),
   ) {
@@ -102,17 +103,8 @@ fun EmojiSearch(
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    columnProvider.create(filteredEmojis) { image ->
-      Row(
-        width = Constraint.Fill,
-        verticalAlignment = CrossAxisAlignment.Center,
-      ) {
-        Image(
-          url = image.url,
-          layoutModifier = LayoutModifier.margin(Margin(8)),
-        )
-        Text(text = image.label)
-      }
+    filteredEmojis.take(2).forEach { image ->
+      Image(url = image.url)
     }
   }
 }

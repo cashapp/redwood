@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.layout.view
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -38,67 +38,61 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.yoga.enums.YogaAlign
-import app.cash.redwood.yoga.enums.YogaEdge
-import app.cash.redwood.yoga.enums.YogaFlexDirection
-import app.cash.redwood.yoga.enums.YogaJustify
+import com.facebook.yoga.YogaAlign
+import com.facebook.yoga.YogaEdge
+import com.facebook.yoga.YogaFlexDirection
+import com.facebook.yoga.YogaJustify
+import com.facebook.yoga.YogaOverflow
+import com.facebook.yoga.android.YogaLayout
 
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : Row<View>, Column<View> {
   private val density = DensityMultiplier * context.resources.displayMetrics.density
-  private val hostView = YogaLayout(context).apply {
-    rootNode.setFlexDirection(when (direction) {
+  private val yogaLayout = YogaLayout(context).apply {
+    yogaNode.flexDirection = when (direction) {
       FlexDirection.Row -> YogaFlexDirection.ROW
       FlexDirection.RowReverse -> YogaFlexDirection.ROW_REVERSE
       FlexDirection.Column -> YogaFlexDirection.COLUMN
       FlexDirection.ColumnReverse -> YogaFlexDirection.COLUMN_REVERSE
       else -> throw AssertionError()
-    })
+    }
   }
-  private var scrollEnabled = false
+  private val hostView = HostView()
+  override val value: View get() = yogaLayout
 
-  private val _value = Container()
-  override val value: View = _value
-
-  override val children = ViewGroupChildren(hostView)
+  override val children = ViewGroupChildren(yogaLayout)
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
+  private var width = Constraint.Wrap
+  private var height = Constraint.Wrap
+
   override fun width(width: Constraint) {
-    hostView.updateLayoutParams {
-      this.height = when (width) {
-        Constraint.Wrap -> WRAP_CONTENT
-        Constraint.Fill -> MATCH_PARENT
-        else -> throw AssertionError()
-      }
-    }
+    this.width = width
     invalidate()
   }
 
   override fun height(height: Constraint) {
-    hostView.updateLayoutParams {
-      this.height = when (height) {
-        Constraint.Wrap -> WRAP_CONTENT
-        Constraint.Fill -> MATCH_PARENT
-        else -> throw AssertionError()
-      }
-    }
+    this.height = height
     invalidate()
   }
 
   override fun margin(margin: Margin) {
-    hostView.rootNode.setMargin(YogaEdge.LEFT, density * margin.left)
-    hostView.rootNode.setMargin(YogaEdge.RIGHT, density * margin.right)
-    hostView.rootNode.setMargin(YogaEdge.TOP, density * margin.top)
-    hostView.rootNode.setMargin(YogaEdge.BOTTOM, density * margin.bottom)
+    yogaLayout.yogaNode.setPadding(YogaEdge.LEFT, density * margin.left)
+    yogaLayout.yogaNode.setPadding(YogaEdge.RIGHT, density * margin.right)
+    yogaLayout.yogaNode.setPadding(YogaEdge.TOP, density * margin.top)
+    yogaLayout.yogaNode.setPadding(YogaEdge.BOTTOM, density * margin.bottom)
     invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-    val oldScrollEnabled = scrollEnabled
-    scrollEnabled = overflow == Overflow.Scroll
-    invalidate(overflowChanged = oldScrollEnabled != scrollEnabled)
+//    hostView.scrollEnabled = when (overflow) {
+//      Overflow.Clip -> false
+//      Overflow.Scroll -> true
+//      else -> throw AssertionError()
+//    }
+    invalidate()
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -118,19 +112,19 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    hostView.rootNode.setAlignItems(when (alignItems) {
+    yogaLayout.yogaNode.alignItems = when (alignItems) {
       AlignItems.FlexStart -> YogaAlign.FLEX_START
       AlignItems.FlexEnd -> YogaAlign.FLEX_END
       AlignItems.Center -> YogaAlign.CENTER
       AlignItems.Baseline -> YogaAlign.BASELINE
       AlignItems.Stretch -> YogaAlign.STRETCH
       else -> throw AssertionError()
-    })
+    }
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    hostView.rootNode.setJustifyContent(when (justifyContent) {
+    yogaLayout.yogaNode.justifyContent = when (justifyContent) {
       JustifyContent.FlexStart -> YogaJustify.FLEX_START
       JustifyContent.FlexEnd -> YogaJustify.FLEX_END
       JustifyContent.Center -> YogaJustify.CENTER
@@ -138,34 +132,57 @@ internal class ViewFlexContainer(
       JustifyContent.SpaceAround -> YogaJustify.SPACE_AROUND
       JustifyContent.SpaceEvenly -> YogaJustify.SPACE_EVENLY
       else -> throw AssertionError()
-    })
+    }
     invalidate()
   }
 
-  private fun invalidate(overflowChanged: Boolean = false) {
-    if (overflowChanged) {
-      _value.updateViewHierarchy()
+  private fun applyLayoutParams() {
+    yogaLayout.updateLayoutParams {
+      width = MATCH_PARENT
+      height = WRAP_CONTENT
     }
-    value.invalidate()
-    value.requestLayout()
   }
 
-  private inner class Container : FrameLayout(context) {
+  private fun invalidate() {
+    applyLayoutParams()
+    for (i in 0 until yogaLayout.yogaNode.childCount) {
+      yogaLayout.yogaNode.getChildAt(i).dirty()
+    }
+    yogaLayout.invalidate()
+    yogaLayout.requestLayout()
+    hostView.invalidate()
+    hostView.requestLayout()
+  }
+
+  private inner class HostView : FrameLayout(context) {
+    var scrollEnabled = false
+      set(new) {
+        val old = field
+        field = new
+        if (old != new) {
+          updateViewHierarchy()
+        }
+      }
+
     init {
-      updateViewHierarchy()
+      //updateViewHierarchy()
+      setBackgroundColor(Color.GREEN)
+      yogaLayout.setBackgroundColor(Color.BLUE)
     }
 
-    fun updateViewHierarchy() {
+    private fun updateViewHierarchy() {
       removeAllViews()
-      hostView.parent?.let { (it as ViewGroup).removeView(hostView) }
+      (yogaLayout.parent as ViewGroup?)?.removeView(yogaLayout)
+
       if (scrollEnabled) {
-        addView(newScrollView().apply { addView(hostView) })
+        yogaLayout.yogaNode.overflow = YogaOverflow.SCROLL
+        addView(newScrollView().apply { addView(yogaLayout) })
       } else {
-        addView(hostView)
+        yogaLayout.yogaNode.overflow = YogaOverflow.VISIBLE
+        addView(yogaLayout)
       }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun newScrollView(): ViewGroup {
       return if (direction.isHorizontal) {
         HorizontalScrollView(context).apply {
