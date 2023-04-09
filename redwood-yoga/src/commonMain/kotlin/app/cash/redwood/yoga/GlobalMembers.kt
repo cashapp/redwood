@@ -16,13 +16,6 @@
 package app.cash.redwood.yoga
 
 import app.cash.redwood.yoga.YGStyle.BitfieldRef
-import app.cash.redwood.yoga.interfaces.YGBaselineFunc
-import app.cash.redwood.yoga.interfaces.YGCloneNodeFunc
-import app.cash.redwood.yoga.interfaces.YGDirtiedFunc
-import app.cash.redwood.yoga.interfaces.YGLogger
-import app.cash.redwood.yoga.interfaces.YGMeasureFunc
-import app.cash.redwood.yoga.interfaces.YGNodeCleanupFunc
-import app.cash.redwood.yoga.interfaces.YGPrintFunc
 import app.cash.redwood.yoga.detail.CompactValue
 import app.cash.redwood.yoga.detail.Log
 import app.cash.redwood.yoga.detail.RefObject
@@ -51,6 +44,11 @@ import app.cash.redwood.yoga.event.MeasureCallbackEndEventData
 import app.cash.redwood.yoga.event.NodeAllocationEventData
 import app.cash.redwood.yoga.event.NodeDeallocationEventData
 import app.cash.redwood.yoga.event.NodeLayoutEventData
+import app.cash.redwood.yoga.interfaces.YGBaselineFunc
+import app.cash.redwood.yoga.interfaces.YGDirtiedFunc
+import app.cash.redwood.yoga.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.interfaces.YGNodeCleanupFunc
+import app.cash.redwood.yoga.interfaces.YGPrintFunc
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.math.abs
@@ -396,16 +394,6 @@ object GlobalMembers {
     return node.getChildren().size
   }
 
-  fun YGNodeSetChildren(
-    owner: YGNode?,
-    c: Array<YGNode>,
-    count: Int?,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    val children = ArrayList(c.asList())
-    YGNodeSetChildrenInternal(owner, children)
-  }
-
   fun YGNodeSetIsReferenceBaseline(
     node: YGNode,
     isReferenceBaseline: Boolean,
@@ -691,10 +679,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGAlign::class,
-      alignItems,
-      { obj: YGStyle -> obj.alignItemsBitfieldRef() },
+      node = node,
+      enumClazz = YGAlign::class,
+      value = alignItems,
+      fieldRef = { obj: YGStyle -> obj.alignItemsBitfieldRef() },
     )
   }
 
@@ -704,10 +692,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGAlign::class,
-      alignSelf,
-      { obj: YGStyle -> obj.alignSelfBitfieldRef() },
+      node = node,
+      enumClazz = YGAlign::class,
+      value = alignSelf,
+      fieldRef = { obj: YGStyle -> obj.alignSelfBitfieldRef() },
     )
   }
 
@@ -717,10 +705,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGPositionType::class,
-      positionType,
-      { obj: YGStyle -> obj.positionTypeBitfieldRef() },
+      node = node,
+      enumClazz = YGPositionType::class,
+      value = positionType,
+      fieldRef = { obj: YGStyle -> obj.positionTypeBitfieldRef() },
     )
   }
 
@@ -730,10 +718,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGWrap::class,
-      flexWrap,
-      { obj: YGStyle -> obj.flexWrapBitfieldRef() },
+      node = node,
+      enumClazz = YGWrap::class,
+      value = flexWrap,
+      fieldRef = { obj: YGStyle -> obj.flexWrapBitfieldRef() },
     )
   }
 
@@ -743,10 +731,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGOverflow::class,
-      overflow,
-      { obj: YGStyle -> obj.overflowBitfieldRef() },
+      node = node,
+      enumClazz = YGOverflow::class,
+      value = overflow,
+      fieldRef = { obj: YGStyle -> obj.overflowBitfieldRef() },
     )
   }
 
@@ -756,10 +744,10 @@ object GlobalMembers {
   ) //Method definition originates from: Yoga.cpp
   {
     updateStyle(
-      node,
-      YGDisplay::class,
-      display,
-      { obj: YGStyle -> obj.displayBitfieldRef() },
+      node = node,
+      enumClazz = YGDisplay::class,
+      value = display,
+      fieldRef = { obj: YGStyle -> obj.displayBitfieldRef() },
     )
   }
 
@@ -815,7 +803,7 @@ object GlobalMembers {
           ygStyle!!.flexBasis(), `val`,
         )
       },
-    ) { ygStyle: YGStyle?, `val`: CompactValue? -> ygStyle!!.setFlexBasis(value) }
+    ) { ygStyle: YGStyle?, _: CompactValue? -> ygStyle!!.setFlexBasis(value) }
   }
 
   fun YGNodeStyleSetFlexBasisPercent(
@@ -832,7 +820,7 @@ object GlobalMembers {
           ygStyle!!.flexBasis(), `val`,
         )
       },
-    ) { ygStyle: YGStyle?, `val`: CompactValue? -> ygStyle!!.setFlexBasis(value) }
+    ) { ygStyle: YGStyle?, _: CompactValue? -> ygStyle!!.setFlexBasis(value) }
   }
 
   fun YGNodeStyleSetFlexBasisAuto(node: YGNode) //Method definition originates from: Yoga.cpp
@@ -845,7 +833,7 @@ object GlobalMembers {
           ygStyle!!.flexBasis(), `val`,
         )
       },
-    ) { ygStyle: YGStyle?, `val`: CompactValue? -> ygStyle!!.setFlexBasis(value) }
+    ) { ygStyle: YGStyle?, _: CompactValue? -> ygStyle!!.setFlexBasis(value) }
   }
 
   fun YGNodeStyleSetPosition(
@@ -916,7 +904,7 @@ object GlobalMembers {
   ) {
     updateStyle(
       node, value,
-      { ygStyle: YGStyle?, `val`: CompactValue ->
+      { _: YGStyle?, `val`: CompactValue ->
         !CompactValue.equalsTo(
           values.invoke(node.getStyle()).getCompactValue(
             edge!!.ordinal,
@@ -924,7 +912,7 @@ object GlobalMembers {
           `val`,
         )
       },
-    ) { ygStyle: YGStyle?, `val`: CompactValue? ->
+    ) { _: YGStyle?, _: CompactValue? ->
       values.invoke(node.getStyle())[edge!!.ordinal] = value
     }
   }
@@ -1262,10 +1250,10 @@ object GlobalMembers {
     updateStyle(
       node,
       value,
-      { ygStyle: YGStyle, newVal: T ->
+      { _: YGStyle, newVal: T ->
         fieldRef.invoke(node.getStyle()).getValue(enumClazz) !== newVal
       },
-    ) { ygStyle: YGStyle, newVal: T -> fieldRef.invoke(node.getStyle()).setValue(newVal) }
+    ) { _: YGStyle, newVal: T -> fieldRef.invoke(node.getStyle()).setValue(newVal) }
   }
 
   fun <T> updateStyle(
@@ -1518,8 +1506,7 @@ object GlobalMembers {
       node.setDirty(false)
     }
     layout.generationCount = generationCount
-    val layoutType: LayoutType
-    layoutType = if (performLayout) {
+    val layoutType = if (performLayout) {
       if (!needToVisitNode && cachedResults === layout.cachedLayout) LayoutType.kCachedLayout else LayoutType.kLayout
     } else {
       if (cachedResults != null) LayoutType.kCachedMeasure else LayoutType.kMeasure
@@ -1630,9 +1617,7 @@ object GlobalMembers {
 
   fun YGNodeIsStyleDimDefined(node: YGNode, axis: YGFlexDirection, ownerSize: Float): Boolean {
     val resolvedDimension = node.getResolvedDimension(dim[axis.ordinal].ordinal)
-    val isUndefined = YGFloatIsUndefined(
-      resolvedDimension!!.value,
-    )
+    val isUndefined = YGFloatIsUndefined(resolvedDimension!!.value)
     val isAutoUnit = resolvedDimension.unit == YGUnit.YGUnitAuto
     val isUndefinedUnit = resolvedDimension.unit == YGUnit.YGUnitUndefined
     val isPointUnit = resolvedDimension.unit == YGUnit.YGUnitPoint
@@ -1678,18 +1663,14 @@ object GlobalMembers {
     }
     if (greaterThanOrEqualTo(
         max,
-        YGFloatOptional(
-          0f,
-        ),
+        YGFloatOptional(0f),
       ) && greaterThan(value, max)
     ) {
       return max
     }
     return if (greaterThanOrEqualTo(
         min,
-        YGFloatOptional(
-          0f,
-        ),
+        YGFloatOptional(0f),
       ) && lessThan(value, min)
     ) {
       min

@@ -36,7 +36,7 @@ import app.cash.redwood.yoga.detail.Values
 
 class YGNode {
   private var context_: Any? = null
-  private var flags: MutableMap<Any?, Any> = mutableMapOf()
+  private var flags = mutableMapOf<Any?, Any>()
   private var reserved_: Byte = 0
   private var measure_ = measure_Struct()
   private var baseline_ = baseline_Struct()
@@ -47,9 +47,8 @@ class YGNode {
   private var lineIndex_ = 0
   private var owner_: YGNode? = null
   private var children_ = mutableListOf<YGNode>()
-  private var config_: YGConfig? = YGConfig(null)
-  private var resolvedDimensions_ =
-    mutableListOf(GlobalMembers.YGValueUndefined, GlobalMembers.YGValueUndefined)
+  private var config_: YGConfig? = YGConfig()
+  private var resolvedDimensions_ = MutableList(2) { GlobalMembers.YGValueUndefined }
 
   constructor(node: YGNode) {
     context_ = node.context_
@@ -778,7 +777,7 @@ class YGNode {
         flags,
         useWebDefaults_,
       )
-    config_ = YGConfig(null)
+    config_ = YGConfig()
     if (webDefaults) {
       useWebDefaults()
     }
