@@ -1675,7 +1675,7 @@ object GlobalMembers {
     enabled: Boolean,
   ) //Method definition originates from: Yoga.cpp
   {
-    config.experimentalFeatures[feature.getValue()] = enabled
+    config.experimentalFeatures[feature.ordinal] = enabled
   }
 
   fun YGConfigIsExperimentalFeatureEnabled(
@@ -1683,7 +1683,7 @@ object GlobalMembers {
     feature: YGExperimentalFeature,
   ): Boolean //Method definition originates from: Yoga.cpp
   {
-    return config.experimentalFeatures[feature.getValue()]
+    return config.experimentalFeatures[feature.ordinal]
   }
 
   fun YGConfigSetUseWebDefaults(
