@@ -29,9 +29,7 @@ class YGLayout {
   var generationCount = 0
   var lastOwnerDirection = YGDirection.YGDirectionInherit
   var nextCachedMeasurementsIndex = 0
-  val cachedMeasurements = ArrayList<YGCachedMeasurement>(YG_MAX_CACHED_RESULT_COUNT).apply {
-    repeat(YG_MAX_CACHED_RESULT_COUNT) { add(YGCachedMeasurement()) }
-  }
+  val cachedMeasurements = MutableList(YG_MAX_CACHED_RESULT_COUNT) { YGCachedMeasurement() }
   val measuredDimensions = arrayListOf(GlobalMembers.YGUndefined, GlobalMembers.YGUndefined)
   val cachedLayout = YGCachedMeasurement()
 
@@ -99,35 +97,6 @@ class YGLayout {
       hadOverflowOffset,
       hadOverflow,
     )
-  }
-
-  fun equalsTo(layout: YGLayout): Boolean {
-    var isEqual = GlobalMembers.YGFloatArrayEqual(position, layout.position) &&
-      GlobalMembers.YGFloatArrayEqual(dimensions, layout.dimensions) &&
-      GlobalMembers.YGFloatArrayEqual(margin, layout.margin) &&
-      GlobalMembers.YGFloatArrayEqual(border, layout.border) &&
-      GlobalMembers.YGFloatArrayEqual(padding, layout.padding) &&
-      direction() == layout.direction() &&
-      hadOverflow() == layout.hadOverflow() &&
-      lastOwnerDirection == layout.lastOwnerDirection &&
-      nextCachedMeasurementsIndex == layout.nextCachedMeasurementsIndex &&
-      cachedLayout.equalsTo(layout.cachedLayout) &&
-      computedFlexBasis == layout.computedFlexBasis
-    var i = 0
-    while (i < YG_MAX_CACHED_RESULT_COUNT && isEqual) {
-      //TODO: Verify if this is correct
-      isEqual = cachedMeasurements[i].equalsTo(layout.cachedMeasurements[i])
-      ++i
-    }
-    if (!GlobalMembers.isUndefined(measuredDimensions[0]) ||
-      !GlobalMembers.isUndefined(layout.measuredDimensions[0])) {
-      isEqual = isEqual && measuredDimensions[0] == layout.measuredDimensions[0]
-    }
-    if (!GlobalMembers.isUndefined(measuredDimensions[1]) ||
-      !GlobalMembers.isUndefined(layout.measuredDimensions[1])) {
-      isEqual = isEqual && measuredDimensions[1] == layout.measuredDimensions[1]
-    }
-    return isEqual
   }
 
   companion object {

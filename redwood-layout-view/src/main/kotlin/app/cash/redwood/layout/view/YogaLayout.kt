@@ -101,7 +101,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
         node = rootNode,
         ownerWidth = Float.NaN,
         ownerHeight = Float.NaN,
-        ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode),
+        ownerDirection = rootNode.getStyle().direction(),
         layoutContext = null,
       )
     }
@@ -161,7 +161,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       node = rootNode,
       ownerWidth = Float.NaN,
       ownerHeight = Float.NaN,
-      ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode),
+      ownerDirection = rootNode.getStyle().direction(),
       layoutContext = null,
     )
   }

@@ -17,8 +17,7 @@ package app.cash.redwood.yoga
 
 import app.cash.redwood.yoga.enums.YGUnit
 
-/** Type originates from: YGValue.h */
 data class YGValue(
-  var value: Float,
+  val value: Float,
   val unit: YGUnit,
 )

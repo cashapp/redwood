@@ -89,12 +89,11 @@ object GlobalMembers {
     if (a.unit != b.unit) {
       return false
     }
-    return if (a.unit == YGUnit.YGUnitUndefined || isUndefined(
-        a.value,
-      ) && isUndefined(b.value)
-    ) {
+    return if (a.unit == YGUnit.YGUnitUndefined || isUndefined(a.value) && isUndefined(b.value)) {
       true
-    } else abs(a.value - b.value) < 0.0001f
+    } else {
+      abs(a.value - b.value) < 0.0001f
+    }
   }
 
   fun YGValueEqual(a: CompactValue, b: CompactValue): Boolean {
@@ -103,26 +102,20 @@ object GlobalMembers {
 
   fun YGFloatsEqual(a: Float, b: Float): Boolean //Method definition originates from: Utils.cpp
   {
-    return if (!isUndefined(a) && !isUndefined(
-        b,
-      )
-    ) {
+    return if (!isUndefined(a) && !isUndefined(b)) {
       abs(a - b) < 0.0001f
-    } else isUndefined(a) && isUndefined(
-      b,
-    )
+    } else {
+      isUndefined(a) && isUndefined(b)
+    }
   }
 
   fun YGDoubleEqual(a: Double, b: Double): Boolean //Method definition originates from: Utils.cpp
   {
-    return if (!isUndefined(a) && !isUndefined(
-        b,
-      )
-    ) {
+    return if (!isUndefined(a) && !isUndefined(b)) {
       abs(a - b) < 0.0001
-    } else isUndefined(a) && isUndefined(
-      b,
-    )
+    } else {
+      isUndefined(a) && isUndefined(b)
+    }
   }
 
   fun YGFloatMax(a: Float, b: Float): Float //Method definition originates from: Utils.cpp
@@ -250,7 +243,6 @@ object GlobalMembers {
   fun YGNodeNewWithConfig(config: YGConfig?): YGNode //Method definition originates from: Yoga.cpp
   {
     val node = YGNode(config!!)
-    YGAssertWithConfig(config, node != null, "Could not allocate memory for node")
     Event.publish(node, NodeAllocationEventData(config))
     return node
   }
@@ -258,7 +250,6 @@ object GlobalMembers {
   fun YGNodeClone(oldNode: YGNode): YGNode //Method definition originates from: Yoga.cpp
   {
     val node = YGNode(oldNode)
-    YGAssertWithConfig(oldNode.getConfig(), node != null, "Could not allocate memory for node")
     Event.publish(node, NodeAllocationEventData(node.getConfig()))
     node.setOwner(null)
     return node
@@ -619,7 +610,7 @@ object GlobalMembers {
     node.setHasNewLayout(hasNewLayout)
   }
 
-  fun YGNodeGetNodeType(node: YGNode): YGNodeType? //Method definition originates from: Yoga.cpp
+  fun YGNodeGetNodeType(node: YGNode): YGNodeType //Method definition originates from: Yoga.cpp
   {
     return node.getNodeType()
   }
@@ -888,7 +879,7 @@ object GlobalMembers {
   fun YGNodeStyleGetPosition(
     node: YGNode,
     edge: YGEdge,
-  ): YGValue? //Method definition originates from: Yoga.cpp
+  ): YGValue //Method definition originates from: Yoga.cpp
   {
     return node.getStyle().position()[edge.ordinal]
   }
@@ -938,40 +929,6 @@ object GlobalMembers {
     }
   }
 
-  fun YGNodeStyleSetMarginPercent(
-    node: YGNode,
-    edge: YGEdge,
-    percent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      edge,
-      percent,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.margin() }
-  }
-
-  fun YGNodeStyleSetMarginAuto(
-    node: YGNode,
-    edge: YGEdge,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      edge,
-      CompactValue.ofAuto(),
-    ) { obj: YGStyle? -> obj!!.margin() }
-  }
-
-  fun YGNodeStyleGetMargin(
-    node: YGNode,
-    edge: YGEdge,
-  ): YGValue //Method definition originates from: Yoga.cpp
-  {
-    return node.getStyle().margin()[edge.ordinal]
-  }
-
   fun YGNodeStyleSetPadding(
     node: YGNode,
     edge: YGEdge,
@@ -984,28 +941,6 @@ object GlobalMembers {
       points,
       YGUnit.YGUnitPoint,
     ) { obj: YGStyle? -> obj!!.padding() }
-  }
-
-  fun YGNodeStyleSetPaddingPercent(
-    node: YGNode,
-    edge: YGEdge,
-    percent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      edge,
-      percent,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.padding() }
-  }
-
-  fun YGNodeStyleGetPadding(
-    node: YGNode,
-    edge: YGEdge,
-  ): YGValue //Method definition originates from: Yoga.cpp
-  {
-    return node.getStyle().padding()[edge.ordinal]
   }
 
   fun YGNodeStyleSetBorder(
@@ -1035,33 +970,6 @@ object GlobalMembers {
     ) { obj: YGStyle? -> obj!!.dimensions() }
   }
 
-  fun YGNodeStyleSetWidthPercent(
-    node: YGNode,
-    percent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionWidth,
-      percent,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.dimensions() }
-  }
-
-  fun YGNodeStyleSetWidthAuto(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionWidth,
-      CompactValue.ofAuto(),
-    ) { obj: YGStyle? -> obj!!.dimensions() }
-  }
-
-  fun YGNodeStyleGetWidth(node: YGNode): YGValue //Method definition originates from: Yoga.cpp
-  {
-    return node.getStyle().dimensions()[YGDimension.YGDimensionWidth.ordinal]
-  }
-
   fun YGNodeStyleSetHeight(
     node: YGNode,
     points: Float,
@@ -1075,33 +983,6 @@ object GlobalMembers {
     ) { obj: YGStyle? -> obj!!.dimensions() }
   }
 
-  fun YGNodeStyleSetHeightPercent(
-    node: YGNode,
-    percent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionHeight,
-      percent,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.dimensions() }
-  }
-
-  fun YGNodeStyleSetHeightAuto(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionHeight,
-      CompactValue.ofAuto(),
-    ) { obj: YGStyle? -> obj!!.dimensions() }
-  }
-
-  fun YGNodeStyleGetHeight(node: YGNode): YGValue? //Method definition originates from: Yoga.cpp
-  {
-    return node.getStyle().dimensions()[YGDimension.YGDimensionHeight.ordinal]
-  }
-
   fun YGNodeStyleSetMinWidth(
     node: YGNode,
     minWidth: Float,
@@ -1112,19 +993,6 @@ object GlobalMembers {
       YGDimension.YGDimensionWidth,
       minWidth,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle? -> obj!!.minDimensions() }
-  }
-
-  fun YGNodeStyleSetMinWidthPercent(
-    node: YGNode,
-    minWidth: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionWidth,
-      minWidth,
-      YGUnit.YGUnitPercent,
     ) { obj: YGStyle? -> obj!!.minDimensions() }
   }
 
@@ -1141,19 +1009,6 @@ object GlobalMembers {
     ) { obj: YGStyle? -> obj!!.minDimensions() }
   }
 
-  fun YGNodeStyleSetMinHeightPercent(
-    node: YGNode,
-    minHeight: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionHeight,
-      minHeight,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.minDimensions() }
-  }
-
   fun YGNodeStyleSetMaxWidth(
     node: YGNode,
     maxWidth: Float,
@@ -1164,19 +1019,6 @@ object GlobalMembers {
       YGDimension.YGDimensionWidth,
       maxWidth,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle? -> obj!!.maxDimensions() }
-  }
-
-  fun YGNodeStyleSetMaxWidthPercent(
-    node: YGNode,
-    maxWidth: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionWidth,
-      maxWidth,
-      YGUnit.YGUnitPercent,
     ) { obj: YGStyle? -> obj!!.maxDimensions() }
   }
 
@@ -1191,34 +1033,6 @@ object GlobalMembers {
       maxHeight,
       YGUnit.YGUnitPoint,
     ) { obj: YGStyle? -> obj!!.maxDimensions() }
-  }
-
-  fun YGNodeStyleSetMaxHeightPercent(
-    node: YGNode,
-    maxHeight: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyleIndexed(
-      node,
-      YGDimension.YGDimensionHeight,
-      maxHeight,
-      YGUnit.YGUnitPercent,
-    ) { obj: YGStyle? -> obj!!.maxDimensions() }
-  }
-
-  // YGValue YGNodeStyleGetMaxHeight(YGNode node);
-  fun YGNodeStyleSetAspectRatio(
-    node: YGNode,
-    aspectRatio: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    updateStyle(
-      node,
-      aspectRatio,
-      { ygStyle: YGStyle?, `val`: Float ->
-        `val` != ygStyle!!.aspectRatio().unwrap()
-      },
-    ) { ygStyle: YGStyle?, `val`: Float -> ygStyle!!.setAspectRatio(YGFloatOptional(`val`)) }
   }
 
   fun YGNodeLayoutGetLeft(node: YGNode): Float //Method definition originates from: Yoga.cpp
@@ -1249,126 +1063,6 @@ object GlobalMembers {
   fun YGNodeLayoutGetHeight(node: YGNode): Float //Method definition originates from: Yoga.cpp
   {
     return node.getLayout()!!.dimensions[YGDimension.YGDimensionHeight.ordinal]
-  }
-
-  fun YGNodeLayoutGetDirection(node: YGNode): YGDirection? //Method definition originates from: Yoga.cpp
-  {
-    return node.getLayout()!!.direction()
-  }
-
-  fun YGNodeLayoutGetHadOverflow(node: YGNode): Boolean //Method definition originates from: Yoga.cpp
-  {
-    return node.getLayout()!!.hadOverflow()
-  }
-
-  fun YGNodeLayoutGetDidLegacyStretchFlagAffectLayout(node: YGNode): Boolean //Method definition originates from: Yoga.cpp
-  {
-    return node.getLayout()!!.doesLegacyStretchFlagAffectsLayout()
-  }
-
-  fun YGNodeLayoutGetMargin(
-    node: YGNode,
-    edge: YGEdge,
-  ): Float //Method definition originates from: Yoga.cpp
-  {
-    YGAssertWithNode(
-      node, edge.ordinal <= YGEdge.YGEdgeEnd.ordinal,
-      "Cannot get layout properties of multi-edge shorthands",
-    )
-    if (edge == YGEdge.YGEdgeStart) {
-      return if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.margin[YGEdge.YGEdgeRight.ordinal]
-      } else {
-        node.getLayout()!!.margin[YGEdge.YGEdgeLeft.ordinal]
-      }
-    }
-    return if (edge == YGEdge.YGEdgeEnd) {
-      if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.margin[YGEdge.YGEdgeLeft.ordinal]
-      } else {
-        node.getLayout()!!.margin[YGEdge.YGEdgeRight.ordinal]
-      }
-    } else node.getLayout()!!.margin[edge.ordinal]
-  }
-
-  fun YGNodeLayoutGetBorder(
-    node: YGNode,
-    edge: YGEdge,
-  ): Float //Method definition originates from: Yoga.cpp
-  {
-    YGAssertWithNode(
-      node, edge.ordinal <= YGEdge.YGEdgeEnd.ordinal,
-      "Cannot get layout properties of multi-edge shorthands",
-    )
-    if (edge == YGEdge.YGEdgeStart) {
-      return if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.border[YGEdge.YGEdgeRight.ordinal]
-      } else {
-        node.getLayout()!!.border[YGEdge.YGEdgeLeft.ordinal]
-      }
-    }
-    return if (edge == YGEdge.YGEdgeEnd) {
-      if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.border[YGEdge.YGEdgeLeft.ordinal]
-      } else {
-        node.getLayout()!!.border[YGEdge.YGEdgeRight.ordinal]
-      }
-    } else node.getLayout()!!.border[edge.ordinal]
-  }
-
-  fun YGNodeLayoutGetPadding(
-    node: YGNode,
-    edge: YGEdge,
-  ): Float //Method definition originates from: Yoga.cpp
-  {
-    YGAssertWithNode(
-      node, edge.ordinal <= YGEdge.YGEdgeEnd.ordinal,
-      "Cannot get layout properties of multi-edge shorthands",
-    )
-    if (edge == YGEdge.YGEdgeStart) {
-      return if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.padding[YGEdge.YGEdgeRight.ordinal]
-      } else {
-        node.getLayout()!!.padding[YGEdge.YGEdgeLeft.ordinal]
-      }
-    }
-    return if (edge == YGEdge.YGEdgeEnd) {
-      if (node.getLayout()!!.direction() == YGDirection.YGDirectionRTL) {
-        node.getLayout()!!.padding[YGEdge.YGEdgeLeft.ordinal]
-      } else {
-        node.getLayout()!!.padding[YGEdge.YGEdgeRight.ordinal]
-      }
-    } else node.getLayout()!!.padding[edge.ordinal]
-  }
-
-  fun YGConfigSetLogger(
-    config: YGConfig,
-    logger: YGLogger?,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.setLogger(
-      logger ?: YGLogger { ygConfig, ygNode, ygLogLevel, format, args ->
-        YGDefaultLog(
-          ygConfig,
-          ygNode,
-          ygLogLevel,
-          format,
-          *args,
-        )
-      },
-    )
-  }
-
-  @OptIn(ExperimentalContracts::class)
-  fun YGAssert(condition: Boolean, message: String?) //Method definition originates from: Yoga.cpp
-  {
-    contract {
-      returns() implies condition
-    }
-    if (!condition) {
-      Log.log(null as YGNode?, YGLogLevel.YGLogLevelFatal, null, "%s\n", message)
-      throw RuntimeException(message)
-    }
   }
 
   @OptIn(ExperimentalContracts::class)
@@ -1403,39 +1097,6 @@ object GlobalMembers {
     }
   }
 
-  fun YGConfigSetPointScaleFactor(
-    config: YGConfig,
-    pixelsInPoint: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    YGAssertWithConfig(
-      config,
-      pixelsInPoint >= 0.0f,
-      "Scale factor should not be less than zero",
-    )
-    if (pixelsInPoint == 0.0f) {
-      config.pointScaleFactor = 0.0f
-    } else {
-      config.pointScaleFactor = pixelsInPoint
-    }
-  }
-
-  fun YGConfigSetShouldDiffLayoutWithoutLegacyStretchBehaviour(
-    config: YGConfig,
-    shouldDiffLayout: Boolean,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.shouldDiffLayoutWithoutLegacyStretchBehaviour = shouldDiffLayout
-  }
-
-  fun YGConfigSetUseLegacyStretchBehaviour(
-    config: YGConfig,
-    useLegacyStretchBehaviour: Boolean,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.useLegacyStretchBehaviour = useLegacyStretchBehaviour
-  }
-
   fun YGConfigNew(): YGConfig //Method definition originates from: Yoga.cpp
   {
     val config =
@@ -1457,56 +1118,10 @@ object GlobalMembers {
     gConfigInstanceCount--
   }
 
-  fun YGConfigCopy(dest: YGConfig?, src: YGConfig?) //Method definition originates from: Yoga.cpp
-  {
-    //memcpy(dest, src, sizeof(YGConfig));
-    //TODO: Implement copy
-    throw UnsupportedOperationException("Not implemented")
-  }
-
-  fun YGConfigGetInstanceCount(): Int //Method definition originates from: Yoga.cpp
-  {
-    return gConfigInstanceCount
-  }
-
-  fun YGConfigSetUseWebDefaults(
-    config: YGConfig,
-    enabled: Boolean,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.useWebDefaults = enabled
-  }
-
-  fun YGConfigGetUseWebDefaults(config: YGConfig): Boolean //Method definition originates from: Yoga.cpp
-  {
-    return config.useWebDefaults
-  }
-
-  fun YGConfigSetCloneNodeFunc(
-    config: YGConfig,
-    callback: YGCloneNodeFunc?,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.setCloneNodeCallback(callback)
-  }
-
   fun YGConfigGetDefault(): YGConfig //Method definition originates from: Yoga.cpp
   {
     //   static struct YGConfig* defaultConfig = YGConfigNew();
     return defaultConfig
-  }
-
-  fun YGConfigSetContext(
-    config: YGConfig,
-    context: Any?,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.context = context
-  }
-
-  fun YGConfigGetContext(config: YGConfig): Any? //Method definition originates from: Yoga.cpp
-  {
-    return config.context
   }
 
   fun YGRoundValueToPixelGrid(
@@ -1629,7 +1244,7 @@ object GlobalMembers {
       if (YGNodeGetChildCount(owner) > 0) {
         for (oldChild in owner.getChildren()) {
 
-//TODO: What is this??
+          //TODO: What is this??
           //if (std::find (children.iterator(), children.end(), oldChild) ==children.end())
           //{
           //oldChild.setLayout(YGLayout());
@@ -1644,24 +1259,6 @@ object GlobalMembers {
       }
       owner.markDirtyAndPropogate()
     }
-  }
-
-  fun YGNodeSetChildren(owner: YGNode?, children: ArrayList<YGNode>) {
-    YGNodeSetChildrenInternal(owner, children)
-  }
-
-  fun YGNodeStyleGetFlexGrow(node: YGNode): Float {
-    return if (node.getStyle()
-        .flexGrow().isUndefined()
-    ) kDefaultFlexGrow else node.getStyle()
-      .flexGrow().unwrap()
-  }
-
-  fun YGNodeStyleGetFlexShrink(node: YGNode): Float {
-    return if (node.getStyle().flexShrink()
-        .isUndefined()
-    ) (if (node.getConfig() != null && node.getConfig()!!.useWebDefaults) kWebDefaultFlexShrink else kDefaultFlexShrink) else node.getStyle()
-      .flexShrink().unwrap()
   }
 
   fun <T : Enum<T>> updateStyle(
@@ -1689,89 +1286,6 @@ object GlobalMembers {
       update.invoke(node.getStyle(), value)
       node.markDirtyAndPropogate()
     }
-  }
-
-  fun YGNodeStyleGetDirection(node: YGNode): YGDirection {
-    return node.getStyle().direction()
-  }
-
-  fun YGNodeStyleGetFlexDirection(node: YGNode): YGFlexDirection {
-    return node.getStyle().flexDirection()
-  }
-
-  fun YGNodeStyleGetJustifyContent(node: YGNode): YGJustify {
-    return node.getStyle().justifyContent()
-  }
-
-  fun YGNodeStyleGetAlignContent(node: YGNode): YGAlign {
-    return node.getStyle().alignContent()
-  }
-
-  fun YGNodeStyleGetAlignItems(node: YGNode): YGAlign {
-    return node.getStyle().alignItems()
-  }
-
-  fun YGNodeStyleGetAlignSelf(node: YGNode): YGAlign {
-    return node.getStyle().alignSelf()
-  }
-
-  fun YGNodeStyleGetPositionType(node: YGNode): YGPositionType {
-    return node.getStyle().positionType()
-  }
-
-  fun YGNodeStyleGetFlexWrap(node: YGNode): YGWrap {
-    return node.getStyle().flexWrap()
-  }
-
-  fun YGNodeStyleGetOverflow(node: YGNode): YGOverflow {
-    return node.getStyle().overflow()
-  }
-
-  fun YGNodeStyleGetDisplay(node: YGNode): YGDisplay {
-    return node.getStyle().display()
-  }
-
-  fun YGNodeStyleGetFlex(node: YGNode): Float {
-    return if (node.getStyle()
-        .flex().isUndefined()
-    ) YGUndefined else node.getStyle()
-      .flex().unwrap()
-  }
-
-  fun YGNodeStyleGetFlexBasis(node: YGNode): YGValue? {
-    val flexBasis = node.getStyle().flexBasis().convertToYgValue()
-    if (flexBasis.unit == YGUnit.YGUnitUndefined || flexBasis.unit == YGUnit.YGUnitAuto) {
-      flexBasis.value = YGUndefined
-    }
-    return flexBasis
-  }
-
-  fun YGNodeStyleGetBorder(node: YGNode, edge: YGEdge): Float {
-    val border = node.getStyle().border().getCompactValue(edge.ordinal)
-    return if (border.isUndefined() || border.isAuto()) {
-      YGUndefined
-    } else border.convertToYgValue().value
-  }
-
-  fun YGNodeStyleGetAspectRatio(node: YGNode): Float {
-    val op = node.getStyle().aspectRatio()
-    return if (op.isUndefined()) YGUndefined else op.unwrap()
-  }
-
-  fun YGNodeStyleGetMinWidth(node: YGNode): YGValue? {
-    return node.getStyle().minDimensions()[YGDimension.YGDimensionWidth.ordinal]
-  }
-
-  fun YGNodeStyleGetMinHeight(node: YGNode): YGValue? {
-    return node.getStyle().minDimensions()[YGDimension.YGDimensionHeight.ordinal]
-  }
-
-  fun YGNodeStyleGetMaxWidth(node: YGNode): YGValue? {
-    return node.getStyle().maxDimensions()[YGDimension.YGDimensionWidth.ordinal]
-  }
-
-  fun YGNodeStyleGetMaxHeight(node: YGNode): YGValue? {
-    return node.getStyle().maxDimensions()[YGDimension.YGDimensionHeight.ordinal]
   }
 
   fun YGLayoutNodeInternal(
@@ -3041,8 +2555,7 @@ object GlobalMembers {
       ) {
         flexShrinkScaledFactor = -currentRelativeChild.resolveFlexShrink() * childFlexBasis
         if (flexShrinkScaledFactor != 0f) {
-          var childSize: Float
-          childSize = if (!YGFloatIsUndefined(
+          val childSize = if (!YGFloatIsUndefined(
               collectedFlexItemsValues.totalFlexShrinkScaledFactors,
             ) && collectedFlexItemsValues.totalFlexShrinkScaledFactors == 0f
           ) {
@@ -3715,7 +3228,7 @@ object GlobalMembers {
 
     // Max main dimension of all the lines.
     var maxLineMainDim = 0f
-    var collectedFlexItemsValues = YGCollectFlexItemsRowValues()
+    var collectedFlexItemsValues: YGCollectFlexItemsRowValues
     while (endOfLineIndex < childCount) {
       collectedFlexItemsValues = YGCalculateCollectFlexItemsRowValues(
         node, ownerDirection, mainAxisownerSize,
