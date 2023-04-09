@@ -21,7 +21,7 @@ import app.cash.redwood.yoga.interfaces.LogWithContextFn
 import app.cash.redwood.yoga.interfaces.YGCloneNodeFunc
 import app.cash.redwood.yoga.interfaces.YGLogger
 
-class YGConfig(logger: YGLogger?) {
+class YGConfig {
   private val logger_struct = logger_Struct()
   var useWebDefaults = false
   var useLegacyStretchBehaviour = false
@@ -32,10 +32,6 @@ class YGConfig(logger: YGLogger?) {
   private var cloneNodeCallback_struct = cloneNodeCallback_Struct()
   private var cloneNodeUsesContext_ = false
   private var loggerUsesContext_ = false
-
-  init {
-    logger_struct.noContext = logger
-  }
 
   fun log(
     config: YGConfig?,

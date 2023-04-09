@@ -1099,16 +1099,8 @@ object GlobalMembers {
 
   fun YGConfigNew(): YGConfig //Method definition originates from: Yoga.cpp
   {
-    val config =
-      YGConfig { ygConfig, ygNode, ygLogLevel, format, args ->
-        YGDefaultLog(
-          ygConfig,
-          ygNode,
-          ygLogLevel,
-          format,
-          *args,
-        )
-      }
+    val config = YGConfig()
+    config.setLogger(::YGDefaultLog)
     gConfigInstanceCount++
     return config
   }
