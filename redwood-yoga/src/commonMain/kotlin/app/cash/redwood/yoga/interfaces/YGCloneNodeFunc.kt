@@ -4,7 +4,7 @@ import app.cash.redwood.yoga.YGNode
 
 fun interface YGCloneNodeFunc {
   operator fun invoke(
-    oldNode: YGNode,
+    node: YGNode,
     owner: YGNode?,
     childIndex: Int,
   ): YGNode

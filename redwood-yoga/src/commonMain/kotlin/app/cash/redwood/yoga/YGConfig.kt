@@ -17,11 +17,12 @@ package app.cash.redwood.yoga
 
 import app.cash.redwood.yoga.enums.YGExperiment
 import app.cash.redwood.yoga.enums.YGLogLevel
+import app.cash.redwood.yoga.interfaces.CloneWithContextFn
+import app.cash.redwood.yoga.interfaces.LogWithContextFn
 import app.cash.redwood.yoga.interfaces.YGCloneNodeFunc
 import app.cash.redwood.yoga.interfaces.YGLogger
 
-class YGConfig(logger: YGLogger?) //Type originates from: YGConfig.h
-{
+class YGConfig(logger: YGLogger?) {
     private val logger_struct = logger_Struct()
     var useWebDefaults = false
     var useLegacyStretchBehaviour = false
@@ -34,8 +35,7 @@ class YGConfig(logger: YGLogger?) //Type originates from: YGConfig.h
     private var cloneNodeUsesContext_ = false
     private var loggerUsesContext_: Boolean
 
-    init  //Method definition originates from: YGConfig.cpp
-    {
+    init {
         cloneNodeCallback_struct = null
         logger_struct.noContext = logger
         loggerUsesContext_ = false
@@ -51,8 +51,7 @@ class YGConfig(logger: YGLogger?) //Type originates from: YGConfig.h
       logContext: Any?,
       format: String,
       vararg args: Any?
-    ) //Method definition originates from: YGConfig.cpp
-    {
+    ) {
         if (loggerUsesContext_) {
             logger_struct.withContext!!.invoke(config, node, logLevel, logContext, format, *args)
         } else {
@@ -84,10 +83,20 @@ class YGConfig(logger: YGLogger?) //Type originates from: YGConfig.h
     {
         var clone: YGNode? = null
         if (cloneNodeCallback_struct!!.noContext != null) {
-            clone = if (cloneNodeUsesContext_) cloneNodeCallback_struct!!.withContext!!.invoke(
-                node, owner, childIndex,
-                cloneContext
-            ) else cloneNodeCallback_struct!!.noContext!!.invoke(node, owner, childIndex)
+            clone = if (cloneNodeUsesContext_) {
+              cloneNodeCallback_struct!!.withContext!!.invoke(
+                node = node,
+                owner = owner,
+                childIndex = childIndex,
+                cloneContext = cloneContext,
+              )
+            } else {
+              cloneNodeCallback_struct!!.noContext!!.invoke(
+                node = node,
+                owner = owner,
+                childIndex = childIndex
+              )
+            }
         }
         if (clone == null) {
             clone = GlobalMembers.YGNodeClone(node)
@@ -108,26 +117,6 @@ class YGConfig(logger: YGLogger?) //Type originates from: YGConfig.h
     fun setCloneNodeCallback() {
         cloneNodeCallback_struct!!.noContext = null
         cloneNodeUsesContext_ = false
-    }
-
-    fun interface LogWithContextFn {
-        operator fun invoke(
-          config: YGConfig?,
-          node: YGNode?,
-          level: YGLogLevel?,
-          context: Any?,
-          format: String?,
-          vararg args: Any?
-        ): Int
-    }
-
-    fun interface CloneWithContextFn {
-        operator fun invoke(
-          node: YGNode?,
-          owner: YGNode?,
-          childIndex: Int,
-          cloneContext: Any?
-        ): YGNode
     }
 
     internal class cloneNodeCallback_Struct {

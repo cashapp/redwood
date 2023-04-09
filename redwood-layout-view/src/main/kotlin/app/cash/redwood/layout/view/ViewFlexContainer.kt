@@ -59,7 +59,7 @@ internal class ViewFlexContainer(
     )
   }
   private val hostView = HostView()
-  override val value: View get() = yogaLayout
+  override val value: View get() = hostView
 
   override val children = ViewGroupChildren(yogaLayout)
   override var layoutModifiers: LayoutModifier = LayoutModifier
