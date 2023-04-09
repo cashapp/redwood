@@ -1908,43 +1908,43 @@ object GlobalMembers {
     }
   }
 
-  fun YGNodeStyleGetDirection(node: YGNode): YGDirection? {
+  fun YGNodeStyleGetDirection(node: YGNode): YGDirection {
     return node.getStyle().direction()
   }
 
-  fun YGNodeStyleGetFlexDirection(node: YGNode): YGFlexDirection? {
+  fun YGNodeStyleGetFlexDirection(node: YGNode): YGFlexDirection {
     return node.getStyle().flexDirection()
   }
 
-  fun YGNodeStyleGetJustifyContent(node: YGNode): YGJustify? {
+  fun YGNodeStyleGetJustifyContent(node: YGNode): YGJustify {
     return node.getStyle().justifyContent()
   }
 
-  fun YGNodeStyleGetAlignContent(node: YGNode): YGAlign? {
+  fun YGNodeStyleGetAlignContent(node: YGNode): YGAlign {
     return node.getStyle().alignContent()
   }
 
-  fun YGNodeStyleGetAlignItems(node: YGNode): YGAlign? {
+  fun YGNodeStyleGetAlignItems(node: YGNode): YGAlign {
     return node.getStyle().alignItems()
   }
 
-  fun YGNodeStyleGetAlignSelf(node: YGNode): YGAlign? {
+  fun YGNodeStyleGetAlignSelf(node: YGNode): YGAlign {
     return node.getStyle().alignSelf()
   }
 
-  fun YGNodeStyleGetPositionType(node: YGNode): YGPositionType? {
+  fun YGNodeStyleGetPositionType(node: YGNode): YGPositionType {
     return node.getStyle().positionType()
   }
 
-  fun YGNodeStyleGetFlexWrap(node: YGNode): YGWrap? {
+  fun YGNodeStyleGetFlexWrap(node: YGNode): YGWrap {
     return node.getStyle().flexWrap()
   }
 
-  fun YGNodeStyleGetOverflow(node: YGNode): YGOverflow? {
+  fun YGNodeStyleGetOverflow(node: YGNode): YGOverflow {
     return node.getStyle().overflow()
   }
 
-  fun YGNodeStyleGetDisplay(node: YGNode): YGDisplay? {
+  fun YGNodeStyleGetDisplay(node: YGNode): YGDisplay {
     return node.getStyle().display()
   }
 
