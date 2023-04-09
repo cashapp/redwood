@@ -18,20 +18,20 @@ package app.cash.redwood.yoga
 import app.cash.redwood.yoga.enums.YGDirection
 
 class YGLayout {
-  private val flags: MutableMap<Any?, Any> = mutableMapOf()
+  private val flags = mutableMapOf<Any?, Any>()
   val position = MutableList(4) { 0f }
   val dimensions = MutableList(2) { GlobalMembers.YGUndefined }
   val margin = MutableList(4) { 0f }
   val border = MutableList(4) { 0f }
   val padding = MutableList(4) { 0f }
+  val cachedMeasurements = MutableList(YG_MAX_CACHED_RESULT_COUNT) { YGCachedMeasurement() }
+  val measuredDimensions = MutableList(2) { GlobalMembers.YGUndefined }
+  val cachedLayout = YGCachedMeasurement()
   var computedFlexBasisGeneration = 0
   var computedFlexBasis = YGFloatOptional()
   var generationCount = 0
   var lastOwnerDirection = YGDirection.YGDirectionInherit
   var nextCachedMeasurementsIndex = 0
-  val cachedMeasurements = MutableList(YG_MAX_CACHED_RESULT_COUNT) { YGCachedMeasurement() }
-  val measuredDimensions = MutableList(2) { GlobalMembers.YGUndefined }
-  val cachedLayout = YGCachedMeasurement()
 
   fun direction(): YGDirection {
     return app.cash.redwood.yoga.detail.GlobalMembers.getEnumData(
