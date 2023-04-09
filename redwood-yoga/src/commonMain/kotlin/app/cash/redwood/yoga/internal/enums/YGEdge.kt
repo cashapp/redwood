@@ -10,14 +10,4 @@ enum class YGEdge {
   YGEdgeHorizontal,
   YGEdgeVertical,
   YGEdgeAll;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-    fun forValue(value: Int): YGEdge {
-      return values()[value]
-    }
-  }
 }

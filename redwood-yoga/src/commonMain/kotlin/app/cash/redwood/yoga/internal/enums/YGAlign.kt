@@ -10,14 +10,4 @@ enum class YGAlign {
   YGAlignBaseline,
   YGAlignSpaceBetween,
   YGAlignSpaceAround;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-    fun forValue(value: Int): YGAlign {
-      return values()[value]
-    }
-  }
 }

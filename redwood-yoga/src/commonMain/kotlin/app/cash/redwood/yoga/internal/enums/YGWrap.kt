@@ -5,14 +5,4 @@ enum class YGWrap {
   YGWrapNoWrap,
   YGWrapWrap,
   YGWrapWrapReverse;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-    fun forValue(value: Int): YGWrap {
-      return values()[value]
-    }
-  }
 }

@@ -5,15 +5,4 @@ enum class YGFlexDirection {
   YGFlexDirectionColumnReverse,
   YGFlexDirectionRow,
   YGFlexDirectionRowReverse;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-
-    fun forValue(value: Int): YGFlexDirection {
-      return values()[value]
-    }
-  }
 }

@@ -33,7 +33,7 @@ class Values<T> //Type originates from: Yoga-internal.h
     }
 
     fun getCompactValue(edge: YGEdge): CompactValue {
-        return getCompactValue(edge.getValue())
+        return getCompactValue(edge.ordinal)
     }
 
     fun getCompactValue(i: Int): CompactValue {

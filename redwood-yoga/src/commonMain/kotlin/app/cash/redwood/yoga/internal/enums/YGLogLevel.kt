@@ -7,15 +7,4 @@ enum class YGLogLevel {
   YGLogLevelDebug,
   YGLogLevelVerbose,
   YGLogLevelFatal;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-
-    fun forValue(value: Int): YGLogLevel {
-      return values()[value]
-    }
-  }
 }

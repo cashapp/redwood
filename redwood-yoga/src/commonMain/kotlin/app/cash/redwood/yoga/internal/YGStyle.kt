@@ -219,7 +219,7 @@ class YGStyle {
     }
 
     fun setValue(x: T): BitfieldRef<T> {
-      GlobalMembers.setEnumData<T>(x::class, style.flags, offset, x)
+      GlobalMembers.setEnumData(x::class, style.flags, offset, x)
       return this
     }
   }

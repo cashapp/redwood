@@ -6,14 +6,4 @@ enum class YGUnit {
   YGUnitPoint,
   YGUnitPercent,
   YGUnitAuto;
-
-  fun getValue(): Int {
-    return ordinal
-  }
-
-  companion object {
-    fun forValue(value: Int): YGUnit {
-      return values()[value]
-    }
-  }
 }

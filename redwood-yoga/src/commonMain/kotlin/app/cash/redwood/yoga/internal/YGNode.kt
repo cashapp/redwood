@@ -236,10 +236,10 @@ class YGNode {
     fun getLeadingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
         val leadingPosition = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.position(), YGEdge.YGEdgeStart,
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.position(),
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGResolveValue(leadingPosition, axisSize)
     }
@@ -247,10 +247,10 @@ class YGNode {
     fun getTrailingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
         val trailingPosition = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.position(), YGEdge.YGEdgeEnd,
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.position(),
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGResolveValue(trailingPosition, axisSize)
     }
@@ -258,10 +258,10 @@ class YGNode {
     fun isLeadingPositionDefined(axis: YGFlexDirection): Boolean {
         val leadingPosition = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.position(), YGEdge.YGEdgeStart,
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofUndefined()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofUndefined()
         ) else computeEdgeValueForColumn(
             style_.position(),
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofUndefined()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofUndefined()
         )
         return !leadingPosition.isUndefined()
     }
@@ -269,10 +269,10 @@ class YGNode {
     fun isTrailingPosDefined(axis: YGFlexDirection): Boolean {
         val trailingPosition = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.position(), YGEdge.YGEdgeEnd,
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofUndefined()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofUndefined()
         ) else computeEdgeValueForColumn(
             style_.position(),
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofUndefined()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofUndefined()
         )
         return !trailingPosition.isUndefined()
     }
@@ -280,10 +280,10 @@ class YGNode {
     fun getLeadingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
         val leadingMargin = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.margin(), YGEdge.YGEdgeStart,
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.margin(),
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGResolveValueMargin(leadingMargin, widthSize)
     }
@@ -291,10 +291,10 @@ class YGNode {
     fun getTrailingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
         val trailingMargin = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.margin(), YGEdge.YGEdgeEnd,
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.margin(),
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGResolveValueMargin(trailingMargin, widthSize)
     }
@@ -452,43 +452,43 @@ class YGNode {
         val crossAxis = GlobalMembers.YGFlexDirectionCross(mainAxis, directionRespectingRoot)
         val relativePositionMain = relativePosition(mainAxis, mainSize)
         val relativePositionCross = relativePosition(crossAxis, crossSize)
-        setLayoutPosition(
-            GlobalMembers.plus(
-              getLeadingMargin(
-                mainAxis, ownerWidth
-              ),
-              relativePositionMain
-            ).unwrap(),
-            GlobalMembers.leading[mainAxis.getValue()].getValue()
-        )
-        setLayoutPosition(
-            GlobalMembers.plus(
-              getTrailingMargin(
-                mainAxis, ownerWidth
-              ),
-              relativePositionMain
-            ).unwrap(),
-            GlobalMembers.trailing[mainAxis.getValue()].getValue()
-        )
-        setLayoutPosition(
-            GlobalMembers.plus(getLeadingMargin(crossAxis, ownerWidth), relativePositionCross)
-                .unwrap(),
-            GlobalMembers.leading[crossAxis.getValue()].getValue()
-        )
-        setLayoutPosition(
-            GlobalMembers.plus(getTrailingMargin(crossAxis, ownerWidth), relativePositionCross)
-                .unwrap(),
-            GlobalMembers.trailing[crossAxis.getValue()].getValue()
-        )
+      setLayoutPosition(
+        GlobalMembers.plus(
+          getLeadingMargin(
+            mainAxis, ownerWidth
+          ),
+          relativePositionMain
+        ).unwrap(),
+        GlobalMembers.leading[mainAxis.ordinal].ordinal
+      )
+      setLayoutPosition(
+        GlobalMembers.plus(
+          getTrailingMargin(
+            mainAxis, ownerWidth
+          ),
+          relativePositionMain
+        ).unwrap(),
+        GlobalMembers.trailing[mainAxis.ordinal].ordinal
+      )
+      setLayoutPosition(
+        GlobalMembers.plus(getLeadingMargin(crossAxis, ownerWidth), relativePositionCross)
+          .unwrap(),
+        GlobalMembers.leading[crossAxis.ordinal].ordinal
+      )
+      setLayoutPosition(
+        GlobalMembers.plus(getTrailingMargin(crossAxis, ownerWidth), relativePositionCross)
+          .unwrap(),
+        GlobalMembers.trailing[crossAxis.ordinal].ordinal
+      )
     }
 
     fun marginLeadingValue(axis: YGFlexDirection): YGValue? {
         return if (GlobalMembers.YGFlexDirectionIsRow(axis) && !style_.margin()
                 .getCompactValue(YGEdge.YGEdgeStart).isUndefined()
         ) {
-            style_.margin()[YGEdge.YGEdgeStart.getValue()]
+          style_.margin()[YGEdge.YGEdgeStart.ordinal]
         } else {
-            style_.margin()[GlobalMembers.leading[axis.getValue()].getValue()]
+          style_.margin()[GlobalMembers.leading[axis.ordinal].ordinal]
         }
     }
 
@@ -496,9 +496,9 @@ class YGNode {
         return if (GlobalMembers.YGFlexDirectionIsRow(axis) && !style_.margin()
                 .getCompactValue(YGEdge.YGEdgeEnd).isUndefined()
         ) {
-            style_.margin()[YGEdge.YGEdgeEnd.getValue()]
+          style_.margin()[YGEdge.YGEdgeEnd.ordinal]
         } else {
-            style_.margin()[GlobalMembers.trailing[axis.getValue()].getValue()]
+          style_.margin()[GlobalMembers.trailing[axis.ordinal].ordinal]
         }
     }
 
@@ -521,21 +521,21 @@ class YGNode {
         val dimensions = arrayOf(YGDimension.YGDimensionWidth, YGDimension.YGDimensionHeight)
         for (dim in dimensions) {
             if (!style.maxDimensions()
-                    .getCompactValue(dim.getValue()).isUndefined() && GlobalMembers.YGValueEqual(
-                style.maxDimensions().getCompactValue(dim.getValue()),
-                style.minDimensions().getCompactValue(dim.getValue())
+                    .getCompactValue(dim.ordinal).isUndefined() && GlobalMembers.YGValueEqual(
+                style.maxDimensions().getCompactValue(dim.ordinal),
+                style.minDimensions().getCompactValue(dim.ordinal)
               )
             ) {
-                resolvedDimensions_[dim.getValue()] = style.maxDimensions()[dim.getValue()]
+              resolvedDimensions_[dim.ordinal] = style.maxDimensions()[dim.ordinal]
             } else {
-                resolvedDimensions_[dim.getValue()] = style.dimensions()[dim.getValue()]
+              resolvedDimensions_[dim.ordinal] = style.dimensions()[dim.ordinal]
             }
         }
     }
 
     fun resolveDirection(ownerDirection: YGDirection): YGDirection? {
         return if (style_.direction() == YGDirection.YGDirectionInherit) {
-            if (ownerDirection.getValue() > YGDirection.YGDirectionInherit.getValue()) ownerDirection else YGDirection.YGDirectionLTR
+          if (ownerDirection.ordinal > YGDirection.YGDirectionInherit.ordinal) ownerDirection else YGDirection.YGDirectionLTR
         } else {
             style_.direction()
         }
@@ -632,10 +632,10 @@ class YGNode {
         val leadingBorder = (if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.border(),
             YGEdge.YGEdgeStart,
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.border(),
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         )).convertToYgValue()
         return maxOf(leadingBorder.value, 0.0f)
     }
@@ -643,10 +643,10 @@ class YGNode {
     fun getTrailingBorder(axis: YGFlexDirection): Float {
         val trailingBorder = (if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.border(), YGEdge.YGEdgeEnd,
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.border(),
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         )).convertToYgValue()
         return maxOf(trailingBorder.value, 0.0f)
     }
@@ -654,10 +654,10 @@ class YGNode {
     fun getLeadingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
         val leadingPadding = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.padding(), YGEdge.YGEdgeStart,
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.padding(),
-            GlobalMembers.leading[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.leading[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGFloatOptionalMax(
           GlobalMembers.YGResolveValue(
@@ -671,10 +671,10 @@ class YGNode {
     fun getTrailingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
         val trailingPadding = if (GlobalMembers.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
             style_.padding(), YGEdge.YGEdgeEnd,
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         ) else computeEdgeValueForColumn(
             style_.padding(),
-            GlobalMembers.trailing[axis.getValue()], CompactValue.ofZero()
+          GlobalMembers.trailing[axis.ordinal], CompactValue.ofZero()
         )
         return GlobalMembers.YGFloatOptionalMax(
           GlobalMembers.YGResolveValue(
