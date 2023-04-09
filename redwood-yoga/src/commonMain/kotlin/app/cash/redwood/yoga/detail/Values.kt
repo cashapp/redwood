@@ -15,11 +15,6 @@ class Values<T> {
     values_.add(CompactValue.createCompactValue(defaultValue))
   }
 
-  constructor(defaultValue: YGValue, size: Int) {
-    values_ = ArrayList(size)
-    values_.add(CompactValue.createCompactValue(defaultValue))
-  }
-
   private fun getValue(i: Int): CompactValue {
     while (values_.size < i + 1) {
       values_.add(CompactValue.ofUndefined())
@@ -27,8 +22,8 @@ class Values<T> {
     return values_[i]
   }
 
-  operator fun set(i: Int?, value: CompactValue) {
-    values_[i!!] = value
+  operator fun set(i: Int, value: CompactValue) {
+    values_[i] = value
   }
 
   fun getCompactValue(edge: YGEdge): CompactValue {
@@ -45,14 +40,5 @@ class Values<T> {
 
   operator fun set(i: Int, value: YGValue) {
     values_[i] = CompactValue.createCompactValue(value)
-  }
-
-  fun equalsTo(other: Values<T>): Boolean {
-    for (i in values_.indices) {
-      if (getValue(i) !== other.getValue(i)) {
-        return false
-      }
-    }
-    return true
   }
 }

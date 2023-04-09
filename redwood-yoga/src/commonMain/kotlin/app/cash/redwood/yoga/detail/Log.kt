@@ -5,7 +5,13 @@ import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.enums.YGLogLevel
 
 object Log {
-  fun log(node: YGNode?, level: YGLogLevel, context: Any?, format: String, vararg args: Any?) {
+  fun log(
+    node: YGNode?,
+    level: YGLogLevel,
+    context: Any?,
+    format: String,
+    vararg args: Any?,
+  ) {
     GlobalMembers.vlog(node?.getConfig(), node, level, context, format, *args)
   }
 
