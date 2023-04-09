@@ -124,9 +124,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       view.layout(left, top, right, bottom)
     }
 
-    val childCount = node.getChildren().size
-    for (i in 0 until childCount) {
-      applyLayoutRecursive(node.getChild(i), xOffset, yOffset)
+    for (child in node.getChildren()) {
+      applyLayoutRecursive(child, xOffset, yOffset)
     }
   }
 

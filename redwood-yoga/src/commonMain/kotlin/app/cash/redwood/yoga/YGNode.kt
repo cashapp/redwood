@@ -217,8 +217,8 @@ class YGNode {
     )
   }
 
-  fun getChild(index: Int?): YGNode {
-    return children_[index!!]
+  fun getChild(index: Int): YGNode {
+    return children_[index]
   }
 
   fun hasMeasureFunc(): Boolean {
