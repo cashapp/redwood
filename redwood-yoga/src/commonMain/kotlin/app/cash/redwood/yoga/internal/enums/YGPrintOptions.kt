@@ -1,22 +1,17 @@
 package app.cash.redwood.yoga.internal.enums
 
-enum class YGPrintOptions(private val value: Int) {
-  YGPrintOptionsLayout(1),
-  YGPrintOptionsStyle(2),
-  YGPrintOptionsChildren(4);
+enum class YGPrintOptions {
+  YGPrintOptionsLayout,
+  YGPrintOptionsStyle,
+  YGPrintOptionsChildren;
 
   fun getValue(): Int {
-    return value
+    return ordinal
   }
 
   companion object {
-    fun forValue(value: Int): YGPrintOptions? {
-      for (options in values()) {
-        if (options.value == value) {
-          return options
-        }
-      }
-      return null
+    fun forValue(value: Int): YGPrintOptions {
+      return values()[value]
     }
   }
 }

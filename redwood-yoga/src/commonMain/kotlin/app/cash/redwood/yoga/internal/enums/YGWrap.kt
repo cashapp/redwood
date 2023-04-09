@@ -1,7 +1,7 @@
 package app.cash.redwood.yoga.internal.enums
 
-enum class YGWrap //Type originates from: YGEnums.h
-{
+/** Type originates from: YGEnums.h */
+enum class YGWrap {
   YGWrapNoWrap,
   YGWrapWrap,
   YGWrapWrapReverse;

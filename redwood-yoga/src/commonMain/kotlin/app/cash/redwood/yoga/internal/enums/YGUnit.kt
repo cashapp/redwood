@@ -1,7 +1,7 @@
 package app.cash.redwood.yoga.internal.enums
 
-enum class YGUnit //Type originates from: YGEnums.h
-{
+/** Type originates from: YGEnums.h */
+enum class YGUnit {
   YGUnitUndefined,
   YGUnitPoint,
   YGUnitPercent,
