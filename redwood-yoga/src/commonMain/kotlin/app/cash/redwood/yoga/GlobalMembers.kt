@@ -2947,7 +2947,7 @@ object GlobalMembers {
         layoutContext,
       )
       layoutMarkerData.measureCallbacks += 1
-      layoutMarkerData.measureCallbackReasonsCount[reason.getValue()] = 1
+      layoutMarkerData.measureCallbackReasonsCount[reason.ordinal] = 1
 
       /* Event.MeasureCallbackEnd */Event.publish(
         node,

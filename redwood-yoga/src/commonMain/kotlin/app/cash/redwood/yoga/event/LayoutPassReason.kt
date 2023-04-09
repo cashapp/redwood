@@ -1,30 +1,31 @@
+/*
+ * Copyright (C) 2023 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package app.cash.redwood.yoga.event
 
-enum class LayoutPassReason //Type originates from: event.h
-  (private val intValue: Int) {
-  kInitial(0),
-  kAbsLayout(1),
-  kStretch(2),
-  kMultilineStretch(3),
-  kFlexLayout(4),
-  kMeasureChild(5),
-  kAbsMeasureChild(6),
-  kFlexMeasure(7),
-  COUNT(8);
-
-  fun getValue(): Int {
-    return intValue
-  }
+enum class LayoutPassReason {
+  kInitial,
+  kAbsLayout,
+  kStretch,
+  kMultilineStretch,
+  kFlexLayout,
+  kMeasureChild,
+  kAbsMeasureChild,
+  kFlexMeasure;
 
   companion object {
-    private val mappings: Map<Int, LayoutPassReason> = values().associateBy { it.intValue }
-
-    private fun getMappings(): Map<Int, LayoutPassReason> {
-      return mappings
-    }
-
-    fun forValue(value: Int): LayoutPassReason? {
-      return getMappings()[value]
-    }
+    val COUNT = values().size
   }
 }

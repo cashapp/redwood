@@ -3,61 +3,25 @@ package app.cash.redwood.yoga.event
 import app.cash.redwood.yoga.YGNode
 import kotlin.reflect.KClass
 
-object Event //Type originates from: event.h
-{
+object Event {
   private val listeners = mutableMapOf<KClass<*>, MutableList<(CallableEvent) -> Unit>>()
-  fun reset() //Method definition originates from: event.cpp
-  {
-    listeners.clear()
-  }
 
+  @Suppress("UNCHECKED_CAST")
   fun <T : CallableEvent> subscribe(
     clazz: KClass<T>,
     listener: (T) -> Unit,
-  ) //Method definition originates from: event.cpp
-  {
-    listeners.getOrPut(clazz) { mutableListOf() }
-      .add(
-        listener as (CallableEvent) -> Unit,
-      )
+  ) {
+    listeners.getOrPut(clazz) { mutableListOf() } += listener as (CallableEvent) -> Unit
   }
 
-  fun publish(node: YGNode?, eventData: CallableEvent = EmptyEventData()) {
-    val listeners = listeners[eventData::class]
-    if (listeners != null) {
-      for (listener in listeners) {
-        listener(eventData)
-      }
+  fun publish(node: YGNode?, eventData: CallableEvent = EmptyEventData) {
+    val listeners = listeners[eventData::class].orEmpty()
+    for (listener in listeners) {
+      listener(eventData)
     }
   }
 
-  private fun publish(
-    node: YGNode,
-    eventType: Type,
-    eventData: CallableEvent,
-  ) //Method definition originates from: event.cpp
-  {
-    publish(node, eventData)
+  fun reset() {
+    listeners.clear()
   }
-
-  enum class Type //Type originates from: event.h
-  {
-    NodeAllocation,
-    NodeDeallocation,
-    NodeLayout,
-    LayoutPassStart,
-    LayoutPassEnd,
-    MeasureCallbackStart,
-    MeasureCallbackEnd,
-    NodeBaselineStart,
-    NodeBaselineEnd;
-
-    companion object {
-      fun forValue(value: Int): Type {
-        return values()[value]
-      }
-    }
-  }
-
-  class EmptyEventData : CallableEvent() //Type originates from: event.h
 }
