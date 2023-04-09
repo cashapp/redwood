@@ -105,7 +105,7 @@ class YGLayout {
           layout.padding
         ) && direction() == layout.direction() && hadOverflow() == layout.hadOverflow() && lastOwnerDirection == layout.lastOwnerDirection && nextCachedMeasurementsIndex == layout.nextCachedMeasurementsIndex && cachedLayout.equalsTo(
             layout.cachedLayout
-        ) && computedFlexBasis === layout.computedFlexBasis
+        ) && computedFlexBasis == layout.computedFlexBasis
         var i = 0
         while (i < YG_MAX_CACHED_RESULT_COUNT && isEqual) {
             //TODO: Verify if this is correct

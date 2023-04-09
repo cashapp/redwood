@@ -3,10 +3,10 @@ package app.cash.redwood.yoga.internal.interfaces
 import app.cash.redwood.yoga.internal.YGNode
 
 fun interface BaselineWithContextFn {
-    operator fun invoke(
-      UnnamedParameter: YGNode?,
-      UnnamedParameter2: Float,
-      UnnamedParameter3: Float,
-      UnnamedParameter4: Any?
-    ): Float
+  operator fun invoke(
+    node: YGNode,
+    width: Float,
+    height: Float,
+    context: Any?,
+  ): Float
 }

@@ -1,22 +1,15 @@
 package app.cash.redwood.yoga.internal
 
-class YGFloatOptional {
-    private val value_: Float
+import kotlin.jvm.JvmInline
 
-    constructor() {
-        // TODO: qNaN
-        value_ = Float.NaN
-    }
-
-    constructor(value: Float) {
-        value_ = value
-    }
+@JvmInline
+value class YGFloatOptional(val value: Float = Float.NaN) {
 
     fun unwrap(): Float {
-        return value_
+        return value
     }
 
     fun isUndefined(): Boolean {
-        return value_.isNaN()
+        return value.isNaN()
     }
 }
