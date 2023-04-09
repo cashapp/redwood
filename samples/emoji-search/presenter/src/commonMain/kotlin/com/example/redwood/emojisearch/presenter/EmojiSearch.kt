@@ -103,8 +103,8 @@ fun EmojiSearch(
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    filteredEmojis.take(2).forEach { image ->
-      Image(url = image.url)
+    filteredEmojis.take(20).forEach { image ->
+      Text(image.label)
     }
   }
 }
