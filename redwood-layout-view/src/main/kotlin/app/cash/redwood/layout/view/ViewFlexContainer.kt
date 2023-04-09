@@ -16,14 +16,10 @@
 package app.cash.redwood.layout.view
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
@@ -38,12 +34,12 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
-import com.facebook.yoga.YogaAlign
-import com.facebook.yoga.YogaEdge
-import com.facebook.yoga.YogaFlexDirection
-import com.facebook.yoga.YogaJustify
-import com.facebook.yoga.YogaOverflow
-import com.facebook.yoga.android.YogaLayout
+import app.cash.redwood.yoga.internal.GlobalMembers
+import app.cash.redwood.yoga.internal.enums.YGAlign
+import app.cash.redwood.yoga.internal.enums.YGEdge
+import app.cash.redwood.yoga.internal.enums.YGFlexDirection
+import app.cash.redwood.yoga.internal.enums.YGJustify
+import app.cash.redwood.yoga.internal.enums.YGOverflow
 
 internal class ViewFlexContainer(
   private val context: Context,
@@ -51,13 +47,16 @@ internal class ViewFlexContainer(
 ) : Row<View>, Column<View> {
   private val density = DensityMultiplier * context.resources.displayMetrics.density
   private val yogaLayout = YogaLayout(context).apply {
-    yogaNode.flexDirection = when (direction) {
-      FlexDirection.Row -> YogaFlexDirection.ROW
-      FlexDirection.RowReverse -> YogaFlexDirection.ROW_REVERSE
-      FlexDirection.Column -> YogaFlexDirection.COLUMN
-      FlexDirection.ColumnReverse -> YogaFlexDirection.COLUMN_REVERSE
-      else -> throw AssertionError()
-    }
+    GlobalMembers.YGNodeStyleSetFlexDirection(
+      node = rootNode,
+      flexDirection = when (direction) {
+        FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
+        FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
+        FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
+        FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
+        else -> throw AssertionError()
+      },
+    )
   }
   private val hostView = HostView()
   override val value: View get() = yogaLayout
@@ -79,19 +78,35 @@ internal class ViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    yogaLayout.yogaNode.setPadding(YogaEdge.LEFT, density * margin.left)
-    yogaLayout.yogaNode.setPadding(YogaEdge.RIGHT, density * margin.right)
-    yogaLayout.yogaNode.setPadding(YogaEdge.TOP, density * margin.top)
-    yogaLayout.yogaNode.setPadding(YogaEdge.BOTTOM, density * margin.bottom)
+    GlobalMembers.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeLeft,
+      points = density * margin.left,
+    )
+    GlobalMembers.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeRight,
+      points = density * margin.right,
+    )
+    GlobalMembers.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeTop,
+      points = density * margin.top,
+    )
+    GlobalMembers.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeBottom,
+      points = density * margin.bottom,
+    )
     invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-//    hostView.scrollEnabled = when (overflow) {
-//      Overflow.Clip -> false
-//      Overflow.Scroll -> true
-//      else -> throw AssertionError()
-//    }
+    hostView.scrollEnabled = when (overflow) {
+      Overflow.Clip -> false
+      Overflow.Scroll -> true
+      else -> throw AssertionError()
+    }
     invalidate()
   }
 
@@ -112,44 +127,37 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    yogaLayout.yogaNode.alignItems = when (alignItems) {
-      AlignItems.FlexStart -> YogaAlign.FLEX_START
-      AlignItems.FlexEnd -> YogaAlign.FLEX_END
-      AlignItems.Center -> YogaAlign.CENTER
-      AlignItems.Baseline -> YogaAlign.BASELINE
-      AlignItems.Stretch -> YogaAlign.STRETCH
-      else -> throw AssertionError()
-    }
+    GlobalMembers.YGNodeStyleSetAlignItems(
+      node = yogaLayout.rootNode,
+      alignItems = when (alignItems) {
+        AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
+        AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
+        AlignItems.Center -> YGAlign.YGAlignCenter
+        AlignItems.Baseline -> YGAlign.YGAlignBaseline
+        AlignItems.Stretch -> YGAlign.YGAlignStretch
+        else -> throw AssertionError()
+      },
+    )
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    yogaLayout.yogaNode.justifyContent = when (justifyContent) {
-      JustifyContent.FlexStart -> YogaJustify.FLEX_START
-      JustifyContent.FlexEnd -> YogaJustify.FLEX_END
-      JustifyContent.Center -> YogaJustify.CENTER
-      JustifyContent.SpaceBetween -> YogaJustify.SPACE_BETWEEN
-      JustifyContent.SpaceAround -> YogaJustify.SPACE_AROUND
-      JustifyContent.SpaceEvenly -> YogaJustify.SPACE_EVENLY
-      else -> throw AssertionError()
-    }
+    GlobalMembers.YGNodeStyleSetJustifyContent(
+      node = yogaLayout.rootNode,
+      justifyContent = when (justifyContent) {
+        JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
+        JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
+        JustifyContent.Center -> YGJustify.YGJustifyCenter
+        JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
+        JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
+        JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
+        else -> throw AssertionError()
+      },
+    )
     invalidate()
   }
 
-  private fun applyLayoutParams() {
-    yogaLayout.updateLayoutParams {
-      width = MATCH_PARENT
-      height = WRAP_CONTENT
-    }
-  }
-
   private fun invalidate() {
-    applyLayoutParams()
-    for (i in 0 until yogaLayout.yogaNode.childCount) {
-      yogaLayout.yogaNode.getChildAt(i).dirty()
-    }
-    yogaLayout.invalidate()
-    yogaLayout.requestLayout()
     hostView.invalidate()
     hostView.requestLayout()
   }
@@ -165,9 +173,7 @@ internal class ViewFlexContainer(
       }
 
     init {
-      //updateViewHierarchy()
-      setBackgroundColor(Color.GREEN)
-      yogaLayout.setBackgroundColor(Color.BLUE)
+      updateViewHierarchy()
     }
 
     private fun updateViewHierarchy() {
@@ -175,10 +181,16 @@ internal class ViewFlexContainer(
       (yogaLayout.parent as ViewGroup?)?.removeView(yogaLayout)
 
       if (scrollEnabled) {
-        yogaLayout.yogaNode.overflow = YogaOverflow.SCROLL
+        GlobalMembers.YGNodeStyleSetOverflow(
+          yogaLayout.rootNode,
+          YGOverflow.YGOverflowScroll,
+        )
         addView(newScrollView().apply { addView(yogaLayout) })
       } else {
-        yogaLayout.yogaNode.overflow = YogaOverflow.VISIBLE
+        GlobalMembers.YGNodeStyleSetOverflow(
+          yogaLayout.rootNode,
+          YGOverflow.YGOverflowVisible,
+        )
         addView(yogaLayout)
       }
     }

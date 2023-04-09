@@ -11,11 +11,11 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import app.cash.redwood.yoga.YogaConstants
-import app.cash.redwood.yoga.YogaNode
-import app.cash.redwood.yoga.YogaNodeFactory
-import app.cash.redwood.yoga.enums.YogaMeasureMode
-import app.cash.redwood.yoga.interfaces.YogaMeasureFunction
+import app.cash.redwood.yoga.internal.GlobalMembers
+import app.cash.redwood.yoga.internal.YGNode
 import app.cash.redwood.yoga.internal.YGSize
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 import kotlin.math.roundToInt
 
 /**
@@ -25,25 +25,23 @@ import kotlin.math.roundToInt
  * and the Yoga engine.
  */
 internal class YogaLayout(context: Context) : ViewGroup(context) {
-  private val nodes = mutableMapOf<View, YogaNode>()
-  val rootNode = YogaNodeFactory.create()
+  private val nodes = mutableMapOf<View, YGNode>()
+  val rootNode = GlobalMembers.YGNodeNew()
 
   init {
-    rootNode.setData(this)
-    rootNode.setMeasureFunction(ViewMeasureFunction())
+    rootNode.setMeasureFunc(ViewMeasureFunction(this))
   }
 
   override fun addView(child: View, index: Int, params: LayoutParams) {
     // Nodes with measure functions cannot have children.
-    rootNode.setMeasureFunction(null)
+    rootNode.setMeasureFunc(null as YGMeasureFunc?)
 
     super.addView(child, index, params)
 
-    val childNode = YogaNodeFactory.create()
-    childNode.setData(child)
-    childNode.setMeasureFunction(ViewMeasureFunction())
+    val childNode = GlobalMembers.YGNodeNew()
+    childNode.setMeasureFunc(ViewMeasureFunction(child))
     nodes[child] = childNode
-    rootNode.addChildAt(childNode, rootNode.getChildCount())
+    rootNode.insertChild(childNode, rootNode.getChildren().size)
   }
 
   override fun removeView(view: View) {
@@ -94,38 +92,45 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   private fun removeViewFromYogaTree(view: View, inLayout: Boolean) {
     val node = nodes[view] ?: return
     val owner = node.getOwner() ?: return
-    for (i in 0 until owner.getChildCount()) {
-      if (owner.getChildAt(i) == node) {
-        owner.removeChildAt(i)
+    val children = owner.getChildren().listIterator()
+    while (children.hasNext()) {
+      if (children.next() == node) {
+        children.remove()
         break
       }
     }
-    node.setData(null)
+    node.setMeasureFunc(null as YGMeasureFunc?)
     nodes.remove(view)
     if (inLayout) {
-      rootNode.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
+      GlobalMembers.YGNodeCalculateLayoutWithContext(
+        node = rootNode,
+        ownerWidth = YogaConstants.UNDEFINED,
+        ownerHeight = YogaConstants.UNDEFINED,
+        ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode)!!,
+        layoutContext = null,
+      )
     }
   }
 
-  private fun applyLayoutRecursive(node: YogaNode, xOffset: Float, yOffset: Float) {
-    val view = node.getData() as View?
+  private fun applyLayoutRecursive(node: YGNode, xOffset: Float, yOffset: Float) {
+    val view = (node.getMeasure().noContext as ViewMeasureFunction?)?.view
     if (view != null && view !== this) {
       if (view.visibility == GONE) {
         return
       }
-      val left = (xOffset + node.getLayoutX()).roundToInt()
-      val top = (yOffset + node.getLayoutY()).roundToInt()
+      val left = (xOffset + GlobalMembers.YGNodeLayoutGetLeft(node)).roundToInt()
+      val top = (yOffset + GlobalMembers.YGNodeLayoutGetTop(node)).roundToInt()
       view.measure(
-        MeasureSpec.makeMeasureSpec(node.getLayoutWidth().roundToInt(), MeasureSpec.EXACTLY),
-        MeasureSpec.makeMeasureSpec(node.getLayoutHeight().roundToInt(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(GlobalMembers.YGNodeLayoutGetWidth(node).roundToInt(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(GlobalMembers.YGNodeLayoutGetHeight(node).roundToInt(), MeasureSpec.EXACTLY),
       )
       view.layout(left, top, left + view.measuredWidth, top + view.measuredHeight)
     }
 
-    val childCount = node.getChildCount()
+    val childCount = node.getChildren().size
     for (i in 0 until childCount) {
       applyLayoutRecursive(
-        node = node.getChildAt(i),
+        node = node.getChild(i),
         xOffset = xOffset,
         yOffset = yOffset,
       )
@@ -149,39 +154,42 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   override fun onMeasure(widthSpec: Int, heightSpec: Int) {
     createLayout(widthSpec, heightSpec)
     setMeasuredDimension(
-      rootNode.getLayoutWidth().roundToInt(),
-      rootNode.getLayoutHeight().roundToInt(),
+      GlobalMembers.YGNodeLayoutGetWidth(rootNode).roundToInt(),
+      GlobalMembers.YGNodeLayoutGetHeight(rootNode).roundToInt(),
     )
   }
 
   private fun createLayout(widthSpec: Int, heightSpec: Int) {
-    val widthSize = MeasureSpec.getSize(widthSpec)
+    val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
-      MeasureSpec.EXACTLY -> rootNode.setWidth(widthSize.toFloat())
-      MeasureSpec.AT_MOST -> rootNode.setMaxWidth(widthSize.toFloat())
+      MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetWidth(rootNode, widthSize)
+      MeasureSpec.AT_MOST -> GlobalMembers.YGNodeStyleSetMaxWidth(rootNode, widthSize)
       MeasureSpec.UNSPECIFIED -> {}
     }
-    val heightSize = MeasureSpec.getSize(heightSpec)
+    val heightSize = MeasureSpec.getSize(heightSpec).toFloat()
     when (MeasureSpec.getMode(heightSpec)) {
-      MeasureSpec.EXACTLY -> rootNode.setHeight(heightSize.toFloat())
-      MeasureSpec.AT_MOST -> rootNode.setMaxHeight(heightSize.toFloat())
+      MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetHeight(rootNode, heightSize)
+      MeasureSpec.AT_MOST -> GlobalMembers.YGNodeStyleSetMaxHeight(rootNode, heightSize)
       MeasureSpec.UNSPECIFIED -> {}
     }
-    rootNode.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
+    GlobalMembers.YGNodeCalculateLayoutWithContext(
+      node = rootNode,
+      ownerWidth = YogaConstants.UNDEFINED,
+      ownerHeight = YogaConstants.UNDEFINED,
+      ownerDirection = GlobalMembers.YGNodeStyleGetDirection(rootNode)!!,
+      layoutContext = null,
+    )
   }
 }
 
-/** Wrapper around a view's measure function for yoga. */
-private class ViewMeasureFunction : YogaMeasureFunction {
-  override fun measure(
-    node: YogaNode,
+private class ViewMeasureFunction(val view: View) : YGMeasureFunc {
+  override fun invoke(
+    node: YGNode,
     width: Float,
-    widthMode: YogaMeasureMode,
+    widthMode: YGMeasureMode,
     height: Float,
-    heightMode: YogaMeasureMode,
+    heightMode: YGMeasureMode,
   ): YGSize {
-    val view = node.getData() as View? ?: return YGSize(0, 0)
-    val layoutParams = view.layoutParams
     val widthSpec = MeasureSpec.makeMeasureSpec(width.toInt(), widthMode.toAndroid())
     val heightSpec = MeasureSpec.makeMeasureSpec(height.toInt(), heightMode.toAndroid())
     view.measure(widthSpec, heightSpec)

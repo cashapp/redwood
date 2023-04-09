@@ -10,7 +10,6 @@ import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 import app.cash.redwood.yoga.internal.enums.YGPositionType
 import app.cash.redwood.yoga.internal.enums.YGFlexDirection
 import app.cash.redwood.yoga.internal.detail.CompactValue
-import app.cash.redwood.yoga.internal.detail.GlobalMembers.Companion
 import app.cash.redwood.yoga.internal.interfaces.YGDirtiedFunc
 import app.cash.redwood.yoga.internal.interfaces.YGBaselineFunc
 import app.cash.redwood.yoga.internal.interfaces.BaselineWithContextFn

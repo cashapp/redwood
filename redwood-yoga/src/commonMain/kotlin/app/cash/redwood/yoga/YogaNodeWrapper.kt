@@ -142,8 +142,11 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
       nativePointers[i] = nodes[i].mNativePointer
     }
     GlobalMembers.YGNodeCalculateLayoutWithContext(
-      mNativePointer, width, height,
-      GlobalMembers.YGNodeStyleGetDirection(mNativePointer)!!, nativePointers,
+      node = mNativePointer,
+      ownerWidth = width,
+      ownerHeight = height,
+      ownerDirection = GlobalMembers.YGNodeStyleGetDirection(mNativePointer)!!,
+      layoutContext = nativePointers,
     )
   }
 
@@ -195,10 +198,10 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     )
   }
 
-  override fun setFlexDirection(flexDirection: YogaFlexDirection) {
+  override fun setFlexDirection(direction: YogaFlexDirection) {
     GlobalMembers.YGNodeStyleSetFlexDirection(
       mNativePointer,
-      YGFlexDirection.forValue(flexDirection.ordinal),
+      YGFlexDirection.forValue(direction.ordinal),
     )
   }
 

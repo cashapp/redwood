@@ -22,15 +22,10 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
-import com.facebook.soloader.SoLoader
 
 public class ViewRedwoodLayoutWidgetFactory(
   private val context: Context,
 ) : RedwoodLayoutWidgetFactory<View> {
-  init {
-    SoLoader.init(context, false)
-  }
-
   override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
   override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
   override fun Spacer(): Spacer<View> = ViewSpacer(context)
