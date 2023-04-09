@@ -65,10 +65,10 @@ class CompactValue //Type originates from: CompactValue.h
       return CompactValue(data)
     }
 
-    fun ofMaybe(value: Float, Unit: YGUnit): CompactValue {
+    fun ofMaybe(value: Float, unit: YGUnit): CompactValue {
       return if (value.isNaN() || value.isInfinite()) ofUndefined() else of(
         value,
-        Unit,
+        unit,
       )
     }
 

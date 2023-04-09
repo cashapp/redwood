@@ -15,856 +15,1062 @@
  */
 package app.cash.redwood.yoga
 
-import app.cash.redwood.yoga.enums.YogaAlign
-import app.cash.redwood.yoga.enums.YogaDirection
-import app.cash.redwood.yoga.enums.YogaEdge
-import app.cash.redwood.yoga.enums.YogaFlexDirection
-import app.cash.redwood.yoga.enums.YogaJustify
-import app.cash.redwood.yoga.enums.YogaOverflow
-import app.cash.redwood.yoga.enums.YogaPositionType
-import app.cash.redwood.yoga.enums.YogaWrap
+import app.cash.redwood.yoga.enums.YGAlign
+import app.cash.redwood.yoga.enums.YGDirection
+import app.cash.redwood.yoga.enums.YGEdge
+import app.cash.redwood.yoga.enums.YGFlexDirection
+import app.cash.redwood.yoga.enums.YGJustify
+import app.cash.redwood.yoga.enums.YGOverflow
+import app.cash.redwood.yoga.enums.YGPositionType
+import app.cash.redwood.yoga.enums.YGWrap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class YGAbsolutePositionTest {
-    @Test
-    fun test_absolute_layout_width_height_start_top() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.START, 10f)
-        root_child0.setPosition(YogaEdge.TOP, 10f)
-        root_child0.setWidth(10f)
-        root_child0.setHeight(10f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_width_height_start_top() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeStart, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 10f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_width_height_end_bottom() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.END, 10f)
-        root_child0.setPosition(YogaEdge.BOTTOM, 10f)
-        root_child0.setWidth(10f)
-        root_child0.setHeight(10f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_width_height_end_bottom() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeEnd, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 10f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_start_top_end_bottom() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.START, 10f)
-        root_child0.setPosition(YogaEdge.TOP, 10f)
-        root_child0.setPosition(YogaEdge.END, 10f)
-        root_child0.setPosition(YogaEdge.BOTTOM, 10f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_start_top_end_bottom() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeStart, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeEnd, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_width_height_start_top_end_bottom() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.START, 10f)
-        root_child0.setPosition(YogaEdge.TOP, 10f)
-        root_child0.setPosition(YogaEdge.END, 10f)
-        root_child0.setPosition(YogaEdge.BOTTOM, 10f)
-        root_child0.setWidth(10f)
-        root_child0.setHeight(10f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_width_height_start_top_end_bottom() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeStart, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeEnd, 10f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 10f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_do_not_clamp_height_of_absolute_node_to_height_of_its_overflow_hidden_parent() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setFlexDirection(YogaFlexDirection.ROW)
-        root.setOverflow(YogaOverflow.HIDDEN)
-        root.setWidth(50f)
-        root.setHeight(50f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.START, 0f)
-        root_child0.setPosition(YogaEdge.TOP, 0f)
-        root.addChildAt(root_child0, 0)
-        val root_child0_child0 = createNode(config)
-        root_child0_child0.setWidth(100f)
-        root_child0_child0.setHeight(100f)
-        root_child0.addChildAt(root_child0_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(50f, root.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0_child0.getLayoutY(), 0.0f)
-        assertEquals(100f, root_child0_child0.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root_child0_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(50f, root.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root.getLayoutHeight(), 0.0f)
-        assertEquals(-50f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0_child0.getLayoutY(), 0.0f)
-        assertEquals(100f, root_child0_child0.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root_child0_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun do_not_clamp_height_of_absolute_node_to_height_of_its_overflow_hidden_parent() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    GlobalMembers.YGNodeStyleSetOverflow(root, YGOverflow.YGOverflowHidden)
+    GlobalMembers.YGNodeStyleSetWidth(root, 50f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 50f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeStart, 0f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 0f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    val root_child0_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0_child0, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0_child0, 100f)
+    GlobalMembers.YGNodeInsertChild(root_child0, root_child0_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(-50f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_within_border() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setMargin(YogaEdge.LEFT, 10f)
-        root.setMargin(YogaEdge.TOP, 10f)
-        root.setMargin(YogaEdge.RIGHT, 10f)
-        root.setMargin(YogaEdge.BOTTOM, 10f)
-        root.setPadding(YogaEdge.LEFT, 10f)
-        root.setPadding(YogaEdge.TOP, 10f)
-        root.setPadding(YogaEdge.RIGHT, 10f)
-        root.setPadding(YogaEdge.BOTTOM, 10f)
-        root.setBorder(YogaEdge.LEFT, 10f)
-        root.setBorder(YogaEdge.TOP, 10f)
-        root.setBorder(YogaEdge.RIGHT, 10f)
-        root.setBorder(YogaEdge.BOTTOM, 10f)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.LEFT, 0f)
-        root_child0.setPosition(YogaEdge.TOP, 0f)
-        root_child0.setWidth(50f)
-        root_child0.setHeight(50f)
-        root.addChildAt(root_child0, 0)
-        val root_child1 = createNode(config)
-        root_child1.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child1.setPosition(YogaEdge.RIGHT, 0f)
-        root_child1.setPosition(YogaEdge.BOTTOM, 0f)
-        root_child1.setWidth(50f)
-        root_child1.setHeight(50f)
-        root.addChildAt(root_child1, 1)
-        val root_child2 = createNode(config)
-        root_child2.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child2.setPosition(YogaEdge.LEFT, 0f)
-        root_child2.setPosition(YogaEdge.TOP, 0f)
-        root_child2.setMargin(YogaEdge.LEFT, 10f)
-        root_child2.setMargin(YogaEdge.TOP, 10f)
-        root_child2.setMargin(YogaEdge.RIGHT, 10f)
-        root_child2.setMargin(YogaEdge.BOTTOM, 10f)
-        root_child2.setWidth(50f)
-        root_child2.setHeight(50f)
-        root.addChildAt(root_child2, 2)
-        val root_child3 = createNode(config)
-        root_child3.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child3.setPosition(YogaEdge.RIGHT, 0f)
-        root_child3.setPosition(YogaEdge.BOTTOM, 0f)
-        root_child3.setMargin(YogaEdge.LEFT, 10f)
-        root_child3.setMargin(YogaEdge.TOP, 10f)
-        root_child3.setMargin(YogaEdge.RIGHT, 10f)
-        root_child3.setMargin(YogaEdge.BOTTOM, 10f)
-        root_child3.setWidth(50f)
-        root_child3.setHeight(50f)
-        root.addChildAt(root_child3, 3)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(10f, root.getLayoutX(), 0.0f)
-        assertEquals(10f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(40f, root_child1.getLayoutX(), 0.0f)
-        assertEquals(40f, root_child1.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child1.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child1.getLayoutHeight(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutX(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child2.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child2.getLayoutHeight(), 0.0f)
-        assertEquals(30f, root_child3.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child3.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child3.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child3.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(10f, root.getLayoutX(), 0.0f)
-        assertEquals(10f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(40f, root_child1.getLayoutX(), 0.0f)
-        assertEquals(40f, root_child1.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child1.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child1.getLayoutHeight(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutX(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child2.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child2.getLayoutHeight(), 0.0f)
-        assertEquals(30f, root_child3.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child3.getLayoutY(), 0.0f)
-        assertEquals(50f, root_child3.getLayoutWidth(), 0.0f)
-        assertEquals(50f, root_child3.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_within_border() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetMargin(root, YGEdge.YGEdgeLeft, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root, YGEdge.YGEdgeRight, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetPadding(root, YGEdge.YGEdgeLeft, 10f)
+    GlobalMembers.YGNodeStyleSetPadding(root, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetPadding(root, YGEdge.YGEdgeRight, 10f)
+    GlobalMembers.YGNodeStyleSetPadding(root, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetBorder(root, YGEdge.YGEdgeLeft, 10f)
+    GlobalMembers.YGNodeStyleSetBorder(root, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetBorder(root, YGEdge.YGEdgeRight, 10f)
+    GlobalMembers.YGNodeStyleSetBorder(root, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeLeft, 0f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 0f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 50f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 50f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child1, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child1, YGEdge.YGEdgeRight, 0f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child1, YGEdge.YGEdgeBottom, 0f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child1, 50f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child1, 50f)
+    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    val root_child2 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child2, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child2, YGEdge.YGEdgeLeft, 0f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child2, YGEdge.YGEdgeTop, 0f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child2, YGEdge.YGEdgeLeft, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child2, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child2, YGEdge.YGEdgeRight, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child2, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child2, 50f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child2, 50f)
+    GlobalMembers.YGNodeInsertChild(root, root_child2, 2)
+    val root_child3 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child3, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child3, YGEdge.YGEdgeRight, 0f)
+    GlobalMembers.YGNodeStyleSetPosition(root_child3, YGEdge.YGEdgeBottom, 0f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child3, YGEdge.YGEdgeLeft, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child3, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child3, YGEdge.YGEdgeRight, 10f)
+    GlobalMembers.YGNodeStyleSetMargin(root_child3, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child3, 50f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child3, 50f)
+    GlobalMembers.YGNodeInsertChild(root, root_child3, 3)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetLeft(root_child2))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetTop(root_child2))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child2))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child2))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetLeft(root_child3))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child3))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetLeft(root_child2))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetTop(root_child2))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child2))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child2))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetLeft(root_child3))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child3))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_center() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_center() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_flex_end() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.FLEX_END)
-        root.setAlignItems(YogaAlign.FLEX_END)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_flex_end() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyFlexEnd)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignFlexEnd)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_justify_content_center() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_justify_content_center() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_center() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_center() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_center_on_child_only() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setAlignSelf(YogaAlign.CENTER)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_center_on_child_only() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetAlignSelf(root_child0, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_center_and_top_position() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.TOP, 10f)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_center_and_top_position() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_center_and_bottom_position() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.BOTTOM, 10f)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(25f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(50f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_center_and_bottom_position() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(25f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(50f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_center_and_left_position() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.LEFT, 5f)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(5f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(5f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_center_and_left_position() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeLeft, 5f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(5f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(5f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_align_items_and_justify_content_center_and_right_position() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setJustifyContent(YogaJustify.CENTER)
-        root.setAlignItems(YogaAlign.CENTER)
-        root.setFlexGrow(1f)
-        root.setWidth(110f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPosition(YogaEdge.RIGHT, 5f)
-        root_child0.setWidth(60f)
-        root_child0.setHeight(40f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(45f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(110f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(45f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(30f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(60f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(40f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_align_items_and_justify_content_center_and_right_position() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetJustifyContent(root, YGJustify.YGJustifyCenter)
+    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignCenter)
+    GlobalMembers.YGNodeStyleSetFlexGrow(root, 1f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 110f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPosition(root_child0, YGEdge.YGEdgeRight, 5f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 60f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 40f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(45f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(110f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(45f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_position_root_with_rtl_should_position_withoutdirection() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setPosition(YogaEdge.LEFT, 72f)
-        root.setWidth(52f)
-        root.setHeight(52f)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(72f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(52f, root.getLayoutWidth(), 0.0f)
-        assertEquals(52f, root.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(72f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(52f, root.getLayoutWidth(), 0.0f)
-        assertEquals(52f, root.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun position_root_with_rtl_should_position_withoutdirection() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPosition(root, YGEdge.YGEdgeLeft, 72f)
+    GlobalMembers.YGNodeStyleSetWidth(root, 52f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 52f)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(72f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(52f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(52f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(72f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(52f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(52f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_percentage_bottom_based_on_parent_height() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWidth(100f)
-        root.setHeight(200f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setPositionPercent(YogaEdge.TOP, 50f)
-        root_child0.setWidth(10f)
-        root_child0.setHeight(10f)
-        root.addChildAt(root_child0, 0)
-        val root_child1 = createNode(config)
-        root_child1.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child1.setPositionPercent(YogaEdge.BOTTOM, 50f)
-        root_child1.setWidth(10f)
-        root_child1.setHeight(10f)
-        root.addChildAt(root_child1, 1)
-        val root_child2 = createNode(config)
-        root_child2.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child2.setPositionPercent(YogaEdge.TOP, 10f)
-        root_child2.setPositionPercent(YogaEdge.BOTTOM, 10f)
-        root_child2.setWidth(10f)
-        root.addChildAt(root_child2, 2)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(200f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child1.getLayoutX(), 0.0f)
-        assertEquals(90f, root_child1.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child1.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child1.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child2.getLayoutX(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child2.getLayoutWidth(), 0.0f)
-        assertEquals(160f, root_child2.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(200f, root.getLayoutHeight(), 0.0f)
-        assertEquals(90f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(100f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child0.getLayoutHeight(), 0.0f)
-        assertEquals(90f, root_child1.getLayoutX(), 0.0f)
-        assertEquals(90f, root_child1.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child1.getLayoutWidth(), 0.0f)
-        assertEquals(10f, root_child1.getLayoutHeight(), 0.0f)
-        assertEquals(90f, root_child2.getLayoutX(), 0.0f)
-        assertEquals(20f, root_child2.getLayoutY(), 0.0f)
-        assertEquals(10f, root_child2.getLayoutWidth(), 0.0f)
-        assertEquals(160f, root_child2.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_percentage_bottom_based_on_parent_height() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 200f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPositionPercent(root_child0, YGEdge.YGEdgeTop, 50f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 10f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child1, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPositionPercent(root_child1, YGEdge.YGEdgeBottom, 50f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child1, 10f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child1, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    val root_child2 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child2, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetPositionPercent(root_child2, YGEdge.YGEdgeTop, 10f)
+    GlobalMembers.YGNodeStyleSetPositionPercent(root_child2, YGEdge.YGEdgeBottom, 10f)
+    GlobalMembers.YGNodeStyleSetWidth(root_child2, 10f)
+    GlobalMembers.YGNodeInsertChild(root, root_child2, 2)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(200f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(90f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child2))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetTop(root_child2))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child2))
+    assertEquals(160f, GlobalMembers.YGNodeLayoutGetHeight(root_child2))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(200f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(90f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(90f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(90f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(90f, GlobalMembers.YGNodeLayoutGetLeft(root_child2))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetTop(root_child2))
+    assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child2))
+    assertEquals(160f, GlobalMembers.YGNodeLayoutGetHeight(root_child2))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_in_wrap_reverse_column_container() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWrap(YogaWrap.WRAP_REVERSE)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(20f)
-        root_child0.setHeight(20f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_in_wrap_reverse_column_container() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexWrap(root, YGWrap.YGWrapWrapReverse)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 20f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 20f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_in_wrap_reverse_row_container() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setFlexDirection(YogaFlexDirection.ROW)
-        root.setWrap(YogaWrap.WRAP_REVERSE)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(20f)
-        root_child0.setHeight(20f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_in_wrap_reverse_row_container() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    GlobalMembers.YGNodeStyleSetFlexWrap(root, YGWrap.YGWrapWrapReverse)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 20f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 20f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_in_wrap_reverse_column_container_flex_end() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setWrap(YogaWrap.WRAP_REVERSE)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setAlignSelf(YogaAlign.FLEX_END)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(20f)
-        root_child0.setHeight(20f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-    }
+  @Test
+  fun absolute_layout_in_wrap_reverse_column_container_flex_end() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexWrap(root, YGWrap.YGWrapWrapReverse)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetAlignSelf(root_child0, YGAlign.YGAlignFlexEnd)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 20f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 20f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 
-    @Test
-    fun test_absolute_layout_in_wrap_reverse_row_container_flex_end() {
-        val config = YogaConfigFactory.create()
-        val root = createNode(config)
-        root.setFlexDirection(YogaFlexDirection.ROW)
-        root.setWrap(YogaWrap.WRAP_REVERSE)
-        root.setWidth(100f)
-        root.setHeight(100f)
-        val root_child0 = createNode(config)
-        root_child0.setAlignSelf(YogaAlign.FLEX_END)
-        root_child0.setPositionType(YogaPositionType.ABSOLUTE)
-        root_child0.setWidth(20f)
-        root_child0.setHeight(20f)
-        root.addChildAt(root_child0, 0)
-        root.setDirection(YogaDirection.LTR)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-        root.setDirection(YogaDirection.RTL)
-        root.calculateLayout(YogaConstants.UNDEFINED, YogaConstants.UNDEFINED)
-        assertEquals(0f, root.getLayoutX(), 0.0f)
-        assertEquals(0f, root.getLayoutY(), 0.0f)
-        assertEquals(100f, root.getLayoutWidth(), 0.0f)
-        assertEquals(100f, root.getLayoutHeight(), 0.0f)
-        assertEquals(80f, root_child0.getLayoutX(), 0.0f)
-        assertEquals(0f, root_child0.getLayoutY(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutWidth(), 0.0f)
-        assertEquals(20f, root_child0.getLayoutHeight(), 0.0f)
-    }
-
-    private fun createNode(config: YogaConfig): YogaNode {
-        return YogaNodeFactory.create(config)
-    }
+  @Test
+  fun absolute_layout_in_wrap_reverse_row_container_flex_end() {
+    val config = GlobalMembers.YGConfigNew()
+    val root = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    GlobalMembers.YGNodeStyleSetFlexWrap(root, YGWrap.YGWrapWrapReverse)
+    GlobalMembers.YGNodeStyleSetWidth(root, 100f)
+    GlobalMembers.YGNodeStyleSetHeight(root, 100f)
+    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
+    GlobalMembers.YGNodeStyleSetAlignSelf(root_child0, YGAlign.YGAlignFlexEnd)
+    GlobalMembers.YGNodeStyleSetPositionType(root_child0, YGPositionType.YGPositionTypeAbsolute)
+    GlobalMembers.YGNodeStyleSetWidth(root_child0, 20f)
+    GlobalMembers.YGNodeStyleSetHeight(root_child0, 20f)
+    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionLTR,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeCalculateLayout(
+      root,
+      GlobalMembers.YGUndefined,
+      GlobalMembers.YGUndefined,
+      YGDirection.YGDirectionRTL,
+    )
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root))
+    assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root))
+    assertEquals(80f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
+    GlobalMembers.YGNodeFreeRecursive(root)
+    GlobalMembers.YGConfigFree(config)
+  }
 }
