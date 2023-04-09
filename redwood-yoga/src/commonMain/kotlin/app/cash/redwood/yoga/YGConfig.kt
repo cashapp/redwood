@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.yoga
 
-import app.cash.redwood.yoga.enums.YGExperiment
 import app.cash.redwood.yoga.enums.YGLogLevel
 import app.cash.redwood.yoga.interfaces.CloneWithContextFn
 import app.cash.redwood.yoga.interfaces.LogWithContextFn
@@ -29,19 +28,13 @@ class YGConfig(logger: YGLogger?) {
   var shouldDiffLayoutWithoutLegacyStretchBehaviour = false
   var printTree = false
   var pointScaleFactor = 1.0f
-  val experimentalFeatures = ArrayList<Boolean>()
   var context: Any? = null
-  private var cloneNodeCallback_struct: cloneNodeCallback_Struct? = cloneNodeCallback_Struct()
+  private var cloneNodeCallback_struct = cloneNodeCallback_Struct()
   private var cloneNodeUsesContext_ = false
-  private var loggerUsesContext_: Boolean
+  private var loggerUsesContext_ = false
 
   init {
-    cloneNodeCallback_struct = null
     logger_struct.noContext = logger
-    loggerUsesContext_ = false
-    for (i in YGExperiment.values().indices) {
-      experimentalFeatures.add(false)
-    }
   }
 
   fun log(
@@ -81,16 +74,16 @@ class YGConfig(logger: YGLogger?) {
     cloneContext: Any?,
   ): YGNode {
     var clone: YGNode? = null
-    if (cloneNodeCallback_struct!!.noContext != null) {
+    if (cloneNodeCallback_struct.noContext != null) {
       clone = if (cloneNodeUsesContext_) {
-        cloneNodeCallback_struct!!.withContext!!.invoke(
+        cloneNodeCallback_struct.withContext?.invoke(
           node = node,
           owner = owner,
           childIndex = childIndex,
           cloneContext = cloneContext,
         )
       } else {
-        cloneNodeCallback_struct!!.noContext!!.invoke(
+        cloneNodeCallback_struct.noContext?.invoke(
           node = node,
           owner = owner,
           childIndex = childIndex,
@@ -104,17 +97,17 @@ class YGConfig(logger: YGLogger?) {
   }
 
   fun setCloneNodeCallback(cloneNode: YGCloneNodeFunc?) {
-    cloneNodeCallback_struct!!.noContext = cloneNode
+    cloneNodeCallback_struct.noContext = cloneNode
     cloneNodeUsesContext_ = false
   }
 
   fun setCloneNodeCallback(cloneNode: CloneWithContextFn?) {
-    cloneNodeCallback_struct!!.withContext = cloneNode
+    cloneNodeCallback_struct.withContext = cloneNode
     cloneNodeUsesContext_ = true
   }
 
   fun setCloneNodeCallback() {
-    cloneNodeCallback_struct!!.noContext = null
+    cloneNodeCallback_struct.noContext = null
     cloneNodeUsesContext_ = false
   }
 

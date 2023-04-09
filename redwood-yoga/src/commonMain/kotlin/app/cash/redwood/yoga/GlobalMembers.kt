@@ -32,7 +32,6 @@ import app.cash.redwood.yoga.enums.YGDimension
 import app.cash.redwood.yoga.enums.YGDirection
 import app.cash.redwood.yoga.enums.YGDisplay
 import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGExperimentalFeature
 import app.cash.redwood.yoga.enums.YGFlexDirection
 import app.cash.redwood.yoga.enums.YGJustify
 import app.cash.redwood.yoga.enums.YGLogLevel
@@ -259,7 +258,6 @@ object GlobalMembers {
     return "unknown"
   }
 
-  //					   ;
   fun YGDimensionToString(value: YGDimension): String //Method definition originates from: YGEnums.cpp
   {
     return when (value) {
@@ -297,15 +295,6 @@ object GlobalMembers {
       YGEdge.YGEdgeHorizontal -> "horizontal"
       YGEdge.YGEdgeVertical -> "vertical"
       YGEdge.YGEdgeAll -> "all"
-    }
-  }
-
-  fun YGExperimentalFeatureToString(value: YGExperimentalFeature): String //Method definition originates from: YGEnums.cpp
-  {
-    return if (value == YGExperimentalFeature.YGExperimentalFeatureWebFlexBasis) {
-      "web-flex-basis"
-    } else {
-      "unknown"
     }
   }
 
@@ -821,7 +810,7 @@ object GlobalMembers {
     value: YGDirection,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGDirection>(
+    updateStyle(
       node,
       YGDirection::class,
       value,
@@ -835,7 +824,7 @@ object GlobalMembers {
     flexDirection: YGFlexDirection,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGFlexDirection>(
+    updateStyle(
       node,
       YGFlexDirection::class,
       flexDirection,
@@ -849,7 +838,7 @@ object GlobalMembers {
     justifyContent: YGJustify,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGJustify>(
+    updateStyle(
       node,
       YGJustify::class,
       justifyContent,
@@ -863,7 +852,7 @@ object GlobalMembers {
     alignContent: YGAlign,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGAlign>(
+    updateStyle(
       node,
       YGAlign::class,
       alignContent,
@@ -877,7 +866,7 @@ object GlobalMembers {
     alignItems: YGAlign,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGAlign>(
+    updateStyle(
       node,
       YGAlign::class,
       alignItems,
@@ -891,7 +880,7 @@ object GlobalMembers {
     alignSelf: YGAlign,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGAlign>(
+    updateStyle(
       node,
       YGAlign::class,
       alignSelf,
@@ -905,7 +894,7 @@ object GlobalMembers {
     positionType: YGPositionType,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGPositionType>(
+    updateStyle(
       node,
       YGPositionType::class,
       positionType,
@@ -919,7 +908,7 @@ object GlobalMembers {
     flexWrap: YGWrap,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGWrap>(
+    updateStyle(
       node,
       YGWrap::class,
       flexWrap,
@@ -933,7 +922,7 @@ object GlobalMembers {
     overflow: YGOverflow,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGOverflow>(
+    updateStyle(
       node,
       YGOverflow::class,
       overflow,
@@ -946,7 +935,7 @@ object GlobalMembers {
     display: YGDisplay,
   ) //Method definition originates from: Yoga.cpp
   {
-    updateStyle<YGDisplay>(
+    updateStyle(
       node,
       YGDisplay::class,
       display,
@@ -1667,23 +1656,6 @@ object GlobalMembers {
   fun YGConfigGetInstanceCount(): Int //Method definition originates from: Yoga.cpp
   {
     return gConfigInstanceCount
-  }
-
-  fun YGConfigSetExperimentalFeatureEnabled(
-    config: YGConfig,
-    feature: YGExperimentalFeature,
-    enabled: Boolean,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    config.experimentalFeatures[feature.ordinal] = enabled
-  }
-
-  fun YGConfigIsExperimentalFeatureEnabled(
-    config: YGConfig,
-    feature: YGExperimentalFeature,
-  ): Boolean //Method definition originates from: Yoga.cpp
-  {
-    return config.experimentalFeatures[feature.ordinal]
   }
 
   fun YGConfigSetUseWebDefaults(
@@ -2486,7 +2458,7 @@ object GlobalMembers {
     var childWidthMeasureMode: YGMeasureMode
     var childHeightMeasureMode: YGMeasureMode
     val resolvedFlexBasis = YGResolveValue(
-      child.resolveFlexBasisPtr()!!,
+      child.resolveFlexBasisPtr(),
       mainAxisownerSize,
     )
     val isRowStyleDimDefined = YGNodeIsStyleDimDefined(
@@ -2498,11 +2470,7 @@ object GlobalMembers {
       ownerHeight,
     )
     if (!resolvedFlexBasis.isUndefined() && !YGFloatIsUndefined(mainAxisSize)) {
-      if (child.getConfig() != null && (child.getLayout()!!.computedFlexBasis.isUndefined() || YGConfigIsExperimentalFeatureEnabled(
-          child.getConfig()!!,
-          YGExperimentalFeature.YGExperimentalFeatureWebFlexBasis,
-        ) && child.getLayout()!!.computedFlexBasisGeneration != generationCount)
-      ) {
+      if (child.getConfig() != null && child.getLayout()!!.computedFlexBasis.isUndefined()) {
         val paddingAndBorder = YGFloatOptional(
           YGNodePaddingAndBorderForAxis(child, mainAxis, ownerWidth),
         )
@@ -3316,7 +3284,7 @@ object GlobalMembers {
           crossAxis,
         )!!.unit != YGUnit.YGUnitAuto && currentRelativeChild.marginTrailingValue(
           crossAxis,
-        )!!.unit != YGUnit.YGUnitAuto
+        ).unit != YGUnit.YGUnitAuto
       ) {
         childCrossSize.argValue = availableInnerCrossDim
         childCrossMeasureMode = YGMeasureMode.YGMeasureModeExactly
@@ -3363,7 +3331,7 @@ object GlobalMembers {
         crossAxis,
       )!!.unit != YGUnit.YGUnitAuto && currentRelativeChild.marginTrailingValue(
         crossAxis,
-      )!!.unit != YGUnit.YGUnitAuto
+      ).unit != YGUnit.YGUnitAuto
       val childWidth = if (isMainAxisRow) childMainSize else childCrossSize
       val childHeight = if (!isMainAxisRow) childMainSize else childCrossSize
       val childWidthMeasureMode =
@@ -3549,7 +3517,7 @@ object GlobalMembers {
         if (child.marginLeadingValue(mainAxis)!!.unit == YGUnit.YGUnitAuto) {
           numberOfAutoMarginsOnCurrentLine++
         }
-        if (child.marginTrailingValue(mainAxis)!!.unit == YGUnit.YGUnitAuto) {
+        if (child.marginTrailingValue(mainAxis).unit == YGUnit.YGUnitAuto) {
           numberOfAutoMarginsOnCurrentLine++
         }
       }
@@ -3621,7 +3589,7 @@ object GlobalMembers {
               pos[mainAxis.ordinal].ordinal,
             )
           }
-          if (child.marginTrailingValue(mainAxis)!!.unit == YGUnit.YGUnitAuto) {
+          if (child.marginTrailingValue(mainAxis).unit == YGUnit.YGUnitAuto) {
             collectedFlexItemsValues.mainDim += collectedFlexItemsValues.remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
           }
           val canSkipFlex =
@@ -4144,7 +4112,7 @@ object GlobalMembers {
                 crossAxis,
               )!!.unit != YGUnit.YGUnitAuto && child.marginTrailingValue(
                 crossAxis,
-              )!!.unit != YGUnit.YGUnitAuto
+              ).unit != YGUnit.YGUnitAuto
             ) {
               // If the child defines a definite size for its cross axis, there's
               // no need to stretch.
@@ -4228,10 +4196,10 @@ object GlobalMembers {
               )
               if (child.marginLeadingValue(crossAxis)!!.unit == YGUnit.YGUnitAuto && child.marginTrailingValue(
                   crossAxis,
-                )!!.unit == YGUnit.YGUnitAuto
+                ).unit == YGUnit.YGUnitAuto
               ) {
                 leadingCrossDim += YGFloatMax(0.0f, remainingCrossDim / 2)
-              } else if (child.marginTrailingValue(crossAxis)!!.unit == YGUnit.YGUnitAuto) {
+              } else if (child.marginTrailingValue(crossAxis).unit == YGUnit.YGUnitAuto) {
                 // No-Op
               } else if (child.marginLeadingValue(crossAxis)!!.unit == YGUnit.YGUnitAuto) {
                 leadingCrossDim += YGFloatMax(0.0f, remainingCrossDim)
