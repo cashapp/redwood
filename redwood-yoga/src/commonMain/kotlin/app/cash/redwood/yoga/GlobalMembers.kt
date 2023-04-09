@@ -69,10 +69,9 @@ object GlobalMembers {
   const val kDefaultFlexShrink = 0.0f
   const val kWebDefaultFlexShrink = 1.0f
   val defaultConfig = YGConfigNew()
-  private val gCurrentGenerationCount = atomic(1)
   const val gPrintChanges = false
   const val gPrintSkips = false
-  var gConfigInstanceCount = 0
+  private val gCurrentGenerationCount = atomic(1)
 
   fun isUndefined(value: Float): Boolean {
     return value.isNaN()
@@ -1089,13 +1088,11 @@ object GlobalMembers {
   {
     val config = YGConfig()
     config.setLogger(::YGDefaultLog)
-    gConfigInstanceCount++
     return config
   }
 
   fun YGConfigFree(config: YGConfig?) //Method definition originates from: Yoga.cpp
   {
-    gConfigInstanceCount--
   }
 
   fun YGConfigGetDefault(): YGConfig //Method definition originates from: Yoga.cpp
@@ -1199,7 +1196,6 @@ object GlobalMembers {
 
   fun YGConfigFreeRecursive(root: YGNode) {
     if (root.getConfig() != null) {
-      gConfigInstanceCount--
       root.setConfig(null)
     }
     for (child in root.getChildren()) {
