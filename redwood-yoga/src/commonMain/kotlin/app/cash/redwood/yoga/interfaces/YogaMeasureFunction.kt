@@ -11,9 +11,6 @@ import app.cash.redwood.yoga.YogaNode
 import app.cash.redwood.yoga.internal.YGSize
 
 interface YogaMeasureFunction {
-    /**
-     * Return a value created by YogaMeasureOutput.make(width, height);
-     */
     fun measure(
       node: YogaNode,
       width: Float,

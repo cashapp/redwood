@@ -183,7 +183,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setDirection(direction: YogaDirection) {
         GlobalMembers.YGNodeStyleSetDirection(
             mNativePointer,
-            YGDirection.forValue(direction.intValue())
+            YGDirection.forValue(direction.ordinal)
         )
     }
 
@@ -198,7 +198,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setFlexDirection(flexDirection: YogaFlexDirection) {
         GlobalMembers.YGNodeStyleSetFlexDirection(
             mNativePointer,
-            YGFlexDirection.forValue(flexDirection.intValue())
+            YGFlexDirection.forValue(flexDirection.ordinal)
         )
     }
 
@@ -213,7 +213,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setJustifyContent(justifyContent: YogaJustify) {
         GlobalMembers.YGNodeStyleSetJustifyContent(
             mNativePointer,
-            YGJustify.forValue(justifyContent.intValue())
+            YGJustify.forValue(justifyContent.ordinal)
         )
     }
 
@@ -227,7 +227,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setAlignItems(alignItems: YogaAlign) {
         GlobalMembers.YGNodeStyleSetAlignItems(
             mNativePointer,
-            YGAlign.forValue(alignItems.intValue())
+            YGAlign.forValue(alignItems.ordinal)
         )
     }
 
@@ -241,7 +241,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setAlignSelf(alignSelf: YogaAlign) {
         GlobalMembers.YGNodeStyleSetAlignSelf(
             mNativePointer,
-            YGAlign.forValue(alignSelf.intValue())
+            YGAlign.forValue(alignSelf.ordinal)
         )
     }
 
@@ -255,7 +255,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setAlignContent(alignContent: YogaAlign) {
         GlobalMembers.YGNodeStyleSetAlignContent(
             mNativePointer,
-            YGAlign.forValue(alignContent.intValue())
+            YGAlign.forValue(alignContent.ordinal)
         )
     }
 
@@ -269,7 +269,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setPositionType(positionType: YogaPositionType) {
         GlobalMembers.YGNodeStyleSetPositionType(
             mNativePointer,
-            YGPositionType.forValue(positionType.intValue())
+            YGPositionType.forValue(positionType.ordinal)
         )
     }
 
@@ -283,7 +283,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setWrap(wrap: YogaWrap) {
         GlobalMembers.YGNodeStyleSetFlexWrap(
             mNativePointer,
-            YGWrap.forValue(wrap.intValue())
+            YGWrap.forValue(wrap.ordinal)
         )
     }
 
@@ -297,7 +297,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setOverflow(overflow: YogaOverflow) {
         GlobalMembers.YGNodeStyleSetOverflow(
             mNativePointer,
-            YGOverflow.forValue(overflow.intValue())
+            YGOverflow.forValue(overflow.ordinal)
         )
     }
 
@@ -311,7 +311,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setDisplay(display: YogaDisplay) {
         GlobalMembers.YGNodeStyleSetDisplay(
             mNativePointer,
-            YGDisplay.forValue(display.intValue())
+            YGDisplay.forValue(display.ordinal)
         )
     }
 
@@ -363,7 +363,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
         return valueFromNative(
             GlobalMembers.YGNodeStyleGetMargin(
                 mNativePointer,
-                YGEdge.forValue(edge.intValue())
+                YGEdge.forValue(edge.ordinal)
             )
         )
     }
@@ -371,7 +371,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setMargin(edge: YogaEdge, margin: Float) {
         GlobalMembers.YGNodeStyleSetMargin(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             margin
         )
     }
@@ -379,7 +379,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setMarginPercent(edge: YogaEdge, percent: Float) {
         GlobalMembers.YGNodeStyleSetMarginPercent(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             percent
         )
     }
@@ -387,7 +387,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setMarginAuto(edge: YogaEdge) {
         GlobalMembers.YGNodeStyleSetMarginAuto(
             mNativePointer,
-            YGEdge.forValue(edge.intValue())
+            YGEdge.forValue(edge.ordinal)
         )
     }
 
@@ -395,7 +395,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
         return valueFromNative(
             GlobalMembers.YGNodeStyleGetPadding(
                 mNativePointer,
-                YGEdge.forValue(edge.intValue())
+                YGEdge.forValue(edge.ordinal)
             )
         )
     }
@@ -403,7 +403,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setPadding(edge: YogaEdge, padding: Float) {
         GlobalMembers.YGNodeStyleSetPadding(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             padding
         )
     }
@@ -411,7 +411,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setPaddingPercent(edge: YogaEdge, percent: Float) {
         GlobalMembers.YGNodeStyleSetPaddingPercent(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             percent
         )
     }
@@ -419,15 +419,15 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun getBorder(edge: YogaEdge): Float {
         return GlobalMembers.YGNodeStyleGetBorder(
             mNativePointer,
-            YGEdge.forValue(edge.intValue())
+            YGEdge.forValue(edge.ordinal)
         )
     }
 
-    override fun setBorder(edge: YogaEdge, border: Float) {
+    override fun setBorder(edge: YogaEdge, value: Float) {
         GlobalMembers.YGNodeStyleSetBorder(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
-            border
+            YGEdge.forValue(edge.ordinal),
+            value
         )
     }
 
@@ -435,7 +435,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
         return valueFromNative(
             GlobalMembers.YGNodeStyleGetPosition(
                 mNativePointer,
-                YGEdge.forValue(edge.intValue())
+                YGEdge.forValue(edge.ordinal)
             )
         )
     }
@@ -443,7 +443,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setPosition(edge: YogaEdge, position: Float) {
         GlobalMembers.YGNodeStyleSetPosition(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             position
         )
     }
@@ -451,7 +451,7 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun setPositionPercent(edge: YogaEdge, percent: Float) {
         GlobalMembers.YGNodeStyleSetPositionPercent(
             mNativePointer,
-            YGEdge.forValue(edge.intValue()),
+            YGEdge.forValue(edge.ordinal),
             percent
         )
     }
@@ -665,21 +665,21 @@ class YogaNodeWrapper private constructor(private var mNativePointer: YGNode) : 
     override fun getLayoutMargin(edge: YogaEdge): Float {
         return GlobalMembers.YGNodeLayoutGetMargin(
             mNativePointer,
-            YGEdge.forValue(edge.intValue())
+            YGEdge.forValue(edge.ordinal)
         )
     }
 
     override fun getLayoutPadding(edge: YogaEdge): Float {
         return GlobalMembers.YGNodeLayoutGetPadding(
             mNativePointer,
-            YGEdge.forValue(edge.intValue())
+            YGEdge.forValue(edge.ordinal)
         )
     }
 
     override fun getLayoutBorder(edge: YogaEdge): Float {
         return GlobalMembers.YGNodeLayoutGetBorder(
             mNativePointer,
-            YGEdge.forValue(edge.intValue())
+            YGEdge.forValue(edge.ordinal)
         )
     }
 

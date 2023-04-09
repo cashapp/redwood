@@ -6,23 +6,12 @@
  */
 package app.cash.redwood.yoga.enums
 
-enum class YogaMeasureMode(private val mIntValue: Int) {
-  UNDEFINED(0),
-  EXACTLY(1),
-  AT_MOST(2);
-
-  fun intValue(): Int {
-    return mIntValue
-  }
+enum class YogaMeasureMode {
+  UNDEFINED,
+  EXACTLY,
+  AT_MOST;
 
   companion object {
-    fun fromInt(value: Int): YogaMeasureMode {
-      return when (value) {
-        0 -> UNDEFINED
-        1 -> EXACTLY
-        2 -> AT_MOST
-        else -> throw IllegalArgumentException("Unknown enum value: $value")
-      }
-    }
+    fun fromInt(value: Int) = values()[value]
   }
 }

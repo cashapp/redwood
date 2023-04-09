@@ -20,7 +20,7 @@ class YogaConfigWrapper private constructor(var mNativePointer: YGConfig) : Yoga
   override fun setExperimentalFeatureEnabled(feature: YogaExperimentalFeature, enabled: Boolean) {
     GlobalMembers.YGConfigSetExperimentalFeatureEnabled(
       mNativePointer,
-      YGExperimentalFeature.Companion.forValue(feature.intValue()), enabled,
+      YGExperimentalFeature.forValue(feature.ordinal), enabled,
     )
   }
 

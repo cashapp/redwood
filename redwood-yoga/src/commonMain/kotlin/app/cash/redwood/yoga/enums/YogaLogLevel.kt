@@ -6,29 +6,15 @@
  */
 package app.cash.redwood.yoga.enums
 
-enum class YogaLogLevel(private val mIntValue: Int) {
-  ERROR(0),
-  WARN(1),
-  INFO(2),
-  DEBUG(3),
-  VERBOSE(4),
-  FATAL(5);
-
-  fun intValue(): Int {
-    return mIntValue
-  }
+enum class YogaLogLevel {
+  ERROR,
+  WARN,
+  INFO,
+  DEBUG,
+  VERBOSE,
+  FATAL;
 
   companion object {
-    fun fromInt(value: Int): YogaLogLevel {
-      return when (value) {
-        0 -> ERROR
-        1 -> WARN
-        2 -> INFO
-        3 -> DEBUG
-        4 -> VERBOSE
-        5 -> FATAL
-        else -> throw IllegalArgumentException("Unknown enum value: $value")
-      }
-    }
+    fun fromInt(value: Int) = values()[value]
   }
 }

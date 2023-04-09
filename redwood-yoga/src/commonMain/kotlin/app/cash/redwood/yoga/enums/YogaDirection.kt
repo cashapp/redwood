@@ -6,23 +6,12 @@
  */
 package app.cash.redwood.yoga.enums
 
-enum class YogaDirection(private val mIntValue: Int) {
-  INHERIT(0),
-  LTR(1),
-  RTL(2);
-
-  fun intValue(): Int {
-    return mIntValue
-  }
+enum class YogaDirection {
+  INHERIT,
+  LTR,
+  RTL;
 
   companion object {
-    fun fromInt(value: Int): YogaDirection {
-      return when (value) {
-        0 -> INHERIT
-        1 -> LTR
-        2 -> RTL
-        else -> throw IllegalArgumentException("Unknown enum value: $value")
-      }
-    }
+    fun fromInt(value: Int) = values()[value]
   }
 }
