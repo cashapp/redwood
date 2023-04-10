@@ -21,7 +21,6 @@ import app.cash.redwood.yoga.enums.YGPositionType
 import app.cash.redwood.yoga.enums.YGWrap
 import kotlin.reflect.KClass
 
-/** Type originates from: YGStyle.h */
 class YGStyle {
   private val margin_ = Values<YGEdge>()
   private val position_ = Values<YGEdge>()
@@ -214,7 +213,6 @@ class YGStyle {
     return aspectRatio_
   }
 
-  //Type originates from: YGStyle.h
   class BitfieldRef<T : Enum<T>>(
     val style: YGStyle,
     val offset: Int,
