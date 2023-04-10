@@ -294,6 +294,13 @@ object GlobalMembers {
     node.reset()
   }
 
+  fun YGNodeAddChild(
+    owner: YGNode,
+    child: YGNode,
+  ) {
+    YGNodeInsertChild(owner, child, owner.getChildren().size)
+  }
+
   fun YGNodeInsertChild(
     owner: YGNode,
     child: YGNode,
@@ -369,14 +376,6 @@ object GlobalMembers {
     } else null
   }
 
-  fun YGNodeGetOwner(node: YGNode): YGNode? {
-    return node.getOwner()
-  }
-
-  fun YGNodeGetParent(node: YGNode): YGNode? {
-    return node.getOwner()
-  }
-
   fun YGNodeGetChildCount(node: YGNode): Int {
     return node.getChildren().size
   }
@@ -389,10 +388,6 @@ object GlobalMembers {
       node.setIsReferenceBaseline(isReferenceBaseline)
       node.markDirtyAndPropogate()
     }
-  }
-
-  fun YGNodeIsReferenceBaseline(node: YGNode): Boolean {
-    return node.isReferenceBaseline()
   }
 
   fun YGNodeCalculateLayout(
@@ -2750,7 +2745,6 @@ object GlobalMembers {
     }
   }
 
-  //
   // This is the main routine that implements a subset of the flexbox layout
   // algorithm described in the W3C CSS documentation:
   // https://www.w3.org/TR/CSS3-flexbox/.

@@ -41,7 +41,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     val childNode = GlobalMembers.YGNodeNew()
     childNode.setMeasureFunc(ViewMeasureFunction(child))
     nodes[child] = childNode
-    GlobalMembers.YGNodeInsertChild(rootNode, childNode, rootNode.getChildren().size)
+    GlobalMembers.YGNodeAddChild(rootNode, childNode)
   }
 
   override fun removeView(view: View) {
@@ -90,11 +90,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   private fun removeViewFromYogaTree(view: View, inLayout: Boolean) {
-    val node = nodes[view] ?: return
-    val owner = node.getOwner() ?: return
+    val childNode = nodes[view] ?: return
+    val owner = childNode.getOwner() ?: return
 
-    owner.removeChild(node)
-    node.setMeasureFunc(null as YGMeasureFunc?)
+    GlobalMembers.YGNodeRemoveChild(owner, childNode)
     nodes -= view
 
     if (inLayout) {
