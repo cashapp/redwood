@@ -51,10 +51,30 @@ object GlobalMembers {
   val YGValueAuto = YGValue(YGUndefined, YGUnit.YGUnitAuto)
   val YGValueUndefined = YGValue(YGUndefined, YGUnit.YGUnitUndefined)
   val YGValueZero = YGValue(0f, YGUnit.YGUnitPoint)
-  val leading = listOf(YGEdge.YGEdgeTop, YGEdge.YGEdgeBottom, YGEdge.YGEdgeLeft, YGEdge.YGEdgeRight)
-  val trailing = listOf(YGEdge.YGEdgeBottom, YGEdge.YGEdgeTop, YGEdge.YGEdgeRight, YGEdge.YGEdgeLeft)
-  val pos = listOf(YGEdge.YGEdgeTop, YGEdge.YGEdgeBottom, YGEdge.YGEdgeLeft, YGEdge.YGEdgeRight)
-  val dim = listOf(YGDimension.YGDimensionHeight, YGDimension.YGDimensionHeight, YGDimension.YGDimensionWidth, YGDimension.YGDimensionWidth)
+  val leading = listOf(
+    YGEdge.YGEdgeTop,
+    YGEdge.YGEdgeBottom,
+    YGEdge.YGEdgeLeft,
+    YGEdge.YGEdgeRight,
+  )
+  val trailing = listOf(
+    YGEdge.YGEdgeBottom,
+    YGEdge.YGEdgeTop,
+    YGEdge.YGEdgeRight,
+    YGEdge.YGEdgeLeft,
+  )
+  val pos = listOf(
+    YGEdge.YGEdgeTop,
+    YGEdge.YGEdgeBottom,
+    YGEdge.YGEdgeLeft,
+    YGEdge.YGEdgeRight,
+  )
+  val dim = listOf(
+    YGDimension.YGDimensionHeight,
+    YGDimension.YGDimensionHeight,
+    YGDimension.YGDimensionWidth,
+    YGDimension.YGDimensionWidth,
+  )
   const val spacer = "                                                            "
   const val kDefaultFlexGrow = 0.0f
   const val kDefaultFlexShrink = 0.0f
@@ -72,8 +92,7 @@ object GlobalMembers {
     return value.isNaN()
   }
 
-  fun YGValueEqual(a: YGValue, b: YGValue): Boolean //Method definition originates from: Utils.cpp
-  {
+  fun YGValueEqual(a: YGValue, b: YGValue): Boolean {
     if (a.unit != b.unit) {
       return false
     }
@@ -88,8 +107,7 @@ object GlobalMembers {
     return YGValueEqual(a.convertToYgValue(), b.convertToYgValue())
   }
 
-  fun YGFloatsEqual(a: Float, b: Float): Boolean //Method definition originates from: Utils.cpp
-  {
+  fun YGFloatsEqual(a: Float, b: Float): Boolean {
     return if (!isUndefined(a) && !isUndefined(b)) {
       abs(a - b) < 0.0001f
     } else {
@@ -97,8 +115,7 @@ object GlobalMembers {
     }
   }
 
-  fun YGDoubleEqual(a: Double, b: Double): Boolean //Method definition originates from: Utils.cpp
-  {
+  fun YGDoubleEqual(a: Double, b: Double): Boolean {
     return if (!isUndefined(a) && !isUndefined(b)) {
       abs(a - b) < 0.0001
     } else {
@@ -106,8 +123,7 @@ object GlobalMembers {
     }
   }
 
-  fun YGFloatMax(a: Float, b: Float): Float //Method definition originates from: Utils.cpp
-  {
+  fun YGFloatMax(a: Float, b: Float): Float {
     if (!isUndefined(a) && !isUndefined(b)) {
       return maxOf(a, b)
     }
@@ -117,8 +133,7 @@ object GlobalMembers {
   fun YGFloatOptionalMax(
     op1: YGFloatOptional,
     op2: YGFloatOptional,
-  ): YGFloatOptional //Method definition originates from: Utils.cpp
-  {
+  ): YGFloatOptional {
     if (greaterThanOrEqualTo(op1, op2)) {
       return op1
     }
@@ -128,8 +143,7 @@ object GlobalMembers {
     return if (op1.isUndefined()) op2 else op1
   }
 
-  fun YGFloatMin(a: Float, b: Float): Float //Method definition originates from: Utils.cpp
-  {
+  fun YGFloatMin(a: Float, b: Float): Float {
     if (!isUndefined(a) && !isUndefined(b)) {
       return minOf(a, b)
     }
@@ -146,16 +160,14 @@ object GlobalMembers {
     return areEqual
   }
 
-  fun YGFloatSanitize(value: Float): Float //Method definition originates from: Utils.cpp
-  {
+  fun YGFloatSanitize(value: Float): Float {
     return if (isUndefined(value)) 0f else value
   }
 
   fun YGFlexDirectionCross(
     flexDirection: YGFlexDirection?,
     direction: YGDirection?,
-  ): YGFlexDirection //Method definition originates from: Utils.cpp
-  {
+  ): YGFlexDirection {
     return if (YGFlexDirectionIsColumn(flexDirection)) YGResolveFlexDirection(
       YGFlexDirection.YGFlexDirectionRow,
       direction,
@@ -223,28 +235,24 @@ object GlobalMembers {
     return "unknown"
   }
 
-  fun YGNodeNew(): YGNode //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeNew(): YGNode {
     return YGNodeNewWithConfig(YGConfigGetDefault())
   }
 
-  fun YGNodeNewWithConfig(config: YGConfig?): YGNode //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeNewWithConfig(config: YGConfig?): YGNode {
     val node = YGNode(config!!)
     Event.publish(node, NodeAllocationEventData(config))
     return node
   }
 
-  fun YGNodeClone(oldNode: YGNode): YGNode //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeClone(oldNode: YGNode): YGNode {
     val node = YGNode(oldNode)
     Event.publish(node, NodeAllocationEventData(node.getConfig()))
     node.setOwner(null)
     return node
   }
 
-  fun YGNodeFree(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeFree(node: YGNode) {
     val owner = node.getOwner()
     if (owner != null) {
       owner.removeChild(node)
@@ -261,8 +269,7 @@ object GlobalMembers {
   fun YGNodeFreeRecursiveWithCleanupFunc(
     root: YGNode,
     cleanup: YGNodeCleanupFunc?,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     var skipped = 0
     while (YGNodeGetChildCount(root) > skipped) {
       val child = YGNodeGetChild(root, skipped)
@@ -279,13 +286,11 @@ object GlobalMembers {
     YGNodeFree(root)
   }
 
-  fun YGNodeFreeRecursive(root: YGNode) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeFreeRecursive(root: YGNode) {
     YGNodeFreeRecursiveWithCleanupFunc(root, null)
   }
 
-  fun YGNodeReset(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeReset(node: YGNode) {
     node.reset()
   }
 
@@ -293,8 +298,7 @@ object GlobalMembers {
     owner: YGNode,
     child: YGNode,
     index: Int,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     YGAssertWithNode(
       owner,
       child.getOwner() == null,
@@ -314,8 +318,7 @@ object GlobalMembers {
     owner: YGNode,
     child: YGNode,
     index: Int,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     owner.replaceChild(child, index)
     child.setOwner(owner)
   }
@@ -323,8 +326,7 @@ object GlobalMembers {
   fun YGNodeRemoveChild(
     owner: YGNode,
     excludedChild: YGNode,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     if (YGNodeGetChildCount(owner) == 0) {
       return
     }
@@ -338,8 +340,7 @@ object GlobalMembers {
     }
   }
 
-  fun YGNodeRemoveAllChildren(owner: YGNode) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeRemoveAllChildren(owner: YGNode) {
     val childCount = YGNodeGetChildCount(owner)
     if (childCount == 0) {
       return
@@ -362,41 +363,35 @@ object GlobalMembers {
   fun YGNodeGetChild(
     node: YGNode,
     index: Int,
-  ): YGNode? //Method definition originates from: Yoga.cpp
-  {
+  ): YGNode? {
     return if (index < node.getChildren().size) {
       node.getChild(index)
     } else null
   }
 
-  fun YGNodeGetOwner(node: YGNode): YGNode? //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeGetOwner(node: YGNode): YGNode? {
     return node.getOwner()
   }
 
-  fun YGNodeGetParent(node: YGNode): YGNode? //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeGetParent(node: YGNode): YGNode? {
     return node.getOwner()
   }
 
-  fun YGNodeGetChildCount(node: YGNode): Int //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeGetChildCount(node: YGNode): Int {
     return node.getChildren().size
   }
 
   fun YGNodeSetIsReferenceBaseline(
     node: YGNode,
     isReferenceBaseline: Boolean,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     if (node.isReferenceBaseline() != isReferenceBaseline) {
       node.setIsReferenceBaseline(isReferenceBaseline)
       node.markDirtyAndPropogate()
     }
   }
 
-  fun YGNodeIsReferenceBaseline(node: YGNode): Boolean //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeIsReferenceBaseline(node: YGNode): Boolean {
     return node.isReferenceBaseline()
   }
 
@@ -405,16 +400,14 @@ object GlobalMembers {
     ownerWidth: Float,
     ownerHeight: Float,
     ownerDirection: YGDirection,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     YGNodeCalculateLayoutWithContext(node, ownerWidth, ownerHeight, ownerDirection, null)
   }
 
-  fun YGNodeMarkDirty(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeMarkDirty(node: YGNode) {
     YGAssertWithNode(
       node, node.hasMeasureFunc(),
-      "Only leaf nodes with custom measure functions" + "should manually mark themselves as dirty",
+      "Only leaf nodes with custom measure functions should manually mark themselves as dirty",
     )
     node.markDirtyAndPropogate()
   }
@@ -433,12 +426,12 @@ object GlobalMembers {
     marginRow: Float,
     marginColumn: Float,
     config: YGConfig?,
-  ): Boolean //Method definition originates from: Yoga.cpp
-  {
+  ): Boolean {
     if (!isUndefined(lastComputedHeight) &&
       lastComputedHeight < 0f ||
       !isUndefined(lastComputedWidth) &&
-      lastComputedWidth < 0f) {
+      lastComputedWidth < 0f
+    ) {
       return false
     }
     val useRoundedComparison = config != null && config.pointScaleFactor != 0f
@@ -492,8 +485,7 @@ object GlobalMembers {
   fun YGNodeCopyStyle(
     dstNode: YGNode,
     srcNode: YGNode,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     if (!(dstNode.getStyle() === srcNode.getStyle())) {
       dstNode.setStyle(srcNode.getStyle())
       dstNode.markDirtyAndPropogate()
@@ -503,24 +495,21 @@ object GlobalMembers {
   fun YGNodeSetMeasureFunc(
     node: YGNode,
     measureFunc: YGMeasureFunc?,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     node.setMeasureFunc(measureFunc)
   }
 
   fun YGNodeSetBaselineFunc(
     node: YGNode,
     baselineFunc: YGBaselineFunc?,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     node.setBaselineFunc(baselineFunc)
   }
 
   fun YGNodeStyleSetFlexDirection(
     node: YGNode,
     flexDirection: YGFlexDirection,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node,
       YGFlexDirection::class,
@@ -532,8 +521,7 @@ object GlobalMembers {
   fun YGNodeStyleSetJustifyContent(
     node: YGNode,
     justifyContent: YGJustify,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node,
       YGJustify::class,
@@ -545,8 +533,7 @@ object GlobalMembers {
   fun YGNodeStyleSetAlignContent(
     node: YGNode,
     alignContent: YGAlign,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node,
       YGAlign::class,
@@ -558,8 +545,7 @@ object GlobalMembers {
   fun YGNodeStyleSetAlignItems(
     node: YGNode,
     alignItems: YGAlign,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGAlign::class,
@@ -571,8 +557,7 @@ object GlobalMembers {
   fun YGNodeStyleSetAlignSelf(
     node: YGNode,
     alignSelf: YGAlign,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGAlign::class,
@@ -584,8 +569,7 @@ object GlobalMembers {
   fun YGNodeStyleSetPositionType(
     node: YGNode,
     positionType: YGPositionType,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGPositionType::class,
@@ -597,8 +581,7 @@ object GlobalMembers {
   fun YGNodeStyleSetFlexWrap(
     node: YGNode,
     flexWrap: YGWrap,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGWrap::class,
@@ -610,8 +593,7 @@ object GlobalMembers {
   fun YGNodeStyleSetOverflow(
     node: YGNode,
     overflow: YGOverflow,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGOverflow::class,
@@ -623,8 +605,7 @@ object GlobalMembers {
   fun YGNodeStyleSetDisplay(
     node: YGNode,
     display: YGDisplay,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node = node,
       enumClazz = YGDisplay::class,
@@ -633,8 +614,7 @@ object GlobalMembers {
     )
   }
 
-  fun YGNodeStyleSetFlex(node: YGNode, flex: Float) //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeStyleSetFlex(node: YGNode, flex: Float) {
     updateStyle(
       node,
       flex,
@@ -647,8 +627,7 @@ object GlobalMembers {
   fun YGNodeStyleSetFlexGrow(
     node: YGNode,
     flexGrow: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node,
       flexGrow,
@@ -661,8 +640,7 @@ object GlobalMembers {
   fun YGNodeStyleSetFlexShrink(
     node: YGNode,
     flexShrink: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyle(
       node,
       flexShrink,
@@ -675,9 +653,8 @@ object GlobalMembers {
   fun YGNodeStyleSetFlexBasis(
     node: YGNode,
     flexBasis: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
-    val value: CompactValue = CompactValue.Companion.ofMaybe(flexBasis, YGUnit.YGUnitPoint)
+  ) {
+    val value: CompactValue = CompactValue.ofMaybe(flexBasis, YGUnit.YGUnitPoint)
     updateStyle(
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
@@ -691,10 +668,9 @@ object GlobalMembers {
   fun YGNodeStyleSetFlexBasisPercent(
     node: YGNode,
     flexBasisPercent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     val value: CompactValue =
-      CompactValue.Companion.ofMaybe(flexBasisPercent, YGUnit.YGUnitPercent)
+      CompactValue.ofMaybe(flexBasisPercent, YGUnit.YGUnitPercent)
     updateStyle(
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
@@ -705,9 +681,8 @@ object GlobalMembers {
     ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.setFlexBasis(value) }
   }
 
-  fun YGNodeStyleSetFlexBasisAuto(node: YGNode) //Method definition originates from: Yoga.cpp
-  {
-    val value: CompactValue = CompactValue.Companion.ofAuto()
+  fun YGNodeStyleSetFlexBasisAuto(node: YGNode) {
+    val value: CompactValue = CompactValue.ofAuto()
     updateStyle(
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
@@ -722,8 +697,7 @@ object GlobalMembers {
     node: YGNode,
     edge: YGEdge,
     points: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       edge,
@@ -736,8 +710,7 @@ object GlobalMembers {
     node: YGNode,
     edge: YGEdge,
     percent: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       edge,
@@ -749,8 +722,7 @@ object GlobalMembers {
   fun YGNodeStyleGetPosition(
     node: YGNode,
     edge: YGEdge,
-  ): YGValue //Method definition originates from: Yoga.cpp
-  {
+  ): YGValue {
     return node.getStyle().position()[edge.ordinal]
   }
 
@@ -758,8 +730,7 @@ object GlobalMembers {
     node: YGNode,
     edge: YGEdge,
     points: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       edge,
@@ -788,9 +759,7 @@ object GlobalMembers {
       node, value,
       { _: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          values.invoke(node.getStyle()).getCompactValue(
-            edge!!.ordinal,
-          ),
+          values.invoke(node.getStyle()).getCompactValue(edge!!.ordinal),
           value,
         )
       },
@@ -803,8 +772,7 @@ object GlobalMembers {
     node: YGNode,
     edge: YGEdge,
     points: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       edge,
@@ -817,8 +785,7 @@ object GlobalMembers {
     node: YGNode,
     edge: YGEdge,
     border: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       edge,
@@ -830,8 +797,7 @@ object GlobalMembers {
   fun YGNodeStyleSetWidth(
     node: YGNode,
     points: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionWidth,
@@ -843,8 +809,7 @@ object GlobalMembers {
   fun YGNodeStyleSetHeight(
     node: YGNode,
     points: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionHeight,
@@ -856,8 +821,7 @@ object GlobalMembers {
   fun YGNodeStyleSetMinWidth(
     node: YGNode,
     minWidth: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionWidth,
@@ -869,8 +833,7 @@ object GlobalMembers {
   fun YGNodeStyleSetMinHeight(
     node: YGNode,
     minHeight: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionHeight,
@@ -882,8 +845,7 @@ object GlobalMembers {
   fun YGNodeStyleSetMaxWidth(
     node: YGNode,
     maxWidth: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionWidth,
@@ -895,8 +857,7 @@ object GlobalMembers {
   fun YGNodeStyleSetMaxHeight(
     node: YGNode,
     maxHeight: Float,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     updateStyleIndexed(
       node,
       YGDimension.YGDimensionHeight,
@@ -905,33 +866,27 @@ object GlobalMembers {
     ) { obj: YGStyle -> obj.maxDimensions() }
   }
 
-  fun YGNodeLayoutGetLeft(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetLeft(node: YGNode): Float {
     return node.getLayout()!!.position[YGEdge.YGEdgeLeft.ordinal]
   }
 
-  fun YGNodeLayoutGetTop(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetTop(node: YGNode): Float {
     return node.getLayout()!!.position[YGEdge.YGEdgeTop.ordinal]
   }
 
-  fun YGNodeLayoutGetRight(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetRight(node: YGNode): Float {
     return node.getLayout()!!.position[YGEdge.YGEdgeRight.ordinal]
   }
 
-  fun YGNodeLayoutGetBottom(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetBottom(node: YGNode): Float {
     return node.getLayout()!!.position[YGEdge.YGEdgeBottom.ordinal]
   }
 
-  fun YGNodeLayoutGetWidth(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetWidth(node: YGNode): Float {
     return node.getLayout()!!.dimensions[YGDimension.YGDimensionWidth.ordinal]
   }
 
-  fun YGNodeLayoutGetHeight(node: YGNode): Float //Method definition originates from: Yoga.cpp
-  {
+  fun YGNodeLayoutGetHeight(node: YGNode): Float {
     return node.getLayout()!!.dimensions[YGDimension.YGDimensionHeight.ordinal]
   }
 
@@ -940,8 +895,7 @@ object GlobalMembers {
     node: YGNode?,
     condition: Boolean,
     message: String?,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     contract {
       returns() implies condition
     }
@@ -956,8 +910,7 @@ object GlobalMembers {
     config: YGConfig?,
     condition: Boolean,
     message: String?,
-  ) //Method definition originates from: Yoga.cpp
-  {
+  ) {
     contract {
       returns() implies condition
     }
@@ -967,19 +920,16 @@ object GlobalMembers {
     }
   }
 
-  fun YGConfigNew(): YGConfig //Method definition originates from: Yoga.cpp
-  {
+  fun YGConfigNew(): YGConfig {
     val config = YGConfig()
     config.setLogger(::YGDefaultLog)
     return config
   }
 
-  fun YGConfigFree(config: YGConfig?) //Method definition originates from: Yoga.cpp
-  {
+  fun YGConfigFree(config: YGConfig?) {
   }
 
-  fun YGConfigGetDefault(): YGConfig //Method definition originates from: Yoga.cpp
-  {
+  fun YGConfigGetDefault(): YGConfig {
     //   static struct YGConfig* defaultConfig = YGConfigNew();
     return defaultConfig
   }
@@ -989,8 +939,7 @@ object GlobalMembers {
     pointScaleFactor: Double,
     forceCeil: Boolean,
     forceFloor: Boolean,
-  ): Float //Method definition originates from: Yoga.cpp
-  {
+  ): Float {
     var scaledValue = value * pointScaleFactor
     var fractial = scaledValue % 1.0
     if (fractial < 0) {
@@ -1029,8 +978,7 @@ object GlobalMembers {
     ygLogLevel: YGLogLevel,
     s: String,
     vararg objects: Any?,
-  ): Int //Method definition originates from: Yoga.cpp
-  {
+  ): Int {
     // FIXME: Uncomment logging
     /*when (ygLogLevel) {
             YGLogLevel.YGLogLevelError, YGLogLevel.YGLogLevelFatal -> {
@@ -1163,8 +1111,7 @@ object GlobalMembers {
     layoutContext: Any?,
     depth: Int,
     generationCount: Int,
-  ): Boolean //Method definition originates from: Yoga.cpp
-  {
+  ): Boolean {
     var depth = depth
     val layout = node.getLayout()
     depth++
@@ -1348,7 +1295,7 @@ object GlobalMembers {
         if (layout.nextCachedMeasurementsIndex + 1 > layoutMarkerData.maxMeasureCache) {
           layoutMarkerData.maxMeasureCache = layout.nextCachedMeasurementsIndex + 1
         }
-        if (layout.nextCachedMeasurementsIndex == YGLayout.Companion.YG_MAX_CACHED_RESULT_COUNT) {
+        if (layout.nextCachedMeasurementsIndex == YGLayout.YG_MAX_CACHED_RESULT_COUNT) {
           if (gPrintChanges) {
             Log.log(node, YGLogLevel.YGLogLevelVerbose, null, "Out of cache entries!\n")
           }
@@ -1606,6 +1553,7 @@ object GlobalMembers {
           maxSize.unwrap()
         }
       }
+
       YGMeasureMode.YGMeasureModeUndefined -> if (!maxSize.isUndefined()) {
         //TODO: What is this???
         size.argValue = maxSize.unwrap()
@@ -1917,7 +1865,7 @@ object GlobalMembers {
       childHeightMeasureMode = if (isUndefined(childHeight)
       ) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
       if (!isMainAxisRow && isUndefined(childWidth) && widthMode != YGMeasureMode.YGMeasureModeUndefined && !isUndefined(
-          width
+          width,
         ) && width > 0f
       ) {
         childWidth = width
@@ -2170,7 +2118,7 @@ object GlobalMembers {
     ownerHeight: Float,
   ): Boolean {
     if (!isUndefined(availableWidth) && widthMeasureMode == YGMeasureMode.YGMeasureModeAtMost && availableWidth <= 0.0f || !isUndefined(
-        availableHeight
+        availableHeight,
       ) && heightMeasureMode == YGMeasureMode.YGMeasureModeAtMost && availableHeight <= 0.0f || widthMeasureMode == YGMeasureMode.YGMeasureModeExactly && heightMeasureMode == YGMeasureMode.YGMeasureModeExactly
     ) {
       node.setLayoutMeasuredDimension(
@@ -2396,12 +2344,13 @@ object GlobalMembers {
       ) {
         flexShrinkScaledFactor = -currentRelativeChild.resolveFlexShrink() * childFlexBasis
         if (flexShrinkScaledFactor != 0f) {
-          val childSize = if (!isUndefined(collectedFlexItemsValues.totalFlexShrinkScaledFactors) && collectedFlexItemsValues.totalFlexShrinkScaledFactors == 0f
-          ) {
-            childFlexBasis + flexShrinkScaledFactor
-          } else {
-            childFlexBasis + collectedFlexItemsValues.remainingFreeSpace / collectedFlexItemsValues.totalFlexShrinkScaledFactors * flexShrinkScaledFactor
-          }
+          val childSize =
+            if (!isUndefined(collectedFlexItemsValues.totalFlexShrinkScaledFactors) && collectedFlexItemsValues.totalFlexShrinkScaledFactors == 0f
+            ) {
+              childFlexBasis + flexShrinkScaledFactor
+            } else {
+              childFlexBasis + collectedFlexItemsValues.remainingFreeSpace / collectedFlexItemsValues.totalFlexShrinkScaledFactors * flexShrinkScaledFactor
+            }
           updatedMainSize = YGNodeBoundAxis(
             currentRelativeChild, mainAxis, childSize, availableInnerMainDim,
             availableInnerWidth,
@@ -2681,8 +2630,10 @@ object GlobalMembers {
       when (justifyContent) {
         YGJustify.YGJustifyCenter -> leadingMainDim =
           collectedFlexItemsValues.remainingFreeSpace / 2
+
         YGJustify.YGJustifyFlexEnd -> leadingMainDim =
           collectedFlexItemsValues.remainingFreeSpace
+
         YGJustify.YGJustifySpaceBetween -> betweenMainDim =
           if (collectedFlexItemsValues.itemsOnLine > 1) {
             YGFloatMax(
@@ -2692,16 +2643,19 @@ object GlobalMembers {
           } else {
             0f
           }
+
         YGJustify.YGJustifySpaceEvenly -> {
           betweenMainDim =
             collectedFlexItemsValues.remainingFreeSpace / (collectedFlexItemsValues.itemsOnLine + 1)
           leadingMainDim = betweenMainDim
         }
+
         YGJustify.YGJustifySpaceAround -> {
           betweenMainDim =
             collectedFlexItemsValues.remainingFreeSpace / collectedFlexItemsValues.itemsOnLine
           leadingMainDim = betweenMainDim / 2
         }
+
         YGJustify.YGJustifyFlexStart -> {}
       }
     }
@@ -3107,7 +3061,7 @@ object GlobalMembers {
           availableInnerMainDim = maxInnerMainDim
         } else {
           if (!node.getConfig()!!.useLegacyStretchBehaviour && (isUndefined(collectedFlexItemsValues.totalFlexGrowFactors) && collectedFlexItemsValues.totalFlexGrowFactors == 0f || isUndefined(
-              node.resolveFlexGrow()
+              node.resolveFlexGrow(),
             ) && node.resolveFlexGrow() == 0f)
           ) {
             // If we don't have any children to flex or we can't flex the node
@@ -3477,6 +3431,7 @@ object GlobalMembers {
                     pos[crossAxis.ordinal].ordinal,
                   )
                 }
+
                 YGAlign.YGAlignFlexEnd -> {
                   child.setLayoutPosition(
                     currentLead + lineHeight - child.getTrailingMargin(
@@ -3487,6 +3442,7 @@ object GlobalMembers {
                     pos[crossAxis.ordinal].ordinal,
                   )
                 }
+
                 YGAlign.YGAlignCenter -> {
                   val childHeight =
                     child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal]
@@ -3495,6 +3451,7 @@ object GlobalMembers {
                     pos[crossAxis.ordinal].ordinal,
                   )
                 }
+
                 YGAlign.YGAlignStretch -> {
                   child.setLayoutPosition(
                     currentLead + child.getLeadingMargin(
@@ -3549,6 +3506,7 @@ object GlobalMembers {
                     }
                   }
                 }
+
                 YGAlign.YGAlignBaseline -> {
                   child.setLayoutPosition(
                     currentLead + maxAscentForCurrentLine - YGBaseline(
@@ -3561,6 +3519,7 @@ object GlobalMembers {
                     YGEdge.YGEdgeTop.ordinal,
                   )
                 }
+
                 YGAlign.YGAlignAuto, YGAlign.YGAlignSpaceBetween, YGAlign.YGAlignSpaceAround -> {}
               }
             }
@@ -3766,7 +3725,7 @@ object GlobalMembers {
     lastComputedSize: Float,
   ): Boolean {
     return lastSizeMode == YGMeasureMode.YGMeasureModeAtMost && sizeMode == YGMeasureMode.YGMeasureModeAtMost && !isUndefined(
-      lastSize
+      lastSize,
     ) && !isUndefined(size) && !isUndefined(lastComputedSize) && lastSize > size && (lastComputedSize <= size || YGFloatsEqual(
       size,
       lastComputedSize,
@@ -3870,14 +3829,19 @@ object GlobalMembers {
         ownerWidth,
       ).unwrap() + node.getMarginForAxis(YGFlexDirection.YGFlexDirectionRow, ownerWidth).unwrap()
       widthMeasureMode = YGMeasureMode.YGMeasureModeExactly
-    } else if (!YGResolveValue(maxDimensions[YGDimension.YGDimensionWidth.ordinal], ownerWidth).isUndefined()) {
+    } else if (!YGResolveValue(
+        maxDimensions[YGDimension.YGDimensionWidth.ordinal],
+        ownerWidth,
+      ).isUndefined()
+    ) {
       width = YGResolveValue(
         maxDimensions[YGDimension.YGDimensionWidth.ordinal], ownerWidth,
       ).unwrap()
       widthMeasureMode = YGMeasureMode.YGMeasureModeAtMost
     } else {
       width = ownerWidth
-      widthMeasureMode = if (isUndefined(width)) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
+      widthMeasureMode =
+        if (isUndefined(width)) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
     }
     val height: Float
     val heightMeasureMode: YGMeasureMode
@@ -3898,7 +3862,8 @@ object GlobalMembers {
       heightMeasureMode = YGMeasureMode.YGMeasureModeAtMost
     } else {
       height = ownerHeight
-      heightMeasureMode = if (isUndefined(height)) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
+      heightMeasureMode =
+        if (isUndefined(height)) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
     }
     if (YGLayoutNodeInternal(
         node,
