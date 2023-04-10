@@ -191,7 +191,7 @@ internal object RowScopeImpl : RowScope
 internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
   val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
-  return FileSpec.builder(scopeType.packageName, scopeType.simpleName)
+  return FileSpec.builder(scopeType)
     .apply {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(Redwood.LayoutScopeMarker)
