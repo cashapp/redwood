@@ -14,6 +14,7 @@ import app.cash.redwood.yoga.GlobalMembers
 import app.cash.redwood.yoga.GlobalMembers.YGUndefined
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
+import app.cash.redwood.yoga.enums.YGDirection
 import app.cash.redwood.yoga.enums.YGMeasureMode
 import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import kotlin.math.roundToInt
@@ -30,6 +31,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
   init {
     rootNode.setMeasureFunc(ViewMeasureFunction(this))
+    applyLayoutParams(layoutParams, rootNode, this)
   }
 
   override fun addView(child: View, index: Int, params: LayoutParams) {
@@ -40,6 +42,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     val childNode = GlobalMembers.YGNodeNew()
     childNode.setMeasureFunc(ViewMeasureFunction(child))
+    applyLayoutParams(child.layoutParams, childNode, child)
     nodes[child] = childNode
     GlobalMembers.YGNodeAddChild(rootNode, childNode)
   }
@@ -152,7 +155,27 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     setMeasuredDimension(width, height)
   }
 
+  private fun applyLayoutParams(layoutParams: LayoutParams?, node: YGNode, view: View) {
+    if (view.resources.configuration.layoutDirection == LAYOUT_DIRECTION_RTL) {
+      node.setLayoutDirection(YGDirection.YGDirectionRTL)
+    }
+
+    if (layoutParams != null) {
+      val width = layoutParams.width
+      if (width >= 0) {
+        GlobalMembers.YGNodeStyleSetWidth(node, width.toFloat())
+      }
+      val height = layoutParams.height
+      if (height >= 0) {
+        GlobalMembers.YGNodeStyleSetHeight(node, height.toFloat())
+      }
+    }
+  }
+
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
+    // TODO: Figure out how to measure incrementally safely.
+    rootNode.markDirtyAndPropogateDownwards()
+
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetWidth(rootNode, widthSize)
