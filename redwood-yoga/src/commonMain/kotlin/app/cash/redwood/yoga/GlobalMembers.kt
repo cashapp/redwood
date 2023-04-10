@@ -73,7 +73,6 @@ object GlobalMembers {
     YGDimension.YGDimensionWidth,
     YGDimension.YGDimensionWidth,
   )
-  const val spacer = "                                                            "
   const val kDefaultFlexGrow = 0.0f
   const val kDefaultFlexShrink = 0.0f
   const val kWebDefaultFlexShrink = 1.0f
@@ -1130,41 +1129,40 @@ object GlobalMembers {
       val marginAxisRow =
         node.getMarginForAxis(YGFlexDirection.YGFlexDirectionRow, ownerWidth).unwrap()
       val marginAxisColumn =
-        node.getMarginForAxis(YGFlexDirection.YGFlexDirectionColumn, ownerWidth)
-          .unwrap()
+        node.getMarginForAxis(YGFlexDirection.YGFlexDirectionColumn, ownerWidth).unwrap()
       if (YGNodeCanUseCachedMeasurement(
-          widthMeasureMode,
-          availableWidth,
-          heightMeasureMode,
-          availableHeight,
-          layout!!.cachedLayout.widthMeasureMode,
-          layout.cachedLayout.availableWidth,
-          layout.cachedLayout.heightMeasureMode,
-          layout.cachedLayout.availableHeight,
-          layout.cachedLayout.computedWidth,
-          layout.cachedLayout.computedHeight,
-          marginAxisRow,
-          marginAxisColumn,
-          config,
+          widthMode = widthMeasureMode,
+          width = availableWidth,
+          heightMode = heightMeasureMode,
+          height = availableHeight,
+          lastWidthMode = layout!!.cachedLayout.widthMeasureMode,
+          lastWidth = layout.cachedLayout.availableWidth,
+          lastHeightMode = layout.cachedLayout.heightMeasureMode,
+          lastHeight = layout.cachedLayout.availableHeight,
+          lastComputedWidth = layout.cachedLayout.computedWidth,
+          lastComputedHeight = layout.cachedLayout.computedHeight,
+          marginRow = marginAxisRow,
+          marginColumn = marginAxisColumn,
+          config = config,
         )
       ) {
         cachedResults = layout.cachedLayout
       } else {
         for (i in 0 until layout.nextCachedMeasurementsIndex) {
           if (YGNodeCanUseCachedMeasurement(
-              widthMeasureMode,
-              availableWidth,
-              heightMeasureMode,
-              availableHeight,
-              layout.cachedMeasurements[i].widthMeasureMode,
-              layout.cachedMeasurements[i].availableWidth,
-              layout.cachedMeasurements[i].heightMeasureMode,
-              layout.cachedMeasurements[i].availableHeight,
-              layout.cachedMeasurements[i].computedWidth,
-              layout.cachedMeasurements[i].computedHeight,
-              marginAxisRow,
-              marginAxisColumn,
-              config,
+              widthMode = widthMeasureMode,
+              width = availableWidth,
+              heightMode = heightMeasureMode,
+              height = availableHeight,
+              lastWidthMode = layout.cachedMeasurements[i].widthMeasureMode,
+              lastWidth = layout.cachedMeasurements[i].availableWidth,
+              lastHeightMode = layout.cachedMeasurements[i].heightMeasureMode,
+              lastHeight = layout.cachedMeasurements[i].availableHeight,
+              lastComputedWidth = layout.cachedMeasurements[i].computedWidth,
+              lastComputedHeight = layout.cachedMeasurements[i].computedHeight,
+              marginRow = marginAxisRow,
+              marginColumn = marginAxisColumn,
+              config = config,
             )
           ) {
             cachedResults = layout.cachedMeasurements[i]
@@ -3677,12 +3675,7 @@ object GlobalMembers {
   }
 
   fun YGSpacer(level: Int): String {
-    val spacerLen = spacer.length
-    return if (level > spacerLen) {
-      spacer.substring(0, 0)
-    } else {
-      spacer.substring(spacerLen - level)
-    }
+    return " ".repeat(level)
   }
 
   fun YGMeasureModeName(mode: YGMeasureMode, performLayout: Boolean): String {
