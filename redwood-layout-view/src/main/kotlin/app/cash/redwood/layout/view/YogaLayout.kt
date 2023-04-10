@@ -97,12 +97,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     nodes -= view
 
     if (inLayout) {
-      GlobalMembers.YGNodeCalculateLayoutWithContext(
+      GlobalMembers.YGNodeCalculateLayout(
         node = rootNode,
         ownerWidth = YGUndefined,
         ownerHeight = YGUndefined,
         ownerDirection = rootNode.getStyle().direction(),
-        layoutContext = null,
       )
     }
   }
@@ -166,12 +165,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       MeasureSpec.AT_MOST -> GlobalMembers.YGNodeStyleSetMaxHeight(rootNode, heightSize)
       MeasureSpec.UNSPECIFIED -> {}
     }
-    GlobalMembers.YGNodeCalculateLayoutWithContext(
+    GlobalMembers.YGNodeCalculateLayout(
       node = rootNode,
       ownerWidth = YGUndefined,
       ownerHeight = YGUndefined,
       ownerDirection = rootNode.getStyle().direction(),
-      layoutContext = null,
     )
   }
 }

@@ -36,10 +36,8 @@ import app.cash.redwood.yoga.event.NodeAllocationEventData
 import app.cash.redwood.yoga.event.NodeDeallocationEventData
 import app.cash.redwood.yoga.event.NodeLayoutEventData
 import app.cash.redwood.yoga.interfaces.YGBaselineFunc
-import app.cash.redwood.yoga.interfaces.YGDirtiedFunc
 import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import app.cash.redwood.yoga.interfaces.YGNodeCleanupFunc
-import app.cash.redwood.yoga.interfaces.YGPrintFunc
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.math.abs
@@ -396,7 +394,13 @@ object GlobalMembers {
     ownerHeight: Float,
     ownerDirection: YGDirection,
   ) {
-    YGNodeCalculateLayoutWithContext(node, ownerWidth, ownerHeight, ownerDirection, null)
+    YGNodeCalculateLayoutWithContext(
+      node = node,
+      ownerWidth = ownerWidth,
+      ownerHeight = ownerHeight,
+      ownerDirection = ownerDirection,
+      layoutContext = null
+    )
   }
 
   fun YGNodeMarkDirty(node: YGNode) {
@@ -1248,22 +1252,22 @@ object GlobalMembers {
           LayoutPassReasonToString(reason),
         )
       }
-      YGNodelayoutImpl(
-        node,
-        availableWidth,
-        availableHeight,
-        ownerDirection,
-        widthMeasureMode,
-        heightMeasureMode,
-        ownerWidth,
-        ownerHeight,
-        performLayout,
-        config,
-        layoutMarkerData,
-        layoutContext,
-        depth,
-        generationCount,
-        reason,
+      YGNodeLayoutImpl(
+        node = node,
+        availableWidth = availableWidth,
+        availableHeight = availableHeight,
+        ownerDirection = ownerDirection,
+        widthMeasureMode = widthMeasureMode,
+        heightMeasureMode = heightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
+        performLayout = performLayout,
+        config = config,
+        layoutMarkerData = layoutMarkerData,
+        layoutContext = layoutContext,
+        depth = depth,
+        generationCount = generationCount,
+        reason = reason,
       )
       if (gPrintChanges) {
         Log.log(
@@ -1720,30 +1724,38 @@ object GlobalMembers {
       }
       val childWidthRef = RefObject(childWidth)
       YGConstrainMaxSizeForMode(
-        child, YGFlexDirection.YGFlexDirectionRow, ownerWidth, ownerWidth,
-        childWidthMeasureMode, childWidthRef,
+        node = child,
+        axis = YGFlexDirection.YGFlexDirectionRow,
+        ownerAxisSize = ownerWidth,
+        ownerWidth = ownerWidth,
+        mode = childWidthMeasureMode,
+        size = childWidthRef,
       )
       YGConstrainMaxSizeForMode(
-        child, YGFlexDirection.YGFlexDirectionColumn, ownerHeight, ownerWidth,
-        childHeightMeasureMode, childWidthRef,
+        node = child,
+        axis = YGFlexDirection.YGFlexDirectionColumn,
+        ownerAxisSize = ownerHeight,
+        ownerWidth = ownerWidth,
+        mode = childHeightMeasureMode,
+        size = childWidthRef,
       )
       childWidth = childWidthRef.argValue
       YGLayoutNodeInternal(
-        child,
-        childWidth,
-        childHeight,
-        direction,
-        childWidthMeasureMode,
-        childHeightMeasureMode,
-        ownerWidth,
-        ownerHeight,
-        false,
-        LayoutPassReason.kMeasureChild,
-        config,
-        layoutMarkerData,
-        layoutContext,
-        depth,
-        generationCount,
+        node = child,
+        availableWidth = childWidth,
+        availableHeight = childHeight,
+        ownerDirection = direction,
+        widthMeasureMode = childWidthMeasureMode,
+        heightMeasureMode = childHeightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
+        performLayout = false,
+        reason = LayoutPassReason.kMeasureChild,
+        config = config,
+        layoutMarkerData = layoutMarkerData,
+        layoutContext = layoutContext,
+        depth = depth,
+        generationCount = generationCount,
       )
       child.setLayoutComputedFlexBasis(
         YGFloatOptional(
@@ -1867,21 +1879,21 @@ object GlobalMembers {
         childWidthMeasureMode = YGMeasureMode.YGMeasureModeAtMost
       }
       YGLayoutNodeInternal(
-        child,
-        childWidth,
-        childHeight,
-        direction,
-        childWidthMeasureMode,
-        childHeightMeasureMode,
-        childWidth,
-        childHeight,
-        false,
-        LayoutPassReason.kAbsMeasureChild,
-        config,
-        layoutMarkerData,
-        layoutContext,
-        depth,
-        generationCount,
+        node = child,
+        availableWidth = childWidth,
+        availableHeight = childHeight,
+        ownerDirection = direction,
+        widthMeasureMode = childWidthMeasureMode,
+        heightMeasureMode = childHeightMeasureMode,
+        ownerWidth = childWidth,
+        ownerHeight = childHeight,
+        performLayout = false,
+        reason = LayoutPassReason.kAbsMeasureChild,
+        config = config,
+        layoutMarkerData = layoutMarkerData,
+        layoutContext = layoutContext,
+        depth = depth,
+        generationCount = generationCount,
       )
       childWidth =
         child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
@@ -1895,21 +1907,21 @@ object GlobalMembers {
         ).unwrap()
     }
     YGLayoutNodeInternal(
-      child,
-      childWidth,
-      childHeight,
-      direction,
-      YGMeasureMode.YGMeasureModeExactly,
-      YGMeasureMode.YGMeasureModeExactly,
-      childWidth,
-      childHeight,
-      true,
-      LayoutPassReason.kAbsLayout,
-      config,
-      layoutMarkerData,
-      layoutContext,
-      depth,
-      generationCount,
+      node = child,
+      availableWidth = childWidth,
+      availableHeight = childHeight,
+      ownerDirection = direction,
+      widthMeasureMode = YGMeasureMode.YGMeasureModeExactly,
+      heightMeasureMode = YGMeasureMode.YGMeasureModeExactly,
+      ownerWidth = childWidth,
+      ownerHeight = childHeight,
+      performLayout = true,
+      reason = LayoutPassReason.kAbsLayout,
+      config = config,
+      layoutMarkerData = layoutMarkerData,
+      layoutContext = layoutContext,
+      depth = depth,
+      generationCount = generationCount,
     )
     if (child.isTrailingPosDefined(mainAxis) && !child.isLeadingPositionDefined(mainAxis)) {
       child.setLayoutPosition(
@@ -2416,12 +2428,20 @@ object GlobalMembers {
           ) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
       }
       YGConstrainMaxSizeForMode(
-        currentRelativeChild, mainAxis, availableInnerMainDim, availableInnerWidth,
-        childMainMeasureMode, childMainSize,
+        node = currentRelativeChild,
+        axis = mainAxis,
+        ownerAxisSize = availableInnerMainDim,
+        ownerWidth = availableInnerWidth,
+        mode = childMainMeasureMode,
+        size = childMainSize,
       )
       YGConstrainMaxSizeForMode(
-        currentRelativeChild, crossAxis, availableInnerCrossDim, availableInnerWidth,
-        childCrossMeasureMode, childCrossSize,
+        node = currentRelativeChild,
+        axis = crossAxis,
+        ownerAxisSize = availableInnerCrossDim,
+        ownerWidth = availableInnerWidth,
+        mode = childCrossMeasureMode,
+        size = childCrossSize,
       )
       val requiresStretchLayout = !YGNodeIsStyleDimDefined(
         currentRelativeChild, crossAxis,
@@ -2442,21 +2462,21 @@ object GlobalMembers {
         if (!isMainAxisRow) childMainMeasureMode else childCrossMeasureMode
       val isLayoutPass = performLayout && !requiresStretchLayout
       YGLayoutNodeInternal(
-        currentRelativeChild,
-        childWidth.argValue,
-        childHeight.argValue,
-        node.getLayout()!!.direction(),
-        childWidthMeasureMode,
-        childHeightMeasureMode,
-        availableInnerWidth,
-        availableInnerHeight,
-        isLayoutPass,
-        if (isLayoutPass) LayoutPassReason.kFlexLayout else LayoutPassReason.kFlexMeasure,
-        config,
-        layoutMarkerData,
-        layoutContext,
-        depth,
-        generationCount,
+        node = currentRelativeChild,
+        availableWidth = childWidth.argValue,
+        availableHeight = childHeight.argValue,
+        ownerDirection = node.getLayout()!!.direction(),
+        widthMeasureMode = childWidthMeasureMode,
+        heightMeasureMode = childHeightMeasureMode,
+        ownerWidth = availableInnerWidth,
+        ownerHeight = availableInnerHeight,
+        performLayout = isLayoutPass,
+        reason = if (isLayoutPass) LayoutPassReason.kFlexLayout else LayoutPassReason.kFlexMeasure,
+        config = config,
+        layoutMarkerData = layoutMarkerData,
+        layoutContext = layoutContext,
+        depth = depth,
+        generationCount = generationCount,
       )
       node.setLayoutHadOverflow(
         node.getLayout()!!.hadOverflow() or currentRelativeChild.getLayout()!!.hadOverflow(),
@@ -2809,7 +2829,7 @@ object GlobalMembers {
   //    passes an available size of undefined then it must also pass a measure
   //    mode of YGMeasureModeUndefined in that dimension.
   //
-  private fun YGNodelayoutImpl(
+  private fun YGNodeLayoutImpl(
     node: YGNode,
     availableWidth: Float,
     availableHeight: Float,
@@ -2827,16 +2847,20 @@ object GlobalMembers {
     reason: LayoutPassReason,
   ) {
     YGAssertWithNode(
-      node,
-      !isUndefined(availableWidth) || widthMeasureMode == YGMeasureMode.YGMeasureModeUndefined,
-      "availableWidth is indefinite so widthMeasureMode must be " + "YGMeasureModeUndefined",
+      node = node,
+      condition = !isUndefined(availableWidth) || widthMeasureMode == YGMeasureMode.YGMeasureModeUndefined,
+      message = "availableWidth is indefinite so widthMeasureMode must be YGMeasureModeUndefined",
     )
     YGAssertWithNode(
-      node,
-      !isUndefined(availableHeight) || heightMeasureMode == YGMeasureMode.YGMeasureModeUndefined,
-      "availableHeight is indefinite so heightMeasureMode must be " + "YGMeasureModeUndefined",
+      node = node,
+      condition = !isUndefined(availableHeight) || heightMeasureMode == YGMeasureMode.YGMeasureModeUndefined,
+      message = "availableHeight is indefinite so heightMeasureMode must be YGMeasureModeUndefined",
     )
-    if (performLayout) layoutMarkerData.layouts += 1 else layoutMarkerData.measures += 1
+    if (performLayout) {
+      layoutMarkerData.layouts += 1
+    } else {
+      layoutMarkerData.measures += 1
+    }
 
     // Set the resolved resolution in the node's layout.
     val direction = node.resolveDirection(ownerDirection)
@@ -2860,14 +2884,8 @@ object GlobalMembers {
     val marginAxisColumn = marginColumnLeading + marginColumnTrailing
     node.setLayoutBorder(node.getLeadingBorder(flexRowDirection), startEdge.ordinal)
     node.setLayoutBorder(node.getTrailingBorder(flexRowDirection), endEdge.ordinal)
-    node.setLayoutBorder(
-      node.getLeadingBorder(flexColumnDirection),
-      YGEdge.YGEdgeTop.ordinal,
-    )
-    node.setLayoutBorder(
-      node.getTrailingBorder(flexColumnDirection),
-      YGEdge.YGEdgeBottom.ordinal,
-    )
+    node.setLayoutBorder(node.getLeadingBorder(flexColumnDirection), YGEdge.YGEdgeTop.ordinal)
+    node.setLayoutBorder(node.getTrailingBorder(flexColumnDirection), YGEdge.YGEdgeBottom.ordinal)
     node.setLayoutPadding(
       node.getLeadingPadding(flexRowDirection, ownerWidth).unwrap(),
       startEdge.ordinal,
@@ -2886,29 +2904,29 @@ object GlobalMembers {
     )
     if (node.hasMeasureFunc()) {
       YGNodeWithMeasureFuncSetMeasuredDimensions(
-        node,
-        availableWidth - marginAxisRow,
-        availableHeight - marginAxisColumn,
-        widthMeasureMode,
-        heightMeasureMode,
-        ownerWidth,
-        ownerHeight,
-        layoutMarkerData,
-        layoutContext,
-        reason,
+        node = node,
+        availableWidth = availableWidth - marginAxisRow,
+        availableHeight = availableHeight - marginAxisColumn,
+        widthMeasureMode = widthMeasureMode,
+        heightMeasureMode = heightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
+        layoutMarkerData = layoutMarkerData,
+        layoutContext = layoutContext,
+        reason = reason,
       )
       return
     }
     val childCount = YGNodeGetChildCount(node)
     if (childCount == 0) {
       YGNodeEmptyContainerSetMeasuredDimensions(
-        node,
-        availableWidth - marginAxisRow,
-        availableHeight - marginAxisColumn,
-        widthMeasureMode,
-        heightMeasureMode,
-        ownerWidth,
-        ownerHeight,
+        node = node,
+        availableWidth = availableWidth - marginAxisRow,
+        availableHeight = availableHeight - marginAxisColumn,
+        widthMeasureMode = widthMeasureMode,
+        heightMeasureMode = heightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
       )
       return
     }
@@ -2916,13 +2934,13 @@ object GlobalMembers {
     // If we're not being asked to perform a full layout we can skip the algorithm
     // if we already know the size
     if (!performLayout && YGNodeFixedSizeSetMeasuredDimensions(
-        node,
-        availableWidth - marginAxisRow,
-        availableHeight - marginAxisColumn,
-        widthMeasureMode,
-        heightMeasureMode,
-        ownerWidth,
-        ownerHeight,
+        node = node,
+        availableWidth = availableWidth - marginAxisRow,
+        availableHeight = availableHeight - marginAxisColumn,
+        widthMeasureMode = widthMeasureMode,
+        heightMeasureMode = heightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
       )
     ) {
       return
@@ -2935,9 +2953,8 @@ object GlobalMembers {
     node.setLayoutHadOverflow(false)
 
     // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
-    val mainAxis = YGResolveFlexDirection(
-      node.getStyle().flexDirection(), direction,
-    )
+
+    val mainAxis = YGResolveFlexDirection(node.getStyle().flexDirection(), direction)
     val crossAxis = YGFlexDirectionCross(mainAxis, direction)
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
     val isNodeFlexWrap = node.getStyle().flexWrap() != YGWrap.YGWrapNoWrap
@@ -2957,39 +2974,47 @@ object GlobalMembers {
       if (isMainAxisRow) paddingAndBorderAxisCross else paddingAndBorderAxisMain
 
     // STEP 2: DETERMINE AVAILABLE SIZE IN MAIN AND CROSS DIRECTIONS
+
     val availableInnerWidth = YGNodeCalculateAvailableInnerDim(
-      node, YGDimension.YGDimensionWidth,
-      availableWidth - marginAxisRow, paddingAndBorderAxisRow, ownerWidth,
+      node = node,
+      dimension = YGDimension.YGDimensionWidth,
+      availableDim = availableWidth - marginAxisRow,
+      paddingAndBorder = paddingAndBorderAxisRow,
+      ownerDim = ownerWidth,
     )
     val availableInnerHeight = YGNodeCalculateAvailableInnerDim(
-      node, YGDimension.YGDimensionHeight,
-      availableHeight - marginAxisColumn, paddingAndBorderAxisColumn, ownerHeight,
+      node = node,
+      dimension = YGDimension.YGDimensionHeight,
+      availableDim = availableHeight - marginAxisColumn,
+      paddingAndBorder = paddingAndBorderAxisColumn,
+      ownerDim = ownerHeight,
     )
     var availableInnerMainDim = if (isMainAxisRow) availableInnerWidth else availableInnerHeight
-    val availableInnerCrossDim =
-      if (isMainAxisRow) availableInnerHeight else availableInnerWidth
+    val availableInnerCrossDim = if (isMainAxisRow) availableInnerHeight else availableInnerWidth
 
     // STEP 3: DETERMINE FLEX BASIS FOR EACH ITEM
+
     val totalOuterFlexBasis = YGNodeComputeFlexBasisForChildren(
-      node,
-      availableInnerWidth,
-      availableInnerHeight,
-      widthMeasureMode,
-      heightMeasureMode,
-      direction,
-      mainAxis,
-      config,
-      performLayout,
-      layoutMarkerData,
-      layoutContext,
-      depth,
-      generationCount,
+      node = node,
+      availableInnerWidth = availableInnerWidth,
+      availableInnerHeight = availableInnerHeight,
+      widthMeasureMode = widthMeasureMode,
+      heightMeasureMode = heightMeasureMode,
+      direction = direction,
+      mainAxis = mainAxis,
+      config = config,
+      performLayout = performLayout,
+      layoutMarkerData = layoutMarkerData,
+      layoutContext = layoutContext,
+      depth = depth,
+      generationCount = generationCount,
     )
-    val flexBasisOverflows =
-      measureModeMainDim != YGMeasureMode.YGMeasureModeUndefined && totalOuterFlexBasis > availableInnerMainDim
+    val flexBasisOverflows = measureModeMainDim != YGMeasureMode.YGMeasureModeUndefined &&
+      totalOuterFlexBasis > availableInnerMainDim
     if (isNodeFlexWrap && flexBasisOverflows && measureModeMainDim == YGMeasureMode.YGMeasureModeAtMost) {
       measureModeMainDim = YGMeasureMode.YGMeasureModeExactly
     }
+
     // STEP 4: COLLECT FLEX ITEMS INTO FLEX LINES
 
     // Indexes of children that represent the first and last items in the line.
@@ -3007,17 +3032,22 @@ object GlobalMembers {
     var collectedFlexItemsValues: YGCollectFlexItemsRowValues
     while (endOfLineIndex < childCount) {
       collectedFlexItemsValues = YGCalculateCollectFlexItemsRowValues(
-        node, ownerDirection, mainAxisownerSize,
-        availableInnerWidth, availableInnerMainDim, startOfLineIndex, lineCount,
+        node = node,
+        ownerDirection = ownerDirection,
+        mainAxisownerSize = mainAxisownerSize,
+        availableInnerWidth = availableInnerWidth,
+        availableInnerMainDim = availableInnerMainDim,
+        startOfLineIndex = startOfLineIndex,
+        lineCount = lineCount,
       )
       endOfLineIndex = collectedFlexItemsValues.endOfLineIndex
 
       // If we don't need to measure the cross axis, we can skip the entire flex
       // step.
-      val canSkipFlex =
-        !performLayout && measureModeCrossDim == YGMeasureMode.YGMeasureModeExactly
+      val canSkipFlex = !performLayout && measureModeCrossDim == YGMeasureMode.YGMeasureModeExactly
 
       // STEP 5: RESOLVING FLEXIBLE LENGTHS ON MAIN AXIS
+
       // Calculate the remaining available space that needs to be allocated. If
       // the main dimension size isn't known, it is computed based on the line
       // length, so there's no more space left to distribute.
@@ -3025,10 +3055,8 @@ object GlobalMembers {
       // If we don't measure with exact main dimension we want to ensure we don't
       // violate min and max
       if (measureModeMainDim != YGMeasureMode.YGMeasureModeExactly) {
-        val minDimensions = node.getStyle()
-          .minDimensions()
-        val maxDimensions = node.getStyle()
-          .maxDimensions()
+        val minDimensions = node.getStyle().minDimensions()
+        val maxDimensions = node.getStyle().maxDimensions()
         val minInnerWidth = YGResolveValue(
           minDimensions[YGDimension.YGDimensionWidth.ordinal],
           ownerWidth,
@@ -3047,16 +3075,15 @@ object GlobalMembers {
         ).unwrap() - paddingAndBorderAxisColumn
         val minInnerMainDim = if (isMainAxisRow) minInnerWidth else minInnerHeight
         val maxInnerMainDim = if (isMainAxisRow) maxInnerWidth else maxInnerHeight
-        if (!isUndefined(minInnerMainDim) && collectedFlexItemsValues.sizeConsumedOnCurrentLine < minInnerMainDim
-        ) {
+        if (!isUndefined(minInnerMainDim) && collectedFlexItemsValues.sizeConsumedOnCurrentLine < minInnerMainDim) {
           availableInnerMainDim = minInnerMainDim
-        } else if (!isUndefined(maxInnerMainDim) && collectedFlexItemsValues.sizeConsumedOnCurrentLine > maxInnerMainDim
-        ) {
+        } else if (!isUndefined(maxInnerMainDim) && collectedFlexItemsValues.sizeConsumedOnCurrentLine > maxInnerMainDim) {
           availableInnerMainDim = maxInnerMainDim
         } else {
-          if (!node.getConfig()!!.useLegacyStretchBehaviour && (isUndefined(collectedFlexItemsValues.totalFlexGrowFactors) && collectedFlexItemsValues.totalFlexGrowFactors == 0f || isUndefined(
-              node.resolveFlexGrow(),
-            ) && node.resolveFlexGrow() == 0f)
+          if (!node.getConfig()!!.useLegacyStretchBehaviour &&
+            (isUndefined(collectedFlexItemsValues.totalFlexGrowFactors) &&
+              collectedFlexItemsValues.totalFlexGrowFactors == 0f ||
+              isUndefined(node.resolveFlexGrow()) && node.resolveFlexGrow() == 0f)
           ) {
             // If we don't have any children to flex or we can't flex the node
             // itself, space we've used is all space we need. Root node also
@@ -3082,28 +3109,27 @@ object GlobalMembers {
       }
       if (!canSkipFlex) {
         YGResolveFlexibleLength(
-          node,
-          collectedFlexItemsValues,
-          mainAxis,
-          crossAxis,
-          mainAxisownerSize,
-          availableInnerMainDim,
-          availableInnerCrossDim,
-          availableInnerWidth,
-          availableInnerHeight,
-          flexBasisOverflows,
-          measureModeCrossDim,
-          performLayout,
-          config,
-          layoutMarkerData,
-          layoutContext,
-          depth,
-          generationCount,
+          node = node,
+          collectedFlexItemsValues = collectedFlexItemsValues,
+          mainAxis = mainAxis,
+          crossAxis = crossAxis,
+          mainAxisownerSize = mainAxisownerSize,
+          availableInnerMainDim = availableInnerMainDim,
+          availableInnerCrossDim = availableInnerCrossDim,
+          availableInnerWidth = availableInnerWidth,
+          availableInnerHeight = availableInnerHeight,
+          flexBasisOverflows = flexBasisOverflows,
+          measureModeCrossDim = measureModeCrossDim,
+          performLayout = performLayout,
+          config = config,
+          layoutMarkerData = layoutMarkerData,
+          layoutContext = layoutContext,
+          depth = depth,
+          generationCount = generationCount,
         )
       }
       node.setLayoutHadOverflow(
-        node.getLayout()!!
-          .hadOverflow() or (collectedFlexItemsValues.remainingFreeSpace < 0),
+        node.getLayout()!!.hadOverflow() || (collectedFlexItemsValues.remainingFreeSpace < 0),
       )
 
       // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
@@ -3113,30 +3139,32 @@ object GlobalMembers {
       // of items that are aligned "stretch". We need to compute these stretch
       // values and set the final positions.
       YGJustifyMainAxis(
-        node,
-        collectedFlexItemsValues,
-        startOfLineIndex,
-        mainAxis,
-        crossAxis,
-        measureModeMainDim,
-        measureModeCrossDim,
-        mainAxisownerSize,
-        ownerWidth,
-        availableInnerMainDim,
-        availableInnerCrossDim,
-        availableInnerWidth,
-        performLayout,
-        layoutContext,
+        node = node,
+        collectedFlexItemsValues = collectedFlexItemsValues,
+        startOfLineIndex = startOfLineIndex,
+        mainAxis = mainAxis,
+        crossAxis = crossAxis,
+        measureModeMainDim = measureModeMainDim,
+        measureModeCrossDim = measureModeCrossDim,
+        mainAxisownerSize = mainAxisownerSize,
+        ownerWidth = ownerWidth,
+        availableInnerMainDim = availableInnerMainDim,
+        availableInnerCrossDim = availableInnerCrossDim,
+        availableInnerWidth = availableInnerWidth,
+        performLayout = performLayout,
+        layoutContext = layoutContext,
       )
       var containerCrossAxis = availableInnerCrossDim
-      if (measureModeCrossDim == YGMeasureMode.YGMeasureModeUndefined || measureModeCrossDim == YGMeasureMode.YGMeasureModeAtMost) {
+      if (measureModeCrossDim == YGMeasureMode.YGMeasureModeUndefined ||
+        measureModeCrossDim == YGMeasureMode.YGMeasureModeAtMost
+      ) {
         // Compute the cross axis from the max cross dimension of the children.
         containerCrossAxis = YGNodeBoundAxis(
-          node,
-          crossAxis,
-          collectedFlexItemsValues.crossDim + paddingAndBorderAxisCross,
-          crossAxisownerSize,
-          ownerWidth,
+          node = node,
+          axis = crossAxis,
+          value = collectedFlexItemsValues.crossDim + paddingAndBorderAxisCross,
+          axisSize = crossAxisownerSize,
+          widthSize = ownerWidth,
         ) - paddingAndBorderAxisCross
       }
 
@@ -3147,12 +3175,15 @@ object GlobalMembers {
 
       // Clamp to the min/max size specified on the container.
       collectedFlexItemsValues.crossDim = YGNodeBoundAxis(
-        node, crossAxis,
-        collectedFlexItemsValues.crossDim + paddingAndBorderAxisCross, crossAxisownerSize,
-        ownerWidth,
+        node = node,
+        axis = crossAxis,
+        value = collectedFlexItemsValues.crossDim + paddingAndBorderAxisCross,
+        axisSize = crossAxisownerSize,
+        widthSize = ownerWidth,
       ) - paddingAndBorderAxisCross
 
       // STEP 7: CROSS-AXIS ALIGNMENT
+
       // We can skip child alignment if we're just measuring the container.
       if (performLayout) {
         for (i in startOfLineIndex until endOfLineIndex) {
@@ -3160,32 +3191,25 @@ object GlobalMembers {
           if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
             continue
           }
-          if (child.getStyle()
-              .positionType() == YGPositionType.YGPositionTypeAbsolute
-          ) {
+          if (child.getStyle().positionType() == YGPositionType.YGPositionTypeAbsolute) {
             // If the child is absolutely positioned and has a
             // top/left/bottom/right set, override all the previously computed
             // positions to set it correctly.
             val isChildLeadingPosDefined = child.isLeadingPositionDefined(crossAxis)
             if (isChildLeadingPosDefined) {
               child.setLayoutPosition(
-                child.getLeadingPosition(crossAxis, availableInnerCrossDim)
-                  .unwrap() + node.getLeadingBorder(crossAxis) + child.getLeadingMargin(
-                  crossAxis,
-                  availableInnerWidth,
-                ).unwrap(),
+                child.getLeadingPosition(crossAxis, availableInnerCrossDim).unwrap() +
+                  node.getLeadingBorder(crossAxis) +
+                  child.getLeadingMargin(crossAxis, availableInnerWidth).unwrap(),
                 pos[crossAxis.ordinal].ordinal,
               )
             }
             // If leading position is not defined or calculations result in Nan,
             // default to border + margin
-            if (!isChildLeadingPosDefined || isUndefined(child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal])
-            ) {
+            if (!isChildLeadingPosDefined || isUndefined(child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal])) {
               child.setLayoutPosition(
-                node.getLeadingBorder(crossAxis) + child.getLeadingMargin(
-                  crossAxis,
-                  availableInnerWidth,
-                ).unwrap(),
+                node.getLeadingBorder(crossAxis) +
+                  child.getLeadingMargin(crossAxis, availableInnerWidth).unwrap(),
                 pos[crossAxis.ordinal].ordinal,
               )
             }
@@ -3200,90 +3224,83 @@ object GlobalMembers {
             // If the child uses align stretch, we need to lay it out one more
             // time, this time forcing the cross-axis size to be the computed
             // cross size for the current line.
-            if (alignItem == YGAlign.YGAlignStretch && child.marginLeadingValue(
-                crossAxis,
-              ).unit != YGUnit.YGUnitAuto && child.marginTrailingValue(
-                crossAxis,
-              ).unit != YGUnit.YGUnitAuto
+            if (alignItem == YGAlign.YGAlignStretch &&
+              child.marginLeadingValue(crossAxis).unit != YGUnit.YGUnitAuto &&
+              child.marginTrailingValue(crossAxis).unit != YGUnit.YGUnitAuto
             ) {
               // If the child defines a definite size for its cross axis, there's
               // no need to stretch.
-              if (!YGNodeIsStyleDimDefined(
-                  child, crossAxis, availableInnerCrossDim,
-                )
-              ) {
-                val childMainSize = RefObject(
-                  child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal],
-                )
+              if (!YGNodeIsStyleDimDefined(child, crossAxis, availableInnerCrossDim)) {
+                val childMainSize =
+                  RefObject(child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal])
                 val childStyle = child.getStyle()
                 val childCrossSize = RefObject(
-                  if (!childStyle.aspectRatio()
-                      .isUndefined()
-                  ) child.getMarginForAxis(
-                    crossAxis,
-                    availableInnerWidth,
-                  )
-                    .unwrap() + (if (isMainAxisRow) childMainSize.argValue / childStyle.aspectRatio()
-                    .unwrap() else childMainSize.argValue * childStyle.aspectRatio()
-                    .unwrap()) else collectedFlexItemsValues.crossDim,
+                  if (!childStyle.aspectRatio().isUndefined()) {
+                    child.getMarginForAxis(crossAxis, availableInnerWidth)
+                      .unwrap() + (if (isMainAxisRow) childMainSize.argValue / childStyle.aspectRatio()
+                      .unwrap() else childMainSize.argValue * childStyle.aspectRatio()
+                      .unwrap())
+                  } else {
+                    collectedFlexItemsValues.crossDim
+                  },
                 )
-                childMainSize.argValue += child.getMarginForAxis(
-                  mainAxis,
-                  availableInnerWidth,
-                )
+                childMainSize.argValue += child.getMarginForAxis(mainAxis, availableInnerWidth)
                   .unwrap()
                 YGConstrainMaxSizeForMode(
-                  child,
-                  mainAxis,
-                  availableInnerMainDim,
-                  availableInnerWidth,
-                  YGMeasureMode.YGMeasureModeExactly,
-                  childMainSize,
+                  node = child,
+                  axis = mainAxis,
+                  ownerAxisSize = availableInnerMainDim,
+                  ownerWidth = availableInnerWidth,
+                  mode = YGMeasureMode.YGMeasureModeExactly,
+                  size = childMainSize,
                 )
                 YGConstrainMaxSizeForMode(
-                  child,
-                  crossAxis,
-                  availableInnerCrossDim,
-                  availableInnerWidth,
-                  YGMeasureMode.YGMeasureModeExactly,
-                  childCrossSize,
+                  node = child,
+                  axis = crossAxis,
+                  ownerAxisSize = availableInnerCrossDim,
+                  ownerWidth = availableInnerWidth,
+                  mode = YGMeasureMode.YGMeasureModeExactly,
+                  size = childCrossSize,
                 )
                 val childWidth =
                   if (isMainAxisRow) childMainSize.argValue else childCrossSize.argValue
                 val childHeight =
                   if (!isMainAxisRow) childMainSize.argValue else childCrossSize.argValue
                 val alignContent = node.getStyle().alignContent()
-                val crossAxisDoesNotGrow =
-                  alignContent != YGAlign.YGAlignStretch && isNodeFlexWrap
+                val crossAxisDoesNotGrow = alignContent != YGAlign.YGAlignStretch && isNodeFlexWrap
                 val childWidthMeasureMode =
-                  if (isUndefined(childWidth) || !isMainAxisRow && crossAxisDoesNotGrow
-                  ) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
+                  if (isUndefined(childWidth) || !isMainAxisRow && crossAxisDoesNotGrow) {
+                    YGMeasureMode.YGMeasureModeUndefined
+                  } else {
+                    YGMeasureMode.YGMeasureModeExactly
+                  }
                 val childHeightMeasureMode =
-                  if (isUndefined(childHeight) || isMainAxisRow && crossAxisDoesNotGrow
-                  ) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
+                  if (isUndefined(childHeight) || isMainAxisRow && crossAxisDoesNotGrow) {
+                    YGMeasureMode.YGMeasureModeUndefined
+                  } else {
+                    YGMeasureMode.YGMeasureModeExactly
+                  }
                 YGLayoutNodeInternal(
-                  child,
-                  childWidth,
-                  childHeight,
-                  direction,
-                  childWidthMeasureMode,
-                  childHeightMeasureMode,
-                  availableInnerWidth,
-                  availableInnerHeight,
-                  true,
-                  LayoutPassReason.kStretch,
-                  config,
-                  layoutMarkerData,
-                  layoutContext,
-                  depth,
-                  generationCount,
+                  node = child,
+                  availableWidth = childWidth,
+                  availableHeight = childHeight,
+                  ownerDirection = direction,
+                  widthMeasureMode = childWidthMeasureMode,
+                  heightMeasureMode = childHeightMeasureMode,
+                  ownerWidth = availableInnerWidth,
+                  ownerHeight = availableInnerHeight,
+                  performLayout = true,
+                  reason = LayoutPassReason.kStretch,
+                  config = config,
+                  layoutMarkerData = layoutMarkerData,
+                  layoutContext = layoutContext,
+                  depth = depth,
+                  generationCount = generationCount,
                 )
               }
             } else {
-              val remainingCrossDim = containerCrossAxis - YGNodeDimWithMargin(
-                child, crossAxis,
-                availableInnerWidth,
-              )
+              val remainingCrossDim =
+                containerCrossAxis - YGNodeDimWithMargin(child, crossAxis, availableInnerWidth)
               if (child.marginLeadingValue(crossAxis).unit == YGUnit.YGUnitAuto && child.marginTrailingValue(
                   crossAxis,
                 ).unit == YGUnit.YGUnitAuto
@@ -3316,6 +3333,7 @@ object GlobalMembers {
     }
 
     // STEP 8: MULTI-LINE CONTENT ALIGNMENT
+
     // currentLead stores the size of the cross dim
     if (performLayout && (isNodeFlexWrap || YGIsBaselineLayout(node))) {
       var crossDimLead = 0f
@@ -3361,16 +3379,11 @@ object GlobalMembers {
             ii++
             continue
           }
-          if (child.getStyle()
-              .positionType() != YGPositionType.YGPositionTypeAbsolute
-          ) {
+          if (child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
             if (child.getLineIndex() != i) {
               break
             }
-            if (YGNodeIsLayoutDimDefined(
-                child, crossAxis,
-              )
-            ) {
+            if (YGNodeIsLayoutDimDefined(child, crossAxis)) {
               lineHeight = YGFloatMax(
                 lineHeight,
                 child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] + child.getMarginForAxis(
@@ -3380,16 +3393,15 @@ object GlobalMembers {
               )
             }
             if (YGNodeAlignItem(node, child) == YGAlign.YGAlignBaseline) {
-              val ascent = YGBaseline(
-                child, layoutContext,
-              ) + child.getLeadingMargin(
-                YGFlexDirection.YGFlexDirectionColumn,
-                availableInnerWidth,
-              ).unwrap()
-              val descent =
-                child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
+              val ascent = YGBaseline(child, layoutContext) +
+                child.getLeadingMargin(
                   YGFlexDirection.YGFlexDirectionColumn,
-                  availableInnerWidth,
+                  availableInnerWidth
+                ).unwrap()
+              val descent = child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] +
+                child.getMarginForAxis(
+                  YGFlexDirection.YGFlexDirectionColumn,
+                  availableInnerWidth
                 ).unwrap() - ascent
               maxAscentForCurrentLine = YGFloatMax(maxAscentForCurrentLine, ascent)
               maxDescentForCurrentLine = YGFloatMax(maxDescentForCurrentLine, descent)
@@ -3411,9 +3423,7 @@ object GlobalMembers {
               ii++
               continue
             }
-            if (child.getStyle()
-                .positionType() != YGPositionType.YGPositionTypeAbsolute
-            ) {
+            if (child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
               when (YGNodeAlignItem(node, child)) {
                 YGAlign.YGAlignFlexStart -> {
                   child.setLayoutPosition(
@@ -3448,20 +3458,13 @@ object GlobalMembers {
 
                 YGAlign.YGAlignStretch -> {
                   child.setLayoutPosition(
-                    currentLead + child.getLeadingMargin(
-                      crossAxis,
-                      availableInnerWidth,
-                    )
-                      .unwrap(),
+                    currentLead + child.getLeadingMargin(crossAxis, availableInnerWidth).unwrap(),
                     pos[crossAxis.ordinal].ordinal,
                   )
 
                   // Remeasure child with the line height as it as been only
                   // measured with the owners height yet.
-                  if (!YGNodeIsStyleDimDefined(
-                      child, crossAxis, availableInnerCrossDim,
-                    )
-                  ) {
+                  if (!YGNodeIsStyleDimDefined(child, crossAxis, availableInnerCrossDim)) {
                     val childWidth =
                       if (isMainAxisRow) child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
                         mainAxis,
@@ -3481,21 +3484,21 @@ object GlobalMembers {
                       ))
                     ) {
                       YGLayoutNodeInternal(
-                        child,
-                        childWidth,
-                        childHeight,
-                        direction,
-                        YGMeasureMode.YGMeasureModeExactly,
-                        YGMeasureMode.YGMeasureModeExactly,
-                        availableInnerWidth,
-                        availableInnerHeight,
-                        true,
-                        LayoutPassReason.kMultilineStretch,
-                        config,
-                        layoutMarkerData,
-                        layoutContext,
-                        depth,
-                        generationCount,
+                        node = child,
+                        availableWidth = childWidth,
+                        availableHeight = childHeight,
+                        ownerDirection = direction,
+                        widthMeasureMode = YGMeasureMode.YGMeasureModeExactly,
+                        heightMeasureMode = YGMeasureMode.YGMeasureModeExactly,
+                        ownerWidth = availableInnerWidth,
+                        ownerHeight = availableInnerHeight,
+                        performLayout = true,
+                        reason = LayoutPassReason.kMultilineStretch,
+                        config = config,
+                        layoutMarkerData = layoutMarkerData,
+                        layoutContext = layoutContext,
+                        depth = depth,
+                        generationCount = generationCount,
                       )
                     }
                   }
@@ -3527,21 +3530,21 @@ object GlobalMembers {
     // STEP 9: COMPUTING FINAL DIMENSIONS
     node.setLayoutMeasuredDimension(
       YGNodeBoundAxis(
-        node,
-        YGFlexDirection.YGFlexDirectionRow,
-        availableWidth - marginAxisRow,
-        ownerWidth,
-        ownerWidth,
+        node = node,
+        axis = YGFlexDirection.YGFlexDirectionRow,
+        value = availableWidth - marginAxisRow,
+        axisSize = ownerWidth,
+        widthSize = ownerWidth,
       ),
       YGDimension.YGDimensionWidth.ordinal,
     )
     node.setLayoutMeasuredDimension(
       YGNodeBoundAxis(
-        node,
-        YGFlexDirection.YGFlexDirectionColumn,
-        availableHeight - marginAxisColumn,
-        ownerHeight,
-        ownerWidth,
+        node = node,
+        axis = YGFlexDirection.YGFlexDirectionColumn,
+        value = availableHeight - marginAxisColumn,
+        axisSize = ownerHeight,
+        widthSize = ownerWidth,
       ),
       YGDimension.YGDimensionHeight.ordinal,
     )
@@ -3565,11 +3568,10 @@ object GlobalMembers {
           YGFloatMin(
             availableInnerMainDim + paddingAndBorderAxisMain,
             YGNodeBoundAxisWithinMinAndMax(
-              node, mainAxis,
-              YGFloatOptional(
-                maxLineMainDim,
-              ),
-              mainAxisownerSize,
+              node = node,
+              axis = mainAxis,
+              value = YGFloatOptional(maxLineMainDim),
+              axisSize = mainAxisownerSize,
             ).unwrap(),
           ),
           paddingAndBorderAxisMain,
@@ -3584,11 +3586,11 @@ object GlobalMembers {
       // doesn't go below the padding and border amount.
       node.setLayoutMeasuredDimension(
         YGNodeBoundAxis(
-          node,
-          crossAxis,
-          totalLineCrossDim + paddingAndBorderAxisCross,
-          crossAxisownerSize,
-          ownerWidth,
+          node = node,
+          axis = crossAxis,
+          value = totalLineCrossDim + paddingAndBorderAxisCross,
+          axisSize = crossAxisownerSize,
+          widthSize = ownerWidth,
         ),
         dim[crossAxis.ordinal].ordinal,
       )
@@ -3600,9 +3602,10 @@ object GlobalMembers {
           YGFloatMin(
             availableInnerCrossDim + paddingAndBorderAxisCross,
             YGNodeBoundAxisWithinMinAndMax(
-              node, crossAxis,
-              YGFloatOptional(totalLineCrossDim + paddingAndBorderAxisCross),
-              crossAxisownerSize,
+              node = node,
+              axis = crossAxis,
+              value = YGFloatOptional(totalLineCrossDim + paddingAndBorderAxisCross),
+              axisSize = crossAxisownerSize,
             ).unwrap(),
           ),
           paddingAndBorderAxisCross,
@@ -3618,10 +3621,9 @@ object GlobalMembers {
         val child = YGNodeGetChild(node, i)
         if (child!!.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
           child.setLayoutPosition(
-            node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.getLayout()!!.position[
-              pos[crossAxis.ordinal]
-                .ordinal,
-            ] - child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
+            node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] -
+              child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal] -
+              child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
             pos[crossAxis.ordinal].ordinal,
           )
         }
@@ -3630,23 +3632,23 @@ object GlobalMembers {
     if (performLayout) {
       // STEP 10: SIZING AND POSITIONING ABSOLUTE CHILDREN
       for (child in node.getChildren()) {
-        if (child.getStyle().display() == YGDisplay.YGDisplayNone || child.getStyle()
-            .positionType() != YGPositionType.YGPositionTypeAbsolute
+        if (child.getStyle().display() == YGDisplay.YGDisplayNone ||
+          child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute
         ) {
           continue
         }
         YGNodeAbsoluteLayoutChild(
-          node,
-          child,
-          availableInnerWidth,
-          if (isMainAxisRow) measureModeMainDim else measureModeCrossDim,
-          availableInnerHeight,
-          direction,
-          config,
-          layoutMarkerData,
-          layoutContext,
-          depth,
-          generationCount,
+          node = node,
+          child = child,
+          width = availableInnerWidth,
+          widthMode = if (isMainAxisRow) measureModeMainDim else measureModeCrossDim,
+          height = availableInnerHeight,
+          direction = direction,
+          config = config,
+          layoutMarkerData = layoutMarkerData,
+          layoutContext = layoutContext,
+          depth = depth,
+          generationCount = generationCount,
         )
       }
 
@@ -3694,10 +3696,7 @@ object GlobalMembers {
     size: Float,
     lastComputedSize: Float,
   ): Boolean {
-    return sizeMode == YGMeasureMode.YGMeasureModeExactly && YGFloatsEqual(
-      size,
-      lastComputedSize,
-    )
+    return sizeMode == YGMeasureMode.YGMeasureModeExactly && YGFloatsEqual(size, lastComputedSize)
   }
 
   fun YGMeasureModeOldSizeIsUnspecifiedAndStillFits(
@@ -3706,9 +3705,9 @@ object GlobalMembers {
     lastSizeMode: YGMeasureMode?,
     lastComputedSize: Float,
   ): Boolean {
-    return sizeMode == YGMeasureMode.YGMeasureModeAtMost && lastSizeMode == YGMeasureMode.YGMeasureModeUndefined && (size >= lastComputedSize || YGFloatsEqual(
-      size, lastComputedSize,
-    ))
+    return sizeMode == YGMeasureMode.YGMeasureModeAtMost &&
+      lastSizeMode == YGMeasureMode.YGMeasureModeUndefined &&
+      (size >= lastComputedSize || YGFloatsEqual(size, lastComputedSize))
   }
 
   fun YGMeasureModeNewMeasureSizeIsStricterAndStillValid(
@@ -3785,10 +3784,10 @@ object GlobalMembers {
     val childCount = YGNodeGetChildCount(node)
     for (i in 0 until childCount) {
       YGRoundToPixelGrid(
-        YGNodeGetChild(node, i)!!,
-        pointScaleFactor,
-        absoluteNodeLeft,
-        absoluteNodeTop,
+        node = YGNodeGetChild(node, i)!!,
+        pointScaleFactor = pointScaleFactor,
+        absoluteLeft = absoluteNodeLeft,
+        absoluteTop = absoluteNodeTop,
       )
     }
   }
@@ -3860,26 +3859,31 @@ object GlobalMembers {
         if (isUndefined(height)) YGMeasureMode.YGMeasureModeUndefined else YGMeasureMode.YGMeasureModeExactly
     }
     if (YGLayoutNodeInternal(
-        node,
-        width,
-        height,
-        ownerDirection,
-        widthMeasureMode,
-        heightMeasureMode,
-        ownerWidth,
-        ownerHeight,
-        true,
-        LayoutPassReason.kInitial,
-        node.getConfig(),
-        markerData,
-        layoutContext,
-        0,
-        gCurrentGenerationCount.value,
+        node = node,
+        availableWidth = width,
+        availableHeight = height,
+        ownerDirection = ownerDirection,
+        widthMeasureMode = widthMeasureMode,
+        heightMeasureMode = heightMeasureMode,
+        ownerWidth = ownerWidth,
+        ownerHeight = ownerHeight,
+        performLayout = true,
+        reason = LayoutPassReason.kInitial,
+        config = node.getConfig(),
+        layoutMarkerData = markerData,
+        layoutContext = layoutContext,
+        depth = 0,
+        generationCount = gCurrentGenerationCount.value,
       )
     ) {
       node.setPosition(node.getLayout()!!.direction(), ownerWidth, ownerHeight, ownerWidth)
       if (node.getConfig() != null) {
-        YGRoundToPixelGrid(node, node.getConfig()!!.pointScaleFactor.toDouble(), 0.0, 0.0)
+        YGRoundToPixelGrid(
+          node = node,
+          pointScaleFactor = node.getConfig()!!.pointScaleFactor.toDouble(),
+          absoluteLeft = 0.0,
+          absoluteTop = 0.0
+        )
       }
     }
 
@@ -3895,10 +3899,21 @@ object GlobalMembers {
       unsetUseLegacyFlagRecursively(nodeWithoutLegacyFlag)
       val layoutMarkerData = LayoutData()
       if (YGLayoutNodeInternal(
-          nodeWithoutLegacyFlag, width, height, ownerDirection, widthMeasureMode,
-          heightMeasureMode, ownerWidth, ownerHeight, true, LayoutPassReason.kInitial,
-          nodeWithoutLegacyFlag.getConfig(), layoutMarkerData, layoutContext, 0,
-          gCurrentGenerationCount.value,
+          node = nodeWithoutLegacyFlag,
+          availableWidth = width,
+          availableHeight = height,
+          ownerDirection = ownerDirection,
+          widthMeasureMode = widthMeasureMode,
+          heightMeasureMode = heightMeasureMode,
+          ownerWidth = ownerWidth,
+          ownerHeight = ownerHeight,
+          performLayout = true,
+          reason = LayoutPassReason.kInitial,
+          config = nodeWithoutLegacyFlag.getConfig(),
+          layoutMarkerData = layoutMarkerData,
+          layoutContext = layoutContext,
+          depth = 0,
+          generationCount = gCurrentGenerationCount.value,
         )
       ) {
         nodeWithoutLegacyFlag.setPosition(
@@ -3906,13 +3921,12 @@ object GlobalMembers {
           ownerHeight, ownerWidth,
         )
         YGRoundToPixelGrid(
-          nodeWithoutLegacyFlag,
-          nodeWithoutLegacyFlag.getConfig()!!.pointScaleFactor.toDouble(),
-          0.0,
-          0.0,
+          node = nodeWithoutLegacyFlag,
+          pointScaleFactor = nodeWithoutLegacyFlag.getConfig()!!.pointScaleFactor.toDouble(),
+          absoluteLeft = 0.0,
+          absoluteTop = 0.0,
         )
-        val neededLegacyStretchBehaviour =
-          !nodeWithoutLegacyFlag.isLayoutTreeEqualToNode(node)
+        val neededLegacyStretchBehaviour = !nodeWithoutLegacyFlag.isLayoutTreeEqualToNode(node)
         node.setLayoutDoesLegacyFlagAffectsLayout(neededLegacyStretchBehaviour)
       }
       YGConfigFreeRecursive(nodeWithoutLegacyFlag)
