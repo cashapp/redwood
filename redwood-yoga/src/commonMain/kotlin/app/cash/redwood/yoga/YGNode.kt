@@ -181,13 +181,13 @@ class YGNode {
   }
 
   fun getNodeType(): YGNodeType {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getEnumData<YGNodeType>(
+    return app.cash.redwood.yoga.detail.GlobalMembers.getEnumData(
       YGNodeType::class, flags, nodeType_,
     )
   }
 
   fun setNodeType(nodeType: YGNodeType) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setEnumData<YGNodeType>(
+    app.cash.redwood.yoga.detail.GlobalMembers.setEnumData(
       YGNodeType::class, flags, nodeType_, nodeType,
     )
   }
@@ -606,7 +606,7 @@ class YGNode {
     return if (!style_.flex().isUndefined() && style_.flex().unwrap() > 0.0f) {
       style_.flex().unwrap()
     } else {
-      GlobalMembers.kDefaultFlexGrow
+      GlobalMembers.DefaultFlexGrow
     }
   }
 
@@ -628,7 +628,7 @@ class YGNode {
         flags,
         useWebDefaults_,
       )
-    ) GlobalMembers.kWebDefaultFlexShrink else GlobalMembers.kDefaultFlexShrink
+    ) GlobalMembers.WebDefaultFlexShrink else GlobalMembers.DefaultFlexShrink
   }
 
   fun isNodeFlexible(): Boolean {

@@ -73,13 +73,12 @@ object GlobalMembers {
     YGDimension.YGDimensionWidth,
     YGDimension.YGDimensionWidth,
   )
-  const val kDefaultFlexGrow = 0.0f
-  const val kDefaultFlexShrink = 0.0f
-  const val kWebDefaultFlexShrink = 1.0f
-  val defaultConfig = YGConfigNew()
-  const val gPrintChanges = false
-  const val gPrintSkips = false
-  private val gCurrentGenerationCount = atomic(1)
+  const val DefaultFlexGrow = 0.0f
+  const val DefaultFlexShrink = 0.0f
+  const val WebDefaultFlexShrink = 1.0f
+  const val printChanges = false
+  const val printSkips = false
+  private val currentGenerationCount = atomic(1)
 
   fun isUndefined(value: Float): Boolean {
     return value.isNaN()
@@ -233,7 +232,7 @@ object GlobalMembers {
   }
 
   fun YGNodeNew(): YGNode {
-    return YGNodeNewWithConfig(YGConfigGetDefault())
+    return YGNodeNewWithConfig(YGConfig.Default)
   }
 
   fun YGNodeNewWithConfig(config: YGConfig?): YGNode {
@@ -924,14 +923,6 @@ object GlobalMembers {
     return config
   }
 
-  fun YGConfigFree(config: YGConfig?) {
-  }
-
-  fun YGConfigGetDefault(): YGConfig {
-    //   static struct YGConfig* defaultConfig = YGConfigNew();
-    return defaultConfig
-  }
-
   fun YGRoundValueToPixelGrid(
     value: Double,
     pointScaleFactor: Double,
@@ -1202,7 +1193,7 @@ object GlobalMembers {
       layout.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] =
         cachedResults.computedHeight
       if (performLayout) layoutMarkerData.cachedLayouts += 1 else layoutMarkerData.cachedMeasures += 1
-      if (gPrintChanges && gPrintSkips) {
+      if (printChanges && printSkips) {
         Log.log(
           node,
           YGLogLevel.YGLogLevelVerbose,
@@ -1227,7 +1218,7 @@ object GlobalMembers {
         )
       }
     } else {
-      if (gPrintChanges) {
+      if (printChanges) {
         Log.log(
           node,
           YGLogLevel.YGLogLevelVerbose,
@@ -1267,7 +1258,7 @@ object GlobalMembers {
         generationCount = generationCount,
         reason = reason,
       )
-      if (gPrintChanges) {
+      if (printChanges) {
         Log.log(
           node,
           YGLogLevel.YGLogLevelVerbose,
@@ -1293,7 +1284,7 @@ object GlobalMembers {
           layoutMarkerData.maxMeasureCache = layout.nextCachedMeasurementsIndex + 1
         }
         if (layout.nextCachedMeasurementsIndex == YGLayout.YG_MAX_CACHED_RESULT_COUNT) {
-          if (gPrintChanges) {
+          if (printChanges) {
             Log.log(node, YGLogLevel.YGLogLevelVerbose, null, "Out of cache entries!\n")
           }
           layout.nextCachedMeasurementsIndex = 0
@@ -3804,7 +3795,7 @@ object GlobalMembers {
     /* Event.LayoutPassStart */
     Event.publish(node, LayoutPassStartEventData(layoutContext))
     val markerData = LayoutData()
-    gCurrentGenerationCount.incrementAndGet()
+    currentGenerationCount.incrementAndGet()
     node.resolveDimension()
     val width: Float
     val widthMeasureMode: YGMeasureMode
@@ -3866,7 +3857,7 @@ object GlobalMembers {
         layoutMarkerData = markerData,
         layoutContext = layoutContext,
         depth = 0,
-        generationCount = gCurrentGenerationCount.value,
+        generationCount = currentGenerationCount.value,
       )
     ) {
       node.setPosition(node.getLayout()!!.direction(), ownerWidth, ownerHeight, ownerWidth)
@@ -3888,7 +3879,7 @@ object GlobalMembers {
       val nodeWithoutLegacyFlag = YGNodeDeepClone(node)
       nodeWithoutLegacyFlag.resolveDimension()
       nodeWithoutLegacyFlag.markDirtyAndPropogateDownwards()
-      gCurrentGenerationCount.incrementAndGet()
+      currentGenerationCount.incrementAndGet()
       unsetUseLegacyFlagRecursively(nodeWithoutLegacyFlag)
       val layoutMarkerData = LayoutData()
       if (YGLayoutNodeInternal(
@@ -3906,7 +3897,7 @@ object GlobalMembers {
           layoutMarkerData = layoutMarkerData,
           layoutContext = layoutContext,
           depth = 0,
-          generationCount = gCurrentGenerationCount.value,
+          generationCount = currentGenerationCount.value,
         )
       ) {
         nodeWithoutLegacyFlag.setPosition(

@@ -69,7 +69,6 @@ class YGAbsolutePositionTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -114,7 +113,6 @@ class YGAbsolutePositionTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -159,7 +157,6 @@ class YGAbsolutePositionTest {
     assertEquals(80f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(80f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -206,7 +203,6 @@ class YGAbsolutePositionTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -263,7 +259,6 @@ class YGAbsolutePositionTest {
     assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
     assertEquals(100f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -373,7 +368,6 @@ class YGAbsolutePositionTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -419,7 +413,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -465,7 +458,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -510,7 +502,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -555,7 +546,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -600,7 +590,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -647,7 +636,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -694,7 +682,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -741,7 +728,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -788,7 +774,6 @@ class YGAbsolutePositionTest {
     assertEquals(60f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -819,7 +804,6 @@ class YGAbsolutePositionTest {
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetWidth(root))
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetHeight(root))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -891,7 +875,6 @@ class YGAbsolutePositionTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child2))
     assertEquals(160f, GlobalMembers.YGNodeLayoutGetHeight(root_child2))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -935,7 +918,6 @@ class YGAbsolutePositionTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -980,7 +962,6 @@ class YGAbsolutePositionTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1025,7 +1006,6 @@ class YGAbsolutePositionTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1071,6 +1051,5 @@ class YGAbsolutePositionTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 }

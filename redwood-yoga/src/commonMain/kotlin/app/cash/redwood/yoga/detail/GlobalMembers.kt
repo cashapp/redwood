@@ -6,7 +6,6 @@
  */
 package app.cash.redwood.yoga.detail
 
-import app.cash.redwood.yoga.GlobalMembers
 import app.cash.redwood.yoga.YGConfig
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.enums.YGLogLevel
@@ -21,7 +20,7 @@ object GlobalMembers {
     format: String,
     vararg args: Any?,
   ) {
-    val logConfig = config ?: GlobalMembers.YGConfigGetDefault()
+    val logConfig = config ?: YGConfig.Default
     logConfig.log(logConfig, node, level, context, format, *args)
   }
 

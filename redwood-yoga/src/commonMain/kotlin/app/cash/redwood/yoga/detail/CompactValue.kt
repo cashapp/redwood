@@ -51,9 +51,9 @@ class CompactValue {
   internal class Payload(val value: Float, val unit: YGUnit)
 
   companion object {
-    const val LOWER_BOUND = 1.08420217e-19f
-    const val UPPER_BOUND_POINT = 36893485948395847680.0f
-    const val UPPER_BOUND_PERCENT = 18446742974197923840.0f
+    private const val LOWER_BOUND = 1.08420217e-19f
+    private const val UPPER_BOUND_POINT = 36893485948395847680.0f
+    private const val UPPER_BOUND_PERCENT = 18446742974197923840.0f
 
     fun of(value: Float, unit: YGUnit): CompactValue {
       var value = value

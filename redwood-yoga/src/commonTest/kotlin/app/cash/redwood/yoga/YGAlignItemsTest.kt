@@ -63,7 +63,6 @@ class YGAlignItemsTest {
     assertEquals(100f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -106,7 +105,6 @@ class YGAlignItemsTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -149,7 +147,6 @@ class YGAlignItemsTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -192,7 +189,6 @@ class YGAlignItemsTest {
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -248,7 +244,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -316,7 +311,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -422,7 +416,6 @@ class YGAlignItemsTest {
     assertEquals(25f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child3))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -530,7 +523,6 @@ class YGAlignItemsTest {
     assertEquals(25f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child3))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -637,7 +629,6 @@ class YGAlignItemsTest {
     assertEquals(25f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child3))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -706,7 +697,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -775,7 +765,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -855,7 +844,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(15f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -910,7 +898,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -986,7 +973,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1062,7 +1048,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1_child0))
     assertEquals(10f, GlobalMembers.YGNodeLayoutGetHeight(root_child1_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1167,7 +1152,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1271,7 +1255,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1375,7 +1358,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1480,7 +1462,6 @@ class YGAlignItemsTest {
     assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child3))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child3))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1537,7 +1518,6 @@ class YGAlignItemsTest {
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1594,7 +1574,6 @@ class YGAlignItemsTest {
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
     assertEquals(52f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1649,7 +1628,6 @@ class YGAlignItemsTest {
     assertEquals(72f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
     assertEquals(72f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1704,7 +1682,6 @@ class YGAlignItemsTest {
     assertEquals(72f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0))
     assertEquals(72f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1772,7 +1749,6 @@ class YGAlignItemsTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1839,7 +1815,6 @@ class YGAlignItemsTest {
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0_child0))
     assertEquals(20f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1904,7 +1879,6 @@ class YGAlignItemsTest {
     assertEquals(0f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0_child0))
     assertEquals(0f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -1968,7 +1942,6 @@ class YGAlignItemsTest {
     assertEquals(500f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0_child0))
     assertEquals(0f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 
   @Test
@@ -2033,6 +2006,5 @@ class YGAlignItemsTest {
     assertEquals(0f, GlobalMembers.YGNodeLayoutGetWidth(root_child0_child0_child0))
     assertEquals(0f, GlobalMembers.YGNodeLayoutGetHeight(root_child0_child0_child0))
     GlobalMembers.YGNodeFreeRecursive(root)
-    GlobalMembers.YGConfigFree(config)
   }
 }

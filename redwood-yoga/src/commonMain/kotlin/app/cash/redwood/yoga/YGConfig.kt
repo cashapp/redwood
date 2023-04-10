@@ -106,4 +106,8 @@ class YGConfig {
     var withContext: LogWithContextFn? = null
     var noContext: YGLogger? = null
   }
+
+  companion object {
+    val Default = GlobalMembers.YGConfigNew()
+  }
 }
