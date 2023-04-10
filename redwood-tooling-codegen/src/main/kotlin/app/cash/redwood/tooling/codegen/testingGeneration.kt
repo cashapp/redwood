@@ -83,7 +83,7 @@ public class MutableSunspotWidgetFactory : SunspotWidgetFactory<MutableWidget> {
 */
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
   val mutableWidgetFactoryType = schema.getMutableWidgetFactoryType()
-  return FileSpec.builder(mutableWidgetFactoryType.packageName, mutableWidgetFactoryType.simpleName)
+  return FileSpec.builder(mutableWidgetFactoryType)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.MutableWidget))
@@ -132,7 +132,7 @@ internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidge
 internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
   val mutableWidgetType = schema.mutableWidgetType(widget)
   val widgetValueType = schema.widgetValueType(widget)
-  return FileSpec.builder(mutableWidgetType.packageName, mutableWidgetType.simpleName)
+  return FileSpec.builder(mutableWidgetType)
     .addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
@@ -337,7 +337,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
 
   toStringBuilder.append(")")
 
-  return FileSpec.builder(widgetValueType.packageName, widgetValueType.simpleName)
+  return FileSpec.builder(widgetValueType)
     .addType(
       classBuilder
         .primaryConstructor(constructorBuilder.build())

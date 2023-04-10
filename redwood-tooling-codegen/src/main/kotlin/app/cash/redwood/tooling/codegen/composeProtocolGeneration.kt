@@ -86,7 +86,7 @@ internal fun generateProtocolBridge(
   val schema = schemaSet.schema
   val type = schema.protocolBridgeType()
   val providerType = schema.getWidgetFactoryProviderType().parameterizedBy(NOTHING)
-  return FileSpec.builder(type.packageName, type.simpleName)
+  return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addSuperinterface(ComposeProtocol.ProtocolBridge)
@@ -183,7 +183,7 @@ internal fun generateProtocolWidgetFactory(
   host: ProtocolSchema = schema,
 ): FileSpec {
   val type = schema.protocolWidgetFactoryType(host)
-  return FileSpec.builder(type.packageName, type.simpleName)
+  return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
@@ -279,7 +279,7 @@ internal fun generateProtocolWidget(
 ): FileSpec {
   val type = schema.protocolWidgetType(widget, host)
   val widgetName = schema.widgetType(widget)
-  return FileSpec.builder(type.packageName, type.simpleName)
+  return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)

@@ -62,7 +62,7 @@ class DiffConsumingGenerationTest {
     val fileSpec = generateDiffConsumingLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
       contains("1 -> PrimaryModifierImpl.serializer()")
-      contains("1000001 -> SecondaryModifierImpl.serializer()")
+      contains("1_000_001 -> SecondaryModifierImpl.serializer()")
     }
   }
 }
