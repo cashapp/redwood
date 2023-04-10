@@ -11,6 +11,7 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import app.cash.redwood.yoga.GlobalMembers
+import app.cash.redwood.yoga.GlobalMembers.YGUndefined
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
 import app.cash.redwood.yoga.enums.YGMeasureMode
@@ -94,13 +95,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     owner.removeChild(node)
     node.setMeasureFunc(null as YGMeasureFunc?)
-    nodes.remove(view)
+    nodes -= view
 
     if (inLayout) {
       GlobalMembers.YGNodeCalculateLayoutWithContext(
         node = rootNode,
-        ownerWidth = Float.NaN,
-        ownerHeight = Float.NaN,
+        ownerWidth = YGUndefined,
+        ownerHeight = YGUndefined,
         ownerDirection = rootNode.getStyle().direction(),
         layoutContext = null,
       )
@@ -158,8 +159,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     }
     GlobalMembers.YGNodeCalculateLayoutWithContext(
       node = rootNode,
-      ownerWidth = Float.NaN,
-      ownerHeight = Float.NaN,
+      ownerWidth = YGUndefined,
+      ownerHeight = YGUndefined,
       ownerDirection = rootNode.getStyle().direction(),
       layoutContext = null,
     )
@@ -174,8 +175,8 @@ private class ViewMeasureFunction(val view: View) : YGMeasureFunc {
     height: Float,
     heightMode: YGMeasureMode,
   ): YGSize {
-    val widthSpec = MeasureSpec.makeMeasureSpec(width.toInt(), widthMode.toAndroid())
-    val heightSpec = MeasureSpec.makeMeasureSpec(height.toInt(), heightMode.toAndroid())
+    val widthSpec = MeasureSpec.makeMeasureSpec(width.roundToInt(), widthMode.toAndroid())
+    val heightSpec = MeasureSpec.makeMeasureSpec(height.roundToInt(), heightMode.toAndroid())
     view.measure(widthSpec, heightSpec)
     return YGSize(view.measuredWidth, view.measuredHeight)
   }
