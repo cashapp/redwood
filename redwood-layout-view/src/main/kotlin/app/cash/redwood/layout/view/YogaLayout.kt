@@ -125,26 +125,36 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       view.layout(left, top, right, bottom)
     }
 
-    for (child in node.getChildren()) {
-      applyLayoutRecursive(child, xOffset, yOffset)
+    if (view === this) {
+      for (child in node.getChildren()) {
+        applyLayoutRecursive(child, xOffset, yOffset)
+      }
+    } else if (view !is YogaLayout) {
+      for (child in node.getChildren()) {
+        applyLayoutRecursive(
+          node = child,
+          xOffset = xOffset + GlobalMembers.YGNodeLayoutGetLeft(node),
+          yOffset = yOffset + GlobalMembers.YGNodeLayoutGetTop(node),
+        )
+      }
     }
   }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     val widthSpec = MeasureSpec.makeMeasureSpec(right - left, MeasureSpec.EXACTLY)
     val heightSpec = MeasureSpec.makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY)
-    createLayout(widthSpec, heightSpec)
+    calculateLayout(widthSpec, heightSpec)
     applyLayoutRecursive(rootNode, 0f, 0f)
   }
 
   override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-    createLayout(widthSpec, heightSpec)
+    calculateLayout(widthSpec, heightSpec)
     val width = GlobalMembers.YGNodeLayoutGetWidth(rootNode).roundToInt()
     val height = GlobalMembers.YGNodeLayoutGetHeight(rootNode).roundToInt()
     setMeasuredDimension(width, height)
   }
 
-  private fun createLayout(widthSpec: Int, heightSpec: Int) {
+  private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetWidth(rootNode, widthSize)

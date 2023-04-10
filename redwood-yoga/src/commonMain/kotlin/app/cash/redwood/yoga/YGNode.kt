@@ -74,7 +74,7 @@ class YGNode {
     }
   }
 
-  fun getResolvedDimension(index: Int): YGValue? {
+  fun getResolvedDimension(index: Int): YGValue {
     return resolvedDimensions_[index]
   }
 
@@ -486,7 +486,7 @@ class YGNode {
     )
   }
 
-  fun marginLeadingValue(axis: YGFlexDirection): YGValue? {
+  fun marginLeadingValue(axis: YGFlexDirection): YGValue {
     return if (GlobalMembers.YGFlexDirectionIsRow(axis) && !style_.margin()
         .getCompactValue(YGEdge.YGEdgeStart).isUndefined()
     ) {
@@ -538,9 +538,13 @@ class YGNode {
     }
   }
 
-  fun resolveDirection(ownerDirection: YGDirection): YGDirection? {
+  fun resolveDirection(ownerDirection: YGDirection): YGDirection {
     return if (style_.direction() == YGDirection.YGDirectionInherit) {
-      if (ownerDirection.ordinal > YGDirection.YGDirectionInherit.ordinal) ownerDirection else YGDirection.YGDirectionLTR
+      if (ownerDirection.ordinal > YGDirection.YGDirectionInherit.ordinal) {
+        ownerDirection
+      } else {
+        YGDirection.YGDirectionLTR
+      }
     } else {
       style_.direction()
     }
@@ -574,11 +578,7 @@ class YGNode {
   }
 
   fun markDirtyAndPropogate() {
-    if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
-        flags,
-        isDirty_,
-      )
-    ) {
+    if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(flags, isDirty_)) {
       setDirty(true)
       setLayoutComputedFlexBasis(YGFloatOptional())
       if (owner_ != null) {
