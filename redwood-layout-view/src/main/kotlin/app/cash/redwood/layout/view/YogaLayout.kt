@@ -10,8 +10,8 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import app.cash.redwood.yoga.GlobalMembers
-import app.cash.redwood.yoga.GlobalMembers.YGUndefined
+import app.cash.redwood.yoga.Yoga
+import app.cash.redwood.yoga.Yoga.YGUndefined
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
 import app.cash.redwood.yoga.enums.YGDirection
@@ -27,7 +27,7 @@ import kotlin.math.roundToInt
  */
 internal class YogaLayout(context: Context) : ViewGroup(context) {
   private val nodes = mutableMapOf<View, YGNode>()
-  val rootNode = GlobalMembers.YGNodeNew()
+  val rootNode = Yoga.YGNodeNew()
 
   init {
     rootNode.setMeasureFunc(ViewMeasureFunction(this))
@@ -42,11 +42,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     super.addView(child, index, params)
 
-    val childNode = GlobalMembers.YGNodeNew()
+    val childNode = Yoga.YGNodeNew()
     childNode.setMeasureFunc(ViewMeasureFunction(child))
     applyLayoutParams(child.layoutParams, childNode, child)
     nodes[child] = childNode
-    GlobalMembers.YGNodeAddChild(rootNode, childNode)
+    Yoga.YGNodeAddChild(rootNode, childNode)
   }
 
   override fun removeView(view: View) {
@@ -98,11 +98,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     val childNode = nodes[view] ?: return
     val owner = childNode.getOwner() ?: return
 
-    GlobalMembers.YGNodeRemoveChild(owner, childNode)
+    Yoga.YGNodeRemoveChild(owner, childNode)
     nodes -= view
 
     if (inLayout) {
-      GlobalMembers.YGNodeCalculateLayout(
+      Yoga.YGNodeCalculateLayout(
         node = rootNode,
         ownerWidth = YGUndefined,
         ownerHeight = YGUndefined,
@@ -116,10 +116,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     if (view != null && view !== this) {
       if (view.visibility == GONE) return
 
-      val left = (xOffset + GlobalMembers.YGNodeLayoutGetLeft(node)).roundToInt()
-      val top = (yOffset + GlobalMembers.YGNodeLayoutGetTop(node)).roundToInt()
-      val width = GlobalMembers.YGNodeLayoutGetWidth(node).roundToInt()
-      val height = GlobalMembers.YGNodeLayoutGetHeight(node).roundToInt()
+      val left = (xOffset + Yoga.YGNodeLayoutGetLeft(node)).roundToInt()
+      val top = (yOffset + Yoga.YGNodeLayoutGetTop(node)).roundToInt()
+      val width = Yoga.YGNodeLayoutGetWidth(node).roundToInt()
+      val height = Yoga.YGNodeLayoutGetHeight(node).roundToInt()
       val widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
       val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
       view.measure(widthSpec, heightSpec)
@@ -136,8 +136,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       for (child in node.getChildren()) {
         applyLayoutRecursive(
           node = child,
-          xOffset = xOffset + GlobalMembers.YGNodeLayoutGetLeft(node),
-          yOffset = yOffset + GlobalMembers.YGNodeLayoutGetTop(node),
+          xOffset = xOffset + Yoga.YGNodeLayoutGetLeft(node),
+          yOffset = yOffset + Yoga.YGNodeLayoutGetTop(node),
         )
       }
     }
@@ -152,8 +152,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
   override fun onMeasure(widthSpec: Int, heightSpec: Int) {
     calculateLayout(widthSpec, heightSpec)
-    val width = GlobalMembers.YGNodeLayoutGetWidth(rootNode).roundToInt()
-    val height = GlobalMembers.YGNodeLayoutGetHeight(rootNode).roundToInt()
+    val width = Yoga.YGNodeLayoutGetWidth(rootNode).roundToInt()
+    val height = Yoga.YGNodeLayoutGetHeight(rootNode).roundToInt()
     setMeasuredDimension(width, height)
   }
 
@@ -165,11 +165,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     if (layoutParams != null) {
       val width = layoutParams.width
       if (width >= 0) {
-        GlobalMembers.YGNodeStyleSetWidth(node, width.toFloat())
+        Yoga.YGNodeStyleSetWidth(node, width.toFloat())
       }
       val height = layoutParams.height
       if (height >= 0) {
-        GlobalMembers.YGNodeStyleSetHeight(node, height.toFloat())
+        Yoga.YGNodeStyleSetHeight(node, height.toFloat())
       }
     }
   }
@@ -180,17 +180,17 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
-      MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetWidth(rootNode, widthSize)
-      MeasureSpec.AT_MOST -> GlobalMembers.YGNodeStyleSetMaxWidth(rootNode, widthSize)
+      MeasureSpec.EXACTLY -> Yoga.YGNodeStyleSetWidth(rootNode, widthSize)
+      MeasureSpec.AT_MOST -> Yoga.YGNodeStyleSetMaxWidth(rootNode, widthSize)
       MeasureSpec.UNSPECIFIED -> {}
     }
     val heightSize = MeasureSpec.getSize(heightSpec).toFloat()
     when (MeasureSpec.getMode(heightSpec)) {
-      MeasureSpec.EXACTLY -> GlobalMembers.YGNodeStyleSetHeight(rootNode, heightSize)
-      MeasureSpec.AT_MOST -> GlobalMembers.YGNodeStyleSetMaxHeight(rootNode, heightSize)
+      MeasureSpec.EXACTLY -> Yoga.YGNodeStyleSetHeight(rootNode, heightSize)
+      MeasureSpec.AT_MOST -> Yoga.YGNodeStyleSetMaxHeight(rootNode, heightSize)
       MeasureSpec.UNSPECIFIED -> {}
     }
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeCalculateLayout(
       node = rootNode,
       ownerWidth = YGUndefined,
       ownerHeight = YGUndefined,

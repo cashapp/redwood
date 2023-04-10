@@ -27,652 +27,652 @@ class YGAlignBaselineTest {
   // Test case for bug in T32999822
   @Test
   fun align_baseline_parent_ht_not_specified() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignContent(root, YGAlign.YGAlignStretch)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 340f)
-    GlobalMembers.YGNodeStyleSetMaxHeight(root, 170f)
-    GlobalMembers.YGNodeStyleSetMinHeight(root, 0f)
-    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexGrow(root_child0, 0f)
-    GlobalMembers.YGNodeStyleSetFlexShrink(root_child0, 1f)
-    GlobalMembers.YGNodeSetMeasureFunc(root_child0, ::_measure1)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexGrow(root_child1, 0f)
-    GlobalMembers.YGNodeStyleSetFlexShrink(root_child1, 1f)
-    GlobalMembers.YGNodeSetMeasureFunc(root_child1, ::_measure2)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignContent(root, YGAlign.YGAlignStretch)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 340f)
+    Yoga.YGNodeStyleSetMaxHeight(root, 170f)
+    Yoga.YGNodeStyleSetMinHeight(root, 0f)
+    val root_child0 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexGrow(root_child0, 0f)
+    Yoga.YGNodeStyleSetFlexShrink(root_child0, 1f)
+    Yoga.YGNodeSetMeasureFunc(root_child0, ::_measure1)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexGrow(root_child1, 0f)
+    Yoga.YGNodeStyleSetFlexShrink(root_child1, 1f)
+    Yoga.YGNodeSetMeasureFunc(root_child1, ::_measure2)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
-    assertEquals(340f, GlobalMembers.YGNodeLayoutGetWidth(root))
-    assertEquals(126f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(42f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
-    assertEquals(76f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(42f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(279f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
-    assertEquals(126f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root))
+    assertEquals(340f, Yoga.YGNodeLayoutGetWidth(root))
+    assertEquals(126f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(42f, Yoga.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(76f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(42f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(279f, Yoga.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(126f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_with_no_parent_ht() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 150f)
-    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetWidth(root_child0, 50f)
-    GlobalMembers.YGNodeStyleSetHeight(root_child0, 50f)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 50f)
-    GlobalMembers.YGNodeStyleSetHeight(root_child1, 40f)
-    GlobalMembers.YGNodeSetBaselineFunc(root_child1, ::_baselineFunc)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 150f)
+    val root_child0 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetWidth(root_child0, 50f)
+    Yoga.YGNodeStyleSetHeight(root_child0, 50f)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetWidth(root_child1, 50f)
+    Yoga.YGNodeStyleSetHeight(root_child1, 40f)
+    Yoga.YGNodeSetBaselineFunc(root_child1, ::_baselineFunc)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
-    assertEquals(150f, GlobalMembers.YGNodeLayoutGetWidth(root))
-    assertEquals(70f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
-    assertEquals(40f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root))
+    assertEquals(150f, Yoga.YGNodeLayoutGetWidth(root))
+    assertEquals(70f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(30f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(50f, Yoga.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(40f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_with_no_baseline_func_and_no_parent_ht() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 150f)
-    val root_child0 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetWidth(root_child0, 50f)
-    GlobalMembers.YGNodeStyleSetHeight(root_child0, 80f)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 50f)
-    GlobalMembers.YGNodeStyleSetHeight(root_child1, 50f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 150f)
+    val root_child0 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetWidth(root_child0, 50f)
+    Yoga.YGNodeStyleSetHeight(root_child0, 80f)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetWidth(root_child1, 50f)
+    Yoga.YGNodeStyleSetHeight(root_child1, 50f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root))
-    assertEquals(150f, GlobalMembers.YGNodeLayoutGetWidth(root))
-    assertEquals(80f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child0))
-    assertEquals(80f, GlobalMembers.YGNodeLayoutGetHeight(root_child0))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(30f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetWidth(root_child1))
-    assertEquals(50f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root))
+    assertEquals(150f, Yoga.YGNodeLayoutGetWidth(root))
+    assertEquals(80f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetWidth(root_child0))
+    assertEquals(80f, Yoga.YGNodeLayoutGetHeight(root_child0))
+    assertEquals(50f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(30f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(50f, Yoga.YGNodeLayoutGetWidth(root_child1))
+    assertEquals(50f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_column_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_with_padding_in_column_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_with_padding_using_child_in_column_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(400f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(100f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(400f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_with_margin_using_child_in_column_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(600f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(600f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_with_margin_in_column_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(400f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(100f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(400f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_row_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 500, 800, true)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_with_padding_in_row_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 500, 800, true)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetPadding(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_with_margin_in_row_as_reference() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 500, 800, true)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeRight, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeTop, 100f)
-    GlobalMembers.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeLeft, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeRight, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeTop, 100f)
+    Yoga.YGNodeStyleSetMargin(root_child1_child1, YGEdge.YGEdgeBottom, 100f)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(600f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(600f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_column_as_reference_with_no_baseline_func() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 800, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_row_as_reference_with_no_baseline_func() {
-    val config = GlobalMembers.YGConfigNew()
+    val config = Yoga.YGConfigNew()
     val root = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 1000, 1000, true)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
     val root_child1 = createYGNode(config, YGFlexDirection.YGFlexDirectionRow, 500, 800, true)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_column_as_reference_with_height_not_specified() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 1000f)
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 1000f)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(
       root_child1,
       YGFlexDirection.YGFlexDirectionColumn,
     )
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 500f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeStyleSetWidth(root_child1, 500f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(800f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(700f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(800f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(700f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_row_as_reference_with_height_not_specified() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 1000f)
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 1000f)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root_child1, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 500f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root_child1, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetWidth(root_child1, 500f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
     root_child1_child1.setBaselineFunc(::_baselineFunc)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(900f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(400f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(900f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(400f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(500f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_column_as_reference_with_no_baseline_func_and_height_not_specified() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 1000f)
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 1000f)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(
       root_child1,
       YGFlexDirection.YGFlexDirectionColumn,
     )
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 500f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeStyleSetWidth(root_child1, 500f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 300, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(700f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(100f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(700f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(300f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(700f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(100f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(700f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(300f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Test
   fun align_baseline_parent_using_child_in_row_as_reference_with_no_baseline_func_and_height_not_specified() {
-    val config = GlobalMembers.YGConfigNew()
-    val root = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
-    GlobalMembers.YGNodeStyleSetWidth(root, 1000f)
+    val config = Yoga.YGConfigNew()
+    val root = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetAlignItems(root, YGAlign.YGAlignBaseline)
+    Yoga.YGNodeStyleSetWidth(root, 1000f)
     val root_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 600, false)
-    GlobalMembers.YGNodeInsertChild(root, root_child0, 0)
-    val root_child1 = GlobalMembers.YGNodeNewWithConfig(config)
-    GlobalMembers.YGNodeStyleSetFlexDirection(root_child1, YGFlexDirection.YGFlexDirectionRow)
-    GlobalMembers.YGNodeStyleSetWidth(root_child1, 500f)
-    GlobalMembers.YGNodeInsertChild(root, root_child1, 1)
+    Yoga.YGNodeInsertChild(root, root_child0, 0)
+    val root_child1 = Yoga.YGNodeNewWithConfig(config)
+    Yoga.YGNodeStyleSetFlexDirection(root_child1, YGFlexDirection.YGFlexDirectionRow)
+    Yoga.YGNodeStyleSetWidth(root_child1, 500f)
+    Yoga.YGNodeInsertChild(root, root_child1, 1)
     val root_child1_child0 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 500, false)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child0, 0)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child0, 0)
     val root_child1_child1 =
       createYGNode(config, YGFlexDirection.YGFlexDirectionColumn, 500, 400, false)
-    GlobalMembers.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
-    GlobalMembers.YGNodeInsertChild(root_child1, root_child1_child1, 1)
-    GlobalMembers.YGNodeCalculateLayout(
+    Yoga.YGNodeSetIsReferenceBaseline(root_child1_child1, true)
+    Yoga.YGNodeInsertChild(root_child1, root_child1_child1, 1)
+    Yoga.YGNodeCalculateLayout(
       root,
-      GlobalMembers.YGUndefined,
-      GlobalMembers.YGUndefined,
+      Yoga.YGUndefined,
+      Yoga.YGUndefined,
       YGDirection.YGDirectionLTR,
     )
-    assertEquals(700f, GlobalMembers.YGNodeLayoutGetHeight(root))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1))
-    assertEquals(200f, GlobalMembers.YGNodeLayoutGetTop(root_child1))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetHeight(root_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child0))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child0))
-    assertEquals(500f, GlobalMembers.YGNodeLayoutGetLeft(root_child1_child1))
-    assertEquals(0f, GlobalMembers.YGNodeLayoutGetTop(root_child1_child1))
-    GlobalMembers.YGNodeFreeRecursive(root)
+    assertEquals(700f, Yoga.YGNodeLayoutGetHeight(root))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1))
+    assertEquals(200f, Yoga.YGNodeLayoutGetTop(root_child1))
+    assertEquals(500f, Yoga.YGNodeLayoutGetHeight(root_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetLeft(root_child1_child0))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child0))
+    assertEquals(500f, Yoga.YGNodeLayoutGetLeft(root_child1_child1))
+    assertEquals(0f, Yoga.YGNodeLayoutGetTop(root_child1_child1))
+    Yoga.YGNodeFreeRecursive(root)
   }
 
   @Suppress("UNUSED_PARAMETER")
@@ -712,13 +712,13 @@ class YGAlignBaselineTest {
       height: Int,
       alignBaseline: Boolean,
     ): YGNode {
-      val node = GlobalMembers.YGNodeNewWithConfig(config)
-      GlobalMembers.YGNodeStyleSetFlexDirection(node, direction)
+      val node = Yoga.YGNodeNewWithConfig(config)
+      Yoga.YGNodeStyleSetFlexDirection(node, direction)
       if (alignBaseline) {
-        GlobalMembers.YGNodeStyleSetAlignItems(node, YGAlign.YGAlignBaseline)
+        Yoga.YGNodeStyleSetAlignItems(node, YGAlign.YGAlignBaseline)
       }
-      GlobalMembers.YGNodeStyleSetWidth(node, width.toFloat())
-      GlobalMembers.YGNodeStyleSetHeight(node, height.toFloat())
+      Yoga.YGNodeStyleSetWidth(node, width.toFloat())
+      Yoga.YGNodeStyleSetHeight(node, height.toFloat())
       return YGNode(node)
     }
   }

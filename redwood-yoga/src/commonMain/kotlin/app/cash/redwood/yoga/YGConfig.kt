@@ -77,7 +77,7 @@ class YGConfig {
       }
     }
     if (clone == null) {
-      clone = GlobalMembers.YGNodeClone(node)
+      clone = Yoga.YGNodeClone(node)
     }
     return clone
   }
@@ -108,6 +108,6 @@ class YGConfig {
   }
 
   companion object {
-    val Default = GlobalMembers.YGConfigNew()
+    val Default = Yoga.YGConfigNew()
   }
 }

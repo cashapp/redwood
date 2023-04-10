@@ -39,10 +39,7 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.yoga.GlobalMembers
-import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetAlignSelf
-import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetFlexGrow
-import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetFlexShrink
+import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.enums.YGEdge
 import app.cash.redwood.yoga.enums.YGOverflow
 
@@ -52,7 +49,7 @@ internal class ViewFlexContainer(
 ) : Row<View>, Column<View> {
   private val density = DensityMultiplier * context.resources.displayMetrics.density
   private val yogaLayout = YogaLayout(context).apply {
-    GlobalMembers.YGNodeStyleSetFlexDirection(rootNode, direction.toYoga())
+    Yoga.YGNodeStyleSetFlexDirection(rootNode, direction.toYoga())
   }
 
   private val hostView = HostView()
@@ -66,38 +63,38 @@ internal class ViewFlexContainer(
       widget.layoutModifiers.forEach { modifier ->
         when (modifier) {
           is Grow -> {
-            YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
+            Yoga.YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
           }
           is Shrink -> {
-            YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
+            Yoga.YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
           }
           is app.cash.redwood.layout.Margin -> {
-            GlobalMembers.YGNodeStyleSetMargin(
+            Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeLeft,
               points = density * modifier.margin.left,
             )
-            GlobalMembers.YGNodeStyleSetMargin(
+            Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeRight,
               points = density * modifier.margin.right,
             )
-            GlobalMembers.YGNodeStyleSetMargin(
+            Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeTop,
               points = density * modifier.margin.top,
             )
-            GlobalMembers.YGNodeStyleSetMargin(
+            Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeBottom,
               points = density * modifier.margin.bottom,
             )
           }
           is HorizontalAlignment -> if (direction.isVertical) {
-            YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
           }
           is VerticalAlignment -> if (direction.isHorizontal) {
-            YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
           }
         }
       }
@@ -119,22 +116,22 @@ internal class ViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    GlobalMembers.YGNodeStyleSetPadding(
+    Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeLeft,
       points = density * margin.left,
     )
-    GlobalMembers.YGNodeStyleSetPadding(
+    Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeRight,
       points = density * margin.right,
     )
-    GlobalMembers.YGNodeStyleSetPadding(
+    Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeTop,
       points = density * margin.top,
     )
-    GlobalMembers.YGNodeStyleSetPadding(
+    Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeBottom,
       points = density * margin.bottom,
@@ -168,12 +165,12 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    GlobalMembers.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
+    Yoga.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    GlobalMembers.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
+    Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
     invalidate()
   }
 
@@ -201,13 +198,13 @@ internal class ViewFlexContainer(
       (yogaLayout.parent as ViewGroup?)?.removeView(yogaLayout)
 
       if (scrollEnabled) {
-        GlobalMembers.YGNodeStyleSetOverflow(
+        Yoga.YGNodeStyleSetOverflow(
           yogaLayout.rootNode,
           YGOverflow.YGOverflowScroll,
         )
         addView(newScrollView().apply { addView(yogaLayout) })
       } else {
-        GlobalMembers.YGNodeStyleSetOverflow(
+        Yoga.YGNodeStyleSetOverflow(
           yogaLayout.rootNode,
           YGOverflow.YGOverflowVisible,
         )

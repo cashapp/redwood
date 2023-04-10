@@ -6,17 +6,18 @@
  */
 package app.cash.redwood.yoga
 
+import app.cash.redwood.yoga.detail.GlobalMembers
 import app.cash.redwood.yoga.enums.YGDirection
 
 class YGLayout {
   private val flags = mutableMapOf<Any?, Any>()
   val position = MutableList(4) { 0f }
-  val dimensions = MutableList(2) { GlobalMembers.YGUndefined }
+  val dimensions = MutableList(2) { Yoga.YGUndefined }
   val margin = MutableList(4) { 0f }
   val border = MutableList(4) { 0f }
   val padding = MutableList(4) { 0f }
   val cachedMeasurements = MutableList(YG_MAX_CACHED_RESULT_COUNT) { YGCachedMeasurement() }
-  val measuredDimensions = MutableList(2) { GlobalMembers.YGUndefined }
+  val measuredDimensions = MutableList(2) { Yoga.YGUndefined }
   val cachedLayout = YGCachedMeasurement()
   var computedFlexBasisGeneration = 0
   var computedFlexBasis = YGFloatOptional()
@@ -25,7 +26,7 @@ class YGLayout {
   var nextCachedMeasurementsIndex = 0
 
   fun direction(): YGDirection {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getEnumData(
+    return GlobalMembers.getEnumData(
       YGDirection::class,
       flags,
       directionOffset,
@@ -33,7 +34,7 @@ class YGLayout {
   }
 
   fun setDirection(direction: YGDirection) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setEnumData(
+    GlobalMembers.setEnumData(
       YGDirection::class,
       flags,
       directionOffset,
@@ -42,14 +43,14 @@ class YGLayout {
   }
 
   fun didUseLegacyFlag(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       didUseLegacyFlagOffset,
     )
   }
 
   fun setDidUseLegacyFlag(value: Boolean) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       didUseLegacyFlagOffset,
       value,
@@ -57,14 +58,14 @@ class YGLayout {
   }
 
   fun doesLegacyStretchFlagAffectsLayout(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       doesLegacyStretchFlagAffectsLayoutOffset,
     )
   }
 
   fun setDoesLegacyStretchFlagAffectsLayout(value: Boolean) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       doesLegacyStretchFlagAffectsLayoutOffset,
       value,
@@ -72,14 +73,14 @@ class YGLayout {
   }
 
   fun hadOverflow(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       hadOverflowOffset,
     )
   }
 
   fun setHadOverflow(hadOverflow: Boolean) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       hadOverflowOffset,
       hadOverflow,
@@ -92,7 +93,7 @@ class YGLayout {
     const val YG_MAX_CACHED_RESULT_COUNT = 8
     private const val directionOffset = 0
     private val didUseLegacyFlagOffset: Int =
-      directionOffset + app.cash.redwood.yoga.detail.GlobalMembers.bitWidthFn<YGDirection>()
+      directionOffset + GlobalMembers.bitWidthFn<YGDirection>()
     private val doesLegacyStretchFlagAffectsLayoutOffset = didUseLegacyFlagOffset + 1
     private val hadOverflowOffset = doesLegacyStretchFlagAffectsLayoutOffset + 1
   }

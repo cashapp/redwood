@@ -44,7 +44,7 @@ import kotlin.math.abs
 import kotlin.reflect.KClass
 import kotlinx.atomicfu.atomic
 
-object GlobalMembers {
+object Yoga {
   const val YGUndefined = Float.NaN
   val YGValueAuto = YGValue(YGUndefined, YGUnit.YGUnitAuto)
   val YGValueUndefined = YGValue(YGUndefined, YGUnit.YGUnitUndefined)
@@ -2146,7 +2146,7 @@ object GlobalMembers {
     node.setLayoutDimension(0f, 1)
     node.setHasNewLayout(true)
     node.iterChildrenAfterCloningIfNeeded<Any>(
-      GlobalMembers::YGZeroOutLayoutRecursivly,
+      Yoga::YGZeroOutLayoutRecursivly,
       layoutContext,
     )
   }
