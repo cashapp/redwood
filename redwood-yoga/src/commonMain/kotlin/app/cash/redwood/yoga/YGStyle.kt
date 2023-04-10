@@ -30,12 +30,12 @@ class YGStyle {
   private val dimensions_ = Values<YGDimension>(CompactValue.ofAuto().convertToYgValue())
   private val minDimensions_ = Values<YGDimension>()
   private val maxDimensions_ = Values<YGDimension>()
-  private val flags: MutableMap<Any?, Any> = mutableMapOf()
+  private val flags = mutableMapOf<Any?, Any>()
   private var aspectRatio_ = YGFloatOptional()
   private var flex_ = YGFloatOptional()
   private var flexGrow_ = YGFloatOptional()
   private var flexShrink_ = YGFloatOptional()
-  private var flexBasis_: CompactValue = CompactValue.ofAuto()
+  private var flexBasis_ = CompactValue.ofAuto()
 
   init {
     GlobalMembers.setEnumData(

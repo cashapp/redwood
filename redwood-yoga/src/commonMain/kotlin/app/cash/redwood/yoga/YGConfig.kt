@@ -17,7 +17,6 @@ class YGConfig {
   var useWebDefaults = false
   var useLegacyStretchBehaviour = false
   var shouldDiffLayoutWithoutLegacyStretchBehaviour = false
-  var printTree = false
   var pointScaleFactor = 1.0f
   var context: Any? = null
   private var cloneNodeCallback_struct = cloneNodeCallback_Struct()
