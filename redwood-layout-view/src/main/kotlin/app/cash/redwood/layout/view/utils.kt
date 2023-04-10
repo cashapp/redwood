@@ -16,10 +16,17 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.yoga.enums.YGAlign
+import app.cash.redwood.yoga.enums.YGFlexDirection
+import app.cash.redwood.yoga.enums.YGJustify
 import app.cash.redwood.yoga.enums.YGMeasureMode
 
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
@@ -31,6 +38,41 @@ internal fun YGMeasureMode.toAndroid() = when (this) {
   YGMeasureMode.YGMeasureModeAtMost -> View.MeasureSpec.AT_MOST
   YGMeasureMode.YGMeasureModeExactly -> View.MeasureSpec.EXACTLY
   YGMeasureMode.YGMeasureModeUndefined -> View.MeasureSpec.UNSPECIFIED
+}
+
+internal fun FlexDirection.toYoga() = when (this) {
+  FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
+  FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
+  FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
+  FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
+  else -> throw AssertionError()
+}
+
+internal fun AlignItems.toYoga() = when (this) {
+  AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
+  AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
+  AlignItems.Center -> YGAlign.YGAlignCenter
+  AlignItems.Baseline -> YGAlign.YGAlignBaseline
+  AlignItems.Stretch -> YGAlign.YGAlignStretch
+  else -> throw AssertionError()
+}
+
+internal fun JustifyContent.toYoga() = when (this) {
+  JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
+  JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
+  JustifyContent.Center -> YGJustify.YGJustifyCenter
+  JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
+  JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
+  JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toYoga() = when (this) {
+  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
+  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
+  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
+  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
+  else -> throw AssertionError()
 }
 
 internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(

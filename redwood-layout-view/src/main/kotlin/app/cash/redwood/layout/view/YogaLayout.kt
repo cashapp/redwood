@@ -34,6 +34,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     applyLayoutParams(layoutParams, rootNode, this)
   }
 
+  fun viewToNode(view: View): YGNode? = nodes[view]
+
   override fun addView(child: View, index: Int, params: LayoutParams) {
     // Nodes with children cannot have measure functions.
     rootNode.setMeasureFunc(null as YGMeasureFunc?)

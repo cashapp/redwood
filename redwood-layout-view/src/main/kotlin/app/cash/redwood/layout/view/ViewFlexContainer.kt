@@ -26,6 +26,11 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
+import app.cash.redwood.layout.Grow
+import app.cash.redwood.layout.HorizontalAlignment
+import app.cash.redwood.layout.Shrink
+import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -35,10 +40,10 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.yoga.GlobalMembers
-import app.cash.redwood.yoga.enums.YGAlign
+import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetAlignSelf
+import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetFlexGrow
+import app.cash.redwood.yoga.GlobalMembers.YGNodeStyleSetFlexShrink
 import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.enums.YGJustify
 import app.cash.redwood.yoga.enums.YGOverflow
 
 internal class ViewFlexContainer(
@@ -47,21 +52,57 @@ internal class ViewFlexContainer(
 ) : Row<View>, Column<View> {
   private val density = DensityMultiplier * context.resources.displayMetrics.density
   private val yogaLayout = YogaLayout(context).apply {
-    GlobalMembers.YGNodeStyleSetFlexDirection(
-      node = rootNode,
-      flexDirection = when (direction) {
-        FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
-        FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
-        FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
-        FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
-        else -> throw AssertionError()
-      },
-    )
+    GlobalMembers.YGNodeStyleSetFlexDirection(rootNode, direction.toYoga())
   }
+
   private val hostView = HostView()
   override val value: View get() = hostView
 
-  override val children = ViewGroupChildren(yogaLayout)
+  override val children = ViewGroupChildren(
+    parent = yogaLayout,
+    onLayoutModifierUpdated = { widget ->
+      val childNode = yogaLayout.viewToNode(widget.value) ?: return@ViewGroupChildren
+
+      widget.layoutModifiers.forEach { modifier ->
+        when (modifier) {
+          is Grow -> {
+            YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
+          }
+          is Shrink -> {
+            YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
+          }
+          is app.cash.redwood.layout.Margin -> {
+            GlobalMembers.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeLeft,
+              points = density * modifier.margin.left,
+            )
+            GlobalMembers.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeRight,
+              points = density * modifier.margin.right,
+            )
+            GlobalMembers.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeTop,
+              points = density * modifier.margin.top,
+            )
+            GlobalMembers.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeBottom,
+              points = density * modifier.margin.bottom,
+            )
+          }
+          is HorizontalAlignment -> if (direction.isVertical) {
+            YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+          is VerticalAlignment -> if (direction.isHorizontal) {
+            YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+        }
+      }
+    }
+  )
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private var width = Constraint.Wrap
@@ -127,33 +168,12 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    GlobalMembers.YGNodeStyleSetAlignItems(
-      node = yogaLayout.rootNode,
-      alignItems = when (alignItems) {
-        AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
-        AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
-        AlignItems.Center -> YGAlign.YGAlignCenter
-        AlignItems.Baseline -> YGAlign.YGAlignBaseline
-        AlignItems.Stretch -> YGAlign.YGAlignStretch
-        else -> throw AssertionError()
-      },
-    )
+    GlobalMembers.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    GlobalMembers.YGNodeStyleSetJustifyContent(
-      node = yogaLayout.rootNode,
-      justifyContent = when (justifyContent) {
-        JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
-        JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
-        JustifyContent.Center -> YGJustify.YGJustifyCenter
-        JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
-        JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
-        JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
-        else -> throw AssertionError()
-      },
-    )
+    GlobalMembers.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
     invalidate()
   }
 
