@@ -41,7 +41,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     val childNode = GlobalMembers.YGNodeNew()
     childNode.setMeasureFunc(ViewMeasureFunction(child))
     nodes[child] = childNode
-    rootNode.insertChild(childNode, rootNode.getChildren().size)
+    GlobalMembers.YGNodeInsertChild(rootNode, childNode, rootNode.getChildren().size)
   }
 
   override fun removeView(view: View) {

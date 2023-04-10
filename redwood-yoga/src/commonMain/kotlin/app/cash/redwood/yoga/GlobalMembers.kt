@@ -292,7 +292,7 @@ object GlobalMembers {
   fun YGNodeInsertChild(
     owner: YGNode,
     child: YGNode,
-    index: Int?,
+    index: Int,
   ) //Method definition originates from: Yoga.cpp
   {
     YGAssertWithNode(
@@ -313,7 +313,7 @@ object GlobalMembers {
   fun YGNodeSwapChild(
     owner: YGNode,
     child: YGNode,
-    index: Int?,
+    index: Int,
   ) //Method definition originates from: Yoga.cpp
   {
     owner.replaceChild(child, index)

@@ -44,7 +44,7 @@ object GlobalMembers {
   inline fun <reified E : Enum<E>> getEnumData(
     e: KClass<E>,
     flags: Map<Any?, Any>,
-    index: Int?,
+    index: Int,
   ): E {
     return getEnumData(e, enumValues(), flags, index)
   }
@@ -53,9 +53,9 @@ object GlobalMembers {
     e: KClass<E>,
     values: Array<E>,
     flags: Map<Any?, Any>,
-    index: Int?,
+    index: Int,
   ): E {
-    return (flags[StyleEnumFlagsKey(e, index!!)] ?: values.first()) as E
+    return (flags[StyleEnumFlagsKey(e, index)] ?: values.first()) as E
   }
 
   fun <E : Enum<E>> setEnumData(
@@ -68,7 +68,7 @@ object GlobalMembers {
     return 0
   }
 
-  fun getBooleanData(flags: Map<Any?, Any>, index: Int?): Boolean {
+  fun getBooleanData(flags: Map<Any?, Any>, index: Int): Boolean {
     return (flags[index] ?: false) as Boolean
   }
 

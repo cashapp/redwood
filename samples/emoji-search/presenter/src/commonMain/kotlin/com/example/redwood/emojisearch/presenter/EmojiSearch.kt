@@ -104,7 +104,12 @@ fun EmojiSearch(
       onChange = { searchTerm = it },
     )
     filteredEmojis.take(20).forEach { image ->
-      Text(image.label)
+      Row(
+        verticalAlignment = CrossAxisAlignment.Center,
+      ) {
+        Image(image.url)
+        Text(image.label)
+      }
     }
   }
 }

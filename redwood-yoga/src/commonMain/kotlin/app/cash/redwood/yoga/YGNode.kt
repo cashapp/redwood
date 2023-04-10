@@ -375,12 +375,12 @@ class YGNode {
     setMeasureFunc(measure_)
   }
 
-  fun replaceChild(child: YGNode, index: Int?) {
-    children_[index!!] = child
+  fun replaceChild(child: YGNode, index: Int) {
+    children_[index] = child
   }
 
-  fun insertChild(child: YGNode, index: Int?) {
-    children_.add(index!!, child)
+  fun insertChild(child: YGNode, index: Int) {
+    children_.add(index, child)
   }
 
   fun removeChild(child: YGNode): Boolean {
