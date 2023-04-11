@@ -1,9 +1,10 @@
 import app.cash.redwood.buildsupport.FlexboxHelpers
+import co.touchlab.cklib.gradle.CompileToBitcode
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'co.touchlab.cklib'
 
 kotlin {
   [
@@ -11,18 +12,9 @@ kotlin {
     iosX64(),
     iosSimulatorArm64()
   ].forEach { target ->
-    target.binaries.configureEach { lib ->
-      if (lib instanceof org.jetbrains.kotlin.gradle.plugin.mpp.Framework) lib.isStatic = false
-      lib.linkerOpts += ["-ObjC"]
+    target.compilations.main.cinterops.create("uikit") {
+      includeDirs("$projectDir/native/uikit")
     }
-  }
-
-  cocoapods {
-    summary = "Some description for a Kotlin/Native module"
-    homepage = "Link to a Kotlin/Native module homepage"
-    ios.deploymentTarget = "14.2"
-
-    pod('YogaKit', '~> 1.18')
   }
 
   sourceSets {
@@ -32,6 +24,7 @@ kotlin {
         api projects.redwoodLayoutWidget
         implementation projects.redwoodFlexbox
         implementation projects.redwoodWidgetCompose
+        implementation projects.redwoodYoga
       }
     }
 
@@ -46,5 +39,16 @@ kotlin {
     iosSimulatorArm64Main {
       dependsOn commonMain
     }
+  }
+}
+
+cklib {
+  config.kotlinVersion = libs.versions.kotlin.get()
+  create("uikit", file("native/uikit"), ["main"]) {ctb ->
+    ctb.language = CompileToBitcode.Language.OBJC
+    ctb.compilerArgs.addAll(
+      ["-DKONAN_MI_MALLOC=1", "-DNS_FORMAT_ARGUMENT(A)=", "-D_Nullable_result=_Nullable"]
+    )
+    ctb.srcDirs = project.files(file("native/uikit"))
   }
 }
