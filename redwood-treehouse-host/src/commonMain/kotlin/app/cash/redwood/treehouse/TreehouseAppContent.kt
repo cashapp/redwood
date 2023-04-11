@@ -87,7 +87,7 @@ internal class TreehouseAppContent<A : AppService>(
         CodeState.Running(
           startViewCodeContentBinding(
             ziplineSession,
-            MutableStateFlow(nextViewState.hostConfiguration)
+            MutableStateFlow(nextViewState.hostConfiguration),
           ),
         )
       }
