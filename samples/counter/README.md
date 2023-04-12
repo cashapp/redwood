@@ -12,6 +12,35 @@ In order to build and run these applications you'll need to have the following i
 - git-lfs
 
 
+Running Counter on Android
+----------------------
+
+Run this (to use the Compose UI frontend):
+
+```
+./gradlew :samples:counter:android-composeui:installDebug
+```
+
+Or this (to use the Android View frontend):
+
+```
+./gradlew :samples:counter:android-views:installDebug
+```
+
+
+Running Counter on iOS
+----------------------
+
+Run this:
+```
+cd samples/counter/ios-uikit
+pod install
+open CounterApp.xcworkspace
+```
+
+Then build and run the app. The shared Kotlin code will be built automatically as part of building the iOS app, and also rebuilt as needed.
+
+
 Running Counter on Web
 ----------------------
 
