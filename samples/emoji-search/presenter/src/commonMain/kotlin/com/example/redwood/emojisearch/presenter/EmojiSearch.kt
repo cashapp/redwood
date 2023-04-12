@@ -96,6 +96,7 @@ fun EmojiSearch(
 
   Column(
     width = Constraint.Fill,
+    height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     margin = Margin(horizontal = 24),
   ) {
@@ -104,7 +105,7 @@ fun EmojiSearch(
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    filteredEmojis.take(20).forEach { image ->
+    filteredEmojis.take(5).forEach { image ->
       Row(
         width = Constraint.Fill,
         verticalAlignment = CrossAxisAlignment.Center,
