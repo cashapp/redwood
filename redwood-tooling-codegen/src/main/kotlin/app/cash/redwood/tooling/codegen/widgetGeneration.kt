@@ -45,7 +45,7 @@ interface SunspotWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProv
 internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
   val widgetFactoriesType = schema.getWidgetFactoriesType()
-  return FileSpec.builder(widgetFactoriesType.packageName, widgetFactoriesType.simpleName)
+  return FileSpec.builder(widgetFactoriesType)
     .addType(
       TypeSpec.classBuilder(widgetFactoriesType)
         .addTypeVariable(typeVariableW)
@@ -92,7 +92,7 @@ interface SunspotWidgetFactory<W : Any> : Widget.Factory<W> {
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
   val widgetFactoryType = schema.getWidgetFactoryType()
-  return FileSpec.builder(widgetFactoryType.packageName, widgetFactoryType.simpleName)
+  return FileSpec.builder(widgetFactoryType)
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
