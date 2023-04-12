@@ -38,9 +38,6 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.setFrame
-import platform.UIKit.setNeedsLayout
-import platform.UIKit.superview
 import platform.darwin.NSObject
 
 internal class UIViewFlexContainer(
