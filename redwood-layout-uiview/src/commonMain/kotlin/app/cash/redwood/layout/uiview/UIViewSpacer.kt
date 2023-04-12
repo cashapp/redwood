@@ -21,8 +21,6 @@ import app.cash.redwood.layout.uiview.cinterop.SpacerHostView
 import app.cash.redwood.layout.widget.Spacer
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
-import platform.UIKit.invalidateIntrinsicContentSize
-import platform.UIKit.setNeedsLayout
 import platform.darwin.NSObject
 
 internal class UIViewSpacer : Spacer<UIView> {
