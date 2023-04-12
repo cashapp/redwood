@@ -26,5 +26,5 @@ import platform.UIKit.UIView
 public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
   override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
   override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)
-  override fun Spacer(): Spacer<UIView> = TODO()
+  override fun Spacer(): Spacer<UIView> = UIViewSpacer()
 }
