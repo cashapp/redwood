@@ -5,5 +5,6 @@
 @protocol RedwoodViewDelegate <NSObject>
 
  @property(nonatomic, readonly) CGSize intrinsicContentSize;
+ - (void)setNeedsLayout;
 
 @end

@@ -272,7 +272,7 @@ public data class Spacing(
 }
 
 /**
- * A two-dimensional size composed of two [Double]s.
+ * A two-dimensional size composed of two positive [Double]s.
  */
 public data class Size(
   val width: Double,

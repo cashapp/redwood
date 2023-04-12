@@ -42,9 +42,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     super.addView(child, index, params)
 
-    val childNode = Yoga.YGNodeNew()
-    childNode.setMeasureFunc(ViewMeasureFunction(child))
-    applyLayoutParams(child.layoutParams, childNode, child)
+    val childNode = child.asNode()
     nodes[child] = childNode
     Yoga.YGNodeAddChild(rootNode, childNode)
   }
@@ -196,6 +194,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       ownerHeight = YGUndefined,
       ownerDirection = rootNode.getStyle().direction(),
     )
+  }
+
+  private fun View.asNode(): YGNode {
+    val childNode = Yoga.YGNodeNew()
+    childNode.setMeasureFunc(ViewMeasureFunction(this))
+    applyLayoutParams(layoutParams, childNode, this)
+    return childNode
   }
 }
 

@@ -391,6 +391,10 @@ class YGNode {
     children_.removeAt(index)
   }
 
+  fun removeAllChildren() {
+    children_.clear()
+  }
+
   fun setLayoutDirection(direction: YGDirection?) {
     layout_!!.setDirection(direction!!)
   }

@@ -17,10 +17,8 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -29,68 +27,59 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.UIViewChildren
-import cocoapods.YogaKit.YGAlign
-import cocoapods.YogaKit.YGFlexDirection
-import cocoapods.YogaKit.YGJustify
-import cocoapods.YogaKit.configureLayoutWithBlock
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.CGSize
-import platform.CoreGraphics.CGSizeMake
+import app.cash.redwood.yoga.Yoga
+import app.cash.redwood.yoga.enums.YGEdge
 import platform.UIKit.UIView
-import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.setFrame
 import platform.UIKit.setNeedsLayout
-import platform.UIKit.superview
-import platform.darwin.NSObject
 
 internal class UIViewFlexContainer(
-  private val direction: FlexDirection,
+  direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
-  override val value = UIView()
+  private val yogaLayout = YogaLayout()
 
+  override val value = yogaLayout.view
   override val children = UIViewChildren(value)
-
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   init {
-    value.configureLayoutWithBlock {
-      it!!.setFlexDirection(when (direction) {
-        FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
-        FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
-        FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
-        FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
-        else -> throw AssertionError()
-      })
-    }
+    Yoga.YGNodeStyleSetFlexDirection(yogaLayout.rootNode, direction.toYoga())
   }
 
   override fun width(width: Constraint) {
-//    container.fillWidth = width == Constraint.Fill
+    yogaLayout.width = width
     invalidate()
   }
 
   override fun height(height: Constraint) {
-//    container.fillHeight = height == Constraint.Fill
+    yogaLayout.height = height
     invalidate()
   }
 
   override fun margin(margin: Margin) {
-    value.configureLayoutWithBlock {
-      it!!.setFlexDirection(when (direction) {
-        FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
-        FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
-        FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
-        FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
-        else -> throw AssertionError()
-      })
-    }
+    Yoga.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeLeft,
+      points = (DensityMultiplier * margin.left).toFloat(),
+    )
+    Yoga.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeRight,
+      points = (DensityMultiplier * margin.right).toFloat(),
+    )
+    Yoga.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeTop,
+      points = (DensityMultiplier * margin.top).toFloat(),
+    )
+    Yoga.YGNodeStyleSetPadding(
+      node = yogaLayout.rootNode,
+      edge = YGEdge.YGEdgeBottom,
+      points = (DensityMultiplier * margin.bottom).toFloat(),
+    )
     invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-//    value.setScrollEnabled(overflow == Overflow.Scroll)
     invalidate()
   }
 
@@ -111,100 +100,16 @@ internal class UIViewFlexContainer(
   }
 
   private fun alignItems(alignItems: AlignItems) {
-    value.configureLayoutWithBlock {
-      it!!.alignItems = when (alignItems) {
-        AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
-        AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
-        AlignItems.Center -> YGAlign.YGAlignCenter
-        AlignItems.Baseline -> YGAlign.YGAlignBaseline
-        AlignItems.Stretch -> YGAlign.YGAlignStretch
-        else -> throw AssertionError()
-      }
-    }
+    Yoga.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
     invalidate()
   }
 
   private fun justifyContent(justifyContent: JustifyContent) {
-    value.configureLayoutWithBlock {
-      it!!.justifyContent = when (justifyContent) {
-        JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
-        JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
-        JustifyContent.Center -> YGJustify.YGJustifyCenter
-        JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
-        JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
-        JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
-        else -> throw AssertionError()
-      }
-    }
+    Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
     invalidate()
   }
 
   private fun invalidate() {
     value.setNeedsLayout()
   }
-
-//  private inner class UIViewDelegate : NSObject(), RedwoodScrollViewDelegateProtocol {
-//    private var needsLayout = true
-//
-//    override fun intrinsicContentSize(): CValue<CGSize> = CGSizeMake(noIntrinsicSize.width, noIntrinsicSize.height)
-//
-//    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> =
-//      measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
-//
-//    override fun setNeedsLayout() {
-//      needsLayout = true
-//    }
-//
-//    override fun layoutSubviews() {
-//      if (!needsLayout) return
-//      needsLayout = false
-//
-//      val bounds = value.bounds.useContents { size.toUnsafeSize() }
-//      measure(bounds)
-//
-//      value.setContentSize(
-//        CGSizeMake(
-//          width = container.items.maxOfOrNull { it.right } ?: 0.0,
-//          height = container.items.maxOfOrNull { it.top } ?: 0.0,
-//        ),
-//      )
-//      value.superview?.setNeedsLayout()
-//
-//      container.items.forEachIndexed { index, item ->
-//        value.typedSubviews[index].setFrame(
-//          CGRectMake(
-//            x = item.left,
-//            y = item.top,
-//            width = item.right - item.left,
-//            height = item.bottom - item.top,
-//          ),
-//        )
-//      }
-//    }
-//
-//    private fun measure(size: UnsafeSize): Size {
-//      syncItems()
-//      val (widthSpec, heightSpec) = size.toMeasureSpecs()
-//      return container.measure(widthSpec, heightSpec)
-//    }
-//
-//    private fun syncItems() {
-//      container.items.clear()
-//      children.widgets.forEach { widget ->
-//        container.items += newFlexItem(
-//          direction = direction,
-//          density = DensityMultiplier,
-//          layoutModifiers = widget.layoutModifiers,
-//          measurable = UIViewMeasurable(widget.value),
-//        )
-//      }
-//    }
-//  }
 }
-
-private val noIntrinsicSize = UnsafeSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
-
-internal data class UnsafeSize(
-  val width: Double,
-  val height: Double,
-)

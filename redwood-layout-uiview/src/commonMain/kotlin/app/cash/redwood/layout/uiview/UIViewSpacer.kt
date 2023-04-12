@@ -54,5 +54,6 @@ internal class UIViewSpacer : Spacer<UIView> {
 
   private inner class UIViewDelegate : NSObject(), RedwoodViewDelegateProtocol {
     override fun intrinsicContentSize() = CGSizeMake(width, height)
+    override fun setNeedsLayout() {}
   }
 }

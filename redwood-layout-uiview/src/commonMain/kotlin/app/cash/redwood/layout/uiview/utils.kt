@@ -15,10 +15,17 @@
  */
 package app.cash.redwood.layout.uiview
 
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.yoga.enums.YGAlign
+import app.cash.redwood.yoga.enums.YGFlexDirection
+import app.cash.redwood.yoga.enums.YGJustify
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
@@ -32,56 +39,41 @@ import platform.UIKit.subviews
 // The cross platform density multiples use iOS as an anchor.
 internal const val DensityMultiplier = 1.0
 
-internal fun CGSize.toSize() = Size(width, height)
-
-internal fun CGSize.toUnsafeSize() = UnsafeSize(width, height)
-
-internal fun UnsafeSize.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
-  val widthSpec = when (width) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(width, MeasureSpecMode.AtMost)
-  }
-  val heightSpec = when (height) {
-    UIViewNoIntrinsicMetric -> MeasureSpec.from(Double.MAX_VALUE, MeasureSpecMode.Unspecified)
-    else -> MeasureSpec.from(height, MeasureSpecMode.AtMost)
-  }
-  return widthSpec to heightSpec
+internal fun FlexDirection.toYoga() = when (this) {
+  FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
+  FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
+  FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
+  FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
+  else -> throw AssertionError()
 }
 
-internal fun measureSpecsToCGSize(widthSpec: MeasureSpec, heightSpec: MeasureSpec): CValue<CGSize> {
-  val width = when (widthSpec.mode) {
-    MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> widthSpec.size
-  }
-  val height = when (heightSpec.mode) {
-    MeasureSpecMode.Unspecified -> UIViewNoIntrinsicMetric
-    else -> heightSpec.size
-  }
-  return CGSizeMake(width, height)
+internal fun AlignItems.toYoga() = when (this) {
+  AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
+  AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
+  AlignItems.Center -> YGAlign.YGAlignCenter
+  AlignItems.Baseline -> YGAlign.YGAlignBaseline
+  AlignItems.Stretch -> YGAlign.YGAlignStretch
+  else -> throw AssertionError()
+}
+
+internal fun JustifyContent.toYoga() = when (this) {
+  JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
+  JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
+  JustifyContent.Center -> YGJustify.YGJustifyCenter
+  JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
+  JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
+  JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toYoga() = when (this) {
+  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
+  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
+  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
+  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
+  else -> throw AssertionError()
 }
 
 @Suppress("UNCHECKED_CAST")
 internal val UIView.typedSubviews: List<UIView>
   get() = subviews as List<UIView>
-
-internal class UIViewMeasurable(val view: UIView) : Measurable() {
-  override val minWidth: Double
-    get() = view.intrinsicContentSize.useContents {
-      if (width == UIViewNoIntrinsicMetric) 0.0 else width
-    }
-  override val minHeight: Double
-    get() = view.intrinsicContentSize.useContents {
-      if (height == UIViewNoIntrinsicMetric) 0.0 else height
-    }
-
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    var output = view.sizeThatFits(measureSpecsToCGSize(widthSpec, heightSpec)).useContents { toSize() }
-    if (widthSpec.mode == MeasureSpecMode.Exactly) {
-      output = output.copy(width = widthSpec.size)
-    }
-    if (heightSpec.mode == MeasureSpecMode.Exactly) {
-      output = output.copy(height = heightSpec.size)
-    }
-    return output
-  }
-}

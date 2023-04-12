@@ -29,4 +29,10 @@
   return [self.kotlinDelegate intrinsicContentSize];
 }
 
+- (void)setNeedsLayout
+{
+  [super setNeedsLayout];
+  [self.kotlinDelegate setNeedsLayout];
+}
+
 @end
