@@ -356,7 +356,7 @@ private class ViewContentCodeBinding<A : AppService>(
       treehouseUiOrNull = treehouseUi
       treehouseUi.start(
         diffSink = this@ViewContentCodeBinding,
-        hostConfigurations = hostConfigurationFlow.toFlowWithInitialValue(),
+        hostConfigurations = hostConfigurationFlow,
       )
     }
   }
