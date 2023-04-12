@@ -25,4 +25,3 @@ internal expect fun CoroutineScope.tickFrameClock(
   dispatchers: TreehouseDispatchers,
   clockService: FrameClockService,
 )
-
