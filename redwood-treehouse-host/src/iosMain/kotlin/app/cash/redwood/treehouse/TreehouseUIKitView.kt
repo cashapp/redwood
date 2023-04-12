@@ -19,7 +19,6 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
-import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.cValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,10 +26,6 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.setFrame
-import platform.UIKit.subviews
-import platform.UIKit.superview
 
 @ObjCName("TreehouseUIKitView", exact = true)
 public class TreehouseUIKitView(
@@ -81,17 +76,16 @@ private fun computeHostConfiguration(
   )
 }
 
-@Suppress("unused") // cinterop erroneously exposes these as extension functions.
 private class RootUiView(
   private val treehouseView: TreehouseUIKitView,
 ) : UIView(cValue { CGRectZero }) {
-  @ObjCAction fun layoutSubviews() {
+  override fun layoutSubviews() {
     subviews.forEach {
       (it as UIView).setFrame(bounds)
     }
   }
 
-  @ObjCAction fun didMoveToSuperview() {
+  override fun didMoveToSuperview() {
     treehouseView.superviewChanged()
   }
 

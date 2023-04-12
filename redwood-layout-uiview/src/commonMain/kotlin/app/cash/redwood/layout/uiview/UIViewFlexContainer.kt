@@ -30,8 +30,10 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.UIViewChildren
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
@@ -106,7 +108,7 @@ internal class UIViewFlexContainer(
     value.setNeedsLayout()
   }
 
-  private inner class FlexContainerHostView : UIScrollView() {
+  private inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
     private var needsLayout = true
 
     override fun intrinsicContentSize(): CValue<CGSize> {

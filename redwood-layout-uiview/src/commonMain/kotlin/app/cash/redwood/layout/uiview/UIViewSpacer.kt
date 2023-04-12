@@ -17,6 +17,8 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.widget.Spacer
+import kotlinx.cinterop.cValue
+import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
@@ -47,7 +49,7 @@ internal class UIViewSpacer : Spacer<UIView> {
     value.setNeedsLayout()
   }
 
-  private inner class SpacerHostView : UIView() {
+  private inner class SpacerHostView : UIView(cValue { CGRectZero }) {
     override fun intrinsicContentSize() = CGSizeMake(width, height)
   }
 }
