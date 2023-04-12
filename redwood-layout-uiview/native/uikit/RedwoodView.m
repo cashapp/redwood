@@ -13,42 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#import "uiview.h"
+#import "RedwoodView.h"
 
-@implementation FlexContainerHostView
-
-- (id)initWithFrame :(CGRect)frame :(id <RedwoodScrollViewDelegate>)kotlinDelegate
-{
-  self = [super initWithFrame:frame];
-  self.kotlinDelegate = kotlinDelegate;
-    return self;
-}
-
-- (CGSize)intrinsicContentSize
-{
-  return [self.kotlinDelegate intrinsicContentSize];
-}
-
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  return [self.kotlinDelegate sizeThatFits:size];
-}
-
-- (void)setNeedsLayout
-{
-  [super setNeedsLayout];
-  [self.kotlinDelegate setNeedsLayout];
-}
-
-- (void)layoutSubviews
-{
-  [super layoutSubviews];
-  [self.kotlinDelegate layoutSubviews];
-}
-
-@end
-
-@implementation SpacerHostView
+@implementation RedwoodView
 
 - (id)initWithFrame :(CGRect)frame :(id <RedwoodViewDelegate>)kotlinDelegate
 {

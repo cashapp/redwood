@@ -366,10 +366,10 @@ static YGSize YGMeasureView(
   //
   // See https://github.com/facebook/yoga/issues/606 for more information.
   if (!view.yoga.isUIView || [view.subviews count] > 0) {
-    sizeThatFits = [view sizeThatFits:(CGSize){
-                                          .width = constrainedWidth,
-                                          .height = constrainedHeight,
-                                      }];
+      sizeThatFits = [view sizeThatFits:(CGSize){
+          .width = constrainedWidth,
+          .height = constrainedHeight,
+      }];
   }
 
   return (YGSize){

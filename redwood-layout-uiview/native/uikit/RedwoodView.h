@@ -19,10 +19,6 @@
 #import "RedwoodViewDelegate.h"
 #import "RedwoodScrollViewDelegate.h"
 
-@interface FlexContainerHostView : UIScrollView
-@property id <RedwoodScrollViewDelegate> kotlinDelegate;
-@end
-
-@interface SpacerHostView : UIView
+@interface RedwoodView : UIView
 @property id <RedwoodViewDelegate> kotlinDelegate;
 @end
