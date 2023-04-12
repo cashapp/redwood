@@ -63,7 +63,7 @@ internal fun generateDiffConsumingNodeFactory(
   val schema = schemaSet.schema
   val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
   val type = schema.diffConsumingNodeFactoryType()
-  return FileSpec.builder(type.packageName, type.simpleName)
+  return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
@@ -174,7 +174,7 @@ internal fun generateDiffConsumingWidget(
   val type = schema.diffConsumingNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
-  return FileSpec.builder(type.packageName, type.simpleName)
+  return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)

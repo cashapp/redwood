@@ -36,7 +36,11 @@ import kotlinx.coroutines.launch
 private class State<A : AppService>(
   val viewState: ViewState,
   val codeState: CodeState<A>,
-)
+) {
+  init {
+    require(viewState != ViewState.None || codeState !is CodeState.Running)
+  }
+}
 
 private sealed interface ViewState {
   object None : ViewState
@@ -66,7 +70,7 @@ internal class TreehouseAppContent<A : AppService>(
 ) : Content {
   private val dispatchers = treehouseApp.dispatchers
 
-  private var stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
+  private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
 
   override fun preload(hostConfiguration: HostConfiguration) {
     treehouseApp.dispatchers.checkUi()
@@ -81,7 +85,10 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && ziplineSession != null -> {
         CodeState.Running(
-          startViewCodeContentBinding(ziplineSession, MutableStateFlow(nextViewState.hostConfiguration)),
+          startViewCodeContentBinding(
+            ziplineSession,
+            MutableStateFlow(nextViewState.hostConfiguration),
+          ),
         )
       }
       else -> previousState.codeState
@@ -119,7 +126,8 @@ internal class TreehouseAppContent<A : AppService>(
       treehouseApp.boundContents += this
     }
 
-    // Make sure we're showing something in the view; either loaded code or a spinner to show that code is coming.
+    // Make sure we're showing something in the view; either loaded code or a spinner to show that
+    // code is coming.
     when (nextCodeState) {
       is CodeState.Idle -> codeListener.onInitialCodeLoading(view)
       is CodeState.Running -> nextCodeState.viewContentCodeBinding.initView(view)
@@ -150,8 +158,8 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = CodeState.Idle<A>()
 
     // Cancel the code if necessary.
+    treehouseApp.boundContents.remove(this)
     if (previousState.codeState is CodeState.Running) {
-      treehouseApp.boundContents.remove(this)
       previousState.codeState.viewContentCodeBinding.cancel()
     }
 
@@ -162,30 +170,30 @@ internal class TreehouseAppContent<A : AppService>(
     treehouseApp.dispatchers.checkUi()
 
     val previousState = stateFlow.value
-    val previousViewState = previousState.viewState
+    val viewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
-    val hostConfiguration = when (previousViewState) {
-      is ViewState.Preloading -> MutableStateFlow(previousViewState.hostConfiguration)
-      is ViewState.Bound -> previousViewState.view.hostConfiguration
+    val hostConfiguration = when (viewState) {
+      is ViewState.Preloading -> MutableStateFlow(viewState.hostConfiguration)
+      is ViewState.Bound -> viewState.view.hostConfiguration
       else -> error("unexpected receiveZiplineSession with no view bound and no preload")
     }
 
-    val nextViewState = ViewState.None
     val nextCodeState = CodeState.Running(
       startViewCodeContentBinding(next, hostConfiguration),
     )
 
-    if (previousViewState is ViewState.Bound) {
-      nextCodeState.viewContentCodeBinding.initView(previousViewState.view)
+    // If we have a view, tell the new binding about it.
+    if (viewState is ViewState.Bound) {
+      nextCodeState.viewContentCodeBinding.initView(viewState.view)
     }
 
-    // Cancel the old code if necessary.
+    // If we replaced an old binding, cancel that old binding.
     if (previousCodeState is CodeState.Running) {
       previousCodeState.viewContentCodeBinding.cancel()
     }
 
-    stateFlow.value = State(nextViewState, nextCodeState)
+    stateFlow.value = State(viewState, nextCodeState)
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
@@ -316,10 +324,16 @@ private class ViewContentCodeBinding<A : AppService>(
 
     if (view == null || bridge == null) {
       if (diffsAwaitingInitView.isEmpty()) {
-        // Update the TreehouseAppContent's ViewState on the first diff.
+        // Unblock coroutines suspended on TreehouseAppContent.awaitContent().
         val currentState = stateFlow.value
-        if (currentState.codeState is CodeState.Running && currentState.codeState.viewContentCodeBinding == this) {
-          stateFlow.value = State(currentState.viewState, CodeState.Running(this, hasDiffs = true))
+        if (
+          currentState.codeState is CodeState.Running &&
+          currentState.codeState.viewContentCodeBinding == this
+        ) {
+          stateFlow.value = State(
+            currentState.viewState,
+            CodeState.Running(this, hasDiffs = true),
+          )
         }
       }
 
