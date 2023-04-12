@@ -28,7 +28,7 @@ internal actual fun CoroutineScope.tickFrameClock(
   dispatchers: TreehouseDispatchers,
   clockService: FrameClockService,
 ) {
-  // Note: this duplicates coe in TickFrameClockJvm.kt
+  // Note: this duplicates coe in TickFrameClockNative.kt
   val ticksPerSecond = 60
   var now = 0L
   val delayNanos = 1_000_000_000L / ticksPerSecond
