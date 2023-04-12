@@ -16,20 +16,17 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.uiview.cinterop.RedwoodViewDelegateProtocol
-import app.cash.redwood.layout.uiview.cinterop.SpacerHostView
 import app.cash.redwood.layout.widget.Spacer
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
-import platform.darwin.NSObject
 
 internal class UIViewSpacer : Spacer<UIView> {
   private var width = 0.0
   private var height = 0.0
 
-  override val value: UIView = SpacerHostView().apply {
-    kotlinDelegate = UIViewDelegate()
-  }
+  private val view = SpacerHostView()
+
+  override val value: UIView get() = view
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
@@ -50,7 +47,7 @@ internal class UIViewSpacer : Spacer<UIView> {
     value.setNeedsLayout()
   }
 
-  private inner class UIViewDelegate : NSObject(), RedwoodViewDelegateProtocol {
+  private inner class SpacerHostView : UIView() {
     override fun intrinsicContentSize() = CGSizeMake(width, height)
   }
 }
