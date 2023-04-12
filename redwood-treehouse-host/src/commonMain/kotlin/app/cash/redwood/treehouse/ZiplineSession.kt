@@ -20,7 +20,6 @@ import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** The host state for a single code load. We get a new session each time we get new code. */
@@ -36,15 +35,10 @@ internal class ZiplineSession<A : AppService>(
 
   fun startFrameClock() {
     sessionScope.launch(app.dispatchers.zipline) {
-      val clockService = appService.withScope(ziplineScope).frameClockService
-      val ticksPerSecond = 60
-      var now = 0L
-      val delayNanos = 1_000_000_000L / ticksPerSecond
-      while (true) {
-        clockService.sendFrame(now)
-        delay(delayNanos / 1_000_000)
-        now += delayNanos
-      }
+      tickFrameClock(
+        dispatchers = app.dispatchers,
+        clockService = appService.withScope(ziplineScope).frameClockService,
+      )
     }
   }
 
