@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
@@ -23,6 +24,7 @@ import app.cash.turbine.test
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.cinterop.objcPtr
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import platform.Foundation.NSDate
@@ -34,6 +36,7 @@ import platform.UIKit.UIWindow
 import platform.UIKit.addSubview
 import platform.UIKit.overrideUserInterfaceStyle
 import platform.UIKit.removeFromSuperview
+import platform.UIKit.safeAreaInsets
 import platform.UIKit.subviews
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -112,6 +115,20 @@ class TreehouseUIKitViewTest {
 
       assertEquals(HostConfiguration(darkMode = true), awaitItem())
     }
+  }
+
+  @Test fun hostConfigurationReflectsInitialSafeAreaInsets() = runTest {
+    val parent = UIWindow()
+
+    // We can't override this value so test that they match.
+    val expectedInsets = parent.safeAreaInsets.useContents {
+      Margin(left, right, top, bottom)
+    }
+
+    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    parent.addSubview(layout.view)
+
+    assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), layout.hostConfiguration.value)
   }
 
   private fun viewWidget(view: UIView) = object : Widget<UIView> {

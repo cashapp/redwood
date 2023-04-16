@@ -21,7 +21,11 @@ import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
@@ -110,6 +114,26 @@ class TreehouseWidgetViewTest {
 
       layout.dispatchConfigurationChanged(newConfig)
       assertEquals(HostConfiguration(darkMode = true), awaitItem())
+    }
+  }
+
+  @Test fun hostConfigurationEmitsSafeAreaInsetsChanges() = runTest {
+    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    layout.hostConfiguration.test {
+      assertEquals(HostConfiguration(safeAreaInsets = Margin.Zero), awaitItem())
+      val insets = Insets.of(10, 20, 30, 40)
+      val windowInsets = WindowInsetsCompat.Builder()
+        .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
+        .build()
+      ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
+      val density = context.resources.displayMetrics.density.toDouble()
+      val expectedInsets = Margin(
+        left = density * insets.left,
+        right = density * insets.right,
+        top = density * insets.top,
+        bottom = density * insets.bottom,
+      )
+      assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), awaitItem())
     }
   }
 

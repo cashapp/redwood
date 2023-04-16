@@ -20,7 +20,11 @@ kotlin {
         api projects.redwoodTreehouseHost
         implementation libs.jetbrains.compose.foundation
         implementation projects.redwoodWidgetCompose
-        implementation projects.redwoodTreehouseComposeuiInsets
+      }
+    }
+    androidMain {
+      dependencies {
+        implementation libs.androidx.core
       }
     }
   }
