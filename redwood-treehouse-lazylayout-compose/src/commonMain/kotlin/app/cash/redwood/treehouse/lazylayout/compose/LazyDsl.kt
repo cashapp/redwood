@@ -20,6 +20,10 @@ import app.cash.redwood.LayoutScopeMarker
 
 @LayoutScopeMarker
 public interface LazyListScope {
+  public fun item(
+    content: @Composable () -> Unit,
+  )
+
   public fun items(
     count: Int,
     itemContent: @Composable (index: Int) -> Unit,
