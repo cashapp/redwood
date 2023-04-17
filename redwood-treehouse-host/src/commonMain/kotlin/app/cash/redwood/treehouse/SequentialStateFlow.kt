@@ -25,7 +25,7 @@ internal class SequentialStateFlow<T>(
 ) : StateFlow<T> {
   val stateFlowValue: MutableStateFlow<StateFlow<T>> = MutableStateFlow(first)
 
-  override val replayCache: List<T> = listOf(value)
+  override val replayCache: List<T> get() = listOf(value)
 
   override suspend fun collect(collector: FlowCollector<T>): Nothing {
     stateFlowValue.collectLatest { stateFlow ->
