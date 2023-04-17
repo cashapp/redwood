@@ -20,7 +20,7 @@ package app.cash.redwood.treehouse.composeui
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -29,7 +29,7 @@ import app.cash.redwood.layout.api.Margin
 @Composable
 public actual fun safeAreaInsets(): Margin {
   val layoutDirection = LocalLayoutDirection.current
-  return WindowInsets.systemBars.asPaddingValues().toMargin(layoutDirection)
+  return WindowInsets.safeDrawing.asPaddingValues().toMargin(layoutDirection)
 }
 
 @Composable

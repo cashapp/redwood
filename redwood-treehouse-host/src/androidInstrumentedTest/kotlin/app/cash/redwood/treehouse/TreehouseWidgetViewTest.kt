@@ -117,13 +117,33 @@ class TreehouseWidgetViewTest {
     }
   }
 
-  @Test fun hostConfigurationEmitsSafeAreaInsetsChanges() = runTest {
+  @Test fun hostConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
     layout.hostConfiguration.test {
       assertEquals(HostConfiguration(safeAreaInsets = Margin.Zero), awaitItem())
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
+        .build()
+      ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
+      val density = context.resources.displayMetrics.density.toDouble()
+      val expectedInsets = Margin(
+        left = density * insets.left,
+        right = density * insets.right,
+        top = density * insets.top,
+        bottom = density * insets.bottom,
+      )
+      assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), awaitItem())
+    }
+  }
+
+  @Test fun hostConfigurationEmitsImeSafeAreaInsetsChanges() = runTest {
+    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
+    layout.hostConfiguration.test {
+      assertEquals(HostConfiguration(safeAreaInsets = Margin.Zero), awaitItem())
+      val insets = Insets.of(10, 20, 30, 40)
+      val windowInsets = WindowInsetsCompat.Builder()
+        .setInsets(WindowInsetsCompat.Type.ime(), insets)
         .build()
       ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
       val density = context.resources.displayMetrics.density.toDouble()
