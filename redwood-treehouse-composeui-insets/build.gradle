@@ -31,5 +31,5 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.treehouse.composeui'
+  namespace 'app.cash.treehouse.composeui.insets'
 }
