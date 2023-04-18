@@ -210,24 +210,25 @@ private fun parseWidget(
   val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
-    memberType.primaryConstructor!!.parameters.map {
-      val property = it.findAnnotation<PropertyAnnotation>()
-      val children = it.findAnnotation<ChildrenAnnotation>()
-      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
+    memberType.primaryConstructor!!.parameters.map { parameter ->
+      val kProperty = memberType.memberProperties.single { it.name == parameter.name }
+      val name = kProperty.name
+      val type = kProperty.returnType
 
-      // Deprecation annotation does not show up on the parameter.
-      val memberProperty = memberType.memberProperties.single { property -> property.name == it.name }
-      val deprecation = memberProperty.parseDeprecation()
+      val property = kProperty.findAnnotation<PropertyAnnotation>()
+      val children = kProperty.findAnnotation<ChildrenAnnotation>()
+      val defaultExpression = kProperty.findAnnotation<DefaultAnnotation>()?.expression
+      val deprecation = kProperty.parseDeprecation()
 
       if (property != null) {
-        if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
-          val arguments = it.type.arguments.dropLast(1) // Drop return type.
+        if (type.isSubtypeOf(eventType) || type.isSubtypeOf(optionalEventType)) {
+          val arguments = type.arguments.dropLast(1) // Drop return type.
           require(arguments.size <= 1) {
-            "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
+            "@Property ${memberType.qualifiedName}#$name lambda type can only have zero or one arguments. Found: $arguments"
           }
           ParsedProtocolEvent(
             tag = property.tag,
-            name = it.name!!,
+            name = name,
             parameterType = arguments.singleOrNull()?.type?.toFqType(),
             defaultExpression = defaultExpression,
             deprecation = deprecation,
@@ -235,39 +236,39 @@ private fun parseWidget(
         } else {
           ParsedProtocolProperty(
             tag = property.tag,
-            name = it.name!!,
-            type = it.type.toFqType(),
+            name = name,
+            type = type.toFqType(),
             defaultExpression = defaultExpression,
             deprecation = deprecation,
           )
         }
       } else if (children != null) {
-        require(it.type.isSubtypeOf(childrenType)) {
-          "@Children ${memberType.qualifiedName}#${it.name} must be of type '() -> Unit'"
+        require(type.isSubtypeOf(childrenType)) {
+          "@Children ${memberType.qualifiedName}#$name must be of type '() -> Unit'"
         }
         var scope: FqType? = null
-        var arguments = it.type.arguments.dropLast(1) // Drop return type.
-        if (it.type.annotations.any(ExtensionFunctionType::class::isInstance)) {
-          val receiverType = it.type.arguments.first().type
+        var arguments = type.arguments.dropLast(1) // Drop return type.
+        if (type.annotations.any(ExtensionFunctionType::class::isInstance)) {
+          val receiverType = type.arguments.first().type
           val receiverClassifier = receiverType?.classifier
           require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty()) {
-            "@Children ${memberType.qualifiedName}#${it.name} lambda receiver can only be a class. Found: $receiverType"
+            "@Children ${memberType.qualifiedName}#$name lambda receiver can only be a class. Found: $receiverType"
           }
           scope = receiverClassifier.toFqType()
           arguments = arguments.drop(1)
         }
         require(arguments.isEmpty()) {
-          "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
+          "@Children ${memberType.qualifiedName}#$name lambda type must not have any arguments. Found: $arguments"
         }
         ParsedProtocolChildren(
           tag = children.tag,
-          name = it.name!!,
+          name = name,
           scope = scope,
           defaultExpression = defaultExpression,
           deprecation = deprecation,
         )
       } else {
-        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
+        throw IllegalArgumentException("Unannotated parameter \"$name\" on ${memberType.qualifiedName}")
       }
     }
   } else if (memberType.objectInstance != null) {
@@ -330,22 +331,23 @@ private fun parseLayoutModifier(
   val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
-    memberType.primaryConstructor!!.parameters.map {
-      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
-      val isSerializable = (it.type.classifier as? KClass<*>)
+    memberType.primaryConstructor!!.parameters.map { parameter ->
+      val kProperty = memberType.memberProperties.single { it.name == parameter.name }
+      val name = kProperty.name
+      val type = kProperty.returnType
+
+      val defaultExpression = kProperty.findAnnotation<DefaultAnnotation>()?.expression
+      val isSerializable = (type.classifier as? KClass<*>)
         ?.annotations
         ?.any { annotation ->
           annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
         }
         ?: false
-
-      // Deprecation annotation does not show up on the parameter.
-      val memberProperty = memberType.memberProperties.single { property -> property.name == it.name }
-      val deprecation = memberProperty.parseDeprecation()
+      val deprecation = kProperty.parseDeprecation()
 
       ParsedProtocolLayoutModifierProperty(
-        name = it.name!!,
-        type = it.type.toFqType(),
+        name = name,
+        type = type.toFqType(),
         isSerializable = isSerializable,
         defaultExpression = defaultExpression,
         deprecation = deprecation,
