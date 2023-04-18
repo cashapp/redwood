@@ -3,18 +3,11 @@ import app.cash.redwood.buildsupport.FlexboxHelpers
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
-apply plugin: 'co.touchlab.cklib'
 
 kotlin {
-  [
-    iosArm64(),
-    iosX64(),
-    iosSimulatorArm64()
-  ].forEach { target ->
-    target.compilations.main.cinterops.create("uikit") {
-      includeDirs("$projectDir/native/uikit")
-    }
-  }
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
 
   sourceSets {
     commonMain {
@@ -37,16 +30,5 @@ kotlin {
     iosSimulatorArm64Main {
       dependsOn commonMain
     }
-  }
-}
-
-cklib {
-  config.kotlinVersion = libs.versions.kotlin.get()
-  create("uikit", file("native/uikit"), ["main"]) {ctb ->
-    ctb.language = co.touchlab.cklib.gradle.CompileToBitcode.Language.OBJC
-    ctb.compilerArgs.addAll(
-      ["-DKONAN_MI_MALLOC=1", "-DNS_FORMAT_ARGUMENT(A)=", "-D_Nullable_result=_Nullable"]
-    )
-    ctb.srcDirs = project.files(file("native/uikit"))
   }
 }

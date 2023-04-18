@@ -24,6 +24,7 @@ import app.cash.zipline.ZiplineScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.plus
 
 /**
@@ -52,7 +53,7 @@ private class RedwoodZiplineTreehouseUi(
 
   override fun start(
     diffSink: DiffSinkService,
-    hostConfigurations: FlowWithInitialValue<HostConfiguration>,
+    hostConfigurations: StateFlow<HostConfiguration>,
   ) {
     val composition = ProtocolRedwoodComposition(
       scope = coroutineScope + StandardFrameClock,
@@ -62,8 +63,7 @@ private class RedwoodZiplineTreehouseUi(
     )
     this.composition = composition
 
-    val (initialHostConfiguration, hostConfigurationFlow) = hostConfigurations
-    composition.bind(treehouseUi, initialHostConfiguration, hostConfigurationFlow)
+    composition.bind(treehouseUi, hostConfigurations.value, hostConfigurations)
   }
 
   override fun close() {

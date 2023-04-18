@@ -26,22 +26,19 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.uiview.cinterop.FlexContainerHostView
-import app.cash.redwood.layout.uiview.cinterop.RedwoodScrollViewDelegateProtocol
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.UIViewChildren
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.setFrame
-import platform.UIKit.setNeedsLayout
-import platform.UIKit.superview
-import platform.darwin.NSObject
 
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
@@ -50,12 +47,12 @@ internal class UIViewFlexContainer(
     flexDirection = direction
     roundToInt = false
   }
-
-  override val value = FlexContainerHostView().apply {
-    kotlinDelegate = UIViewDelegate()
+  private val view = FlexContainerHostView().apply {
     showsHorizontalScrollIndicator = false
     showsVerticalScrollIndicator = false
   }
+
+  override val value: UIView get() = view
 
   override val children = UIViewChildren(value)
 
@@ -77,7 +74,7 @@ internal class UIViewFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
-    value.setScrollEnabled(overflow == Overflow.Scroll)
+    view.setScrollEnabled(overflow == Overflow.Scroll)
     invalidate()
   }
 
@@ -111,13 +108,16 @@ internal class UIViewFlexContainer(
     value.setNeedsLayout()
   }
 
-  private inner class UIViewDelegate : NSObject(), RedwoodScrollViewDelegateProtocol {
+  private inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
     private var needsLayout = true
 
-    override fun intrinsicContentSize(): CValue<CGSize> = CGSizeMake(noIntrinsicSize.width, noIntrinsicSize.height)
+    override fun intrinsicContentSize(): CValue<CGSize> {
+      return CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
+    }
 
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> =
-      measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      return measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
+    }
 
     override fun setNeedsLayout() {
       needsLayout = true
@@ -127,19 +127,19 @@ internal class UIViewFlexContainer(
       if (!needsLayout) return
       needsLayout = false
 
-      val bounds = value.bounds.useContents { size.toUnsafeSize() }
+      val bounds = bounds.useContents { size.toUnsafeSize() }
       measure(bounds)
 
-      value.setContentSize(
+      setContentSize(
         CGSizeMake(
           width = container.items.maxOfOrNull { it.right } ?: 0.0,
           height = container.items.maxOfOrNull { it.top } ?: 0.0,
         ),
       )
-      value.superview?.setNeedsLayout()
+      superview?.setNeedsLayout()
 
       container.items.forEachIndexed { index, item ->
-        value.typedSubviews[index].setFrame(
+        typedSubviews[index].setFrame(
           CGRectMake(
             x = item.left,
             y = item.top,
@@ -169,8 +169,6 @@ internal class UIViewFlexContainer(
     }
   }
 }
-
-private val noIntrinsicSize = UnsafeSize(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
 
 internal data class UnsafeSize(
   val width: Double,

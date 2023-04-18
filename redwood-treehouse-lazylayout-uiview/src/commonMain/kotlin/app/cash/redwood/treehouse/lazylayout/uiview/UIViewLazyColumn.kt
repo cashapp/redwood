@@ -32,10 +32,8 @@ import platform.UIKit.UITableViewCell
 import platform.UIKit.UITableViewCellStyle
 import platform.UIKit.UITableViewDiffableDataSource
 import platform.UIKit.UIView
-import platform.UIKit.addSubview
 import platform.UIKit.row
 import platform.UIKit.section
-import platform.UIKit.setFrame
 import platform.darwin.NSInteger
 
 internal class UIViewLazyColumn<A : AppService>(

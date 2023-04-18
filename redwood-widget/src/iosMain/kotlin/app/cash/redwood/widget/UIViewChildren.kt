@@ -17,10 +17,6 @@ package app.cash.redwood.widget
 
 import kotlinx.cinterop.convert
 import platform.UIKit.UIView
-import platform.UIKit.insertSubview
-import platform.UIKit.invalidateIntrinsicContentSize
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.setNeedsDisplay
 import platform.darwin.NSInteger
 
 @ObjCName("UIViewChildren", exact = true)
