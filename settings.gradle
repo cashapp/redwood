@@ -79,6 +79,16 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'
   include ':samples:emoji-search:values'
+
+  include ':samples:repo-search:android-views'
+  include ':samples:repo-search:launcher'
+  include ':samples:repo-search:presenter'
+  include ':samples:repo-search:presenter-treehouse'
+  include ':samples:repo-search:schema'
+  include ':samples:repo-search:schema:compose'
+  include ':samples:repo-search:schema:compose:protocol'
+  include ':samples:repo-search:schema:widget'
+  include ':samples:repo-search:schema:widget:protocol'
 }
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
