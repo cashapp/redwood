@@ -37,6 +37,7 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.DensityMultiplier
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow

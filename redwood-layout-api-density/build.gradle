@@ -2,6 +2,7 @@ import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.android.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 apply plugin: 'app.cash.redwood.build.compose'
@@ -12,10 +13,13 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutApiDensity
         api libs.jetbrains.compose.runtime
         api libs.kotlinx.serialization.core
       }
     }
   }
+}
+
+android {
+  namespace 'app.cash.redwood.layout.api.density'
 }

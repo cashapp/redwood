@@ -18,6 +18,7 @@ package app.cash.redwood.layout.dom
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -75,10 +76,10 @@ private class HTMLFlexContainer(
 
   override fun margin(margin: Margin) {
     value.style.apply {
-      marginLeft = unitsToPx(margin.left)
-      marginRight = unitsToPx(margin.right)
-      marginTop = unitsToPx(margin.top)
-      marginBottom = unitsToPx(margin.bottom)
+      marginLeft = margin.left.toPxString()
+      marginRight = margin.right.toPxString()
+      marginTop = margin.top.toPxString()
+      marginBottom = margin.bottom.toPxString()
     }
   }
 
@@ -108,12 +109,12 @@ private class HTMLFlexContainer(
 private class HTMLSpacer(
   override val value: HTMLDivElement,
 ) : Spacer<HTMLElement> {
-  override fun width(width: Int) {
-    value.style.width = unitsToPx(width)
+  override fun width(width: Dp) {
+    value.style.width = width.toPxString()
   }
 
-  override fun height(height: Int) {
-    value.style.height = unitsToPx(height)
+  override fun height(height: Dp) {
+    value.style.height = height.toPxString()
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier

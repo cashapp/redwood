@@ -35,6 +35,7 @@ import app.cash.redwood.layout.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.api.toPx
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -63,10 +64,10 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 }
 
 internal fun Margin.toSpacing(density: Double) = Spacing(
-  left = density * left.toDouble(),
-  right = density * right.toDouble(),
-  top = density * top.toDouble(),
-  bottom = density * bottom.toDouble(),
+  left = left.toPx(density),
+  right = right.toPx(density),
+  top = top.toPx(density),
+  bottom = bottom.toPx(density),
 )
 
 internal fun newFlexItem(

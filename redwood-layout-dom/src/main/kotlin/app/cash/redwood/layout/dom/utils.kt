@@ -17,15 +17,14 @@ package app.cash.redwood.layout.dom
 
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.api.toPx
 import kotlin.math.roundToInt
 
-// TODO: Figure out a good density multiple to map units into a reasonable size on web.
-internal const val DensityMultiplier = 1.0
-
-internal fun unitsToPx(units: Int): String {
-  return "${(DensityMultiplier * units).roundToInt()}px"
+internal fun Dp.toPxString(): String {
+  return "${toPx(1.0).roundToInt()}px"
 }
 
 internal fun Constraint.toCss() = when (this) {

@@ -46,7 +46,7 @@ internal class ViewFlexContainer(
     flexDirection = direction
     roundToInt = true
   }
-  private val density = DensityMultiplier * context.resources.displayMetrics.density
+  private val density = context.resources.displayMetrics.density.toDouble()
 
   private val hostView = HostView(context)
 

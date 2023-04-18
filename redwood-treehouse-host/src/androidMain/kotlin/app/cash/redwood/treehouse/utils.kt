@@ -19,13 +19,15 @@ import android.view.View
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import app.cash.redwood.layout.api.DensityMultiplier
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.api.dp
 
 internal fun Insets.toMargin(density: Double) = Margin(
-  left = left / density,
-  right = right / density,
-  top = top / density,
-  bottom = bottom / density,
+  left = (left / density / DensityMultiplier).dp,
+  right = (right / density / DensityMultiplier).dp,
+  top = (top / density / DensityMultiplier).dp,
+  bottom = (bottom / density / DensityMultiplier).dp,
 )
 
 // Root insets will be null if the view is not attached.

@@ -69,7 +69,7 @@ internal class UIViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    container.margin = margin.toSpacing(DensityMultiplier)
+    container.margin = margin.toSpacing(1.0)
     invalidate()
   }
 
@@ -161,7 +161,7 @@ internal class UIViewFlexContainer(
       children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
-          density = DensityMultiplier,
+          density = 1.0,
           layoutModifiers = widget.layoutModifiers,
           measurable = UIViewMeasurable(widget.value),
         )

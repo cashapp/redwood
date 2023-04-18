@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutApi
+        api projects.redwoodLayoutApiDensity
         api libs.kotlinx.serialization.core
       }
     }
