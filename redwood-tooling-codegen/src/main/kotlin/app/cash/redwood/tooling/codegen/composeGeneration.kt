@@ -75,6 +75,10 @@ internal fun generateComposable(
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .apply {
+          widget.deprecation?.let { deprecation ->
+            addAnnotation(deprecation.toAnnotationSpec())
+          }
+
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.
           val layoutModifierIndex = widget.traits.indexOfLast { it !is Children } + 1
