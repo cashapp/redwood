@@ -230,6 +230,7 @@ private fun parseWidget(
             tag = property.tag,
             name = name,
             parameterType = arguments.singleOrNull()?.type?.toFqType(),
+            isNullable = type.isMarkedNullable,
             defaultExpression = defaultExpression,
             deprecation = deprecation,
           )

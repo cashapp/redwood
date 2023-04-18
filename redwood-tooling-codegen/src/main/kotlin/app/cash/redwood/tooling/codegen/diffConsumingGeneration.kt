@@ -264,7 +264,11 @@ internal fun generateDiffConsumingWidget(
                         )
                       }
                       nextControlFlow("else")
-                      addStatement("null")
+                      if (trait.isNullable) {
+                        addStatement("null")
+                      } else {
+                        addStatement("throw %T()", Stdlib.AssertionError)
+                      }
                       endControlFlow()
                       addStatement("widget.%1N(%1N)", trait.name)
                       endControlFlow()

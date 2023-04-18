@@ -90,7 +90,7 @@ class ComposeGenerationTest {
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
       contains("trait: String = \"test\"")
-      contains("onEvent: (() -> Unit)? = { error(\"test\") }")
+      contains("onEvent: () -> Unit = { error(\"test\") }")
       contains("block: @Composable () -> Unit = {}")
     }
   }

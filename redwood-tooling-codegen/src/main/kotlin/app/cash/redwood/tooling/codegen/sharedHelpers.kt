@@ -51,14 +51,16 @@ internal val FqType.flatName: String
 
 internal val Event.lambdaType: TypeName
   get() {
-    parameterType?.let { parameterType ->
-      return LambdaTypeName.get(null, parameterType.asTypeName(), returnType = UNIT)
-        .copy(nullable = true)
-    }
-    return noArgumentEventLambda
+    val lambda = parameterType
+      ?.let { parameterType ->
+        LambdaTypeName.get(null, parameterType.asTypeName(), returnType = UNIT)
+      }
+      ?: noArgumentEventLambda
+
+    return lambda.copy(nullable = isNullable)
   }
 
-private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT).copy(nullable = true)
+private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT)
 
 internal fun Schema.composePackage(host: Schema? = null): String {
   return if (host == null) {

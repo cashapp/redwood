@@ -47,7 +47,7 @@ data class TextInput(
   val hint: String,
   @Property(3)
   @Default("null")
-  val onChange: (TextFieldState) -> Unit,
+  val onChange: ((TextFieldState) -> Unit)?,
 )
 
 @Widget(2)
