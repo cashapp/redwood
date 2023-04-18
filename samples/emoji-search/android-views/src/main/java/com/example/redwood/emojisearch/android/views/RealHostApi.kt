@@ -48,6 +48,7 @@ class RealHostApi(
           }
         },
       )
+      continuation.invokeOnCancellation { call.cancel() }
     }
   }
 }
