@@ -18,8 +18,8 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.Schema
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 internal fun generateLayoutModifierInterface(schema: Schema, layoutModifier: LayoutModifier): FileSpec {
   val type = schema.layoutModifierType(layoutModifier)
@@ -28,8 +28,19 @@ internal fun generateLayoutModifierInterface(schema: Schema, layoutModifier: Lay
       TypeSpec.interfaceBuilder(type)
         .addSuperinterface(Redwood.LayoutModifierElement)
         .apply {
-          for (trait in layoutModifier.properties) {
-            addProperty(trait.name, trait.type.asTypeName())
+          layoutModifier.deprecation?.let { deprecation ->
+            addAnnotation(deprecation.toAnnotationSpec())
+          }
+          for (property in layoutModifier.properties) {
+            addProperty(
+              PropertySpec.builder(property.name, property.type.asTypeName())
+                .apply {
+                  property.deprecation?.let { deprecation ->
+                    addAnnotation(deprecation.toAnnotationSpec())
+                  }
+                }
+                .build(),
+            )
           }
         }
         .build(),

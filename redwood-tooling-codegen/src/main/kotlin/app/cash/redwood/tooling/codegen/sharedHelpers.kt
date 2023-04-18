@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.schema.Deprecation
+import app.cash.redwood.tooling.schema.Deprecation.Level.ERROR
+import app.cash.redwood.tooling.schema.Deprecation.Level.WARNING
 import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.LayoutModifier
 import app.cash.redwood.tooling.schema.ProtocolLayoutModifier
@@ -24,6 +27,7 @@ import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -35,6 +39,7 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
 /**
@@ -204,4 +209,21 @@ internal fun layoutModifierToString(layoutModifier: LayoutModifier): FunSpec {
       }
     }
     .build()
+}
+
+internal fun Deprecation.toAnnotationSpec(): AnnotationSpec {
+  return AnnotationSpec.builder(Deprecated::class)
+    .addMember("%S", message)
+    .addMember("level = %M", level.toMemberName())
+    .build()
+}
+
+private fun Deprecation.Level.toMemberName(): MemberName {
+  return MemberName(
+    DeprecationLevel::class.asClassName(),
+    when (this) {
+      WARNING -> DeprecationLevel.WARNING.name
+      ERROR -> DeprecationLevel.ERROR.name
+    },
+  )
 }

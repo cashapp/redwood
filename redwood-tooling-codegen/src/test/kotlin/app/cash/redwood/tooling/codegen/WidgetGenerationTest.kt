@@ -15,11 +15,13 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.parseSchema
 import com.google.common.truth.Truth.assertThat
+import kotlin.DeprecationLevel.ERROR
 import org.junit.Test
 
 class WidgetGenerationTest {
@@ -79,6 +81,76 @@ class WidgetGenerationTest {
         |   * {tag=1}
         |   */
         |  public fun text
+        """.trimMargin(),
+      )
+    }
+  }
+
+  @Suppress("DEPRECATION")
+  @Schema(
+    [
+      DeprecatedWidget::class,
+    ],
+  )
+  interface DeprecatedSchema
+
+  @Widget(1)
+  @Deprecated("Hey")
+  data class DeprecatedWidget(
+    @Property(1)
+    @Deprecated("Property", level = ERROR)
+    val prop: String,
+    @Property(2)
+    @Deprecated("Event", level = ERROR)
+    val event: () -> Unit,
+    @Children(1)
+    @Deprecated("Children", level = ERROR)
+    val children: () -> Unit,
+  )
+
+  @Test fun deprecation() {
+    val schema = parseSchema(DeprecatedSchema::class).schema
+
+    val widget = schema.widgets.single()
+    val fileSpec = generateWidget(schema, widget)
+    assertThat(fileSpec.toString()).apply {
+      contains(
+        """
+        |@Deprecated(
+        |  "Hey",
+        |  level = WARNING,
+        |)
+        |public interface WidgetGenerationTestDeprecatedWidget
+        """.trimMargin(),
+      )
+
+      contains(
+        """
+        |  @Deprecated(
+        |    "Property",
+        |    level = ERROR,
+        |  )
+        |  public fun prop(
+        """.trimMargin(),
+      )
+
+      contains(
+        """
+        |  @Deprecated(
+        |    "Event",
+        |    level = ERROR,
+        |  )
+        |  public fun event(
+        """.trimMargin(),
+      )
+
+      contains(
+        """
+        |  @Deprecated(
+        |    "Children",
+        |    level = ERROR,
+        |  )
+        |  public val children:
         """.trimMargin(),
       )
     }

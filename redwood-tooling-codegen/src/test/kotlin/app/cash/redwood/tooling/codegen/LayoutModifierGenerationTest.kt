@@ -20,6 +20,7 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.tooling.schema.parseSchema
 import com.google.common.truth.Truth.assertThat
 import example.redwood.compose.TestScope
+import kotlin.DeprecationLevel.ERROR
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
@@ -90,5 +91,48 @@ class LayoutModifierGenerationTest {
 
     type = app.cash.redwood.LayoutModifier.customTypeWithDefault(40.minutes, "hello")
     assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
+  }
+
+  @Suppress("DEPRECATION")
+  @Schema(
+    [
+      DeprecatedLayoutModifier::class,
+    ],
+  )
+  interface DeprecatedSchema
+
+  @LayoutModifier(1, LayoutModifierScope::class)
+  @Deprecated("Hey")
+  data class DeprecatedLayoutModifier(
+    @Deprecated("Hello", level = ERROR)
+    val a: String,
+  )
+
+  @Test fun deprecation() {
+    val schema = parseSchema(DeprecatedSchema::class).schema
+
+    val modifier = schema.layoutModifiers.single()
+    val fileSpec = generateLayoutModifierInterface(schema, modifier)
+    assertThat(fileSpec.toString()).apply {
+      contains(
+        """
+        |@Deprecated(
+        |  "Hey",
+        |  level = WARNING,
+        |)
+        |public interface LayoutModifierGenerationTestDeprecatedLayoutModifier
+        """.trimMargin(),
+      )
+
+      contains(
+        """
+        |  @Deprecated(
+        |    "Hello",
+        |    level = ERROR,
+        |  )
+        |  public val a:
+        """.trimMargin(),
+      )
+    }
   }
 }

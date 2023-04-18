@@ -21,11 +21,16 @@ import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
+import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import kotlin.DeprecationLevel.ERROR
+import kotlin.DeprecationLevel.WARNING
+import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
@@ -210,15 +215,31 @@ private fun parseWidget(
       val children = it.findAnnotation<ChildrenAnnotation>()
       val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
 
+      // Deprecation annotation does not show up on the parameter.
+      val memberProperty = memberType.memberProperties.single { property -> property.name == it.name }
+      val deprecation = memberProperty.parseDeprecation()
+
       if (property != null) {
         if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
           val arguments = it.type.arguments.dropLast(1) // Drop return type.
           require(arguments.size <= 1) {
             "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
           }
-          ParsedProtocolEvent(property.tag, it.name!!, arguments.singleOrNull()?.type?.toFqType(), defaultExpression)
+          ParsedProtocolEvent(
+            tag = property.tag,
+            name = it.name!!,
+            parameterType = arguments.singleOrNull()?.type?.toFqType(),
+            defaultExpression = defaultExpression,
+            deprecation = deprecation,
+          )
         } else {
-          ParsedProtocolProperty(property.tag, it.name!!, it.type.toFqType(), defaultExpression)
+          ParsedProtocolProperty(
+            tag = property.tag,
+            name = it.name!!,
+            type = it.type.toFqType(),
+            defaultExpression = defaultExpression,
+            deprecation = deprecation,
+          )
         }
       } else if (children != null) {
         require(it.type.isSubtypeOf(childrenType)) {
@@ -238,7 +259,13 @@ private fun parseWidget(
         require(arguments.isEmpty()) {
           "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
         }
-        ParsedProtocolChildren(children.tag, it.name!!, scope, defaultExpression)
+        ParsedProtocolChildren(
+          tag = children.tag,
+          name = it.name!!,
+          scope = scope,
+          defaultExpression = defaultExpression,
+          deprecation = deprecation,
+        )
       } else {
         throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
       }
@@ -281,7 +308,12 @@ private fun parseWidget(
     )
   }
 
-  return ParsedProtocolWidget(tag, memberType.toFqType(), traits)
+  return ParsedProtocolWidget(
+    tag = tag,
+    type = memberType.toFqType(),
+    deprecation = memberType.parseDeprecation(),
+    traits = traits,
+  )
 }
 
 private fun parseLayoutModifier(
@@ -306,7 +338,18 @@ private fun parseLayoutModifier(
           annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
         }
         ?: false
-      ParsedProtocolLayoutModifierProperty(it.name!!, it.type.toFqType(), isSerializable, defaultExpression)
+
+      // Deprecation annotation does not show up on the parameter.
+      val memberProperty = memberType.memberProperties.single { property -> property.name == it.name }
+      val deprecation = memberProperty.parseDeprecation()
+
+      ParsedProtocolLayoutModifierProperty(
+        name = it.name!!,
+        type = it.type.toFqType(),
+        isSerializable = isSerializable,
+        defaultExpression = defaultExpression,
+        deprecation = deprecation,
+      )
     }
   } else if (memberType.objectInstance != null) {
     emptyList()
@@ -317,9 +360,31 @@ private fun parseLayoutModifier(
   }
 
   return ParsedProtocolLayoutModifier(
-    tag,
-    annotation.scopes.map { it.toFqType() },
-    memberType.toFqType(),
-    properties,
+    tag = tag,
+    scopes = annotation.scopes.map { it.toFqType() },
+    type = memberType.toFqType(),
+    deprecation = memberType.parseDeprecation(),
+    properties = properties,
   )
+}
+
+private fun KAnnotatedElement.parseDeprecation(): ParsedDeprecation? {
+  return findAnnotation<Deprecated>()
+    ?.let { deprecated ->
+      require(deprecated.replaceWith.expression.isEmpty() && deprecated.replaceWith.imports.isEmpty()) {
+        "Schema deprecation does not support replacements: $this"
+      }
+      ParsedDeprecation(
+        level = when (deprecated.level) {
+          WARNING -> Level.WARNING
+          ERROR -> Level.ERROR
+          else -> {
+            throw IllegalArgumentException(
+              "Schema deprecation does not support level ${deprecated.level}: $this",
+            )
+          }
+        },
+        message = deprecated.message,
+      )
+    }
 }
