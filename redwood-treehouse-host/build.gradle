@@ -27,6 +27,7 @@ kotlin {
     androidMain {
       dependencies {
         api libs.okHttp
+        implementation libs.androidx.core
       }
     }
 
@@ -37,7 +38,7 @@ kotlin {
         implementation libs.turbine
       }
     }
-    androidInstrumentedTest {
+    androidUnitTest {
       dependsOn(commonTest)
       dependencies {
         implementation libs.robolectric

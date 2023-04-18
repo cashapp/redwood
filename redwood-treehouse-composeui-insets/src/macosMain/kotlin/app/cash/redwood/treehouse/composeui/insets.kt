@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.treehouse.composeui
 
 import app.cash.redwood.layout.api.Margin
-import kotlinx.serialization.Serializable
+import kotlinx.cinterop.useContents
+import platform.AppKit.NSScreen
 
-@Serializable
-public data class HostConfiguration(
-  val darkMode: Boolean = false,
-  val safeAreaInsets: Margin = Margin.Zero,
-) {
-  public companion object
+public actual fun safeAreaInsets(): Margin {
+  val mainScreen = NSScreen.mainScreen ?: return Margin.Zero
+  return mainScreen.safeAreaInsets.useContents { Margin(left, right, top, bottom) }
 }
