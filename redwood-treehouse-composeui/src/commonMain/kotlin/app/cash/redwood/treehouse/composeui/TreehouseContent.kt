@@ -42,6 +42,7 @@ public fun <A : AppService> TreehouseContent(
 ) {
   val hostConfiguration = HostConfiguration(
     darkMode = isSystemInDarkTheme(),
+    safeAreaInsets = safeAreaInsets(),
   )
 
   val treehouseView = remember(widgetSystem) {

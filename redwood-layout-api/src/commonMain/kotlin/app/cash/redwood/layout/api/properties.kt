@@ -146,3 +146,17 @@ public fun Margin(
 public fun Margin(
   all: Int = 0,
 ): Margin = Margin(all, all, all, all)
+
+// Temporary constructor before migrating everything to doubles.
+@Stable
+public fun Margin(
+  left: Double = 0.0,
+  right: Double = 0.0,
+  top: Double = 0.0,
+  bottom: Double = 0.0,
+): Margin = Margin(
+  left = left.toInt(),
+  right = right.toInt(),
+  top = top.toInt(),
+  bottom = bottom.toInt(),
+)

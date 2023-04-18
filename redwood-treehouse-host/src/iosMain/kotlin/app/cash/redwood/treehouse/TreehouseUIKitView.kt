@@ -15,14 +15,17 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRectZero
+import platform.UIKit.UIApplication
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
@@ -73,7 +76,13 @@ private fun computeHostConfiguration(
 ): HostConfiguration {
   return HostConfiguration(
     darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark,
+    safeAreaInsets = computeSafeAreaInsets(),
   )
+}
+
+private fun computeSafeAreaInsets(): Margin {
+  val keyWindow = UIApplication.sharedApplication.keyWindow ?: return Margin.Zero
+  return keyWindow.safeAreaInsets.useContents { Margin(left, right, top, bottom) }
 }
 
 private class RootUiView(

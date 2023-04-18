@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.treehouse.lazylayout.compose
 
-import app.cash.redwood.layout.api.Margin
-import kotlinx.serialization.Serializable
+import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutScopeMarker
 
-@Serializable
-public data class HostConfiguration(
-  val darkMode: Boolean = false,
-  val safeAreaInsets: Margin = Margin.Zero,
+@LayoutScopeMarker
+public interface LazyListScope {
+  public fun items(
+    count: Int,
+    itemContent: @Composable (index: Int) -> Unit,
+  )
+}
+
+public inline fun <T> LazyListScope.items(
+  items: List<T>,
+  crossinline itemContent: @Composable (item: T) -> Unit,
+): Unit = items(
+  count = items.size,
 ) {
-  public companion object
+  itemContent(items[it])
 }

@@ -23,6 +23,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.core.graphics.Insets
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
@@ -51,11 +52,16 @@ public class TreehouseWidgetView(
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 
-  private val mutableHostConfiguration =
-    MutableStateFlow(computeHostConfiguration(context.resources.configuration))
+  private val mutableHostConfiguration = MutableStateFlow(computeHostConfiguration())
 
   override val hostConfiguration: StateFlow<HostConfiguration>
     get() = mutableHostConfiguration
+
+  init {
+    setOnWindowInsetsChangeListener { insets ->
+      mutableHostConfiguration.value = computeHostConfiguration(insets = insets.safeDrawing)
+    }
+  }
 
   override fun reset() {
     _children.remove(0, _children.widgets.size)
@@ -78,17 +84,19 @@ public class TreehouseWidgetView(
 
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
-    mutableHostConfiguration.value = computeHostConfiguration(newConfig)
+    mutableHostConfiguration.value = computeHostConfiguration(config = newConfig)
   }
 
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
-}
 
-private fun computeHostConfiguration(
-  config: Configuration,
-): HostConfiguration {
-  return HostConfiguration(
-    darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
-  )
+  private fun computeHostConfiguration(
+    config: Configuration = context.resources.configuration,
+    insets: Insets = rootWindowInsetsCompat.safeDrawing,
+  ): HostConfiguration {
+    return HostConfiguration(
+      darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
+      safeAreaInsets = insets.toMargin(resources.displayMetrics.density.toDouble()),
+    )
+  }
 }

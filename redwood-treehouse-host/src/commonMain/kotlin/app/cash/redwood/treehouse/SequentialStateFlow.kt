@@ -23,15 +23,13 @@ import kotlinx.coroutines.flow.collectLatest
 internal class SequentialStateFlow<T>(
   first: StateFlow<T>,
 ) : StateFlow<T> {
-  public val stateFlowValue: MutableStateFlow<StateFlow<T>> = MutableStateFlow(first)
+  val stateFlowValue: MutableStateFlow<StateFlow<T>> = MutableStateFlow(first)
 
-  override val replayCache: List<T> = listOf()
+  override val replayCache: List<T> get() = listOf(value)
 
   override suspend fun collect(collector: FlowCollector<T>): Nothing {
     stateFlowValue.collectLatest { stateFlow ->
-      stateFlow.collect {
-        collector.emit(it)
-      }
+      stateFlow.collect(collector::emit)
     }
     error("stateFlow.collect never returns")
   }
