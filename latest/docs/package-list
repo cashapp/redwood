@@ -43,8 +43,6 @@ module:redwood-treehouse-composeui-insets
 app.cash.redwood.treehouse.composeui
 module:redwood-treehouse-configuration
 app.cash.redwood.treehouse
-module:redwood-treehouse-guest
-app.cash.redwood.treehouse
 module:redwood-treehouse-guest-compose
 app.cash.redwood.treehouse
 module:redwood-treehouse-host
