@@ -38,3 +38,21 @@ public inline fun <T> LazyListScope.items(
 ) {
   itemContent(items[it])
 }
+
+public inline fun <T> LazyListScope.items(
+  items: Array<T>,
+  crossinline itemContent: @Composable (item: T) -> Unit,
+): Unit = items(
+  count = items.size,
+) {
+  itemContent(items[it])
+}
+
+public inline fun <T> LazyListScope.itemsIndexed(
+  items: Array<T>,
+  crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
+): Unit = items(
+  count = items.size,
+) {
+  itemContent(it, items[it])
+}
