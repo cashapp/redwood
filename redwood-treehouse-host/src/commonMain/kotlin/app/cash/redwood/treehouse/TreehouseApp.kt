@@ -120,31 +120,29 @@ public class TreehouseApp<A : AppService> private constructor(
    */
   private fun ziplineFlow(): Flow<LoadResult> {
     // Loads applications from the network only. The cache is neither read nor written.
-    val ziplineLoaderNetworkOnly = ZiplineLoader(
+    var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
       eventListener = eventPublisher.ziplineEventListener(this),
     )
 
-    ziplineLoaderNetworkOnly.concurrentDownloads = factory.concurrentDownloads
+    loader.concurrentDownloads = factory.concurrentDownloads
 
-    val ziplineLoaderForLoad = when {
-      spec.loadCodeFromNetworkOnly -> {
-        ziplineLoaderNetworkOnly
-      }
-      else -> {
-        // Loads applications from the network, the cache, or the embedded resources.
-        ziplineLoaderNetworkOnly.withCache(
-          cache = factory.cache,
-        ).withEmbedded(
+    if (!spec.loadCodeFromNetworkOnly) {
+      loader = loader.withCache(
+        cache = factory.cache,
+      )
+
+      if (factory.embeddedDir != null && factory.embeddedFileSystem != null) {
+        loader = loader.withEmbedded(
           embeddedDir = factory.embeddedDir,
           embeddedFileSystem = factory.embeddedFileSystem,
         )
       }
     }
 
-    return ziplineLoaderForLoad.load(
+    return loader.load(
       applicationName = spec.name,
       manifestUrlFlow = spec.manifestUrl,
       serializersModule = spec.serializersModule,
@@ -217,8 +215,8 @@ public class TreehouseApp<A : AppService> private constructor(
     eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
     internal val manifestVerifier: ManifestVerifier,
-    internal val embeddedDir: Path,
-    internal val embeddedFileSystem: FileSystem,
+    internal val embeddedDir: Path?,
+    internal val embeddedFileSystem: FileSystem?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
     internal val concurrentDownloads: Int,
