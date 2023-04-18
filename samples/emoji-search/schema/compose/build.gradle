@@ -7,8 +7,7 @@ kotlin {
   js {
     browser()
   }
-  jvm {
-  }
+  jvm()
 
   sourceSets {
     commonMain {
