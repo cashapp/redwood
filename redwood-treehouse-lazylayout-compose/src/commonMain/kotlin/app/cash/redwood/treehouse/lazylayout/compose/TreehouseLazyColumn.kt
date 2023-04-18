@@ -58,6 +58,13 @@ private class TreehouseLazyListScope(
       itemProvider = Item(provider, widgetVersion, itemContent),
     )
   }
+
+  override fun item(content: @Composable () -> Unit) {
+    intervals += LazyListIntervalContent(
+      1,
+      Item(provider, widgetVersion) { content() },
+    )
+  }
 }
 
 private class IndexedTreehouseUi(
