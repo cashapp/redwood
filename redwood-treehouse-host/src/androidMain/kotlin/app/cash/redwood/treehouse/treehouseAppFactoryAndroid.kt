@@ -29,15 +29,14 @@ import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toOkioPath
-import okio.Path.Companion.toPath
 
 public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
   eventListener: EventListener = EventListener.NONE,
-  embeddedDir: Path = "/".toPath(),
-  embeddedFileSystem: FileSystem = FileSystem.SYSTEM,
+  embeddedDir: Path? = null,
+  embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
   concurrentDownloads: Int = 8,
