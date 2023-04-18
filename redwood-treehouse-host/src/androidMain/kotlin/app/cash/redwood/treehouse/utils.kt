@@ -32,5 +32,12 @@ internal fun Insets.toMargin(density: Double) = Margin(
 internal val View.rootWindowInsetsCompat: WindowInsetsCompat?
   get() = ViewCompat.getRootWindowInsets(this)
 
-internal val WindowInsetsCompat?.systemBars: Insets
-  get() = this?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: Insets.NONE
+internal val WindowInsetsCompat?.safeDrawing: Insets
+  get() {
+    this ?: return Insets.NONE
+    // The equivalent of WindowInsets.safeDrawing in Compose UI.
+    val mask = WindowInsetsCompat.Type.systemBars() or
+      WindowInsetsCompat.Type.ime() or
+      WindowInsetsCompat.Type.displayCutout()
+    return getInsets(mask)
+  }

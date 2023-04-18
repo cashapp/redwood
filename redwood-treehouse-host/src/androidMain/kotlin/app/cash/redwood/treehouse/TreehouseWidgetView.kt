@@ -59,7 +59,7 @@ public class TreehouseWidgetView(
 
   init {
     setOnWindowInsetsChangeListener { insets ->
-      mutableHostConfiguration.value = computeHostConfiguration(insets = insets.systemBars)
+      mutableHostConfiguration.value = computeHostConfiguration(insets = insets.safeDrawing)
     }
   }
 
@@ -92,7 +92,7 @@ public class TreehouseWidgetView(
 
   private fun computeHostConfiguration(
     config: Configuration = context.resources.configuration,
-    insets: Insets = rootWindowInsetsCompat.systemBars,
+    insets: Insets = rootWindowInsetsCompat.safeDrawing,
   ): HostConfiguration {
     return HostConfiguration(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,

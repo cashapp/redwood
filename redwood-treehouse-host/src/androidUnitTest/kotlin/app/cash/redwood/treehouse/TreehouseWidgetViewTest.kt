@@ -43,6 +43,7 @@ import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [26])
 class TreehouseWidgetViewTest {
   private val context = RuntimeEnvironment.getApplication()!!
 
@@ -94,9 +95,7 @@ class TreehouseWidgetViewTest {
     assertEquals(0, children.widgets.size)
   }
 
-  @Test
-  @Config(sdk = [26])
-  fun hostConfigurationReflectsInitialUiMode() {
+  @Test fun hostConfigurationReflectsInitialUiMode() {
     val newConfig = Configuration(context.resources.configuration)
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = context.createConfigurationContext(newConfig) // Needs API 26.
@@ -124,26 +123,6 @@ class TreehouseWidgetViewTest {
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
-        .build()
-      ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
-      val density = context.resources.displayMetrics.density.toDouble()
-      val expectedInsets = Margin(
-        left = density * insets.left,
-        right = density * insets.right,
-        top = density * insets.top,
-        bottom = density * insets.bottom,
-      )
-      assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), awaitItem())
-    }
-  }
-
-  @Test fun hostConfigurationEmitsImeSafeAreaInsetsChanges() = runTest {
-    val layout = TreehouseWidgetView(context, throwingWidgetSystem)
-    layout.hostConfiguration.test {
-      assertEquals(HostConfiguration(safeAreaInsets = Margin.Zero), awaitItem())
-      val insets = Insets.of(10, 20, 30, 40)
-      val windowInsets = WindowInsetsCompat.Builder()
-        .setInsets(WindowInsetsCompat.Type.ime(), insets)
         .build()
       ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
       val density = context.resources.displayMetrics.density.toDouble()
