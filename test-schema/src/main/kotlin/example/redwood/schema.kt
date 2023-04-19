@@ -66,7 +66,7 @@ public data class Text(
 @Widget(4)
 public data class Button(
   @Property(1) val text: String?,
-  @Property(2) val onClick: () -> Unit,
+  @Property(2) val onClick: (() -> Unit)?,
 )
 
 @Widget(5)

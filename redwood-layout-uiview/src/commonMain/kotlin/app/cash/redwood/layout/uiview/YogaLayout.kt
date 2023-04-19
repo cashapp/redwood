@@ -17,8 +17,6 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.uiview.cinterop.RedwoodView
-import app.cash.redwood.layout.uiview.cinterop.RedwoodViewDelegateProtocol
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
 import app.cash.redwood.yoga.Yoga
@@ -33,22 +31,18 @@ import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeExactly
 import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeUndefined
 import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointZero
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
-import platform.UIKit.setFrame
-import platform.UIKit.sizeThatFits
-import platform.UIKit.subviews
-import platform.darwin.NSObject
 
 internal class YogaLayout {
   val rootNode = Yoga.YGNodeNew()
-  val view = RedwoodView().apply {
-    kotlinDelegate = UIViewDelegate()
-  }
+  val view: UIView = View()
 
   var width = Constraint.Wrap
   var height = Constraint.Wrap
@@ -94,7 +88,7 @@ internal class YogaLayout {
     )
   }
 
-  private inner class UIViewDelegate : NSObject(), RedwoodViewDelegateProtocol {
+  private inner class View : UIView(cValue { CGRectZero }) {
     override fun intrinsicContentSize(): CValue<CGSize> {
       return calculateLayoutWithSize(YGSize(YGUndefined, YGUndefined)).toCGSize()
     }

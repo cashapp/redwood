@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.tooling.schema
 
+import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.LayoutModifier.Property
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
@@ -64,9 +65,16 @@ internal data class ParsedProtocolSchema(
 }
 
 @Serializable
+internal data class ParsedDeprecation(
+  override val level: Level,
+  override val message: String,
+) : Deprecation
+
+@Serializable
 internal data class ParsedProtocolWidget(
   override val tag: Int,
   override val type: FqType,
+  override val deprecation: ParsedDeprecation? = null,
   override val traits: List<ProtocolTrait> = emptyList(),
 ) : ProtocolWidget
 
@@ -77,6 +85,7 @@ internal data class ParsedProtocolProperty(
   override val name: String,
   override val type: FqType,
   override val defaultExpression: String? = null,
+  override val deprecation: ParsedDeprecation? = null,
 ) : ProtocolProperty
 
 @Serializable
@@ -85,7 +94,9 @@ internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
   override val parameterType: FqType?,
+  override val isNullable: Boolean,
   override val defaultExpression: String? = null,
+  override val deprecation: ParsedDeprecation? = null,
 ) : ProtocolEvent
 
 @Serializable
@@ -95,6 +106,7 @@ internal data class ParsedProtocolChildren(
   override val name: String,
   override val scope: FqType? = null,
   override val defaultExpression: String? = null,
+  override val deprecation: ParsedDeprecation? = null,
 ) : ProtocolChildren
 
 @Serializable
@@ -102,6 +114,7 @@ internal data class ParsedProtocolLayoutModifier(
   override val tag: Int,
   override val scopes: List<FqType>,
   override val type: FqType,
+  override val deprecation: ParsedDeprecation? = null,
   override val properties: List<ParsedProtocolLayoutModifierProperty> = emptyList(),
 ) : ProtocolLayoutModifier
 
@@ -111,4 +124,5 @@ internal data class ParsedProtocolLayoutModifierProperty(
   override val type: FqType,
   override val isSerializable: Boolean,
   override val defaultExpression: String? = null,
+  override val deprecation: ParsedDeprecation? = null,
 ) : Property

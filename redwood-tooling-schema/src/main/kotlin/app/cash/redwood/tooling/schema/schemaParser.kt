@@ -21,14 +21,20 @@ import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
+import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import kotlin.DeprecationLevel.ERROR
+import kotlin.DeprecationLevel.WARNING
+import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
+import kotlin.reflect.typeOf
 
 private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
@@ -205,42 +211,66 @@ private fun parseWidget(
   val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
-    memberType.primaryConstructor!!.parameters.map {
-      val property = it.findAnnotation<PropertyAnnotation>()
-      val children = it.findAnnotation<ChildrenAnnotation>()
-      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
+    memberType.primaryConstructor!!.parameters.map { parameter ->
+      val kProperty = memberType.memberProperties.single { it.name == parameter.name }
+      val name = kProperty.name
+      val type = kProperty.returnType
+
+      val property = kProperty.findAnnotation<PropertyAnnotation>()
+      val children = kProperty.findAnnotation<ChildrenAnnotation>()
+      val defaultExpression = kProperty.findAnnotation<DefaultAnnotation>()?.expression
+      val deprecation = kProperty.parseDeprecation()
 
       if (property != null) {
-        if (it.type.isSubtypeOf(eventType) || it.type.isSubtypeOf(optionalEventType)) {
-          val arguments = it.type.arguments.dropLast(1) // Drop return type.
+        if (type.isSubtypeOf(eventType) || type.isSubtypeOf(optionalEventType)) {
+          val arguments = type.arguments.dropLast(1) // Drop return type.
           require(arguments.size <= 1) {
-            "@Property ${memberType.qualifiedName}#${it.name} lambda type can only have zero or one arguments. Found: $arguments"
+            "@Property ${memberType.qualifiedName}#$name lambda type can only have zero or one arguments. Found: $arguments"
           }
-          ParsedProtocolEvent(property.tag, it.name!!, arguments.singleOrNull()?.type?.toFqType(), defaultExpression)
+          ParsedProtocolEvent(
+            tag = property.tag,
+            name = name,
+            parameterType = arguments.singleOrNull()?.type?.toFqType(),
+            isNullable = type.isMarkedNullable,
+            defaultExpression = defaultExpression,
+            deprecation = deprecation,
+          )
         } else {
-          ParsedProtocolProperty(property.tag, it.name!!, it.type.toFqType(), defaultExpression)
+          ParsedProtocolProperty(
+            tag = property.tag,
+            name = name,
+            type = type.toFqType(),
+            defaultExpression = defaultExpression,
+            deprecation = deprecation,
+          )
         }
       } else if (children != null) {
-        require(it.type.isSubtypeOf(childrenType)) {
-          "@Children ${memberType.qualifiedName}#${it.name} must be of type '() -> Unit'"
+        require(type.isSubtypeOf(childrenType) && type.arguments.last().type == typeOf<Unit>()) {
+          "@Children ${memberType.qualifiedName}#$name must be of type '() -> Unit'"
         }
         var scope: FqType? = null
-        var arguments = it.type.arguments.dropLast(1) // Drop return type.
-        if (it.type.annotations.any(ExtensionFunctionType::class::isInstance)) {
-          val receiverType = it.type.arguments.first().type
+        var arguments = type.arguments.dropLast(1) // Drop Unit return type.
+        if (type.annotations.any(ExtensionFunctionType::class::isInstance)) {
+          val receiverType = type.arguments.first().type
           val receiverClassifier = receiverType?.classifier
           require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty()) {
-            "@Children ${memberType.qualifiedName}#${it.name} lambda receiver can only be a class. Found: $receiverType"
+            "@Children ${memberType.qualifiedName}#$name lambda receiver can only be a class. Found: $receiverType"
           }
           scope = receiverClassifier.toFqType()
           arguments = arguments.drop(1)
         }
         require(arguments.isEmpty()) {
-          "@Children ${memberType.qualifiedName}#${it.name} lambda type must not have any arguments. Found: $arguments"
+          "@Children ${memberType.qualifiedName}#$name lambda type must not have any arguments. Found: $arguments"
         }
-        ParsedProtocolChildren(children.tag, it.name!!, scope, defaultExpression)
+        ParsedProtocolChildren(
+          tag = children.tag,
+          name = name,
+          scope = scope,
+          defaultExpression = defaultExpression,
+          deprecation = deprecation,
+        )
       } else {
-        throw IllegalArgumentException("Unannotated parameter \"${it.name}\" on ${memberType.qualifiedName}")
+        throw IllegalArgumentException("Unannotated parameter \"$name\" on ${memberType.qualifiedName}")
       }
     }
   } else if (memberType.objectInstance != null) {
@@ -281,7 +311,12 @@ private fun parseWidget(
     )
   }
 
-  return ParsedProtocolWidget(tag, memberType.toFqType(), traits)
+  return ParsedProtocolWidget(
+    tag = tag,
+    type = memberType.toFqType(),
+    deprecation = memberType.parseDeprecation(),
+    traits = traits,
+  )
 }
 
 private fun parseLayoutModifier(
@@ -298,15 +333,27 @@ private fun parseLayoutModifier(
   val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
-    memberType.primaryConstructor!!.parameters.map {
-      val defaultExpression = it.findAnnotation<DefaultAnnotation>()?.expression
-      val isSerializable = (it.type.classifier as? KClass<*>)
+    memberType.primaryConstructor!!.parameters.map { parameter ->
+      val kProperty = memberType.memberProperties.single { it.name == parameter.name }
+      val name = kProperty.name
+      val type = kProperty.returnType
+
+      val defaultExpression = kProperty.findAnnotation<DefaultAnnotation>()?.expression
+      val isSerializable = (type.classifier as? KClass<*>)
         ?.annotations
         ?.any { annotation ->
           annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
         }
         ?: false
-      ParsedProtocolLayoutModifierProperty(it.name!!, it.type.toFqType(), isSerializable, defaultExpression)
+      val deprecation = kProperty.parseDeprecation()
+
+      ParsedProtocolLayoutModifierProperty(
+        name = name,
+        type = type.toFqType(),
+        isSerializable = isSerializable,
+        defaultExpression = defaultExpression,
+        deprecation = deprecation,
+      )
     }
   } else if (memberType.objectInstance != null) {
     emptyList()
@@ -317,9 +364,31 @@ private fun parseLayoutModifier(
   }
 
   return ParsedProtocolLayoutModifier(
-    tag,
-    annotation.scopes.map { it.toFqType() },
-    memberType.toFqType(),
-    properties,
+    tag = tag,
+    scopes = annotation.scopes.map { it.toFqType() },
+    type = memberType.toFqType(),
+    deprecation = memberType.parseDeprecation(),
+    properties = properties,
   )
+}
+
+private fun KAnnotatedElement.parseDeprecation(): ParsedDeprecation? {
+  return findAnnotation<Deprecated>()
+    ?.let { deprecated ->
+      require(deprecated.replaceWith.expression.isEmpty() && deprecated.replaceWith.imports.isEmpty()) {
+        "Schema deprecation does not support replacements: $this"
+      }
+      ParsedDeprecation(
+        level = when (deprecated.level) {
+          WARNING -> Level.WARNING
+          ERROR -> Level.ERROR
+          else -> {
+            throw IllegalArgumentException(
+              "Schema deprecation does not support level ${deprecated.level}: $this",
+            )
+          }
+        },
+        message = deprecated.message,
+      )
+    }
 }

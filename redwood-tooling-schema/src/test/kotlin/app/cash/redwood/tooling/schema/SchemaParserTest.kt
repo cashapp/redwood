@@ -23,6 +23,7 @@ import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
 import com.google.common.truth.Truth.assertThat
+import kotlin.DeprecationLevel.HIDDEN
 import org.junit.Test
 
 class SchemaParserTest {
@@ -305,6 +306,26 @@ class SchemaParserTest {
       parseProtocolSchema(InvalidChildrenTypeSchema::class)
     }.hasMessageThat().isEqualTo(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
+    )
+  }
+
+  @Schema(
+    [
+      InvalidChildrenLambdaReturnTypeWidget::class,
+    ],
+  )
+  interface InvalidChildrenLambdaReturnTypeSchema
+
+  @Widget(1)
+  data class InvalidChildrenLambdaReturnTypeWidget(
+    @Children(1) val children: () -> String,
+  )
+
+  @Test fun invalidChildrenLambdaReturnTypeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseProtocolSchema(InvalidChildrenLambdaReturnTypeSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenLambdaReturnTypeWidget#children must be of type '() -> Unit'",
     )
   }
 
@@ -785,6 +806,49 @@ class SchemaParserTest {
     }.hasMessageThat().isEqualTo(
       "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedLayoutModifier " +
         "must have at least one scope.",
+    )
+  }
+
+  @Schema(
+    [
+      DeprecationHiddenWidget::class,
+    ],
+  )
+  interface DeprecationHiddenSchema
+
+  @Widget(1)
+  data class DeprecationHiddenWidget(
+    @Deprecated("", level = HIDDEN)
+    val a: String,
+  )
+
+  @Test fun deprecationHiddenThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseProtocolSchema(DeprecationHiddenSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "Schema deprecation does not support level HIDDEN: " +
+        "val app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a: kotlin.String",
+    )
+  }
+
+  @Suppress("DEPRECATION")
+  @Schema(
+    [
+      DeprecationReplaceWithWidget::class,
+    ],
+  )
+  interface DeprecationReplaceWithSchema
+
+  @Widget(1)
+  @Deprecated("", ReplaceWith("Hello"))
+  object DeprecationReplaceWithWidget
+
+  @Test fun deprecationReplaceWithThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseProtocolSchema(DeprecationReplaceWithSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "Schema deprecation does not support replacements: " +
+        "class app.cash.redwood.tooling.schema.SchemaParserTest\$DeprecationReplaceWithWidget",
     )
   }
 }

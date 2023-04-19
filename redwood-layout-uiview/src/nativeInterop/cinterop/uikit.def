@@ -1,3 +1,0 @@
-package = app.cash.redwood.layout.uiview.cinterop
-language = Objective-C
-headers = RedwoodScrollView.h RedwoodScrollViewDelegate.h RedwoodView.h RedwoodViewDelegate.h

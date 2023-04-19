@@ -50,9 +50,22 @@ public data class EmbeddedSchema(
   val json: String,
 )
 
+public interface Deprecation {
+  public val level: Level
+  public val message: String
+
+  public enum class Level {
+    WARNING,
+    ERROR,
+  }
+}
+
 public interface Widget {
   /** Either a 'data class' or 'object'. */
   public val type: FqType
+
+  /** Non-null if this widget is deprecated. */
+  public val deprecation: Deprecation?
 
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val traits: List<Trait>
@@ -60,6 +73,9 @@ public interface Widget {
   public sealed interface Trait {
     public val name: String
     public val defaultExpression: String?
+
+    /** Non-null if this trait is deprecated. */
+    public val deprecation: Deprecation?
   }
 
   public interface Property : Trait {
@@ -68,6 +84,7 @@ public interface Widget {
 
   public interface Event : Trait {
     public val parameterType: FqType?
+    public val isNullable: Boolean
   }
 
   public interface Children : Trait {
@@ -81,6 +98,9 @@ public interface LayoutModifier {
   /** Either a 'data class' or 'object'. */
   public val type: FqType
 
+  /** Non-null if this layout modifier is deprecated. */
+  public val deprecation: Deprecation?
+
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val properties: List<Property>
 
@@ -89,6 +109,9 @@ public interface LayoutModifier {
     public val type: FqType
     public val isSerializable: Boolean
     public val defaultExpression: String?
+
+    /** Non-null if this property is deprecated. */
+    public val deprecation: Deprecation?
   }
 }
 

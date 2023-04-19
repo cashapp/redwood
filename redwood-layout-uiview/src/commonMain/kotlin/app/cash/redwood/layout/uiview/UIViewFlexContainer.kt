@@ -30,14 +30,13 @@ import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.enums.YGEdge
 import platform.UIKit.UIView
-import platform.UIKit.setNeedsLayout
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaLayout = YogaLayout()
 
-  override val value = yogaLayout.view
+  override val value get() = yogaLayout.view
   override val children = UIViewChildren(value)
   override var layoutModifiers: LayoutModifier = LayoutModifier
 

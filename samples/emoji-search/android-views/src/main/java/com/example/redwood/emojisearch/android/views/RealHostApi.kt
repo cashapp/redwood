@@ -16,6 +16,8 @@
 package com.example.redwood.emojisearch.android.views
 
 import com.example.redwood.emojisearch.treehouse.HostApi
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -24,6 +26,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+
+/** Exception for an unexpected, non-2xx HTTP response. */
+class HttpException(response: Response) :
+  RuntimeException("HTTP ${response.code} ${response.message}")
 
 class RealHostApi(
   private val client: OkHttpClient,
@@ -43,11 +49,15 @@ class RealHostApi(
           }
 
           override fun onResponse(call: Call, response: Response) {
-            val responseString = response.body!!.string()
-            continuation.resumeWith(Result.success(responseString))
+            if (response.isSuccessful) {
+              continuation.resume(response.body!!.string())
+            } else {
+              continuation.resumeWithException(HttpException(response))
+            }
           }
         },
       )
+      continuation.invokeOnCancellation { call.cancel() }
     }
   }
 }

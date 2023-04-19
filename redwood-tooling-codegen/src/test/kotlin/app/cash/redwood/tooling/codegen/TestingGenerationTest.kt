@@ -98,7 +98,7 @@ class TestingGenerationTest {
       |    this.trait = trait
       |  }
       |
-      |  public override fun onEvent(onEvent: (() -> Unit)?): Unit {
+      |  public override fun onEvent(onEvent: () -> Unit): Unit {
       |    this.onEvent = onEvent
       |  }
       |
@@ -106,7 +106,7 @@ class TestingGenerationTest {
       |      TestingGenerationTestBasicWidgetValue(
       |    layoutModifiers = layoutModifiers,
       |    trait = trait!!,
-      |    onEvent = onEvent,
+      |    onEvent = onEvent!!,
       |    block = block.map { it.`value`.snapshot() },
       |  )
       |}
@@ -119,7 +119,7 @@ class TestingGenerationTest {
       |public class TestingGenerationTestBasicWidgetValue(
       |  public override val layoutModifiers: LayoutModifier = LayoutModifier,
       |  public val trait: String = "test",
-      |  public val onEvent: (() -> Unit)? = { error("test") },
+      |  public val onEvent: () -> Unit = { error("test") },
       |  public val block: List<WidgetValue> = listOf(),
       |) : WidgetValue {
       |  public override val childrenLists: List<List<WidgetValue>>

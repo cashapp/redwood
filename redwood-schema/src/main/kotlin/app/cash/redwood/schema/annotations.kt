@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.schema
 
+import kotlin.annotation.AnnotationRetention.RUNTIME
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.PROPERTY
 import kotlin.reflect.KClass
 
 /**
@@ -34,10 +37,14 @@ import kotlin.reflect.KClass
  * @see Widget
  * @see LayoutModifier
  */
+@Retention(RUNTIME)
+@Target(CLASS)
 public annotation class Schema(
   val members: Array<KClass<*>>,
   val dependencies: Array<Dependency> = [],
 ) {
+  @Retention(RUNTIME)
+  @Target(/* None, use only within @Schema. */)
   public annotation class Dependency(
     val tag: Int,
     val schema: KClass<*>,
@@ -58,6 +65,8 @@ public annotation class Schema(
  * )
  * ```
  */
+@Retention(RUNTIME)
+@Target(CLASS)
 public annotation class Widget(val tag: Int)
 
 /**
@@ -72,6 +81,8 @@ public annotation class Widget(val tag: Int)
  * )
  * ```
  */
+@Retention(RUNTIME)
+@Target(PROPERTY)
 public annotation class Property(val tag: Int)
 
 /**
@@ -96,6 +107,8 @@ public annotation class Property(val tag: Int)
  * )
  * ```
  */
+@Retention(RUNTIME)
+@Target(PROPERTY)
 public annotation class Children(
   val tag: Int,
 )
@@ -112,6 +125,8 @@ public annotation class Children(
  * )
  * ```
  */
+@Retention(RUNTIME)
+@Target(PROPERTY)
 public annotation class Default(val expression: String)
 
 /**
@@ -126,6 +141,8 @@ public annotation class Default(val expression: String)
  * )
  * ```
  */
+@Retention(RUNTIME)
+@Target(CLASS)
 public annotation class LayoutModifier(
   val tag: Int,
   vararg val scopes: KClass<*>,

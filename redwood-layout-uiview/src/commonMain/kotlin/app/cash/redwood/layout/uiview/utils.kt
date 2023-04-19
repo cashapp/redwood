@@ -32,9 +32,6 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
-import platform.UIKit.intrinsicContentSize
-import platform.UIKit.sizeThatFits
-import platform.UIKit.subviews
 
 // The cross platform density multiples use iOS as an anchor.
 internal const val DensityMultiplier = 1.0

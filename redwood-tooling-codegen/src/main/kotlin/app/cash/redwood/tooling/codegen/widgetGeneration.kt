@@ -103,6 +103,9 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
                 .addModifiers(PUBLIC, ABSTRACT)
                 .returns(schema.widgetType(widget).parameterizedBy(typeVariableW))
                 .apply {
+                  widget.deprecation?.let { deprecation ->
+                    addAnnotation(deprecation.toAnnotationSpec())
+                  }
                   if (widget is ProtocolWidget) {
                     addKdoc("{tag=${widget.tag}}")
                   }
@@ -136,11 +139,14 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
         .apply {
+          widget.deprecation?.let { deprecation ->
+            addAnnotation(deprecation.toAnnotationSpec())
+          }
+
           if (widget is ProtocolWidget) {
             addKdoc("{tag=${widget.tag}}")
           }
-        }
-        .apply {
+
           for (trait in widget.traits) {
             when (trait) {
               is Property -> {
@@ -149,6 +155,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
                     .apply {
+                      trait.deprecation?.let { deprecation ->
+                        addAnnotation(deprecation.toAnnotationSpec())
+                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -162,6 +171,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .addModifiers(PUBLIC, ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
                     .apply {
+                      trait.deprecation?.let { deprecation ->
+                        addAnnotation(deprecation.toAnnotationSpec())
+                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -174,6 +186,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
                     .addModifiers(PUBLIC, ABSTRACT)
                     .apply {
+                      trait.deprecation?.let { deprecation ->
+                        addAnnotation(deprecation.toAnnotationSpec())
+                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }

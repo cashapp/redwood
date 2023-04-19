@@ -15,11 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.layout.api.Margin
 import kotlinx.serialization.Serializable
 
 @Serializable
 public data class HostConfiguration(
   val darkMode: Boolean = false,
+  val safeAreaInsets: Margin = Margin.Zero,
 ) {
   public companion object
 }

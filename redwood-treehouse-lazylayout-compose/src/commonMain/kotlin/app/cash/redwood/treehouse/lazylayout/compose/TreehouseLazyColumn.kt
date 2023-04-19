@@ -16,7 +16,6 @@
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.LayoutScopeMarker
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.TreehouseUi
@@ -30,23 +29,6 @@ public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
   val scope = TreehouseLazyListScope(this, widgetVersion)
   content(scope)
   LazyColumn(scope.intervals)
-}
-
-@LayoutScopeMarker
-public interface LazyListScope {
-  public fun items(
-    count: Int,
-    itemContent: @Composable (index: Int) -> Unit,
-  )
-}
-
-public inline fun <T> LazyListScope.items(
-  items: List<T>,
-  crossinline itemContent: @Composable (item: T) -> Unit,
-) {
-  items(items.size) {
-    itemContent(items[it])
-  }
 }
 
 private class TreehouseLazyListScope(
@@ -74,6 +56,13 @@ private class TreehouseLazyListScope(
     intervals += LazyListIntervalContent(
       count,
       itemProvider = Item(provider, widgetVersion, itemContent),
+    )
+  }
+
+  override fun item(content: @Composable () -> Unit) {
+    intervals += LazyListIntervalContent(
+      1,
+      Item(provider, widgetVersion) { content() },
     )
   }
 }

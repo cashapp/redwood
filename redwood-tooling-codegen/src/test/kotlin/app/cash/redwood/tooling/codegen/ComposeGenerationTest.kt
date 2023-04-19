@@ -90,7 +90,7 @@ class ComposeGenerationTest {
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).apply {
       contains("trait: String = \"test\"")
-      contains("onEvent: (() -> Unit)? = { error(\"test\") }")
+      contains("onEvent: () -> Unit = { error(\"test\") }")
       contains("block: @Composable () -> Unit = {}")
     }
   }
@@ -117,6 +117,35 @@ class ComposeGenerationTest {
       |  layoutModifier: LayoutModifier = LayoutModifier,
       |  top: @Composable () -> Unit,
       |  bottom: @Composable () -> Unit,
+      """.trimMargin(),
+    )
+  }
+
+  @Suppress("DEPRECATION")
+  @Schema(
+    [
+      DeprecatedWidget::class,
+    ],
+  )
+  interface DeprecatedSchema
+
+  @Widget(1)
+  @Deprecated("Hey")
+  object DeprecatedWidget
+
+  @Test fun deprecation() {
+    // NOTE: There's no way to deprecate a parameter to a function.
+
+    val schema = parseSchema(DeprecatedSchema::class).schema
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).contains(
+      """
+      |@Deprecated(
+      |  "Hey",
+      |  level = WARNING,
+      |)
+      |public fun ComposeGenerationTestDeprecatedWidget
       """.trimMargin(),
     )
   }

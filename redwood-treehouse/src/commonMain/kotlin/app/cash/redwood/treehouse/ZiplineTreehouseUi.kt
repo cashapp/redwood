@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.EventSink
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Adapt TreehouseComposition to conform the limitations of Zipline interfaces.
@@ -28,6 +29,6 @@ import kotlin.native.ObjCName
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     diffSink: DiffSinkService,
-    hostConfigurations: FlowWithInitialValue<HostConfiguration>,
+    hostConfigurations: StateFlow<HostConfiguration>,
   )
 }
