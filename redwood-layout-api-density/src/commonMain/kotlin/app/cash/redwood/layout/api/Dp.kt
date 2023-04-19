@@ -35,6 +35,9 @@ public value class Dp(
   }
 
   override fun toString(): String = "$value.dp"
+
+  /** Empty companion object used for extensions. */
+  public companion object
 }
 
 /** Create a [Dp] from an [Int]. */
@@ -50,14 +53,17 @@ public inline val Float.dp: Dp get() = Dp(toDouble())
 public inline val Double.dp: Dp get() = Dp(toDouble())
 
 /**
- * Convert a [Dp] into a pixel value that's specific to the current device and [density].
+ * Convert device-agnostic density-independent pixel value into a
+ * device-specific density-independent pixel value.
  */
-public fun Dp.toPx(density: Double): Double {
-  return DensityMultiplier * density * value
+public fun Dp.toPlatformDp(): Double {
+  return value / DensityMultiplier
 }
 
 /**
- * A multiplier that's used to normalize the density values of each
- * target platform so [Dp] values look similar on each device.
+ * Convert device-specific density-independent pixel value into a
+ * device-agnostic density-independent pixel value.
  */
-public expect val DensityMultiplier: Double
+public fun Dp.Companion.fromPlatformDp(value: Double): Dp {
+  return Dp(value * DensityMultiplier)
+}

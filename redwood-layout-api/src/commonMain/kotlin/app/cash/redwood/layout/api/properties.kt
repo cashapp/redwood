@@ -18,7 +18,6 @@
 package app.cash.redwood.layout.api
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 

@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.api.fromPlatformDp
 
 @Composable
 public actual fun safeAreaInsets(): Margin {
@@ -34,8 +36,8 @@ public actual fun safeAreaInsets(): Margin {
 
 @Composable
 private fun PaddingValues.toMargin(layoutDirection: LayoutDirection) = Margin(
-  start = calculateLeftPadding(layoutDirection).value.toDouble(),
-  end = calculateRightPadding(layoutDirection).value.toDouble(),
-  top = calculateTopPadding().value.toDouble(),
-  bottom = calculateBottomPadding().value.toDouble(),
+  start = Dp.fromPlatformDp(calculateLeftPadding(layoutDirection).value.toDouble()),
+  end = Dp.fromPlatformDp(calculateRightPadding(layoutDirection).value.toDouble()),
+  top = Dp.fromPlatformDp(calculateTopPadding().value.toDouble()),
+  bottom = Dp.fromPlatformDp(calculateBottomPadding().value.toDouble()),
 )

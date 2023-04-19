@@ -15,9 +15,9 @@
  */
 package app.cash.redwood.layout.api
 
-public actual val DensityMultiplier: Double = 1.0
+/** iOS's coordinate system accounts for density automatically. */
+public val Density.Companion.Default: Density get() = DefaultDensity
 
-/** iOS's coordinate system already accounts for density automatically. */
-public fun Dp.toPx(): Double {
-  return toPx(1.0)
-}
+private val DefaultDensity = Density(1.0)
+
+internal actual val DensityMultiplier = 1.0

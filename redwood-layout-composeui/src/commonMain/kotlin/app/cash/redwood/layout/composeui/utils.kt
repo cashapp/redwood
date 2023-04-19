@@ -15,19 +15,19 @@
  */
 package app.cash.redwood.layout.composeui
 
-import androidx.compose.ui.unit.Dp as ComposeUiDp
-import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
+import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.layout.api.DensityMultiplier
-import app.cash.redwood.layout.api.Dp
+import app.cash.redwood.layout.api.Dp as RedwoodDp
+import app.cash.redwood.layout.api.toPlatformDp
 
-internal fun Dp.toComposeUiDp(): ComposeUiDp {
-  return ComposeUiDp((value / DensityMultiplier).toFloat())
+internal fun RedwoodDp.toDp(): Dp {
+  return Dp(toPlatformDp().toFloat())
 }
 
 internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {

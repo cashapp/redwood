@@ -37,7 +37,7 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.DensityMultiplier
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -61,7 +61,7 @@ internal class ComposeUiFlexContainer(
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
 
-  private var density = -1.0
+  private var density = Density(1.0)
   private var marginUpdated = false
 
   var modifier: Modifier by mutableStateOf(Modifier)
@@ -122,7 +122,7 @@ internal class ComposeUiFlexContainer(
         recomposeTick
 
         // Read the density for use in 'measure'.
-        updateDensity(DensityMultiplier * LocalDensity.current.density)
+        updateDensity(Density(LocalDensity.current.density.toDouble()))
 
         children.render()
       },
@@ -139,7 +139,7 @@ internal class ComposeUiFlexContainer(
     )
   }
 
-  private fun updateDensity(density: Double) {
+  private fun updateDensity(density: Density) {
     if (density != this.density || marginUpdated) {
       this.density = density
       this.marginUpdated = false

@@ -16,6 +16,8 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
@@ -33,11 +35,6 @@ import platform.Foundation.runUntilDate
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
 import platform.UIKit.UIWindow
-import platform.UIKit.addSubview
-import platform.UIKit.overrideUserInterfaceStyle
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.safeAreaInsets
-import platform.UIKit.subviews
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseUIKitViewTest {
@@ -122,7 +119,9 @@ class TreehouseUIKitViewTest {
 
     // We can't override this value so test that they match.
     val expectedInsets = parent.safeAreaInsets.useContents {
-      Margin(left, right, top, bottom)
+      with(Density.Default) {
+        Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
+      }
     }
 
     val layout = TreehouseUIKitView(throwingWidgetSystem)

@@ -19,27 +19,27 @@ import android.content.Context
 import android.view.View
 import android.widget.Space
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Dp
-import app.cash.redwood.layout.api.toPx
 import app.cash.redwood.layout.widget.Spacer
 import kotlin.math.roundToInt
 
 internal class ViewSpacer(
   context: Context,
 ) : Spacer<View> {
-  private val density = context.resources.displayMetrics.density.toDouble()
+  private val density = Density(context.resources)
 
   override val value = Space(context)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override fun width(width: Dp) {
-    value.minimumWidth = width.toPx(density).roundToInt()
+    value.minimumWidth = with(density) { width.toPx() }.roundToInt()
     invalidate()
   }
 
   override fun height(height: Dp) {
-    value.minimumHeight = height.toPx(density).roundToInt()
+    value.minimumHeight = with(density) { height.toPx() }.roundToInt()
     invalidate()
   }
 

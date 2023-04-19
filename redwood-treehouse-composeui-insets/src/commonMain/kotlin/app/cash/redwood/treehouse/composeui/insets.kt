@@ -21,10 +21,3 @@ import app.cash.redwood.layout.api.Margin
 /** Return the device's insets in screen density-independent pixels. */
 @Composable
 public expect fun safeAreaInsets(): Margin
-
-internal operator fun Margin.div(density: Double) = Margin(
-  start = start / density,
-  end = end / density,
-  top = top / density,
-  bottom = bottom / density,
-)

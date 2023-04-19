@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.dp
@@ -33,9 +32,7 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
   private var height by mutableStateOf(0.dp)
 
   override val value = @Composable {
-    val minWidth = width.toComposeUiDp()
-    val minHeight = height.toComposeUiDp()
-    Spacer(Modifier.defaultMinSize(minWidth, minHeight))
+    Spacer(Modifier.defaultMinSize(width.toDp(), height.toDp()))
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier

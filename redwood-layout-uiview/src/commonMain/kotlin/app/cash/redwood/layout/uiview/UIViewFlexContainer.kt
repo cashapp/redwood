@@ -23,6 +23,8 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -69,7 +71,7 @@ internal class UIViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    container.margin = margin.toSpacing(1.0)
+    container.margin = margin.toSpacing(Density.Default)
     invalidate()
   }
 
@@ -161,7 +163,7 @@ internal class UIViewFlexContainer(
       children.widgets.forEach { widget ->
         container.items += newFlexItem(
           direction = direction,
-          density = 1.0,
+          density = Density.Default,
           layoutModifiers = widget.layoutModifiers,
           measurable = UIViewMeasurable(widget.value),
         )

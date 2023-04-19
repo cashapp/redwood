@@ -15,4 +15,4 @@
  */
 package app.cash.redwood.layout.api
 
-public actual val DensityMultiplier: Double = 1.0
+internal actual val DensityMultiplier = 1.0

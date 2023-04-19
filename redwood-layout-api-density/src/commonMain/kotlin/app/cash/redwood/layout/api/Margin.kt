@@ -19,8 +19,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
-@Immutable
-@Serializable
+@[Immutable Serializable]
 public data class Margin(
   val start: Dp = 0.dp,
   val end: Dp = 0.dp,

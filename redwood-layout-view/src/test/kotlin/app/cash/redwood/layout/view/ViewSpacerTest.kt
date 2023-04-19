@@ -24,6 +24,7 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.AbstractSpacerTest
+import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.widget.Widget
 import com.android.ide.common.rendering.api.SessionParams
@@ -48,8 +49,8 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
     layoutModifier: LayoutModifier,
   ): Spacer<View> = ViewSpacer(paparazzi.context).apply {
     layoutModifiers = layoutModifier
-    width(width)
-    height(height)
+    width(width.dp)
+    height(height.dp)
   }
 
   override fun wrap(widget: Widget<View>, horizontal: Boolean): View {
