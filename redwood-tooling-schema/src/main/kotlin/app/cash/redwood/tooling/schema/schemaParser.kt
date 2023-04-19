@@ -169,11 +169,11 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     }
 
   val schema = ParsedProtocolSchema(
-    schemaType.toFqType(),
-    scopes.toList(),
-    widgets,
-    layoutModifiers,
-    dependencies.map { it.type },
+    type = schemaType.toFqType(),
+    scopes = scopes.toList(),
+    widgets = widgets,
+    layoutModifiers = layoutModifiers,
+    dependencies = dependencies.map { it.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
     schema,

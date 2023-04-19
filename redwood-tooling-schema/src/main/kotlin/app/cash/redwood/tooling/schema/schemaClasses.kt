@@ -21,6 +21,8 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.EncodeDefault.Mode.ALWAYS
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -35,12 +37,21 @@ internal data class ParsedProtocolSchemaSet(
 
 @Serializable
 internal data class ParsedProtocolSchema(
+  /** The format version of this JSON. */
+  @EncodeDefault(ALWAYS)
+  val version: Int = 1,
   override val type: FqType,
   override val scopes: List<FqType> = emptyList(),
   override val widgets: List<ParsedProtocolWidget> = emptyList(),
   override val layoutModifiers: List<ParsedProtocolLayoutModifier> = emptyList(),
   override val dependencies: List<FqType> = emptyList(),
 ) : ProtocolSchema {
+  init {
+    require(version == 1) {
+      "Only version 1 is supported"
+    }
+  }
+
   override fun toEmbeddedSchema(): EmbeddedSchema {
     return EmbeddedSchema(
       path = type.names[0].replace('.', '/') + "/" + type.names.drop(1).joinToString(".") + ".json",
