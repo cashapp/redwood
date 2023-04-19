@@ -136,7 +136,9 @@ allprojects {
       // TODO: remove this once we remove the Dokka plugin
       dokkatooPublicationDirectory.set(layout.buildDirectory.dir("dokkatoo"))
 
-      // TODO: work out if we need to customize anything here
+      dokkatooSourceSets.configureEach {
+        suppressGeneratedFiles.set(false) // document generated code
+      }
     }
   }
 

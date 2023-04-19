@@ -16,6 +16,10 @@
 
 apply plugin: 'dev.adamko.dokkatoo-html'
 
+dokkatoo {
+  moduleName.set("Redwood")
+}
+
 dependencies {
   rootProject.subprojects.each {
     if (it.name == name) return
@@ -26,4 +30,8 @@ dependencies {
 
     dokkatoo(project(it.path))
   }
+
+  // Need to manually depend on this due to https://github.com/adamko-dev/dokkatoo/issues/14
+  dokkatooPluginHtml("org.jetbrains.dokka:all-modules-page-plugin:1.8.10")
+  dokkatooPluginHtml("org.jetbrains.dokka:templating-plugin:1.8.10")
 }
