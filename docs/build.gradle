@@ -24,13 +24,6 @@ dependencies {
     // Each submodule needs to have the dokkatoo plugin applied
     if (!it.plugins.hasPlugin('dev.adamko.dokkatoo-html')) return
 
-    // FIXME: remove this before landing
-    println("Adding dokkatoo to: ${it.path}")
-
     dokkatoo(project(it.path))
   }
-
-  // TODO: check if we need this
-  dokkatooPluginHtml("org.jetbrains.dokka:all-modules-page-plugin:1.8.10")
-  dokkatooPluginHtml("org.jetbrains.dokka:templating-plugin:1.8.10")
 }

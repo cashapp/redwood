@@ -7,6 +7,7 @@ apply plugin: 'app.cash.paparazzi'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'dev.adamko.dokkatoo-html' // Must be applied here for publish plugin.
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'dev.adamko.dokkatoo-html' // Must be applied here for publish plugin.
 
 dependencies {
   api projects.redwoodLayoutWidget

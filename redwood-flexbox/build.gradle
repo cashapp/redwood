@@ -3,6 +3,7 @@ import app.cash.redwood.buildsupport.KmpTargets
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'dev.adamko.dokkatoo-html' // Must be applied here for publish plugin.
 
 kotlin {
   KmpTargets.addAllTargets(project)
