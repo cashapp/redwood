@@ -18,61 +18,11 @@ package app.cash.redwood.treehouse.lazylayout.compose
 import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.protocol.compose.ProtocolBridge
-import app.cash.redwood.treehouse.TreehouseUi
-import app.cash.redwood.treehouse.ZiplineTreehouseUi
-import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
 
 @Composable
 public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
   val widgetVersion = LocalWidgetVersion.current
-  val scope = TreehouseLazyListScope(this, widgetVersion)
+  val scope = LazyListIntervalContent(this, widgetVersion)
   content(scope)
   LazyColumn(scope.intervals)
-}
-
-private class TreehouseLazyListScope(
-  private val provider: ProtocolBridge,
-  private val widgetVersion: UInt,
-) : LazyListScope {
-  val intervals = mutableListOf<LazyListIntervalContent>()
-
-  private class Item(
-    private val provider: ProtocolBridge,
-    private val widgetVersion: UInt,
-    private val content: @Composable (index: Int) -> Unit,
-  ) : LazyListIntervalContent.Item {
-
-    override fun get(index: Int): ZiplineTreehouseUi {
-      val treehouseUi = IndexedTreehouseUi(content, index)
-      return treehouseUi.asZiplineTreehouseUi(provider, widgetVersion)
-    }
-  }
-
-  override fun items(
-    count: Int,
-    itemContent: @Composable (index: Int) -> Unit,
-  ) {
-    intervals += LazyListIntervalContent(
-      count,
-      itemProvider = Item(provider, widgetVersion, itemContent),
-    )
-  }
-
-  override fun item(content: @Composable () -> Unit) {
-    intervals += LazyListIntervalContent(
-      1,
-      Item(provider, widgetVersion) { content() },
-    )
-  }
-}
-
-private class IndexedTreehouseUi(
-  private val content: @Composable (index: Int) -> Unit,
-  private val index: Int,
-) : TreehouseUi {
-  @Composable
-  override fun Show() {
-    content(index)
-  }
 }

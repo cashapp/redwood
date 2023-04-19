@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.lazylayout
+package app.cash.redwood.treehouse.lazylayout.api
 
-import app.cash.redwood.schema.Property
-import app.cash.redwood.schema.Widget
-import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
+import app.cash.zipline.ziplineServiceSerializer
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 
-@Widget(1)
-public data class LazyColumn(
-  @Property(1) val intervals: List<LazyListInterval>,
-)
+public val treehouseLazyLayoutSerializersModule: SerializersModule = SerializersModule {
+  contextual(ziplineServiceSerializer<LazyListInterval.Item>())
+}
