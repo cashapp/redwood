@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>app.cash.redwood.layout.api</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>redwood</span>            </a>    </div>
+    <div>0.3.0-SNAPSHOT
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":redwood-layout-api-density:dokkaHtmlPartial/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-layout-api-density:dokkaHtmlPartial/iosMain">ios</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-layout-api-density:dokkaHtmlPartial/macosMain">macos</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="redwood-layout-api-density::app.cash.redwood.layout.api////PointingToDeclaration//328597986">
+  <div class="breadcrumbs"><a href="../index.html">redwood-layout-api-density</a><span class="delimiter">/</span><span class="current">app.cash.redwood.layout.api</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-382274364%2FClasslikes%2F-2034806606" anchor-label="Density" id="-382274364%2FClasslikes%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-density/index.html"><span><span>Density</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-382274364%2FClasslikes%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-density/index.html">Density</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>rawDensity<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents a device's display density.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-485916726%2FClasslikes%2F-2034806606" anchor-label="Dp" id="-485916726%2FClasslikes%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-dp/index.html"><span><span>Dp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-485916726%2FClasslikes%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-dp/index.html">Dp</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents a density-independent pixel value. Values will be scaled and converted into standard pixel values according to the device's density.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-820423064%2FClasslikes%2F-2034806606" anchor-label="Margin" id="-820423064%2FClasslikes%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-margin/index.html"><span><span>Margin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-820423064%2FClasslikes%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-margin/index.html">Margin</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>start<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>end<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>top<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>bottom<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1264636758%2FFunctions%2F1053766376" anchor-label="Density" id="1264636758%2FFunctions%2F1053766376" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-density.html"><span><span>Density</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1264636758%2FFunctions%2F1053766376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-layout-api-density:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-density.html"><span class="token function">Density</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">resources<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-density/index.html">Density</a></div><div class="brief "><p class="paragraph">Create a <a href="../../redwood-layout-api/app.cash.redwood.layout.api/-density/index.html">Density</a> from the device's <a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a>.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1560830528%2FFunctions%2F-2034806606" anchor-label="fromPlatformDp" id="-1560830528%2FFunctions%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="from-platform-dp.html"><span>from</span><wbr><span>Platform</span><wbr><span><span>Dp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1560830528%2FFunctions%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-dp/-companion/index.html">Dp.Companion</a><span class="token punctuation">.</span><a href="from-platform-dp.html"><span class="token function">fromPlatformDp</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-dp/index.html">Dp</a></div><div class="brief "><p class="paragraph">Convert device-specific density-independent pixel value into a device-agnostic density-independent pixel value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="99689101%2FFunctions%2F-2034806606" anchor-label="Margin" id="99689101%2FFunctions%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-margin.html"><span><span>Margin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="99689101%2FFunctions%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-margin.html"><span class="token function">Margin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">all<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-margin/index.html">Margin</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-margin.html"><span class="token function">Margin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">horizontal<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp<span class="token punctuation">, </span></span><span class="parameter ">vertical<span class="token operator">: </span><a href="-dp/index.html">Dp</a><span class="token operator"> = </span>0.dp</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-margin/index.html">Margin</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1721143851%2FFunctions%2F-2034806606" anchor-label="toPlatformDp" id="-1721143851%2FFunctions%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-platform-dp.html"><span>to</span><wbr><span>Platform</span><wbr><span><span>Dp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1721143851%2FFunctions%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-dp/index.html">Dp</a><span class="token punctuation">.</span><a href="to-platform-dp.html"><span class="token function">toPlatformDp</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div><div class="brief "><p class="paragraph">Convert device-agnostic density-independent pixel value into a device-specific density-independent pixel value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="490263704%2FProperties%2F1668330264" anchor-label="Default" id="490263704%2FProperties%2F1668330264" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/iosMain :redwood-layout-api-density:dokkaHtmlPartial/macosMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/iosMain :redwood-layout-api-density:dokkaHtmlPartial/macosMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/iosMain :redwood-layout-api-density:dokkaHtmlPartial/macosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default.html"><span><span>Default</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="490263704%2FProperties%2F1668330264"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-layout-api-density:dokkaHtmlPartial/iosMain">ios</button><button class="platform-bookmark" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/macosMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/macosMain" data-toggle=":redwood-layout-api-density:dokkaHtmlPartial/macosMain">macos</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-density/-companion/index.html#2047962182%2FMain%2F-1048503142">Density.Companion</a><span class="token punctuation">.</span><a href="-default.html">Default</a><span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-density/index.html">Density</a></div><div class="brief "><p class="paragraph">iOS's coordinate system accounts for density automatically.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/macosMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-density/-companion/index.html#2047962182%2FMain%2F1400778086">Density.Companion</a><span class="token punctuation">.</span><a href="-default.html">Default</a><span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-density/index.html">Density</a></div><div class="brief "><p class="paragraph">MacOS's coordinate system accounts for density automatically.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1954214864%2FProperties%2F-2034806606" anchor-label="dp" id="1954214864%2FProperties%2F-2034806606" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":redwood-layout-api-density:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-api-density:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dp.html"><span><span>dp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1954214864%2FProperties%2F-2034806606"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-api-density:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">.</span><a href="dp.html">dp</a><span class="token operator">: </span><a href="-dp/index.html">Dp</a></div><div class="brief "><p class="paragraph">Create a <a href="-dp/index.html">Dp</a> from a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">.</span><a href="dp.html">dp</a><span class="token operator">: </span><a href="-dp/index.html">Dp</a></div><div class="brief "><p class="paragraph">Create a <a href="-dp/index.html">Dp</a> from a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">.</span><a href="dp.html">dp</a><span class="token operator">: </span><a href="-dp/index.html">Dp</a></div><div class="brief "><p class="paragraph">Create a <a href="-dp/index.html">Dp</a> from an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -9,6 +9,8 @@ module:redwood-flexbox
 app.cash.redwood.flexbox
 module:redwood-layout-api
 app.cash.redwood.layout.api
+module:redwood-layout-api-density
+app.cash.redwood.layout.api
 module:redwood-layout-compose
 app.cash.redwood.layout.compose
 module:redwood-layout-composeui
