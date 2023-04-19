@@ -31,18 +31,18 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.composeui.TreehouseContent
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 
 internal class ComposeUiLazyColumn<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
 ) : LazyColumn<@Composable () -> Unit> {
-  private var intervals by mutableStateOf<List<LazyListIntervalContent>>(emptyList())
+  private var intervals by mutableStateOf<List<LazyListInterval>>(emptyList())
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override fun intervals(intervals: List<LazyListIntervalContent>) {
+  override fun intervals(intervals: List<LazyListInterval>) {
     this.intervals = intervals
   }
 

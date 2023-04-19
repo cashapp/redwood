@@ -37,7 +37,7 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.TreehouseWidgetView
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -73,7 +73,7 @@ internal class ViewLazyColumn<A : AppService>(
     )
   }
 
-  override fun intervals(intervals: List<LazyListIntervalContent>) {
+  override fun intervals(intervals: List<LazyListInterval>) {
     // TODO Don't hardcode pageSizes
     // TODO Enable placeholder support
     // TODO Set a maxSize so we don't keep _too_ many views in memory
@@ -89,14 +89,14 @@ internal class ViewLazyColumn<A : AppService>(
 
   private class ItemPagingSource<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
-    private val intervals: List<LazyListIntervalContent>,
+    private val intervals: List<LazyListInterval>,
   ) : PagingSource<Int, Content>() {
 
     override suspend fun load(
       params: LoadParams<Int>,
     ): LoadResult<Int, Content> {
       val key = params.key ?: 0
-      val count = intervals.sumOf(LazyListIntervalContent::count)
+      val count = intervals.sumOf(LazyListInterval::count)
       val limit = when (params) {
         is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
         else -> params.loadSize
