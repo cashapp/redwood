@@ -16,6 +16,9 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
+import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.widget.Spacer
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
@@ -32,15 +35,13 @@ internal class UIViewSpacer : Spacer<UIView> {
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override fun width(width: Int) {
-    require(width >= 0) { "width must be >= 0: $width" }
-    this.width = width.toDouble()
+  override fun width(width: Dp) {
+    this.width = with(Density.Default) { width.toPx() }
     invalidate()
   }
 
-  override fun height(height: Int) {
-    require(height >= 0) { "height must be >= 0: $height" }
-    this.height = height.toDouble()
+  override fun height(height: Dp) {
+    this.height = with(Density.Default) { height.toPx() }
     invalidate()
   }
 

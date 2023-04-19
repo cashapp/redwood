@@ -19,6 +19,7 @@ package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Margin
 import java.awt.GraphicsEnvironment
 import java.awt.Insets
@@ -28,13 +29,10 @@ import java.awt.Toolkit
 public actual fun safeAreaInsets(): Margin {
   val configuration = GraphicsEnvironment.getLocalGraphicsEnvironment()
     .defaultScreenDevice.defaultConfiguration
-  val rawSpacing = Toolkit.getDefaultToolkit().getScreenInsets(configuration).toMargin()
-  return rawSpacing / LocalDensity.current.density.toDouble()
+  val density = Density(LocalDensity.current.density.toDouble())
+  return Toolkit.getDefaultToolkit().getScreenInsets(configuration).toMargin(density)
 }
 
-private fun Insets.toMargin() = Margin(
-  left = left.toDouble(),
-  right = right.toDouble(),
-  top = top.toDouble(),
-  bottom = bottom.toDouble(),
-)
+private fun Insets.toMargin(density: Density) = with(density) {
+  Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
+}

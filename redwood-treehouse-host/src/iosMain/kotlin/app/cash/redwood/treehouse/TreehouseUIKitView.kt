@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
@@ -82,7 +84,11 @@ private fun computeHostConfiguration(
 
 private fun computeSafeAreaInsets(): Margin {
   val keyWindow = UIApplication.sharedApplication.keyWindow ?: return Margin.Zero
-  return keyWindow.safeAreaInsets.useContents { Margin(left, right, top, bottom) }
+  return keyWindow.safeAreaInsets.useContents {
+    with(Density.Default) {
+      Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
+    }
+  }
 }
 
 private class RootUiView(

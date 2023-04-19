@@ -26,9 +26,6 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-// The cross platform density multiples use iOS as an anchor.
-internal const val DensityMultiplier = 1.0
-
 internal fun CGSize.toSize() = Size(width, height)
 
 internal fun CGSize.toUnsafeSize() = UnsafeSize(width, height)

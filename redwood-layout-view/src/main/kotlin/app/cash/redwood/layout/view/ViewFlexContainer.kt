@@ -31,6 +31,7 @@ import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -46,7 +47,7 @@ internal class ViewFlexContainer(
     flexDirection = direction
     roundToInt = true
   }
-  private val density = DensityMultiplier * context.resources.displayMetrics.density
+  private val density = Density(context.resources)
 
   private val hostView = HostView(context)
 

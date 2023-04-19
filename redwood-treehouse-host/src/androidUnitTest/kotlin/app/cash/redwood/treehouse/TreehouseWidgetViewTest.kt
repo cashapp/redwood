@@ -25,6 +25,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
@@ -125,13 +126,14 @@ class TreehouseWidgetViewTest {
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
         .build()
       ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
-      val density = context.resources.displayMetrics.density.toDouble()
-      val expectedInsets = Margin(
-        left = density * insets.left,
-        right = density * insets.right,
-        top = density * insets.top,
-        bottom = density * insets.bottom,
-      )
+      val expectedInsets = with(Density(context.resources)) {
+        Margin(
+          start = insets.left.toDp(),
+          end = insets.right.toDp(),
+          top = insets.top.toDp(),
+          bottom = insets.bottom.toDp(),
+        )
+      }
       assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), awaitItem())
     }
   }
