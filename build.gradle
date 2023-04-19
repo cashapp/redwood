@@ -5,6 +5,16 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 buildscript {
   dependencies {
+    // TODO: find a way to get a kotlinx-serialization-json version that's compatible with the
+    //     kotlinx-serialization-core that Dokkatoo wants to use. Something is pinning this down
+    //     but unclear what.
+    classpath("org.jetbrains.kotlinx:kotlinx-serialization-core") {
+      version { strictly("1.1.0") }
+    }
+    classpath("org.jetbrains.kotlinx:kotlinx-serialization-json") {
+      version { strictly("1.1.0") }
+    }
+
     classpath libs.kotlin.gradlePlugin
     classpath libs.kotlin.serializationPlugin
     classpath libs.jetbrains.compose.gradlePlugin
