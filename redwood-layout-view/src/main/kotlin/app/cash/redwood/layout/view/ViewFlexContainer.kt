@@ -33,6 +33,7 @@ import app.cash.redwood.layout.Shrink
 import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -47,10 +48,10 @@ internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : Row<View>, Column<View> {
-  private val density = DensityMultiplier * context.resources.displayMetrics.density
   private val yogaLayout = YogaLayout(context).apply {
     Yoga.YGNodeStyleSetFlexDirection(rootNode, direction.toYoga())
   }
+  private val density = Density(context.resources)
 
   private val hostView = HostView()
   override val value: View get() = hostView
@@ -72,22 +73,22 @@ internal class ViewFlexContainer(
             Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeLeft,
-              points = density * modifier.margin.left,
+              points = with(density) { modifier.margin.start.toPx() }.toFloat(),
             )
             Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeRight,
-              points = density * modifier.margin.right,
+              points = with(density) { modifier.margin.end.toPx() }.toFloat(),
             )
             Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeTop,
-              points = density * modifier.margin.top,
+              points = with(density) { modifier.margin.top.toPx() }.toFloat(),
             )
             Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeBottom,
-              points = density * modifier.margin.bottom,
+              points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
             )
           }
           is HorizontalAlignment -> if (direction.isVertical) {
@@ -119,22 +120,22 @@ internal class ViewFlexContainer(
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeLeft,
-      points = density * margin.left,
+      points = with(density) { margin.start.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeRight,
-      points = density * margin.right,
+      points = with(density) { margin.end.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeTop,
-      points = density * margin.top,
+      points = with(density) { margin.top.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeBottom,
-      points = density * margin.bottom,
+      points = with(density) { margin.bottom.toPx() }.toFloat(),
     )
     invalidate()
   }

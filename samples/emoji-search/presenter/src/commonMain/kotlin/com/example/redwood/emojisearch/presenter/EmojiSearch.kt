@@ -28,7 +28,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
-import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import com.example.redwood.emojisearch.compose.Image
@@ -98,7 +98,7 @@ fun EmojiSearch(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = Margin(horizontal = 24),
+    margin = Margin(horizontal = 24.dp),
   ) {
     TextInput(
       state = searchTerm,
@@ -113,7 +113,7 @@ fun EmojiSearch(
         Image(
           url = image.url,
           layoutModifier = LayoutModifier
-            .margin(Margin(8)),
+            .margin(Margin(8.dp)),
         )
         Text(
           text = image.label,

@@ -18,7 +18,6 @@
 package app.cash.redwood.layout.api
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 
@@ -26,8 +25,7 @@ import kotlinx.serialization.Serializable
 //  Blocked by https://issuetracker.google.com/issues/251430194.
 
 /** Controls how the container should determine its width/height. */
-@JvmInline
-@Serializable
+@[Immutable JvmInline Serializable]
 public value class Constraint internal constructor(internal val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
@@ -43,8 +41,7 @@ public value class Constraint internal constructor(internal val ordinal: Int) {
 }
 
 /** Equivalent to `justify-content`. */
-@JvmInline
-@Serializable
+@[Immutable JvmInline Serializable]
 public value class MainAxisAlignment internal constructor(internal val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
@@ -68,8 +65,7 @@ public value class MainAxisAlignment internal constructor(internal val ordinal: 
 }
 
 /** Equivalent to `align-items`. */
-@JvmInline
-@Serializable
+@[Immutable JvmInline Serializable]
 public value class CrossAxisAlignment internal constructor(internal val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
@@ -89,8 +85,7 @@ public value class CrossAxisAlignment internal constructor(internal val ordinal:
 }
 
 /** Equivalent to `overflow-x`/`overflow-y`. */
-@JvmInline
-@Serializable
+@[Immutable JvmInline Serializable]
 public value class Overflow internal constructor(internal val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
@@ -104,59 +99,3 @@ public value class Overflow internal constructor(internal val ordinal: Int) {
     public val Scroll: Overflow = Overflow(1)
   }
 }
-
-@Immutable
-@Serializable
-public data class Margin(
-  val left: Int = 0,
-  val right: Int = 0,
-  val top: Int = 0,
-  val bottom: Int = 0,
-) {
-  init {
-    require(left >= 0 && right >= 0 && top >= 0 && bottom >= 0) {
-      "Invalid Margin: [$left, $right, $top, $bottom]"
-    }
-  }
-
-  override fun toString(): String {
-    return if (left == right && top == bottom) {
-      if (left == top) {
-        "Margin(all=$left)"
-      } else {
-        "Margin(horizontal=$left, vertical=$top)"
-      }
-    } else {
-      "Margin(left=$left, right=$right, top=$top, bottom=$bottom)"
-    }
-  }
-
-  public companion object {
-    public val Zero: Margin = Margin()
-  }
-}
-
-@Stable
-public fun Margin(
-  horizontal: Int = 0,
-  vertical: Int = 0,
-): Margin = Margin(horizontal, horizontal, vertical, vertical)
-
-@Stable
-public fun Margin(
-  all: Int = 0,
-): Margin = Margin(all, all, all, all)
-
-// Temporary constructor before migrating everything to doubles.
-@Stable
-public fun Margin(
-  left: Double = 0.0,
-  right: Double = 0.0,
-  top: Double = 0.0,
-  bottom: Double = 0.0,
-): Margin = Margin(
-  left = left.toInt(),
-  right = right.toInt(),
-  top = top.toInt(),
-  bottom = bottom.toInt(),
-)

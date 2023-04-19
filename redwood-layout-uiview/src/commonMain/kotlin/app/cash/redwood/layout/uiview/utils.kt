@@ -33,9 +33,6 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-// The cross platform density multiples use iOS as an anchor.
-internal const val DensityMultiplier = 1.0
-
 internal fun FlexDirection.toYoga() = when (this) {
   FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
   FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse

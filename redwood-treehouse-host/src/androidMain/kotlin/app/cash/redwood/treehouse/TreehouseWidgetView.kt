@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.core.graphics.Insets
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
@@ -96,7 +97,7 @@ public class TreehouseWidgetView(
   ): HostConfiguration {
     return HostConfiguration(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
-      safeAreaInsets = insets.toMargin(resources.displayMetrics.density.toDouble()),
+      safeAreaInsets = insets.toMargin(Density(resources)),
     )
   }
 }

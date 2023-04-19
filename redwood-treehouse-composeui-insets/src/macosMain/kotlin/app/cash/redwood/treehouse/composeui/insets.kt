@@ -15,11 +15,17 @@
  */
 package app.cash.redwood.treehouse.composeui
 
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.Margin
 import kotlinx.cinterop.useContents
 import platform.AppKit.NSScreen
 
 public actual fun safeAreaInsets(): Margin {
   val mainScreen = NSScreen.mainScreen ?: return Margin.Zero
-  return mainScreen.safeAreaInsets.useContents { Margin(left, right, top, bottom) }
+  return mainScreen.safeAreaInsets.useContents {
+    with(Density.Default) {
+      Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
+    }
+  }
 }

@@ -21,6 +21,8 @@ import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Default
+import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -58,22 +60,22 @@ internal class UIViewFlexContainer(
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeLeft,
-      points = (DensityMultiplier * margin.left).toFloat(),
+      points = with(Density.Default) { margin.start.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeRight,
-      points = (DensityMultiplier * margin.right).toFloat(),
+      points = with(Density.Default) { margin.end.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeTop,
-      points = (DensityMultiplier * margin.top).toFloat(),
+      points = with(Density.Default) { margin.top.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
       node = yogaLayout.rootNode,
       edge = YGEdge.YGEdgeBottom,
-      points = (DensityMultiplier * margin.bottom).toFloat(),
+      points = with(Density.Default) { margin.bottom.toPx() }.toFloat(),
     )
     invalidate()
   }

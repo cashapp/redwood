@@ -17,6 +17,7 @@ package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
@@ -78,9 +79,9 @@ public object ColumnScope
 @Widget(3)
 public data class Spacer(
   @Property(1)
-  @Default("0")
-  val width: Int,
+  @Default("Dp(0.0)")
+  val width: Dp,
   @Property(2)
-  @Default("0")
-  val height: Int,
+  @Default("Dp(0.0)")
+  val height: Dp,
 )

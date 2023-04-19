@@ -17,9 +17,9 @@ package app.cash.redwood.treehouse.lazylayout
 
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.treehouse.lazylayout.api.LazyListIntervalContent
+import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 
 @Widget(1)
 public data class LazyColumn(
-  @Property(1) val intervals: List<LazyListIntervalContent>,
+  @Property(1) val intervals: List<LazyListInterval>,
 )

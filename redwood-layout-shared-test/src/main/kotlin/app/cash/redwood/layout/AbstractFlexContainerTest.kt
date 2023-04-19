@@ -22,6 +22,7 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.layout.api.dp
 import app.cash.redwood.widget.Widget
 import org.junit.Test
 
@@ -64,7 +65,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun columnWithMarginAndDifferentAlignments() {
     val container = flexContainer(FlexDirection.Column)
-    container.margin(Margin(horizontal = 10, vertical = 20))
+    container.margin(Margin(horizontal = 10.dp, vertical = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
         0 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Start)

@@ -23,25 +23,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.layout.api.Dp
+import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.widget.Spacer
 
 internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
-  private var width by mutableStateOf(0)
-  private var height by mutableStateOf(0)
+  private var width by mutableStateOf(0.dp)
+  private var height by mutableStateOf(0.dp)
 
   override val value = @Composable {
-    Spacer(Modifier.defaultMinSize(unitsToDp(width), unitsToDp(height)))
+    Spacer(Modifier.defaultMinSize(width.toDp(), height.toDp()))
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override fun width(width: Int) {
-    require(width >= 0) { "width must be >= 0: $width" }
+  override fun width(width: Dp) {
     this.width = width
   }
 
-  override fun height(height: Int) {
-    require(height >= 0) { "height must be >= 0: $height" }
+  override fun height(height: Dp) {
     this.height = height
   }
 }
