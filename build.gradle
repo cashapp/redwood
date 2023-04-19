@@ -211,14 +211,6 @@ allprojects {
     }
   }
 
-  plugins.withId('signing') {
-    signing {
-      def signingKey = findProperty('signingKey')
-      def signingPassword = ''
-      useInMemoryPgpKeys(signingKey, signingPassword)
-    }
-  }
-
   apply plugin: 'com.diffplug.spotless'
   spotless {
     kotlin {
