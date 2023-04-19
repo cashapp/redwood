@@ -24,8 +24,8 @@ import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.dp
 
 internal fun Insets.toMargin(density: Double) = Margin(
-  left = (left / density / DensityMultiplier).dp,
-  right = (right / density / DensityMultiplier).dp,
+  start = (left / density / DensityMultiplier).dp,
+  end = (right / density / DensityMultiplier).dp,
   top = (top / density / DensityMultiplier).dp,
   bottom = (bottom / density / DensityMultiplier).dp,
 )

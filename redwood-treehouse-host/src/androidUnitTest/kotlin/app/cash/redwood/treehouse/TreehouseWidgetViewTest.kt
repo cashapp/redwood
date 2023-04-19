@@ -127,8 +127,8 @@ class TreehouseWidgetViewTest {
       ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
       val density = context.resources.displayMetrics.density.toDouble()
       val expectedInsets = Margin(
-        left = density * insets.left,
-        right = density * insets.right,
+        start = density * insets.left,
+        end = density * insets.right,
         top = density * insets.top,
         bottom = density * insets.bottom,
       )

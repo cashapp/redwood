@@ -23,8 +23,8 @@ import app.cash.redwood.layout.api.Margin
 public expect fun safeAreaInsets(): Margin
 
 internal operator fun Margin.div(density: Double) = Margin(
-  left = left / density,
-  right = right / density,
+  start = start / density,
+  end = end / density,
   top = top / density,
   bottom = bottom / density,
 )

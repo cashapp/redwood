@@ -33,8 +33,8 @@ public actual fun safeAreaInsets(): Margin {
 }
 
 private fun Insets.toMargin() = Margin(
-  left = left.toDouble(),
-  right = right.toDouble(),
+  start = left.toDouble(),
+  end = right.toDouble(),
   top = top.toDouble(),
   bottom = bottom.toDouble(),
 )

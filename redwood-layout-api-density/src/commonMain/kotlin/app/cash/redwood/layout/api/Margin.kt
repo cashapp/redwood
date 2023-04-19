@@ -22,20 +22,20 @@ import kotlinx.serialization.Serializable
 @Immutable
 @Serializable
 public data class Margin(
-  val left: Dp = 0.dp,
-  val right: Dp = 0.dp,
+  val start: Dp = 0.dp,
+  val end: Dp = 0.dp,
   val top: Dp = 0.dp,
   val bottom: Dp = 0.dp,
 ) {
 
   override fun toString(): String = when {
-    left != right || top != bottom -> {
-      "Margin(left=$left, right=$right, top=$top, bottom=$bottom)"
+    start != end || top != bottom -> {
+      "Margin(start=$start, end=$end, top=$top, bottom=$bottom)"
     }
-    left != top -> {
-      "Margin(horizontal=$left, vertical=$top)"
+    start != top -> {
+      "Margin(horizontal=$start, vertical=$top)"
     }
-    else -> "Margin(all=$left)"
+    else -> "Margin(all=$start)"
   }
 
   public companion object {

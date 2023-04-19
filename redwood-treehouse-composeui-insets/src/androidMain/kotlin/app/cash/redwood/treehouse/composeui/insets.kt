@@ -34,8 +34,8 @@ public actual fun safeAreaInsets(): Margin {
 
 @Composable
 private fun PaddingValues.toMargin(layoutDirection: LayoutDirection) = Margin(
-  left = calculateLeftPadding(layoutDirection).value.toDouble(),
-  right = calculateRightPadding(layoutDirection).value.toDouble(),
+  start = calculateLeftPadding(layoutDirection).value.toDouble(),
+  end = calculateRightPadding(layoutDirection).value.toDouble(),
   top = calculateTopPadding().value.toDouble(),
   bottom = calculateBottomPadding().value.toDouble(),
 )
