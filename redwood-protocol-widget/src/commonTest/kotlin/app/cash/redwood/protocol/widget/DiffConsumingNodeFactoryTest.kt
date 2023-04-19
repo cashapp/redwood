@@ -342,14 +342,14 @@ class DiffConsumingNodeFactoryTest {
     var onChange: ((String) -> Unit)? = null
       private set
 
-    override fun onChange(onChange: ((String) -> Unit)?) {
+    override fun onChange(onChange: (String) -> Unit) {
       this.onChange = onChange
     }
 
     var onChangeCustomType: ((Duration) -> Unit)? = null
       private set
 
-    override fun onChangeCustomType(onChangeCustomType: ((Duration) -> Unit)?) {
+    override fun onChangeCustomType(onChangeCustomType: (Duration) -> Unit) {
       this.onChangeCustomType = onChangeCustomType
     }
 

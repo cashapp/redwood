@@ -94,6 +94,7 @@ internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
   override val parameterType: FqType?,
+  override val isNullable: Boolean,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,
 ) : ProtocolEvent

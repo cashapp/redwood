@@ -350,7 +350,7 @@ internal fun generateProtocolWidget(
               }
               is ProtocolEvent -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, trait.lambdaType, PRIVATE)
+                  PropertySpec.builder(trait.name, trait.lambdaType.copy(nullable = true), PRIVATE)
                     .mutable()
                     .initializer("null")
                     .build(),
@@ -359,16 +359,24 @@ internal fun generateProtocolWidget(
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, trait.lambdaType)
-                    .addStatement("val %1NSet = %1N != null", trait.name)
-                    .beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
-                    .addStatement(
-                      "this.state.append(%T(this.id, %T(%L), %M(%NSet)))",
-                      Protocol.PropertyDiff,
-                      Protocol.PropertyTag,
-                      trait.tag,
-                      KotlinxSerialization.JsonPrimitive,
-                      trait.name,
-                    )
+                    .apply {
+                      val newValue = if (trait.isNullable) {
+                        addStatement("val %1NSet = %1N != null", trait.name)
+                        beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
+                        trait.name + "Set"
+                      } else {
+                        beginControlFlow("if (this.%1N == null)", trait.name)
+                        "true"
+                      }
+                      addStatement(
+                        "this.state.append(%T(this.id, %T(%L), %M(%L)))",
+                        Protocol.PropertyDiff,
+                        Protocol.PropertyTag,
+                        trait.tag,
+                        KotlinxSerialization.JsonPrimitive,
+                        newValue,
+                      )
+                    }
                     .endControlFlow()
                     .addStatement("this.%1N = %1N", trait.name)
                     .build(),
