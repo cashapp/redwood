@@ -20,7 +20,7 @@ import android.content.res.Resources
 // Android uses 2.75 as a density scale for most recent Pixel devices and iOS
 // uses 3. This aligns the two so the generic values used by Redwood layout are
 // visually similar on both platforms.
-internal actual val DensityMultiplier = 1.1
+internal actual const val DensityMultiplier = 1.1
 
 /**
  * Create a [Density] from the device's [Resources].
