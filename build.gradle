@@ -11,6 +11,7 @@ buildscript {
     classpath libs.androidGradlePlugin
     classpath libs.gradleMavenPublishPlugin
     classpath libs.dokkaPlugin
+    classpath libs.dokkatooPlugin
     classpath libs.spotlessPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
@@ -117,6 +118,15 @@ allprojects {
   tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial) {
     dokkaSourceSets.configureEach {
       suppressGeneratedFiles.set(false) // document generated code
+    }
+  }
+
+  plugins.withId('dev.adamko.dokkatoo-html') {
+    dokkatoo {
+      // TODO: remove this once we remove the Dokka plugin
+      dokkatooPublicationDirectory.set(layout.buildDirectory.dir("dokkatoo"))
+
+      // TODO: work out if we need to customize anything here
     }
   }
 

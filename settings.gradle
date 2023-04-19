@@ -44,6 +44,8 @@ include ':redwood-treehouse-lazylayout-widget'
 include ':redwood-widget'
 include ':redwood-widget-compose'
 
+include ':docs'
+
 include ':test-schema'
 include ':test-schema:compose'
 include ':test-schema:compose:protocol'
