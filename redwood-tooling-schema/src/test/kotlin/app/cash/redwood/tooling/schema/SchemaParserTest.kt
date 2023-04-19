@@ -311,6 +311,26 @@ class SchemaParserTest {
 
   @Schema(
     [
+      InvalidChildrenLambdaReturnTypeWidget::class,
+    ],
+  )
+  interface InvalidChildrenLambdaReturnTypeSchema
+
+  @Widget(1)
+  data class InvalidChildrenLambdaReturnTypeWidget(
+    @Children(1) val children: () -> String,
+  )
+
+  @Test fun invalidChildrenLambdaReturnTypeThrows() {
+    assertThrows<IllegalArgumentException> {
+      parseProtocolSchema(InvalidChildrenLambdaReturnTypeSchema::class)
+    }.hasMessageThat().isEqualTo(
+      "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenLambdaReturnTypeWidget#children must be of type '() -> Unit'",
+    )
+  }
+
+  @Schema(
+    [
       ChildrenArgumentsInvalidWidget::class,
     ],
   )

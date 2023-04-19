@@ -84,6 +84,7 @@ public interface Widget {
 
   public interface Event : Trait {
     public val parameterType: FqType?
+    public val isNullable: Boolean
   }
 
   public interface Children : Trait {

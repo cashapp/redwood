@@ -107,7 +107,9 @@ internal fun generateComposable(
                 }
                 is Event -> {
                   ParameterSpec.builder(trait.name, trait.lambdaType)
-                    .defaultValue(trait.defaultExpression ?: "null")
+                    .apply {
+                      trait.defaultExpression?.let { defaultValue(it) }
+                    }
                     .build()
                 }
                 is Children -> {

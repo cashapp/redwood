@@ -34,6 +34,7 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.withNullability
+import kotlin.reflect.typeOf
 
 private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
@@ -230,6 +231,7 @@ private fun parseWidget(
             tag = property.tag,
             name = name,
             parameterType = arguments.singleOrNull()?.type?.toFqType(),
+            isNullable = type.isMarkedNullable,
             defaultExpression = defaultExpression,
             deprecation = deprecation,
           )
@@ -243,11 +245,11 @@ private fun parseWidget(
           )
         }
       } else if (children != null) {
-        require(type.isSubtypeOf(childrenType)) {
+        require(type.isSubtypeOf(childrenType) && type.arguments.last().type == typeOf<Unit>()) {
           "@Children ${memberType.qualifiedName}#$name must be of type '() -> Unit'"
         }
         var scope: FqType? = null
-        var arguments = type.arguments.dropLast(1) // Drop return type.
+        var arguments = type.arguments.dropLast(1) // Drop Unit return type.
         if (type.annotations.any(ExtensionFunctionType::class::isInstance)) {
           val receiverType = type.arguments.first().type
           val receiverClassifier = receiverType?.classifier
