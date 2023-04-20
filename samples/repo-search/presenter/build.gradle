@@ -1,0 +1,29 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+
+kotlin {
+  js {
+    browser()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation projects.samples.repoSearch.schema.compose
+        implementation projects.redwoodProtocolCompose
+        implementation projects.redwoodTreehouse
+        implementation libs.paging.compose.common
+        implementation libs.kotlinx.coroutines.core
+      }
+    }
+    jsMain {
+      dependencies {
+        implementation projects.redwoodTreehouseLazylayoutCompose
+        implementation projects.redwoodTreehouseLazylayoutApi
+        implementation projects.redwoodTreehouseLazylayoutPaging
+      }
+    }
+  }
+}

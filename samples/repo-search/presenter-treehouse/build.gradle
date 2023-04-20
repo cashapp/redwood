@@ -1,0 +1,33 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.zipline'
+
+kotlin {
+  jvm()
+
+  js {
+    browser()
+    binaries.executable()
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseLazylayoutApi
+      }
+    }
+
+    jsMain {
+      dependencies {
+        api projects.redwoodTreehouseGuest
+        api projects.samples.repoSearch.presenter
+        implementation projects.samples.repoSearch.schema.compose.protocol
+      }
+    }
+  }
+}
+
+zipline {
+  mainFunction = 'com.example.redwood.reposearch.treehouse.preparePresenters'
+}

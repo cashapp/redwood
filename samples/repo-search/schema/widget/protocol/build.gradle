@@ -1,0 +1,22 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.widget.protocol'
+
+archivesBaseName = 'schema-widget-protocol'
+
+kotlin {
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.samples.repoSearch.schema.widget
+        api projects.redwoodLayoutWidget
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.samples.repoSearch.schema
+  type = 'com.example.redwood.reposearch.RepoSearch'
+}
