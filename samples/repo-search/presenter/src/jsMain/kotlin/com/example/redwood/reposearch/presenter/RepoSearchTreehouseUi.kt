@@ -24,9 +24,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.paging.items
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-// import app.cash.redwood.treehouse.lazylayout.paging.items
 
 class RepoSearchTreehouseUi(
   private val httpClient: HttpClient,
