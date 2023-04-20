@@ -131,7 +131,7 @@ internal fun Schema.widgetPackage(host: Schema? = null): String {
 }
 
 internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(type.names[0], layoutModifier.type.flatName)
+  return ClassName(type.names[0] + ".modifier", layoutModifier.type.flatName)
 }
 
 internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, host: Schema): ClassName {
