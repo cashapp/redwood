@@ -47,7 +47,7 @@ class RepoSearchTreehouseUi(
   @Composable
   override fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-    bridge.LazyColumn {
+    LazyColumn(bridge) {
       items(lazyPagingItems) {
         RepoSearch(it!!)
       }
