@@ -18,14 +18,11 @@ package com.example.redwood.reposearch.android.views
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.TreehouseApp
 import com.example.redwood.reposearch.widget.RepoSearchWidgetFactory
 import com.example.redwood.reposearch.widget.Text
 
-class AndroidRepoSearchWidgetFactory<A : AppService>(
+class AndroidRepoSearchWidgetFactory(
   private val context: Context,
-  private val treehouseApp: TreehouseApp<A>,
 ) : RepoSearchWidgetFactory<View> {
   override fun Text(): Text<View> = ViewText(TextView(context))
 }
