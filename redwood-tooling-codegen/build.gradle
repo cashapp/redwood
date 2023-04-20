@@ -5,6 +5,7 @@ dependencies {
   api projects.redwoodToolingSchema
   implementation libs.kotlinPoet
 
+  testImplementation projects.testSchema
   testImplementation projects.testSchema.compose
   testImplementation libs.junit
   testImplementation libs.truth

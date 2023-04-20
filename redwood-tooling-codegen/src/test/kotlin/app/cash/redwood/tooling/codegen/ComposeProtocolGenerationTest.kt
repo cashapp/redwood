@@ -20,6 +20,7 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.parseProtocolSchema
 import com.google.common.truth.Truth.assertThat
+import example.redwood.ExampleSchema
 import org.junit.Test
 
 class ComposeProtocolGenerationTest {
@@ -49,12 +50,12 @@ class ComposeProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schemaSet = parseProtocolSchema(PrimarySchema::class)
+    val schemaSet = parseProtocolSchema(ExampleSchema::class)
 
     val fileSpec = generateProtocolLayoutModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).apply {
-      contains("is PrimaryModifier -> PrimaryModifierSerializer.encode(json, this)")
-      contains("is SecondaryModifier -> SecondaryModifierSerializer.encode(json, this)")
+      contains("is RowVerticalAlignment -> RowVerticalAlignmentSerializer.encode(json, this)")
+      contains("is Grow -> GrowSerializer.encode(json, this)")
     }
   }
 }
