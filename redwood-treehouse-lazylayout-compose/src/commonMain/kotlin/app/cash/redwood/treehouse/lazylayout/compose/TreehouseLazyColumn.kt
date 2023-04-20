@@ -20,9 +20,9 @@ import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.protocol.compose.ProtocolBridge
 
 @Composable
-public fun ProtocolBridge.LazyColumn(content: LazyListScope.() -> Unit) {
+public fun LazyColumn(bridge: ProtocolBridge, content: LazyListScope.() -> Unit) {
   val widgetVersion = LocalWidgetVersion.current
-  val scope = LazyListIntervalContent(this, widgetVersion)
+  val scope = LazyListIntervalContent(bridge, widgetVersion)
   content(scope)
   LazyColumn(scope.intervals)
 }
