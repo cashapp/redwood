@@ -18,7 +18,7 @@ app.cash.redwood.layout.composeui
 module:redwood-layout-dom
 app.cash.redwood.layout.dom
 module:redwood-layout-layoutmodifiers
-app.cash.redwood.layout
+app.cash.redwood.layout.modifier
 module:redwood-layout-schema
 app.cash.redwood.layout
 module:redwood-layout-testing
