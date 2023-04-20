@@ -54,13 +54,35 @@ internal data class ParsedProtocolSchema(
 
   override fun toEmbeddedSchema(): EmbeddedSchema {
     return EmbeddedSchema(
-      path = type.names[0].replace('.', '/') + "/" + type.names.drop(1).joinToString(".") + ".json",
-      json = json.encodeToString(serializer(), this),
+      path = toEmbeddedPath(type),
+      json = jsonFormat.encodeToString(serializer(), this),
     )
   }
 
   companion object {
-    private val json = Json {
+    fun toEmbeddedPath(type: FqType): String {
+      return type.names[0].replace('.', '/') + "/" + type.names.drop(1).joinToString(".") + ".json"
+    }
+
+    fun parseEmbeddedJson(json: String, tagOffset: Int = 0): ProtocolSchema {
+      val schema = jsonFormat.decodeFromString(serializer(), json)
+      if (tagOffset == 0) {
+        return schema
+      }
+      // The schema JSON was generated locally from at its source with its normal tag numbers.
+      // If we are consuming it as a tagged dependency, offset the widget and modifier tag numbers
+      // to simplify usage downstream.
+      return schema.copy(
+        widgets = schema.widgets.map { widget ->
+          widget.copy(tag = tagOffset + widget.tag)
+        },
+        layoutModifiers = schema.layoutModifiers.map { layoutModifier ->
+          layoutModifier.copy(tag = tagOffset + layoutModifier.tag)
+        },
+      )
+    }
+
+    private val jsonFormat = Json {
       prettyPrint = true
       prettyPrintIndent = "\t"
       classDiscriminator = "kind"
