@@ -24,7 +24,7 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
-import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import platform.Foundation.NSIndexPath
 import platform.QuartzCore.CALayer
 import platform.UIKit.UITableView
@@ -36,13 +36,20 @@ import platform.UIKit.row
 import platform.UIKit.section
 import platform.darwin.NSInteger
 
-internal class UIViewLazyColumn<A : AppService>(
+internal class UIViewLazyList<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
-) : LazyColumn<UIView> {
+) : LazyList<UIView> {
   private val dataSource = TableViewDataSource(treehouseApp, widgetSystem)
   private val root = UITableView().apply {
-    this.dataSource = this@UIViewLazyColumn.dataSource
+    this.dataSource = this@UIViewLazyList.dataSource
+  }
+
+  override fun isVertical(isVertical: Boolean) {
+    if (!isVertical) {
+      // TODO UITableView only supports vertical scrolling. Switch to UICollectionView.
+      TODO()
+    }
   }
 
   override fun intervals(intervals: List<LazyListInterval>) {

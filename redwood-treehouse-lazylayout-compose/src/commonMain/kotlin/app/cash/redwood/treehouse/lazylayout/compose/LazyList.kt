@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:JvmName("LazyList") // Conflicts with generated LazyList compose widget
+
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.protocol.compose.ProtocolBridge
+import kotlin.jvm.JvmName
 
 @Composable
-public fun LazyColumn(bridge: ProtocolBridge, content: LazyListScope.() -> Unit) {
+internal fun LazyList(
+  bridge: ProtocolBridge,
+  isVertical: Boolean,
+  content: LazyListScope.() -> Unit,
+) {
   val widgetVersion = LocalWidgetVersion.current
   val scope = LazyListIntervalContent(bridge, widgetVersion)
   content(scope)
-  LazyColumn(scope.intervals)
+  LazyList(isVertical, scope.intervals)
 }

@@ -19,12 +19,12 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 
 public class ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   private val widgetSystem: WidgetSystem,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<@Composable () -> Unit> {
-  override fun LazyColumn(): LazyColumn<@Composable () -> Unit> = ComposeUiLazyColumn(treehouseApp, widgetSystem)
+  override fun LazyList(): LazyList<@Composable () -> Unit> = ComposeUiLazyList(treehouseApp, widgetSystem)
 }

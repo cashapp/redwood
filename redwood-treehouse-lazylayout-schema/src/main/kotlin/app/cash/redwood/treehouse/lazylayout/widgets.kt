@@ -20,6 +20,7 @@ import app.cash.redwood.schema.Widget
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 
 @Widget(1)
-public data class LazyColumn(
-  @Property(1) val intervals: List<LazyListInterval>,
+public data class LazyList(
+  @Property(1) val isVertical: Boolean,
+  @Property(2) val intervals: List<LazyListInterval>,
 )

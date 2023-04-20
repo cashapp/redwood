@@ -16,9 +16,13 @@
 package app.cash.redwood.treehouse.lazylayout.composeui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,33 +36,51 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.composeui.TreehouseContent
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
-import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 
-internal class ComposeUiLazyColumn<A : AppService>(
+internal class ComposeUiLazyList<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
-) : LazyColumn<@Composable () -> Unit> {
+) : LazyList<@Composable () -> Unit> {
+  private var isVertical by mutableStateOf(false)
   private var intervals by mutableStateOf<List<LazyListInterval>>(emptyList())
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
+
+  override fun isVertical(isVertical: Boolean) {
+    this.isVertical = isVertical
+  }
 
   override fun intervals(intervals: List<LazyListInterval>) {
     this.intervals = intervals
   }
 
   override val value = @Composable {
-    LazyColumn(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = Modifier
-        .fillMaxWidth(),
-    ) {
+    // TODO Remove statically sized containers (https://github.com/cashapp/redwood/pull/854).
+    val itemBoxModifier = if (isVertical) Modifier.height(64.dp) else Modifier.width(64.dp)
+    val content: LazyListScope.() -> Unit = {
       intervals.forEach { interval ->
         items(interval.count) { index ->
-          Box(Modifier.height(64.dp)) {
+          Box(itemBoxModifier) {
             TreehouseContent(treehouseApp, widgetSystem) { interval.itemProvider.get(index) }
           }
         }
       }
+    }
+    if (isVertical) {
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = content,
+      )
+    } else {
+      LazyRow(
+        modifier = Modifier
+          .fillMaxHeight(),
+        verticalAlignment = Alignment.CenterVertically,
+        content = content,
+      )
     }
   }
 }
