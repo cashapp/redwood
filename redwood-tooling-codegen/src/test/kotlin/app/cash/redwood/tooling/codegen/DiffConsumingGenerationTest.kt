@@ -20,6 +20,7 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.parseProtocolSchema
 import com.google.common.truth.Truth.assertThat
+import example.redwood.ExampleSchema
 import java.util.regex.Pattern
 import java.util.regex.Pattern.MULTILINE
 import org.junit.Test
@@ -57,12 +58,12 @@ class DiffConsumingGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schema = parseProtocolSchema(PrimarySchema::class)
+    val schema = parseProtocolSchema(ExampleSchema::class)
 
     val fileSpec = generateDiffConsumingLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
-      contains("1 -> PrimaryModifierImpl.serializer()")
-      contains("1_000_001 -> SecondaryModifierImpl.serializer()")
+      contains("1 -> RowVerticalAlignmentImpl.serializer()")
+      contains("1_000_001 -> GrowImpl.serializer()")
     }
   }
 }
