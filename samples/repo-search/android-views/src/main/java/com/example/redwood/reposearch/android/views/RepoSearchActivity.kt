@@ -56,10 +56,7 @@ class RepoSearchActivity : ComponentActivity() {
         protocolMismatchHandler: ProtocolMismatchHandler,
       ) = RepoSearchDiffConsumingNodeFactory(
         provider = RepoSearchWidgetFactories(
-          RepoSearch = AndroidRepoSearchWidgetFactory(
-            context = context,
-            treehouseApp = treehouseApp,
-          ),
+          RepoSearch = AndroidRepoSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, this),
         ),
