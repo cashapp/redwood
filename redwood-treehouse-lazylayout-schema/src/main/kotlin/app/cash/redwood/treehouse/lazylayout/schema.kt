@@ -19,7 +19,7 @@ import app.cash.redwood.schema.Schema
 
 @Schema(
   [
-    LazyColumn::class,
+    LazyList::class,
   ],
 )
 public interface RedwoodTreehouseLazyLayout

@@ -49,7 +49,7 @@ fun main() {
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodTreehouseLazyLayout = object : RedwoodTreehouseLazyLayoutWidgetFactory<HTMLElement> {
         // For now we use a ColumnProvider to replace this with a normal Column.
-        override fun LazyColumn() = throw UnsupportedOperationException()
+        override fun LazyList() = throw UnsupportedOperationException()
       },
     ),
   )

@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 
 public class ViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
@@ -29,5 +29,5 @@ public class ViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   private val widgetSystem: WidgetSystem,
 ) : RedwoodTreehouseLazyLayoutWidgetFactory<View> {
-  public override fun LazyColumn(): LazyColumn<View> = ViewLazyColumn(treehouseApp, widgetSystem, RecyclerView(context))
+  public override fun LazyList(): LazyList<View> = ViewLazyList(treehouseApp, widgetSystem, RecyclerView(context))
 }

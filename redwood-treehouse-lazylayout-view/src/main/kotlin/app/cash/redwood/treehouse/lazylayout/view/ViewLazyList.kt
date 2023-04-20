@@ -38,26 +38,27 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
-import app.cash.redwood.treehouse.lazylayout.widget.LazyColumn
+import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-internal class ViewLazyColumn<A : AppService>(
+internal class ViewLazyList<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
   override val value: RecyclerView,
-) : LazyColumn<View> {
+) : LazyList<View> {
   private val scope = MainScope()
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
+  private val linearLayoutManager = LinearLayoutManager(value.context)
   private val adapter = LazyContentItemListAdapter(widgetSystem)
 
   init {
     value.apply {
-      layoutManager = LinearLayoutManager(value.context)
+      layoutManager = linearLayoutManager
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
     }
     value.adapter = adapter
@@ -71,6 +72,10 @@ internal class ViewLazyColumn<A : AppService>(
         }
       },
     )
+  }
+
+  override fun isVertical(isVertical: Boolean) {
+    linearLayoutManager.orientation = if (isVertical) RecyclerView.VERTICAL else RecyclerView.HORIZONTAL
   }
 
   override fun intervals(intervals: List<LazyListInterval>) {
