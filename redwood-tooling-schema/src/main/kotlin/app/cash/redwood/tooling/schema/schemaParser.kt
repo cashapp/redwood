@@ -24,6 +24,7 @@ import app.cash.redwood.schema.Widget as WidgetAnnotation
 import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import java.io.InputStream
 import kotlin.DeprecationLevel.ERROR
 import kotlin.DeprecationLevel.WARNING
 import kotlin.reflect.KAnnotatedElement
@@ -160,7 +161,18 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
       require(it.tag in 1..maxSchemaTag) {
         "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
       }
-      val schema = parseProtocolSchema(it.schema, it.tag).schema
+      val tagOffset = it.tag * maxMemberTag
+
+      val path = ParsedProtocolSchema.toEmbeddedPath(it.schema.toFqType())
+      val schema = schemaType.java
+        .getResourceAsStream("/$path")
+        ?.use(InputStream::readBytes)
+        ?.decodeToString()
+        ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json, tagOffset) }
+        ?: throw IllegalArgumentException(
+          "Unable to locate JSON for ${it.schema.qualifiedName} at $path",
+        )
+
       require(schema.dependencies.isEmpty()) {
         "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
           "For now, only a single level of dependencies is supported."

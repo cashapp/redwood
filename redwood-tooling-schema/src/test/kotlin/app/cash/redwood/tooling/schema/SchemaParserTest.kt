@@ -15,14 +15,19 @@
  */
 package app.cash.redwood.tooling.schema
 
+import app.cash.redwood.layout.RedwoodLayout
+import app.cash.redwood.layout.Row
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
+import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
 import com.google.common.truth.Truth.assertThat
+import example.redwood.ExampleSchema
 import kotlin.DeprecationLevel.HIDDEN
 import org.junit.Test
 
@@ -605,7 +610,7 @@ class SchemaParserTest {
   @Schema(
     members = [],
     dependencies = [
-      Dependency(4, SchemaTag::class),
+      Dependency(4, RedwoodLayout::class),
     ],
   )
   object SchemaDependencyTagOffsetsMemberTags
@@ -614,12 +619,14 @@ class SchemaParserTest {
     val schema = parseProtocolSchema(SchemaDependencyTagOffsetsMemberTags::class)
     val dependency = schema.dependencies.values.single()
 
-    val widget = dependency.widgets.single()
+    val widget = dependency.widgets.single { it.type.names.last() == "Row" }
     assertThat(widget.tag).isEqualTo(4_000_001)
-    assertThat(widget.traits[0].tag).isEqualTo(1)
-    assertThat(widget.traits[1].tag).isEqualTo(1)
+    val widgetProperty = widget.traits.first { it is PropertyTrait }
+    assertThat(widgetProperty.tag).isEqualTo(1)
+    val widgetChildren = widget.traits.first { it is ChildrenTrait }
+    assertThat(widgetChildren.tag).isEqualTo(1)
 
-    val layoutModifier = dependency.layoutModifiers.single()
+    val layoutModifier = dependency.layoutModifiers.single { it.type.names.last() == "Grow" }
     assertThat(layoutModifier.tag).isEqualTo(4_000_001)
   }
 
@@ -713,67 +720,26 @@ class SchemaParserTest {
   @Schema(
     members = [],
     dependencies = [
-      Dependency(1, SchemaDependencyHasDependencyA::class),
+      Dependency(1, ExampleSchema::class),
     ],
   )
   object SchemaDependencyHasDependency
-
-  @Schema(
-    members = [],
-    dependencies = [
-      Dependency(2, SchemaDependencyHasDependencyB::class),
-    ],
-  )
-  object SchemaDependencyHasDependencyA
-
-  @Schema(members = [])
-  object SchemaDependencyHasDependencyB
 
   @Test fun schemaDependencyHasDependencyThrows() {
     assertThrows<IllegalArgumentException> {
       parseProtocolSchema(SchemaDependencyHasDependency::class)
     }.hasMessageThat().isEqualTo(
-      "Schema dependency app.cash.redwood.tooling.schema.SchemaParserTest.SchemaDependencyHasDependencyA also has its own dependencies. " +
+      "Schema dependency example.redwood.ExampleSchema also has its own dependencies. " +
         "For now, only a single level of dependencies is supported.",
     )
   }
 
   @Schema(
-    members = [],
-    dependencies = [
-      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
-      Dependency(2, SchemaWidgetDuplicateAcrossDependenciesB::class),
-    ],
-  )
-  object SchemaWidgetDuplicateAcrossDependencies
-
-  @Widget(1)
-  object WidgetDuplicateAcrossDependencies
-
-  @Schema([WidgetDuplicateAcrossDependencies::class])
-  object SchemaWidgetDuplicateAcrossDependenciesA
-
-  @Schema([WidgetDuplicateAcrossDependencies::class])
-  object SchemaWidgetDuplicateAcrossDependenciesB
-
-  @Test fun schemaWidgetDuplicateAcrossDependenciesThrows() {
-    assertThrows<IllegalArgumentException> {
-      parseProtocolSchema(SchemaWidgetDuplicateAcrossDependencies::class)
-    }.hasMessageThat().isEqualTo(
-      """
-      |Schema dependency tree contains duplicated widgets
-      |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesA, app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesB
-      """.trimMargin(),
-    )
-  }
-
-  @Schema(
     members = [
-      WidgetDuplicateAcrossDependencies::class,
+      Row::class,
     ],
     dependencies = [
-      Dependency(1, SchemaWidgetDuplicateAcrossDependenciesA::class),
+      Dependency(1, RedwoodLayout::class),
     ],
   )
   object SchemaWidgetDuplicateInDependency
@@ -785,7 +751,7 @@ class SchemaParserTest {
       """
       |Schema dependency tree contains duplicated widgets
       |
-      |- app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateAcrossDependencies: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateInDependency, app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateAcrossDependenciesA
+      |- app.cash.redwood.layout.Row: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateInDependency, app.cash.redwood.layout.RedwoodLayout
       """.trimMargin(),
     )
   }
