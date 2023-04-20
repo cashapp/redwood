@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.redwood.treehouse.lazylayout.compose.LazyListScope
 
+// TODO Delete file and replace usage with LazyPagingItems.kt in redwood-treehouse-lazylayout-paging.
+
 /**
  * Adds the [LazyPagingItems] and their content to the scope. The range from 0 (inclusive) to
  * [LazyPagingItems.itemCount] (exclusive) always represents the full range of presentable items,
