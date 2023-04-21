@@ -34,7 +34,6 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
@@ -95,13 +94,13 @@ internal class ViewLazyList<A : AppService>(
   private class ItemPagingSource<A : AppService>(
     private val treehouseApp: TreehouseApp<A>,
     private val intervals: List<LazyListInterval>,
-  ) : PagingSource<Int, Content>() {
+  ) : PagingSource<Int, KeyAndContent>() {
 
     override suspend fun load(
       params: LoadParams<Int>,
-    ): LoadResult<Int, Content> {
+    ): LoadResult<Int, KeyAndContent> {
       val key = params.key ?: 0
-      val count = intervals.sumOf(LazyListInterval::count)
+      val count = intervals.sumOf { it.keys.size }
       val limit = when (params) {
         is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
         else -> params.loadSize
@@ -114,19 +113,16 @@ internal class ViewLazyList<A : AppService>(
       val nextPosToLoad = offset + limit
       val loadResult = LoadResult.Page(
         data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
-          val itemContentSource = TreehouseContentSource<A> {
-            var interval = IndexedValue(index + offset, intervals.first())
-            for (nextInterval in intervals.drop(1)) {
-              if (interval.index < interval.value.count) break
-              interval = IndexedValue(interval.index - interval.value.count, nextInterval)
-            }
-            interval.value.itemProvider.get(interval.index)
-          }
-          treehouseApp.createContent(itemContentSource).apply {
-            // TODO Create a public API that accepts an Android Context and returns the corresponding HostConfiguration
-            preload(HostConfiguration(darkMode = true))
-            awaitContent()
-          }
+          val (indexInInterval, interval) = findInterval(index + offset)
+          val content = treehouseApp.createContent(
+            source = { interval.itemProvider.get(indexInInterval) }
+          )
+          val keyAndContent = KeyAndContent(
+            key = interval.keys[indexInInterval],
+            content = content,
+          )
+          keyAndContent.awaitContent()
+          keyAndContent
         },
         prevKey = offset.takeIf { it > 0 && limit > 0 },
         nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
@@ -136,12 +132,38 @@ internal class ViewLazyList<A : AppService>(
       return if (invalid) LoadResult.Invalid() else loadResult
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Content>) = state.anchorPosition
+    private fun findInterval(index: Int): Pair<Int, LazyListInterval> {
+      var i = index
+      for (interval in intervals) {
+        if (i < interval.keys.size) return (i to interval)
+        i -= interval.keys.size
+      }
+      throw IllegalArgumentException()
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, KeyAndContent>) = state.anchorPosition
+  }
+
+  private class KeyAndContent(
+    val key: String,
+    val content: Content,
+  ) {
+    suspend fun awaitContent() {
+      // TODO Create a public API that accepts an Android Context and returns the corresponding HostConfiguration
+      content.preload(HostConfiguration(darkMode = true))
+      content.awaitContent()
+    }
+
+    override fun equals(other: Any?) = other is KeyAndContent && key == other.key
+
+    override fun hashCode() = key.hashCode()
+
+    override fun toString() = "TreehouseItem($key)"
   }
 
   private class LazyContentItemListAdapter(
     private val widgetSystem: WidgetSystem,
-  ) : PagingDataAdapter<Content, ViewHolder>(ContentDiffCallback) {
+  ) : PagingDataAdapter<KeyAndContent, ViewHolder>(ContentDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
       TreehouseWidgetView(parent.context, widgetSystem).apply {
         layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
@@ -152,26 +174,26 @@ internal class ViewLazyList<A : AppService>(
 
     override fun onViewRecycled(holder: ViewHolder) {
       if (holder.bindingAdapterPosition != RecyclerView.NO_POSITION) {
-        getItem(holder.bindingAdapterPosition)!!.unbind()
+        getItem(holder.bindingAdapterPosition)!!.content.unbind()
       }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      getItem(position)!!.bind(holder.treehouseWidgetView)
+      getItem(position)!!.content.bind(holder.treehouseWidgetView)
     }
   }
 
   private class ViewHolder(val treehouseWidgetView: TreehouseWidgetView) : RecyclerView.ViewHolder(treehouseWidgetView)
 
-  private object ContentDiffCallback : DiffUtil.ItemCallback<Content>() {
+  private object ContentDiffCallback : DiffUtil.ItemCallback<KeyAndContent>() {
     override fun areItemsTheSame(
-      oldItem: Content,
-      newItem: Content,
-    ) = oldItem === newItem
+      oldItem: KeyAndContent,
+      newItem: KeyAndContent,
+    ) = oldItem == newItem
 
     override fun areContentsTheSame(
-      oldItem: Content,
-      newItem: Content,
+      oldItem: KeyAndContent,
+      newItem: KeyAndContent,
     ) = oldItem == newItem
   }
 }
