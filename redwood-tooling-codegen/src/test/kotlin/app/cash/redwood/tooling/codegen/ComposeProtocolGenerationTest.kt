@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.google.common.truth.Truth.assertThat
 import example.redwood.ExampleSchema
 import org.junit.Test
@@ -38,7 +38,7 @@ class ComposeProtocolGenerationTest {
   )
 
   @Test fun `id property does not collide`() {
-    val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(IdPropertyNameCollisionSchema::class).schema
 
     val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
@@ -50,7 +50,7 @@ class ComposeProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schemaSet = parseProtocolSchema(ExampleSchema::class)
+    val schemaSet = ProtocolSchemaSet.parse(ExampleSchema::class)
 
     val fileSpec = generateComposeProtocolLayoutModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).apply {

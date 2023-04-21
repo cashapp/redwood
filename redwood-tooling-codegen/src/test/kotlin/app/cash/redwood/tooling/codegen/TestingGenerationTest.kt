@@ -20,7 +20,7 @@ import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -46,7 +46,7 @@ class TestingGenerationTest {
   )
 
   @Test fun `tester happy path`() {
-    val schemaSet = parseSchema(HappyPathSchema::class)
+    val schemaSet = ProtocolSchemaSet.parse(HappyPathSchema::class)
     val schema = schemaSet.schema
 
     val testerFileSpec = generateTester(schemaSet)

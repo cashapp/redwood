@@ -32,12 +32,12 @@ class SchemaJsonTest {
   object MyWidget
 
   @Test fun pathReflectsFqcn() {
-    val embeddedSchema = parseSchema(MySchema::class).schema.toEmbeddedSchema()
+    val embeddedSchema = ProtocolSchemaSet.parse(MySchema::class).schema.toEmbeddedSchema()
     assertThat(embeddedSchema.path).isEqualTo("app/cash/redwood/tooling/schema/SchemaJsonTest.MySchema.json")
   }
 
   @Test fun versioned() {
-    val embeddedSchema = parseSchema(MySchema::class).schema.toEmbeddedSchema()
+    val embeddedSchema = ProtocolSchemaSet.parse(MySchema::class).schema.toEmbeddedSchema()
     assertThat(embeddedSchema.json).contains(""""version": 1,""")
   }
 }

@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.cli
 
-import app.cash.redwood.tooling.schema.parseProtocolSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -46,7 +46,7 @@ internal class JsonCommand : CliktCommand(
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
-    val schema = parseProtocolSchema(schemaType).schema
+    val schema = ProtocolSchemaSet.parse(schemaType).schema
     val embeddedSchema = schema.toEmbeddedSchema()
     val path = out.resolve(embeddedSchema.path)
     path.parent.createDirectories()

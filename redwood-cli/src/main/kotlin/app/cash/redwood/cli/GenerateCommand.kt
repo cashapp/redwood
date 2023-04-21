@@ -18,10 +18,11 @@ package app.cash.redwood.cli
 import app.cash.redwood.tooling.codegen.CodegenType
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType
 import app.cash.redwood.tooling.codegen.generate
-import app.cash.redwood.tooling.schema.parseProtocolSchema
-import app.cash.redwood.tooling.schema.parseSchema
+import app.cash.redwood.tooling.schema.FqType
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.help
@@ -52,20 +53,27 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
     .convert { it.split(File.pathSeparator).map(::File) }
     .required()
 
-  private val schemaTypeName by argument("schema")
+  private val schemaType by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
+    .convert {
+      FqType(
+        listOf(
+          it.substringBeforeLast(".", missingDelimiterValue = ""), // Package name.
+          it.substringAfterLast("."), // Simple name.
+        ),
+      )
+    }
 
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
-    val schemaType = classLoader.loadClass(schemaTypeName).kotlin
 
     when (val type = type) {
       is CodegenType -> {
-        val schemaSet = parseSchema(schemaType)
+        val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
       is ProtocolCodegenType -> {
-        val schemaSet = parseProtocolSchema(schemaType)
+        val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
       else -> throw AssertionError()
