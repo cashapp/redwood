@@ -16,16 +16,16 @@
 package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.compose.items
 
 class EmojiSearchTreehouseUi(
   private val httpClient: HttpClient,
-  bridge: ProtocolBridge,
+  appLifecycle: StandardAppLifecycle,
 ) : TreehouseUi {
-  private val lazyColumnProvider = LazyColumnProvider(bridge)
+  private val lazyColumnProvider = LazyColumnProvider(appLifecycle)
 
   @Composable
   override fun Show() {
@@ -34,14 +34,14 @@ class EmojiSearchTreehouseUi(
 }
 
 private class LazyColumnProvider(
-  private val bridge: ProtocolBridge,
+  private val appLifecycle: StandardAppLifecycle,
 ) : ColumnProvider {
   @Composable
   override fun <T> create(
     items: List<T>,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    LazyColumn(bridge) {
+    LazyColumn(appLifecycle) {
       items(items, itemContent)
     }
   }

@@ -18,18 +18,16 @@
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.compose.LocalWidgetVersion
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import kotlin.jvm.JvmName
 
 @Composable
 internal fun LazyList(
-  bridge: ProtocolBridge,
+  appLifecycle: StandardAppLifecycle,
   isVertical: Boolean,
   content: LazyListScope.() -> Unit,
 ) {
-  val widgetVersion = LocalWidgetVersion.current
-  val scope = LazyListIntervalContent(bridge, widgetVersion)
+  val scope = LazyListIntervalContent(appLifecycle)
   content(scope)
   LazyList(isVertical, scope.intervals)
 }
