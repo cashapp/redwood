@@ -25,7 +25,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule -PredwoodNoSamples
 
       # If we're on the integration branch, save the site to deploy from the publish job.
       - uses: actions/upload-artifact@v3
