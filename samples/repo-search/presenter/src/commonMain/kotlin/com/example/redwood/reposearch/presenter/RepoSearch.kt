@@ -28,9 +28,10 @@ fun interface HttpClient {
 
 @Composable
 fun RepoSearch(
+  id: Int,
   repository: Repository,
 ) {
   Column(margin = Margin(16.dp)) {
-    Text(text = repository.fullName)
+    Text(text = "$id ${repository.fullName}")
   }
 }

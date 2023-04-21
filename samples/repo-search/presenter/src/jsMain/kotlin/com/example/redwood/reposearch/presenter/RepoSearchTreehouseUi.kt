@@ -16,6 +16,8 @@
 package com.example.redwood.reposearch.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
@@ -47,9 +49,14 @@ class RepoSearchTreehouseUi(
   @Composable
   override fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
+    val nextId = remember { mutableStateOf(1) }
     LazyColumn(bridge) {
       items(lazyPagingItems) {
-        RepoSearch(it!!)
+        val id = remember {
+          nextId.value
+            .also { nextId.value = nextId.value + 1 }
+        }
+        RepoSearch(id, it!!)
       }
     }
   }
