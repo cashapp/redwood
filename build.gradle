@@ -3,6 +3,7 @@ buildscript {
     classpath libs.kotlin.serializationPlugin
     classpath libs.atomicFuPlugin
     classpath libs.buildConfigPlugin
+    classpath libs.dependencySortPlugin
     classpath libs.zipline.gradlePlugin
     classpath libs.paparazzi.gradlePlugin
     classpath libs.poko.gradlePlugin
@@ -28,4 +29,6 @@ afterEvaluate {
       )
     }
   }
+
+  apply plugin: 'com.squareup.sort-dependencies'
 }
