@@ -23,6 +23,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.EncodeDefault.Mode.ALWAYS
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -38,6 +39,7 @@ internal data class ParsedProtocolSchemaSet(
 @Serializable
 internal data class ParsedProtocolSchema(
   /** The format version of this JSON. */
+  @OptIn(ExperimentalSerializationApi::class) // Easier than second constructor setting fixed value.
   @EncodeDefault(ALWAYS)
   val version: Int = 1,
   override val type: FqType,
@@ -83,6 +85,7 @@ internal data class ParsedProtocolSchema(
       )
     }
 
+    @OptIn(ExperimentalSerializationApi::class) // For custom indent, which is only a nice-to-have.
     private val jsonFormat = Json {
       prettyPrint = true
       prettyPrintIndent = "\t"
