@@ -9,7 +9,7 @@ class CounterViewController : UIViewController {
     override func viewDidLoad() {
         let container = UIStackView()
         container.axis = .horizontal
-        container.alignment = .center
+        container.alignment = .fill
         container.distribution = .fillEqually
         container.translatesAutoresizingMaskIntoConstraints = false
 
