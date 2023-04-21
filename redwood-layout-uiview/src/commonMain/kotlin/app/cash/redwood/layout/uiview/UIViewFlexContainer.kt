@@ -16,11 +16,7 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Size
+import app.cash.redwood.flexbox.*
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Default
@@ -38,11 +34,12 @@ import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class UIViewFlexContainer(
+public class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val container = FlexContainer().apply {
@@ -56,7 +53,7 @@ internal class UIViewFlexContainer(
 
   override val value: UIView get() = view
 
-  override val children = UIViewChildren(value)
+  override val children: UIViewChildren = UIViewChildren(value)
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
@@ -110,7 +107,26 @@ internal class UIViewFlexContainer(
     value.setNeedsLayout()
   }
 
-  private inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
+  public inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
+
+    private var widthContraint: NSLayoutConstraint? = null
+    private var heightConstraint: NSLayoutConstraint? = null
+
+    override fun didMoveToSuperview() {
+      if (superview == null) return
+      translatesAutoresizingMaskIntoConstraints = false
+      widthContraint = widthAnchor.constraintEqualToConstant(0.0)
+      heightConstraint = heightAnchor.constraintEqualToConstant(0.0)
+      if(direction.isHorizontal) {
+        NSLayoutConstraint.activateConstraints(listOf(widthContraint))
+      } else if (direction.isVertical) {
+        NSLayoutConstraint.activateConstraints(listOf(heightConstraint))
+      } else {
+        //Unknown??
+      }
+      super.didMoveToSuperview()
+    }
+
     private var needsLayout = true
 
     override fun intrinsicContentSize(): CValue<CGSize> {
@@ -132,12 +148,20 @@ internal class UIViewFlexContainer(
       val bounds = bounds.useContents { size.toUnsafeSize() }
       measure(bounds)
 
-      setContentSize(
-        CGSizeMake(
-          width = container.items.maxOfOrNull { it.right } ?: 0.0,
-          height = container.items.maxOfOrNull { it.top } ?: 0.0,
-        ),
+      val contentSize = CGSizeMake(
+        width = container.items.maxOfOrNull { it.right } ?: 0.0,
+        height = container.items.maxOfOrNull { it.bottom } ?: 0.0,
       )
+
+      setContentSize(
+        contentSize,
+      )
+
+      contentSize.useContents {
+        heightConstraint?.setConstant(height)
+        widthContraint?.setConstant(width)
+      }
+
       superview?.setNeedsLayout()
 
       container.items.forEachIndexed { index, item ->
