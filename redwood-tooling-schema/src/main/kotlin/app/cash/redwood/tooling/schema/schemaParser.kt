@@ -52,10 +52,8 @@ public fun parseSchema(schemaType: KClass<*>): SchemaSet {
   return parseProtocolSchema(schemaType)
 }
 
-public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchemaSet {
+public fun parseProtocolSchema(schemaType: KClass<*>): ProtocolSchemaSet {
   val schemaAnnotation = schemaType.schemaAnnotation
-  require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
-
   val memberTypes = schemaAnnotation.members
 
   val duplicatedMembers = memberTypes.groupBy { it }.filterValues { it.size > 1 }.keys
@@ -82,9 +80,9 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
         "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier",
       )
     } else if (widgetAnnotation != null) {
-      widgets += parseWidget(tag, memberType, widgetAnnotation)
+      widgets += parseWidget(memberType, widgetAnnotation)
     } else if (layoutModifierAnnotation != null) {
-      layoutModifiers += parseLayoutModifier(tag, memberType, layoutModifierAnnotation)
+      layoutModifiers += parseLayoutModifier(memberType, layoutModifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -214,14 +212,13 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
 }
 
 private fun parseWidget(
-  schemaTag: Int,
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
-  require(annotation.tag in 1 until maxMemberTag) {
-    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
+  val tag = annotation.tag
+  require(tag in 1 until maxMemberTag) {
+    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->
@@ -333,17 +330,16 @@ private fun parseWidget(
 }
 
 private fun parseLayoutModifier(
-  schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): ParsedProtocolLayoutModifier {
-  require(annotation.tag in 1 until maxMemberTag) {
-    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
+  val tag = annotation.tag
+  require(tag in 1 until maxMemberTag) {
+    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@LayoutModifier ${memberType.qualifiedName} must have at least one scope."
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->

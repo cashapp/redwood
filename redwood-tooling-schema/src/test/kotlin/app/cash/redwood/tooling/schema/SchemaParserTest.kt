@@ -630,12 +630,6 @@ class SchemaParserTest {
     assertThat(layoutModifier.tag).isEqualTo(4_000_001)
   }
 
-  @Test fun schemaTagOutOfRangeThrows() {
-    assertThrows<IllegalArgumentException> {
-      parseProtocolSchema(SchemaTag::class, tag = 2001)
-    }.hasMessageThat().isEqualTo("Schema tag must be in range [0, 2000]: 2001")
-  }
-
   @Schema(
     members = [],
     dependencies = [
