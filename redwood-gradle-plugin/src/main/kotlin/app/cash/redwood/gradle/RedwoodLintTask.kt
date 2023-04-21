@@ -19,14 +19,10 @@ import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity.ABSOLUTE
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.gradle.workers.WorkAction
@@ -40,9 +36,8 @@ internal abstract class RedwoodLintTask @Inject constructor(
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
-  @get:InputDirectory
-  @get:PathSensitive(ABSOLUTE)
-  abstract val projectDirectory: RegularFileProperty
+  @get:Input
+  abstract val projectDirectoryPath: Property<String>
 
   @get:Input
   abstract val sourceDirectories: Property<Collection<File>>
@@ -55,7 +50,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodLintWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
-      it.projectDirectory.set(projectDirectory)
+      it.projectDirectoryPath.set(projectDirectoryPath)
       it.sourceDirectories.set(sourceDirectories)
       it.classpath.setFrom(classpath)
     }
@@ -64,7 +59,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
 
 private interface RedwoodLintParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
-  val projectDirectory: RegularFileProperty
+  val projectDirectoryPath: Property<String>
   val sourceDirectories: Property<Collection<File>>
   val classpath: ConfigurableFileCollection
 }
@@ -79,7 +74,7 @@ private abstract class RedwoodLintWorker @Inject constructor(
 
       exec.args = mutableListOf<String>().apply {
         add("lint")
-        add(parameters.projectDirectory.get().asFile.absolutePath)
+        add(parameters.projectDirectoryPath.get())
 
         for (file in parameters.sourceDirectories.get()) {
           add("--sources")
