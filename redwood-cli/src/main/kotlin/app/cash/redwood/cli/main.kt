@@ -26,6 +26,7 @@ public fun main(vararg args: String) {
     .subcommands(
       ApiMergeCommand(FileSystems.getDefault()),
       GenerateCommand(),
+      JsonCommand(),
       LintCommand(),
     )
     .main(args)

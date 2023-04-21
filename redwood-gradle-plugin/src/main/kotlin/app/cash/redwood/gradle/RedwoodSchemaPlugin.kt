@@ -52,13 +52,12 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
     val compilation = kotlin.target.compilations.getByName(MAIN_COMPILATION_NAME)
     val classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName)
 
-    val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
+    val generate = project.tasks.register("redwoodGenerate", RedwoodSchemaTask::class.java) {
       it.group = LifecycleBasePlugin.BUILD_GROUP
       it.description = "Generate parsed schema JSON"
 
       it.toolClasspath.from(cliConfiguration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
-      it.generatorFlag.set("--json")
       it.schemaType.set(extension.type)
       it.classpath.from(classpath, compilation.output.classesDirs)
     }

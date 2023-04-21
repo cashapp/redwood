@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,7 @@
  */
 package app.cash.redwood.cli
 
-import app.cash.redwood.tooling.codegen.CodegenType
-import app.cash.redwood.tooling.codegen.ProtocolCodegenType
-import app.cash.redwood.tooling.codegen.generate
 import app.cash.redwood.tooling.schema.parseProtocolSchema
-import app.cash.redwood.tooling.schema.parseSchema
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -27,26 +23,18 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.types.path
 import java.io.File
 import java.net.URLClassLoader
+import kotlin.io.path.createDirectories
+import kotlin.io.path.writeText
 
-internal class GenerateCommand : CliktCommand(name = "generate") {
-  private val type by option()
-    .switch(
-      "--compose" to CodegenType.Compose,
-      "--compose-protocol" to ProtocolCodegenType.Compose,
-      "--layout-modifiers" to CodegenType.LayoutModifiers,
-      "--testing" to CodegenType.Testing,
-      "--widget" to CodegenType.Widget,
-      "--widget-protocol" to ProtocolCodegenType.Widget,
-    )
-    .help("Type of code to generate")
-    .required()
-
+internal class JsonCommand : CliktCommand(
+  name = "json",
+  help = "Parse schema members into a JSON representation",
+) {
   private val out by option().path().required()
-    .help("Directory into which generated files are written")
+    .help("Directory into which JSON is written")
 
   private val classpath by option("-cp", "--class-path")
     .convert { it.split(File.pathSeparator).map(::File) }
@@ -58,17 +46,10 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
-
-    when (val type = type) {
-      is CodegenType -> {
-        val schemaSet = parseSchema(schemaType)
-        schemaSet.generate(type, out)
-      }
-      is ProtocolCodegenType -> {
-        val schemaSet = parseProtocolSchema(schemaType)
-        schemaSet.generate(type, out)
-      }
-      else -> throw AssertionError()
-    }
+    val schema = parseProtocolSchema(schemaType).schema
+    val embeddedSchema = schema.toEmbeddedSchema()
+    val path = out.resolve(embeddedSchema.path)
+    path.parent.createDirectories()
+    path.writeText(embeddedSchema.json)
   }
 }
