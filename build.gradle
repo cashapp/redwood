@@ -39,7 +39,11 @@ allprojects {
   tasks.withType(AbstractTestTask).configureEach {
     testLogging {
       if (System.getenv("CI") == "true") {
-        events = ["failed", "skipped", "passed"]
+        events = [
+          "failed",
+          "skipped",
+          "passed"
+        ]
       }
       exceptionFormat "full"
     }
@@ -217,6 +221,9 @@ allprojects {
         'ktlint_standard_filename': 'disabled',
       ])
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
+    }
+    groovyGradle {
+      greclipse().configFile(rootProject.file('greclipse.properties'))
     }
   }
 }

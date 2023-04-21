@@ -24,6 +24,6 @@ spotless {
       "src/commonMain/kotlin/app/cash/redwood/flexbox/FlexItem.kt",
       "src/commonMain/kotlin/app/cash/redwood/flexbox/FlexLine.kt",
       "src/commonTest/kotlin/app/cash/redwood/flexbox/FlexContainerTest.kt",
-    )
+      )
   }
 }

@@ -43,6 +43,6 @@ spotless {
       // Apache 2-licensed files from AOSP.
       "src/androidMain/kotlin/app/cash/redwood/compose/AndroidUiDispatcher.kt",
       "src/androidMain/kotlin/app/cash/redwood/compose/AndroidUiFrameClock.kt",
-    )
+      )
   }
 }
