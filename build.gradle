@@ -47,13 +47,6 @@ allprojects {
     outputs.upToDateWhen { false }
   }
 
-  plugins.withId('java-base') {
-    java {
-      sourceCompatibility = JavaVersion.VERSION_11
-      targetCompatibility = JavaVersion.VERSION_11
-    }
-  }
-
   plugins.withId('com.vanniktech.maven.publish') {
     mavenPublishing {
       publishToMavenCentral(SonatypeHost.DEFAULT)
@@ -103,6 +96,11 @@ allprojects {
         '-progressive', // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
       ])
     }
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach {
