@@ -44,7 +44,8 @@ internal data class ParsedProtocolSchema(
   override val scopes: List<FqType> = emptyList(),
   override val widgets: List<ParsedProtocolWidget> = emptyList(),
   override val layoutModifiers: List<ParsedProtocolLayoutModifier> = emptyList(),
-  override val dependencies: List<FqType> = emptyList(),
+  @SerialName("dependencies")
+  override val taggedDependencies: Map<Int, FqType> = emptyMap(),
 ) : ProtocolSchema {
   init {
     require(version == 1) {

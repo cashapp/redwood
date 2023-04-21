@@ -129,6 +129,8 @@ public interface ProtocolSchemaSet : SchemaSet {
 public interface ProtocolSchema : Schema {
   override val widgets: List<ProtocolWidget>
   override val layoutModifiers: List<ProtocolLayoutModifier>
+  override val dependencies: List<FqType> get() = taggedDependencies.values.toList()
+  public val taggedDependencies: Map<Int, FqType>
 }
 
 public interface ProtocolWidget : Widget {

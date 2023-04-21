@@ -157,11 +157,12 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
   }
 
   val dependencies = schemaAnnotation.dependencies
-    .map {
-      require(it.tag in 1..maxSchemaTag) {
-        "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
+    .associate {
+      val dependencyTag = it.tag
+      require(dependencyTag in 1..maxSchemaTag) {
+        "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: $dependencyTag"
       }
-      val tagOffset = it.tag * maxMemberTag
+      val tagOffset = dependencyTag * maxMemberTag
 
       val path = ParsedProtocolSchema.toEmbeddedPath(it.schema.toFqType())
       val schema = schemaType.java
@@ -177,7 +178,7 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
         "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
           "For now, only a single level of dependencies is supported."
       }
-      schema
+      dependencyTag to schema
     }
 
   val schema = ParsedProtocolSchema(
@@ -185,11 +186,11 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
     scopes = scopes.toList(),
     widgets = widgets,
     layoutModifiers = layoutModifiers,
-    dependencies = dependencies.map { it.type },
+    taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
     schema,
-    dependencies.associateBy { it.type },
+    dependencies.values.associateBy { it.type },
   )
 
   val duplicatedWidgets = schemaSet.all
