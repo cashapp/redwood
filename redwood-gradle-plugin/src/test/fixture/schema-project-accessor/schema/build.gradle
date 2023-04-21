@@ -1,5 +1,10 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood.schema'
 
 dependencies {
   api "app.cash.redwood:redwood-schema:$redwoodVersion"
+}
+
+redwoodSchema {
+  type = 'example.counter.Counter'
 }
