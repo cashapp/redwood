@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.ZiplineService
-import kotlin.native.ObjCName
-import kotlinx.coroutines.flow.StateFlow
 
-/**
- * Adapt TreehouseComposition to conform the limitations of Zipline interfaces.
- *
- * Most callers shouldn't use this directly; instead use `TreehouseUi`.
- */
-@ObjCName("ZiplineTreehouseUi", exact = true)
-public interface ZiplineTreehouseUi : ZiplineService, EventSink {
-  public fun start(
-    diffSink: DiffSinkService,
-    hostConfigurations: StateFlow<HostConfiguration>,
-    treehouseHost: TreehouseHost,
-  )
+public interface TreehouseHost : ZiplineService {
+  public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
+
+  public fun onUnknownEventNode(id: Id, tag: EventTag)
 }

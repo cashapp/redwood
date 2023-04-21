@@ -29,10 +29,10 @@ class RealEmojiSearchPresenter(
   override val frameClockService = StandardFrameClockService
 
   override fun launch(): ZiplineTreehouseUi {
-    val bridge = EmojiSearchProtocolBridge.create(json)
-    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall, bridge)
+    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall)
     return treehouseUi.asZiplineTreehouseUi(
-      bridge = bridge,
+      bridgeFactory = EmojiSearchProtocolBridge.Companion,
+      json = json,
       widgetVersion = 0U,
     )
   }
