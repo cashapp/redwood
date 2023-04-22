@@ -16,8 +16,9 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.protocol.compose.ProtocolMismatchHandler
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
@@ -30,15 +31,13 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge = appLifecycle.protocolBridgeFactory.create(appLifecycle.json)
-  return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this)
 }
 
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
-  private val bridge: ProtocolBridge,
-) : ZiplineTreehouseUi, ZiplineScoped, EventSink by bridge {
+) : ZiplineTreehouseUi, ZiplineScoped {
 
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
@@ -47,12 +46,17 @@ private class RedwoodZiplineTreehouseUi(
    */
   override val scope = (treehouseUi as? ZiplineScoped)?.scope ?: ZiplineScope()
 
+  private lateinit var bridge: ProtocolBridge
+
   private lateinit var composition: RedwoodComposition
 
   override fun start(
     diffSink: DiffSinkService,
     hostConfigurations: StateFlow<HostConfiguration>,
   ) {
+    bridge = appLifecycle.protocolBridgeFactory.create(
+      appLifecycle.json, ProtocolMismatchHandler.Logging,
+    )
     val composition = ProtocolRedwoodComposition(
       scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
@@ -68,5 +72,9 @@ private class RedwoodZiplineTreehouseUi(
     composition.cancel()
     treehouseUi.close()
     scope.close()
+  }
+
+  override fun sendEvent(event: Event) {
+    bridge.sendEvent(event)
   }
 }

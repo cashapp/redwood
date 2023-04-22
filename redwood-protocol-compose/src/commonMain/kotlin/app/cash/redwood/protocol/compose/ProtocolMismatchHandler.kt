@@ -48,5 +48,23 @@ public interface ProtocolMismatchHandler {
         )
       }
     }
+
+    /** A [ProtocolMismatchHandler] which prints out info for all callbacks. */
+    @JvmField
+    public val Logging: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
+      override fun onUnknownEvent(
+        widgetTag: WidgetTag,
+        tag: EventTag,
+      ) {
+        println("Unknown event tag ${tag.value} for widget tag ${widgetTag.value}")
+      }
+
+      override fun onUnknownEventNode(
+        id: Id,
+        tag: EventTag,
+      ) {
+        println("Unknown node ID ${id.value} for event with tag ${tag.value}")
+      }
+    }
   }
 }
