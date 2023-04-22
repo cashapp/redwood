@@ -88,8 +88,8 @@ internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}DiffConsumingNodeFactory")
 }
 
-internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}")
+internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
+  return ClassName(widgetPackage(host), "Protocol${widget.type.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
