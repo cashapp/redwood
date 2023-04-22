@@ -115,7 +115,7 @@ internal class ViewLazyList<A : AppService>(
         data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
           val (indexInInterval, interval) = findInterval(index + offset)
           val content = treehouseApp.createContent(
-            source = { interval.itemProvider.get(indexInInterval) }
+            source = { interval.itemProvider.get(indexInInterval) },
           )
           val keyAndContent = KeyAndContent(
             key = interval.keys[indexInInterval],
