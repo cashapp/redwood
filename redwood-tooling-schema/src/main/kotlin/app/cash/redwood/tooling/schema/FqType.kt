@@ -98,6 +98,29 @@ public data class FqType(
 
   public companion object {
     public val Star: FqType = FqType(listOf("", "*"))
+
+    public fun bestGuess(name: String): FqType {
+      val names = mutableListOf<String>()
+
+      // Add the package name, like "java.util.concurrent", or "" for no package.
+      var p = 0
+      while (p < name.length && Character.isLowerCase(name.codePointAt(p))) {
+        p = name.indexOf('.', p) + 1
+        require(p != 0) { "Couldn't guess: $name" }
+      }
+      names += if (p != 0) name.substring(0, p - 1) else ""
+
+      // Add the class names, like "Map" and "Entry".
+      for (part in name.substring(p).split('.')) {
+        require(part.isNotEmpty() && Character.isUpperCase(part.codePointAt(0))) {
+          "Couldn't guess: $name"
+        }
+        names += part
+      }
+
+      require(names.size >= 2) { "couldn't make a guess for $name" }
+      return FqType(names)
+    }
   }
 }
 

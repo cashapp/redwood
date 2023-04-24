@@ -55,14 +55,7 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
 
   private val schemaType by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
-    .convert {
-      FqType(
-        listOf(
-          it.substringBeforeLast(".", missingDelimiterValue = ""), // Package name.
-          it.substringAfterLast("."), // Simple name.
-        ),
-      )
-    }
+    .convert { FqType.bestGuess(it) }
 
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())

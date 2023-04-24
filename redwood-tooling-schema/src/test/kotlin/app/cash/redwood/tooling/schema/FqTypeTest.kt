@@ -120,4 +120,45 @@ class FqTypeTest {
     }.hasMessageThat()
       .isEqualTo("Star projection must not be nullable")
   }
+
+  @Test fun bestGuessValid() {
+    assertEquals(
+      FqType(listOf("", "Map")),
+      FqType.bestGuess("Map"),
+    )
+    assertEquals(
+      FqType(listOf("", "Map", "Entry")),
+      FqType.bestGuess("Map.Entry"),
+    )
+    assertEquals(
+      FqType(listOf("java", "Map", "Entry")),
+      FqType.bestGuess("java.Map.Entry"),
+    )
+    assertEquals(
+      FqType(listOf("java.util.concurrent", "Map", "Entry")),
+      FqType.bestGuess("java.util.concurrent.Map.Entry"),
+    )
+  }
+
+  @Test fun bestGuessInvalid() {
+    assertThrows<IllegalArgumentException> {
+      FqType.bestGuess("java")
+    }.hasMessageThat().isEqualTo("Couldn't guess: java")
+
+    assertThrows<IllegalArgumentException> {
+      FqType.bestGuess("java.util.concurrent")
+    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent")
+
+    assertThrows<IllegalArgumentException> {
+      FqType.bestGuess("java..concurrent")
+    }.hasMessageThat().isEqualTo("Couldn't guess: java..concurrent")
+
+    assertThrows<IllegalArgumentException> {
+      FqType.bestGuess("java.util.concurrent.Map..Entry")
+    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent.Map..Entry")
+
+    assertThrows<IllegalArgumentException> {
+      FqType.bestGuess("java.util.concurrent.Map.entry")
+    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent.Map.entry")
+  }
 }
