@@ -1,4 +1,4 @@
-name: Spotless
+name: spotless
 
 on:
   issue_comment:
@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  run:
+  apply:
     if: github.repository == 'cashapp/redwood' && github.event.issue.pull_request != '' && contains(github.event.comment.body, '/spotless')
 
     runs-on: ubuntu-latest
@@ -30,3 +30,5 @@ jobs:
       - run: ./gradlew spotlessApply
 
       - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply Spotless
