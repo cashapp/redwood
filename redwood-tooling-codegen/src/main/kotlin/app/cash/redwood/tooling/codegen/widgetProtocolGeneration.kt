@@ -67,7 +67,7 @@ internal fun generateDiffConsumingNodeFactory(
     .addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(WidgetProtocol.DiffConsumingNodeFactory.parameterizedBy(typeVariableW))
+        .addSuperinterface(WidgetProtocol.ProtocolNodeFactory.parameterizedBy(typeVariableW))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("provider", provider)
@@ -105,7 +105,7 @@ internal fun generateDiffConsumingNodeFactory(
             .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
             .addParameter("tag", Protocol.WidgetTag)
             .returns(
-              WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
+              WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
                 .copy(nullable = true),
             )
             .beginControlFlow("return when (tag.value)")
@@ -173,7 +173,7 @@ internal fun generateProtocolNode(
 ): FileSpec {
   val type = schema.protocolNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
-  val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
+  val protocolType = WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
   return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)

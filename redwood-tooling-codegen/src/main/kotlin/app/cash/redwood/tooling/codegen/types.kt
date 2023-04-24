@@ -50,10 +50,10 @@ internal object ComposeProtocol {
 }
 
 internal object WidgetProtocol {
-  val DiffConsumingNode = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingNode")
-  val DiffConsumingNodeFactory = DiffConsumingNode.nestedClass("Factory")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
+  val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
+  val ProtocolNodeFactory = ProtocolNode.nestedClass("Factory")
 }
 
 internal object Redwood {

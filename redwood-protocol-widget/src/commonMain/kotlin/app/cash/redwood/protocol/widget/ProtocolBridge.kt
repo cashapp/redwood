@@ -37,11 +37,11 @@ import kotlin.native.ObjCName
 @ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
-  private val factory: DiffConsumingNode.Factory<W>,
+  private val factory: ProtocolNode.Factory<W>,
   private val eventSink: EventSink,
 ) : DiffSink {
-  private val nodes = mutableMapOf<Id, DiffConsumingNode<W>>(
-    Id.Root to DiffConsumingProtocolRoot(container),
+  private val nodes = mutableMapOf<Id, ProtocolNode<W>>(
+    Id.Root to RootProtocolNode(container),
   )
 
   override fun sendDiff(diff: Diff) {
@@ -86,14 +86,14 @@ public class ProtocolBridge<W : Any>(
     }
   }
 
-  private fun node(id: Id): DiffConsumingNode<W> {
+  private fun node(id: Id): ProtocolNode<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID $id" }
   }
 }
 
-private class DiffConsumingProtocolRoot<W : Any>(
+private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
-) : DiffConsumingNode<W>(
+) : ProtocolNode<W>(
   parentId = Id.Root, // This value is a lie, but it's never accessed on this node.
   parentChildren = children, // This value is a lie, but it's never accessed on this node.
 ) {
