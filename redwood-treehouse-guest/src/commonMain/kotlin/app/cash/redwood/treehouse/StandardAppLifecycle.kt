@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.treehouse.AppLifecycle.Host
@@ -29,17 +30,17 @@ public class StandardAppLifecycle(
 ) : AppLifecycle {
   internal val coroutineScope: CoroutineScope = GlobalScope
 
-  private var ziplineFrameClock: ZiplineFrameClock? = null
+  private var broadcastFrameClock: BroadcastFrameClock? = null
 
   public val frameClock: MonotonicFrameClock
-    get() = ziplineFrameClock ?: error("AppLifecycle not started yet")
+    get() = broadcastFrameClock ?: error("AppLifecycle not started yet")
 
   override fun start(host: Host) {
-    ziplineFrameClock = ZiplineFrameClock(host)
+    broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
   }
 
   override fun sendFrame(timeNanos: Long) {
-    val frameClock = ziplineFrameClock ?: error("AppLifecycle not started yet")
+    val frameClock = broadcastFrameClock ?: error("AppLifecycle not started yet")
     frameClock.sendFrame(timeNanos)
   }
 }
