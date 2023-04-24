@@ -23,7 +23,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2
 
-      - run: gh pr checkout ${{ github.event.pull_request.number }}
+      - run: gh pr checkout ${{ github.event.issue.number }}
 
       - run: ./gradlew spotlessApply
 
