@@ -15,10 +15,10 @@
  */
 package app.cash.redwood.protocol
 
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
