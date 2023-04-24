@@ -223,6 +223,50 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .addCode("⇤)\n")
             .build(),
         )
+        /*
+
+        // TODO: generate a function like this:
+
+        override fun addTo(
+          parentId: Id,
+          childrenTag: ChildrenTag,
+          builder: ViewTreeBuilder,
+        ) {
+          val myId = builder.nextId++
+
+          // Add this widget.
+          builder.childrenDiffs.add(
+            ChildrenDiff.Insert(
+              id = parentId,
+              tag = childrenTag,
+              childId = Id(myId),
+              widgetTag = WidgetTag(11), // Button
+              index = 0,
+            )
+          )
+
+          // Set all properties.
+          builder.propertyDiffs.add(
+            PropertyDiff(
+              Id(myId),
+              tag = PropertyTag(1),
+              value = JsonPrimitive(this.text),
+            )
+          )
+
+          // Recursively add all children.
+          for (child in children) {
+            child.addTo(myId, ChildrenTag(1), builder)
+          }
+        }
+
+
+         */
+        .addFunction(
+          FunSpec.builder("addTo")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .build(),
+        )
         .build(),
     )
     .build()
