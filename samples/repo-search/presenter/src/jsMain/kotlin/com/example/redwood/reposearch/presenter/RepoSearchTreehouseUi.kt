@@ -21,7 +21,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.paging.compose.collectAsLazyPagingItems
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
 import app.cash.redwood.treehouse.lazylayout.paging.items
@@ -30,7 +30,7 @@ import kotlinx.serialization.json.Json
 
 class RepoSearchTreehouseUi(
   private val httpClient: HttpClient,
-  private val bridge: ProtocolBridge,
+  private val appLifecycle: StandardAppLifecycle,
 ) : TreehouseUi {
   private var latestSearchTerm = "android"
 
@@ -47,7 +47,7 @@ class RepoSearchTreehouseUi(
   @Composable
   override fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-    LazyColumn(bridge) {
+    LazyColumn(appLifecycle) {
       items(lazyPagingItems) {
         RepoSearch(it!!)
       }

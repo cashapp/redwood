@@ -34,17 +34,12 @@ internal class ZiplineSession<A : AppService>(
 ) {
   private val ziplineScope = ZiplineScope()
 
-  fun startFrameClock() {
+  fun start() {
     sessionScope.launch(app.dispatchers.zipline) {
-      val clockService = appService.withScope(ziplineScope).frameClockService
-      val ticksPerSecond = 60
-      var now = 0L
-      val delayNanos = 1_000_000_000L / ticksPerSecond
-      while (true) {
-        clockService.sendFrame(now)
-        delay(delayNanos / 1_000_000)
-        now += delayNanos
-      }
+      val appLifecycle = appService.withScope(ziplineScope).appLifecycle
+      val host = RealAppLifecycleHost(appLifecycle)
+      appLifecycle.start(host)
+      host.runFrameClock()
     }
   }
 
@@ -53,6 +48,31 @@ internal class ZiplineSession<A : AppService>(
       sessionScope.cancel()
       ziplineScope.close()
       zipline.close()
+    }
+  }
+}
+
+/** Platform features to the guest application. */
+private class RealAppLifecycleHost(
+  val appLifecycle: AppLifecycle,
+) : AppLifecycle.Host {
+  private var frameRequested = false
+
+  override fun requestFrame() {
+    frameRequested = true
+  }
+
+  suspend fun runFrameClock() {
+    val ticksPerSecond = 60
+    var now = 0L
+    val delayNanos = 1_000_000_000L / ticksPerSecond
+    while (true) {
+      if (frameRequested) {
+        appLifecycle.sendFrame(now)
+        frameRequested = false
+      }
+      delay(delayNanos / 1_000_000)
+      now += delayNanos
     }
   }
 }

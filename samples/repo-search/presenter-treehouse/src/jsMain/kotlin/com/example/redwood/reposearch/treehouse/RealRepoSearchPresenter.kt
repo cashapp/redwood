@@ -15,7 +15,7 @@
  */
 package com.example.redwood.reposearch.treehouse
 
-import app.cash.redwood.treehouse.StandardFrameClockService
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import com.example.redwood.reposearch.compose.RepoSearchProtocolBridge
@@ -26,14 +26,14 @@ class RealRepoSearchPresenter(
   private val hostApi: HostApi,
   private val json: Json,
 ) : RepoSearchPresenter {
-  override val frameClockService = StandardFrameClockService
+  override val appLifecycle = StandardAppLifecycle(
+    protocolBridgeFactory = RepoSearchProtocolBridge,
+    json = json,
+    widgetVersion = 0U,
+  )
 
   override fun launch(): ZiplineTreehouseUi {
-    val bridge = RepoSearchProtocolBridge.create(json)
-    val treehouseUi = RepoSearchTreehouseUi(hostApi::httpCall, bridge)
-    return treehouseUi.asZiplineTreehouseUi(
-      bridge = bridge,
-      widgetVersion = 0U,
-    )
+    val treehouseUi = RepoSearchTreehouseUi(hostApi::httpCall, appLifecycle)
+    return treehouseUi.asZiplineTreehouseUi(appLifecycle)
   }
 }

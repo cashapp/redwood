@@ -174,7 +174,7 @@ public class TreehouseApp<A : AppService> private constructor(
         isInitialLaunch = previous == null,
       )
 
-      next.startFrameClock()
+      next.start()
 
       for (content in boundContents) {
         content.receiveZiplineSession(next)

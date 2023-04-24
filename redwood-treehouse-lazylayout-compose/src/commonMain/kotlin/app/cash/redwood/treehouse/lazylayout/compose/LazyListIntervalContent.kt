@@ -16,27 +16,25 @@
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 
 internal class LazyListIntervalContent(
-  private val provider: ProtocolBridge,
-  private val widgetVersion: UInt,
+  private val appLifecycle: StandardAppLifecycle,
 ) : LazyListScope {
   val intervals = mutableListOf<LazyListInterval>()
 
   private class Item(
-    private val provider: ProtocolBridge,
-    private val widgetVersion: UInt,
+    private val appLifecycle: StandardAppLifecycle,
     private val content: @Composable (index: Int) -> Unit,
   ) : LazyListInterval.Item {
 
     override fun get(index: Int): ZiplineTreehouseUi {
       val treehouseUi = IndexedTreehouseUi(content, index)
-      return treehouseUi.asZiplineTreehouseUi(provider, widgetVersion)
+      return treehouseUi.asZiplineTreehouseUi(appLifecycle)
     }
   }
 
@@ -46,14 +44,14 @@ internal class LazyListIntervalContent(
   ) {
     intervals += LazyListInterval(
       count,
-      itemProvider = Item(provider, widgetVersion, itemContent),
+      itemProvider = Item(appLifecycle, itemContent),
     )
   }
 
   override fun item(content: @Composable () -> Unit) {
     intervals += LazyListInterval(
       1,
-      Item(provider, widgetVersion) { content() },
+      Item(appLifecycle) { content() },
     )
   }
 }
