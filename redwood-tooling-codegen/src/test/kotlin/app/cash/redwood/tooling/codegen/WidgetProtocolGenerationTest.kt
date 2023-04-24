@@ -51,7 +51,7 @@ class WidgetProtocolGenerationTest {
   @Test fun `names are sorted by their node tags`() {
     val schema = ProtocolSchemaSet.parse(SortedByTagSchema::class)
 
-    val fileSpec = generateDiffConsumingNodeFactory(schema)
+    val fileSpec = generateProtocolNodeFactory(schema)
     assertThat(fileSpec.toString()).containsMatch(
       Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE),
     )

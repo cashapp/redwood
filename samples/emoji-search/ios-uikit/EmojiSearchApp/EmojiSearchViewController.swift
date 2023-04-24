@@ -64,7 +64,7 @@ class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
     ) -> ProtocolNodeFactory {
-        return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
+        return ProtocolEmojiSearchProtocolNodeFactory<UIView>(
             provider: WidgetEmojiSearchWidgetFactories<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),

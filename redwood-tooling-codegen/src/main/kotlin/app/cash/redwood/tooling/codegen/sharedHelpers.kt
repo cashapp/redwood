@@ -84,8 +84,8 @@ internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName 
   return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
 }
 
-internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}DiffConsumingNodeFactory")
+internal fun Schema.protocolNodeFactoryType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}ProtocolNodeFactory")
 }
 
 internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {

@@ -32,7 +32,7 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.reposearch.launcher.RepoSearchAppSpec
 import com.example.redwood.reposearch.treehouse.RepoSearchPresenter
-import com.example.redwood.reposearch.widget.RepoSearchDiffConsumingNodeFactory
+import com.example.redwood.reposearch.widget.RepoSearchProtocolNodeFactory
 import com.example.redwood.reposearch.widget.RepoSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -54,7 +54,7 @@ class RepoSearchActivity : ComponentActivity() {
       override fun widgetFactory(
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = RepoSearchDiffConsumingNodeFactory(
+      ) = RepoSearchProtocolNodeFactory(
         provider = RepoSearchWidgetFactories(
           RepoSearch = AndroidRepoSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),

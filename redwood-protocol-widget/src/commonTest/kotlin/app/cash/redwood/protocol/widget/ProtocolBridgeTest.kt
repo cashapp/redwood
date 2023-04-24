@@ -21,7 +21,7 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
-import example.redwood.widget.ExampleSchemaDiffConsumingNodeFactory
+import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +31,7 @@ class ProtocolBridgeTest {
   @Test fun insertRootIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaDiffConsumingNodeFactory(
+      factory = ExampleSchemaProtocolNodeFactory(
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -59,7 +59,7 @@ class ProtocolBridgeTest {
   @Test fun duplicateIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaDiffConsumingNodeFactory(
+      factory = ExampleSchemaProtocolNodeFactory(
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
