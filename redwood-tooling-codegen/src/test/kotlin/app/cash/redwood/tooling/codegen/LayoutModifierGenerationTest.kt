@@ -17,7 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.schema.LayoutModifier
 import app.cash.redwood.schema.Schema
-import app.cash.redwood.tooling.schema.parseSchema
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.google.common.truth.Truth.assertThat
 import example.redwood.compose.TestScope
 import kotlin.DeprecationLevel.ERROR
@@ -45,7 +45,7 @@ class LayoutModifierGenerationTest {
   data class ContentDescription(val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
 
     val topType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestContentDescription" }
     val topTypeSpec = generateLayoutModifierInterface(schema, topType)
@@ -69,7 +69,7 @@ class LayoutModifierGenerationTest {
   object ScopedLayoutModifier
 
   @Test fun `layout modifier functions are stable`() {
-    val schema = parseSchema(ScopedModifierSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(ScopedModifierSchema::class).schema
 
     val modifier = schema.layoutModifiers.single { it.type.names.last() == "ScopedLayoutModifier" }
     val scope = modifier.scopes.single { it.names.last() == "LayoutModifierScope" }
@@ -109,7 +109,7 @@ class LayoutModifierGenerationTest {
   )
 
   @Test fun deprecation() {
-    val schema = parseSchema(DeprecatedSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
 
     val modifier = schema.layoutModifiers.single()
     val fileSpec = generateLayoutModifierInterface(schema, modifier)

@@ -48,11 +48,47 @@ private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>): SchemaSet {
-  return parseProtocolSchema(schemaType)
+internal fun loadProtocolSchemaSet(
+  type: FqType,
+  classLoader: ClassLoader,
+): ProtocolSchemaSet {
+  val schema = loadProtocolSchema(type, classLoader)
+  val dependencies = schema.taggedDependencies.map { (tag, dependency) ->
+    loadProtocolSchema(dependency, classLoader, tag)
+  }
+  return ParsedProtocolSchemaSet(
+    schema = schema,
+    dependencies = dependencies.associateBy { it.type },
+  )
 }
 
-public fun parseProtocolSchema(schemaType: KClass<*>): ProtocolSchemaSet {
+internal fun loadProtocolSchema(
+  type: FqType,
+  classLoader: ClassLoader,
+  tag: Int = 0,
+): ProtocolSchema {
+  require(tag in 0..maxSchemaTag) {
+    "$type tag must be 0 for the root or in range (0, $maxSchemaTag] as a dependency: $tag"
+  }
+  val tagOffset = tag * maxMemberTag
+
+  val path = ParsedProtocolSchema.toEmbeddedPath(type)
+  val schema = classLoader
+    .getResourceAsStream(path)
+    ?.use(InputStream::readBytes)
+    ?.decodeToString()
+    ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json, tagOffset) }
+    ?: throw IllegalArgumentException("Unable to locate JSON for $type at $path")
+
+  require(tag == 0 || schema.dependencies.isEmpty()) {
+    "Schema dependency $type also has its own dependencies. " +
+      "For now, only a single level of dependencies is supported."
+  }
+
+  return schema
+}
+
+internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
   val schemaAnnotation = schemaType.schemaAnnotation
   val memberTypes = schemaAnnotation.members
 
@@ -157,25 +193,16 @@ public fun parseProtocolSchema(schemaType: KClass<*>): ProtocolSchemaSet {
   val dependencies = schemaAnnotation.dependencies
     .associate {
       val dependencyTag = it.tag
-      require(dependencyTag in 1..maxSchemaTag) {
-        "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: $dependencyTag"
+      val dependencyType = it.schema.toFqType()
+      require(dependencyTag != 0) {
+        "Dependency $dependencyType tag must not be non-zero"
       }
-      val tagOffset = dependencyTag * maxMemberTag
 
-      val path = ParsedProtocolSchema.toEmbeddedPath(it.schema.toFqType())
-      val schema = schemaType.java
-        .getResourceAsStream("/$path")
-        ?.use(InputStream::readBytes)
-        ?.decodeToString()
-        ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json, tagOffset) }
-        ?: throw IllegalArgumentException(
-          "Unable to locate JSON for ${it.schema.qualifiedName} at $path",
-        )
-
-      require(schema.dependencies.isEmpty()) {
-        "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
-          "For now, only a single level of dependencies is supported."
-      }
+      val schema = loadProtocolSchema(
+        type = dependencyType,
+        classLoader = schemaType.java.classLoader,
+        tag = dependencyTag,
+      )
       dependencyTag to schema
     }
 

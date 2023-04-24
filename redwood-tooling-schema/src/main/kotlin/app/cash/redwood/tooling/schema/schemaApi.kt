@@ -19,6 +19,7 @@ import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import app.cash.redwood.tooling.schema.Widget.Trait
+import kotlin.reflect.KClass
 
 /** A [Schema] and its dependencies. */
 public interface SchemaSet {
@@ -37,12 +38,6 @@ public interface Schema {
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
   public val dependencies: List<FqType>
-
-  /**
-   * Convert this schema to JSON which can be embedded inside the schema artifact.
-   * This JSON will be read when the schema is used as a dependency.
-   */
-  public fun toEmbeddedSchema(): EmbeddedSchema
 }
 
 public data class EmbeddedSchema(
@@ -124,6 +119,16 @@ public interface ProtocolSchemaSet : SchemaSet {
     add(schema)
     addAll(dependencies.values)
   }
+
+  public companion object {
+    public fun load(type: FqType, classLoader: ClassLoader): ProtocolSchemaSet {
+      return loadProtocolSchemaSet(type, classLoader)
+    }
+
+    public fun parse(type: KClass<*>): ProtocolSchemaSet {
+      return parseProtocolSchemaSet(type)
+    }
+  }
 }
 
 public interface ProtocolSchema : Schema {
@@ -131,6 +136,12 @@ public interface ProtocolSchema : Schema {
   override val layoutModifiers: List<ProtocolLayoutModifier>
   override val dependencies: List<FqType> get() = taggedDependencies.values.toList()
   public val taggedDependencies: Map<Int, FqType>
+
+  /**
+   * Convert this schema to JSON which can be embedded inside the schema artifact.
+   * This JSON will be read when the schema is used as a dependency.
+   */
+  public fun toEmbeddedSchema(): EmbeddedSchema
 }
 
 public interface ProtocolWidget : Widget {
