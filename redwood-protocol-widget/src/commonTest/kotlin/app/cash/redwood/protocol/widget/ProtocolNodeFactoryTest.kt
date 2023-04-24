@@ -27,7 +27,7 @@ import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import example.redwood.compose.TestScope
-import example.redwood.widget.ExampleSchemaDiffConsumingNodeFactory
+import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import example.redwood.widget.TextInput
 import kotlin.test.Test
@@ -45,7 +45,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 class ProtocolNodeFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -60,7 +60,7 @@ class ProtocolNodeFactoryTest {
 
   @Test fun unknownWidgetCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -80,7 +80,7 @@ class ProtocolNodeFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = object : EmptyExampleSchemaWidgetFactory() {
           override fun TextInput() = recordingTextInput
@@ -114,7 +114,7 @@ class ProtocolNodeFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = object : EmptyExampleSchemaWidgetFactory() {
           override fun TextInput() = recordingTextInput
@@ -142,7 +142,7 @@ class ProtocolNodeFactoryTest {
   }
 
   @Test fun unknownLayoutModifierThrowsDefault() {
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -171,7 +171,7 @@ class ProtocolNodeFactoryTest {
     }
     val handler = RecordingProtocolMismatchHandler()
     val recordingTextInput = RecordingTextInput()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = object : EmptyExampleSchemaWidgetFactory() {
           override fun TextInput() = recordingTextInput
@@ -208,7 +208,7 @@ class ProtocolNodeFactoryTest {
   }
 
   @Test fun unknownChildrenThrowsDefault() {
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -224,7 +224,7 @@ class ProtocolNodeFactoryTest {
 
   @Test fun unknownChildrenCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -245,7 +245,7 @@ class ProtocolNodeFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = object : EmptyExampleSchemaWidgetFactory() {
           override fun TextInput() = recordingTextInput
@@ -263,7 +263,7 @@ class ProtocolNodeFactoryTest {
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -281,7 +281,7 @@ class ProtocolNodeFactoryTest {
 
   @Test fun unknownPropertyCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -302,7 +302,7 @@ class ProtocolNodeFactoryTest {
       }
     }
     val recordingTextInput = RecordingTextInput()
-    val factory = ExampleSchemaDiffConsumingNodeFactory(
+    val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = object : EmptyExampleSchemaWidgetFactory() {
           override fun TextInput() = recordingTextInput

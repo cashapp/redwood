@@ -26,7 +26,7 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import okio.ByteString
@@ -38,12 +38,12 @@ import platform.Foundation.NSData
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
+  protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
   treehouseUIKitView: TreehouseUIKitView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
   widgetSystem: WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
-  diffConsumingNodeFactory: EmojiSearchDiffConsumingNodeFactory<*>,
 ) {
   throw AssertionError()
 }

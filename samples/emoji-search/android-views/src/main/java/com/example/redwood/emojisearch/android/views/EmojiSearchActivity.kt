@@ -32,7 +32,7 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -54,7 +54,7 @@ class EmojiSearchActivity : ComponentActivity() {
       override fun widgetFactory(
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = EmojiSearchDiffConsumingNodeFactory(
+      ) = EmojiSearchProtocolNodeFactory(
         provider = EmojiSearchWidgetFactories(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(
             context = context,

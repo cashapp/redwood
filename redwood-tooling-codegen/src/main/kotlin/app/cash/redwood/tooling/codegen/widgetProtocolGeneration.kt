@@ -36,20 +36,20 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
-public class SunspotDiffConsumingNodeFactory<W : Any>(
+public class SunspotProtocolNodeFactory<W : Any>(
   private val provider: SunspotWidgetFactoryProvider<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : DiffConsumingNode.Factory<W> {
+) : ProtocolNode.Factory<W> {
   override fun create(
     parentId: Id,
     parentChildren: Widget.Children<W>,
     tag: WidgetTag,
-  ): DiffConsumingNode<W>? = when (tag.value) {
-    1 -> DiffConsumingTextNode(parentId, parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
-    2 -> DiffConsumingButtonNode(parentId, parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
-    1_000_001 -> DiffConsumingRedwoodLayoutRowNode(parentId, parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
-    1_000_002 -> DiffConsumingRedwoodLayoutColumnNode(parentId, parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
+  ): ProtocolNode<W>? = when (tag.value) {
+    1 -> TextProtocolNode(parentId, parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
+    2 -> ButtonProtocolNode(parentId, parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
+    1_000_001 -> RedwoodLayoutRowProtocolNode(parentId, parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
+    1_000_002 -> RedwoodLayoutColumnProtocolNode(parentId, parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
     else -> {
       mismatchHandler.onUnknownWidget(tag)
       null
@@ -57,12 +57,12 @@ public class SunspotDiffConsumingNodeFactory<W : Any>(
   }
 }
 */
-internal fun generateDiffConsumingNodeFactory(
+internal fun generateProtocolNodeFactory(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
   val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
-  val type = schema.diffConsumingNodeFactoryType()
+  val type = schema.protocolNodeFactoryType()
   return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
@@ -139,7 +139,7 @@ internal class ProtocolButton<W : Any>(
   private val delegate: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : DiffConsumingNode<W> {
+) : ProtocolNode<W> {
   public override val value: W get() = delegate.value
 
   public override val layoutModifiers: LayoutModifier
