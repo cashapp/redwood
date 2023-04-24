@@ -106,7 +106,7 @@ fun EmojiSearch(
     )
     columnProvider.create(
       filteredEmojis,
-      itemToKey = { it.label }
+      itemToKey = { it.label },
     ) { image ->
       Row(
         width = Constraint.Fill,
