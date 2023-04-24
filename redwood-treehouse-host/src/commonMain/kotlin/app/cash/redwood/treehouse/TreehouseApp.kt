@@ -45,7 +45,7 @@ public class TreehouseApp<A : AppService> private constructor(
   public val spec: Spec<A>,
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
-  internal val eventPublisher: EventPublisher = factory.eventPublisher
+  public val eventPublisher: EventPublisher = factory.eventPublisher
 
   private var started = false
 

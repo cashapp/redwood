@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
@@ -37,7 +40,7 @@ internal class ZiplineSession<A : AppService>(
   fun start() {
     sessionScope.launch(app.dispatchers.zipline) {
       val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(appLifecycle)
+      val host = RealAppLifecycleHost(appLifecycle, app.eventPublisher)
       appLifecycle.start(host)
       host.runFrameClock()
     }
@@ -55,11 +58,20 @@ internal class ZiplineSession<A : AppService>(
 /** Platform features to the guest application. */
 private class RealAppLifecycleHost(
   val appLifecycle: AppLifecycle,
+  val eventPublisher: EventPublisher,
 ) : AppLifecycle.Host {
   private var frameRequested = false
 
   override fun requestFrame() {
     frameRequested = true
+  }
+
+  override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+    eventPublisher.composeProtocolMismatchHandler().onUnknownEvent(widgetTag, tag)
+  }
+
+  override fun onUnknownEventNode(id: Id, tag: EventTag) {
+    eventPublisher.composeProtocolMismatchHandler().onUnknownEventNode(id, tag)
   }
 
   suspend fun runFrameClock() {

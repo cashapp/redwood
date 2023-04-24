@@ -16,6 +16,8 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
@@ -146,6 +148,16 @@ public abstract class EventListener {
     widgetTag: WidgetTag,
     tag: PropertyTag,
   ) {
+  }
+
+  /** Invoked on a request to process an unknown event [tag] for the specified widget [widgetTag]. */
+  public open fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+    println("Unknown event tag ${tag.value} for widget tag ${widgetTag.value}")
+  }
+
+  /** Invoked for an event whose node [id] is unknown. */
+  public fun onUnknownEventNode(id: Id, tag: EventTag) {
+    println("Unknown node ID ${id.value} for event with tag ${tag.value}")
   }
 
   /**

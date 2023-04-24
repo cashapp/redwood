@@ -16,9 +16,12 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.compose.ProtocolMismatchHandler as ComposeProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
@@ -26,123 +29,134 @@ import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
 
-internal class EventPublisher(
+public class EventPublisher(
   private val listener: EventListener,
 ) {
   private var nameToApplication = mapOf<String, TreehouseApp<*>>()
 
-  fun appStart(app: TreehouseApp<*>) {
+  public fun appStart(app: TreehouseApp<*>) {
     nameToApplication = nameToApplication + (app.spec.name to app)
     listener.appStart(app)
   }
 
-  fun appCanceled(app: TreehouseApp<*>) {
+  public fun appCanceled(app: TreehouseApp<*>) {
     nameToApplication = nameToApplication - app.spec.name
     listener.appCanceled(app)
   }
 
-  fun ziplineEventListener(app: TreehouseApp<*>) = object : ZiplineEventListener() {
-    override fun applicationLoadStart(applicationName: String, manifestUrl: String?): Any? {
-      return listener.codeLoadStart(app, manifestUrl)
+  public fun ziplineEventListener(app: TreehouseApp<*>): app.cash.zipline.EventListener =
+    object : ZiplineEventListener() {
+      override fun applicationLoadStart(
+        applicationName: String,
+        manifestUrl: String?,
+      ): Any? {
+        return listener.codeLoadStart(app, manifestUrl)
+      }
+
+      override fun applicationLoadSuccess(
+        applicationName: String,
+        manifestUrl: String?,
+        zipline: Zipline,
+        startValue: Any?,
+      ) {
+        listener.codeLoadSuccess(app, manifestUrl, zipline, startValue)
+      }
+
+      override fun applicationLoadSkipped(
+        applicationName: String,
+        manifestUrl: String,
+        startValue: Any?,
+      ) {
+        listener.codeLoadSkipped(app, manifestUrl, startValue)
+      }
+
+      override fun applicationLoadFailed(
+        applicationName: String,
+        manifestUrl: String?,
+        exception: Exception,
+        startValue: Any?,
+      ) {
+        listener.codeLoadFailed(app, manifestUrl, exception, startValue)
+      }
+
+      override fun bindService(
+        zipline: Zipline,
+        name: String,
+        service: ZiplineService,
+      ) {
+        listener.bindService(app, name, service)
+      }
+
+      override fun callStart(
+        zipline: Zipline,
+        call: Call,
+      ): Any? {
+        return listener.callStart(app, call)
+      }
+
+      override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
+        listener.callEnd(app, call, result, startValue)
+      }
+
+      override fun downloadStart(applicationName: String, url: String): Any? {
+        return listener.downloadStart(app, url)
+      }
+
+      override fun downloadEnd(applicationName: String, url: String, startValue: Any?) {
+        listener.downloadSuccess(app, url, startValue)
+      }
+
+      override fun downloadFailed(
+        applicationName: String,
+        url: String,
+        exception: Exception,
+        startValue: Any?,
+      ) {
+        listener.downloadFailed(app, url, exception, startValue)
+      }
+
+      override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
+        return listener.moduleLoadStart(app, zipline, moduleId)
+      }
+
+      override fun moduleLoadEnd(zipline: Zipline, moduleId: String, startValue: Any?) {
+        listener.moduleLoadEnd(app, zipline, moduleId, startValue)
+      }
+
+      override fun initializerStart(zipline: Zipline, applicationName: String): Any? {
+        return listener.initializerStart(app, zipline, applicationName)
+      }
+
+      override fun initializerEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
+        listener.initializerEnd(app, zipline, applicationName, startValue)
+      }
+
+      override fun mainFunctionStart(zipline: Zipline, applicationName: String): Any? {
+        return listener.mainFunctionStart(app, zipline, applicationName)
+      }
+
+      override fun mainFunctionEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
+        listener.mainFunctionEnd(app, zipline, applicationName, startValue)
+      }
+
+      override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
+        listener.manifestParseFailed(app, url, exception)
+      }
+
+      override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
+        listener.takeService(app, name, service)
+      }
+
+      override fun serviceLeaked(zipline: Zipline, name: String) {
+        listener.serviceLeaked(app, name)
+      }
+
+      override fun ziplineClosed(zipline: Zipline) {
+        listener.codeUnloaded(app, zipline)
+      }
     }
 
-    override fun applicationLoadSuccess(
-      applicationName: String,
-      manifestUrl: String?,
-      zipline: Zipline,
-      startValue: Any?,
-    ) {
-      listener.codeLoadSuccess(app, manifestUrl, zipline, startValue)
-    }
-
-    override fun applicationLoadSkipped(
-      applicationName: String,
-      manifestUrl: String,
-      startValue: Any?,
-    ) {
-      listener.codeLoadSkipped(app, manifestUrl, startValue)
-    }
-
-    override fun applicationLoadFailed(
-      applicationName: String,
-      manifestUrl: String?,
-      exception: Exception,
-      startValue: Any?,
-    ) {
-      listener.codeLoadFailed(app, manifestUrl, exception, startValue)
-    }
-
-    override fun bindService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.bindService(app, name, service)
-    }
-
-    override fun callStart(zipline: Zipline, call: Call): Any? {
-      return listener.callStart(app, call)
-    }
-
-    override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
-      listener.callEnd(app, call, result, startValue)
-    }
-
-    override fun downloadStart(applicationName: String, url: String): Any? {
-      return listener.downloadStart(app, url)
-    }
-
-    override fun downloadEnd(applicationName: String, url: String, startValue: Any?) {
-      listener.downloadSuccess(app, url, startValue)
-    }
-
-    override fun downloadFailed(
-      applicationName: String,
-      url: String,
-      exception: Exception,
-      startValue: Any?,
-    ) {
-      listener.downloadFailed(app, url, exception, startValue)
-    }
-
-    override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
-      return listener.moduleLoadStart(app, zipline, moduleId)
-    }
-
-    override fun moduleLoadEnd(zipline: Zipline, moduleId: String, startValue: Any?) {
-      listener.moduleLoadEnd(app, zipline, moduleId, startValue)
-    }
-
-    override fun initializerStart(zipline: Zipline, applicationName: String): Any? {
-      return listener.initializerStart(app, zipline, applicationName)
-    }
-
-    override fun initializerEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
-      listener.initializerEnd(app, zipline, applicationName, startValue)
-    }
-
-    override fun mainFunctionStart(zipline: Zipline, applicationName: String): Any? {
-      return listener.mainFunctionStart(app, zipline, applicationName)
-    }
-
-    override fun mainFunctionEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
-      listener.mainFunctionEnd(app, zipline, applicationName, startValue)
-    }
-
-    override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
-      listener.manifestParseFailed(app, url, exception)
-    }
-
-    override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.takeService(app, name, service)
-    }
-
-    override fun serviceLeaked(zipline: Zipline, name: String) {
-      listener.serviceLeaked(app, name)
-    }
-
-    override fun ziplineClosed(zipline: Zipline) {
-      listener.codeUnloaded(app, zipline)
-    }
-  }
-
-  fun protocolMismatchHandler(app: TreehouseApp<*>) = object : ProtocolMismatchHandler {
+  public fun widgetProtocolMismatchHandler(app: TreehouseApp<*>): ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownWidget(tag: WidgetTag) {
       listener.onUnknownWidget(app, tag)
     }
@@ -157,6 +171,16 @@ internal class EventPublisher(
 
     override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
       listener.onUnknownProperty(app, widgetTag, tag)
+    }
+  }
+
+  public fun composeProtocolMismatchHandler(): ComposeProtocolMismatchHandler = object : ComposeProtocolMismatchHandler {
+    override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+      listener.onUnknownEvent(widgetTag, tag)
+    }
+
+    override fun onUnknownEventNode(id: Id, tag: EventTag) {
+      listener.onUnknownEventNode(id, tag)
     }
   }
 }

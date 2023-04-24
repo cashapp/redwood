@@ -17,7 +17,11 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.protocol.compose.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -35,8 +39,21 @@ public class StandardAppLifecycle(
   public val frameClock: MonotonicFrameClock
     get() = broadcastFrameClock ?: error("AppLifecycle not started yet")
 
+  private var _mismatchHandler: ProtocolMismatchHandler? = null
+  internal val mismatchHandler: ProtocolMismatchHandler
+    get() = _mismatchHandler ?: error("AppLifecycle not started yet")
+
   override fun start(host: Host) {
     broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
+    _mismatchHandler = object : ProtocolMismatchHandler {
+      override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+        host.onUnknownEvent(widgetTag, tag)
+      }
+
+      override fun onUnknownEventNode(id: Id, tag: EventTag) {
+        host.onUnknownEventNode(id, tag)
+      }
+    }
   }
 
   override fun sendFrame(timeNanos: Long) {
