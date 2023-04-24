@@ -62,23 +62,23 @@ internal class ViewFlexContainer(
 
   override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
-    invalidate()
+    requestLayout()
   }
 
   override fun height(height: Constraint) {
     container.fillHeight = height == Constraint.Fill
-    invalidate()
+    requestLayout()
   }
 
   override fun margin(margin: Margin) {
     container.margin = margin.toSpacing(density)
-    invalidate()
+    requestLayout()
   }
 
   override fun overflow(overflow: Overflow) {
     val oldScrollEnabled = scrollEnabled
     scrollEnabled = overflow == Overflow.Scroll
-    invalidate(overflowChanged = oldScrollEnabled != scrollEnabled)
+    requestLayout(overflowChanged = oldScrollEnabled != scrollEnabled)
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -99,19 +99,18 @@ internal class ViewFlexContainer(
 
   fun alignItems(alignItems: AlignItems) {
     container.alignItems = alignItems
-    invalidate()
+    requestLayout()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
     container.justifyContent = justifyContent
-    invalidate()
+    requestLayout()
   }
 
-  private fun invalidate(overflowChanged: Boolean = false) {
+  private fun requestLayout(overflowChanged: Boolean = false) {
     if (overflowChanged) {
       _value.updateViewHierarchy()
     }
-    value.invalidate()
     value.requestLayout()
   }
 
