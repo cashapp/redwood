@@ -675,7 +675,7 @@ internal fun generateProtocolLayoutModifierSerializers(
     .build()
 }
 
-internal fun generateProtocolLayoutModifierSerialization(
+internal fun generateComposeProtocolLayoutModifierSerialization(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema

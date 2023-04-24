@@ -25,7 +25,7 @@ import java.util.regex.Pattern
 import java.util.regex.Pattern.MULTILINE
 import org.junit.Test
 
-class DiffConsumingGenerationTest {
+class WidgetProtocolGenerationTest {
   @Schema(
     [
       Node12::class,
@@ -60,7 +60,7 @@ class DiffConsumingGenerationTest {
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schema = parseProtocolSchema(ExampleSchema::class)
 
-    val fileSpec = generateDiffConsumingLayoutModifierSerialization(schema)
+    val fileSpec = generateWidgetProtocolLayoutModifierSerialization(schema)
     assertThat(fileSpec.toString()).apply {
       contains("1 -> RowVerticalAlignmentImpl.serializer()")
       contains("1_000_001 -> GrowImpl.serializer()")

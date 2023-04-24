@@ -52,7 +52,7 @@ class ComposeProtocolGenerationTest {
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schemaSet = parseProtocolSchema(ExampleSchema::class)
 
-    val fileSpec = generateProtocolLayoutModifierSerialization(schemaSet)
+    val fileSpec = generateComposeProtocolLayoutModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).apply {
       contains("is RowVerticalAlignment -> RowVerticalAlignmentSerializer.encode(json, this)")
       contains("is Grow -> GrowSerializer.encode(json, this)")

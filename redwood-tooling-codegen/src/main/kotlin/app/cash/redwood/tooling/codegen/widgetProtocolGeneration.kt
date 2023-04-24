@@ -115,7 +115,7 @@ internal fun generateDiffConsumingNodeFactory(
                   addStatement(
                     "%L -> %T(parentId, parentChildren, provider.%N.%N(), json, mismatchHandler)",
                     widget.tag,
-                    dependency.diffConsumingNodeType(widget, schema),
+                    dependency.protocolNodeType(widget, schema),
                     dependency.type.flatName,
                     widget.type.flatName,
                   )
@@ -135,11 +135,11 @@ internal fun generateDiffConsumingNodeFactory(
 }
 
 /*
-internal class DiffConsumingSunspotButton<W : Any>(
-  private val delegate: SunspotButton<W>,
+internal class ProtocolButton<W : Any>(
+  private val delegate: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : DiffConsumingWidget<W> {
+) : DiffConsumingNode<W> {
   public override val value: W get() = delegate.value
 
   public override val layoutModifiers: LayoutModifier
@@ -166,12 +166,12 @@ internal class DiffConsumingSunspotButton<W : Any>(
   }
 }
 */
-internal fun generateDiffConsumingWidget(
+internal fun generateProtocolNode(
   schema: ProtocolSchema,
   widget: ProtocolWidget,
   host: ProtocolSchema = schema,
 ): FileSpec {
-  val type = schema.diffConsumingNodeType(widget, host)
+  val type = schema.protocolNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.DiffConsumingNode.parameterizedBy(typeVariableW)
   return FileSpec.builder(type)
@@ -343,7 +343,7 @@ internal fun generateDiffConsumingWidget(
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifierSerialization(
+internal fun generateWidgetProtocolLayoutModifierSerialization(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   return FileSpec.builder(schemaSet.schema.widgetPackage(), "layoutModifierSerialization")
@@ -352,7 +352,7 @@ internal fun generateDiffConsumingLayoutModifierSerialization(
     .build()
 }
 
-internal fun generateDiffConsumingLayoutModifierImpls(
+internal fun generateProtocolLayoutModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec {
