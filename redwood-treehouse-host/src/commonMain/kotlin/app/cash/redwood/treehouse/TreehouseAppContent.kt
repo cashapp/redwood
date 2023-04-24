@@ -18,8 +18,8 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.DiffConsumingNode
 import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.protocol.widget.ProtocolNode
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
@@ -286,7 +286,7 @@ private class ViewContentCodeBinding<A : AppService>(
       factory = view.widgetSystem.widgetFactory(
         json = json,
         protocolMismatchHandler = eventPublisher.protocolMismatchHandler(app),
-      ) as DiffConsumingNode.Factory<Any>,
+      ) as ProtocolNode.Factory<Any>,
       eventSink = this,
     )
 

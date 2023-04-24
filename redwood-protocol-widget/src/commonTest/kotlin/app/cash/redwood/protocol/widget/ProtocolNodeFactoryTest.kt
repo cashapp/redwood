@@ -43,7 +43,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
-class DiffConsumingNodeFactoryTest {
+class ProtocolNodeFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
     val factory = ExampleSchemaDiffConsumingNodeFactory(
       ExampleSchemaWidgetFactories(

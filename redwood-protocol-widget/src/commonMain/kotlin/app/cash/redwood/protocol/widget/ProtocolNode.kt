@@ -25,12 +25,12 @@ import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 
 /**
- * A [Widget] which consumes protocol diffs and applies them to a platform-specific representation.
+ * A node which consumes protocol diffs and applies them to a platform-specific representation.
  *
  * @suppress
  */
-@ObjCName("DiffConsumingNode", exact = true)
-public abstract class DiffConsumingNode<W : Any>(
+@ObjCName("ProtocolNode", exact = true)
+public abstract class ProtocolNode<W : Any>(
   public val parentId: Id,
   public val parentChildren: Widget.Children<W>,
 ) {
@@ -45,7 +45,7 @@ public abstract class DiffConsumingNode<W : Any>(
   public abstract fun updateLayoutModifier(elements: List<LayoutModifierElement>)
 
   /**
-   * Return one of this widget's children groups by its [tag].
+   * Return one of this node's children groups by its [tag].
    *
    * Invalid [tag] values can either produce an exception or result in `null` being returned.
    * If `null` is returned, the caller should make every effort to ignore these children and
@@ -53,19 +53,19 @@ public abstract class DiffConsumingNode<W : Any>(
    */
   public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 
-  @ObjCName("DiffConsumingNodeFactory", exact = true)
+  @ObjCName("ProtocolNodeFactory", exact = true)
   public interface Factory<W : Any> {
     /**
-     * Create a new protocol-consuming widget of the specified [tag].
+     * Create a new protocol node of the specified [tag].
      *
      * Invalid [tag] values can either produce an exception or result in `null` being returned.
-     * If `null` is returned, the caller should make every effort to ignore this widget and
+     * If `null` is returned, the caller should make every effort to ignore this node and
      * continue executing.
      */
     public fun create(
       parentId: Id,
       parentChildren: Widget.Children<W>,
       tag: WidgetTag,
-    ): DiffConsumingNode<W>?
+    ): ProtocolNode<W>?
   }
 }
