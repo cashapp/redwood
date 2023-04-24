@@ -24,6 +24,8 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - run: gh pr checkout ${{ github.event.issue.number }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: ./gradlew spotlessApply
 
