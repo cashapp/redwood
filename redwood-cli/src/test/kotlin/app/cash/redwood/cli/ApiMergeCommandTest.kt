@@ -15,9 +15,10 @@
  */
 package app.cash.redwood.cli
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.google.common.jimfs.Configuration.unix
 import com.google.common.jimfs.Jimfs
-import com.google.common.truth.Truth.assertThat
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import org.junit.Test

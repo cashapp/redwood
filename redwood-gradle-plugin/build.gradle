@@ -32,7 +32,7 @@ dependencies {
 
   testImplementation libs.junit
   testImplementation libs.testParameterInjector
-  testImplementation libs.truth
+  testImplementation libs.assertk
   testImplementation gradleTestKit()
 }
 

@@ -21,7 +21,8 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
 import org.junit.Test
 
 class TestingGenerationTest {

@@ -15,7 +15,10 @@
  */
 package app.cash.redwood.gradle
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.containsExactly
+import assertk.assertions.isNotEmpty
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test

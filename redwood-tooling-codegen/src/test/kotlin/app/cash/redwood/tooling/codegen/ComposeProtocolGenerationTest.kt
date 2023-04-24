@@ -19,7 +19,9 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import com.google.common.truth.Truth.assertThat
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
 import example.redwood.ExampleSchema
 import org.junit.Test
 
@@ -53,7 +55,7 @@ class ComposeProtocolGenerationTest {
     val schemaSet = ProtocolSchemaSet.parse(ExampleSchema::class)
 
     val fileSpec = generateComposeProtocolLayoutModifierSerialization(schemaSet)
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains("is RowVerticalAlignment -> RowVerticalAlignmentSerializer.encode(json, this)")
       contains("is Grow -> GrowSerializer.encode(json, this)")
     }

@@ -18,6 +18,7 @@ package app.cash.redwood.tooling.schema
 import DefaultPackage
 import app.cash.redwood.tooling.schema.FqType.Variance.In
 import app.cash.redwood.tooling.schema.FqType.Variance.Out
+import assertk.assertions.hasMessage
 import java.util.PrimitiveIterator
 import kotlin.reflect.typeOf
 import org.junit.Assert.assertEquals
@@ -79,15 +80,13 @@ class FqTypeTest {
   }
 
   @Test fun classTooFewNamesThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf())
-    }.hasMessageThat()
-      .isEqualTo("At least two names are required: package and a simple name: []")
+    }.hasMessage("At least two names are required: package and a simple name: []")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("kotlin"))
-    }.hasMessageThat()
-      .isEqualTo("At least two names are required: package and a simple name: [kotlin]")
+    }.hasMessage("At least two names are required: package and a simple name: [kotlin]")
   }
 
   @Test fun star() {
@@ -95,30 +94,25 @@ class FqTypeTest {
   }
 
   @Test fun starOtherPropertiesThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("kotlin", "*"))
-    }.hasMessageThat()
-      .isEqualTo("Star projection must use empty package name: kotlin")
+    }.hasMessage("Star projection must use empty package name: kotlin")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("", "*", "Nested"))
-    }.hasMessageThat()
-      .isEqualTo("Star projection cannot have nested types: [*, Nested]")
+    }.hasMessage("Star projection cannot have nested types: [*, Nested]")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("", "*"), parameterTypes = listOf(Int::class.toFqType()))
-    }.hasMessageThat()
-      .isEqualTo("Star projection must not have parameter types: [kotlin.Int]")
+    }.hasMessage("Star projection must not have parameter types: [kotlin.Int]")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("", "*"), variance = In)
-    }.hasMessageThat()
-      .isEqualTo("Star projection must be Invariant: In")
+    }.hasMessage("Star projection must be Invariant: In")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType(listOf("", "*"), nullable = true)
-    }.hasMessageThat()
-      .isEqualTo("Star projection must not be nullable")
+    }.hasMessage("Star projection must not be nullable")
   }
 
   @Test fun bestGuessValid() {
@@ -141,24 +135,24 @@ class FqTypeTest {
   }
 
   @Test fun bestGuessInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType.bestGuess("java")
-    }.hasMessageThat().isEqualTo("Couldn't guess: java")
+    }.hasMessage("Couldn't guess: java")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType.bestGuess("java.util.concurrent")
-    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent")
+    }.hasMessage("Couldn't guess: java.util.concurrent")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType.bestGuess("java..concurrent")
-    }.hasMessageThat().isEqualTo("Couldn't guess: java..concurrent")
+    }.hasMessage("Couldn't guess: java..concurrent")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType.bestGuess("java.util.concurrent.Map..Entry")
-    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent.Map..Entry")
+    }.hasMessage("Couldn't guess: java.util.concurrent.Map..Entry")
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       FqType.bestGuess("java.util.concurrent.Map.entry")
-    }.hasMessageThat().isEqualTo("Couldn't guess: java.util.concurrent.Map.entry")
+    }.hasMessage("Couldn't guess: java.util.concurrent.Map.entry")
   }
 }
