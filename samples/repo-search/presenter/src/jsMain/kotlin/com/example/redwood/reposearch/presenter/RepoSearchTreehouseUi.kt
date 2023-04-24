@@ -48,7 +48,10 @@ class RepoSearchTreehouseUi(
   override fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
     LazyColumn(appLifecycle) {
-      items(lazyPagingItems) {
+      items(
+        items = lazyPagingItems,
+        itemToKey = { it!!.fullName },
+      ) {
         RepoSearch(it!!)
       }
     }

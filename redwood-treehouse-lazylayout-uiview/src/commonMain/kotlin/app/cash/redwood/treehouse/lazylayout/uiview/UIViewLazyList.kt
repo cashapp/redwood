@@ -73,7 +73,7 @@ private class TableViewDataSource<A : AppService>(
   }
 
   override fun tableView(tableView: UITableView, numberOfRowsInSection: NSInteger): NSInteger {
-    return intervals[numberOfRowsInSection.toInt()].count.toLong()
+    return intervals[numberOfRowsInSection.toInt()].keys.size.toLong()
   }
 
   override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
