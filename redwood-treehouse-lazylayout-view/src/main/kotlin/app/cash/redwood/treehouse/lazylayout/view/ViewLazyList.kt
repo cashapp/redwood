@@ -118,7 +118,7 @@ internal class ViewLazyList<A : AppService>(
             source = { interval.itemProvider.get(indexInInterval) },
           )
           val keyAndContent = KeyAndContent(
-            // coalesce the key to the item index in the list
+            // Coalesce the key to the item index in the list.
             key = interval.keys[indexInInterval] ?: (index + offset).toString(),
             content = content,
           )
