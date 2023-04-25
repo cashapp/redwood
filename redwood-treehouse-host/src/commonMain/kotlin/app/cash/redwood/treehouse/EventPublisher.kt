@@ -154,6 +154,7 @@ internal class EventPublisher(
         listener.codeUnloaded(app, zipline)
       }
     }
+
   fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
     listener.onUnknownEvent(widgetTag, tag)
   }
