@@ -50,7 +50,7 @@ class RepoSearchTreehouseUi(
     LazyColumn(appLifecycle) {
       items(
         items = lazyPagingItems,
-        itemToKey = { it!!.fullName },
+        itemToKey = { it?.fullName },
       ) {
         RepoSearch(it!!)
       }

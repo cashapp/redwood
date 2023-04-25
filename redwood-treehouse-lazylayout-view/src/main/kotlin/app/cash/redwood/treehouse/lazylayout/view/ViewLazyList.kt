@@ -118,7 +118,8 @@ internal class ViewLazyList<A : AppService>(
             source = { interval.itemProvider.get(indexInInterval) },
           )
           val keyAndContent = KeyAndContent(
-            key = interval.keys[indexInInterval],
+            // coalesce the key to the item index in the list
+            key = interval.keys[indexInInterval] ?: (index + offset).toString(),
             content = content,
           )
           keyAndContent.awaitContent()
@@ -145,7 +146,7 @@ internal class ViewLazyList<A : AppService>(
   }
 
   private class KeyAndContent(
-    val key: String,
+    val key: String?,
     val content: Content,
   ) {
     suspend fun awaitContent() {
