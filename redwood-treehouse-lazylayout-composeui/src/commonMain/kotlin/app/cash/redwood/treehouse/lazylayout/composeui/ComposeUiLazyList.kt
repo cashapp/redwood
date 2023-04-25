@@ -60,7 +60,10 @@ internal class ComposeUiLazyList<A : AppService>(
     val itemBoxModifier = if (isVertical) Modifier.height(64.dp) else Modifier.width(64.dp)
     val content: LazyListScope.() -> Unit = {
       intervals.forEach { interval ->
-        items(interval.keys.size) { index ->
+        items(
+          count = interval.keys.size,
+          key = { index -> interval.keys[index] ?: index },
+        ) { index ->
           Box(itemBoxModifier) {
             TreehouseContent(treehouseApp, widgetSystem) { interval.itemProvider.get(index) }
           }

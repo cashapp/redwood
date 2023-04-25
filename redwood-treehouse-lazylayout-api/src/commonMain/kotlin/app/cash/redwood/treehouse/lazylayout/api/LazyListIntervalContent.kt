@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @ObjCName("LazyListInterval", exact = true)
 public class LazyListInterval(
-  public val keys: List<String>,
+  public val keys: List<String?>,
   @Contextual public val itemProvider: Item,
 ) {
   public val count: Int = keys.size

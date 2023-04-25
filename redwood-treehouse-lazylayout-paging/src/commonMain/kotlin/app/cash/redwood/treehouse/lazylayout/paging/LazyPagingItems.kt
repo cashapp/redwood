@@ -31,7 +31,7 @@ import app.cash.redwood.treehouse.lazylayout.compose.LazyListScope
  */
 public fun <T : Any> LazyListScope.items(
   items: LazyPagingItems<T>,
-  itemToKey: (item: T?) -> String,
+  itemToKey: (item: T?) -> String?,
   itemContent: @Composable (value: T?) -> Unit,
 ) {
   items(items.keys(itemToKey)) { index ->
@@ -61,8 +61,8 @@ public fun <T : Any> LazyListScope.itemsIndexed(
 }
 
 private fun <T : Any> LazyPagingItems<T>.keys(
-  itemToKey: (item: T?) -> String,
-): List<String> {
+  itemToKey: (item: T?) -> String?,
+): List<String?> {
   return List(itemCount) {
     val item = this[it]
     itemToKey(item)
