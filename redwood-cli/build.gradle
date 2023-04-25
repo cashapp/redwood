@@ -30,7 +30,7 @@ dependencies {
   implementation libs.clikt
 
   testImplementation libs.junit
-  testImplementation libs.truth
+  testImplementation libs.assertk
   testImplementation libs.jimfs
 }
 

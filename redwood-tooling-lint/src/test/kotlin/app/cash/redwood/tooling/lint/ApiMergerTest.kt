@@ -15,7 +15,9 @@
  */
 package app.cash.redwood.tooling.lint
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
 import kotlin.test.assertFailsWith
 import org.junit.Test
 
@@ -25,8 +27,7 @@ class ApiMergerTest {
     val t = assertFailsWith<IllegalStateException> {
       merger.merge()
     }
-    assertThat(t).hasMessageThat()
-      .isEqualTo("One or more API definitions must be added in order to merge")
+    assertThat(t).hasMessage("One or more API definitions must be added in order to merge")
   }
 
   @Test fun version1Only() {
@@ -34,8 +35,7 @@ class ApiMergerTest {
     val t = assertFailsWith<IllegalArgumentException> {
       merger.add("""<api version="2"/>""")
     }
-    assertThat(t).hasMessageThat()
-      .isEqualTo("Only Redwood API XML version 1 is supported. Found: 2")
+    assertThat(t).hasMessage("Only Redwood API XML version 1 is supported. Found: 2")
   }
 
   @Test fun widgetTakesHigherSince() {
