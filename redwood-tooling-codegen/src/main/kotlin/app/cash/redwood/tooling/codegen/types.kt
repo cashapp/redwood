@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.UNIT
 
 internal object Protocol {
   val ChildrenTag = ClassName("app.cash.redwood.protocol", "ChildrenTag")
+  val ChildrenDiff = ClassName("app.cash.redwood.protocol", "ChildrenDiff")
   val Diff = ClassName("app.cash.redwood.protocol", "Diff")
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
@@ -69,6 +70,8 @@ internal object Redwood {
 internal object RedwoodTesting {
   val MutableWidget = ClassName("app.cash.redwood.compose.testing", "MutableWidget")
   val RedwoodTester = ClassName("app.cash.redwood.compose.testing", "RedwoodTester")
+  val ViewTree = ClassName("app.cash.redwood.compose.testing", "ViewTree")
+  val ViewTreeBuilder = ViewTree.nestedClass("Builder")
   val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
 }
 

@@ -15,6 +15,10 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
+import app.cash.redwood.tooling.codegen.Protocol.Id
+import app.cash.redwood.tooling.codegen.RedwoodTesting.ViewTreeBuilder
+import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.SchemaSet
@@ -32,10 +36,12 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.buildCodeBlock
 
 /*
 @OptIn(RedwoodCodegenApi::class)
@@ -281,6 +287,20 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .add("layoutModifiers,\n")
   val toStringBuilder = StringBuilder()
     .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
+  val childrenDiff = MemberName("app.cash.redwood.protocol","ChildrenDiff")
+  val addToBuilder = CodeBlock.builder()
+    .addStatement("val widgetId = Id(builder.nextId++)")
+    .addStatement("val widgetTag: WidgetTag = %L", buildCodeBlock {
+      val wt = MemberName("app.cash.redwood.protocol", "WidgetTag")
+      if (widget is ProtocolWidget) {
+        add("%M(${widget.tag})", wt)
+      }
+    })
+    .addStatement(
+      "val childrenDiff = %M.Insert(parentId, childrenTag, widgetId, widgetTag, 0)",
+      childrenDiff
+    )
+    .addStatement("builder.childrenDiffs.add(childrenDiff)")
 
   for (trait in widget.traits) {
     val type = when (trait) {
@@ -309,6 +329,26 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
+    val encodeToJsonElement = MemberName(
+      "kotlinx.serialization.json",
+      "encodeToJsonElement"
+    )
+    val propertyDiff = MemberName(
+      "app.cash.redwood.protocol",
+      "PropertyDiff"
+    )
+    val propertyTag = MemberName("app.cash.redwood.protocol", "PropertyTag")
+    if (trait is ProtocolWidget.ProtocolProperty) {
+      addToBuilder.addStatement(
+        "builder.propertyDiffs.add(%M(widgetId, %M(%L), builder.json.%M(this.%N)))",
+        propertyDiff,
+        propertyTag,
+        trait.tag,
+        encodeToJsonElement,
+        trait.name
+      )
+    }
+
     when (trait) {
       is Property, is Children -> {
         if (trait is Children) {
@@ -336,6 +376,14 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   hashCodeBuilder.add("⇤).hashCode()\n")
 
   toStringBuilder.append(")")
+
+  addToBuilder
+    .addStatement("val nextChildrenTag = childrenTag.value + 1")
+    .beginControlFlow("for (childrenList in childrenLists)")
+    .beginControlFlow("for (child in childrenList)")
+    .addStatement("child.addTo(widgetId, ChildrenTag(nextChildrenTag), builder)")
+    .endControlFlow()
+    .endControlFlow()
 
   return FileSpec.builder(widgetValueType)
     .addType(
@@ -374,6 +422,15 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(String::class)
             .addCode("return %P", toStringBuilder.toString())
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("addTo")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .addParameter("parentId", Id)
+            .addParameter("childrenTag", ChildrenTag)
+            .addParameter("builder", ViewTreeBuilder)
+            .addCode(addToBuilder.build())
             .build(),
         )
         .build(),

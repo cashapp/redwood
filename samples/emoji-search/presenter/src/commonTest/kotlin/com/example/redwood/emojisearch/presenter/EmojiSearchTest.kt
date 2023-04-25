@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.testing.flatten
+import app.cash.redwood.compose.testing.viewTree
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.widget.ColumnValue
 import com.example.redwood.emojisearch.compose.Text
@@ -33,6 +34,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /**
  * This test demonstrates typical use of [RedwoodTester].

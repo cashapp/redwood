@@ -16,6 +16,8 @@
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -76,5 +78,9 @@ class WidgetValueTest {
   class SimpleWidgetValue(
     override val layoutModifiers: LayoutModifier = LayoutModifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
-  ) : WidgetValue
+  ) : WidgetValue {
+    override fun addTo(parentId: Id, childrenTag: ChildrenTag, builder: ViewTree.Builder) {
+      // Intentionally empty
+    }
+  }
 }
