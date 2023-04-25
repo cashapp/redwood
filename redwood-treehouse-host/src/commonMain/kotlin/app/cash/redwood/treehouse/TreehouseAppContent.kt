@@ -285,7 +285,7 @@ private class ViewContentCodeBinding<A : AppService>(
       container = view.children as Widget.Children<Any>,
       factory = view.widgetSystem.widgetFactory(
         json = json,
-        protocolMismatchHandler = eventPublisher.protocolMismatchHandler(app),
+        protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler(app),
       ) as ProtocolNode.Factory<Any>,
       eventSink = this,
     )
