@@ -16,7 +16,13 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.flexbox.*
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexContainer
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.Size
+import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Default
@@ -113,16 +119,17 @@ public class UIViewFlexContainer(
     private var heightConstraint: NSLayoutConstraint? = null
 
     override fun didMoveToSuperview() {
-      if (superview == null) return
-      translatesAutoresizingMaskIntoConstraints = false
-      widthContraint = widthAnchor.constraintEqualToConstant(0.0)
-      heightConstraint = heightAnchor.constraintEqualToConstant(0.0)
-      if(direction.isHorizontal) {
-        NSLayoutConstraint.activateConstraints(listOf(widthContraint))
-      } else if (direction.isVertical) {
-        NSLayoutConstraint.activateConstraints(listOf(heightConstraint))
-      } else {
-      throw AssertionError()
+      if (superview != null) {
+        translatesAutoresizingMaskIntoConstraints = false
+        widthContraint = widthAnchor.constraintEqualToConstant(0.0)
+        heightConstraint = heightAnchor.constraintEqualToConstant(0.0)
+        if (direction.isHorizontal) {
+          NSLayoutConstraint.activateConstraints(listOf(widthContraint))
+        } else if (direction.isVertical) {
+          NSLayoutConstraint.activateConstraints(listOf(heightConstraint))
+        } else {
+          throw AssertionError()
+        }
       }
       super.didMoveToSuperview()
     }
