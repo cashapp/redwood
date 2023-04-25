@@ -40,7 +40,7 @@ internal class ZiplineSession<A : AppService>(
   fun start() {
     sessionScope.launch(app.dispatchers.zipline) {
       val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(appLifecycle, app.eventPublisher)
+      val host = RealAppLifecycleHost(appLifecycle, app)
       appLifecycle.start(host)
       host.runFrameClock()
     }
@@ -58,7 +58,7 @@ internal class ZiplineSession<A : AppService>(
 /** Platform features to the guest application. */
 private class RealAppLifecycleHost(
   val appLifecycle: AppLifecycle,
-  val eventPublisher: EventPublisher,
+  val app: TreehouseApp<*>,
 ) : AppLifecycle.Host {
   private var frameRequested = false
 
@@ -70,14 +70,14 @@ private class RealAppLifecycleHost(
     widgetTag: WidgetTag,
     tag: EventTag,
   ) {
-    eventPublisher.onUnknownEvent(widgetTag, tag)
+    app.eventPublisher.onUnknownEvent(app, widgetTag, tag)
   }
 
   override fun onUnknownEventNode(
     id: Id,
     tag: EventTag,
   ) {
-    eventPublisher.onUnknownEventNode(id, tag)
+    app.eventPublisher.onUnknownEventNode(app, id, tag)
   }
 
   suspend fun runFrameClock() {

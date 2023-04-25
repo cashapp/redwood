@@ -155,12 +155,12 @@ internal class EventPublisher(
       }
     }
 
-  fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    listener.onUnknownEvent(widgetTag, tag)
+  fun onUnknownEvent(app: TreehouseApp<*>, widgetTag: WidgetTag, tag: EventTag) {
+    listener.onUnknownEvent(app, widgetTag, tag)
   }
 
-  fun onUnknownEventNode(id: Id, tag: EventTag) {
-    listener.onUnknownEventNode(id, tag)
+  fun onUnknownEventNode(app: TreehouseApp<*>, id: Id, tag: EventTag) {
+    listener.onUnknownEventNode(app, id, tag)
   }
 
   fun widgetProtocolMismatchHandler(app: TreehouseApp<*>): ProtocolMismatchHandler = object : ProtocolMismatchHandler {

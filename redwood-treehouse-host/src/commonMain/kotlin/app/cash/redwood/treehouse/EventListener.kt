@@ -151,13 +151,19 @@ public abstract class EventListener {
   }
 
   /** Invoked on a request to process an unknown event [tag] for the specified widget [widgetTag]. */
-  public open fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    println("Unknown event tag ${tag.value} for widget tag ${widgetTag.value}")
+  public open fun onUnknownEvent(
+    app: TreehouseApp<*>,
+    widgetTag: WidgetTag,
+    tag: EventTag,
+  ) {
   }
 
   /** Invoked for an event whose node [id] is unknown. */
-  public fun onUnknownEventNode(id: Id, tag: EventTag) {
-    println("Unknown node ID ${id.value} for event with tag ${tag.value}")
+  public fun onUnknownEventNode(
+    app: TreehouseApp<*>,
+    id: Id,
+    tag: EventTag,
+  ) {
   }
 
   /**
