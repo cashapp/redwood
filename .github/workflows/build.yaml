@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3.11.0
@@ -36,7 +36,7 @@ jobs:
           if-no-files-found: error
 
   connected:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3.11.0
@@ -67,7 +67,7 @@ jobs:
       - run: ./gradlew verifyPaparazziDebug
 
   sample-counter:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3.11.0
@@ -92,7 +92,7 @@ jobs:
           xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   sample-emoji:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3.11.0
@@ -111,7 +111,7 @@ jobs:
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   sample-repo:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3.11.0
@@ -124,7 +124,7 @@ jobs:
       - run: ./gradlew -p samples/repo-search build
 
   publish:
-    runs-on: macos-latest
+    runs-on: macos-latest-xl
     if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
     needs:
       - build
