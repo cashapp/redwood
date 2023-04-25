@@ -122,7 +122,7 @@ public class UIViewFlexContainer(
       } else if (direction.isVertical) {
         NSLayoutConstraint.activateConstraints(listOf(heightConstraint))
       } else {
-        //Unknown??
+      throw AssertionError()
       }
       super.didMoveToSuperview()
     }
