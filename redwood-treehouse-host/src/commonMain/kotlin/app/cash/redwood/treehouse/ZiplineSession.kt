@@ -66,12 +66,18 @@ private class RealAppLifecycleHost(
     frameRequested = true
   }
 
-  override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    eventPublisher.composeProtocolMismatchHandler().onUnknownEvent(widgetTag, tag)
+  override fun onUnknownEvent(
+    widgetTag: WidgetTag,
+    tag: EventTag,
+  ) {
+    eventPublisher.onUnknownEvent(widgetTag, tag)
   }
 
-  override fun onUnknownEventNode(id: Id, tag: EventTag) {
-    eventPublisher.composeProtocolMismatchHandler().onUnknownEventNode(id, tag)
+  override fun onUnknownEventNode(
+    id: Id,
+    tag: EventTag,
+  ) {
+    eventPublisher.onUnknownEventNode(id, tag)
   }
 
   suspend fun runFrameClock() {

@@ -21,7 +21,6 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.compose.ProtocolMismatchHandler as ComposeProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
@@ -29,22 +28,22 @@ import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineService
 
-public class EventPublisher(
+internal class EventPublisher(
   private val listener: EventListener,
 ) {
   private var nameToApplication = mapOf<String, TreehouseApp<*>>()
 
-  public fun appStart(app: TreehouseApp<*>) {
+  fun appStart(app: TreehouseApp<*>) {
     nameToApplication = nameToApplication + (app.spec.name to app)
     listener.appStart(app)
   }
 
-  public fun appCanceled(app: TreehouseApp<*>) {
+  fun appCanceled(app: TreehouseApp<*>) {
     nameToApplication = nameToApplication - app.spec.name
     listener.appCanceled(app)
   }
 
-  public fun ziplineEventListener(app: TreehouseApp<*>): app.cash.zipline.EventListener =
+  fun ziplineEventListener(app: TreehouseApp<*>): app.cash.zipline.EventListener =
     object : ZiplineEventListener() {
       override fun applicationLoadStart(
         applicationName: String,
@@ -155,8 +154,15 @@ public class EventPublisher(
         listener.codeUnloaded(app, zipline)
       }
     }
+  fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+    listener.onUnknownEvent(widgetTag, tag)
+  }
 
-  public fun widgetProtocolMismatchHandler(app: TreehouseApp<*>): ProtocolMismatchHandler = object : ProtocolMismatchHandler {
+  fun onUnknownEventNode(id: Id, tag: EventTag) {
+    listener.onUnknownEventNode(id, tag)
+  }
+
+  fun widgetProtocolMismatchHandler(app: TreehouseApp<*>): ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownWidget(tag: WidgetTag) {
       listener.onUnknownWidget(app, tag)
     }
@@ -171,16 +177,6 @@ public class EventPublisher(
 
     override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
       listener.onUnknownProperty(app, widgetTag, tag)
-    }
-  }
-
-  public fun composeProtocolMismatchHandler(): ComposeProtocolMismatchHandler = object : ComposeProtocolMismatchHandler {
-    override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-      listener.onUnknownEvent(widgetTag, tag)
-    }
-
-    override fun onUnknownEventNode(id: Id, tag: EventTag) {
-      listener.onUnknownEventNode(id, tag)
     }
   }
 }

@@ -19,7 +19,6 @@ kotlin {
         api libs.zipline
         api libs.zipline.loader
         api projects.redwoodProtocol
-        api projects.redwoodProtocolCompose
         api projects.redwoodProtocolWidget
         api projects.redwoodTreehouse
       }
