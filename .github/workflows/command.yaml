@@ -1,0 +1,57 @@
+name: command
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  spotless:
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/spotless')
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3.11.0
+        with:
+          distribution: 'zulu'
+          java-version: 19
+
+      - run: gh pr checkout ${{ github.event.issue.number }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: ./gradlew spotlessApply
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply Spotless
+
+  yarn:
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/yarn')
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3.11.0
+        with:
+          distribution: 'zulu'
+          java-version: 20
+
+      - run: gh pr checkout ${{ github.event.pull_request.number }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: ./gradlew kotlinUpgradeYarnLock
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update yarn.lock
