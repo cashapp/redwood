@@ -26,14 +26,16 @@ import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import example.redwood.compose.TestScope
 import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import example.redwood.widget.TextInput
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.json.Json
@@ -55,7 +57,7 @@ class ProtocolNodeFactoryTest {
     val t = assertFailsWith<IllegalArgumentException> {
       factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))
     }
-    assertEquals("Unknown widget tag 345432", t.message)
+    assertThat(t).hasMessage("Unknown widget tag 345432")
   }
 
   @Test fun unknownWidgetCallsHandler() {
@@ -68,9 +70,9 @@ class ProtocolNodeFactoryTest {
       mismatchHandler = handler,
     )
 
-    assertNull(factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432)))
+    assertThat(factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))).isNull()
 
-    assertEquals("Unknown widget 345432", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown widget 345432")
   }
 
   @Test fun layoutModifierUsesSerializerModule() {
@@ -103,7 +105,7 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertEquals(LayoutModifier.customType(10.seconds), recordingTextInput.layoutModifiers)
+      assertThat(recordingTextInput.layoutModifiers).isEqualTo(LayoutModifier.customType(10.seconds))
     }
   }
 
@@ -137,7 +139,12 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertEquals(LayoutModifier.customTypeWithDefault(10.seconds, "sup"), recordingTextInput.layoutModifiers)
+      assertThat(recordingTextInput.layoutModifiers).isEqualTo(
+        LayoutModifier.customTypeWithDefault(
+          10.seconds,
+          "sup",
+        ),
+      )
     }
   }
 
@@ -160,7 +167,7 @@ class ProtocolNodeFactoryTest {
         ),
       )
     }
-    assertEquals("Unknown layout modifier tag 345432", t.message)
+    assertThat(t).hasMessage("Unknown layout modifier tag 345432")
   }
 
   @Test fun unknownLayoutModifierCallsHandler() {
@@ -199,11 +206,15 @@ class ProtocolNodeFactoryTest {
       ),
     )
 
-    assertEquals("Unknown layout modifier 345432", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown layout modifier 345432")
 
     // Ensure only the invalid LayoutModifier was discarded and not all of them.
     with(object : TestScope {}) {
-      assertEquals(LayoutModifier.accessibilityDescription("hi"), recordingTextInput.layoutModifiers)
+      assertThat(recordingTextInput.layoutModifiers).isEqualTo(
+        LayoutModifier.accessibilityDescription(
+          "hi",
+        ),
+      )
     }
   }
 
@@ -219,7 +230,7 @@ class ProtocolNodeFactoryTest {
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(ChildrenTag(345432))
     }
-    assertEquals("Unknown children tag 345432 for widget tag 4", t.message)
+    assertThat(t).hasMessage("Unknown children tag 345432 for widget tag 4")
   }
 
   @Test fun unknownChildrenCallsHandler() {
@@ -233,9 +244,9 @@ class ProtocolNodeFactoryTest {
     )
 
     val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
-    assertNull(button.children(ChildrenTag(345432)))
+    assertThat(button.children(ChildrenTag(345432))).isNull()
 
-    assertEquals("Unknown children 345432 for 4", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown children 345432 for 4")
   }
 
   @Test fun propertyUsesSerializersModule() {
@@ -259,7 +270,7 @@ class ProtocolNodeFactoryTest {
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
 
-    assertEquals(10.seconds, recordingTextInput.customType)
+    assertThat(recordingTextInput.customType).isEqualTo(10.seconds)
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
@@ -276,7 +287,7 @@ class ProtocolNodeFactoryTest {
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(diff, eventSink)
     }
-    assertEquals("Unknown property tag 345432 for widget tag 4", t.message)
+    assertThat(t).hasMessage("Unknown property tag 345432 for widget tag 4")
   }
 
   @Test fun unknownPropertyCallsHandler() {
@@ -292,7 +303,7 @@ class ProtocolNodeFactoryTest {
 
     button.apply(PropertyDiff(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
-    assertEquals("Unknown property 345432 for 4", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown property 345432 for 4")
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -318,7 +329,8 @@ class ProtocolNodeFactoryTest {
 
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
-    assertEquals(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")), eventSink.events.single())
+    assertThat(eventSink.events.single())
+      .isEqualTo(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
   }
 
   class RecordingTextInput : TextInput<Nothing> {

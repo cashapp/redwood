@@ -30,12 +30,13 @@ import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import example.redwood.compose.Button
 import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.plus
@@ -58,7 +59,7 @@ class ProtocolTest {
     }
     composition.cancel()
 
-    assertEquals(22U, actualDisplayVersion)
+    assertThat(actualDisplayVersion).isEqualTo(22U)
   }
 
   @Test fun childrenInheritIdFromSyntheticParent() = runTest {
@@ -79,7 +80,7 @@ class ProtocolTest {
       }
     }
 
-    assertEquals(
+    assertThat(diffClock.awaitDiff()).isEqualTo(
       Diff(
         childrenDiffs = listOf(
           ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(1) /* row */, 0),
@@ -98,7 +99,6 @@ class ProtocolTest {
           PropertyDiff(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
         ),
       ),
-      diffClock.awaitDiff(),
     )
 
     composition.cancel()
@@ -128,7 +128,7 @@ class ProtocolTest {
       )
     }
 
-    assertEquals(
+    assertThat(diffClock.awaitDiff()).isEqualTo(
       Diff(
         childrenDiffs = listOf(
           ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(4) /* button */, 0),
@@ -141,44 +141,40 @@ class ProtocolTest {
           PropertyDiff(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
         ),
       ),
-      diffClock.awaitDiff(),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertEquals(
+    assertThat(diffClock.awaitDiff()).isEqualTo(
       Diff(
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
         ),
       ),
-      diffClock.awaitDiff(),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertEquals(
+    assertThat(diffClock.awaitDiff()).isEqualTo(
       Diff(
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 2")),
           PropertyDiff(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
         ),
       ),
-      diffClock.awaitDiff(),
     )
 
     // Manually advance state from 2 to 3 to test null to null case.
     state = 3
 
-    assertEquals(
+    assertThat(diffClock.awaitDiff()).isEqualTo(
       Diff(
         propertyDiffs = listOf(
           PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
         ),
       ),
-      diffClock.awaitDiff(),
     )
 
     composition.cancel()

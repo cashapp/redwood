@@ -21,10 +21,11 @@ import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
+import assertk.assertThat
+import assertk.assertions.hasMessage
 import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class ProtocolBridgeTest {
@@ -53,7 +54,7 @@ class ProtocolBridgeTest {
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendDiff(diff)
     }
-    assertEquals("Insert attempted to replace existing widget with ID 0", t.message)
+    assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 0")
   }
 
   @Test fun duplicateIdThrows() {
@@ -82,6 +83,6 @@ class ProtocolBridgeTest {
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendDiff(diff)
     }
-    assertEquals("Insert attempted to replace existing widget with ID 1", t.message)
+    assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
   }
 }

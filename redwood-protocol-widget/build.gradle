@@ -19,9 +19,10 @@ kotlin {
     }
     commonTest {
       dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
         implementation projects.testSchema.compose
         implementation projects.testSchema.widget.protocol
-        implementation libs.kotlin.test
       }
     }
   }

@@ -16,8 +16,9 @@
 package app.cash.redwood.treehouse
 
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -29,24 +30,24 @@ class SequentialStateFlowTest {
   fun happyPath() = runTest {
     val ab = MutableStateFlow("a")
     val sequentialStateFlow = SequentialStateFlow(ab)
-    assertEquals("a", sequentialStateFlow.value)
+    assertThat(sequentialStateFlow.value).isEqualTo("a")
 
     sequentialStateFlow.test {
-      assertEquals("a", awaitItem())
-      assertEquals("a", sequentialStateFlow.value)
+      assertThat(awaitItem()).isEqualTo("a")
+      assertThat(sequentialStateFlow.value).isEqualTo("a")
 
       ab.value = "b"
-      assertEquals("b", sequentialStateFlow.value)
-      assertEquals("b", awaitItem())
+      assertThat(sequentialStateFlow.value).isEqualTo("b")
+      assertThat(awaitItem()).isEqualTo("b")
 
       val cd = MutableStateFlow("c")
       sequentialStateFlow.stateFlowValue.value = cd
-      assertEquals("c", sequentialStateFlow.value)
-      assertEquals("c", awaitItem())
+      assertThat(sequentialStateFlow.value).isEqualTo("c")
+      assertThat(awaitItem()).isEqualTo("c")
 
       cd.value = "d"
-      assertEquals("d", sequentialStateFlow.value)
-      assertEquals("d", awaitItem())
+      assertThat(sequentialStateFlow.value).isEqualTo("d")
+      assertThat(awaitItem()).isEqualTo("d")
     }
   }
 
@@ -55,15 +56,15 @@ class SequentialStateFlowTest {
     val ab = MutableStateFlow("a")
     val sequentialStateFlow = SequentialStateFlow(ab)
     sequentialStateFlow.test {
-      assertEquals("a", awaitItem())
+      assertThat(awaitItem()).isEqualTo("a")
 
       val cd = MutableStateFlow("c")
       sequentialStateFlow.stateFlowValue.value = cd
-      assertEquals("c", awaitItem())
+      assertThat(awaitItem()).isEqualTo("c")
 
       ab.value = "b" // The flow should not emit this value!
       cd.value = "d"
-      assertEquals("d", awaitItem())
+      assertThat(awaitItem()).isEqualTo("d")
     }
   }
 
@@ -72,7 +73,7 @@ class SequentialStateFlowTest {
     val ab = MutableStateFlow("a")
     val sequentialStateFlow = SequentialStateFlow(ab)
     sequentialStateFlow.test {
-      assertEquals("a", awaitItem())
+      assertThat(awaitItem()).isEqualTo("a")
 
       val cd = MutableStateFlow("c")
       sequentialStateFlow.stateFlowValue.value = cd
@@ -81,8 +82,8 @@ class SequentialStateFlowTest {
       sequentialStateFlow.stateFlowValue.value = ef
 
       // Because Turbine receives without suspending, emit("c") completes before that collect is canceled.
-      assertEquals("c", awaitItem())
-      assertEquals("e", awaitItem())
+      assertThat(awaitItem()).isEqualTo("c")
+      assertThat(awaitItem()).isEqualTo("e")
     }
   }
 }
