@@ -24,6 +24,7 @@ import platform.UIKit.UIControlStateNormal
 import platform.UIKit.UIView
 import platform.objc.sel_registerName
 
+// NOTE: This class must be public for the click selector to work.
 class IosButton : Button<UIView> {
   override val value = UIButton()
 
