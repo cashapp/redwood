@@ -36,6 +36,7 @@ import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import example.redwood.ExampleSchema
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -48,6 +49,8 @@ class SchemaParserTest(
   interface NonAnnotationSchema
 
   @Test fun nonAnnotatedSchemaThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonAnnotationSchema::class)
     }.hasMessage(
@@ -66,6 +69,8 @@ class SchemaParserTest(
   )
 
   @Test fun nonAnnotatedWidgetThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonAnnotatedWidgetSchema::class)
     }.hasMessage(
@@ -87,6 +92,8 @@ class SchemaParserTest(
   )
 
   @Test fun doubleAnnotatedWidgetThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DoubleAnnotatedWidgetSchema::class)
     }.hasMessage(
@@ -119,6 +126,8 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateWidgetTagThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicateWidgetTagSchema::class)
     }.hasMessage(
@@ -155,6 +164,8 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateLayoutModifierTagThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicateLayoutModifierTagSchema::class)
     }.hasMessage(
@@ -180,6 +191,8 @@ class SchemaParserTest(
   )
 
   @Test fun repeatedWidgetTypeThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(RepeatedWidgetTypeSchema::class)
     }.hasMessage(
@@ -206,6 +219,8 @@ class SchemaParserTest(
   )
 
   @Test fun duplicatePropertyTagThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicatePropertyTagSchema::class)
     }.hasMessage(
@@ -232,6 +247,8 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateChildrenTagThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicateChildrenTagSchema::class)
     }.hasMessage(
@@ -258,6 +275,8 @@ class SchemaParserTest(
   )
 
   @Test fun unannotatedPrimaryParameterThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(UnannotatedPrimaryParameterSchema::class)
     }.hasMessage(
@@ -278,6 +297,8 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassWidgetThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonDataClassWidgetSchema::class)
     }.hasMessage(
@@ -298,6 +319,8 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassLayoutModifierThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonDataClassLayoutModifierSchema::class)
     }.hasMessage(
@@ -318,6 +341,8 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenTypeThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(InvalidChildrenTypeSchema::class)
     }.hasMessage(
@@ -338,6 +363,8 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(InvalidChildrenLambdaReturnTypeSchema::class)
     }.hasMessage(
@@ -358,6 +385,8 @@ class SchemaParserTest(
   )
 
   @Test fun childrenArgumentsInvalid() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ChildrenArgumentsInvalidSchema::class)
     }.hasMessage(
@@ -379,6 +408,8 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenArgumentsInvalid() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ScopedChildrenArgumentsInvalidSchema::class)
     }.hasMessage(
@@ -400,6 +431,8 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenInvalid() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ScopedChildrenInvalidSchema::class)
     }.hasMessage(
@@ -421,6 +454,8 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenTypeParameterInvalid() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ScopedChildrenTypeParameterInvalidSchema::class)
     }.hasMessage(
@@ -443,6 +478,8 @@ class SchemaParserTest(
   )
 
   @Test fun eventTypes() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     val schema = parser.parse(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
@@ -464,6 +501,8 @@ class SchemaParserTest(
   )
 
   @Test fun eventArguments() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     val schema = parser.parse(EventArgumentsSchema::class).schema
     val widget = schema.widgets.single()
 
@@ -488,6 +527,8 @@ class SchemaParserTest(
   )
 
   @Test fun eventArgumentsInvalid() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(EventArgumentsInvalidSchema::class)
     }.hasMessage(
@@ -507,6 +548,8 @@ class SchemaParserTest(
   object ObjectWidget
 
   @Test fun objectWidget() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     val schema = parser.parse(ObjectSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
@@ -523,6 +566,8 @@ class SchemaParserTest(
   object OneMillionWidget
 
   @Test fun widgetTagOneMillionThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(OneMillionWidgetSchema::class)
     }.hasMessage(
@@ -542,6 +587,8 @@ class SchemaParserTest(
   object ZeroWidget
 
   @Test fun widgetTagZeroThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ZeroWidgetSchema::class)
     }.hasMessage(
@@ -563,6 +610,8 @@ class SchemaParserTest(
   )
 
   @Test fun layoutModifierTagOneMillionThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(OneMillionLayoutModifierSchema::class)
     }.hasMessage(
@@ -584,6 +633,8 @@ class SchemaParserTest(
   )
 
   @Test fun layoutModifierTagZeroThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ZeroLayoutModifierSchema::class)
     }.hasMessage(
@@ -607,6 +658,8 @@ class SchemaParserTest(
   )
 
   @Test fun schemaTagDefault() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     val schema = parser.parse(SchemaTag::class).schema
 
     val widget = schema.widgets.single()
@@ -627,6 +680,8 @@ class SchemaParserTest(
   object SchemaDependencyTagOffsetsMemberTags
 
   @Test fun schemaTagOffsetsMemberTags() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     val schema = parser.parse(SchemaDependencyTagOffsetsMemberTags::class)
     val dependency = schema.dependencies.values.single()
 
@@ -658,6 +713,8 @@ class SchemaParserTest(
   object SchemaDependencyTagTooLow
 
   @Test fun dependencyTagTooHighThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyTagTooHigh::class)
     }.hasMessage(
@@ -680,6 +737,8 @@ class SchemaParserTest(
   object SchemaDependencyTagZero
 
   @Test fun dependencyTagZeroThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyTagZero::class)
     }.hasMessage(
@@ -703,6 +762,8 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTagB
 
   @Test fun schemaDuplicateDependencyTagThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDuplicateDependencyTag::class)
     }.hasMessage(
@@ -727,6 +788,8 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTypeOther
 
   @Test fun schemaDuplicateDependencyTypeThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDuplicateDependencyType::class)
     }.hasMessage(
@@ -747,6 +810,8 @@ class SchemaParserTest(
   object SchemaDependencyHasDependency
 
   @Test fun schemaDependencyHasDependencyThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyHasDependency::class)
     }.hasMessage(
@@ -766,6 +831,8 @@ class SchemaParserTest(
   object SchemaWidgetDuplicateInDependency
 
   @Test fun schemaWidgetDuplicateInDependencyThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaWidgetDuplicateInDependency::class)
     }.hasMessage(
@@ -788,6 +855,8 @@ class SchemaParserTest(
   object UnscopedLayoutModifier
 
   @Test fun `layout modifier must have at least one scope`() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(UnscopedModifierSchema::class)
     }.hasMessage(
@@ -810,6 +879,8 @@ class SchemaParserTest(
   )
 
   @Test fun deprecationHiddenThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DeprecationHiddenSchema::class)
     }.hasMessage(
@@ -831,6 +902,8 @@ class SchemaParserTest(
   object DeprecationReplaceWithWidget
 
   @Test fun deprecationReplaceWithThrows() {
+    assumeTrue(parser != SchemaParser.Fir)
+
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DeprecationReplaceWithSchema::class)
     }.hasMessage(
@@ -846,6 +919,11 @@ class SchemaParserTest(
         return parseProtocolSchemaSet(type)
       }
     },
+    Fir {
+      override fun parse(type: KClass<*>): ProtocolSchemaSet {
+        throw AssertionError("Not implemented!")
+      }
+    }
     ;
 
     abstract fun parse(type: KClass<*>): ProtocolSchemaSet
