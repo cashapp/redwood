@@ -50,7 +50,7 @@ jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jbCompose" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.4.2" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.0.0" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.13.0" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "3.5.2" }
 junit = { module = "junit:junit", version = "4.13.2" }
