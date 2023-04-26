@@ -17,8 +17,9 @@ package app.cash.redwood.flexbox
 
 import app.cash.redwood.flexbox.FlexDirection.Companion.Column
 import app.cash.redwood.flexbox.FlexDirection.Companion.Row
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class FlexContainerStringCanvasTest {
   private val imdbTop4 = listOf(
@@ -37,7 +38,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(14, 20, widgets)).isEqualTo(
       """
       ┌──────────┐··
       |The       │··
@@ -60,7 +61,6 @@ class FlexContainerStringCanvasTest {
       ··············
       ··············
       """.trimIndent(),
-      container.layout(14, 20, widgets),
     )
   }
 
@@ -74,7 +74,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(20, 22, widgets)).isEqualTo(
       """
       ····················
       ····················
@@ -99,7 +99,6 @@ class FlexContainerStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      container.layout(20, 22, widgets),
     )
   }
 
@@ -113,7 +112,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(20, 20, widgets)).isEqualTo(
       """
       ··┌─────────────┐···
       ··|The Shawshank│···
@@ -136,7 +135,6 @@ class FlexContainerStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      container.layout(20, 20, widgets),
     )
   }
 
@@ -150,7 +148,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(20, 22, widgets)).isEqualTo(
       """
       ┌──────────────────┐
       |The Shawshank     │
@@ -175,7 +173,6 @@ class FlexContainerStringCanvasTest {
       ····················
       ····················
       """.trimIndent(),
-      container.layout(20, 22, widgets),
     )
   }
 
@@ -188,7 +185,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(60, 8, widgets)).isEqualTo(
       """
       ┌───────────────────┐┌─────────┐┌──────────┐┌──────────────┐
       |The Shawshank      │|The      │|The Dark  │|The Godfather │
@@ -199,7 +196,6 @@ class FlexContainerStringCanvasTest {
       ····························································
       ····························································
       """.trimIndent(),
-      container.layout(60, 8, widgets),
     )
   }
 
@@ -215,7 +211,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(60, 6, widgets)).isEqualTo(
       """
       ·········┌──────────┐┌─────────┐┌──────┐┌─────────┐·········
       ·········|The       │|The      │|The   │|The      │·········
@@ -224,7 +220,6 @@ class FlexContainerStringCanvasTest {
       ·········└──────────┘···········└──────┘|         │·········
       ········································└─────────┘·········
       """.trimIndent(),
-      container.layout(60, 6, widgets),
     )
   }
 
@@ -238,7 +233,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(42, 8, widgets)).isEqualTo(
       """
       ··········································
       ┌──────────┐···········┌──────┐┌─────────┐
@@ -249,7 +244,6 @@ class FlexContainerStringCanvasTest {
       ··········································
       ··········································
       """.trimIndent(),
-      container.layout(42, 8, widgets),
     )
   }
 
@@ -263,7 +257,7 @@ class FlexContainerStringCanvasTest {
       roundToInt = true
     }
 
-    assertEquals(
+    assertThat(container.layout(100, 8, widgets)).isEqualTo(
       """
       ┌────────────────────────┐┌─────────────┐┌───────────────┐┌─────────────────────┐···················
       |The Shawshank Redemption│|The Godfather│|The Dark Knight│|The Godfather Part II│···················
@@ -274,7 +268,6 @@ class FlexContainerStringCanvasTest {
       |                        │|             │|               │|                     │···················
       └────────────────────────┘└─────────────┘└───────────────┘└─────────────────────┘···················
       """.trimIndent(),
-      container.layout(100, 8, widgets),
     )
   }
 
