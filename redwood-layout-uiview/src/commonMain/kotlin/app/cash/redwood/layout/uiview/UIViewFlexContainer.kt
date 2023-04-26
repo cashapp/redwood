@@ -135,7 +135,7 @@ internal class UIViewFlexContainer(
       setContentSize(
         CGSizeMake(
           width = container.items.maxOfOrNull { it.right } ?: 0.0,
-          height = container.items.maxOfOrNull { it.top } ?: 0.0,
+          height = container.items.maxOfOrNull { it.bottom } ?: 0.0,
         ),
       )
       superview?.setNeedsLayout()
