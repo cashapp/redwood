@@ -8,5 +8,5 @@ dependencies {
   testImplementation projects.testSchema
   testImplementation projects.testSchema.compose
   testImplementation libs.junit
-  testImplementation libs.truth
+  testImplementation libs.assertk
 }

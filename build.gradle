@@ -120,6 +120,21 @@ allprojects {
     }
   }
 
+  // Workaround for https://github.com/Kotlin/dokka/issues/2977.
+  // We disable the C Interop IDE metadata task when generating documentation using Dokka.
+  gradle.taskGraph.whenReady {
+    def hasDokkaTasks = gradle.taskGraph.allTasks.any {
+      it instanceof org.jetbrains.dokka.gradle.AbstractDokkaTask
+    }
+    if (hasDokkaTasks) {
+      tasks.withType(
+        org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask
+      ).configureEach {
+        enabled = false
+      }
+    }
+  }
+
   // Disable the release linking tasks because we never need it for iOS sample applications.
   // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
   plugins.withId('org.jetbrains.kotlin.multiplatform') {

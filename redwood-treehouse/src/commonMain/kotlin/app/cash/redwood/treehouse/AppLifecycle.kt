@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
@@ -26,5 +29,9 @@ public interface AppLifecycle : ZiplineService {
 
   public interface Host : ZiplineService {
     public fun requestFrame()
+
+    public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
+
+    public fun onUnknownEventNode(id: Id, tag: EventTag)
   }
 }

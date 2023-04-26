@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.protocol.ChildrenDiff
@@ -24,9 +23,10 @@ import app.cash.redwood.protocol.PropertyDiff
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+// TODO: Add support LayoutModifiers.
 @Serializable
 public class ViewTree(
-  public val diff: Diff
+  public val diff: Diff,
 ) {
   public class Builder {
     public var nextId: Int = Id.Root.value
@@ -47,7 +47,7 @@ public class ViewTree(
 public val List<WidgetValue>.viewTree: ViewTree
   get() {
     val builder = ViewTree.Builder()
-    val root = builder.nextId
+    val root = builder.nextId++
 
     for (widget in this) {
       widget.addTo(Id(root), ChildrenTag.Root, builder)
@@ -59,6 +59,6 @@ public val List<WidgetValue>.viewTree: ViewTree
 public val WidgetValue.viewTree: ViewTree
   get() {
     val builder = ViewTree.Builder()
-    addTo(Id(builder.nextId), ChildrenTag.Root, builder)
+    addTo(Id(builder.nextId++), ChildrenTag.Root, builder)
     return builder.build()
   }

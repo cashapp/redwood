@@ -19,10 +19,12 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import com.google.common.truth.Truth.assertThat
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.matchesPredicate
 import example.redwood.ExampleSchema
-import java.util.regex.Pattern
-import java.util.regex.Pattern.MULTILINE
+import kotlin.text.RegexOption.MULTILINE
 import org.junit.Test
 
 class WidgetProtocolGenerationTest {
@@ -52,16 +54,17 @@ class WidgetProtocolGenerationTest {
     val schema = ProtocolSchemaSet.parse(SortedByTagSchema::class)
 
     val fileSpec = generateProtocolNodeFactory(schema)
-    assertThat(fileSpec.toString()).containsMatch(
-      Pattern.compile("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE),
-    )
+
+    // https://github.com/willowtreeapps/assertk/issues/452
+    val regex = Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE)
+    assertThat(fileSpec.toString()).matchesPredicate(regex::containsMatchIn)
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schema = ProtocolSchemaSet.parse(ExampleSchema::class)
 
     val fileSpec = generateWidgetProtocolLayoutModifierSerialization(schema)
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains("1 -> RowVerticalAlignmentImpl.serializer()")
       contains("1_000_001 -> GrowImpl.serializer()")
     }

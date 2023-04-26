@@ -126,6 +126,7 @@ internal object KotlinxSerialization {
   val SerialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")
   val buildClassSerialDescriptor = MemberName("kotlinx.serialization.descriptors", "buildClassSerialDescriptor")
   val element = MemberName("kotlinx.serialization.descriptors", "element")
+  val encodeToJsonElement = MemberName("kotlinx.serialization.json", "encodeToJsonElement")
 
   val Decoder = ClassName("kotlinx.serialization.encoding", "Decoder")
   val Encoder = ClassName("kotlinx.serialization.encoding", "Encoder")

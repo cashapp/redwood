@@ -23,8 +23,10 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,9 +45,9 @@ class TreehouseUIKitViewTest {
 
     val view = UIView()
     layout.children.insert(0, viewWidget(view))
-    assertEquals(1, layout.view.subviews.size)
+    assertThat(layout.view.subviews).hasSize(1)
     // For some reason `assertSame` fails on these references.
-    assertEquals(view.objcPtr(), layout.view.subviews[0].objcPtr())
+    assertThat(layout.view.subviews[0].objcPtr()).isEqualTo(view.objcPtr())
   }
 
   @Test fun attachAndDetachSendsStateChange() {
@@ -54,23 +56,23 @@ class TreehouseUIKitViewTest {
     val listener = CountingReadyForContentChangeListener()
 
     layout.readyForContentChangeListener = listener
-    assertEquals(0, listener.count)
+    assertThat(listener.count).isEqualTo(0)
 
     parent.addSubview(layout.view)
-    assertEquals(1, listener.count)
+    assertThat(listener.count).isEqualTo(1)
 
     layout.view.removeFromSuperview()
-    assertEquals(2, listener.count)
+    assertThat(listener.count).isEqualTo(2)
   }
 
   @Test fun resetClearsUntrackedChildren() {
     val layout = TreehouseUIKitView(throwingWidgetSystem)
 
     layout.view.addSubview(UIView())
-    assertEquals(1, layout.view.subviews.size)
+    assertThat(layout.view.subviews).hasSize(1)
 
     layout.reset()
-    assertEquals(0, layout.view.subviews.size)
+    assertThat(layout.view.subviews).hasSize(0)
   }
 
   @Test fun resetClearsTrackedWidgets() {
@@ -80,10 +82,10 @@ class TreehouseUIKitViewTest {
     val children = layout.children as UIViewChildren
 
     children.insert(0, viewWidget(UIView()))
-    assertEquals(1, children.widgets.size)
+    assertThat(children.widgets).hasSize(1)
 
     layout.reset()
-    assertEquals(0, children.widgets.size)
+    assertThat(children.widgets).hasSize(0)
   }
 
   @Test
@@ -94,7 +96,7 @@ class TreehouseUIKitViewTest {
     val layout = TreehouseUIKitView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertEquals(HostConfiguration(darkMode = true), layout.hostConfiguration.value)
+    assertThat(layout.hostConfiguration.value).isEqualTo(HostConfiguration(darkMode = true))
   }
 
   @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
@@ -104,13 +106,13 @@ class TreehouseUIKitViewTest {
     parent.addSubview(layout.view)
 
     layout.hostConfiguration.test {
-      assertEquals(HostConfiguration(darkMode = false), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = false))
 
       parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
       // Style propagation through hierarchy is async so yield to run loop for any posted work.
       NSRunLoop.currentRunLoop.runUntilDate(NSDate())
 
-      assertEquals(HostConfiguration(darkMode = true), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = true))
     }
   }
 
@@ -127,7 +129,8 @@ class TreehouseUIKitViewTest {
     val layout = TreehouseUIKitView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), layout.hostConfiguration.value)
+    assertThat(layout.hostConfiguration.value)
+      .isEqualTo(HostConfiguration(safeAreaInsets = expectedInsets))
   }
 
   private fun viewWidget(view: UIView) = object : Widget<UIView> {

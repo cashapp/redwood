@@ -26,7 +26,11 @@ import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import example.redwood.ExampleSchema
 import kotlin.DeprecationLevel.HIDDEN
 import org.junit.Test
@@ -37,9 +41,9 @@ class SchemaParserTest {
   interface NonAnnotationSchema
 
   @Test fun nonAnnotatedSchemaThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(NonAnnotationSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Schema app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotationSchema missing @Schema annotation",
     )
   }
@@ -55,9 +59,9 @@ class SchemaParserTest {
   )
 
   @Test fun nonAnnotatedWidgetThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(NonAnnotatedWidgetSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @LayoutModifier",
     )
   }
@@ -76,9 +80,9 @@ class SchemaParserTest {
   )
 
   @Test fun doubleAnnotatedWidgetThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DoubleAnnotatedWidgetSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "app.cash.redwood.tooling.schema.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
     )
   }
@@ -108,9 +112,9 @@ class SchemaParserTest {
   )
 
   @Test fun duplicateWidgetTagThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DuplicateWidgetTagSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema @Widget tags must be unique
       |
@@ -144,9 +148,9 @@ class SchemaParserTest {
   )
 
   @Test fun duplicateLayoutModifierTagThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DuplicateLayoutModifierTagSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema @LayoutModifier tags must be unique
       |
@@ -169,9 +173,9 @@ class SchemaParserTest {
   )
 
   @Test fun repeatedWidgetTypeThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(RepeatedWidgetTypeSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema contains repeated member
       |
@@ -195,9 +199,9 @@ class SchemaParserTest {
   )
 
   @Test fun duplicatePropertyTagThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DuplicatePropertyTagSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |app.cash.redwood.tooling.schema.SchemaParserTest.DuplicatePropertyTagWidget's @Property tags must be unique
       |
@@ -221,9 +225,9 @@ class SchemaParserTest {
   )
 
   @Test fun duplicateChildrenTagThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DuplicateChildrenTagSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateChildrenTagWidget's @Children tags must be unique
       |
@@ -247,9 +251,9 @@ class SchemaParserTest {
   )
 
   @Test fun unannotatedPrimaryParameterThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(UnannotatedPrimaryParameterSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Unannotated parameter \"unannotated\" on app.cash.redwood.tooling.schema.SchemaParserTest.UnannotatedPrimaryParameterWidget",
     )
   }
@@ -267,9 +271,9 @@ class SchemaParserTest {
   )
 
   @Test fun nonDataClassWidgetThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(NonDataClassWidgetSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
     )
   }
@@ -287,9 +291,9 @@ class SchemaParserTest {
   )
 
   @Test fun nonDataClassLayoutModifierThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(NonDataClassLayoutModifierSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassLayoutModifier must be 'data' class or 'object'",
     )
   }
@@ -307,9 +311,9 @@ class SchemaParserTest {
   )
 
   @Test fun invalidChildrenTypeThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(InvalidChildrenTypeSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
     )
   }
@@ -327,9 +331,9 @@ class SchemaParserTest {
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(InvalidChildrenLambdaReturnTypeSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenLambdaReturnTypeWidget#children must be of type '() -> Unit'",
     )
   }
@@ -347,9 +351,9 @@ class SchemaParserTest {
   )
 
   @Test fun childrenArgumentsInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ChildrenArgumentsInvalidSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
         "Found: [kotlin.String]",
     )
@@ -368,9 +372,9 @@ class SchemaParserTest {
   )
 
   @Test fun scopedChildrenArgumentsInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ScopedChildrenArgumentsInvalidSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
         "Found: [kotlin.Int]",
     )
@@ -389,9 +393,9 @@ class SchemaParserTest {
   )
 
   @Test fun scopedChildrenInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ScopedChildrenInvalidSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
         "Found: kotlin.collections.List<kotlin.Int>",
     )
@@ -410,9 +414,9 @@ class SchemaParserTest {
   )
 
   @Test fun scopedChildrenTypeParameterInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ScopedChildrenTypeParameterInvalidSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a class. " +
         "Found: T",
     )
@@ -477,9 +481,9 @@ class SchemaParserTest {
   )
 
   @Test fun eventArgumentsInvalid() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(EventArgumentsInvalidSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Property app.cash.redwood.tooling.schema.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
         "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]",
     )
@@ -512,9 +516,9 @@ class SchemaParserTest {
   object OneMillionWidget
 
   @Test fun widgetTagOneMillionThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(OneMillionWidgetSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionWidget " +
         "tag must be in range [1, 1000000): 1000000",
     )
@@ -531,9 +535,9 @@ class SchemaParserTest {
   object ZeroWidget
 
   @Test fun widgetTagZeroThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ZeroWidgetSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.ZeroWidget " +
         "tag must be in range [1, 1000000): 0",
     )
@@ -552,9 +556,9 @@ class SchemaParserTest {
   )
 
   @Test fun layoutModifierTagOneMillionThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(OneMillionLayoutModifierSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionLayoutModifier " +
         "tag must be in range [1, 1000000): 1000000",
     )
@@ -573,9 +577,9 @@ class SchemaParserTest {
   )
 
   @Test fun layoutModifierTagZeroThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(ZeroLayoutModifierSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.ZeroLayoutModifier " +
         "tag must be in range [1, 1000000): 0",
     )
@@ -647,15 +651,15 @@ class SchemaParserTest {
   object SchemaDependencyTagTooLow
 
   @Test fun dependencyTagTooHighThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDependencyTagTooHigh::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: 2001",
     )
 
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDependencyTagTooLow::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: -1",
     )
   }
@@ -669,9 +673,9 @@ class SchemaParserTest {
   object SchemaDependencyTagZero
 
   @Test fun dependencyTagZeroThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDependencyTagZero::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Dependency app.cash.redwood.layout.RedwoodLayout tag must not be non-zero",
     )
   }
@@ -692,9 +696,9 @@ class SchemaParserTest {
   object SchemaDuplicateDependencyTagB
 
   @Test fun schemaDuplicateDependencyTagThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDuplicateDependencyTag::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema dependency tags must be unique
       |
@@ -716,9 +720,9 @@ class SchemaParserTest {
   object SchemaDuplicateDependencyTypeOther
 
   @Test fun schemaDuplicateDependencyTypeThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDuplicateDependencyType::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema contains repeated dependency
       |
@@ -736,9 +740,9 @@ class SchemaParserTest {
   object SchemaDependencyHasDependency
 
   @Test fun schemaDependencyHasDependencyThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaDependencyHasDependency::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Schema dependency example.redwood.ExampleSchema also has its own dependencies. " +
         "For now, only a single level of dependencies is supported.",
     )
@@ -755,9 +759,9 @@ class SchemaParserTest {
   object SchemaWidgetDuplicateInDependency
 
   @Test fun schemaWidgetDuplicateInDependencyThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(SchemaWidgetDuplicateInDependency::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       """
       |Schema dependency tree contains duplicated widgets
       |
@@ -777,9 +781,9 @@ class SchemaParserTest {
   object UnscopedLayoutModifier
 
   @Test fun `layout modifier must have at least one scope`() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(UnscopedModifierSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedLayoutModifier " +
         "must have at least one scope.",
     )
@@ -799,9 +803,9 @@ class SchemaParserTest {
   )
 
   @Test fun deprecationHiddenThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DeprecationHiddenSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Schema deprecation does not support level HIDDEN: " +
         "val app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a: kotlin.String",
     )
@@ -820,9 +824,9 @@ class SchemaParserTest {
   object DeprecationReplaceWithWidget
 
   @Test fun deprecationReplaceWithThrows() {
-    assertThrows<IllegalArgumentException> {
+    assertFailsWith<IllegalArgumentException> {
       parseProtocolSchemaSet(DeprecationReplaceWithSchema::class)
-    }.hasMessageThat().isEqualTo(
+    }.hasMessage(
       "Schema deprecation does not support replacements: " +
         "class app.cash.redwood.tooling.schema.SchemaParserTest\$DeprecationReplaceWithWidget",
     )

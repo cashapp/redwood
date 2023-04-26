@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -98,7 +98,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -144,7 +144,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 

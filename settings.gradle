@@ -1,3 +1,35 @@
+pluginManagement {
+  repositories {
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+  }
+}
+
+plugins {
+  id "com.gradle.enterprise" version "3.13"
+}
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+    if (System.getenv("CI")) {
+      publishAlways()
+      tag "CI"
+    }
+  }
+}
+
+includeBuild('build-support') {
+  dependencySubstitution {
+    substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
+    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
+  }
+}
+
+enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+
 rootProject.name = 'redwood'
 
 include ':redwood-cli'
@@ -89,13 +121,4 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:repo-search:schema:compose:protocol'
   include ':samples:repo-search:schema:widget'
   include ':samples:repo-search:schema:widget:protocol'
-}
-
-enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
-
-includeBuild('build-support') {
-  dependencySubstitution {
-    substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
-    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
-  }
 }

@@ -39,7 +39,7 @@ internal class LazyListIntervalContent(
   }
 
   override fun items(
-    keys: List<String>,
+    keys: List<String?>,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
     intervals += LazyListInterval(
@@ -49,7 +49,7 @@ internal class LazyListIntervalContent(
   }
 
   override fun item(
-    key: String,
+    key: String?,
     content: @Composable () -> Unit,
   ) {
     intervals += LazyListInterval(

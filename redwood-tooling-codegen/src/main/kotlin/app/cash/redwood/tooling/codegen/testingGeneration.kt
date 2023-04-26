@@ -36,12 +36,10 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.buildCodeBlock
 
 /*
 @OptIn(RedwoodCodegenApi::class)
@@ -287,18 +285,21 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .add("layoutModifiers,\n")
   val toStringBuilder = StringBuilder()
     .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
-  val childrenDiff = MemberName("app.cash.redwood.protocol","ChildrenDiff")
   val addToBuilder = CodeBlock.builder()
-    .addStatement("val widgetId = Id(builder.nextId++)")
-    .addStatement("val widgetTag: WidgetTag = %L", buildCodeBlock {
-      val wt = MemberName("app.cash.redwood.protocol", "WidgetTag")
-      if (widget is ProtocolWidget) {
-        add("%M(${widget.tag})", wt)
-      }
-    })
+    .addStatement("val widgetId = %T(builder.nextId++)", Protocol.Id)
+    .addStatement("val widgetTag = %T(%L)", Protocol.WidgetTag, (widget as ProtocolWidget).tag)
     .addStatement(
-      "val childrenDiff = %M.Insert(parentId, childrenTag, widgetId, widgetTag, 0)",
-      childrenDiff
+      """
+      |val childrenDiff = %T(
+      |  parentId,
+      |  childrenTag,
+      |  widgetId,
+      |  widgetTag,
+      |  builder.childrenDiffs.size
+      |)
+      |
+      """.trimMargin(),
+      Protocol.ChildrenDiff.nestedClass("Insert"),
     )
     .addStatement("builder.childrenDiffs.add(childrenDiff)")
 
@@ -329,23 +330,14 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
-    val encodeToJsonElement = MemberName(
-      "kotlinx.serialization.json",
-      "encodeToJsonElement"
-    )
-    val propertyDiff = MemberName(
-      "app.cash.redwood.protocol",
-      "PropertyDiff"
-    )
-    val propertyTag = MemberName("app.cash.redwood.protocol", "PropertyTag")
     if (trait is ProtocolWidget.ProtocolProperty) {
       addToBuilder.addStatement(
-        "builder.propertyDiffs.add(%M(widgetId, %M(%L), builder.json.%M(this.%N)))",
-        propertyDiff,
-        propertyTag,
+        "builder.propertyDiffs.add(%T(widgetId, %T(%L), builder.json.%M(this.%N)))",
+        Protocol.PropertyDiff,
+        Protocol.PropertyTag,
         trait.tag,
-        encodeToJsonElement,
-        trait.name
+        KotlinxSerialization.encodeToJsonElement,
+        trait.name,
       )
     }
 
@@ -378,10 +370,10 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   toStringBuilder.append(")")
 
   addToBuilder
-    .addStatement("val nextChildrenTag = childrenTag.value + 1")
     .beginControlFlow("for (childrenList in childrenLists)")
+    .addStatement("val nextChildrenTag = childrenTag.value + 1")
     .beginControlFlow("for (child in childrenList)")
-    .addStatement("child.addTo(widgetId, ChildrenTag(nextChildrenTag), builder)")
+    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), builder)", Protocol.ChildrenTag)
     .endControlFlow()
     .endControlFlow()
 

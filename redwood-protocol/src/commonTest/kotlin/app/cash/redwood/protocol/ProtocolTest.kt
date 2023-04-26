@@ -15,8 +15,10 @@
  */
 package app.cash.redwood.protocol
 
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -33,8 +35,8 @@ class ProtocolTest {
   @Test fun constants() {
     // This is otherwise a change-detector test, but since these values are included in
     // the serialized form they must never change.
-    assertEquals(0, Id.Root.value)
-    assertEquals(1, ChildrenTag.Root.value)
+    assertThat(Id.Root.value).isEqualTo(0)
+    assertThat(ChildrenTag.Root.value).isEqualTo(1)
   }
 
   @Test fun eventNonNullValue() {
@@ -130,16 +132,16 @@ class ProtocolTest {
     val zero = assertFailsWith<IllegalStateException> {
       format.decodeFromString(LayoutModifierElement.serializer(), "[]")
     }
-    assertEquals("LayoutModifierElement array may only have 1 or 2 values. Found: 0", zero.message)
+    assertThat(zero).hasMessage("LayoutModifierElement array may only have 1 or 2 values. Found: 0")
 
     val three = assertFailsWith<IllegalStateException> {
       format.decodeFromString(LayoutModifierElement.serializer(), "[1,{},2]")
     }
-    assertEquals("LayoutModifierElement array may only have 1 or 2 values. Found: 3", three.message)
+    assertThat(three).hasMessage("LayoutModifierElement array may only have 1 or 2 values. Found: 3")
   }
 
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {
-    assertEquals(json, format.encodeToString(serializer, model))
-    assertEquals(model, format.decodeFromString(serializer, json))
+    assertThat(format.encodeToString(serializer, model)).isEqualTo(json)
+    assertThat(format.decodeFromString(serializer, json)).isEqualTo(model)
   }
 }

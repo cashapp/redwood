@@ -30,7 +30,7 @@ import platform.Foundation.NSThread
 public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
-  eventListener: EventListener = EventListener.NONE,
+  eventListener: EventListener = EventListener(),
   embeddedDir: Path? = null,
   embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",

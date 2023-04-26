@@ -23,7 +23,9 @@ import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import com.google.common.truth.Truth.assertThat
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
 import org.junit.Test
 
 object RowScope
@@ -46,7 +48,7 @@ class ComposeGenerationTest {
     val schema = ProtocolSchemaSet.parse(ScopedAndUnscopedSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains("scoped: @Composable RowScope.() -> Unit")
       contains("unscoped: @Composable () -> Unit")
     }
@@ -88,7 +90,7 @@ class ComposeGenerationTest {
     val schema = ProtocolSchemaSet.parse(DefaultSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains("trait: String = \"test\"")
       contains("onEvent: () -> Unit = { error(\"test\") }")
       contains("block: @Composable () -> Unit = {}")

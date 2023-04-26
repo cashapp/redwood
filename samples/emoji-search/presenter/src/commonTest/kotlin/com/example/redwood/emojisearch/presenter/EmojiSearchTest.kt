@@ -21,9 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.testing.flatten
-import app.cash.redwood.compose.testing.viewTree
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.widget.ColumnValue
+import assertk.assertThat
+import assertk.assertions.containsExactly
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import com.example.redwood.emojisearch.widget.EmojiSearchTester
@@ -31,11 +32,8 @@ import com.example.redwood.emojisearch.widget.TextInputValue
 import com.example.redwood.emojisearch.widget.TextValue
 import example.values.TextFieldState
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * This test demonstrates typical use of [RedwoodTester].
@@ -50,42 +48,36 @@ class EmojiSearchTest {
       }
 
       val snapshot0 = awaitSnapshot()
-      assertEquals(
-        listOf(
-          ColumnValue(
-            children = listOf(
-              TextInputValue(
-                state = TextFieldState(text = ""),
-                hint = "Search",
-              ),
+      assertThat(snapshot0).containsExactly(
+        ColumnValue(
+          children = listOf(
+            TextInputValue(
+              state = TextFieldState(text = ""),
+              hint = "Search",
             ),
           ),
         ),
-        snapshot0,
       )
 
       snapshot0.flatten().filterIsInstance<TextInputValue>().first()
         .onChange!!.invoke(TextFieldState(text = "tree"))
 
       val snapshot1 = awaitSnapshot()
-      assertEquals(
-        listOf(
-          ColumnValue(
-            children = listOf(
-              TextInputValue(
-                state = TextFieldState(text = "tree"),
-                hint = "Search",
-              ),
-              TextValue(
-                text = "🌲",
-              ),
-              TextValue(
-                text = "🌳",
-              ),
+      assertThat(snapshot1).containsExactly(
+        ColumnValue(
+          children = listOf(
+            TextInputValue(
+              state = TextFieldState(text = "tree"),
+              hint = "Search",
+            ),
+            TextValue(
+              text = "🌲",
+            ),
+            TextValue(
+              text = "🌳",
             ),
           ),
         ),
-        snapshot1,
       )
     }
   }

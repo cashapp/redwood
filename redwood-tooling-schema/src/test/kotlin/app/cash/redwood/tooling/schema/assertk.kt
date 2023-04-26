@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,21 @@
  */
 package app.cash.redwood.tooling.schema
 
-import com.google.common.truth.Subject
-import com.google.common.truth.ThrowableSubject
-import com.google.common.truth.Truth.assertThat
+import assertk.Assert
+import assertk.assertThat
+import assertk.assertions.isFailure
+import assertk.assertions.isInstanceOf
 
-inline fun <reified T : Throwable> assertThrows(body: () -> Unit): ThrowableSubject {
-  try {
-    body()
-  } catch (t: Throwable) {
-    if (t is T) {
-      return assertThat(t)
-    }
-    throw t
-  }
-  throw AssertionError(
-    "Expect body to throw ${T::class.java.simpleName} but it completed successfully",
-  )
+inline fun <reified T : Throwable> assertFailsWith(body: () -> Any?): Assert<T> {
+  // https://github.com/willowtreeapps/assertk/issues/453
+
+  return assertThat(body)
+    .isFailure()
+    .isInstanceOf(T::class)
 }
 
-inline fun <reified T : Any> Subject.isInstanceOf() {
-  isInstanceOf(T::class.java)
+inline fun <reified T : Any> Assert<Any>.isInstanceOf(): Assert<T> {
+  // https://github.com/willowtreeapps/assertk/issues/454
+
+  return isInstanceOf(T::class)
 }

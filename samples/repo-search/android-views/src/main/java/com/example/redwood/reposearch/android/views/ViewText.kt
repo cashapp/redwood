@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.TextView
 import app.cash.redwood.LayoutModifier
 import com.example.redwood.reposearch.widget.Text
+import com.google.android.material.R as MaterialR
 
 internal class ViewText(
   override val value: TextView,
@@ -28,7 +29,7 @@ internal class ViewText(
 
   init {
     val tv = TypedValue()
-    if (value.context.theme.resolveAttribute(R.attr.colorOnBackground, tv, true)) {
+    if (value.context.theme.resolveAttribute(MaterialR.attr.colorOnBackground, tv, true)) {
       value.setTextColor(tv.data)
     }
   }

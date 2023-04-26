@@ -25,10 +25,12 @@ import app.cash.redwood.protocol.LayoutModifierTag
 import app.cash.redwood.protocol.LayoutModifiers
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.PropertyTag
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
 import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.TestScope
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -54,7 +56,7 @@ class GeneratedProtocolBridgeTest {
         PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
       ),
     )
-    assertEquals(expected, bridge.createDiffOrNull())
+    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
   }
 
   @Test fun layoutModifierUsesSerializersModule() {
@@ -85,7 +87,7 @@ class GeneratedProtocolBridgeTest {
         ),
       ),
     )
-    assertEquals(expected, bridge.createDiffOrNull())
+    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
   }
 
   @Test fun layoutModifierDefaultValueNotSerialized() {
@@ -116,7 +118,7 @@ class GeneratedProtocolBridgeTest {
         ),
       ),
     )
-    assertEquals(expected, bridge.createDiffOrNull())
+    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -137,7 +139,7 @@ class GeneratedProtocolBridgeTest {
 
     protocolWidget.sendEvent(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
 
-    assertEquals(10.seconds, argument)
+    assertThat(argument).isEqualTo(10.seconds)
   }
 
   @Test fun unknownEventThrowsDefault() {
@@ -148,7 +150,7 @@ class GeneratedProtocolBridgeTest {
       button.sendEvent(Event(Id(1), EventTag(3456543)))
     }
 
-    assertEquals("Unknown event tag 3456543 for widget tag 4", t.message)
+    assertThat(t).hasMessage("Unknown event tag 3456543 for widget tag 4")
   }
 
   @Test fun unknownEventCallsHandler() {
@@ -158,7 +160,7 @@ class GeneratedProtocolBridgeTest {
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 
-    assertEquals("Unknown event 3456543 for 4", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown event 3456543 for 4")
   }
 
   @Test fun unknownEventNodeThrowsDefault() {
@@ -166,7 +168,7 @@ class GeneratedProtocolBridgeTest {
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendEvent(Event(Id(3456543), EventTag(1)))
     }
-    assertEquals("Unknown node ID 3456543 for event with tag 1", t.message)
+    assertThat(t).hasMessage("Unknown node ID 3456543 for event with tag 1")
   }
 
   @Test fun unknownEventNodeCallsHandler() {
@@ -175,6 +177,6 @@ class GeneratedProtocolBridgeTest {
 
     bridge.sendEvent(Event(Id(3456543), EventTag(1)))
 
-    assertEquals("Unknown ID 3456543 for event tag 1", handler.events.single())
+    assertThat(handler.events.single()).isEqualTo("Unknown ID 3456543 for event tag 1")
   }
 }

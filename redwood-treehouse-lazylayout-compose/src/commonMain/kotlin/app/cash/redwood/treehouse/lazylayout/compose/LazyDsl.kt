@@ -22,19 +22,19 @@ import app.cash.redwood.treehouse.StandardAppLifecycle
 @LayoutScopeMarker
 public interface LazyListScope {
   public fun item(
-    key: String,
+    key: String?,
     content: @Composable () -> Unit,
   )
 
   public fun items(
-    keys: List<String>,
+    keys: List<String?>,
     itemContent: @Composable (index: Int) -> Unit,
   )
 }
 
 public inline fun <T> LazyListScope.items(
   items: List<T>,
-  itemToKey: (item: T) -> String,
+  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ): Unit = items(
   keys = items.map(itemToKey),
@@ -44,7 +44,7 @@ public inline fun <T> LazyListScope.items(
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
-  itemToKey: (item: T) -> String,
+  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
   keys = items.map(itemToKey),
@@ -54,7 +54,7 @@ public inline fun <T> LazyListScope.itemsIndexed(
 
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
-  itemToKey: (item: T) -> String,
+  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ): Unit = items(
   keys = items.map(itemToKey),
@@ -64,7 +64,7 @@ public inline fun <T> LazyListScope.items(
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
-  itemToKey: (item: T) -> String,
+  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
   keys = items.map(itemToKey),
