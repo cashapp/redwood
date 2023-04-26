@@ -28,7 +28,7 @@ import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
 @ObjCName("EventListener", exact = true)
-public abstract class EventListener {
+public open class EventListener {
   /**
    * Invoked each time a [TreehouseApp] is created. When this is triggered the app may not yet have
    * any code loaded; but it will always attempt to load code.
@@ -159,7 +159,7 @@ public abstract class EventListener {
   }
 
   /** Invoked for an event whose node [id] is unknown. */
-  public fun onUnknownEventNode(
+  public open fun onUnknownEventNode(
     app: TreehouseApp<*>,
     id: Id,
     tag: EventTag,
@@ -355,10 +355,5 @@ public abstract class EventListener {
     app: TreehouseApp<*>,
     name: String,
   ) {
-  }
-
-  public companion object {
-    public val NONE: EventListener = object : EventListener() {
-    }
   }
 }

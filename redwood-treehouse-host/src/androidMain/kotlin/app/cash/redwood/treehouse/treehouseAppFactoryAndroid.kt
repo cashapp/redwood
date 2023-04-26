@@ -34,7 +34,7 @@ public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
-  eventListener: EventListener = EventListener.NONE,
+  eventListener: EventListener = EventListener(),
   embeddedDir: Path? = null,
   embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",
