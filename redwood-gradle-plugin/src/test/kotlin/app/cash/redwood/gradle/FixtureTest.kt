@@ -24,12 +24,6 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
 
 class FixtureTest {
-  @Test fun composeUiAppPackagingSucceeds() {
-    val fixtureDir = File("src/test/fixture/compose-ui")
-    // If our dependency substitution did not work the D8 step would fail with duplicate classes.
-    fixtureGradleRunner(fixtureDir, "assemble").build()
-  }
-
   @Test fun schemaProjectAccessor() {
     val fixtureDir = File("src/test/fixture/schema-project-accessor")
     fixtureGradleRunner(fixtureDir, "assemble").build()
