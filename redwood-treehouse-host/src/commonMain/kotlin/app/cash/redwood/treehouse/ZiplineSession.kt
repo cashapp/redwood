@@ -23,7 +23,6 @@ import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** The host state for a single code load. We get a new session each time we get new code. */
@@ -34,15 +33,16 @@ internal class ZiplineSession<A : AppService>(
   val appService: A,
   val zipline: Zipline,
   val isInitialLaunch: Boolean,
+  private val frameClock: FrameClock,
 ) {
   private val ziplineScope = ZiplineScope()
 
   fun start() {
+    frameClock.start(sessionScope, app.dispatchers)
     sessionScope.launch(app.dispatchers.zipline) {
       val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(appLifecycle, app)
+      val host = RealAppLifecycleHost(appLifecycle, app, frameClock)
       appLifecycle.start(host)
-      host.runFrameClock()
     }
   }
 
@@ -59,11 +59,10 @@ internal class ZiplineSession<A : AppService>(
 private class RealAppLifecycleHost(
   val appLifecycle: AppLifecycle,
   val app: TreehouseApp<*>,
+  val frameClock: FrameClock,
 ) : AppLifecycle.Host {
-  private var frameRequested = false
-
   override fun requestFrame() {
-    frameRequested = true
+    frameClock.requestFrame(appLifecycle)
   }
 
   override fun onUnknownEvent(
@@ -78,19 +77,5 @@ private class RealAppLifecycleHost(
     tag: EventTag,
   ) {
     app.eventPublisher.onUnknownEventNode(app, id, tag)
-  }
-
-  suspend fun runFrameClock() {
-    val ticksPerSecond = 60
-    var now = 0L
-    val delayNanos = 1_000_000_000L / ticksPerSecond
-    while (true) {
-      if (frameRequested) {
-        appLifecycle.sendFrame(now)
-        frameRequested = false
-      }
-      delay(delayNanos / 1_000_000)
-      now += delayNanos
-    }
   }
 }
