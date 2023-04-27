@@ -17,15 +17,26 @@ package app.cash.redwood.tooling.schema
 
 import assertk.Assert
 import assertk.assertThat
-import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
+import kotlin.reflect.KClass
 
-inline fun <reified T : Throwable> assertFailsWith(body: () -> Any?): Assert<T> {
+inline fun <reified T : Throwable> assertFailsWith(noinline body: () -> Any?): Assert<T> {
   // https://github.com/willowtreeapps/assertk/issues/453
+  return assertFailsWith(T::class, body)
+}
 
-  return assertThat(body)
-    .isFailure()
-    .isInstanceOf(T::class)
+fun <T : Throwable> assertFailsWith(type: KClass<T>, body: () -> Any?): Assert<T> {
+  try {
+    body()
+  } catch (t: Throwable) {
+    if (type.isInstance(t)) {
+      @Suppress("UNCHECKED_CAST")
+      return assertThat(t as T)
+    }
+    // https://github.com/willowtreeapps/assertk/issues/456
+    throw t
+  }
+  throw AssertionError("Expected body to fail but completed successfully")
 }
 
 inline fun <reified T : Any> Assert<Any>.isInstanceOf(): Assert<T> {

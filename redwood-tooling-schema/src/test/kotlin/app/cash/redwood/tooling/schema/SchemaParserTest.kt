@@ -34,6 +34,7 @@ import assertk.assertions.isNull
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import example.redwood.ExampleSchema
+import java.io.File
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
 import org.junit.Assume.assumeTrue
@@ -49,8 +50,6 @@ class SchemaParserTest(
   interface NonAnnotationSchema
 
   @Test fun nonAnnotatedSchemaThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonAnnotationSchema::class)
     }.hasMessage(
@@ -921,9 +920,17 @@ class SchemaParserTest(
     },
     Fir {
       override fun parse(type: KClass<*>): ProtocolSchemaSet {
-        throw AssertionError("Not implemented!")
+        val sources = System.getProperty("redwood.internal.sources")
+          .split(File.pathSeparator)
+          .map(::File)
+          .filter(File::exists) // Entries that don't exist produce warnings.
+        val classpath = System.getProperty("redwood.internal.classpath")
+          .split(File.pathSeparator)
+          .map(::File)
+          .filter(File::exists) // Entries that don't exist produce warnings.
+        return parseProtocolSchema(sources, classpath, type.toFqType())
       }
-    }
+    },
     ;
 
     abstract fun parse(type: KClass<*>): ProtocolSchemaSet
