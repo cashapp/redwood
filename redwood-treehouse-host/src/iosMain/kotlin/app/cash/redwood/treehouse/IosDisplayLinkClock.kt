@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-public class IosDisplayLinkClock : FrameClock {
+internal class IosDisplayLinkClock : FrameClock {
   private lateinit var scope: CoroutineScope
   private lateinit var dispatchers: TreehouseDispatchers
   private lateinit var displayLinkTarget: DisplayLinkTarget
