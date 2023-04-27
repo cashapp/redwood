@@ -41,6 +41,7 @@ public fun TreehouseAppFactory(
   dispatchers = IosTreehouseDispatchers(),
   eventListener = eventListener,
   httpClient = httpClient,
+  frameClock = FixedDelayFrameClock(),
   manifestVerifier = manifestVerifier,
   embeddedDir = embeddedDir,
   embeddedFileSystem = embeddedFileSystem,

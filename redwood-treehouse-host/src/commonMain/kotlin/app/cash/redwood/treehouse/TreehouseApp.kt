@@ -172,6 +172,7 @@ public class TreehouseApp<A : AppService> private constructor(
         zipline = zipline,
         appService = appService,
         isInitialLaunch = previous == null,
+        frameClock = factory.frameClock,
       )
 
       next.start()
@@ -214,6 +215,7 @@ public class TreehouseApp<A : AppService> private constructor(
     public val dispatchers: TreehouseDispatchers,
     eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
+    internal val frameClock: FrameClock,
     internal val manifestVerifier: ManifestVerifier,
     internal val embeddedDir: Path?,
     internal val embeddedFileSystem: FileSystem?,
