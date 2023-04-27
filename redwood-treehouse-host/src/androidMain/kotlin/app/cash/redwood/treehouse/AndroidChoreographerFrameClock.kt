@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import android.annotation.SuppressLint
 import android.view.Choreographer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -23,7 +22,6 @@ import kotlinx.coroutines.launch
 /**
  * A [FrameClock] that suspends with a fixed delay. This does not match the host app's frame pulse.
  */
-@SuppressLint("NewApi")
 internal class AndroidChoreographerFrameClock : FrameClock {
   private val choreographer = Choreographer.getInstance()
   private lateinit var scope: CoroutineScope
