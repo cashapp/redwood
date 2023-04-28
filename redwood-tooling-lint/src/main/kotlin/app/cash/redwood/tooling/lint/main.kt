@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 @file:JvmName("Main")
 
-package app.cash.redwood.cli
+package app.cash.redwood.tooling.lint
 
 import com.github.ajalt.clikt.core.NoOpCliktCommand
 import com.github.ajalt.clikt.core.subcommands
+import java.nio.file.FileSystems
 
 public fun main(vararg args: String) {
-  NoOpCliktCommand(name = "redwood")
+  NoOpCliktCommand(name = "redwood-lint")
     .subcommands(
-      GenerateCommand(),
-      JsonCommand(),
-      LintCommand(),
+      ApiMergeCommand(FileSystems.getDefault()),
     )
     .main(args)
 }

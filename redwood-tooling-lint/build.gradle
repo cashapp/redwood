@@ -1,12 +1,27 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'application'
+
+application {
+  applicationName = 'redwood-lint'
+  mainClass.set('app.cash.redwood.tooling.lint.Main')
+}
 
 dependencies {
+  implementation libs.clikt
   implementation libs.kotlinx.serialization.core
   implementation libs.xmlutil.serialization
 
   testImplementation libs.kotlin.test
   testImplementation libs.junit
   testImplementation libs.assertk
+  testImplementation libs.jimfs
+}
+
+tasks.named("distTar").configure { task ->
+  task.enabled = false
+}
+tasks.named("assemble").configure { task ->
+  task.dependsOn(tasks.named("installDist"))
 }
