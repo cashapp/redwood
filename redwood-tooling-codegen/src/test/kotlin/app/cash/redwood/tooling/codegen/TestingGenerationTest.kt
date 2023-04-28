@@ -142,6 +142,32 @@ class TestingGenerationTest {
       |
       |  public override fun toString(): String =
       |      "${'"'}"TestingGenerationTestBasicWidgetValue(layoutModifiers=${'$'}layoutModifiers, trait=${'$'}trait, block=${'$'}block)"${'"'}"
+      |
+      |  public override fun addTo(
+      |    parentId: Id,
+      |    childrenTag: ChildrenTag,
+      |    builder: ViewTree.Builder,
+      |  ): Unit {
+      |    val widgetId = Id(builder.nextId++)
+      |    val widgetTag = WidgetTag(1)
+      |    val childrenDiff = ChildrenDiff.Insert(
+      |          parentId,
+      |          childrenTag,
+      |          widgetId,
+      |          widgetTag,
+      |          builder.childrenDiffs.size
+      |        )
+      |
+      |    builder.childrenDiffs.add(childrenDiff)
+      |    builder.propertyDiffs.add(PropertyDiff(widgetId, PropertyTag(1),
+      |        builder.json.encodeToJsonElement(this.trait)))
+      |    for (childrenList in childrenLists) {
+      |      val nextChildrenTag = childrenTag.value + 1
+      |      for (child in childrenList) {
+      |        child.addTo(widgetId, ChildrenTag(nextChildrenTag), builder)
+      |      }
+      |    }
+      |  }
       |}
       """.trimMargin(),
     )
