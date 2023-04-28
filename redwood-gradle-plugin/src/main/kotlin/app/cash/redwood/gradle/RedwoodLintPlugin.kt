@@ -198,8 +198,8 @@ private fun Project.createRedwoodLintTask(
   sourceDirs: () -> Collection<File>,
   classpath: () -> Configuration,
 ): TaskProvider<out Task> {
-  val configuration = configurations.maybeCreate("redwood")
-  dependencies.add(configuration.name, project.redwoodDependency("redwood-cli"))
+  val configuration = configurations.maybeCreate("redwoodToolingLint")
+  dependencies.add(configuration.name, project.redwoodDependency("redwood-tooling-lint"))
 
   return tasks.register(name, RedwoodLintTask::class.java) { task ->
     task.group = VERIFICATION_GROUP
