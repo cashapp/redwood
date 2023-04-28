@@ -16,7 +16,7 @@
 @file:JvmName("Main")
 @file:Suppress("UnstableApiUsage" /* Lint 🙄 */)
 
-package app.cash.redwood.cli
+package app.cash.redwood.tooling.lint
 
 import com.android.tools.lint.LintResourceRepository.Companion.EmptyRepository
 import com.android.tools.lint.LintStats
@@ -56,7 +56,7 @@ import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.utils.PathUtil.getJdkClassesRootsFromCurrentJre
 
-internal class LintCommand : CliktCommand(name = "lint") {
+internal class LintCommand : CliktCommand(name = "check") {
   private val projectDirectory by argument("PROJECT_DIR")
     .file()
   private val sourceDirectories by option("-s", "--sources", metavar = "DIR")

@@ -25,6 +25,7 @@ public fun main(vararg args: String) {
   NoOpCliktCommand(name = "redwood-lint")
     .subcommands(
       ApiMergeCommand(FileSystems.getDefault()),
+      LintCommand(),
     )
     .main(args)
 }

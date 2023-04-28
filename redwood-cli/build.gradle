@@ -11,21 +11,9 @@ application {
   mainClass.set('app.cash.redwood.cli.Main')
 }
 
-tasks.withType(JavaCompile).configureEach {
-  sourceCompatibility = JavaVersion.VERSION_11.toString()
-  targetCompatibility = JavaVersion.VERSION_11.toString()
-}
-
-tasks.withType(KotlinJvmCompile).configureEach {
-  compilerOptions {
-    jvmTarget.set(JvmTarget.JVM_11)
-  }
-}
-
 dependencies {
   implementation projects.redwoodToolingCodegen
   implementation projects.redwoodToolingSchema
-  implementation libs.lint.core
   implementation libs.clikt
 }
 

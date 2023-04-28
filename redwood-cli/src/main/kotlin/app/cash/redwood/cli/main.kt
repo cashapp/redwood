@@ -25,7 +25,6 @@ public fun main(vararg args: String) {
     .subcommands(
       GenerateCommand(),
       JsonCommand(),
-      LintCommand(),
     )
     .main(args)
 }
