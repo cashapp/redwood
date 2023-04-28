@@ -24,14 +24,9 @@ tasks.withType(KotlinJvmCompile).configureEach {
 
 dependencies {
   implementation projects.redwoodToolingCodegen
-  implementation projects.redwoodToolingLint
   implementation projects.redwoodToolingSchema
   implementation libs.lint.core
   implementation libs.clikt
-
-  testImplementation libs.junit
-  testImplementation libs.assertk
-  testImplementation libs.jimfs
 }
 
 tasks.named("distTar").configure { task ->
