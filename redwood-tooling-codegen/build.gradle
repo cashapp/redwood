@@ -1,12 +1,26 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'application'
+
+application {
+  applicationName = 'redwood-codegen'
+  mainClass.set('app.cash.redwood.tooling.codegen.Main')
+}
 
 dependencies {
   api projects.redwoodToolingSchema
   implementation libs.kotlinPoet
+  implementation libs.clikt
 
   testImplementation projects.testSchema
   testImplementation projects.testSchema.compose
   testImplementation libs.junit
   testImplementation libs.assertk
+}
+
+tasks.named("distTar").configure { task ->
+  task.enabled = false
+}
+tasks.named("assemble").configure { task ->
+  task.dependsOn(tasks.named("installDist"))
 }

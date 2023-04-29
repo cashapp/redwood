@@ -73,11 +73,11 @@ public abstract class RedwoodGeneratorPlugin(
       RedwoodGeneratorExtension::class.java,
     )
 
-    val cliConfiguration = project.configurations.create("redwoodCli").apply {
+    val toolingConfiguration = project.configurations.create("redwoodToolingCodegen").apply {
       isCanBeConsumed = false
       isVisible = false
     }
-    project.dependencies.add(cliConfiguration.name, project.redwoodDependency("redwood-cli"))
+    project.dependencies.add(toolingConfiguration.name, project.redwoodDependency("redwood-tooling-codegen"))
 
     val schemaConfiguration = project.configurations.create("redwoodSchema").apply {
       isCanBeConsumed = false
@@ -87,7 +87,7 @@ public abstract class RedwoodGeneratorPlugin(
       it.group = BUILD_GROUP
       it.description = "Generate Redwood sources"
 
-      it.toolClasspath.from(cliConfiguration)
+      it.toolClasspath.from(toolingConfiguration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
       it.generatorFlag.set(strategy.generatorFlag)
       it.schemaType.set(extension.type)

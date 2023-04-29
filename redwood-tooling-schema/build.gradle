@@ -1,13 +1,27 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'application'
+
+application {
+  applicationName = 'redwood-schema'
+  mainClass.set('app.cash.redwood.tooling.schema.Main')
+}
 
 dependencies {
   api projects.redwoodSchema
   api libs.kotlin.reflect
   implementation libs.kotlinx.serialization.json
+  implementation libs.clikt
 
   testImplementation projects.testSchema
   testImplementation libs.junit
   testImplementation libs.assertk
+}
+
+tasks.named("distTar").configure { task ->
+  task.enabled = false
+}
+tasks.named("assemble").configure { task ->
+  task.dependsOn(tasks.named("installDist"))
 }

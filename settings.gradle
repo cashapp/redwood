@@ -32,7 +32,6 @@ enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
 rootProject.name = 'redwood'
 
-include ':redwood-cli'
 include ':redwood-compose'
 include ':redwood-compose-testing'
 include ':redwood-flexbox'
