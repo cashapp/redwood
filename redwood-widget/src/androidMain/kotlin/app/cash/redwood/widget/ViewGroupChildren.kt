@@ -53,8 +53,6 @@ public class ViewGroupChildren(
   }
 
   override fun onLayoutModifierUpdated(index: Int) {
-    val view = parent.getChildAt(index)
-    view.invalidate()
-    view.requestLayout()
+    parent.getChildAt(index).requestLayout()
   }
 }
