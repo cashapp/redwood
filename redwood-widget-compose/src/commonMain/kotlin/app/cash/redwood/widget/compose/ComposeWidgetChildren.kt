@@ -16,41 +16,41 @@
 package app.cash.redwood.widget.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import app.cash.redwood.LayoutModifier
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import app.cash.redwood.widget.Widget
 
 public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private val layoutModifiers = mutableStateListOf<LayoutModifier>()
+  private var layoutModifierTick by mutableStateOf(0)
 
   private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
   public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
   public fun render() {
+    // Observe the layout modifier count so we recompose if it changes.
+    layoutModifierTick
+
     for (index in _widgets.indices) {
-      // Observe the layout modifier so we recompose if it changes.
-      layoutModifiers[index]
       _widgets[index].value()
     }
   }
 
   override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
     _widgets.add(index, widget)
-    layoutModifiers.add(index, widget.layoutModifiers)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
-    layoutModifiers.move(fromIndex, toIndex, count)
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
-    layoutModifiers.remove(index, count)
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
-    layoutModifiers.set(index, _widgets[index].layoutModifiers)
+  override fun onLayoutModifierUpdated() {
+    layoutModifierTick++
   }
 }

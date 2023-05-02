@@ -52,33 +52,26 @@ public class ProtocolBridge<W : Any>(
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(id, children, childrenDiff.widgetTag) ?: continue
+          val childWidget = factory.create(children, childrenDiff.widgetTag) ?: continue
           children.insert(childrenDiff.index, childWidget.widget)
           val old = nodes.put(childrenDiff.childId, childWidget)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${childrenDiff.childId.value}"
           }
-          node.childIds.add(childrenDiff.index, childrenDiff.childId)
         }
         is ChildrenDiff.Move -> {
           children.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)
-          node.childIds.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)
         }
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
-          for (i in childrenDiff.index until childrenDiff.index + childrenDiff.count) {
-            nodes.remove(node.childIds[i])
-          }
-          node.childIds.remove(childrenDiff.index, childrenDiff.count)
         }
       }
     }
 
     for (layoutModifier in diff.layoutModifiers) {
       val node = node(layoutModifier.id)
-      val childIndex = node(node.parentId).childIds.indexOf(layoutModifier.id)
       node.updateLayoutModifier(layoutModifier.elements)
-      node.parentChildren.onLayoutModifierUpdated(childIndex)
+      node.parentChildren.onLayoutModifierUpdated()
     }
 
     for (propertyDiff in diff.propertyDiffs) {
@@ -94,7 +87,6 @@ public class ProtocolBridge<W : Any>(
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
 ) : ProtocolNode<W>(
-  parentId = Id.Root, // This value is a lie, but it's never accessed on this node.
   parentChildren = children, // This value is a lie, but it's never accessed on this node.
 ) {
   override fun updateLayoutModifier(elements: List<LayoutModifierElement>) {

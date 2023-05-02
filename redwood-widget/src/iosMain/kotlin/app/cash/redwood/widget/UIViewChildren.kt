@@ -62,7 +62,7 @@ public class UIViewChildren(
     invalidate()
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
+  override fun onLayoutModifierUpdated() {
     invalidate()
   }
 
