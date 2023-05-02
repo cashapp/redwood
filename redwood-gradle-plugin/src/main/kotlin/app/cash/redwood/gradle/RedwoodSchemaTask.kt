@@ -74,7 +74,7 @@ private abstract class RedwoodSchemaWorker @Inject constructor(
 
     execOperations.javaexec { exec ->
       exec.classpath = parameters.toolClasspath
-      exec.mainClass.set("app.cash.redwood.cli.Main")
+      exec.mainClass.set("app.cash.redwood.tooling.schema.Main")
 
       exec.args = listOf(
         "json",

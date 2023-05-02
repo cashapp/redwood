@@ -42,11 +42,11 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
   }
 
   private fun applyToProject(project: Project, extension: RedwoodSchemaExtension) {
-    val cliConfiguration = project.configurations.create("redwoodCli").apply {
+    val toolingConfiguration = project.configurations.create("redwoodToolingSchema").apply {
       isCanBeConsumed = false
       isVisible = false
     }
-    project.dependencies.add(cliConfiguration.name, project.redwoodDependency("redwood-cli"))
+    project.dependencies.add(toolingConfiguration.name, project.redwoodDependency("redwood-tooling-schema"))
 
     val kotlin = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
     val compilation = kotlin.target.compilations.getByName(MAIN_COMPILATION_NAME)
@@ -56,7 +56,7 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.group = LifecycleBasePlugin.BUILD_GROUP
       it.description = "Generate parsed schema JSON"
 
-      it.toolClasspath.from(cliConfiguration)
+      it.toolClasspath.from(toolingConfiguration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
       it.schemaType.set(extension.type)
       it.classpath.from(classpath, compilation.output.classesDirs)

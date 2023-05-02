@@ -96,7 +96,6 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':redwood-cli:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-flexbox:publishAllPublicationsToLocalMavenRepository')

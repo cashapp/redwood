@@ -15,6 +15,10 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
+import app.cash.redwood.tooling.codegen.Protocol.Id
+import app.cash.redwood.tooling.codegen.RedwoodTesting.ViewTreeBuilder
+import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.SchemaSet
@@ -281,6 +285,23 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .add("layoutModifiers,\n")
   val toStringBuilder = StringBuilder()
     .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
+  val addToBuilder = CodeBlock.builder()
+    .addStatement("val widgetId = %T(builder.nextId++)", Protocol.Id)
+    .addStatement("val widgetTag = %T(%L)", Protocol.WidgetTag, (widget as ProtocolWidget).tag)
+    .addStatement(
+      """
+      |val childrenDiff = %T(
+      |  parentId,
+      |  childrenTag,
+      |  widgetId,
+      |  widgetTag,
+      |  builder.childrenDiffs.size
+      |)
+      |
+      """.trimMargin(),
+      Protocol.ChildrenDiff.nestedClass("Insert"),
+    )
+    .addStatement("builder.childrenDiffs.add(childrenDiff)")
 
   for (trait in widget.traits) {
     val type = when (trait) {
@@ -309,6 +330,17 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
+    if (trait is ProtocolWidget.ProtocolProperty) {
+      addToBuilder.addStatement(
+        "builder.propertyDiffs.add(%T(widgetId, %T(%L), builder.json.%M(this.%N)))",
+        Protocol.PropertyDiff,
+        Protocol.PropertyTag,
+        trait.tag,
+        KotlinxSerialization.encodeToJsonElement,
+        trait.name,
+      )
+    }
+
     when (trait) {
       is Property, is Children -> {
         if (trait is Children) {
@@ -336,6 +368,14 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   hashCodeBuilder.add("⇤).hashCode()\n")
 
   toStringBuilder.append(")")
+
+  addToBuilder
+    .beginControlFlow("for (childrenList in childrenLists)")
+    .addStatement("val nextChildrenTag = childrenTag.value + 1")
+    .beginControlFlow("for (child in childrenList)")
+    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), builder)", Protocol.ChildrenTag)
+    .endControlFlow()
+    .endControlFlow()
 
   return FileSpec.builder(widgetValueType)
     .addType(
@@ -374,6 +414,15 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(String::class)
             .addCode("return %P", toStringBuilder.toString())
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("addTo")
+            .addModifiers(PUBLIC, OVERRIDE)
+            .addParameter("parentId", Id)
+            .addParameter("childrenTag", ChildrenTag)
+            .addParameter("builder", ViewTreeBuilder)
+            .addCode(addToBuilder.build())
             .build(),
         )
         .build(),

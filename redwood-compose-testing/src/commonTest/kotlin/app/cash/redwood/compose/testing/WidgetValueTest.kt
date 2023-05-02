@@ -16,6 +16,8 @@
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
@@ -64,5 +66,9 @@ class WidgetValueTest {
   class SimpleWidgetValue(
     override val layoutModifiers: LayoutModifier = LayoutModifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
-  ) : WidgetValue
+  ) : WidgetValue {
+    override fun addTo(parentId: Id, childrenTag: ChildrenTag, builder: ViewTree.Builder) {
+      throw AssertionError()
+    }
+  }
 }

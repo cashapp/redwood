@@ -6,12 +6,19 @@ import static org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.TEST_COMPILAT
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'application'
+
+application {
+  applicationName = 'redwood-schema'
+  mainClass.set('app.cash.redwood.tooling.schema.Main')
+}
 
 dependencies {
   api projects.redwoodSchema
   api libs.kotlin.reflect
   implementation libs.kotlinx.serialization.json
   implementation libs.kotlin.compilerEmbeddable
+  implementation libs.clikt
 
   testImplementation projects.testSchema
   testImplementation libs.junit
@@ -30,4 +37,11 @@ tasks.named(TEST_TASK_NAME, Test).configure {
 
   def classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName).files
   it.systemProperty('redwood.internal.classpath', classpath.join(File.pathSeparator))
+}
+
+tasks.named("distTar").configure { task ->
+  task.enabled = false
+}
+tasks.named("assemble").configure { task ->
+  task.dependsOn(tasks.named("installDist"))
 }
