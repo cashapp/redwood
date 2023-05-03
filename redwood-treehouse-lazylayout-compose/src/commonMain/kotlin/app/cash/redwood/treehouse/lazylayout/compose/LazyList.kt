@@ -55,11 +55,8 @@ internal fun LazyList(
     isVertical,
     onPositionDisplayed = { position ->
       /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
-      try {
+      if (position < lazyPagingItems.itemCount) {
         lazyPagingItems[position]
-      } catch (ignore: IndexOutOfBoundsException) {
-        // Ignore potential race condition where position exceeds available items.
-        // TODO This clause isn't invoked on IndexOutOfBoundsException. Why?
       }
     },
     items = {
