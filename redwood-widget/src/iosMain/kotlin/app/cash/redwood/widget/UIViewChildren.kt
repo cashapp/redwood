@@ -26,11 +26,11 @@ public class UIViewChildren(
     parent.insertSubview(view, index.convert<NSInteger>())
   },
 ) : Widget.Children<UIView> {
-  private val _widgets = MutableListChildren<UIView>()
+  private val _widgets = ArrayList<Widget<UIView>>()
   public val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
-    _widgets.insert(index, widget)
+    _widgets.add(index, widget)
     insert(widget.value, index)
     invalidate()
   }
