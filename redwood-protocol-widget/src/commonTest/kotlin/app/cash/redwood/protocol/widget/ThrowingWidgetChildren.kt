@@ -21,5 +21,5 @@ class ThrowingWidgetChildren<W : Any> : Widget.Children<W> {
   override fun insert(index: Int, widget: Widget<W>) = throw AssertionError()
   override fun move(fromIndex: Int, toIndex: Int, count: Int) = throw AssertionError()
   override fun remove(index: Int, count: Int) = throw AssertionError()
-  override fun onLayoutModifierUpdated(index: Int) = throw AssertionError()
+  override fun onLayoutModifierUpdated() = throw AssertionError()
 }

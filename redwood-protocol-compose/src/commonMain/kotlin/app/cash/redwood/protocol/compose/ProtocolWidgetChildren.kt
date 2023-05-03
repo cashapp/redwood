@@ -47,7 +47,7 @@ internal class ProtocolWidgetChildren(
     state.append(ChildrenDiff.Move(id, tag, fromIndex, toIndex, count))
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
+  override fun onLayoutModifierUpdated() {
     throw AssertionError()
   }
 }

@@ -61,9 +61,11 @@ public class HTMLElementChildren(
     }
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
-    val element = parent.children[index] as HTMLElement
+  override fun onLayoutModifierUpdated() {
+    // If this function is being invoked we are guaranteed to have at least one child.
+
+    val element = parent.children[0] as HTMLElement
     parent.removeChild(element)
-    parent.insertBefore(element, parent.children[index])
+    parent.insertBefore(element, parent.children[0])
   }
 }

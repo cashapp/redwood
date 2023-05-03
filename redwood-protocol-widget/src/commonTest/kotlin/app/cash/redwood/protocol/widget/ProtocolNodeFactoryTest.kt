@@ -55,7 +55,7 @@ class ProtocolNodeFactoryTest {
     )
 
     val t = assertFailsWith<IllegalArgumentException> {
-      factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))
+      factory.create(ThrowingWidgetChildren(), WidgetTag(345432))
     }
     assertThat(t).hasMessage("Unknown widget tag 345432")
   }
@@ -70,7 +70,7 @@ class ProtocolNodeFactoryTest {
       mismatchHandler = handler,
     )
 
-    assertThat(factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(345432))).isNull()
+    assertThat(factory.create(ThrowingWidgetChildren(), WidgetTag(345432))).isNull()
 
     assertThat(handler.events.single()).isEqualTo("Unknown widget 345432")
   }
@@ -91,7 +91,7 @@ class ProtocolNodeFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
+    val textInput = factory.create(ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
       listOf(
@@ -125,7 +125,7 @@ class ProtocolNodeFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
+    val textInput = factory.create(ThrowingWidgetChildren(), WidgetTag(5))!!
 
     textInput.updateLayoutModifier(
       listOf(
@@ -155,7 +155,7 @@ class ProtocolNodeFactoryTest {
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
       ),
     )
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
+    val button = factory.create(ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.updateLayoutModifier(
@@ -189,7 +189,7 @@ class ProtocolNodeFactoryTest {
       mismatchHandler = handler,
     )
 
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
+    val textInput = factory.create(ThrowingWidgetChildren(), WidgetTag(5))!!
     textInput.updateLayoutModifier(
       listOf(
         LayoutModifierElement(
@@ -225,7 +225,7 @@ class ProtocolNodeFactoryTest {
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
       ),
     )
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
+    val button = factory.create(ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(ChildrenTag(345432))
@@ -243,7 +243,7 @@ class ProtocolNodeFactoryTest {
       mismatchHandler = handler,
     )
 
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
+    val button = factory.create(ThrowingWidgetChildren(), WidgetTag(4))!!
     assertThat(button.children(ChildrenTag(345432))).isNull()
 
     assertThat(handler.events.single()).isEqualTo("Unknown children 345432 for 4")
@@ -265,7 +265,7 @@ class ProtocolNodeFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
+    val textInput = factory.create(ThrowingWidgetChildren(), WidgetTag(5))!!
 
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
@@ -280,7 +280,7 @@ class ProtocolNodeFactoryTest {
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
       ),
     )
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
+    val button = factory.create(ThrowingWidgetChildren(), WidgetTag(4))!!
 
     val diff = PropertyDiff(Id(1), PropertyTag(345432))
     val eventSink = EventSink { throw UnsupportedOperationException() }
@@ -299,7 +299,7 @@ class ProtocolNodeFactoryTest {
       ),
       mismatchHandler = handler,
     )
-    val button = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(4))!!
+    val button = factory.create(ThrowingWidgetChildren(), WidgetTag(4))!!
 
     button.apply(PropertyDiff(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
@@ -322,7 +322,7 @@ class ProtocolNodeFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.create(Id.Root, ThrowingWidgetChildren(), WidgetTag(5))!!
+    val textInput = factory.create(ThrowingWidgetChildren(), WidgetTag(5))!!
 
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyDiff(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)

@@ -42,14 +42,13 @@ public class SunspotProtocolNodeFactory<W : Any>(
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : ProtocolNode.Factory<W> {
   override fun create(
-    parentId: Id,
     parentChildren: Widget.Children<W>,
     tag: WidgetTag,
   ): ProtocolNode<W>? = when (tag.value) {
-    1 -> TextProtocolNode(parentId, parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
-    2 -> ButtonProtocolNode(parentId, parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
-    1_000_001 -> RedwoodLayoutRowProtocolNode(parentId, parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
-    1_000_002 -> RedwoodLayoutColumnProtocolNode(parentId, parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
+    1 -> TextProtocolNode(parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
+    2 -> ButtonProtocolNode(parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
+    1_000_001 -> RedwoodLayoutRowProtocolNode(parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
+    1_000_002 -> RedwoodLayoutColumnProtocolNode(parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
     else -> {
       mismatchHandler.onUnknownWidget(tag)
       null
@@ -101,7 +100,6 @@ internal fun generateProtocolNodeFactory(
         .addFunction(
           FunSpec.builder("create")
             .addModifiers(OVERRIDE)
-            .addParameter("parentId", Protocol.Id)
             .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
             .addParameter("tag", Protocol.WidgetTag)
             .returns(
@@ -113,7 +111,7 @@ internal fun generateProtocolNodeFactory(
               for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                 for (widget in dependency.widgets.sortedBy { it.tag }) {
                   addStatement(
-                    "%L -> %T(parentId, parentChildren, provider.%N.%N(), json, mismatchHandler)",
+                    "%L -> %T(parentChildren, provider.%N.%N(), json, mismatchHandler)",
                     widget.tag,
                     dependency.protocolNodeType(widget, schema),
                     dependency.type.flatName,
@@ -136,10 +134,11 @@ internal fun generateProtocolNodeFactory(
 
 /*
 internal class ProtocolButton<W : Any>(
+  parentChildren: Widget.Children<W>,
   private val delegate: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolNode<W> {
+) : ProtocolNode<W>(parentChildren) {
   public override val value: W get() = delegate.value
 
   public override val layoutModifiers: LayoutModifier
@@ -182,14 +181,12 @@ internal fun generateProtocolNode(
         .superclass(protocolType)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("parentId", Protocol.Id)
             .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
             .addParameter("widget", widgetType)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
             .build(),
         )
-        .addSuperclassConstructorParameter("parentId")
         .addSuperclassConstructorParameter("parentChildren")
         .addProperty(
           PropertySpec.builder("widget", widgetType, OVERRIDE)
