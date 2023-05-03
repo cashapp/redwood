@@ -17,5 +17,11 @@ kotlin {
         api libs.jetbrains.compose.runtime
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.kotlinx.coroutines.core
+        implementation projects.redwoodWidgetTesting
+      }
+    }
   }
 }
