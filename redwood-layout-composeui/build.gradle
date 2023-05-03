@@ -22,9 +22,6 @@ kotlin {
 
   jvm()
 
-  macosArm64()
-  macosX64()
-
   sourceSets {
     commonMain {
       kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get())

@@ -14,10 +14,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodTreehouse
-        api projects.redwoodTreehouseLazylayoutApi
         api projects.redwoodTreehouseLazylayoutWidget
-        api projects.redwoodTreehouseGuest
+        implementation libs.paging.compose.common
       }
     }
   }

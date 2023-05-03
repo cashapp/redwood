@@ -15,37 +15,47 @@
  */
 package app.cash.redwood.treehouse.lazylayout.view
 
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingDataAdapter
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.Content
-import app.cash.redwood.treehouse.HostConfiguration
-import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.treehouse.TreehouseWidgetView
-import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
+import app.cash.redwood.widget.MutableListChildren
+import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
-internal class ViewLazyList<A : AppService>(
-  private val treehouseApp: TreehouseApp<A>,
-  widgetSystem: WidgetSystem,
+internal class Items<VH : RecyclerView.ViewHolder>(
+  private val adapter: RecyclerView.Adapter<VH>,
+) : Widget.Children<View> {
+  private val _widgets = MutableListChildren<View>()
+  val widgets: List<Widget<View>> get() = _widgets
+
+  override fun insert(index: Int, widget: Widget<View>) {
+    _widgets.insert(index, widget)
+    adapter.notifyItemInserted(index)
+  }
+
+  override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+    _widgets.move(fromIndex, toIndex, count)
+    check(count == 1)
+    adapter.notifyItemMoved(fromIndex, toIndex) // TODO Support arbitrary count.
+  }
+
+  override fun remove(index: Int, count: Int) {
+    _widgets.remove(index, count)
+    adapter.notifyItemRangeRemoved(index, count)
+  }
+
+  override fun onLayoutModifierUpdated() {
+  }
+}
+
+internal class ViewLazyList(
   override val value: RecyclerView,
 ) : LazyList<View> {
   private val scope = MainScope()
@@ -53,9 +63,12 @@ internal class ViewLazyList<A : AppService>(
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private val linearLayoutManager = LinearLayoutManager(value.context)
-  private val adapter = LazyContentItemListAdapter(widgetSystem)
+  private val adapter = LazyContentItemListAdapter()
+
+  override val items = Items(adapter)
 
   init {
+    adapter.items = items
     value.apply {
       layoutManager = linearLayoutManager
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -77,124 +90,31 @@ internal class ViewLazyList<A : AppService>(
     linearLayoutManager.orientation = if (isVertical) RecyclerView.VERTICAL else RecyclerView.HORIZONTAL
   }
 
-  override fun intervals(intervals: List<LazyListInterval>) {
-    // TODO Don't hardcode pageSizes
-    // TODO Enable placeholder support
-    // TODO Set a maxSize so we don't keep _too_ many views in memory
-    val pager = Pager(PagingConfig(pageSize = 30, initialLoadSize = 30, enablePlaceholders = false)) {
-      ItemPagingSource(treehouseApp, intervals)
-    }
-    scope.launch {
-      pager.flow.collectLatest { pagingData ->
-        adapter.submitData(pagingData)
-      }
-    }
+  override fun onPositionDisplayed(onPositionDisplayed: (Int) -> Unit) {
+    adapter.onPositionDisplayed = onPositionDisplayed
   }
 
-  private class ItemPagingSource<A : AppService>(
-    private val treehouseApp: TreehouseApp<A>,
-    private val intervals: List<LazyListInterval>,
-  ) : PagingSource<Int, KeyAndContent>() {
+  private class LazyContentItemListAdapter : RecyclerView.Adapter<ViewHolder>() {
+    var onPositionDisplayed: ((Int) -> Unit)? = null
 
-    override suspend fun load(
-      params: LoadParams<Int>,
-    ): LoadResult<Int, KeyAndContent> {
-      val key = params.key ?: 0
-      val count = intervals.sumOf { it.keys.size }
-      val limit = when (params) {
-        is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
-        else -> params.loadSize
-      }.coerceAtMost(count)
-      val offset = when (params) {
-        is LoadParams.Prepend<*> -> maxOf(0, key - params.loadSize)
-        is LoadParams.Append<*> -> key
-        is LoadParams.Refresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
-      }
-      val nextPosToLoad = offset + limit
-      val loadResult = LoadResult.Page(
-        data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
-          val (indexInInterval, interval) = findInterval(index + offset)
-          val content = treehouseApp.createContent(
-            source = { interval.itemProvider.get(indexInInterval) },
-          )
-          val keyAndContent = KeyAndContent(
-            // Coalesce the key to the item index in the list.
-            key = interval.keys[indexInInterval] ?: (index + offset).toString(),
-            content = content,
-          )
-          keyAndContent.awaitContent()
-          keyAndContent
-        },
-        prevKey = offset.takeIf { it > 0 && limit > 0 },
-        nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
-        itemsBefore = offset,
-        itemsAfter = maxOf(0, count - nextPosToLoad),
-      )
-      return if (invalid) LoadResult.Invalid() else loadResult
-    }
+    lateinit var items: Items<ViewHolder>
 
-    private fun findInterval(index: Int): Pair<Int, LazyListInterval> {
-      var i = index
-      for (interval in intervals) {
-        if (i < interval.keys.size) return (i to interval)
-        i -= interval.keys.size
-      }
-      throw IllegalArgumentException()
-    }
+    override fun getItemCount(): Int = items.widgets.size
 
-    override fun getRefreshKey(state: PagingState<Int, KeyAndContent>) = state.anchorPosition
-  }
-
-  private class KeyAndContent(
-    val key: String?,
-    val content: Content,
-  ) {
-    suspend fun awaitContent() {
-      // TODO Create a public API that accepts an Android Context and returns the corresponding HostConfiguration
-      content.preload(HostConfiguration(darkMode = true))
-      content.awaitContent()
-    }
-
-    override fun equals(other: Any?) = other is KeyAndContent && key == other.key
-
-    override fun hashCode() = key.hashCode()
-
-    override fun toString() = "TreehouseItem($key)"
-  }
-
-  private class LazyContentItemListAdapter(
-    private val widgetSystem: WidgetSystem,
-  ) : PagingDataAdapter<KeyAndContent, ViewHolder>(ContentDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-      TreehouseWidgetView(parent.context, widgetSystem).apply {
-        layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-          gravity = Gravity.CENTER_HORIZONTAL
-        }
+      FrameLayout(parent.context).apply {
+        layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
       },
     )
 
-    override fun onViewRecycled(holder: ViewHolder) {
-      if (holder.bindingAdapterPosition != RecyclerView.NO_POSITION) {
-        getItem(holder.bindingAdapterPosition)!!.content.unbind()
-      }
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      getItem(position)!!.content.bind(holder.treehouseWidgetView)
+      onPositionDisplayed!!.invoke(position)
+      val view = items.widgets[position].value
+      holder.container.removeAllViews()
+      (view.parent as? FrameLayout)?.removeAllViews()
+      holder.container.addView(view)
     }
   }
 
-  private class ViewHolder(val treehouseWidgetView: TreehouseWidgetView) : RecyclerView.ViewHolder(treehouseWidgetView)
-
-  private object ContentDiffCallback : DiffUtil.ItemCallback<KeyAndContent>() {
-    override fun areItemsTheSame(
-      oldItem: KeyAndContent,
-      newItem: KeyAndContent,
-    ) = oldItem == newItem
-
-    override fun areContentsTheSame(
-      oldItem: KeyAndContent,
-      newItem: KeyAndContent,
-    ) = oldItem == newItem
-  }
+  class ViewHolder(val container: FrameLayout) : RecyclerView.ViewHolder(container)
 }

@@ -19,18 +19,13 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.zipline.Zipline
 import com.example.redwood.reposearch.treehouse.HostApi
 import com.example.redwood.reposearch.treehouse.RepoSearchPresenter
-import com.example.redwood.reposearch.treehouse.treehouseSerializersModule
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.modules.SerializersModule
 
 class RepoSearchAppSpec(
   override val manifestUrl: Flow<String>,
   private val hostApi: HostApi,
 ) : TreehouseApp.Spec<RepoSearchPresenter>() {
   override val name = "repo-search"
-
-  override val serializersModule: SerializersModule
-    get() = treehouseSerializersModule
 
   override fun bindServices(zipline: Zipline) {
     zipline.bind<HostApi>("HostApi", hostApi)

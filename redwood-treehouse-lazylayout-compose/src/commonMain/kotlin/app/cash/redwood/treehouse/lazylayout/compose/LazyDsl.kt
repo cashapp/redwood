@@ -17,7 +17,6 @@ package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
-import app.cash.redwood.treehouse.StandardAppLifecycle
 
 @LayoutScopeMarker
 public interface LazyListScope {
@@ -74,11 +73,9 @@ public inline fun <T> LazyListScope.itemsIndexed(
 
 @Composable
 public fun LazyRow(
-  appLifecycle: StandardAppLifecycle,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
-    appLifecycle = appLifecycle,
     isVertical = false,
     content = content,
   )
@@ -86,11 +83,9 @@ public fun LazyRow(
 
 @Composable
 public fun LazyColumn(
-  appLifecycle: StandardAppLifecycle,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
-    appLifecycle = appLifecycle,
     isVertical = true,
     content = content,
   )

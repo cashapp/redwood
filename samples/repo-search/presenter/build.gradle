@@ -20,8 +20,8 @@ kotlin {
     }
     jsMain {
       dependencies {
+        implementation projects.redwoodTreehouseGuest
         implementation projects.redwoodTreehouseLazylayoutCompose
-        implementation projects.redwoodTreehouseLazylayoutApi
         implementation projects.redwoodTreehouseLazylayoutPaging
       }
     }

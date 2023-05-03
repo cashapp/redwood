@@ -16,55 +16,85 @@
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.treehouse.StandardAppLifecycle
-import app.cash.redwood.treehouse.TreehouseUi
-import app.cash.redwood.treehouse.ZiplineTreehouseUi
-import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingSourceLoadParams
+import app.cash.paging.PagingSourceLoadParamsAppend
+import app.cash.paging.PagingSourceLoadParamsPrepend
+import app.cash.paging.PagingSourceLoadParamsRefresh
+import app.cash.paging.PagingSourceLoadResult
+import app.cash.paging.PagingSourceLoadResultInvalid
+import app.cash.paging.PagingSourceLoadResultPage
+import app.cash.paging.PagingState
 
 internal class LazyListIntervalContent(
-  private val appLifecycle: StandardAppLifecycle,
+  content: LazyListScope.() -> Unit,
 ) : LazyListScope {
   val intervals = mutableListOf<LazyListInterval>()
 
-  private class Item(
-    private val appLifecycle: StandardAppLifecycle,
-    private val content: @Composable (index: Int) -> Unit,
-  ) : LazyListInterval.Item {
-
-    override fun get(index: Int): ZiplineTreehouseUi {
-      val treehouseUi = IndexedTreehouseUi(content, index)
-      return treehouseUi.asZiplineTreehouseUi(appLifecycle)
-    }
+  init {
+    apply(content)
   }
 
   override fun items(
-    keys: List<String?>,
+    count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
     intervals += LazyListInterval(
-      keys,
-      Item(appLifecycle, itemContent),
+      count,
+      itemContent = itemContent,
     )
   }
 
-  override fun item(
-    key: String?,
-    content: @Composable () -> Unit,
-  ) {
+  override fun item(content: @Composable () -> Unit) {
     intervals += LazyListInterval(
-      listOf(key),
-      Item(appLifecycle) { content() },
+      1,
+      itemContent = { content() },
     )
   }
 }
 
-private class IndexedTreehouseUi(
-  private val content: @Composable (index: Int) -> Unit,
-  private val index: Int,
-) : TreehouseUi {
-  @Composable
-  override fun Show() {
-    content(index)
+internal data class LazyListInterval(
+  val count: Int,
+  val itemContent: @Composable (index: Int) -> Unit,
+)
+
+internal class ItemPagingSource(
+  private val scope: LazyListIntervalContent,
+) : PagingSource<Int, @Composable () -> Unit>() {
+
+  override suspend fun load(
+    params: PagingSourceLoadParams<Int>,
+  ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
+    val key = params.key ?: 0
+    val count = scope.intervals.sumOf { it.count }
+    val limit = when (params) {
+      is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
+      else -> params.loadSize
+    }.coerceAtMost(count)
+    val offset = when (params) {
+      is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
+      is PagingSourceLoadParamsAppend<*> -> key
+      is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
+      else -> error("Shouldn't happen")
+    }
+    val nextPosToLoad = offset + limit
+    val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
+      data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
+        var interval = IndexedValue(index + offset, scope.intervals.first())
+        for (nextInterval in scope.intervals.drop(1)) {
+          if (interval.index < interval.value.count) break
+          interval = IndexedValue(interval.index - interval.value.count, nextInterval)
+        }
+        { interval.value.itemContent.invoke(interval.index) }
+      },
+      prevKey = offset.takeIf { it > 0 && limit > 0 },
+      nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
+      itemsBefore = offset,
+      itemsAfter = maxOf(0, count - nextPosToLoad),
+    )
+
+    return if (invalid) PagingSourceLoadResultInvalid() else loadResult
   }
+
+  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int? = state.anchorPosition
 }

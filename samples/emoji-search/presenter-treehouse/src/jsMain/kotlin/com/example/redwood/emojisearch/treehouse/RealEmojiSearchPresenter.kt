@@ -33,7 +33,7 @@ class RealEmojiSearchPresenter(
   )
 
   override fun launch(): ZiplineTreehouseUi {
-    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall, appLifecycle)
+    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall)
     return treehouseUi.asZiplineTreehouseUi(
       appLifecycle = appLifecycle,
     )

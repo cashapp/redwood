@@ -1,5 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.zipline'
 
 kotlin {
@@ -18,7 +17,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodTreehouse
-        api projects.redwoodTreehouseLazylayoutApi
       }
     }
 

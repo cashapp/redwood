@@ -19,7 +19,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
@@ -37,7 +36,6 @@ import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 
 class EmojiSearchActivity : ComponentActivity() {
@@ -50,18 +48,15 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
-    val widgetSystem = object : TreehouseView.WidgetSystem {
-      override fun widgetFactory(
-        json: Json,
-        protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = EmojiSearchProtocolNodeFactory(
+    val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
+      EmojiSearchProtocolNodeFactory(
         provider = EmojiSearchWidgetFactories(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(
             context = context,
             treehouseApp = treehouseApp,
           ),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, this),
+          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context),
         ),
         json = json,
         mismatchHandler = protocolMismatchHandler,
