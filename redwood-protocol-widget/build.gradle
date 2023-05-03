@@ -31,12 +31,3 @@ kotlin {
 android {
   namespace 'app.cash.redwood.protocol.widget'
 }
-
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/protocol/widget/utils.kt",
-    )
-  }
-}
