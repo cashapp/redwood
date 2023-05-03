@@ -17,6 +17,7 @@ package app.cash.redwood.widget
 
 import android.view.View
 import android.widget.FrameLayout
+import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment

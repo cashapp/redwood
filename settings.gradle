@@ -74,6 +74,7 @@ include ':redwood-treehouse-lazylayout-view'
 include ':redwood-treehouse-lazylayout-widget'
 include ':redwood-widget'
 include ':redwood-widget-compose'
+include ':redwood-widget-testing'
 
 include ':test-schema'
 include ':test-schema:compose'

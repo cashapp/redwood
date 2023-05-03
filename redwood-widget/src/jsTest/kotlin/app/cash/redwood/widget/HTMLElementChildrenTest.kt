@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
