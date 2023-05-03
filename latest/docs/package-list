@@ -73,3 +73,5 @@ module:redwood-widget
 app.cash.redwood.widget
 module:redwood-widget-compose
 app.cash.redwood.widget.compose
+module:redwood-widget-testing
+app.cash.redwood.widget.testing
