@@ -18,7 +18,7 @@ package app.cash.redwood.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
  * Provide the version of widgets in use.
@@ -27,7 +27,7 @@ import androidx.compose.runtime.compositionLocalOf
  *
  * @see WidgetVersion
  */
-public val LocalWidgetVersion: ProvidableCompositionLocal<UInt> = compositionLocalOf {
+public val LocalWidgetVersion: ProvidableCompositionLocal<UInt> = staticCompositionLocalOf {
   // A real value is always provided to a protocol-based composition.
   // When connected directly (i.e., without the protocol indirection) always assume latest.
   UInt.MAX_VALUE
