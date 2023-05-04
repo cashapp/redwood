@@ -85,6 +85,7 @@ internal object RedwoodWidget {
 
 internal object RedwoodCompose {
   val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
+  val WidgetNode = ClassName("app.cash.redwood.compose", "WidgetNode")
 }
 
 internal object ComposeRuntime {
