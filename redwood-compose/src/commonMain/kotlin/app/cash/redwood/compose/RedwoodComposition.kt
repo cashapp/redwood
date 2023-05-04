@@ -71,15 +71,9 @@ public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
   provider: Widget.Provider<W>,
+  onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, WidgetApplier(provider, container))
-}
-
-public fun RedwoodComposition(
-  scope: CoroutineScope,
-  applier: WidgetApplier<*>,
-): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, applier)
+  return WidgetRedwoodComposition(scope, WidgetApplier(provider, container, onEndChanges))
 }
 
 private class WidgetRedwoodComposition(
@@ -118,6 +112,12 @@ private class WidgetRedwoodComposition(
   }
 }
 
+/** @suppress For generated code usage only. */
+@RedwoodCodegenApi
+public interface RedwoodApplier<W : Any> {
+  public val provider: Widget.Provider<W>
+}
+
 /**
  * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
  * we expose the provider type [P] to our factory function so the correct widget can be created.
@@ -137,7 +137,7 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
 
   if (currentComposer.inserting) {
     @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as WidgetApplier<P>
+    val applier = currentComposer.applier as RedwoodApplier<P>
     currentComposer.createNode {
       @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
       factory(applier.provider as P)
@@ -186,8 +186,6 @@ public class RedwoodComposeContent<out W : Widget<*>> {
  * supports one or more groups of children will have one or more of these synthetic nodes as its
  * direct descendants. The nodes which are produced by each group of children will then become the
  * descendants of those synthetic nodes.
- *
- * @suppress For generated code usage only.
  */
 internal class ChildrenWidget<W : Any> private constructor(
   var accessor: ((Widget<W>) -> Widget.Children<W>)?,

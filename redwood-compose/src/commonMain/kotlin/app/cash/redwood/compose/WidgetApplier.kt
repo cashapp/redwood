@@ -17,6 +17,7 @@ package app.cash.redwood.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
 
 /**
@@ -44,11 +45,12 @@ import app.cash.redwood.widget.Widget
  * user widgets to the synthetic children widgets as they can never be individually moved/removed.
  * The hierarchy is maintained by Compose's slot table and is represented by dotted lines above.
  */
-public class WidgetApplier<W : Any>(
-  public val provider: Widget.Provider<W>,
+@OptIn(RedwoodCodegenApi::class)
+internal class WidgetApplier<W : Any>(
+  override val provider: Widget.Provider<W>,
   root: Widget.Children<W>,
-  private val onEndChanges: () -> Unit = {},
-) : AbstractApplier<Widget<W>>(ChildrenWidget(root)) {
+  private val onEndChanges: () -> Unit,
+) : AbstractApplier<Widget<W>>(ChildrenWidget(root)), RedwoodApplier<W> {
   private var closed = false
 
   override fun onEndChanges() {
