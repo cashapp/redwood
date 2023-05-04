@@ -49,12 +49,3 @@ android {
     unitTests.returnDefaultValues = true
   }
 }
-
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/protocol/compose/utils.kt",
-    )
-  }
-}

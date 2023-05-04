@@ -65,7 +65,7 @@ public interface Widget<W : Any> {
     /** Remove [count] child widgets starting from [index]. */
     public fun remove(index: Int, count: Int)
 
-    /** Indicates that the [LayoutModifier] for the widget at [index] has changed. */
-    public fun onLayoutModifierUpdated(index: Int)
+    /** Indicates that [LayoutModifier]s for the child widgets have changed. */
+    public fun onLayoutModifierUpdated()
   }
 }

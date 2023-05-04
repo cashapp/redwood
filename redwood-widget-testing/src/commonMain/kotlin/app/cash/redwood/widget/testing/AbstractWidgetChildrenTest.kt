@@ -13,40 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.widget
+package app.cash.redwood.widget.testing
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.widget.Widget
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import kotlin.test.Test
 
-abstract class AbstractWidgetChildrenTest<W : Any> {
-  abstract val children: Widget.Children<W>
-  abstract fun widget(name: String): W
-  abstract fun names(): List<String>
+public abstract class AbstractWidgetChildrenTest<W : Any> {
+  public abstract val children: Widget.Children<W>
+  public abstract fun widget(name: String): W
+  public abstract fun names(): List<String>
 
-  @Test fun insertAppend() {
+  @Test public fun insertAppend() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
     assertThat(names()).containsExactly("one", "two", "three")
   }
 
-  @Test fun insertPrepend() {
+  @Test public fun insertPrepend() {
     children.insert(0, widget("one"))
     children.insert(0, widget("two"))
     children.insert(0, widget("three"))
     assertThat(names()).containsExactly("three", "two", "one")
   }
 
-  @Test fun insertRandom() {
+  @Test public fun insertRandom() {
     children.insert(0, widget("one"))
     children.insert(0, widget("two"))
     children.insert(1, widget("three"))
     assertThat(names()).containsExactly("two", "three", "one")
   }
 
-  @Test fun moveSingleForward() {
+  @Test public fun moveSingleForward() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -54,7 +55,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("two", "three", "one")
   }
 
-  @Test fun moveSingleComposeApplierDocumentation() {
+  @Test public fun moveSingleComposeApplierDocumentation() {
     // This test comes from Compose Applier's `move` documentation.
     children.insert(0, widget("A"))
     children.insert(1, widget("B"))
@@ -65,7 +66,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("A", "C", "B", "D", "E")
   }
 
-  @Test fun moveMultipleForward() {
+  @Test public fun moveMultipleForward() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -73,7 +74,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("three", "one", "two")
   }
 
-  @Test fun moveSingleBackward() {
+  @Test public fun moveSingleBackward() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -81,7 +82,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("three", "one", "two")
   }
 
-  @Test fun moveMultipleBackward() {
+  @Test public fun moveMultipleBackward() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -89,7 +90,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("two", "three", "one")
   }
 
-  @Test fun moveZero() {
+  @Test public fun moveZero() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -99,7 +100,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("one", "two", "three")
   }
 
-  @Test fun removeSingleStart() {
+  @Test public fun removeSingleStart() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -107,7 +108,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("two", "three")
   }
 
-  @Test fun removeMultipleStart() {
+  @Test public fun removeMultipleStart() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -115,7 +116,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("three")
   }
 
-  @Test fun removeSingleEnd() {
+  @Test public fun removeSingleEnd() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -123,7 +124,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("one", "two")
   }
 
-  @Test fun removeMultipleEnd() {
+  @Test public fun removeMultipleEnd() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))
@@ -131,7 +132,7 @@ abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("one")
   }
 
-  @Test fun removeZero() {
+  @Test public fun removeZero() {
     children.insert(0, widget("one"))
     children.insert(1, widget("two"))
     children.insert(2, widget("three"))

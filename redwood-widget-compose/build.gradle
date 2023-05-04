@@ -17,14 +17,11 @@ kotlin {
         api libs.jetbrains.compose.runtime
       }
     }
-  }
-}
-
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/widget/compose/utils.kt",
-    )
+    commonTest {
+      dependencies {
+        implementation libs.kotlinx.coroutines.core
+        implementation projects.redwoodWidgetTesting
+      }
+    }
   }
 }

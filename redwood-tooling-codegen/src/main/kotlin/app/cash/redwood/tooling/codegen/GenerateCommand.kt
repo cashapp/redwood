@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.cli
+package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.CodegenType
-import app.cash.redwood.tooling.codegen.ProtocolCodegenType
-import app.cash.redwood.tooling.codegen.generate
 import app.cash.redwood.tooling.schema.FqType
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.github.ajalt.clikt.core.CliktCommand

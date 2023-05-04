@@ -7,7 +7,7 @@ pluginManagement {
 }
 
 plugins {
-  id "com.gradle.enterprise" version "3.13"
+  id "com.gradle.enterprise" version "3.13.1"
 }
 
 gradleEnterprise {
@@ -32,7 +32,6 @@ enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
 rootProject.name = 'redwood'
 
-include ':redwood-cli'
 include ':redwood-compose'
 include ':redwood-compose-testing'
 include ':redwood-flexbox'
@@ -75,6 +74,7 @@ include ':redwood-treehouse-lazylayout-view'
 include ':redwood-treehouse-lazylayout-widget'
 include ':redwood-widget'
 include ':redwood-widget-compose'
+include ':redwood-widget-testing'
 
 include ':test-schema'
 include ':test-schema:compose'

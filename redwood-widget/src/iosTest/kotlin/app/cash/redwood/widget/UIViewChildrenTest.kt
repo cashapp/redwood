@@ -15,9 +15,9 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
-import platform.UIKit.subviews
 
 class UIViewChildrenTest : AbstractWidgetChildrenTest<UIView>() {
   private val parent = UIView()

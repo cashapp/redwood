@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.widget
+@file:JvmName("Main")
 
-import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
+package app.cash.redwood.tooling.codegen
 
-class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
-  override val children = MutableListChildren<String>()
-  override fun widget(name: String) = name
-  override fun names() = children.map { it.value }
+import com.github.ajalt.clikt.core.NoOpCliktCommand
+import com.github.ajalt.clikt.core.subcommands
+
+public fun main(vararg args: String) {
+  NoOpCliktCommand()
+    .subcommands(
+      GenerateCommand(),
+    )
+    .main(args)
 }

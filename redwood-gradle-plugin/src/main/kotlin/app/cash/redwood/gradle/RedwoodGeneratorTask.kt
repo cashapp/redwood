@@ -79,7 +79,7 @@ private abstract class RedwoodGeneratorWorker @Inject constructor(
 
     execOperations.javaexec { exec ->
       exec.classpath = parameters.toolClasspath
-      exec.mainClass.set("app.cash.redwood.cli.Main")
+      exec.mainClass.set("app.cash.redwood.tooling.codegen.Main")
 
       exec.args = listOf(
         "generate",

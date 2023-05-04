@@ -17,7 +17,6 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.PropertyDiff
 import app.cash.redwood.protocol.WidgetTag
@@ -31,13 +30,8 @@ import kotlin.native.ObjCName
  */
 @ObjCName("ProtocolNode", exact = true)
 public abstract class ProtocolNode<W : Any>(
-  public val parentId: Id,
   public val parentChildren: Widget.Children<W>,
 ) {
-  private var _childIds: MutableList<Id>? = null
-  public val childIds: MutableList<Id>
-    get() = _childIds ?: mutableListOf<Id>().also { _childIds = it }
-
   public abstract val widget: Widget<W>
 
   public abstract fun apply(diff: PropertyDiff, eventSink: EventSink)
@@ -63,7 +57,6 @@ public abstract class ProtocolNode<W : Any>(
      * continue executing.
      */
     public fun create(
-      parentId: Id,
       parentChildren: Widget.Children<W>,
       tag: WidgetTag,
     ): ProtocolNode<W>?

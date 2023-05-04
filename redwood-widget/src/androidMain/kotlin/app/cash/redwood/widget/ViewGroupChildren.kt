@@ -21,11 +21,11 @@ import android.view.ViewGroup
 public class ViewGroupChildren(
   private val parent: ViewGroup,
 ) : Widget.Children<View> {
-  private val _widgets = MutableListChildren<View>()
+  private val _widgets = ArrayList<Widget<View>>()
   public val widgets: List<Widget<View>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<View>) {
-    _widgets.insert(index, widget)
+    _widgets.add(index, widget)
     parent.addView(widget.value, index)
   }
 
@@ -52,9 +52,7 @@ public class ViewGroupChildren(
     parent.removeViews(index, count)
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
-    val view = parent.getChildAt(index)
-    view.invalidate()
-    view.requestLayout()
+  override fun onLayoutModifierUpdated() {
+    parent.requestLayout()
   }
 }

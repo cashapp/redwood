@@ -21,11 +21,11 @@ import org.w3c.dom.get
 public class HTMLElementChildren(
   private val parent: HTMLElement,
 ) : Widget.Children<HTMLElement> {
-  private val _widgets = MutableListChildren<HTMLElement>()
+  private val _widgets = ArrayList<Widget<HTMLElement>>()
   public val widgets: List<Widget<HTMLElement>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<HTMLElement>) {
-    _widgets.insert(index, widget)
+    _widgets.add(index, widget)
 
     // Null element returned when index == childCount causes insertion at end.
     val current = parent.children[index]
@@ -61,9 +61,11 @@ public class HTMLElementChildren(
     }
   }
 
-  override fun onLayoutModifierUpdated(index: Int) {
-    val element = parent.children[index] as HTMLElement
+  override fun onLayoutModifierUpdated() {
+    // If this function is being invoked we are guaranteed to have at least one child.
+
+    val element = parent.children[0] as HTMLElement
     parent.removeChild(element)
-    parent.insertBefore(element, parent.children[index])
+    parent.insertBefore(element, parent.children[0])
   }
 }
