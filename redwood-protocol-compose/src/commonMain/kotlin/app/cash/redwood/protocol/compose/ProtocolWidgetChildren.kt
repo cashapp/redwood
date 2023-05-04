@@ -48,6 +48,5 @@ internal class ProtocolWidgetChildren(
   }
 
   override fun onLayoutModifierUpdated() {
-    throw AssertionError()
   }
 }
