@@ -18,6 +18,7 @@ package app.cash.redwood.compose.testing
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.ViewTree
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
