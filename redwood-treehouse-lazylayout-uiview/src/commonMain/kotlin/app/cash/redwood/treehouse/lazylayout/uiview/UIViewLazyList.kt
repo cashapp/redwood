@@ -25,12 +25,22 @@ import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
+import kotlinx.cinterop.CValue
+import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSIndexPath
 import platform.QuartzCore.CALayer
-import platform.UIKit.UITableView
-import platform.UIKit.UITableViewCell
-import platform.UIKit.UITableViewCellStyle
-import platform.UIKit.UITableViewDiffableDataSource
+import platform.UIKit.UICollectionView
+import platform.UIKit.UICollectionViewCell
+import platform.UIKit.UICollectionViewCellMeta
+import platform.UIKit.UICollectionViewController
+import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
+import platform.UIKit.UICollectionViewDiffableDataSource
+import platform.UIKit.UICollectionViewFlowLayout
+import platform.UIKit.UICollectionViewLayout
+import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
+import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
 import platform.UIKit.UIView
 import platform.UIKit.row
 import platform.UIKit.section
@@ -40,50 +50,76 @@ internal class UIViewLazyList<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
 ) : LazyList<UIView> {
-  private val dataSource = TableViewDataSource(treehouseApp, widgetSystem)
-  private val root = UITableView().apply {
-    this.dataSource = this@UIViewLazyList.dataSource
-  }
+  private val layout = UICollectionViewFlowLayout()
+  private val viewController = CollectionViewController(treehouseApp, widgetSystem, layout)
 
   override fun isVertical(isVertical: Boolean) {
-    if (!isVertical) {
-      // TODO UITableView only supports vertical scrolling. Switch to UICollectionView.
-      TODO()
+    layout.scrollDirection = if (isVertical) {
+      UICollectionViewScrollDirectionVertical
+    } else {
+      UICollectionViewScrollDirectionHorizontal
     }
   }
 
   override fun intervals(intervals: List<LazyListInterval>) {
-    dataSource.intervals = intervals
-    root.reloadData()
+    viewController.dataSource.intervals = intervals
+    viewController.collectionView.reloadData()
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override val value: UIView get() = root
+  override val value: UIView get() = viewController.collectionView
 }
 
-private class TableViewDataSource<A : AppService>(
+private class CollectionViewController<A : AppService>(
+  treehouseApp: TreehouseApp<A>,
+  widgetSystem: WidgetSystem,
+  layout: UICollectionViewLayout,
+) : UICollectionViewController(layout),
+  UICollectionViewDelegateFlowLayoutProtocol {
+  val dataSource = CollectionViewDataSource(treehouseApp, widgetSystem)
+
+  init {
+    collectionView.registerClass(CollectionViewCell, "CollectionViewCell")
+    collectionView.dataSource = dataSource
+  }
+
+  override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath: NSIndexPath): CValue<CGSize> {
+    // TODO Flip the dimensions when isVertical==false.
+    return CGSizeMake(
+//      width = collectionView.bounds.useContents { size }.width, // This always returns 0.
+      width = 100.0,
+      height = 64.0,
+    )
+  }
+}
+
+private class CollectionViewDataSource<A : AppService>(
   private val treehouseApp: TreehouseApp<A>,
   private val widgetSystem: WidgetSystem,
-) : UITableViewDiffableDataSource() {
+) : UICollectionViewDiffableDataSource() {
   var intervals = emptyList<LazyListInterval>()
 
-  override fun numberOfSectionsInTableView(tableView: UITableView): NSInteger {
+  override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger {
     return intervals.size.toLong()
   }
 
-  override fun tableView(tableView: UITableView, numberOfRowsInSection: NSInteger): NSInteger {
-    return intervals[numberOfRowsInSection.toInt()].keys.size.toLong()
+  override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger {
+    return intervals[numberOfItemsInSection.toInt()].keys.size.toLong()
   }
 
-  override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
+  override fun collectionView(collectionView: UICollectionView, cellForItemAtIndexPath: NSIndexPath): UICollectionViewCell {
+    val collectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", cellForItemAtIndexPath) as CollectionViewCell
     val treehouseView = TreehouseUIKitView(widgetSystem)
+    collectionViewCell.view = treehouseView.view
     val cellContentSource = CellContentSource<A>(
-      intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
-      cellForRowAtIndexPath.row.toInt(),
+      intervals[cellForItemAtIndexPath.section.toInt()].itemProvider,
+      cellForItemAtIndexPath.row.toInt(),
     )
     cellContentSource.bindWhenReady(treehouseView, treehouseApp)
-    return TableViewCell(treehouseView.view)
+    collectionViewCell.subviews.forEach { (it as UIView).removeFromSuperview() }
+    collectionViewCell.addSubview(treehouseView.view)
+    return collectionViewCell
   }
 }
 
@@ -97,13 +133,18 @@ private class CellContentSource<A : AppService>(
   }
 }
 
-private class TableViewCell(private val view: UIView) :
-  UITableViewCell(UITableViewCellStyle.UITableViewCellStyleDefault, null) {
-  init {
-    addSubview(view)
-  }
+private class CollectionViewCell(frame: CValue<CGRect>) : UICollectionViewCell(frame) {
+  var view: UIView? = null
 
   override fun layoutSublayersOfLayer(layer: CALayer) {
-    view.setFrame(bounds)
+    view!!.setFrame(bounds)
   }
+
+  // If this isn't included, an 'Initializer is not implemented' exception is thrown.
+  @Suppress("OVERRIDE_DEPRECATION")
+  override fun initWithFrame(frame: CValue<CGRect>): UICollectionViewCell {
+    return CollectionViewCell(frame)
+  }
+
+  companion object : UICollectionViewCellMeta()
 }
