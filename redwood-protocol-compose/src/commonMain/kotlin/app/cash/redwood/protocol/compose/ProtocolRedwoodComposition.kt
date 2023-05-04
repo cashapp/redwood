@@ -20,7 +20,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.compose.WidgetApplier
 import app.cash.redwood.protocol.DiffSink
 import kotlinx.coroutines.CoroutineScope
 
@@ -34,10 +33,9 @@ public fun ProtocolRedwoodComposition(
   diffSink: DiffSink,
   widgetVersion: UInt,
 ): RedwoodComposition {
-  val applier = WidgetApplier(bridge.provider, bridge.root) {
+  val composition = RedwoodComposition(scope, bridge.root, bridge.provider) {
     bridge.createDiffOrNull()?.let(diffSink::sendDiff)
   }
-  val composition = RedwoodComposition(scope, applier)
   return ProtocolRedwoodComposition(composition, widgetVersion)
 }
 
