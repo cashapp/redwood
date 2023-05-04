@@ -1,3 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+import static org.gradle.api.plugins.JavaPlugin.TEST_TASK_NAME
+import static org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.TEST_COMPILATION_NAME
+
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.vanniktech.maven.publish'
@@ -12,11 +17,26 @@ dependencies {
   api projects.redwoodSchema
   api libs.kotlin.reflect
   implementation libs.kotlinx.serialization.json
+  implementation libs.kotlin.compilerEmbeddable
   implementation libs.clikt
 
   testImplementation projects.testSchema
   testImplementation libs.junit
   testImplementation libs.assertk
+  testImplementation libs.testParameterInjector
+}
+
+// In order to simplify writing test schemas, inject the test sources and
+// test classpath as properties into the test runtime. This allows testing
+// the FIR-based parser on sources written inside the test case. Cool!
+tasks.named(TEST_TASK_NAME, Test).configure {
+  def compilation = kotlin.target.compilations.getByName(TEST_COMPILATION_NAME)
+
+  def sources = compilation.defaultSourceSet.kotlin.sourceDirectories.files
+  it.systemProperty('redwood.internal.sources', sources.join(File.pathSeparator))
+
+  def classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName).files
+  it.systemProperty('redwood.internal.classpath', classpath.join(File.pathSeparator))
 }
 
 tasks.named("distTar").configure { task ->
