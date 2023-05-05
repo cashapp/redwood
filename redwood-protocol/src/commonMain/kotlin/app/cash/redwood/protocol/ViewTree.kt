@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.compose.testing
+package app.cash.redwood.protocol
 
-import app.cash.redwood.protocol.ChildrenDiff
-import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.PropertyDiff
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+/**
+ * A snapshot of a view hierarchy, intended for use in tests, debugging, and development tools.
+ */
 // TODO: Add support LayoutModifiers.
 @Serializable
 public class ViewTree(
@@ -43,22 +41,3 @@ public class ViewTree(
     )
   }
 }
-
-public val List<WidgetValue>.viewTree: ViewTree
-  get() {
-    val builder = ViewTree.Builder()
-    val root = builder.nextId++
-
-    for (widget in this) {
-      widget.addTo(Id(root), ChildrenTag.Root, builder)
-    }
-
-    return builder.build()
-  }
-
-public val WidgetValue.viewTree: ViewTree
-  get() {
-    val builder = ViewTree.Builder()
-    addTo(Id(builder.nextId++), ChildrenTag.Root, builder)
-    return builder.build()
-  }

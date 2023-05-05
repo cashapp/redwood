@@ -17,7 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
 import app.cash.redwood.tooling.codegen.Protocol.Id
-import app.cash.redwood.tooling.codegen.RedwoodTesting.ViewTreeBuilder
+import app.cash.redwood.tooling.codegen.Protocol.ViewTreeBuilder
 import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema

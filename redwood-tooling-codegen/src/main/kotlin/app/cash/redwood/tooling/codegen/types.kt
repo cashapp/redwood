@@ -38,6 +38,8 @@ internal object Protocol {
   val LayoutModifierTag = ClassName("app.cash.redwood.protocol", "LayoutModifierTag")
   val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
+  val ViewTree = ClassName("app.cash.redwood.protocol", "ViewTree")
+  val ViewTreeBuilder = ViewTree.nestedClass("Builder")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
@@ -70,8 +72,6 @@ internal object Redwood {
 internal object RedwoodTesting {
   val MutableWidget = ClassName("app.cash.redwood.compose.testing", "MutableWidget")
   val RedwoodTester = ClassName("app.cash.redwood.compose.testing", "RedwoodTester")
-  val ViewTree = ClassName("app.cash.redwood.compose.testing", "ViewTree")
-  val ViewTreeBuilder = ViewTree.nestedClass("Builder")
   val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
 }
 
