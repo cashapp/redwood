@@ -26,9 +26,11 @@ import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
+import kotlinx.cinterop.copy
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGSize
-import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSIndexPath
 import platform.QuartzCore.CALayer
 import platform.UIKit.UICollectionView
@@ -86,11 +88,9 @@ private class CollectionViewController<A : AppService>(
 
   override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath: NSIndexPath): CValue<CGSize> {
     // TODO Flip the dimensions when isVertical==false.
-    return CGSizeMake(
-//      width = collectionView.bounds.useContents { size }.width, // This always returns 0.
-      width = 100.0,
-      height = 64.0,
-    )
+    return collectionView.sizeThatFits(cValue { collectionView.bounds.useContents { size } }).copy {
+      height = 64.0
+    }
   }
 }
 
