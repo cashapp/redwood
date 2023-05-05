@@ -29,14 +29,19 @@ import kotlin.native.ObjCName
  * @suppress
  */
 @ObjCName("ProtocolNode", exact = true)
-public abstract class ProtocolNode<W : Any>(
-  public val parentChildren: Widget.Children<W>,
-) {
-  public abstract val widget: Widget<W>
+public interface ProtocolNode<W : Any> {
+  public val widget: Widget<W>
 
-  public abstract fun apply(diff: PropertyDiff, eventSink: EventSink)
+  /**
+   * Record that this node's [widget] has been inserted into [container].
+   * Updates to this node's layout modifiers will notify [container].
+   * This function may only be invoked once on each instance.
+   */
+  public fun attachTo(container: Widget.Children<W>)
 
-  public abstract fun updateLayoutModifier(elements: List<LayoutModifierElement>)
+  public fun apply(diff: PropertyDiff, eventSink: EventSink)
+
+  public fun updateLayoutModifier(elements: List<LayoutModifierElement>)
 
   /**
    * Return one of this node's children groups by its [tag].
@@ -45,7 +50,7 @@ public abstract class ProtocolNode<W : Any>(
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
+  public fun children(tag: ChildrenTag): Widget.Children<W>?
 
   @ObjCName("ProtocolNodeFactory", exact = true)
   public interface Factory<W : Any> {
@@ -56,9 +61,6 @@ public abstract class ProtocolNode<W : Any>(
      * If `null` is returned, the caller should make every effort to ignore this node and
      * continue executing.
      */
-    public fun create(
-      parentChildren: Widget.Children<W>,
-      tag: WidgetTag,
-    ): ProtocolNode<W>?
+    public fun create(tag: WidgetTag): ProtocolNode<W>?
   }
 }

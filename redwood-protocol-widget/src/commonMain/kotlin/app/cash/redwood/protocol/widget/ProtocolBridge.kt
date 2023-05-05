@@ -52,8 +52,9 @@ public class ProtocolBridge<W : Any>(
 
       when (childrenDiff) {
         is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(children, childrenDiff.widgetTag) ?: continue
+          val childWidget = factory.create(childrenDiff.widgetTag) ?: continue
           children.insert(childrenDiff.index, childWidget.widget)
+          childWidget.attachTo(children)
           val old = nodes.put(childrenDiff.childId, childWidget)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${childrenDiff.childId.value}"
@@ -71,7 +72,6 @@ public class ProtocolBridge<W : Any>(
     for (layoutModifier in diff.layoutModifiers) {
       val node = node(layoutModifier.id)
       node.updateLayoutModifier(layoutModifier.elements)
-      node.parentChildren.onLayoutModifierUpdated()
     }
 
     for (propertyDiff in diff.propertyDiffs) {
@@ -86,9 +86,7 @@ public class ProtocolBridge<W : Any>(
 
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
-) : ProtocolNode<W>(
-  parentChildren = children, // This value is a lie, but it's never accessed on this node.
-) {
+) : ProtocolNode<W> {
   override fun updateLayoutModifier(elements: List<LayoutModifierElement>) {
     throw AssertionError("unexpected: $elements")
   }
@@ -101,6 +99,9 @@ private class RootProtocolNode<W : Any>(
     ChildrenTag.Root -> children
     else -> throw AssertionError("unexpected: $tag")
   }
-
   override val widget: Widget<W> get() = throw AssertionError()
+
+  override fun attachTo(children: Widget.Children<W>) {
+    throw AssertionError()
+  }
 }
