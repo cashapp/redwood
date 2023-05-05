@@ -19,7 +19,6 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.compose.WidgetApplier
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlin.time.Duration
@@ -56,7 +55,9 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
-    applier = WidgetApplier(provider, mutableChildren) {
+    container = mutableChildren,
+    provider = provider,
+    onEndChanges = {
       val newSnapshot = mutableChildren.map { it.value.snapshot() }
 
       // trySend always succeeds on a CONFLATED channel.
