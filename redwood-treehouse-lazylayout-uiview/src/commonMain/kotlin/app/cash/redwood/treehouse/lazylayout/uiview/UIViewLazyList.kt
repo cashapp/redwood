@@ -87,9 +87,13 @@ private class CollectionViewController<A : AppService>(
   }
 
   override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath: NSIndexPath): CValue<CGSize> {
-    // TODO Flip the dimensions when isVertical==false.
     return collectionView.sizeThatFits(cValue { collectionView.bounds.useContents { size } }).copy {
-      height = 64.0
+      // TODO Remove statically sized containers (https://github.com/cashapp/redwood/pull/854).
+      if ((layout as UICollectionViewFlowLayout).scrollDirection == UICollectionViewScrollDirectionVertical) {
+        height = 64.0
+      } else {
+        width = 64.0
+      }
     }
   }
 }
