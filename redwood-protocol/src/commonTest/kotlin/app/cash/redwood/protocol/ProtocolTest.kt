@@ -56,7 +56,7 @@ class ProtocolTest {
       childrenDiffs = listOf(
         ChildrenDiff.Insert(Id(1), ChildrenTag(2), Id(3), WidgetTag(4), 5),
         ChildrenDiff.Move(Id(1), ChildrenTag(2), 3, 4, 5),
-        ChildrenDiff.Remove(Id(1), ChildrenTag(2), 3, 4),
+        ChildrenDiff.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7), Id(8))),
       ),
       layoutModifiers = listOf(
         LayoutModifiers(
@@ -93,7 +93,7 @@ class ProtocolTest {
       """{"childrenDiffs":[""" +
       """["insert",{"id":1,"tag":2,"childId":3,"widgetTag":4,"index":5}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
-      """["remove",{"id":1,"tag":2,"index":3,"count":4}]""" +
+      """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}]""" +
       """],"layoutModifiers":[""" +
       """{"id":1,"elements":[[1,{}],[2,3],[3,[]],[4],[5]]}""" +
       """],"propertyDiffs":[""" +
@@ -111,6 +111,13 @@ class ProtocolTest {
     )
     val json = "{}"
     assertJsonRoundtrip(Diff.serializer(), model, json)
+  }
+
+  @Test fun removeCountMustMatchListSize() {
+    val t = assertFailsWith<IllegalArgumentException> {
+      ChildrenDiff.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7)))
+    }
+    assertThat(t).hasMessage("Count 4 != Removed ID list size 3")
   }
 
   @Test fun layoutModifierElementSerialization() {
