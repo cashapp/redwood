@@ -51,14 +51,14 @@ private class RedwoodZiplineTreehouseUi(
   private lateinit var composition: RedwoodComposition
 
   override fun start(
-    diffSink: DiffSinkService,
+    changesSink: ChangesSinkService,
     hostConfigurations: StateFlow<HostConfiguration>,
   ) {
     val composition = ProtocolRedwoodComposition(
       scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
-      diffSink = diffSink,
+      changesSink = changesSink,
     )
     this.composition = composition
 

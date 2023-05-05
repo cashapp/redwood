@@ -26,17 +26,18 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
 internal object Protocol {
+  val Create = ClassName("app.cash.redwood.protocol", "Create")
+  val Change = ClassName("app.cash.redwood.protocol", "Change")
+  val ChildrenChangeAdd = ClassName("app.cash.redwood.protocol", "ChildrenChange", "Add")
   val ChildrenTag = ClassName("app.cash.redwood.protocol", "ChildrenTag")
-  val ChildrenDiff = ClassName("app.cash.redwood.protocol", "ChildrenDiff")
-  val Diff = ClassName("app.cash.redwood.protocol", "Diff")
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
-  val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+  val LayoutModifierChange = ClassName("app.cash.redwood.protocol", "LayoutModifierChange")
   val LayoutModifierElement = ClassName("app.cash.redwood.protocol", "LayoutModifierElement")
   val LayoutModifierTag = ClassName("app.cash.redwood.protocol", "LayoutModifierTag")
-  val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
+  val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
   val ViewTree = ClassName("app.cash.redwood.protocol", "ViewTree")
   val ViewTreeBuilder = ViewTree.nestedClass("Builder")

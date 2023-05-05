@@ -21,23 +21,16 @@ import kotlinx.serialization.json.Json
 /**
  * A snapshot of a view hierarchy, intended for use in tests, debugging, and development tools.
  */
-// TODO: Add support LayoutModifiers.
 @Serializable
 public class ViewTree(
-  public val diff: Diff,
+  public val changes: List<Change>,
 ) {
   public class Builder {
     public var nextId: Int = Id.Root.value
     public val json: Json = Json
 
-    public val childrenDiffs: MutableList<ChildrenDiff> = mutableListOf<ChildrenDiff>()
-    public val propertyDiffs: MutableList<PropertyDiff> = mutableListOf<PropertyDiff>()
+    public val changes: MutableList<Change> = mutableListOf()
 
-    public fun build(): ViewTree = ViewTree(
-      Diff(
-        childrenDiffs = childrenDiffs.toList(),
-        propertyDiffs = propertyDiffs.toList(),
-      ),
-    )
+    public fun build(): ViewTree = ViewTree(changes.toList())
   }
 }

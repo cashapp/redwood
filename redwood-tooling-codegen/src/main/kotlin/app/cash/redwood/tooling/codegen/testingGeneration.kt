@@ -287,18 +287,26 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .addStatement("val widgetTag = %T(%L)", Protocol.WidgetTag, (widget as ProtocolWidget).tag)
     .addStatement(
       """
-      |val childrenDiff = %T(
-      |  parentId,
-      |  childrenTag,
+      |builder.changes += %T(
       |  widgetId,
       |  widgetTag,
-      |  builder.childrenDiffs.size
       |)
       |
       """.trimMargin(),
-      Protocol.ChildrenDiff.nestedClass("Insert"),
+      Protocol.Create,
     )
-    .addStatement("builder.childrenDiffs.add(childrenDiff)")
+    .addStatement(
+      """
+      |builder.changes += %T(
+      |  parentId,
+      |  childrenTag,
+      |  widgetId,
+      |  builder.changes.size,
+      |)
+      |
+      """.trimMargin(),
+      Protocol.ChildrenChangeAdd,
+    )
 
   for (trait in widget.traits) {
     val type = when (trait) {
@@ -327,10 +335,12 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
+    // TODO: Add support LayoutModifiers.
+
     if (trait is ProtocolWidget.ProtocolProperty) {
       addToBuilder.addStatement(
-        "builder.propertyDiffs.add(%T(widgetId, %T(%L), builder.json.%M(this.%N)))",
-        Protocol.PropertyDiff,
+        "builder.changes += %T(widgetId, %T(%L), builder.json.%M(this.%N))",
+        Protocol.PropertyChange,
         Protocol.PropertyTag,
         trait.tag,
         KotlinxSerialization.encodeToJsonElement,

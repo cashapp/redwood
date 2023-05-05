@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 @ObjCName("ZiplineTreehouseUi", exact = true)
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
-    diffSink: DiffSinkService,
+    changesSink: ChangesSinkService,
     hostConfigurations: StateFlow<HostConfiguration>,
   )
 }

@@ -19,6 +19,6 @@ public fun interface EventSink {
   public fun sendEvent(event: Event)
 }
 
-public fun interface DiffSink {
-  public fun sendDiff(diff: Diff)
+public fun interface ChangesSink {
+  public fun sendChanges(changes: List<Change>)
 }

@@ -46,7 +46,7 @@ class ComposeProtocolGenerationTest {
     assertThat(fileSpec.toString()).contains(
       """
       |  public override fun id(id: String): Unit {
-      |    this.state.append(PropertyDiff(this.id,
+      |    this.state.append(PropertyChange(this.id,
       """.trimMargin(),
     )
   }

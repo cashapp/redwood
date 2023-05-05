@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
@@ -59,7 +59,7 @@ private sealed interface CodeState<A : AppService> {
 
   class Running<A : AppService>(
     val viewContentCodeBinding: ViewContentCodeBinding<A>,
-    val hasDiffs: Boolean = false,
+    val hasChanges: Boolean = false,
   ) : CodeState<A>
 }
 
@@ -142,7 +142,7 @@ internal class TreehouseAppContent<A : AppService>(
         throw CancellationException("unbound while awaiting content")
       }
 
-      it.codeState is CodeState.Running && it.codeState.hasDiffs
+      it.codeState is CodeState.Running && it.codeState.hasChanges
     }
   }
 
@@ -239,7 +239,7 @@ private class ViewContentCodeBinding<A : AppService>(
   val stateFlow: MutableStateFlow<State<A>>,
   session: ZiplineSession<A>,
   firstHostConfiguration: StateFlow<HostConfiguration>,
-) : EventSink, DiffSinkService {
+) : EventSink, ChangesSinkService {
   private val hostConfigurationFlow = SequentialStateFlow(firstHostConfiguration)
 
   private val isInitialLaunch: Boolean = session.isInitialLaunch
@@ -261,10 +261,10 @@ private class ViewContentCodeBinding<A : AppService>(
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
 
   /** Only accessed on [TreehouseDispatchers.ui]. Empty after [initView]. */
-  private val diffsAwaitingInitView = ArrayDeque<Diff>()
+  private val changesAwaitingInitView = ArrayDeque<List<Change>>()
 
-  /** Diffs applied to the UI. Only accessed on [TreehouseDispatchers.ui]. */
-  var diffCount = 0
+  /** Changes applied to the UI. Only accessed on [TreehouseDispatchers.ui]. */
+  var changesCount = 0
 
   /** Only accessed on [TreehouseDispatchers.ui]. */
   private var canceled = false
@@ -290,10 +290,10 @@ private class ViewContentCodeBinding<A : AppService>(
       eventSink = this,
     )
 
-    // Apply all the diffs received before we had a view to apply them to.
+    // Apply all the changes received before we had a view to apply them to.
     while (true) {
-      val diff = diffsAwaitingInitView.removeFirstOrNull() ?: break
-      receiveDiffOnUiDispatcher(diff)
+      val changes = changesAwaitingInitView.removeFirstOrNull() ?: break
+      receiveChangesOnUiDispatcher(changes)
     }
   }
 
@@ -306,15 +306,15 @@ private class ViewContentCodeBinding<A : AppService>(
     }
   }
 
-  /** Send a diff from Zipline to the UI. */
-  override fun sendDiff(diff: Diff) {
+  /** Send changes from Zipline to the UI. */
+  override fun sendChanges(changes: List<Change>) {
     // Receive UI updates on the UI dispatcher.
     bindingScope.launch(app.dispatchers.ui) {
-      receiveDiffOnUiDispatcher(diff)
+      receiveChangesOnUiDispatcher(changes)
     }
   }
 
-  private fun receiveDiffOnUiDispatcher(diff: Diff) {
+  private fun receiveChangesOnUiDispatcher(changes: List<Change>) {
     val view = viewOrNull
     val bridge = bridgeOrNull
 
@@ -323,7 +323,7 @@ private class ViewContentCodeBinding<A : AppService>(
     }
 
     if (view == null || bridge == null) {
-      if (diffsAwaitingInitView.isEmpty()) {
+      if (changesAwaitingInitView.isEmpty()) {
         // Unblock coroutines suspended on TreehouseAppContent.awaitContent().
         val currentState = stateFlow.value
         if (
@@ -332,21 +332,21 @@ private class ViewContentCodeBinding<A : AppService>(
         ) {
           stateFlow.value = State(
             currentState.viewState,
-            CodeState.Running(this, hasDiffs = true),
+            CodeState.Running(this, hasChanges = true),
           )
         }
       }
 
-      diffsAwaitingInitView += diff
+      changesAwaitingInitView += changes
       return
     }
 
-    if (diffCount++ == 0) {
+    if (changesCount++ == 0) {
       view.reset()
       codeListener.onCodeLoaded(view, isInitialLaunch)
     }
 
-    bridge.sendDiff(diff)
+    bridge.sendChanges(changes)
   }
 
   fun start(session: ZiplineSession<A>) {
@@ -355,7 +355,7 @@ private class ViewContentCodeBinding<A : AppService>(
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
       treehouseUi.start(
-        diffSink = this@ViewContentCodeBinding,
+        changesSink = this@ViewContentCodeBinding,
         hostConfigurations = hostConfigurationFlow,
       )
     }

@@ -17,8 +17,8 @@ package app.cash.redwood.protocol.compose
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
-import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.DiffSink
+import app.cash.redwood.protocol.Change
+import app.cash.redwood.protocol.ChangesSink
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.cancelAndJoin
@@ -28,29 +28,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
-class DiffAwaitingFrameClock : MonotonicFrameClock, DiffSink {
+class ChangesAwaitingFrameClock : MonotonicFrameClock, ChangesSink {
   private val clock = BroadcastFrameClock()
-  private val diffs = Channel<Diff>(Channel.UNLIMITED)
+  private val channel = Channel<List<Change>>(Channel.UNLIMITED)
 
   override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
     return clock.withFrameNanos(onFrame)
   }
 
-  override fun sendDiff(diff: Diff) {
-    check(diffs.trySend(diff).isSuccess)
+  override fun sendChanges(changes: List<Change>) {
+    check(channel.trySend(changes).isSuccess)
   }
 
-  suspend fun awaitDiff(timeout: Duration = 2.seconds): Diff = coroutineScope {
+  suspend fun awaitChanges(timeout: Duration = 2.seconds): List<Change> = coroutineScope {
     val tick = launch {
       while (true) {
         clock.sendFrame(0L)
         delay(16)
       }
     }
-    val diff = withTimeout(timeout) {
-      diffs.receive()
+    val changes = withTimeout(timeout) {
+      channel.receive()
     }
     tick.cancelAndJoin()
-    diff
+    changes
   }
 }

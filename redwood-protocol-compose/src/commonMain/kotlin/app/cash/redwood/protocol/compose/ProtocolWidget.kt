@@ -21,7 +21,7 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 
 /**
- * A [Widget] with no platform-specific representation which instead produces protocol diffs
+ * A [Widget] with no platform-specific representation which instead produces protocol changes
  * based on its properties.
  *
  * @suppress For generated code use only.

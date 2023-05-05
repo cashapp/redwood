@@ -20,14 +20,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifiers
-import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.LayoutModifierChange
+import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
@@ -49,7 +49,7 @@ class ProtocolTest {
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
       bridge = ExampleSchemaProtocolBridge.create(),
-      diffSink = ::error,
+      changesSink = ::error,
       widgetVersion = 22U,
     )
 
@@ -62,12 +62,12 @@ class ProtocolTest {
     assertThat(actualDisplayVersion).isEqualTo(22U)
   }
 
-  @Test fun childrenInheritIdFromSyntheticParent() = runTest {
-    val diffClock = DiffAwaitingFrameClock()
+  @Test fun protocolChangeOrder() = runTest {
+    val changeClock = ChangesAwaitingFrameClock()
     val composition = ProtocolRedwoodComposition(
-      scope = this + diffClock,
+      scope = this + changeClock,
       bridge = ExampleSchemaProtocolBridge.create(),
-      diffSink = diffClock,
+      changesSink = changeClock,
       widgetVersion = 1U,
     )
 
@@ -80,24 +80,22 @@ class ProtocolTest {
       }
     }
 
-    assertThat(diffClock.awaitDiff()).isEqualTo(
-      Diff(
-        childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(1) /* row */, 0),
-          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(2), WidgetTag(3) /* text */, 0),
-          ChildrenDiff.Insert(Id(1), ChildrenTag(1), Id(3), WidgetTag(1) /* row */, 1),
-          ChildrenDiff.Insert(Id(3), ChildrenTag(1), Id(4), WidgetTag(3) /* text */, 0),
-        ),
-        layoutModifiers = listOf(
-          LayoutModifiers(Id(1)),
-          LayoutModifiers(Id(2)),
-          LayoutModifiers(Id(3)),
-          LayoutModifiers(Id(4)),
-        ),
-        propertyDiffs = listOf(
-          PropertyDiff(Id(2), PropertyTag(1) /* text */, JsonPrimitive("hey")),
-          PropertyDiff(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
-        ),
+    assertThat(changeClock.awaitChanges()).isEqualTo(
+      listOf(
+        Create(Id(1), WidgetTag(1) /* row */),
+        LayoutModifierChange(Id(1)),
+        Create(Id(2), WidgetTag(3) /* text */),
+        LayoutModifierChange(Id(2)),
+        PropertyChange(Id(2), PropertyTag(1) /* text */, JsonPrimitive("hey")),
+        ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
+        Create(Id(3), WidgetTag(1) /* row */),
+        LayoutModifierChange(Id(3)),
+        Create(Id(4), WidgetTag(3) /* text */),
+        LayoutModifierChange(Id(4)),
+        PropertyChange(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
+        ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
+        ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
 
@@ -105,13 +103,13 @@ class ProtocolTest {
   }
 
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
-    val diffClock = DiffAwaitingFrameClock()
+    val changeClock = ChangesAwaitingFrameClock()
     var state by mutableStateOf(0)
     val bridge = ExampleSchemaProtocolBridge.create()
     val composition = ProtocolRedwoodComposition(
-      scope = this + diffClock,
+      scope = this + changeClock,
       bridge = bridge,
-      diffSink = diffClock,
+      changesSink = changeClock,
       widgetVersion = 1U,
     )
 
@@ -128,52 +126,41 @@ class ProtocolTest {
       )
     }
 
-    assertThat(diffClock.awaitDiff()).isEqualTo(
-      Diff(
-        childrenDiffs = listOf(
-          ChildrenDiff.Insert(Id.Root, ChildrenTag.Root, Id(1), WidgetTag(4) /* button */, 0),
-        ),
-        layoutModifiers = listOf(
-          LayoutModifiers(Id(1)),
-        ),
-        propertyDiffs = listOf(
-          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 0")),
-          PropertyDiff(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
-        ),
+    assertThat(changeClock.awaitChanges()).isEqualTo(
+      listOf(
+        Create(Id(1), WidgetTag(4) /* button */),
+        LayoutModifierChange(Id(1)),
+        PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 0")),
+        PropertyChange(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertThat(diffClock.awaitDiff()).isEqualTo(
-      Diff(
-        propertyDiffs = listOf(
-          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
-        ),
+    assertThat(changeClock.awaitChanges()).isEqualTo(
+      listOf(
+        PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
       ),
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertThat(diffClock.awaitDiff()).isEqualTo(
-      Diff(
-        propertyDiffs = listOf(
-          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 2")),
-          PropertyDiff(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
-        ),
+    assertThat(changeClock.awaitChanges()).isEqualTo(
+      listOf(
+        PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 2")),
+        PropertyChange(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
       ),
     )
 
     // Manually advance state from 2 to 3 to test null to null case.
     state = 3
 
-    assertThat(diffClock.awaitDiff()).isEqualTo(
-      Diff(
-        propertyDiffs = listOf(
-          PropertyDiff(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
-        ),
+    assertThat(changeClock.awaitChanges()).isEqualTo(
+      listOf(
+        PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
       ),
     )
 

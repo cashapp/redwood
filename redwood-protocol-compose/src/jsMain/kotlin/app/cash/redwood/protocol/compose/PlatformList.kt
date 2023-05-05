@@ -17,7 +17,8 @@ package app.cash.redwood.protocol.compose
 
 @JsName("Array")
 internal external class JsArray<E> {
-  val length: Int
+  @JsName("length")
+  val size: Int
 
   @JsName("push")
   fun add(element: E)
@@ -32,7 +33,7 @@ internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
 internal class JsArrayList<E>(
   private val storage: JsArray<E>,
 ) : AbstractList<E>(), RandomAccess {
-  override val size: Int get() = storage.length
+  override val size: Int get() = storage.size
 
   override fun get(index: Int): E {
     return storage.asDynamic()[index].unsafeCast<E>()

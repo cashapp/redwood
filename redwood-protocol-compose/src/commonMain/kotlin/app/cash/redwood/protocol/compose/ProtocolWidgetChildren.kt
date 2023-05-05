@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.protocol.compose
 
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
@@ -31,7 +31,7 @@ internal class ProtocolWidgetChildren(
     widget as ProtocolWidget
     ids.add(index, widget.id)
     state.addWidget(widget)
-    state.append(ChildrenDiff.Insert(id, tag, widget.id, widget.tag, index))
+    state.append(ChildrenChange.Add(id, tag, widget.id, index))
   }
 
   override fun remove(index: Int, count: Int) {
@@ -43,12 +43,12 @@ internal class ProtocolWidgetChildren(
       state.removeWidget(removedId)
     }
 
-    state.append(ChildrenDiff.Remove(id, tag, index, count, removedIds))
+    state.append(ChildrenChange.Remove(id, tag, index, count, removedIds))
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     ids.move(fromIndex, toIndex, count)
-    state.append(ChildrenDiff.Move(id, tag, fromIndex, toIndex, count))
+    state.append(ChildrenChange.Move(id, tag, fromIndex, toIndex, count))
   }
 
   override fun onLayoutModifierUpdated() {
