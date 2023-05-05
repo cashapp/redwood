@@ -54,9 +54,7 @@ class TestingGenerationTest {
     assertThat(testerFileSpec.toString()).contains(
       """
       |@OptIn(RedwoodCodegenApi::class)
-      |public fun TestingGenerationTestHappyPathSchemaTester(scope: CoroutineScope): RedwoodTester =
-      |    RedwoodTester(
-      |  scope = scope,
+      |public fun TestingGenerationTestHappyPathSchemaTester(): RedwoodTester = RedwoodTester(
       |  provider = TestingGenerationTestHappyPathSchemaWidgetFactories(
       |    TestingGenerationTestHappyPathSchema =
       |        MutableTestingGenerationTestHappyPathSchemaWidgetFactory(),

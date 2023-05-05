@@ -43,9 +43,8 @@ import com.squareup.kotlinpoet.TypeSpec
 
 /*
 @OptIn(RedwoodCodegenApi::class)
-public fun SunspotTester(scope: CoroutineScope): RedwoodTester {
+public fun SunspotTester(): RedwoodTester {
   return RedwoodTester(
-    scope = scope,
     provider = SunspotWidgetFactories(
       Sunspot = MutableSunspotWidgetFactory(),
       RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
@@ -60,10 +59,8 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
     .addFunction(
       FunSpec.builder(testerFunction.simpleName)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
-        .addParameter("scope", KotlinxCoroutines.CoroutineScope)
         .returns(RedwoodTesting.RedwoodTester)
         .addCode("return %T(⇥\n", RedwoodTesting.RedwoodTester)
-        .addCode("scope = scope,\n")
         .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schemaSet.all) {
