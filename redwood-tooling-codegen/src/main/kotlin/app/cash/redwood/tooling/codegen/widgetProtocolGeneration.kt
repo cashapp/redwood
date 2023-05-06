@@ -352,7 +352,10 @@ internal fun generateWidgetProtocolLayoutModifierSerialization(
 internal fun generateProtocolLayoutModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
-): FileSpec {
+): FileSpec? {
+  if (schema.layoutModifiers.isEmpty()) {
+    return null
+  }
   return FileSpec.builder(schema.widgetPackage(host), "layoutModifierImpls")
     .apply {
       for (layoutModifier in schema.layoutModifiers) {
