@@ -41,14 +41,11 @@ public class SunspotProtocolNodeFactory<W : Any>(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : ProtocolNode.Factory<W> {
-  override fun create(
-    parentChildren: Widget.Children<W>,
-    tag: WidgetTag,
-  ): ProtocolNode<W>? = when (tag.value) {
-    1 -> TextProtocolNode(parentChildren, delegate.Sunspot.Text(), json, mismatchHandler)
-    2 -> ButtonProtocolNode(parentChildren, delegate.Sunspot.Button(), json, mismatchHandler)
-    1_000_001 -> RedwoodLayoutRowProtocolNode(parentChildren, delegate.RedwoodLayout.Row(), json, mismatchHandler)
-    1_000_002 -> RedwoodLayoutColumnProtocolNode(parentChildren, delegate.RedwoodLayout.Column(), json, mismatchHandler)
+  override fun create(tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
+    1 -> TextProtocolNode(delegate.Sunspot.Text(), json, mismatchHandler)
+    2 -> ButtonProtocolNode(delegate.Sunspot.Button(), json, mismatchHandler)
+    1_000_001 -> RedwoodLayoutRowProtocolNode(delegate.RedwoodLayout.Row(), json, mismatchHandler)
+    1_000_002 -> RedwoodLayoutColumnProtocolNode(delegate.RedwoodLayout.Column(), json, mismatchHandler)
     else -> {
       mismatchHandler.onUnknownWidget(tag)
       null
@@ -100,7 +97,6 @@ internal fun generateProtocolNodeFactory(
         .addFunction(
           FunSpec.builder("create")
             .addModifiers(OVERRIDE)
-            .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
             .addParameter("tag", Protocol.WidgetTag)
             .returns(
               WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
@@ -111,7 +107,7 @@ internal fun generateProtocolNodeFactory(
               for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                 for (widget in dependency.widgets.sortedBy { it.tag }) {
                   addStatement(
-                    "%L -> %T(parentChildren, provider.%N.%N(), json, mismatchHandler)",
+                    "%L -> %T(provider.%N.%N(), json, mismatchHandler)",
                     widget.tag,
                     dependency.protocolNodeType(widget, schema),
                     dependency.type.flatName,
@@ -134,34 +130,42 @@ internal fun generateProtocolNodeFactory(
 
 /*
 internal class ProtocolButton<W : Any>(
-  parentChildren: Widget.Children<W>,
-  private val delegate: Button<W>,
+  override val widget: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolNode<W>(parentChildren) {
-  public override val value: W get() = delegate.value
-
-  public override val layoutModifiers: LayoutModifier
-    get() = delegate.layoutModifiers
-    set(value) { delegate.layoutModifiers = value }
-
+) : ProtocolNode<W> {
+  private var container: Widget.Children<W>? = null
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   public override fun apply(diff: PropertyDiff, eventSink: EventSink): Unit {
     when (diff.tag.value) {
-      1 -> delegate.text(json.decodeFromJsonElement(serializer_0, diff.value))
-      2 -> delegate.enabled(json.decodeFromJsonElement(serializer_1, diff.value))
+      1 -> widget.text(json.decodeFromJsonElement(serializer_0, diff.value))
+      2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, diff.value))
       3 -> {
         val onClick: (() -> Unit)? = if (diff.value.jsonPrimitive.boolean) {
           { eventSink.sendEvent(Event(diff.id, EventTag(3))) }
         } else {
           null
         }
-        delegate.onClick(onClick)
+        widget.onClick(onClick)
       }
       else -> mismatchHandler.onUnknownProperty(WidgetTag(12), diff.tag)
     }
+  }
+
+  public override fun children(tag: ChildrenTag): Widget.Children<W> {
+    mismatchHandler.onUnknownChildren(WidgetTag(2), tag)
+  }
+
+  public override fun updateLayoutModifiers() {
+    widget.layoutModifiers = elements.toLayoutModifiers(json, mismatchHandler)
+    container?.onLayoutModifierUpdated()
+  }
+
+  public override fun attachTo(container: Widget.Children<W>) {
+    check(this.container == null)
+    this.container = container
   }
 }
 */
@@ -178,16 +182,14 @@ internal fun generateProtocolNode(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
-        .superclass(protocolType)
+        .addSuperinterface(protocolType)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("parentChildren", RedwoodWidget.WidgetChildrenOfW)
             .addParameter("widget", widgetType)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
             .build(),
         )
-        .addSuperclassConstructorParameter("parentChildren")
         .addProperty(
           PropertySpec.builder("widget", widgetType, OVERRIDE)
             .initializer("widget")
@@ -201,6 +203,13 @@ internal fun generateProtocolNode(
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("container", RedwoodWidget.WidgetChildrenOfW.copy(nullable = true))
+            .addModifiers(PRIVATE)
+            .mutable()
+            .initializer("null")
             .build(),
         )
         .apply {
@@ -333,6 +342,15 @@ internal fun generateProtocolNode(
             .addModifiers(OVERRIDE)
             .addParameter("elements", LIST.parameterizedBy(Protocol.LayoutModifierElement))
             .addStatement("widget.layoutModifiers = elements.%M(json, mismatchHandler)", host.toLayoutModifier)
+            .addStatement("container?.onLayoutModifierUpdated()")
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("attachTo")
+            .addModifiers(OVERRIDE)
+            .addParameter("container", RedwoodWidget.WidgetChildrenOfW)
+            .addStatement("check(this.container == null)")
+            .addStatement("this.container = container")
             .build(),
         )
         .build(),
