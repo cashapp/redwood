@@ -65,6 +65,8 @@ public class ProtocolBridge<W : Any>(
         }
         is ChildrenDiff.Remove -> {
           children.remove(childrenDiff.index, childrenDiff.count)
+          @Suppress("ConvertArgumentToSet") // Compose side guarantees set semantics.
+          nodes.keys.removeAll(childrenDiff.removedIds)
         }
       }
     }
@@ -80,7 +82,7 @@ public class ProtocolBridge<W : Any>(
   }
 
   private fun node(id: Id): ProtocolNode<W> {
-    return checkNotNull(nodes[id]) { "Unknown widget ID $id" }
+    return checkNotNull(nodes[id]) { "Unknown widget ID ${id.value}" }
   }
 }
 

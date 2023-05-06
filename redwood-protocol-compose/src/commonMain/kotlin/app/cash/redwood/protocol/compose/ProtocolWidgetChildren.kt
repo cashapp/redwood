@@ -35,11 +35,15 @@ internal class ProtocolWidgetChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    for (i in index until index + count) {
-      state.removeWidget(ids[i])
+    val removingIds = ids.subList(index, index + count)
+    val removedIds = removingIds.toList()
+    removingIds.clear()
+
+    for (removedId in removedIds) {
+      state.removeWidget(removedId)
     }
-    ids.remove(index, count)
-    state.append(ChildrenDiff.Remove(id, tag, index, count))
+
+    state.append(ChildrenDiff.Remove(id, tag, index, count, removedIds))
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {

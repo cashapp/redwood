@@ -19,6 +19,8 @@ import app.cash.redwood.protocol.ChildrenDiff
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Diff
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
@@ -27,6 +29,7 @@ import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlinx.serialization.json.JsonPrimitive
 
 class ProtocolBridgeTest {
   @Test fun insertRootIdThrows() {
@@ -84,5 +87,63 @@ class ProtocolBridgeTest {
       bridge.sendDiff(diff)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
+  }
+
+  @Test fun removeRemoves() {
+    val bridge = ProtocolBridge(
+      container = MutableListChildren(),
+      factory = ExampleSchemaProtocolNodeFactory(
+        provider = ExampleSchemaWidgetFactories(
+          ExampleSchema = EmptyExampleSchemaWidgetFactory(),
+          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        ),
+      ),
+      eventSink = ::error,
+    )
+
+    // Add a button.
+    bridge.sendDiff(
+      Diff(
+        childrenDiffs = listOf(
+          ChildrenDiff.Insert(
+            id = Id.Root,
+            tag = ChildrenTag.Root,
+            childId = Id(1),
+            widgetTag = WidgetTag(4) /* button */,
+            index = 0,
+          ),
+        ),
+      ),
+    )
+
+    // Remove the button.
+    bridge.sendDiff(
+      Diff(
+        childrenDiffs = listOf(
+          ChildrenDiff.Remove(
+            id = Id.Root,
+            tag = ChildrenTag.Root,
+            index = 0,
+            count = 1,
+            removedIds = listOf(Id(1)),
+          ),
+        ),
+      ),
+    )
+
+    // Ensure targeting the button fails.
+    val updateButtonText = Diff(
+      propertyDiffs = listOf(
+        PropertyDiff(
+          id = Id(1),
+          tag = PropertyTag(1) /* text */,
+          value = JsonPrimitive("hello"),
+        ),
+      ),
+    )
+    val t = assertFailsWith<IllegalStateException> {
+      bridge.sendDiff(updateButtonText)
+    }
+    assertThat(t).hasMessage("Unknown widget ID 1")
   }
 }
