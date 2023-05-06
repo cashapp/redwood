@@ -3,4 +3,16 @@
   "extends": [
     "config:base",
   ],
+  "packageRules": [
+    {
+      // Compose compilers and Zipline are tightly coupled to Kotlin version
+      "groupName": "Kotlin, Compose, and Zipline",
+      "matchPackagePrefixes": [
+        "androidx.compose.compiler",
+        "app.cash.zipline",
+        "org.jetbrains.compose.compiler",
+        "org.jetbrains.kotlin",
+      ],
+    },
+  ],
 }
