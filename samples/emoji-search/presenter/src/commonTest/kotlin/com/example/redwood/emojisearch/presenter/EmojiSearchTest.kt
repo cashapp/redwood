@@ -42,7 +42,7 @@ import kotlinx.coroutines.test.runTest
 class EmojiSearchTest {
   @Test
   fun recomposed() = runTest {
-    EmojiSearchTester(this).test {
+    EmojiSearchTester().test {
       setContent {
         BasicEmojiSearch()
       }
