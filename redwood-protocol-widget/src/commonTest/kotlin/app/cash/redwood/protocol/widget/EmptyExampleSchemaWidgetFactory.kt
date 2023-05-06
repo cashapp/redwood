@@ -34,7 +34,7 @@ open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing>
       get() = TODO()
       set(_) { TODO() }
 
-    override fun text(text: String?) {}
+    override fun text(text: String?) = TODO()
     override fun onClick(onClick: (() -> Unit)?) = TODO()
   }
   override fun TextInput(): TextInput<Nothing> = TODO()
