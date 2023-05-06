@@ -147,17 +147,17 @@ internal fun generateProtocolBridge(
                 .addParameter("json", KotlinxSerialization.Json)
                 .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
                 .returns(type)
-                .addStatement("val bridge = %T()", ComposeProtocol.ProtocolState)
-                .addStatement("val root = bridge.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
+                .addStatement("val state = %T()", ComposeProtocol.ProtocolState)
+                .addStatement("val root = state.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
                     for (dependency in schemaSet.all) {
-                      add(CodeBlock.of("%N = %T(bridge, json, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
+                      add(CodeBlock.of("%N = %T(state, json, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                     }
                   }
                   addStatement("val factories = %T(\n%L)", schema.getWidgetFactoriesType(), arguments.joinToCode(separator = ",\n"))
                 }
-                .addStatement("return %T(bridge, mismatchHandler, root, factories)", type)
+                .addStatement("return %T(state, mismatchHandler, root, factories)", type)
                 .build(),
             )
             .build(),
@@ -190,14 +190,14 @@ internal fun generateProtocolWidgetFactory(
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("bridge", ComposeProtocol.ProtocolState)
+            .addParameter("state", ComposeProtocol.ProtocolState)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("bridge", ComposeProtocol.ProtocolState, PRIVATE)
-            .initializer("bridge")
+          PropertySpec.builder("state", ComposeProtocol.ProtocolState, PRIVATE)
+            .initializer("state")
             .build(),
         )
         .addProperty(
@@ -217,7 +217,7 @@ internal fun generateProtocolWidgetFactory(
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
                 .addStatement(
-                  "return %T(bridge, json, mismatchHandler)",
+                  "return %T(state, json, mismatchHandler)",
                   schema.protocolWidgetType(widget, host),
                 )
                 .build(),
