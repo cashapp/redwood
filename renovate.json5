@@ -11,7 +11,7 @@
         "androidx.compose.compiler",
         "app.cash.zipline",
         "org.jetbrains.compose.compiler",
-        "org.jetbrains.kotlin",
+        "org.jetbrains.kotlin:kotlin",
       ],
     },
   ],
