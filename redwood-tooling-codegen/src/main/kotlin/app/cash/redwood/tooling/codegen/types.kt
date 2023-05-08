@@ -108,7 +108,9 @@ internal fun composableLambda(
 
 internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
+  val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
+  val ObjCName = ClassName("kotlin.native", "ObjCName")
   val OptIn = ClassName("kotlin", "OptIn")
   val buildList = MemberName("kotlin.collections", "buildList")
   val listOf = MemberName("kotlin.collections", "listOf")

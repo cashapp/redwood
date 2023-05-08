@@ -17,7 +17,7 @@
 import EmojiSearchKt
 import UIKit
 
-class TextInputBinding: WidgetTextInput {
+class TextInputBinding: TextInput {
     private let root: UITextField = {
         let view = UITextField()
         view.borderStyle = .roundedRect

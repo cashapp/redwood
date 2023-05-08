@@ -75,6 +75,11 @@ class WidgetGenerationTest {
         """
         | * {tag=3}
         | */
+        |@OptIn(ExperimentalObjCName::class)
+        |@ObjCName(
+        |  "WidgetGenerationTestButton",
+        |  exact = true,
+        |)
         |public interface WidgetGenerationTestButton
         """.trimMargin(),
       )
