@@ -103,7 +103,7 @@ private class RootProtocolNode<W : Any>(
   }
   override val widget: Widget<W> get() = throw AssertionError()
 
-  override fun attachTo(children: Widget.Children<W>) {
+  override fun attachTo(container: Widget.Children<W>) {
     throw AssertionError()
   }
 }
