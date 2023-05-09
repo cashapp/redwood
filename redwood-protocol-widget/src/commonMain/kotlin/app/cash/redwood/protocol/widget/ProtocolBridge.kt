@@ -15,69 +15,77 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.Change
+import app.cash.redwood.protocol.ChangesSink
+import app.cash.redwood.protocol.ChildrenChange
+import app.cash.redwood.protocol.ChildrenChange.Add
+import app.cash.redwood.protocol.ChildrenChange.Move
+import app.cash.redwood.protocol.ChildrenChange.Remove
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Diff
-import app.cash.redwood.protocol.DiffSink
+import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierChange
 import app.cash.redwood.protocol.LayoutModifierElement
-import app.cash.redwood.protocol.LayoutModifiers
-import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 
 /**
  * Bridges the serialized Redwood protocol back to widgets on the display side.
  *
- * This type will consume [Diff]s and apply their [ChildrenDiff] operations to the widget tree.
- * [PropertyDiff]s and [LayoutModifiers]s are forwarded to their respective widgets. Events from
- * widgets are forwarded to [eventSink].
+ * This type will consume [Change]s and apply their [ChildrenChange] operations to the widget tree.
+ * [PropertyChange]s and [LayoutModifierChange]s are forwarded to their respective widgets.
+ * Events from widgets are forwarded to [eventSink].
  */
 @ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
   private val factory: ProtocolNode.Factory<W>,
   private val eventSink: EventSink,
-) : DiffSink {
+) : ChangesSink {
   private val nodes = mutableMapOf<Id, ProtocolNode<W>>(
     Id.Root to RootProtocolNode(container),
   )
 
-  override fun sendDiff(diff: Diff) {
-    for (childrenDiff in diff.childrenDiffs) {
-      val id = childrenDiff.id
-      val node = node(id)
-      val children = node.children(childrenDiff.tag) ?: continue
-
-      when (childrenDiff) {
-        is ChildrenDiff.Insert -> {
-          val childWidget = factory.create(childrenDiff.widgetTag) ?: continue
-          children.insert(childrenDiff.index, childWidget.widget)
-          childWidget.attachTo(children)
-          val old = nodes.put(childrenDiff.childId, childWidget)
+  override fun sendChanges(changes: List<Change>) {
+    for (i in changes.indices) {
+      val change = changes[i]
+      val id = change.id
+      when (change) {
+        is Create -> {
+          val node = factory.create(change.tag) ?: continue
+          val old = nodes.put(change.id, node)
           require(old == null) {
-            "Insert attempted to replace existing widget with ID ${childrenDiff.childId.value}"
+            "Insert attempted to replace existing widget with ID ${change.id.value}"
           }
         }
-        is ChildrenDiff.Move -> {
-          children.move(childrenDiff.fromIndex, childrenDiff.toIndex, childrenDiff.count)
+        is ChildrenChange -> {
+          val node = node(id)
+          val children = node.children(change.tag) ?: continue
+          when (change) {
+            is Add -> {
+              val child = node(change.childId)
+              children.insert(change.index, child.widget)
+            }
+            is Move -> {
+              children.move(change.fromIndex, change.toIndex, change.count)
+            }
+            is Remove -> {
+              children.remove(change.index, change.count)
+              @Suppress("ConvertArgumentToSet") // Compose side guarantees set semantics.
+              nodes.keys.removeAll(change.removedIds)
+            }
+          }
         }
-        is ChildrenDiff.Remove -> {
-          children.remove(childrenDiff.index, childrenDiff.count)
-          @Suppress("ConvertArgumentToSet") // Compose side guarantees set semantics.
-          nodes.keys.removeAll(childrenDiff.removedIds)
+        is LayoutModifierChange -> {
+          val node = node(id)
+          node.updateLayoutModifier(change.elements)
+        }
+        is PropertyChange -> {
+          node(change.id).apply(change, eventSink)
         }
       }
-    }
-
-    for (layoutModifier in diff.layoutModifiers) {
-      val node = node(layoutModifier.id)
-      node.updateLayoutModifier(layoutModifier.elements)
-    }
-
-    for (propertyDiff in diff.propertyDiffs) {
-      node(propertyDiff.id).apply(propertyDiff, eventSink)
     }
   }
 
@@ -93,8 +101,8 @@ private class RootProtocolNode<W : Any>(
     throw AssertionError("unexpected: $elements")
   }
 
-  override fun apply(diff: PropertyDiff, eventSink: EventSink) {
-    throw AssertionError("unexpected: $diff")
+  override fun apply(change: PropertyChange, eventSink: EventSink) {
+    throw AssertionError("unexpected: $change")
   }
 
   override fun children(tag: ChildrenTag) = when (tag) {

@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
@@ -32,7 +32,7 @@ import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
 
 class ProtocolBridgeTest {
-  @Test fun insertRootIdThrows() {
+  @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = ExampleSchemaProtocolNodeFactory(
@@ -43,19 +43,14 @@ class ProtocolBridgeTest {
       ),
       eventSink = ::error,
     )
-    val diff = Diff(
-      childrenDiffs = listOf(
-        ChildrenDiff.Insert(
-          id = Id.Root,
-          tag = ChildrenTag.Root,
-          childId = Id.Root,
-          widgetTag = WidgetTag(4) /* button */,
-          index = 0,
-        ),
+    val changes = listOf(
+      Create(
+        id = Id.Root,
+        tag = WidgetTag(4), /* button */
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendDiff(diff)
+      bridge.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 0")
   }
@@ -71,20 +66,15 @@ class ProtocolBridgeTest {
       ),
       eventSink = ::error,
     )
-    val diff = Diff(
-      childrenDiffs = listOf(
-        ChildrenDiff.Insert(
-          id = Id.Root,
-          tag = ChildrenTag.Root,
-          childId = Id(1),
-          widgetTag = WidgetTag(4) /* button */,
-          index = 0,
-        ),
+    val changes = listOf(
+      Create(
+        id = Id(1),
+        tag = WidgetTag(4), /* button */
       ),
     )
-    bridge.sendDiff(diff)
+    bridge.sendChanges(changes)
     val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendDiff(diff)
+      bridge.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
   }
@@ -102,47 +92,44 @@ class ProtocolBridgeTest {
     )
 
     // Add a button.
-    bridge.sendDiff(
-      Diff(
-        childrenDiffs = listOf(
-          ChildrenDiff.Insert(
-            id = Id.Root,
-            tag = ChildrenTag.Root,
-            childId = Id(1),
-            widgetTag = WidgetTag(4) /* button */,
-            index = 0,
-          ),
+    bridge.sendChanges(
+      listOf(
+        Create(
+          id = Id(1),
+          tag = WidgetTag(4), /* button */
+        ),
+        ChildrenChange.Add(
+          id = Id.Root,
+          tag = ChildrenTag.Root,
+          childId = Id(1),
+          index = 0,
         ),
       ),
     )
 
     // Remove the button.
-    bridge.sendDiff(
-      Diff(
-        childrenDiffs = listOf(
-          ChildrenDiff.Remove(
-            id = Id.Root,
-            tag = ChildrenTag.Root,
-            index = 0,
-            count = 1,
-            removedIds = listOf(Id(1)),
-          ),
+    bridge.sendChanges(
+      listOf(
+        ChildrenChange.Remove(
+          id = Id.Root,
+          tag = ChildrenTag.Root,
+          index = 0,
+          count = 1,
+          removedIds = listOf(Id(1)),
         ),
       ),
     )
 
     // Ensure targeting the button fails.
-    val updateButtonText = Diff(
-      propertyDiffs = listOf(
-        PropertyDiff(
-          id = Id(1),
-          tag = PropertyTag(1) /* text */,
-          value = JsonPrimitive("hello"),
-        ),
+    val updateButtonText = listOf(
+      PropertyChange(
+        id = Id(1),
+        tag = PropertyTag(1), /* text */
+        value = JsonPrimitive("hello"),
       ),
     )
     val t = assertFailsWith<IllegalStateException> {
-      bridge.sendDiff(updateButtonText)
+      bridge.sendChanges(updateButtonText)
     }
     assertThat(t).hasMessage("Unknown widget ID 1")
   }

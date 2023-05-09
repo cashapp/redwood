@@ -67,11 +67,22 @@ internal class NodeApplier<W : Any>(
   override fun insertTopDown(index: Int, instance: Node<W>) {
     check(!closed)
 
+    // If this is a synthetic children node, immediately attach it to its widget node parent when
+    // traversing down the tree. This ensures we can add widget nodes to children nodes in
+    // bottom-up order.
     if (instance is ChildrenNode) {
       @Suppress("UNCHECKED_CAST") // Guaranteed by generated code.
       val widgetNode = current as WidgetNode<Widget<W>, W>
       instance.attachTo(widgetNode.widget)
-    } else {
+    }
+  }
+
+  override fun insertBottomUp(index: Int, instance: Node<W>) {
+    check(!closed)
+
+    // We only attach widgets to their parent node's children when traversing back up the tree.
+    // This ensures that the initial properties of the widget have been set before it is attached.
+    if (instance is WidgetNode<*, *>) {
       @Suppress("UNCHECKED_CAST") // Guaranteed by generated code.
       val widgetNode = instance as WidgetNode<Widget<W>, W>
       val children = (current as ChildrenNode<W>).children
@@ -79,10 +90,6 @@ internal class NodeApplier<W : Any>(
       widgetNode.container = children
       children.insert(index, widgetNode.widget)
     }
-  }
-
-  override fun insertBottomUp(index: Int, instance: Node<W>) {
-    // Ignored, we insert top-down.
   }
 
   override fun remove(index: Int, count: Int) {

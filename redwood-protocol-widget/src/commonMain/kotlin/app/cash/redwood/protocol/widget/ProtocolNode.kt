@@ -18,13 +18,13 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.LayoutModifierElement
-import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 
 /**
- * A node which consumes protocol diffs and applies them to a platform-specific representation.
+ * A node which consumes protocol changes and applies them to a platform-specific representation.
  *
  * @suppress
  */
@@ -39,7 +39,7 @@ public interface ProtocolNode<W : Any> {
    */
   public fun attachTo(container: Widget.Children<W>)
 
-  public fun apply(diff: PropertyDiff, eventSink: EventSink)
+  public fun apply(change: PropertyChange, eventSink: EventSink)
 
   public fun updateLayoutModifier(elements: List<LayoutModifierElement>)
 

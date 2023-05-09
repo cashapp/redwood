@@ -50,6 +50,6 @@ public class ViewTreeRenderer<W : Any>(
       ) as ProtocolNode.Factory<W>,
       eventSink = refuseAllEvents,
     )
-    bridge.sendDiff(viewTree.diff)
+    bridge.sendChanges(viewTree.changes)
   }
 }

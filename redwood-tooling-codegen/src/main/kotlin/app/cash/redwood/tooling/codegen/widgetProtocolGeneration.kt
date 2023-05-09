@@ -138,19 +138,19 @@ internal class ProtocolButton<W : Any>(
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
-  public override fun apply(diff: PropertyDiff, eventSink: EventSink): Unit {
-    when (diff.tag.value) {
-      1 -> widget.text(json.decodeFromJsonElement(serializer_0, diff.value))
-      2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, diff.value))
+  public override fun apply(change: PropertyChange, eventSink: EventSink): Unit {
+    when (change.tag.value) {
+      1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
+      2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
-        val onClick: (() -> Unit)? = if (diff.value.jsonPrimitive.boolean) {
-          { eventSink.sendEvent(Event(diff.id, EventTag(3))) }
+        val onClick: (() -> Unit)? = if (change.value.jsonPrimitive.boolean) {
+          { eventSink.sendEvent(Event(change.id, EventTag(3))) }
         } else {
           null
         }
         widget.onClick(onClick)
       }
-      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), diff.tag)
+      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.tag)
     }
   }
 
@@ -220,9 +220,9 @@ internal fun generateProtocolNode(
           addFunction(
             FunSpec.builder("apply")
               .addModifiers(OVERRIDE)
-              .addParameter("diff", Protocol.PropertyDiff)
+              .addParameter("change", Protocol.PropertyChange)
               .addParameter("eventSink", Protocol.EventSink)
-              .beginControlFlow("when (diff.tag.value)")
+              .beginControlFlow("when (change.tag.value)")
               .apply {
                 for (trait in properties) {
                   when (trait) {
@@ -233,7 +233,7 @@ internal fun generateProtocolNode(
                       }
 
                       addStatement(
-                        "%L -> widget.%N(json.decodeFromJsonElement(serializer_%L, diff.value))",
+                        "%L -> widget.%N(json.decodeFromJsonElement(serializer_%L, change.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -243,7 +243,7 @@ internal fun generateProtocolNode(
                     is ProtocolEvent -> {
                       beginControlFlow("%L ->", trait.tag)
                       beginControlFlow(
-                        "val %N: %T = if (diff.value.%M.%M)",
+                        "val %N: %T = if (change.value.%M.%M)",
                         trait.name,
                         trait.lambdaType,
                         KotlinxSerialization.jsonPrimitive,
@@ -255,7 +255,7 @@ internal fun generateProtocolNode(
                           nextSerializerId++
                         }
                         addStatement(
-                          "{ eventSink.sendEvent(%T(diff.id, %T(%L), json.encodeToJsonElement(serializer_%L, it))) }",
+                          "{ eventSink.sendEvent(%T(change.id, %T(%L), json.encodeToJsonElement(serializer_%L, it))) }",
                           Protocol.Event,
                           Protocol.EventTag,
                           trait.tag,
@@ -263,7 +263,7 @@ internal fun generateProtocolNode(
                         )
                       } else {
                         addStatement(
-                          "{ eventSink.sendEvent(%T(diff.id, %T(%L))) }",
+                          "{ eventSink.sendEvent(%T(change.id, %T(%L))) }",
                           Protocol.Event,
                           Protocol.EventTag,
                           trait.tag,
@@ -297,7 +297,7 @@ internal fun generateProtocolNode(
                 }
               }
               .addStatement(
-                "else -> mismatchHandler.onUnknownProperty(%T(%L), diff.tag)",
+                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.tag)",
                 Protocol.WidgetTag,
                 widget.tag,
               )

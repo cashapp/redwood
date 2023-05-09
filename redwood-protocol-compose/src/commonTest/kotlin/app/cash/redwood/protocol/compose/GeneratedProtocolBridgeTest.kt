@@ -16,15 +16,16 @@
 package app.cash.redwood.protocol.compose
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.LayoutModifierChange
 import app.cash.redwood.protocol.LayoutModifierElement
 import app.cash.redwood.protocol.LayoutModifierTag
-import app.cash.redwood.protocol.LayoutModifiers
-import app.cash.redwood.protocol.PropertyDiff
+import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
@@ -51,12 +52,11 @@ class GeneratedProtocolBridgeTest {
 
     textInput.customType(10.seconds)
 
-    val expected = Diff(
-      propertyDiffs = listOf(
-        PropertyDiff(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
-      ),
+    val expected = listOf(
+      Create(Id(1), WidgetTag(5)),
+      PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
     )
-    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
+    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
   }
 
   @Test fun layoutModifierUsesSerializersModule() {
@@ -72,22 +72,21 @@ class GeneratedProtocolBridgeTest {
       LayoutModifier.customType(10.seconds)
     }
 
-    val expected = Diff(
-      layoutModifiers = listOf(
-        LayoutModifiers(
-          Id(1),
-          listOf(
-            LayoutModifierElement(
-              LayoutModifierTag(3),
-              buildJsonObject {
-                put("customType", JsonPrimitive("PT10S"))
-              },
-            ),
+    val expected = listOf(
+      Create(Id(1), WidgetTag(4)),
+      LayoutModifierChange(
+        Id(1),
+        listOf(
+          LayoutModifierElement(
+            LayoutModifierTag(3),
+            buildJsonObject {
+              put("customType", JsonPrimitive("PT10S"))
+            },
           ),
         ),
       ),
     )
-    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
+    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
   }
 
   @Test fun layoutModifierDefaultValueNotSerialized() {
@@ -103,22 +102,21 @@ class GeneratedProtocolBridgeTest {
       LayoutModifier.customTypeWithDefault(10.seconds, "sup")
     }
 
-    val expected = Diff(
-      layoutModifiers = listOf(
-        LayoutModifiers(
-          Id(1),
-          listOf(
-            LayoutModifierElement(
-              LayoutModifierTag(5),
-              buildJsonObject {
-                put("customType", JsonPrimitive("PT10S"))
-              },
-            ),
+    val expected = listOf(
+      Create(Id(1), WidgetTag(4)),
+      LayoutModifierChange(
+        Id(1),
+        listOf(
+          LayoutModifierElement(
+            LayoutModifierTag(5),
+            buildJsonObject {
+              put("customType", JsonPrimitive("PT10S"))
+            },
           ),
         ),
       ),
     )
-    assertThat(bridge.createDiffOrNull()).isEqualTo(expected)
+    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
   }
 
   @Test fun eventUsesSerializersModule() {
