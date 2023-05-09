@@ -36,8 +36,9 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
-public class SunspotProtocolNodeFactory<W : Any>(
-  private val provider: SunspotWidgetFactoryProvider<W>,
+@ObjCName("ExampleProtocolNodeFactory", exact = true)
+public class ExampleProtocolNodeFactory<W : Any>(
+  private val provider: ExampleWidgetFactoryProvider<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : ProtocolNode.Factory<W> {
@@ -64,6 +65,17 @@ internal fun generateProtocolNodeFactory(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(WidgetProtocol.ProtocolNodeFactory.parameterizedBy(typeVariableW))
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.OptIn)
+            .addMember("%T::class", Stdlib.ExperimentalObjCName)
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.ObjCName)
+            .addMember("%S", type.simpleName)
+            .addMember("exact = true")
+            .build(),
+        )
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("provider", provider)
