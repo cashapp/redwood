@@ -1,12 +1,14 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 import static org.gradle.api.plugins.JavaPlugin.TEST_TASK_NAME
 import static org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.TEST_COMPILATION_NAME
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'application'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
 
 application {
   applicationName = 'redwood-schema'

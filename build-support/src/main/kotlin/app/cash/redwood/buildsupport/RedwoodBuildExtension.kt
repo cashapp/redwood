@@ -18,4 +18,6 @@ package app.cash.redwood.buildsupport
 interface RedwoodBuildExtension {
   /** Add the Compose compiler plugin. */
   fun composeCompiler()
+  /** Enable artifact publishing and Dokka documentation generation. */
+  fun publishing()
 }

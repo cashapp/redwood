@@ -4,12 +4,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.paparazzi'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   composeCompiler()
+  publishing()
 }
 
 kotlin {

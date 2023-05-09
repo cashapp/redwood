@@ -1,6 +1,10 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'application'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
 
 application {
   applicationName = 'redwood-codegen'

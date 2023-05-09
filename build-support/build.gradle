@@ -26,6 +26,8 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
+  implementation libs.gradleMavenPublishPlugin
+  implementation libs.dokkaPlugin
 }
 
 gradlePlugin {
