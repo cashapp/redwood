@@ -28,6 +28,7 @@ dependencies {
   compileOnly libs.kotlin.gradlePlugin
   implementation libs.gradleMavenPublishPlugin
   implementation libs.dokkaPlugin
+  implementation libs.spotlessPlugin
 }
 
 gradlePlugin {
