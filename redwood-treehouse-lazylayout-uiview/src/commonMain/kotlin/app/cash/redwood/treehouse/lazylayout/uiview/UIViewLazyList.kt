@@ -18,32 +18,96 @@ package app.cash.redwood.treehouse.lazylayout.uiview
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseContentSource
-import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.treehouse.ZiplineTreehouseUi
-import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
+import app.cash.redwood.widget.Widget
+import kotlinx.cinterop.ObjCClass
 import platform.Foundation.NSIndexPath
-import platform.QuartzCore.CALayer
+import platform.Foundation.classForCoder
 import platform.UIKit.UITableView
 import platform.UIKit.UITableViewCell
 import platform.UIKit.UITableViewCellStyle
-import platform.UIKit.UITableViewDiffableDataSource
+import platform.UIKit.UITableViewCellStyle.UITableViewCellStyleDefault
+import platform.UIKit.UITableViewDataSourceProtocol
+import platform.UIKit.UITableViewDelegateProtocol
 import platform.UIKit.UIView
-import platform.UIKit.row
-import platform.UIKit.section
+import platform.UIKit.item
 import platform.darwin.NSInteger
+import platform.darwin.NSObject
 
 internal class UIViewLazyList<A : AppService>(
   treehouseApp: TreehouseApp<A>,
   widgetSystem: WidgetSystem,
 ) : LazyList<UIView> {
-  private val dataSource = TableViewDataSource(treehouseApp, widgetSystem)
-  private val root = UITableView().apply {
-    this.dataSource = this@UIViewLazyList.dataSource
+  private val reuseIdentifier = "cell"
+
+  private val itemsList = mutableListOf<Widget<UIView>>()
+
+  override val items: Widget.Children<UIView> = object : Widget.Children<UIView> {
+    override fun insert(index: Int, widget: Widget<UIView>) {
+      itemsList.add(index, widget)
+      tableView.reloadData()
+    }
+
+    override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+      TODO("Not yet implemented")
+    }
+
+    override fun remove(index: Int, count: Int) {
+      for (i in 0 until count) {
+        itemsList.removeAt(index)
+      }
+      tableView.reloadData()
+    }
+
+    override fun onLayoutModifierUpdated() {
+    }
   }
+
+  private val tableViewDelegate: UITableViewDelegateProtocol =
+    object : NSObject(), UITableViewDelegateProtocol {
+      override fun tableView(
+        tableView: UITableView,
+        willDisplayCell: UITableViewCell,
+        forRowAtIndexPath: NSIndexPath,
+      ) {
+        val content = itemsList[forRowAtIndexPath.item.toInt()]
+        (willDisplayCell as Cell).setWidget(content.value)
+      }
+    }
+
+  private val tableViewDataSource: UITableViewDataSourceProtocol =
+    object : NSObject(), UITableViewDataSourceProtocol {
+      override fun numberOfSectionsInTableView(
+        tableView: UITableView,
+      ): NSInteger = 1L
+
+      override fun tableView(
+        tableView: UITableView,
+        numberOfRowsInSection: NSInteger,
+      ): NSInteger = itemsList.size.toLong()
+
+      override fun tableView(
+        tableView: UITableView,
+        cellForRowAtIndexPath: NSIndexPath,
+      ): UITableViewCell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as Cell
+    }
+
+  private val tableView = UITableView()
+    .apply {
+      dataSource = tableViewDataSource
+      delegate = tableViewDelegate
+      rowHeight = 64.0 // TODO: size rows by their content.
+      prefetchingEnabled = false
+      registerClass(
+        Cell(UITableViewCellStyleDefault, reuseIdentifier).classForCoder() as ObjCClass?,
+        forCellReuseIdentifier = reuseIdentifier,
+      )
+    }
+
+  private val root = tableView
+
+  private lateinit var onPositionDisplayed: (Int) -> Unit
 
   override fun isVertical(isVertical: Boolean) {
     if (!isVertical) {
@@ -52,9 +116,8 @@ internal class UIViewLazyList<A : AppService>(
     }
   }
 
-  override fun intervals(intervals: List<LazyListInterval>) {
-    dataSource.intervals = intervals
-    root.reloadData()
+  override fun onPositionDisplayed(onPositionDisplayed: (Int) -> Unit) {
+    this.onPositionDisplayed = onPositionDisplayed
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
@@ -62,48 +125,29 @@ internal class UIViewLazyList<A : AppService>(
   override val value: UIView get() = root
 }
 
-private class TableViewDataSource<A : AppService>(
-  private val treehouseApp: TreehouseApp<A>,
-  private val widgetSystem: WidgetSystem,
-) : UITableViewDiffableDataSource() {
-  var intervals = emptyList<LazyListInterval>()
+private class Cell(
+  style: UITableViewCellStyle, reuseIdentifier: String?
+) : UITableViewCell(style, reuseIdentifier) {
+  private var widget: UIView? = null
 
-  override fun numberOfSectionsInTableView(tableView: UITableView): NSInteger {
-    return intervals.size.toLong()
+  /** Factory function for a new cell. */
+  override fun initWithStyle(
+    style: UITableViewCellStyle,
+    reuseIdentifier: String?,
+  ): UITableViewCell = Cell(style, reuseIdentifier)
+
+  override fun prepareForReuse() {
+    super.prepareForReuse()
+    this.widget?.removeFromSuperview()
   }
 
-  override fun tableView(tableView: UITableView, numberOfRowsInSection: NSInteger): NSInteger {
-    return intervals[numberOfRowsInSection.toInt()].keys.size.toLong()
+  fun setWidget(widget: UIView) {
+    contentView.addSubview(widget)
+    this.widget = widget
   }
 
-  override fun tableView(tableView: UITableView, cellForRowAtIndexPath: NSIndexPath): UITableViewCell {
-    val treehouseView = TreehouseUIKitView(widgetSystem)
-    val cellContentSource = CellContentSource<A>(
-      intervals[cellForRowAtIndexPath.section.toInt()].itemProvider,
-      cellForRowAtIndexPath.row.toInt(),
-    )
-    cellContentSource.bindWhenReady(treehouseView, treehouseApp)
-    return TableViewCell(treehouseView.view)
-  }
-}
-
-private class CellContentSource<A : AppService>(
-  private val itemProvider: LazyListInterval.Item,
-  private val index: Int,
-) : TreehouseContentSource<A> {
-
-  override fun get(app: A): ZiplineTreehouseUi {
-    return itemProvider.get(index)
-  }
-}
-
-private class TableViewCell(private val view: UIView) :
-  UITableViewCell(UITableViewCellStyle.UITableViewCellStyleDefault, null) {
-  init {
-    addSubview(view)
-  }
-
-  override fun layoutSublayersOfLayer(layer: CALayer) {
-    view.setFrame(bounds)
+  override fun layoutSubviews() {
+    super.layoutSubviews()
+    widget?.setFrame(bounds)
   }
 }
