@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.buildsupport
 
+import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.Plugin
@@ -30,6 +31,18 @@ class RedwoodBuildPlugin : Plugin<Project> {
       "redwoodBuild",
       RedwoodBuildExtensionImpl(target),
     )
+
+    target.plugins.apply("com.diffplug.spotless")
+    val spotless = target.extensions.getByName("spotless") as SpotlessExtension
+    spotless.apply {
+      kotlin {
+        it.target("src/*/kotlin/**/*.kt")
+        it.ktlint().editorConfigOverride(
+          mapOf("ktlint_standard_filename" to "disabled"),
+        )
+        it.licenseHeaderFile(target.rootProject.file("gradle/license-header.txt"))
+      }
+    }
   }
 }
 
