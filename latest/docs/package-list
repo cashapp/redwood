@@ -7,6 +7,8 @@ module:redwood-compose-testing
 app.cash.redwood.compose.testing
 module:redwood-flexbox
 app.cash.redwood.flexbox
+module:redwood-gradle-plugin
+app.cash.redwood.gradle
 module:redwood-layout-api
 app.cash.redwood.layout.api
 module:redwood-layout-api-density
@@ -37,6 +39,14 @@ module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
+module:redwood-schema
+app.cash.redwood.schema
+module:redwood-tooling-codegen
+app.cash.redwood.tooling.codegen
+module:redwood-tooling-lint
+app.cash.redwood.tooling.lint
+module:redwood-tooling-schema
+app.cash.redwood.tooling.schema
 module:redwood-treehouse
 app.cash.redwood.treehouse
 module:redwood-treehouse-composeui
