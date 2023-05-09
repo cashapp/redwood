@@ -19,6 +19,7 @@ import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 
 @Suppress("unused") // Invoked reflectively by Gradle.
@@ -87,6 +88,24 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       task.dokkaSourceSets.configureEach {
         it.suppressGeneratedFiles.set(false) // document generated code
       }
+    }
+  }
+
+  override fun application(name: String, mainClass: String) {
+    project.plugins.apply("application")
+
+    val application = project.extensions.getByName("application") as JavaApplication
+    application.applicationName = name
+    application.mainClass.set(mainClass)
+
+    // A zip and tar are configured by default. We don't care about tar.
+    project.tasks.named("distTar").configure { task ->
+      task.enabled = false
+    }
+
+    // Build an exploded application directory by default for local testing.
+    project.tasks.named("assemble").configure { task ->
+      task.dependsOn(project.tasks.named("installDist"))
     }
   }
 }

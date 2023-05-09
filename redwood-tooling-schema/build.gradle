@@ -3,16 +3,11 @@ import static org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.TEST_COMPILAT
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'application'
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   publishing()
-}
-
-application {
-  applicationName = 'redwood-schema'
-  mainClass.set('app.cash.redwood.tooling.schema.Main')
+  application('redwood-schema', 'app.cash.redwood.tooling.schema.Main')
 }
 
 dependencies {
@@ -39,11 +34,4 @@ tasks.named(TEST_TASK_NAME, Test).configure {
 
   def classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName).files
   it.systemProperty('redwood.internal.classpath', classpath.join(File.pathSeparator))
-}
-
-tasks.named("distTar").configure { task ->
-  task.enabled = false
-}
-tasks.named("assemble").configure { task ->
-  task.dependsOn(tasks.named("installDist"))
 }

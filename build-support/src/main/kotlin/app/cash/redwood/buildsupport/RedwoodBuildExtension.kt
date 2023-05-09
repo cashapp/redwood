@@ -20,4 +20,6 @@ interface RedwoodBuildExtension {
   fun composeCompiler()
   /** Enable artifact publishing and Dokka documentation generation. */
   fun publishing()
+  /** Bundle a zip with dependencies and startup scripts. */
+  fun application(name: String, mainClass: String)
 }

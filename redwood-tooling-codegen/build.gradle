@@ -1,14 +1,9 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'application'
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   publishing()
-}
-
-application {
-  applicationName = 'redwood-codegen'
-  mainClass.set('app.cash.redwood.tooling.codegen.Main')
+  application('redwood-codegen', 'app.cash.redwood.tooling.codegen.Main')
 }
 
 dependencies {
@@ -20,11 +15,4 @@ dependencies {
   testImplementation projects.testSchema.compose
   testImplementation libs.junit
   testImplementation libs.assertk
-}
-
-tasks.named("distTar").configure { task ->
-  task.enabled = false
-}
-tasks.named("assemble").configure { task ->
-  task.dependsOn(tasks.named("installDist"))
 }
