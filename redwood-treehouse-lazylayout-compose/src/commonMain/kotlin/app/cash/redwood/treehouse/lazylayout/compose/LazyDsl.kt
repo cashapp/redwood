@@ -21,52 +21,45 @@ import app.cash.redwood.LayoutScopeMarker
 @LayoutScopeMarker
 public interface LazyListScope {
   public fun item(
-    key: String?,
     content: @Composable () -> Unit,
   )
 
   public fun items(
-    keys: List<String?>,
+    count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   )
 }
 
 public inline fun <T> LazyListScope.items(
   items: List<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
-): Unit = items(
-  keys = items.map(itemToKey),
-) {
+): Unit = items(items.size) {
   itemContent(items[it])
 }
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(it, items[it])
 }
 
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(items[it])
 }
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(it, items[it])
 }
