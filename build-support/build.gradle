@@ -26,15 +26,17 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
+  implementation libs.gradleMavenPublishPlugin
+  implementation libs.dokkaPlugin
 }
 
 gradlePlugin {
   plugins {
-    jetbrainsCompose {
-      id = "app.cash.redwood.build.compose"
-      displayName = "JetBrains Compose"
-      description = "Gradle plugin to apply JetBrains Compose compiler"
-      implementationClass = "app.cash.redwood.buildsupport.ComposePlugin"
+    redwoodBuild {
+      id = "app.cash.redwood.build"
+      displayName = "Redwood Build plugin"
+      description = "Gradle plugin for Redwood build things"
+      implementationClass = "app.cash.redwood.buildsupport.RedwoodBuildPlugin"
     }
   }
 }

@@ -11,7 +11,11 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 //
 // We only want to publish when it's being built in the root project.
 if (rootProject.name == 'redwood') {
-  apply plugin: 'com.vanniktech.maven.publish'
+  apply plugin: 'app.cash.redwood.build'
+
+  redwoodBuild {
+    publishing()
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
