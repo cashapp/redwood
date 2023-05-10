@@ -20,3 +20,11 @@ kotlin {
     }
   }
 }
+
+// TODO: find a way to get Objective-C conflicting overloads to play nice with Kotlin metadata.
+// https://kotlinlang.slack.com/archives/C9JM6Q2UX/p1683686935270659
+tasks.configureEach { task ->
+  if (task.name == "compileCommonMainKotlinMetadata") {
+    task.onlyIf { false }
+  }
+}
