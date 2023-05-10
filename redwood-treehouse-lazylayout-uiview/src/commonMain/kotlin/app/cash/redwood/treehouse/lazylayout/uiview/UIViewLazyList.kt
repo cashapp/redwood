@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Prevent Objective-C function overloads from breaking compile.
-// https://kotlinlang.slack.com/archives/C9JM6Q2UX/p1683686935270659
 @file:Suppress(
   "PARAMETER_NAME_CHANGED_ON_OVERRIDE",
-  "RETURN_TYPE_MISMATCH_ON_OVERRIDE"
+  "RETURN_TYPE_MISMATCH_ON_OVERRIDE",
 )
+
 package app.cash.redwood.treehouse.lazylayout.uiview
 
 import app.cash.redwood.LayoutModifier
