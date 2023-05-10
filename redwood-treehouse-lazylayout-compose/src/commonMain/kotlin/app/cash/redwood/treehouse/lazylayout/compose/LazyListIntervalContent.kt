@@ -93,7 +93,7 @@ internal class ItemPagingSource(
       itemsAfter = maxOf(0, count - nextPosToLoad),
     )
 
-    return if (invalid) PagingSourceLoadResultInvalid() else loadResult
+    return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
   }
 
   override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int? = state.anchorPosition

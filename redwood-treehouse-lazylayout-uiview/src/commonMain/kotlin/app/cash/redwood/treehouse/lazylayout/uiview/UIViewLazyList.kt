@@ -126,7 +126,8 @@ internal class UIViewLazyList<A : AppService>(
 }
 
 private class Cell(
-  style: UITableViewCellStyle, reuseIdentifier: String?
+  style: UITableViewCellStyle,
+  reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
   private var widget: UIView? = null
 
