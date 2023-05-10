@@ -53,7 +53,8 @@ internal class UIViewLazyList : LazyList<UIView> {
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-      TODO("Not yet implemented")
+      itemsList.move(fromIndex, toIndex, count)
+      tableView.reloadData()
     }
 
     override fun remove(index: Int, count: Int) {
