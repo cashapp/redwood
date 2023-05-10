@@ -111,8 +111,6 @@ internal class UIViewLazyList<A : AppService>(
       )
     }
 
-  private val root = tableView
-
   private lateinit var onPositionDisplayed: (Int) -> Unit
 
   override fun isVertical(isVertical: Boolean) {
@@ -128,7 +126,7 @@ internal class UIViewLazyList<A : AppService>(
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  override val value: UIView get() = root
+  override val value: UIView get() = tableView
 }
 
 private class Cell(
