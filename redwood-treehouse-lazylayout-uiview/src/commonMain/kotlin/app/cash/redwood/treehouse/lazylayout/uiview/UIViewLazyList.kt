@@ -42,10 +42,7 @@ import platform.darwin.NSObject
 
 private const val reuseIdentifier = "cell"
 
-internal class UIViewLazyList<A : AppService>(
-  treehouseApp: TreehouseApp<A>,
-  widgetSystem: WidgetSystem,
-) : LazyList<UIView> {
+internal class UIViewLazyList : LazyList<UIView> {
 
   private val itemsList = mutableListOf<Widget<UIView>>()
 

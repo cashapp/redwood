@@ -41,7 +41,7 @@ fun exposedTypes(
   protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
   treehouseUIKitView: TreehouseUIKitView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
-  uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory<*>,
+  uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory,
   widgetSystem: WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
 ) {

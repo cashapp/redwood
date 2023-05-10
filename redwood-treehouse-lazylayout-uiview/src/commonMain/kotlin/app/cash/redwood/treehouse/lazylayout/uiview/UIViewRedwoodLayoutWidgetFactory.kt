@@ -15,17 +15,11 @@
  */
 package app.cash.redwood.treehouse.lazylayout.uiview
 
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
 import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodTreehouseLazyLayoutWidgetFactory", exact = true)
-public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory<A : AppService>(
-  private var treehouseApp: TreehouseApp<A>,
-  private var widgetSystem: WidgetSystem,
-) : RedwoodTreehouseLazyLayoutWidgetFactory<UIView> {
-  override fun LazyList(): LazyList<UIView> = UIViewLazyList(treehouseApp, widgetSystem)
+public class UIViewRedwoodTreehouseLazyLayoutWidgetFactory : RedwoodTreehouseLazyLayoutWidgetFactory<UIView> {
+  override fun LazyList(): LazyList<UIView> = UIViewLazyList()
 }
