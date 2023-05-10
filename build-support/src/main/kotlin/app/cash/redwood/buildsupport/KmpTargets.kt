@@ -41,7 +41,8 @@ fun addAllTargets(project: Project, skipJs: Boolean = false) {
 
       jvm()
 
-      // TODO Add back macos targets after Multiplatform Paging adds support for it.
+      macosArm64()
+      macosX64()
 
       val commonMain = sourceSets.getByName("commonMain")
       val commonTest = sourceSets.getByName("commonTest")
@@ -60,12 +61,22 @@ fun addAllTargets(project: Project, skipJs: Boolean = false) {
         dependsOn(nativeTest)
       }
 
+      val macosMain = sourceSets.create("macosMain").apply {
+        dependsOn(nativeMain)
+      }
+      val macosTest = sourceSets.create("macosTest").apply {
+        dependsOn(nativeTest)
+      }
+
       targets.all { target ->
         // Some Kotlin targets do not have this property, but native ones always will.
         if (target.platformType.name == "native") {
           if (target.name.startsWith("ios")) {
             target.compilations.getByName("main").defaultSourceSet.dependsOn(iosMain)
             target.compilations.getByName("test").defaultSourceSet.dependsOn(iosTest)
+          } else if (target.name.startsWith("macos")) {
+            target.compilations.getByName("main").defaultSourceSet.dependsOn(macosMain)
+            target.compilations.getByName("test").defaultSourceSet.dependsOn(macosTest)
           } else {
             throw AssertionError("Unknown target ${target.name}")
           }
