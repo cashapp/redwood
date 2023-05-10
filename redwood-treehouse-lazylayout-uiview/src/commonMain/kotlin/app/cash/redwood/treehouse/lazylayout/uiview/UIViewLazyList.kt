@@ -60,9 +60,7 @@ internal class UIViewLazyList<A : AppService>(
     }
 
     override fun remove(index: Int, count: Int) {
-      for (i in 0 until count) {
-        itemsList.removeAt(index)
-      }
+      itemsList.remove(index, count)
       tableView.reloadData()
     }
 
