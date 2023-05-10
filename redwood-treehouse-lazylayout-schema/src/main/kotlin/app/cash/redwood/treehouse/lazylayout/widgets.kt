@@ -23,5 +23,5 @@ import app.cash.redwood.schema.Widget
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
   @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
-  @Children(3) val items: () -> Unit,
+  @Children(1) val items: () -> Unit,
 )
