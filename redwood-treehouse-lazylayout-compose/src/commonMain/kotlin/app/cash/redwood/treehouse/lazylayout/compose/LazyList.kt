@@ -61,7 +61,7 @@ internal fun LazyList(
     },
     items = {
       for (index in (0 until lazyPagingItems.itemCount)) {
-        /** Only invokes Composable lambdas that are loaded. */
+        // Only invokes Composable lambdas that are loaded.
         lazyPagingItems.peek(index)?.invoke() ?: break
       }
     },
