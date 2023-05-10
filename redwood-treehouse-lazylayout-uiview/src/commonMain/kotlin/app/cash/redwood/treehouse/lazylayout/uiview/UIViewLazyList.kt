@@ -21,9 +21,6 @@
 package app.cash.redwood.treehouse.lazylayout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCClass
@@ -74,7 +71,7 @@ internal class UIViewLazyList : LazyList<UIView> {
         forRowAtIndexPath: NSIndexPath,
       ) {
         val content = itemsList[forRowAtIndexPath.item.toInt()]
-        (willDisplayCell as Cell).setWidget(content.value)
+        (willDisplayCell as Cell).setView(content.value)
       }
     }
 
@@ -129,7 +126,7 @@ private class Cell(
   style: UITableViewCellStyle,
   reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
-  private var widget: UIView? = null
+  private var view: UIView? = null
 
   /** Factory function for a new cell. */
   override fun initWithStyle(
@@ -139,16 +136,16 @@ private class Cell(
 
   override fun prepareForReuse() {
     super.prepareForReuse()
-    this.widget?.removeFromSuperview()
+    this.view?.removeFromSuperview()
   }
 
-  fun setWidget(widget: UIView) {
-    contentView.addSubview(widget)
-    this.widget = widget
+  fun setView(view: UIView) {
+    contentView.addSubview(view)
+    this.view = view
   }
 
   override fun layoutSubviews() {
     super.layoutSubviews()
-    widget?.setFrame(bounds)
+    view?.setFrame(bounds)
   }
 }
