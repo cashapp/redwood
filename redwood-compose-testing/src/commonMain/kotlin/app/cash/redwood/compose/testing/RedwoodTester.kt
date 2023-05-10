@@ -40,7 +40,7 @@ import kotlinx.coroutines.withTimeout
  */
 @OptIn(RedwoodCodegenApi::class)
 public class RedwoodTester @RedwoodCodegenApi constructor(
-  private val provider: Widget.Provider<MutableWidget>,
+  private val provider: Widget.Provider<WidgetValue>,
 ) {
   /** Emit frames manually in [sendFrames]. */
   private val clock = BroadcastFrameClock()
@@ -53,13 +53,13 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
   /** Execute [testBody] and then cancel this tester. */
   public suspend fun test(testBody: suspend TestScope.() -> Unit) {
     coroutineScope {
-      val mutableChildren = MutableListChildren<MutableWidget>()
+      val mutableChildren = MutableListChildren<WidgetValue>()
       val composition = RedwoodComposition(
         scope = this + clock,
         container = mutableChildren,
         provider = provider,
         onEndChanges = {
-          val newSnapshot = mutableChildren.map { it.value.snapshot() }
+          val newSnapshot = mutableChildren.map { it.value }
 
           // trySend always succeeds on a CONFLATED channel.
           check(snapshots.trySend(newSnapshot).isSuccess)

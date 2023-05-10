@@ -76,10 +76,9 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
 
 /*
 @RedwoodCodegenApi
-public class MutableSunspotWidgetFactory : SunspotWidgetFactory<MutableWidget> {
-  public override fun SunspotText(): SunspotText<MutableWidget> = MutableSunspotText()
-
-  public override fun SunspotButton(): SunspotButton<MutableWidget> = MutableSunspotButton()
+public class EmojiSearchMutableWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
+  public override fun Text(): Text<WidgetValue> = MutableText()
+  public override fun Button(): Button<WidgetValue> = MutableButton()
 }
 */
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
@@ -87,14 +86,14 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
   return FileSpec.builder(mutableWidgetFactoryType)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
-        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.MutableWidget))
+        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.WidgetValue))
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .apply {
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
-                .addModifiers(PUBLIC, OVERRIDE)
-                .returns(schema.widgetType(widget).parameterizedBy(RedwoodTesting.MutableWidget))
+                .addModifiers(OVERRIDE)
+                .returns(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
                 .addCode("return %T()", schema.mutableWidgetType(widget))
                 .build(),
             )
@@ -106,10 +105,9 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
 }
 
 /*
-@RedwoodCodegenApi
-internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidget {
-  public override val value: MutableWidget
-    get() = this
+internal class MutableButton : Button<WidgetValue> {
+  public override val value: WidgetValue
+    get() = ButtonValue(layoutModifiers, text, enabled!!, maxLength!!)
 
   public override var layoutModifiers: LayoutModifier = LayoutModifier
 
@@ -124,10 +122,6 @@ internal class MutableSunspotButton : SunspotButton<MutableWidget>, MutableWidge
   public override fun enabled(enabled: Boolean) {
     this.enabled = enabled
   }
-
-  public override fun snapshot() : SunspotButtonValue {
-    return SunspotButtonValue(layoutModifiers, text, enabled!!, maxLength!!)
-  }
 }
 */
 internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
@@ -137,15 +131,35 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
     .addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
-        .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.MutableWidget))
-        .addSuperinterface(RedwoodTesting.MutableWidget)
-        .addAnnotation(Redwood.RedwoodCodegenApi)
+        .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
         .addProperty(
-          PropertySpec.builder("value", RedwoodTesting.MutableWidget)
-            .addModifiers(PUBLIC, OVERRIDE)
+          PropertySpec.builder("value", RedwoodTesting.WidgetValue)
+            .addModifiers(OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
-                .addCode("return this")
+                .addCode("return %T(⇥\n", widgetValueType)
+                .addCode("layoutModifiers = layoutModifiers,\n")
+                .apply {
+                  for (trait in widget.traits) {
+                    when (trait) {
+                      is Event, is Property -> {
+                        val nullable = when (trait) {
+                          is Property -> trait.type.nullable
+                          is Event -> trait.lambdaType.isNullable
+                          else -> false
+                        }
+                        if (nullable) {
+                          addCode("%1N = %1N,\n", trait.name)
+                        } else {
+                          addCode("%1N = %1N!!,\n", trait.name)
+                        }
+                      }
+                      is Children -> addCode("%1N = %1N.map { it.`value` },\n", trait.name)
+                      is ProtocolTrait -> throw AssertionError()
+                    }
+                  }
+                }
+                .addCode("⇤)\n")
                 .build(),
             )
             .build(),
@@ -183,11 +197,11 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
               }
               is Children -> {
                 val mutableChildrenOfMutableWidget = RedwoodWidget.MutableListChildren
-                  .parameterizedBy(RedwoodTesting.MutableWidget)
+                  .parameterizedBy(RedwoodTesting.WidgetValue)
                 addProperty(
                   PropertySpec.builder(trait.name, mutableChildrenOfMutableWidget)
                     .addModifiers(PUBLIC, OVERRIDE)
-                    .initializer("%T()", mutableChildrenOfMutableWidget)
+                    .initializer("%T()", RedwoodWidget.MutableListChildren)
                     .build(),
                 )
               }
@@ -195,42 +209,13 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             }
           }
         }
-        .addFunction(
-          FunSpec.builder("snapshot")
-            .addModifiers(PUBLIC, OVERRIDE)
-            .returns(widgetValueType)
-            .addCode("return %T(⇥\n", widgetValueType)
-            .addCode("layoutModifiers = layoutModifiers,\n")
-            .apply {
-              for (trait in widget.traits) {
-                when (trait) {
-                  is Event, is Property -> {
-                    val nullable = when (trait) {
-                      is Property -> trait.type.nullable
-                      is Event -> trait.lambdaType.isNullable
-                      else -> false
-                    }
-                    if (nullable) {
-                      addCode("%N = %N,\n", trait.name, trait.name)
-                    } else {
-                      addCode("%N = %N!!,\n", trait.name, trait.name)
-                    }
-                  }
-                  is Children -> addCode("%N = %N.map { it.`value`.snapshot() },\n", trait.name, trait.name)
-                  is ProtocolTrait -> throw AssertionError()
-                }
-              }
-            }
-            .addCode("⇤)\n")
-            .build(),
-        )
         .build(),
     )
     .build()
 }
 
 /*
-public class SunspotButtonValue(
+public class ButtonValue(
   public override val layoutModifiers: LayoutModifier = LayoutModifier,
   public val text: String? = null,
   public val enabled: Boolean = false,
@@ -248,7 +233,7 @@ public class SunspotButtonValue(
   ).hashCode()
 
   public override fun toString(): String =
-    """SunspotButtonValue(text=$text, enabled=$enabled)"""
+    """ButtonValue(text=$text, enabled=$enabled)"""
 }
 */
 internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
