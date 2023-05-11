@@ -18,16 +18,52 @@
 package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.treehouse.StandardAppLifecycle
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.compose.collectAsLazyPagingItems
 import kotlin.jvm.JvmName
 
 @Composable
 internal fun LazyList(
-  appLifecycle: StandardAppLifecycle,
   isVertical: Boolean,
   content: LazyListScope.() -> Unit,
 ) {
-  val scope = LazyListIntervalContent(appLifecycle)
-  content(scope)
-  LazyList(isVertical, scope.intervals)
+  var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
+  val scope = LazyListIntervalContent(content)
+  val pagerFlow = remember {
+    // TODO Don't hardcode pageSizes
+    // TODO Enable placeholder support
+    // TODO Set a maxSize so we don't keep _too_ many views in memory
+    val pager = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)) {
+      itemPagingSource!!
+    }
+    pager.flow
+  }
+  val lazyPagingItems = pagerFlow.collectAsLazyPagingItems()
+  DisposableEffect(scope) {
+    itemPagingSource = ItemPagingSource(scope)
+    onDispose {
+      itemPagingSource?.invalidate()
+    }
+  }
+  LazyList(
+    isVertical,
+    onPositionDisplayed = { position ->
+      /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
+      if (position < lazyPagingItems.itemCount) {
+        lazyPagingItems[position]
+      }
+    },
+    items = {
+      for (index in (0 until lazyPagingItems.itemCount)) {
+        // Only invokes Composable lambdas that are loaded.
+        lazyPagingItems.peek(index)?.invoke() ?: break
+      }
+    },
+  )
 }

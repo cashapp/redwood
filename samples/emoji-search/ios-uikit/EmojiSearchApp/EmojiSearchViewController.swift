@@ -68,10 +68,7 @@ class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
             provider: EmojiSearchWidgetFactories<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
-                RedwoodTreehouseLazyLayout: UIViewRedwoodTreehouseLazyLayoutWidgetFactory(
-                    treehouseApp: treehouseApp,
-                    widgetSystem: self
-                )
+                RedwoodTreehouseLazyLayout: UIViewRedwoodTreehouseLazyLayoutWidgetFactory()
             ),
             json: json,
             mismatchHandler: protocolMismatchHandler

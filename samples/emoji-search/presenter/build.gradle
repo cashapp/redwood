@@ -13,7 +13,6 @@ kotlin {
         api projects.samples.emojiSearch.schema.compose
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose
-        api projects.redwoodTreehouseLazylayoutApi
       }
     }
     commonTest {

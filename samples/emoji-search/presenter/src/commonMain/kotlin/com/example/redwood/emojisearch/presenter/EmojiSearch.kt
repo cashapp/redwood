@@ -57,7 +57,6 @@ interface ColumnProvider {
   @Composable
   fun <T> create(
     items: List<T>,
-    itemToKey: (item: T) -> String?,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -106,7 +105,6 @@ fun EmojiSearch(
     )
     columnProvider.create(
       filteredEmojis,
-      itemToKey = { it.label },
     ) { image ->
       Row(
         width = Constraint.Fill,

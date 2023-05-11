@@ -15,12 +15,13 @@
  */
 package app.cash.redwood.treehouse.lazylayout
 
+import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.treehouse.lazylayout.api.LazyListInterval
 
 @Widget(1)
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
-  @Property(2) val intervals: List<LazyListInterval>,
+  @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
+  @Children(1) val items: () -> Unit,
 )

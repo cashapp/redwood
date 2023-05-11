@@ -33,7 +33,7 @@ class RealRepoSearchPresenter(
   )
 
   override fun launch(): ZiplineTreehouseUi {
-    val treehouseUi = RepoSearchTreehouseUi(hostApi::httpCall, appLifecycle)
+    val treehouseUi = RepoSearchTreehouseUi(hostApi::httpCall)
     return treehouseUi.asZiplineTreehouseUi(appLifecycle)
   }
 }

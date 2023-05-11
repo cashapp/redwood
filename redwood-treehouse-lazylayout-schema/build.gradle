@@ -6,10 +6,6 @@ redwoodBuild {
   publishing()
 }
 
-dependencies {
-  api projects.redwoodTreehouseLazylayoutApi
-}
-
 redwoodSchema {
   type = 'app.cash.redwood.treehouse.lazylayout.RedwoodTreehouseLazyLayout'
 }

@@ -17,68 +17,58 @@ package app.cash.redwood.treehouse.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
-import app.cash.redwood.treehouse.StandardAppLifecycle
 
 @LayoutScopeMarker
 public interface LazyListScope {
   public fun item(
-    key: String?,
     content: @Composable () -> Unit,
   )
 
   public fun items(
-    keys: List<String?>,
+    count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   )
 }
 
 public inline fun <T> LazyListScope.items(
   items: List<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
-): Unit = items(
-  keys = items.map(itemToKey),
-) {
+): Unit = items(items.size) {
   itemContent(items[it])
 }
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(it, items[it])
 }
 
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(items[it])
 }
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
-  itemToKey: (item: T) -> String?,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  keys = items.map(itemToKey),
+  items.size,
 ) {
   itemContent(it, items[it])
 }
 
 @Composable
 public fun LazyRow(
-  appLifecycle: StandardAppLifecycle,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
-    appLifecycle = appLifecycle,
     isVertical = false,
     content = content,
   )
@@ -86,11 +76,9 @@ public fun LazyRow(
 
 @Composable
 public fun LazyColumn(
-  appLifecycle: StandardAppLifecycle,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
-    appLifecycle = appLifecycle,
     isVertical = true,
     content = content,
   )

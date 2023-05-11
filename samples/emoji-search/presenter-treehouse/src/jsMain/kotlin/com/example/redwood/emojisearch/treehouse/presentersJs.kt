@@ -17,7 +17,7 @@ package com.example.redwood.emojisearch.treehouse
 
 import app.cash.zipline.Zipline
 
-private val zipline by lazy { Zipline.get(treehouseSerializersModule) }
+private val zipline by lazy { Zipline.get() }
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport

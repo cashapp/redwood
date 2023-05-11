@@ -58,7 +58,7 @@ class RepoSearchActivity : ComponentActivity() {
         provider = RepoSearchWidgetFactories(
           RepoSearch = AndroidRepoSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, this),
+          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context),
         ),
         json = json,
         mismatchHandler = protocolMismatchHandler,
