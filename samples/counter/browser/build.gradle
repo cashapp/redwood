@@ -1,10 +1,13 @@
 apply plugin: 'org.jetbrains.kotlin.js'
 apply plugin: 'app.cash.redwood'
 
+// The name of the final JS file to be referenced from HTML.
 archivesBaseName = 'counter'
 
 kotlin {
   js {
+    // The name of the JS module which needs to be unique within the repo.
+    moduleName = 'counter-browser'
     browser()
     binaries.executable()
   }

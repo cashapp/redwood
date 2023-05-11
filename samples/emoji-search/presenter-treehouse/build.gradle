@@ -10,6 +10,8 @@ kotlin {
   jvm()
 
   js {
+    // The name of the JS module which needs to be unique within the repo.
+    moduleName = 'emoji-search-presenter-treehouse'
     browser()
     binaries.executable()
   }
