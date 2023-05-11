@@ -53,7 +53,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolNodeFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(treehouseApp),
+          EmojiSearch = AndroidEmojiSearchWidgetFactory(),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodTreehouseLazyLayout = ComposeUiRedwoodTreehouseLazyLayoutWidgetFactory(),
         ),
