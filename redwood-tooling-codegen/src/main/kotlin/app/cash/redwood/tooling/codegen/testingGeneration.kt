@@ -35,40 +35,68 @@ import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
+import com.squareup.kotlinpoet.KModifier.SUSPEND
 import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.UNIT
 
 /*
-@OptIn(RedwoodCodegenApi::class)
-public fun SunspotTester(): RedwoodTester {
-  return RedwoodTester(
-    provider = SunspotWidgetFactories(
-      Sunspot = MutableSunspotWidgetFactory(),
-      RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
-    ),
+suspend fun ExampleTester(
+  body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> Unit,
+) {
+  val factories = ExampleWidgetFactories(
+    Sunspot = MutableExampleWidgetFactory(),
+    RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
   )
+  val container = MutableListChildren<WidgetValue>()
+  coroutineScope {
+    val tester = TestRedwoodComposition(this, factories, container) {
+      container.map { it.value }
+    }
+    try {
+      tester.body()
+    } finally {
+      tester.cancel()
+    }
+  }
 }
 */
 internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
   val testerFunction = schema.getTesterFunction()
+  val bodyType = LambdaTypeName.get(
+    receiver = RedwoodTesting.TestRedwoodComposition
+      .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
+    returnType = UNIT,
+  ).copy(suspending = true)
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
     .addFunction(
       FunSpec.builder(testerFunction.simpleName)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
-        .returns(RedwoodTesting.RedwoodTester)
-        .addCode("return %T(⇥\n", RedwoodTesting.RedwoodTester)
-        .addCode("provider = %T(⇥\n", schema.getWidgetFactoriesType())
+        .addModifiers(SUSPEND)
+        .addParameter("body", bodyType)
+        .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schemaSet.all) {
             addCode("%N = %T(),\n", dependency.type.flatName, dependency.getMutableWidgetFactoryType())
           }
         }
-        .addCode("⇤),\n")
-        .addCode("⇤)\n", RedwoodTesting.RedwoodTester)
+        .addCode("⇤)\n")
+        .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
+        .beginControlFlow("%M", KotlinxCoroutines.coroutineScope)
+        .beginControlFlow("val tester = %T(this, factories, container)", RedwoodTesting.TestRedwoodComposition)
+        .addStatement("container.map { it.value }")
+        .endControlFlow()
+        .beginControlFlow("try")
+        .addStatement("tester.body()")
+        .nextControlFlow("finally")
+        .addStatement("tester.cancel()")
+        .endControlFlow()
+        .endControlFlow()
         .build(),
     )
     .build()

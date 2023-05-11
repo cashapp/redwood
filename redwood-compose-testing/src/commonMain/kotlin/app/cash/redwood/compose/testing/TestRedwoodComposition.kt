@@ -17,9 +17,7 @@ package app.cash.redwood.compose.testing
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -27,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -35,60 +32,57 @@ import kotlinx.coroutines.withTimeout
 
 /**
  * Performs Redwood composition strictly for testing.
- *
- * Create an instance with a generated `AppNameTester()` function.
  */
-@OptIn(RedwoodCodegenApi::class)
-public class RedwoodTester @RedwoodCodegenApi constructor(
-  private val provider: Widget.Provider<WidgetValue>,
-) {
+public fun <W : Any, S> TestRedwoodComposition(
+  scope: CoroutineScope,
+  provider: Widget.Provider<W>,
+  container: Widget.Children<W>,
+  createSnapshot: () -> S,
+): TestRedwoodComposition<S> {
+  return RealTestRedwoodComposition(scope, provider, container, createSnapshot)
+}
+
+public interface TestRedwoodComposition<S> : RedwoodComposition {
+  /**
+   * Returns a snapshot, waiting if necessary for changes to occur since the previous snapshot.
+   *
+   * @throws TimeoutCancellationException if no new snapshot is produced before [timeout].
+   */
+  public suspend fun awaitSnapshot(timeout: Duration = 1.seconds): S
+}
+
+/** Performs Redwood composition strictly for testing. */
+private class RealTestRedwoodComposition<W : Any, S>(
+  scope: CoroutineScope,
+  provider: Widget.Provider<W>,
+  container: Widget.Children<W>,
+  createSnapshot: () -> S,
+) : TestRedwoodComposition<S> {
   /** Emit frames manually in [sendFrames]. */
   private val clock = BroadcastFrameClock()
   private var timeNanos = 0L
   private val frameDelay = 1.seconds / 60
 
   /** Channel with the most recent snapshot, if any. */
-  private val snapshots = Channel<List<WidgetValue>>(Channel.CONFLATED)
+  private val snapshots = Channel<S>(Channel.CONFLATED)
 
-  /** Execute [testBody] and then cancel this tester. */
-  public suspend fun test(testBody: suspend TestScope.() -> Unit) {
-    coroutineScope {
-      val mutableChildren = MutableListChildren<WidgetValue>()
-      val composition = RedwoodComposition(
-        scope = this + clock,
-        container = mutableChildren,
-        provider = provider,
-        onEndChanges = {
-          val newSnapshot = mutableChildren.map { it.value }
+  private val composition = RedwoodComposition(
+    scope = scope + clock,
+    container = container,
+    provider = provider,
+    onEndChanges = {
+      val newSnapshot = createSnapshot()
 
-          // trySend always succeeds on a CONFLATED channel.
-          check(snapshots.trySend(newSnapshot).isSuccess)
-        },
-      )
+      // trySend always succeeds on a CONFLATED channel.
+      check(snapshots.trySend(newSnapshot).isSuccess)
+    },
+  )
 
-      val scope = object : TestScope {
-        override fun setContent(content: @Composable () -> Unit) {
-          composition.setContent(content)
-        }
-        override suspend fun awaitSnapshot(timeout: Duration): List<WidgetValue> {
-          return this@RedwoodTester.awaitSnapshot(timeout)
-        }
-      }
-
-      try {
-        scope.testBody()
-      } finally {
-        composition.cancel()
-      }
-    }
+  override fun setContent(content: @Composable () -> Unit) {
+    composition.setContent(content)
   }
 
-  /**
-   * Returns a snapshot, waiting if necessary for changes to occur since the previous snapshot.
-   *
-   * @throws TimeoutCancellationException if no new snapshot is produced before [timeout].
-   */
-  private suspend fun awaitSnapshot(timeout: Duration): List<WidgetValue> {
+  override suspend fun awaitSnapshot(timeout: Duration): S {
     // Await at least one change, sending frames while we wait.
     return withTimeout(timeout) {
       val sendFramesJob = sendFrames()
@@ -110,9 +104,8 @@ public class RedwoodTester @RedwoodCodegenApi constructor(
       }
     }
   }
-}
 
-public interface TestScope {
-  public fun setContent(content: @Composable () -> Unit)
-  public suspend fun awaitSnapshot(timeout: Duration = 1.seconds): List<WidgetValue>
+  override fun cancel() {
+    composition.cancel()
+  }
 }
