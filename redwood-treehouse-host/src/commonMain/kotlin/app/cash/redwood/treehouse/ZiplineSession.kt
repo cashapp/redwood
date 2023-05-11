@@ -32,7 +32,6 @@ internal class ZiplineSession<A : AppService>(
   val sessionScope: CoroutineScope,
   val appService: A,
   val zipline: Zipline,
-  val isInitialLaunch: Boolean,
   private val frameClock: FrameClock,
 ) {
   private val ziplineScope = ZiplineScope()

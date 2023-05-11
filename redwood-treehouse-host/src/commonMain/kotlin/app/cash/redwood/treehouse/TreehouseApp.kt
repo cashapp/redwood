@@ -169,9 +169,8 @@ public class TreehouseApp<A : AppService> private constructor(
         app = this@TreehouseApp,
         appScope = appScope,
         sessionScope = sessionScope,
-        zipline = zipline,
         appService = appService,
-        isInitialLaunch = previous == null,
+        zipline = zipline,
         frameClock = factory.frameClock,
       )
 

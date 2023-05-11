@@ -86,8 +86,9 @@ internal class TreehouseAppContent<A : AppService>(
       previousState.codeState is CodeState.Idle && ziplineSession != null -> {
         CodeState.Running(
           startViewCodeContentBinding(
-            ziplineSession,
-            MutableStateFlow(nextViewState.hostConfiguration),
+            ziplineSession = ziplineSession,
+            isInitialLaunch = true,
+            firstHostConfiguration = MutableStateFlow(nextViewState.hostConfiguration),
           ),
         )
       }
@@ -115,7 +116,11 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && ziplineSession != null -> {
         CodeState.Running(
-          startViewCodeContentBinding(ziplineSession, nextViewState.view.hostConfiguration),
+          startViewCodeContentBinding(
+            ziplineSession = ziplineSession,
+            isInitialLaunch = true,
+            firstHostConfiguration = nextViewState.view.hostConfiguration,
+          ),
         )
       }
       else -> previousState.codeState
@@ -180,7 +185,11 @@ internal class TreehouseAppContent<A : AppService>(
     }
 
     val nextCodeState = CodeState.Running(
-      startViewCodeContentBinding(next, hostConfiguration),
+      startViewCodeContentBinding(
+        ziplineSession = next,
+        isInitialLaunch = previousCodeState is CodeState.Idle,
+        firstHostConfiguration = hostConfiguration,
+      ),
     )
 
     // If we have a view, tell the new binding about it.
@@ -199,6 +208,7 @@ internal class TreehouseAppContent<A : AppService>(
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   private fun startViewCodeContentBinding(
     ziplineSession: ZiplineSession<A>,
+    isInitialLaunch: Boolean,
     firstHostConfiguration: StateFlow<HostConfiguration>,
   ): ViewContentCodeBinding<A> {
     dispatchers.checkUi()
@@ -210,6 +220,7 @@ internal class TreehouseAppContent<A : AppService>(
       contentSource = source,
       codeListener = codeListener,
       stateFlow = stateFlow,
+      isInitialLaunch = isInitialLaunch,
       session = ziplineSession,
       firstHostConfiguration = firstHostConfiguration,
     ).apply {
@@ -237,12 +248,11 @@ private class ViewContentCodeBinding<A : AppService>(
   val contentSource: TreehouseContentSource<A>,
   val codeListener: CodeListener,
   val stateFlow: MutableStateFlow<State<A>>,
+  private val isInitialLaunch: Boolean,
   session: ZiplineSession<A>,
   firstHostConfiguration: StateFlow<HostConfiguration>,
 ) : EventSink, ChangesSinkService {
   private val hostConfigurationFlow = SequentialStateFlow(firstHostConfiguration)
-
-  private val isInitialLaunch: Boolean = session.isInitialLaunch
 
   private val json = session.zipline.json
 

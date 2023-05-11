@@ -28,6 +28,8 @@ public open class CodeListener {
   /**
    * Invoked each time new code is loaded. This is called after the view's old children have
    * been cleared but before the children of the new code have been added.
+   *
+   * @param initial true if this is the first code loaded for this view's current content.
    */
   public open fun onCodeLoaded(view: TreehouseView, initial: Boolean) {}
 }
