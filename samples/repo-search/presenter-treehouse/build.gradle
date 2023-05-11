@@ -6,6 +6,8 @@ kotlin {
   jvm()
 
   js {
+    // The name of the JS module which needs to be unique within the repo.
+    moduleName = 'repo-search-presenter-treehouse'
     browser()
     binaries.executable()
   }
