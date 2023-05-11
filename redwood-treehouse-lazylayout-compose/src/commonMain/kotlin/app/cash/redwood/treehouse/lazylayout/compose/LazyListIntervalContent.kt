@@ -69,12 +69,13 @@ internal class ItemPagingSource(
     val count = scope.intervals.sumOf { it.count }
     val limit = when (params) {
       is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
+      is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
       else -> params.loadSize
     }.coerceAtMost(count)
     val offset = when (params) {
       is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
       is PagingSourceLoadParamsAppend<*> -> key
-      is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
+      is PagingSourceLoadParamsRefresh<*> -> 0
       else -> error("Shouldn't happen")
     }
     val nextPosToLoad = offset + limit
@@ -96,5 +97,5 @@ internal class ItemPagingSource(
     return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
   }
 
-  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int? = state.anchorPosition
+  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int = state.pages.sumOf { it.data.size }
 }
