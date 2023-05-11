@@ -20,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
+import app.cash.redwood.compose.testing.TestRedwoodComposition
+import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
@@ -38,17 +40,19 @@ import example.redwood.compose.Row
 import example.redwood.compose.Text
 import kotlin.test.Test
 import kotlin.test.fail
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.job
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ProtocolTest {
+  private val bridge = ExampleSchemaProtocolBridge.create()
+
   @Test fun widgetVersionPropagated() = runTest {
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = ExampleSchemaProtocolBridge.create(),
+      bridge = bridge,
       changesSink = ::error,
       widgetVersion = 22U,
     )
@@ -63,13 +67,7 @@ class ProtocolTest {
   }
 
   @Test fun protocolChangeOrder() = runTest {
-    val changeClock = ChangesAwaitingFrameClock()
-    val composition = ProtocolRedwoodComposition(
-      scope = this + changeClock,
-      bridge = ExampleSchemaProtocolBridge.create(),
-      changesSink = changeClock,
-      widgetVersion = 1U,
-    )
+    val composition = testProtocolComposition()
 
     composition.setContent {
       Row {
@@ -80,7 +78,7 @@ class ProtocolTest {
       }
     }
 
-    assertThat(changeClock.awaitChanges()).isEqualTo(
+    assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         Create(Id(1), WidgetTag(1) /* row */),
         LayoutModifierChange(Id(1)),
@@ -98,21 +96,12 @@ class ProtocolTest {
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
-
-    composition.cancel()
   }
 
   @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
-    val changeClock = ChangesAwaitingFrameClock()
-    var state by mutableStateOf(0)
-    val bridge = ExampleSchemaProtocolBridge.create()
-    val composition = ProtocolRedwoodComposition(
-      scope = this + changeClock,
-      bridge = bridge,
-      changesSink = changeClock,
-      widgetVersion = 1U,
-    )
+    val composition = testProtocolComposition()
 
+    var state by mutableStateOf(0)
     composition.setContent {
       Button(
         "state: $state",
@@ -126,7 +115,7 @@ class ProtocolTest {
       )
     }
 
-    assertThat(changeClock.awaitChanges()).isEqualTo(
+    assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         Create(Id(1), WidgetTag(4) /* button */),
         LayoutModifierChange(Id(1)),
@@ -139,7 +128,7 @@ class ProtocolTest {
     // Invoke the onClick lambda to move the state from 0 to 1.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertThat(changeClock.awaitChanges()).isEqualTo(
+    assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 1")),
       ),
@@ -148,7 +137,7 @@ class ProtocolTest {
     // Invoke the onClick lambda to move the state from 1 to 2.
     bridge.sendEvent(Event(Id(1), EventTag(2)))
 
-    assertThat(changeClock.awaitChanges()).isEqualTo(
+    assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 2")),
         PropertyChange(Id(1), PropertyTag(2) /* text */, JsonPrimitive(false)),
@@ -158,12 +147,24 @@ class ProtocolTest {
     // Manually advance state from 2 to 3 to test null to null case.
     state = 3
 
-    assertThat(changeClock.awaitChanges()).isEqualTo(
+    assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 3")),
       ),
     )
+  }
 
-    composition.cancel()
+  private fun TestScope.testProtocolComposition(): TestRedwoodComposition<List<Change>> {
+    val composition = TestRedwoodComposition(
+      scope = backgroundScope,
+      provider = bridge.provider,
+      container = bridge.root,
+    ) {
+      bridge.getChangesOrNull() ?: emptyList()
+    }
+    backgroundScope.coroutineContext.job.invokeOnCompletion {
+      composition.cancel()
+    }
+    return composition
   }
 }

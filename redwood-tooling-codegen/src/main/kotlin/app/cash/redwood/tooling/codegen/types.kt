@@ -71,7 +71,7 @@ internal object Redwood {
 }
 
 internal object RedwoodTesting {
-  val RedwoodTester = ClassName("app.cash.redwood.compose.testing", "RedwoodTester")
+  val TestRedwoodComposition = ClassName("app.cash.redwood.compose.testing", "TestRedwoodComposition")
   val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
 }
 
@@ -143,5 +143,5 @@ internal object KotlinxSerialization {
 }
 
 internal object KotlinxCoroutines {
-  val CoroutineScope = ClassName("kotlinx.coroutines", "CoroutineScope")
+  val coroutineScope = MemberName("kotlinx.coroutines", "coroutineScope")
 }

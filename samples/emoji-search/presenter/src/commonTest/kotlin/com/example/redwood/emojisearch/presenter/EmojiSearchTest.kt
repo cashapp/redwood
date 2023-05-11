@@ -32,17 +32,15 @@ import com.example.redwood.emojisearch.widget.TextInputValue
 import com.example.redwood.emojisearch.widget.TextValue
 import example.values.TextFieldState
 import kotlin.test.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 
 /**
  * This test demonstrates typical use of [RedwoodTester].
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class EmojiSearchTest {
   @Test
   fun recomposed() = runTest {
-    EmojiSearchTester().test {
+    EmojiSearchTester {
       setContent {
         BasicEmojiSearch()
       }
