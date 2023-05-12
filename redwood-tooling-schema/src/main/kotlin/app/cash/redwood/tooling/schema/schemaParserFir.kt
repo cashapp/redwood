@@ -62,6 +62,7 @@ import org.jetbrains.kotlin.fir.expressions.builder.toAnnotationArgumentMapping
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
 import org.jetbrains.kotlin.fir.types.classId
+import org.jetbrains.kotlin.fir.types.type
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.FqName
@@ -351,7 +352,7 @@ private fun FirContext.parseWidget(
   val traits = if (firClass.isData) {
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
-      val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
+      val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName()
 
       val propertyAnnotation = findPropertyAnnotation(parameter.annotations)
       val childrenAnnotation = findChildrenAnnotation(parameter.annotations)
@@ -363,11 +364,21 @@ private fun FirContext.parseWidget(
         ParsedProtocolProperty(
           tag = propertyAnnotation.tag,
           name = name,
-          type = parameterType,
+          type = parameterType.toFqType(),
           defaultExpression = defaultAnnotation?.expression,
           deprecation = deprecation,
         )
       } else if (childrenAnnotation != null) {
+        val typeArguments = parameter.resolvedReturnType.typeArguments
+        val lastArgument = typeArguments.lastOrNull()?.type?.classId?.asSingleFqName()
+        require(lastArgument == FqNames.Unit) {
+          "@Children $memberType#$name must be of type '() -> Unit'"
+        }
+        require(parameterType == FqNames.Function0) {
+          "@Children $memberType#$name lambda type must not have any arguments. " +
+            "Found: ${typeArguments.dropLast(1).map { it.type!!.classId!!.asSingleFqName() }}"
+        }
+
         val scope: FqType? = null
         ParsedProtocolChildren(
           tag = childrenAnnotation.tag,
@@ -482,7 +493,7 @@ private fun FirContext.parseLayoutModifier(
 private fun FirContext.findSchemaAnnotation(
   annotations: List<FirAnnotation>,
 ): SchemaAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Schema }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Schema }
     ?: return null
 
   val membersArray = annotation.argumentMapping
@@ -540,7 +551,7 @@ private data class SchemaAnnotation(
 private fun FirContext.findWidgetAnnotation(
   annotations: List<FirAnnotation>,
 ): WidgetAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Widget }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Widget }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -558,7 +569,7 @@ private data class WidgetAnnotation(
 private fun FirContext.findPropertyAnnotation(
   annotations: List<FirAnnotation>,
 ): PropertyAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Property }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Property }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -576,7 +587,7 @@ private data class PropertyAnnotation(
 private fun FirContext.findChildrenAnnotation(
   annotations: List<FirAnnotation>,
 ): ChildrenAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Children }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Children }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -595,7 +606,7 @@ private data class ChildrenAnnotation(
 private fun FirContext.findDefaultAnnotation(
   annotations: List<FirAnnotation>,
 ): DefaultAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Default }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Default }
     ?: return null
 
   val expression = annotation.argumentMapping
@@ -613,7 +624,7 @@ private data class DefaultAnnotation(
 private fun FirContext.findLayoutModifierAnnotation(
   annotations: List<FirAnnotation>,
 ): LayoutModifierAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.LayoutModifier }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.LayoutModifier }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -643,7 +654,7 @@ private data class LayoutModifierAnnotation(
 private fun FirContext.findDeprecationAnnotation(
   annotations: List<FirAnnotation>,
 ): DeprecationAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Deprecated }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Deprecated }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -687,12 +698,15 @@ private fun DeprecationAnnotation.toDeprecation(source: () -> String): ParsedDep
 
 private fun FqName.toFqType() = FqType.bestGuess(asString())
 
-private object Annotations {
+private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")
   val Default = FqName("app.cash.redwood.schema.Default")
   val Deprecated = FqName("kotlin.Deprecated")
+  val Function0 = FqName("kotlin.Function0")
+  val Function1 = FqName("kotlin.Function1")
   val LayoutModifier = FqName("app.cash.redwood.schema.LayoutModifier")
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")
   val Widget = FqName("app.cash.redwood.schema.Widget")
+  val Unit = FqName("kotlin.Unit")
 }

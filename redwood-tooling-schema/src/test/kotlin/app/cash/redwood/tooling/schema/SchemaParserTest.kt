@@ -320,8 +320,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(InvalidChildrenTypeSchema::class)
     }.hasMessage(
@@ -342,8 +340,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(InvalidChildrenLambdaReturnTypeSchema::class)
     }.hasMessage(
@@ -364,8 +360,6 @@ class SchemaParserTest(
   )
 
   @Test fun childrenArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ChildrenArgumentsInvalidSchema::class)
     }.hasMessage(
