@@ -42,7 +42,7 @@ private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
 private const val maxSchemaTag = 2_000
-private const val maxMemberTag = 1_000_000
+internal const val maxMemberTag = 1_000_000
 
 private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }

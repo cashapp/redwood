@@ -68,8 +68,6 @@ class SchemaParserTest(
   )
 
   @Test fun nonAnnotatedWidgetThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonAnnotatedWidgetSchema::class)
     }.hasMessage(
@@ -91,8 +89,6 @@ class SchemaParserTest(
   )
 
   @Test fun doubleAnnotatedWidgetThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DoubleAnnotatedWidgetSchema::class)
     }.hasMessage(
@@ -296,8 +292,6 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassWidgetThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonDataClassWidgetSchema::class)
     }.hasMessage(
@@ -318,8 +312,6 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassLayoutModifierThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(NonDataClassLayoutModifierSchema::class)
     }.hasMessage(
@@ -565,8 +557,6 @@ class SchemaParserTest(
   object OneMillionWidget
 
   @Test fun widgetTagOneMillionThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(OneMillionWidgetSchema::class)
     }.hasMessage(
@@ -586,8 +576,6 @@ class SchemaParserTest(
   object ZeroWidget
 
   @Test fun widgetTagZeroThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ZeroWidgetSchema::class)
     }.hasMessage(
@@ -609,8 +597,6 @@ class SchemaParserTest(
   )
 
   @Test fun layoutModifierTagOneMillionThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(OneMillionLayoutModifierSchema::class)
     }.hasMessage(
@@ -632,8 +618,6 @@ class SchemaParserTest(
   )
 
   @Test fun layoutModifierTagZeroThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(ZeroLayoutModifierSchema::class)
     }.hasMessage(
