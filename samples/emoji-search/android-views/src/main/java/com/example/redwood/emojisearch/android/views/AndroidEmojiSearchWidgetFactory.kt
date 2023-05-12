@@ -19,18 +19,15 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.TreehouseApp
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 
-class AndroidEmojiSearchWidgetFactory<A : AppService>(
+class AndroidEmojiSearchWidgetFactory(
   private val context: Context,
-  private val treehouseApp: TreehouseApp<A>,
 ) : EmojiSearchWidgetFactory<View> {
-  override fun TextInput(): TextInput<View> = ViewTextInput(context, treehouseApp.dispatchers)
+  override fun TextInput(): TextInput<View> = ViewTextInput(context)
   override fun Text(): Text<View> = ViewText(TextView(context))
   override fun Image(): Image<View> = ViewImage(ImageView(context))
 }

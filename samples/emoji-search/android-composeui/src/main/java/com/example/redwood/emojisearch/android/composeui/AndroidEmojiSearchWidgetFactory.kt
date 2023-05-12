@@ -23,10 +23,8 @@ import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 
-class AndroidEmojiSearchWidgetFactory<A : AppService>(
-  private val treehouseApp: TreehouseApp<A>,
-) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
-  override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput(treehouseApp.dispatchers)
+class AndroidEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<@Composable () -> Unit> {
+  override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage()
 }

@@ -25,14 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.TreehouseDispatchers
 import com.example.redwood.emojisearch.widget.TextInput
 import example.values.TextFieldState
 import kotlin.coroutines.EmptyCoroutineContext
 
-internal class ComposeUiTextInput(
-  private val dispatchers: TreehouseDispatchers,
-) : TextInput<@Composable () -> Unit> {
+internal class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
   private var state by mutableStateOf(TextFieldState())
   private var hint by mutableStateOf("")
   private var onChange: ((TextFieldState) -> Unit)? = null
@@ -103,10 +100,7 @@ internal class ComposeUiTextInput(
     )
     if (!state.contentEquals(newState)) {
       state = newState
-      dispatchers.zipline.dispatch(
-        EmptyCoroutineContext,
-        Runnable { onChange?.invoke(newState) },
-      )
+      onChange?.invoke(newState)
     }
   }
 }

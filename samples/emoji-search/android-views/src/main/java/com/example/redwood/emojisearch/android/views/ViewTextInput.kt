@@ -23,7 +23,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.widget.addTextChangedListener
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.treehouse.TreehouseDispatchers
 import com.example.redwood.emojisearch.widget.TextInput
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -32,7 +31,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 internal class ViewTextInput(
   context: Context,
-  private val dispatchers: TreehouseDispatchers,
 ) : TextInput<View> {
   private var state = TextFieldState()
   private var onChange: ((TextFieldState) -> Unit)? = null
@@ -104,10 +102,7 @@ internal class ViewTextInput(
     )
     if (!state.contentEquals(newState)) {
       state = newState
-      dispatchers.zipline.dispatch(
-        EmptyCoroutineContext,
-        Runnable { onChange?.invoke(newState) },
-      )
+      onChange?.invoke(newState)
     }
   }
 }
