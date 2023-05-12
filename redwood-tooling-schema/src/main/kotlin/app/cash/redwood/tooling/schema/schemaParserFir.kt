@@ -15,7 +15,12 @@
  */
 package app.cash.redwood.tooling.schema
 
+import app.cash.redwood.tooling.schema.Deprecation.Level
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.SchemaAnnotation.DependencyAnnotation
 import java.io.File
+import java.net.URLClassLoader
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
@@ -54,6 +59,7 @@ import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.builder.toAnnotationArgumentMapping
 import org.jetbrains.kotlin.fir.resolve.fqName
+import org.jetbrains.kotlin.fir.types.classId
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.FqName
@@ -160,10 +166,44 @@ public fun parseProtocolSchema(
 
   disposable.dispose()
 
-  return ParsedProtocolSchemaSet(
-    schema = schema,
-    dependencies = emptyMap(),
+  val dependencyClassLoader = URLClassLoader(dependencies.map { it.toURI().toURL() }.toTypedArray())
+  val dependencySchemas = schema.taggedDependencies.entries
+    .associate { (dependencyTag, dependencyType) ->
+      require(dependencyTag != 0) {
+        "Dependency $dependencyType tag must not be non-zero"
+      }
+
+      val dependency = loadProtocolSchema(
+        type = dependencyType,
+        classLoader = dependencyClassLoader,
+        tag = dependencyTag,
+      )
+      dependencyTag to dependency
+    }
+
+  val schemaSet = ParsedProtocolSchemaSet(
+    schema,
+    dependencySchemas.values.associateBy { it.type },
   )
+
+  val duplicatedWidgets = schemaSet.all
+    .flatMap { it.widgets.map { widget -> widget to it } }
+    .groupBy { it.first.type }
+    .filterValues { it.size > 1 }
+    .mapValues { it.value.map(Pair<*, Schema>::second) }
+  if (duplicatedWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema dependency tree contains duplicated widgets")
+        for ((widget, schemas) in duplicatedWidgets) {
+          append("\n- $widget: ")
+          schemas.joinTo(this) { it.type.toString() }
+        }
+      },
+    )
+  }
+
+  return schemaSet
 }
 
 private fun List<FirDeclaration>.findRegularClassesRecursive(): List<FirRegularClass> {
@@ -180,36 +220,33 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   val firClass = firClassByName[type]
     ?: throw IllegalArgumentException("Unable to locate schema type $type")
 
-  val schemaAnnotation = firClass.annotations
-    .find { it.fqName(firSession) == Annotations.Schema }
+  val schemaAnnotation = findSchemaAnnotation(firClass.annotations)
     ?: throw IllegalArgumentException("Schema $type missing @Schema annotation")
 
-  val membersArray = schemaAnnotation.argumentMapping
-    .mapping[Name.identifier("members")] as? FirArrayOfCall
-    ?: throw AssertionError(schemaAnnotation.source?.text)
-
-  val memberTypes = membersArray.argumentList
-    .arguments
-    .map {
-      val getClassCall = it as? FirGetClassCall
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val classId = resolvedQualifier.classId
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      classId.asSingleFqName().toFqType()
-    }
+  val duplicatedMembers = schemaAnnotation.members
+    .groupBy { it }
+    .filterValues { it.size > 1 }
+    .keys
+  if (duplicatedMembers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema contains repeated member")
+        if (duplicatedMembers.size > 1) {
+          append('s')
+        }
+        duplicatedMembers.joinTo(this, prefix = "\n\n- ", separator = "\n- ")
+      },
+    )
+  }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
   val layoutModifiers = mutableListOf<ParsedProtocolLayoutModifier>()
-  for (memberType in memberTypes) {
+  for (memberType in schemaAnnotation.members) {
     val memberClass = firClassByName[memberType]
       ?: throw IllegalArgumentException("Unable to locate schema type $memberType")
 
-    val widgetAnnotation = memberClass.annotations
-      .find { it.fqName(firSession) == Annotations.Widget }
-    val layoutModifierAnnotation = memberClass.annotations
-      .find { it.fqName(firSession) == Annotations.LayoutModifier }
+    val widgetAnnotation = findWidgetAnnotation(memberClass.annotations)
+    val layoutModifierAnnotation = findLayoutModifierAnnotation(memberClass.annotations)
 
     if ((widgetAnnotation == null) == (layoutModifierAnnotation == null)) {
       throw IllegalArgumentException(
@@ -224,31 +261,31 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     }
   }
 
-  val dependenciesArray = schemaAnnotation.argumentMapping
-    .mapping[Name.identifier("dependencies")] as? FirArrayOfCall
-    ?: throw AssertionError(schemaAnnotation.source?.text)
+  val badWidgets = widgets.groupBy(ProtocolWidget::tag).filterValues { it.size > 1 }
+  if (badWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema @Widget tags must be unique")
+        for ((widgetTag, group) in badWidgets) {
+          append("\n- @Widget($widgetTag): ")
+          group.joinTo(this) { it.type.toString() }
+        }
+      },
+    )
+  }
 
-  val dependencyTypesByTag = dependenciesArray.arguments
-    .associate {
-      val functionCall = it as? FirFunctionCall
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val mapping = functionCall.argumentList.toAnnotationArgumentMapping().mapping
-
-      @Suppress("UNCHECKED_CAST")
-      val tagExpression = mapping[Name.identifier("tag")] as? FirConstExpression<Int>
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val tag = tagExpression.value
-
-      val getClassCall = mapping[Name.identifier("schema")] as? FirGetClassCall
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val classId = resolvedQualifier.classId
-        ?: throw AssertionError(schemaAnnotation.source?.text)
-      val fqType = classId.asSingleFqName().toFqType()
-
-      tag to fqType
-    }
+  val badLayoutModifiers = layoutModifiers.groupBy(ProtocolLayoutModifier::tag).filterValues { it.size > 1 }
+  if (badLayoutModifiers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema @LayoutModifier tags must be unique")
+        for ((modifierTag, group) in badLayoutModifiers) {
+          append("\n- @LayoutModifier($modifierTag): ")
+          group.joinTo(this) { it.type.toString() }
+        }
+      },
+    )
+  }
 
   val widgetScopes = widgets
     .flatMap { it.traits }
@@ -261,24 +298,50 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     addAll(layoutModifierScopes)
   }
 
+  val badDependencyTags = schemaAnnotation.dependencies
+    .groupBy { it.tag }
+    .filterValues { it.size > 1 }
+  if (badDependencyTags.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("Schema dependency tags must be unique")
+        for ((dependencyTag, group) in badDependencyTags) {
+          append("\n- Dependency tag $dependencyTag: ")
+          group.joinTo(this) { it.schema.toString() }
+        }
+      },
+    )
+  }
+
+  val badDependencyTypes = schemaAnnotation.dependencies
+    .groupBy { it.schema }
+    .filterValues { it.size > 1 }
+    .keys
+  if (badDependencyTypes.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema contains repeated ")
+        append(if (badDependencyTypes.size > 1) "dependencies" else "dependency")
+        badDependencyTypes.joinTo(this, prefix = "\n\n- ", separator = "\n- ")
+      },
+    )
+  }
+
   return ParsedProtocolSchema(
     type = type,
     scopes = scopes.toList(),
     widgets = widgets,
     layoutModifiers = layoutModifiers,
-    taggedDependencies = dependencyTypesByTag,
+    taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema },
   )
 }
 
 private fun FirContext.parseWidget(
   memberType: FqType,
   firClass: FirRegularClass,
-  annotation: FirAnnotation,
+  annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
-  @Suppress("UNCHECKED_CAST")
-  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
-    ?: throw AssertionError(annotation.source?.text)
-  val tag = tagExpression.value
+  val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
     "@Widget $memberType tag must be in range [1, $maxMemberTag): $tag"
   }
@@ -287,36 +350,29 @@ private fun FirContext.parseWidget(
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
 
-      val propertyAnnotation =
-        parameter.annotations.find { it.fqName(firSession) == Annotations.Property }
-      val childrenAnnotation =
-        parameter.annotations.find { it.fqName(firSession) == Annotations.Children }
+      val propertyAnnotation = findPropertyAnnotation(parameter.annotations)
+      val childrenAnnotation = findChildrenAnnotation(parameter.annotations)
+      val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
+      val deprecation = findDeprecationAnnotation(parameter.annotations)
+        ?.toDeprecation()
 
       if (propertyAnnotation != null) {
-        @Suppress("UNCHECKED_CAST")
-        val propertyTagExpression = propertyAnnotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
-          ?: throw AssertionError(annotation.source?.text)
-        val propertyTag = propertyTagExpression.value
-
+        val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
         ParsedProtocolProperty(
-          tag = propertyTag,
+          tag = propertyAnnotation.tag,
           name = name,
-          type = TODO(),
-          defaultExpression = TODO(),
-          deprecation = TODO(),
+          type = parameterType,
+          defaultExpression = defaultAnnotation?.expression,
+          deprecation = deprecation,
         )
       } else if (childrenAnnotation != null) {
-        @Suppress("UNCHECKED_CAST")
-        val childrenTagExpression = childrenAnnotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
-          ?: throw AssertionError(annotation.source?.text)
-        val childrenTag = childrenTagExpression.value
-
+        val scope: FqType? = null
         ParsedProtocolChildren(
-          tag = childrenTag,
+          tag = childrenAnnotation.tag,
           name = name,
-          scope = TODO(),
-          defaultExpression = TODO(),
-          deprecation = TODO(),
+          scope = scope,
+          defaultExpression = defaultAnnotation?.expression,
+          deprecation = deprecation,
         )
       } else {
         throw IllegalArgumentException("Unannotated parameter \"$name\" on $memberType")
@@ -330,10 +386,43 @@ private fun FirContext.parseWidget(
     )
   }
 
+  val badChildren = traits.filterIsInstance<ProtocolChildren>()
+    .groupBy(ProtocolChildren::tag)
+    .filterValues { it.size > 1 }
+  if (badChildren.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("$memberType's @Children tags must be unique")
+        for ((childTag, group) in badChildren) {
+          append("\n- @Children($childTag): ")
+          group.joinTo(this) { it.name }
+        }
+      },
+    )
+  }
+
+  val badProperties = traits.filterIsInstance<ProtocolProperty>()
+    .groupBy(ProtocolProperty::tag)
+    .filterValues { it.size > 1 }
+  if (badProperties.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        appendLine("$memberType's @Property tags must be unique")
+        for ((propertyTag, group) in badProperties) {
+          append("\n- @Property($propertyTag): ")
+          group.joinTo(this) { it.name }
+        }
+      },
+    )
+  }
+
+  val deprecation = findDeprecationAnnotation(firClass.annotations)
+    ?.toDeprecation()
+
   return ParsedProtocolWidget(
     tag = tag,
     type = memberType,
-    deprecation = TODO(),
+    deprecation = deprecation,
     traits = traits,
   )
 }
@@ -341,28 +430,15 @@ private fun FirContext.parseWidget(
 private fun FirContext.parseLayoutModifier(
   memberType: FqType,
   firClass: FirRegularClass,
-  annotation: FirAnnotation,
+  annotation: LayoutModifierAnnotation,
 ): ParsedProtocolLayoutModifier {
-  @Suppress("UNCHECKED_CAST")
-  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
-    ?: throw AssertionError(annotation.source?.text)
-  val tag = tagExpression.value
+  val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
     "@LayoutModifier $memberType tag must be in range [1, $maxMemberTag): $tag"
   }
-
-  val scopesExpression = annotation.argumentMapping.mapping[Name.identifier("scopes")] as? FirVarargArgumentsExpression
-    ?: throw AssertionError(annotation.source?.text)
-  val scopes = scopesExpression.arguments
-    .map {
-      val getClassCall = it as? FirGetClassCall
-        ?: throw AssertionError(annotation.source?.text)
-      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
-        ?: throw AssertionError(annotation.source?.text)
-      val classId = resolvedQualifier.classId
-        ?: throw AssertionError(annotation.source?.text)
-      classId.asSingleFqName().toFqType()
-    }
+  require(annotation.scopes.isNotEmpty()) {
+    "@LayoutModifier $memberType must have at least one scope."
+  }
 
   val properties = if (firClass.isData) {
     TODO()
@@ -374,12 +450,215 @@ private fun FirContext.parseLayoutModifier(
     )
   }
 
+  val deprecation = findDeprecationAnnotation(firClass.annotations)
+    ?.toDeprecation()
+
   return ParsedProtocolLayoutModifier(
     tag = tag,
-    scopes = scopes,
+    scopes = annotation.scopes,
     type = memberType,
-    deprecation = TODO(),
+    deprecation = deprecation,
     properties = properties,
+  )
+}
+
+private fun FirContext.findSchemaAnnotation(
+  annotations: List<FirAnnotation>,
+): SchemaAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Schema }
+    ?: return null
+
+  val membersArray = annotation.argumentMapping
+    .mapping[Name.identifier("members")] as? FirArrayOfCall
+    ?: throw AssertionError(annotation.source?.text)
+  val members = membersArray.argumentList
+    .arguments
+    .map {
+      val getClassCall = it as? FirGetClassCall
+        ?: throw AssertionError(annotation.source?.text)
+      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
+        ?: throw AssertionError(annotation.source?.text)
+      val classId = resolvedQualifier.classId
+        ?: throw AssertionError(annotation.source?.text)
+      classId.asSingleFqName().toFqType()
+    }
+
+  val dependenciesArray = annotation.argumentMapping
+    .mapping[Name.identifier("dependencies")] as? FirArrayOfCall
+  val dependencies = dependenciesArray?.arguments.orEmpty()
+    .map {
+      val functionCall = it as? FirFunctionCall
+        ?: throw AssertionError(annotation.source?.text)
+      val mapping = functionCall.argumentList.toAnnotationArgumentMapping().mapping
+
+      @Suppress("UNCHECKED_CAST")
+      val tagExpression = mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+        ?: throw AssertionError(annotation.source?.text)
+      val tag = tagExpression.value
+
+      val getClassCall = mapping[Name.identifier("schema")] as? FirGetClassCall
+        ?: throw AssertionError(annotation.source?.text)
+      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
+        ?: throw AssertionError(annotation.source?.text)
+      val classId = resolvedQualifier.classId
+        ?: throw AssertionError(annotation.source?.text)
+      val fqType = classId.asSingleFqName().toFqType()
+
+      DependencyAnnotation(tag, fqType)
+    }
+
+  return SchemaAnnotation(members, dependencies)
+}
+
+private data class SchemaAnnotation(
+  val members: List<FqType>,
+  val dependencies: List<DependencyAnnotation>,
+) {
+  data class DependencyAnnotation(
+    val tag: Int,
+    val schema: FqType,
+  )
+}
+
+private fun FirContext.findWidgetAnnotation(
+  annotations: List<FirAnnotation>,
+): WidgetAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Widget }
+    ?: return null
+
+  @Suppress("UNCHECKED_CAST")
+  val tagExpression = annotation.argumentMapping
+    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    ?: throw AssertionError(annotation.source?.text)
+
+  return WidgetAnnotation(tagExpression.value)
+}
+
+private data class WidgetAnnotation(
+  val tag: Int,
+)
+
+private fun FirContext.findPropertyAnnotation(
+  annotations: List<FirAnnotation>,
+): PropertyAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Property }
+    ?: return null
+
+  @Suppress("UNCHECKED_CAST")
+  val tagExpression = annotation.argumentMapping
+    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    ?: throw AssertionError(annotation.source?.text)
+
+  return PropertyAnnotation(tagExpression.value)
+}
+
+private data class PropertyAnnotation(
+  val tag: Int,
+)
+
+private fun FirContext.findChildrenAnnotation(
+  annotations: List<FirAnnotation>,
+): ChildrenAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Children }
+    ?: return null
+
+  @Suppress("UNCHECKED_CAST")
+  val tagExpression = annotation.argumentMapping
+    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    ?: throw AssertionError(annotation.source?.text)
+
+  return ChildrenAnnotation(tagExpression.value)
+}
+
+private data class ChildrenAnnotation(
+  val tag: Int,
+)
+
+@Suppress("UNCHECKED_CAST")
+private fun FirContext.findDefaultAnnotation(
+  annotations: List<FirAnnotation>,
+): DefaultAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Default }
+    ?: return null
+
+  val expression = annotation.argumentMapping
+    .mapping[Name.identifier("expression")] as? FirConstExpression<String>
+    ?: throw AssertionError(annotation.source?.text)
+
+  return DefaultAnnotation(expression.value)
+}
+
+private data class DefaultAnnotation(
+  val expression: String,
+)
+
+@Suppress("UNCHECKED_CAST")
+private fun FirContext.findLayoutModifierAnnotation(
+  annotations: List<FirAnnotation>,
+): LayoutModifierAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.LayoutModifier }
+    ?: return null
+
+  @Suppress("UNCHECKED_CAST")
+  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    ?: throw AssertionError(annotation.source?.text)
+
+  val scopesExpression = annotation.argumentMapping.mapping[Name.identifier("scopes")] as? FirVarargArgumentsExpression
+  val scopes = scopesExpression?.arguments.orEmpty()
+    .map {
+      val getClassCall = it as? FirGetClassCall
+        ?: throw AssertionError(annotation.source?.text)
+      val resolvedQualifier = getClassCall.argument as? FirResolvedQualifier
+        ?: throw AssertionError(annotation.source?.text)
+      val classId = resolvedQualifier.classId
+        ?: throw AssertionError(annotation.source?.text)
+      classId.asSingleFqName().toFqType()
+    }
+
+  return LayoutModifierAnnotation(tagExpression.value, scopes)
+}
+
+private data class LayoutModifierAnnotation(
+  val tag: Int,
+  val scopes: List<FqType>,
+)
+
+private fun FirContext.findDeprecationAnnotation(
+  annotations: List<FirAnnotation>,
+): DeprecationAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == Annotations.Deprecated }
+    ?: return null
+
+  @Suppress("UNCHECKED_CAST")
+  val messageExpression = annotation.argumentMapping
+    .mapping[Name.identifier("message")] as? FirConstExpression<String>
+    ?: throw AssertionError(annotation.source?.text)
+
+  @Suppress("UNCHECKED_CAST")
+  val levelExpression = annotation.argumentMapping
+    .mapping[Name.identifier("level")] as? FirConstExpression<String>
+    ?: throw AssertionError(annotation.source?.text)
+
+  return DeprecationAnnotation(messageExpression.value, levelExpression.value)
+}
+
+private data class DeprecationAnnotation(
+  val message: String,
+  val level: String,
+)
+
+private fun DeprecationAnnotation.toDeprecation(): ParsedDeprecation {
+  return ParsedDeprecation(
+    level = when (level) {
+      "WARNING" -> Level.WARNING
+      "ERROR" -> Level.ERROR
+      else -> {
+        throw IllegalArgumentException(
+          "Schema deprecation does not support level $level: $this",
+        )
+      }
+    },
+    message = message,
   )
 }
 
@@ -387,6 +666,8 @@ private fun FqName.toFqType() = FqType.bestGuess(asString())
 
 private object Annotations {
   val Children = FqName("app.cash.redwood.schema.Children")
+  val Default = FqName("app.cash.redwood.schema.Default")
+  val Deprecated = FqName("kotlin.Deprecated")
   val LayoutModifier = FqName("app.cash.redwood.schema.LayoutModifier")
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")

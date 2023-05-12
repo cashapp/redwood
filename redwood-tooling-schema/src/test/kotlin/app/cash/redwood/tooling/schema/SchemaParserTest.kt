@@ -186,8 +186,6 @@ class SchemaParserTest(
   )
 
   @Test fun repeatedWidgetTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(RepeatedWidgetTypeSchema::class)
     }.hasMessage(
@@ -214,8 +212,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicatePropertyTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicatePropertyTagSchema::class)
     }.hasMessage(
@@ -242,8 +238,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateChildrenTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(DuplicateChildrenTagSchema::class)
     }.hasMessage(
@@ -270,8 +264,6 @@ class SchemaParserTest(
   )
 
   @Test fun unannotatedPrimaryParameterThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(UnannotatedPrimaryParameterSchema::class)
     }.hasMessage(
@@ -308,7 +300,7 @@ class SchemaParserTest(
 
   @LayoutModifier(1, TestScope::class)
   class NonDataClassLayoutModifier(
-    @Property(1) val name: String,
+    val name: String,
   )
 
   @Test fun nonDataClassLayoutModifierThrows() {
@@ -539,8 +531,6 @@ class SchemaParserTest(
   object ObjectWidget
 
   @Test fun objectWidget() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(ObjectSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
@@ -663,8 +653,6 @@ class SchemaParserTest(
   object SchemaDependencyTagOffsetsMemberTags
 
   @Test fun schemaTagOffsetsMemberTags() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(SchemaDependencyTagOffsetsMemberTags::class)
     val dependency = schema.dependencies.values.single()
 
@@ -696,8 +684,6 @@ class SchemaParserTest(
   object SchemaDependencyTagTooLow
 
   @Test fun dependencyTagTooHighThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyTagTooHigh::class)
     }.hasMessage(
@@ -720,8 +706,6 @@ class SchemaParserTest(
   object SchemaDependencyTagZero
 
   @Test fun dependencyTagZeroThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyTagZero::class)
     }.hasMessage(
@@ -745,8 +729,6 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTagB
 
   @Test fun schemaDuplicateDependencyTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDuplicateDependencyTag::class)
     }.hasMessage(
@@ -771,8 +753,6 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTypeOther
 
   @Test fun schemaDuplicateDependencyTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDuplicateDependencyType::class)
     }.hasMessage(
@@ -793,8 +773,6 @@ class SchemaParserTest(
   object SchemaDependencyHasDependency
 
   @Test fun schemaDependencyHasDependencyThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(SchemaDependencyHasDependency::class)
     }.hasMessage(
@@ -827,6 +805,14 @@ class SchemaParserTest(
     )
   }
 
+  @Test fun schemaMembersMustBeInSource() {
+    assumeTrue(parser == SchemaParser.Fir)
+
+    assertFailsWith<IllegalArgumentException> {
+      parser.parse(SchemaWidgetDuplicateInDependency::class)
+    }.hasMessage("Unable to locate schema type app.cash.redwood.layout.Row")
+  }
+
   @Schema(
     members = [
       UnscopedLayoutModifier::class,
@@ -838,8 +824,6 @@ class SchemaParserTest(
   object UnscopedLayoutModifier
 
   @Test fun `layout modifier must have at least one scope`() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailsWith<IllegalArgumentException> {
       parser.parse(UnscopedModifierSchema::class)
     }.hasMessage(
