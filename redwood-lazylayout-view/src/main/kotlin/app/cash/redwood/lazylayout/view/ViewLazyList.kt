@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.view.doOnDetach
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,23 +38,27 @@ import kotlinx.coroutines.cancel
 internal class Items<VH : RecyclerView.ViewHolder>(
   private val adapter: RecyclerView.Adapter<VH>,
 ) : Widget.Children<View> {
+  internal var itemsBefore = 0
+  internal var itemsAfter = 0
+
   private val _widgets = MutableListChildren<View>()
   val widgets: List<Widget<View>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<View>) {
     _widgets.insert(index, widget)
-    adapter.notifyItemInserted(index)
+    adapter.notifyItemInserted(itemsBefore + index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
     check(count == 1)
-    adapter.notifyItemMoved(fromIndex, toIndex) // TODO Support arbitrary count.
+    // TODO Support arbitrary count.
+    adapter.notifyItemMoved(itemsBefore + fromIndex, itemsBefore + toIndex)
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
-    adapter.notifyItemRangeRemoved(index, count)
+    adapter.notifyItemRangeRemoved(itemsBefore + index, count)
   }
 
   override fun onLayoutModifierUpdated() {
@@ -86,6 +91,8 @@ internal open class ViewLazyListImpl(
 
   private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
   private val adapter = LazyContentItemListAdapter()
+  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
+  private var viewport = IntRange.EMPTY
 
   override val value: View get() = recyclerView
 
@@ -100,6 +107,14 @@ internal open class ViewLazyListImpl(
       // TODO: sizing should be controlled by LayoutModifiers
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
+      addOnScrollListener(
+        object : RecyclerView.OnScrollListener() {
+          override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            updateViewport()
+          }
+        },
+      )
+
       doOnDetach {
         scope.cancel()
       }
@@ -111,16 +126,45 @@ internal open class ViewLazyListImpl(
     linearLayoutManager.orientation = if (isVertical) RecyclerView.VERTICAL else RecyclerView.HORIZONTAL
   }
 
-  override fun onPositionDisplayed(onPositionDisplayed: (Int) -> Unit) {
-    adapter.onPositionDisplayed = onPositionDisplayed
+  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+    this.onViewportChanged = onViewportChanged
+  }
+
+  private fun updateViewport() {
+    val newViewport = linearLayoutManager.findFirstVisibleItemPosition()..linearLayoutManager.findLastVisibleItemPosition()
+    if (newViewport != viewport) {
+      this.viewport = newViewport
+      onViewportChanged?.invoke(newViewport.first, newViewport.last)
+    }
+  }
+
+  override fun itemsBefore(itemsBefore: Int) {
+    val delta = itemsBefore - items.itemsBefore
+    items.itemsBefore = itemsBefore
+
+    if (delta > 0) {
+      adapter.notifyItemRangeInserted(itemsBefore - delta, delta)
+    } else {
+      adapter.notifyItemRangeRemoved(itemsBefore, -delta)
+    }
+  }
+
+  override fun itemsAfter(itemsAfter: Int) {
+    val delta = itemsAfter - items.itemsAfter
+    items.itemsAfter = itemsAfter
+
+    val positionStart = items.itemsBefore + items.widgets.size
+    if (delta > 0) {
+      adapter.notifyItemRangeInserted(positionStart, delta)
+    } else {
+      adapter.notifyItemRangeRemoved(positionStart, -delta)
+    }
   }
 
   private class LazyContentItemListAdapter : RecyclerView.Adapter<ViewHolder>() {
-    var onPositionDisplayed: ((Int) -> Unit)? = null
-
     lateinit var items: Items<ViewHolder>
 
-    override fun getItemCount(): Int = items.widgets.size
+    override fun getItemCount(): Int = items.itemsBefore + items.widgets.size + items.itemsAfter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
       FrameLayout(parent.context).apply {
@@ -129,8 +173,14 @@ internal open class ViewLazyListImpl(
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      onPositionDisplayed!!.invoke(position)
-      val view = items.widgets[position].value
+      val index = position - items.itemsBefore
+      val view = if (index !in items.widgets.indices) {
+        TextView(holder.itemView.context).apply {
+          text = "Placeholder"
+        }
+      } else {
+        items.widgets[index].value
+      }
       holder.container.removeAllViews()
       (view.parent as? FrameLayout)?.removeAllViews()
       holder.container.addView(view)

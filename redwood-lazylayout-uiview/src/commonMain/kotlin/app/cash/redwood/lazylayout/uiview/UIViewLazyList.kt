@@ -116,7 +116,9 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
       )
     }
 
-  private lateinit var onPositionDisplayed: (Int) -> Unit
+  private lateinit var onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit
+  private var itemsBefore = 0
+  private var itemsAfter = 0
 
   override fun isVertical(isVertical: Boolean) {
     if (!isVertical) {
@@ -125,8 +127,16 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
     }
   }
 
-  override fun onPositionDisplayed(onPositionDisplayed: (Int) -> Unit) {
-    this.onPositionDisplayed = onPositionDisplayed
+  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+    this.onViewportChanged = onViewportChanged
+  }
+
+  override fun itemsBefore(itemsBefore: Int) {
+    this.itemsBefore = itemsBefore
+  }
+
+  override fun itemsAfter(itemsAfter: Int) {
+    this.itemsAfter = itemsAfter
   }
 
   override var layoutModifiers: LayoutModifier = LayoutModifier
