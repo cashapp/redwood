@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>app.cash.redwood.layout.widget</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>redwood</span>            </a>    </div>
+    <div>0.3.0
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-layout-testing:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="redwood-layout-testing::app.cash.redwood.layout.widget////PointingToDeclaration//1105111607">
+  <div class="breadcrumbs"><a href="../index.html">redwood-layout-testing</a><span class="delimiter">/</span><span class="current">app.cash.redwood.layout.widget</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1052544027%2FClasslikes%2F1105111607" anchor-label="ColumnValue" id="1052544027%2FClasslikes%2F1105111607" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-testing:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-column-value/index.html"><span>Column</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1052544027%2FClasslikes%2F1105111607"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-testing:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-column-value/index.html">ColumnValue</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>layoutModifiers<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood/-layout-modifier/index.html">LayoutModifier</a><span class="token operator"> = </span>LayoutModifier<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token operator"> = </span>Constraint.Wrap<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>height<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token operator"> = </span>Constraint.Wrap<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>margin<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-margin/index.html">Margin</a><span class="token operator"> = </span>Margin.Zero<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>overflow<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-overflow/index.html">Overflow</a><span class="token operator"> = </span>Overflow.Clip<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>horizontalAlignment<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-cross-axis-alignment/index.html">CrossAxisAlignment</a><span class="token operator"> = </span>CrossAxisAlignment.Start<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verticalAlignment<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-main-axis-alignment/index.html">MainAxisAlignment</a><span class="token operator"> = </span>MainAxisAlignment.Start<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>children<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a><span class="token operator">&gt;</span><span class="token operator"> = </span>listOf()</span></span><span class="token punctuation">)</span> : <a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1616091538%2FClasslikes%2F1105111607" anchor-label="RedwoodLayoutMutableWidgetFactory" id="-1616091538%2FClasslikes%2F1105111607" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-testing:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-redwood-layout-mutable-widget-factory/index.html"><span>Redwood</span><wbr><span>Layout</span><wbr><span>Mutable</span><wbr><span>Widget</span><wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1616091538%2FClasslikes%2F1105111607"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-testing:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-redwood-layout-mutable-widget-factory/index.html">RedwoodLayoutMutableWidgetFactory</a> : <a href="../../redwood-layout-testing/app.cash.redwood.layout.widget/-redwood-layout-widget-factory/index.html">RedwoodLayoutWidgetFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a><span class="token operator">&gt; </span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-986898635%2FClasslikes%2F1105111607" anchor-label="RowValue" id="-986898635%2FClasslikes%2F1105111607" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-testing:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-row-value/index.html"><span>Row</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-986898635%2FClasslikes%2F1105111607"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-testing:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-row-value/index.html">RowValue</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>layoutModifiers<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood/-layout-modifier/index.html">LayoutModifier</a><span class="token operator"> = </span>LayoutModifier<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token operator"> = </span>Constraint.Wrap<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>height<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token operator"> = </span>Constraint.Wrap<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>margin<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-margin/index.html">Margin</a><span class="token operator"> = </span>Margin.Zero<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>overflow<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-overflow/index.html">Overflow</a><span class="token operator"> = </span>Overflow.Clip<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>horizontalAlignment<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-main-axis-alignment/index.html">MainAxisAlignment</a><span class="token operator"> = </span>MainAxisAlignment.Start<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verticalAlignment<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-cross-axis-alignment/index.html">CrossAxisAlignment</a><span class="token operator"> = </span>CrossAxisAlignment.Start<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>children<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a><span class="token operator">&gt;</span><span class="token operator"> = </span>listOf()</span></span><span class="token punctuation">)</span> : <a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2111746447%2FClasslikes%2F1105111607" anchor-label="SpacerValue" id="-2111746447%2FClasslikes%2F1105111607" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-testing:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-spacer-value/index.html"><span>Spacer</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2111746447%2FClasslikes%2F1105111607"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-testing:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-spacer-value/index.html">SpacerValue</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>layoutModifiers<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood/-layout-modifier/index.html">LayoutModifier</a><span class="token operator"> = </span>LayoutModifier<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-dp/index.html">Dp</a><span class="token operator"> = </span>Dp(0.0)<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>height<span class="token operator">: </span><a href="../../redwood-layout-api/app.cash.redwood.layout.api/-dp/index.html">Dp</a><span class="token operator"> = </span>Dp(0.0)</span></span><span class="token punctuation">)</span> : <a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-77431599%2FFunctions%2F1105111607" anchor-label="RedwoodLayoutTester" id="-77431599%2FFunctions%2F1105111607" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-layout-testing:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-layout-testing:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-redwood-layout-tester.html"><span>Redwood</span><wbr><span>Layout</span><wbr><span><span>Tester</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-77431599%2FFunctions%2F1105111607"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-layout-testing:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="-redwood-layout-tester.html"><span class="token function">RedwoodLayoutTester</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-test-redwood-composition/index.html">TestRedwoodComposition</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../redwood-compose-testing/app.cash.redwood.compose.testing/-widget-value/index.html">WidgetValue</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
