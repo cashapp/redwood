@@ -14,7 +14,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLayoutWidget
-        api projects.redwoodTreehouseLazylayoutWidget
+        api projects.redwoodLazylayoutWidget
       }
     }
   }

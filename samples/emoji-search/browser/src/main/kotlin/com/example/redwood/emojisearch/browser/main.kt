@@ -20,7 +20,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
-import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
@@ -47,7 +47,7 @@ fun main() {
     provider = EmojiSearchWidgetFactories(
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
-      RedwoodTreehouseLazyLayout = object : RedwoodTreehouseLazyLayoutWidgetFactory<HTMLElement> {
+      RedwoodLazyLayout = object : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
         // For now we use a ColumnProvider to replace this with a normal Column.
         override fun LazyList() = throw UnsupportedOperationException()
       },

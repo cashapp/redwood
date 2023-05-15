@@ -22,7 +22,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.treehouse.TreehouseUi
-import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
+import app.cash.redwood.lazylayout.compose.LazyColumn
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 

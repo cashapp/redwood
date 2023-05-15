@@ -25,7 +25,7 @@ import app.cash.redwood.treehouse.TreehouseUIKitView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.treehouse.lazylayout.uiview.UIViewRedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
@@ -41,7 +41,7 @@ fun exposedTypes(
   protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
   treehouseUIKitView: TreehouseUIKitView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
-  uiViewRedwoodTreehouseLazyLayoutWidgetFactory: UIViewRedwoodTreehouseLazyLayoutWidgetFactory,
+  uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   widgetSystem: WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
 ) {

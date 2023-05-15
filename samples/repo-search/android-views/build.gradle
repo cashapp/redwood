@@ -10,7 +10,7 @@ dependencies {
   implementation projects.samples.repoSearch.presenterTreehouse
   implementation projects.samples.repoSearch.schema.widget.protocol
   implementation projects.redwoodLayoutView
-  implementation projects.redwoodTreehouseLazylayoutView
+  implementation projects.redwoodLazylayoutView
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation libs.google.material

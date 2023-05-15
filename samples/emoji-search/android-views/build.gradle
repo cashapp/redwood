@@ -15,7 +15,7 @@ dependencies {
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation projects.redwoodLayoutView
-  implementation projects.redwoodTreehouseLazylayoutView
+  implementation projects.redwoodLazylayoutView
   implementation projects.redwoodTreehouse
   implementation projects.redwoodTreehouseHost
 }

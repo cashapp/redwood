@@ -20,7 +20,7 @@ kotlin {
         implementation projects.samples.emojiSearch.presenterTreehouse
         implementation projects.samples.emojiSearch.schema.widget.protocol
         implementation projects.redwoodLayoutUiview
-        implementation projects.redwoodTreehouseLazylayoutUiview
+        implementation projects.redwoodLazylayoutUiview
       }
     }
   }
