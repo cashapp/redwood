@@ -24,7 +24,6 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodTreehouseComposeui
         api projects.redwoodTreehouseLazylayoutWidget
         implementation projects.redwoodWidgetCompose
         implementation libs.jetbrains.compose.foundation
