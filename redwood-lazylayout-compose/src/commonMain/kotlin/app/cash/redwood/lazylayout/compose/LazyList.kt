@@ -26,11 +26,13 @@ import androidx.compose.runtime.setValue
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
+import app.cash.redwood.LayoutModifier
 import kotlin.jvm.JvmName
 
 @Composable
 internal fun LazyList(
   isVertical: Boolean,
+  layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
   var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
@@ -59,6 +61,53 @@ internal fun LazyList(
         lazyPagingItems[position]
       }
     },
+    layoutModifier = layoutModifier,
+    items = {
+      repeat(lazyPagingItems.itemCount) { index ->
+        // Only invokes Composable lambdas that are loaded.
+        lazyPagingItems.peek(index)!!()
+      }
+    },
+  )
+}
+
+@Composable
+internal fun RefreshableLazyList(
+  isVertical: Boolean,
+  refreshing: Boolean = false,
+  onRefresh: (() -> Unit)? = null,
+  layoutModifier: LayoutModifier = LayoutModifier,
+  content: LazyListScope.() -> Unit,
+) {
+  var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
+  val scope = LazyListIntervalContent(content)
+  val pagerFlow = remember {
+    // TODO Don't hardcode pageSizes
+    // TODO Enable placeholder support
+    // TODO Set a maxSize so we don't keep _too_ many views in memory
+    val pager = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)) {
+      itemPagingSource!!
+    }
+    pager.flow
+  }
+  val lazyPagingItems = pagerFlow.collectAsLazyPagingItems()
+  DisposableEffect(scope) {
+    itemPagingSource = ItemPagingSource(scope)
+    onDispose {
+      itemPagingSource?.invalidate()
+    }
+  }
+  RefreshableLazyList(
+    isVertical,
+    onPositionDisplayed = { position ->
+      /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
+      if (position < lazyPagingItems.itemCount) {
+        lazyPagingItems[position]
+      }
+    },
+    refreshing = refreshing,
+    onRefresh = onRefresh,
+    layoutModifier = layoutModifier,
     items = {
       repeat(lazyPagingItems.itemCount) { index ->
         // Only invokes Composable lambdas that are loaded.

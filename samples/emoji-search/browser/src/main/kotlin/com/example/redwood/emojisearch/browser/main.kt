@@ -16,6 +16,7 @@
 package com.example.redwood.emojisearch.browser
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.compose.Column
@@ -78,9 +79,12 @@ private object TruncatingColumnProvider : ColumnProvider {
   @Composable
   override fun <T> create(
     items: List<T>,
+    refreshing: Boolean,
+    onRefresh: (() -> Unit)?,
+    layoutModifier: LayoutModifier,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    Column {
+    Column(layoutModifier = layoutModifier) {
       for (item in items.take(25)) {
         itemContent(item)
       }

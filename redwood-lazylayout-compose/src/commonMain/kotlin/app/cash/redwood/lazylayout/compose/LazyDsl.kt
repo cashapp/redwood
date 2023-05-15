@@ -16,6 +16,7 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.LayoutScopeMarker
 
 @LayoutScopeMarker
@@ -64,22 +65,63 @@ public inline fun <T> LazyListScope.itemsIndexed(
   itemContent(it, items[it])
 }
 
+@RequiresOptIn("This API is for use by Redwood's generated code only")
+public annotation class ExperimentalRedwoodLazyLayoutApi
+
 @Composable
 public fun LazyRow(
+  layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = false,
+    layoutModifier = layoutModifier,
+    content = content,
+  )
+}
+
+@ExperimentalRedwoodLazyLayoutApi
+@Composable
+public fun LazyRow(
+  refreshing: Boolean,
+  onRefresh: (() -> Unit)?,
+  layoutModifier: LayoutModifier = LayoutModifier,
+  content: LazyListScope.() -> Unit,
+) {
+  RefreshableLazyList(
+    isVertical = false,
+    refreshing = refreshing,
+    onRefresh = onRefresh,
+    layoutModifier = layoutModifier,
     content = content,
   )
 }
 
 @Composable
 public fun LazyColumn(
+  layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = true,
+    layoutModifier = layoutModifier,
+    content = content,
+  )
+}
+
+@ExperimentalRedwoodLazyLayoutApi
+@Composable
+public fun LazyColumn(
+  refreshing: Boolean,
+  onRefresh: (() -> Unit)?,
+  layoutModifier: LayoutModifier = LayoutModifier,
+  content: LazyListScope.() -> Unit,
+) {
+  RefreshableLazyList(
+    isVertical = true,
+    refreshing = refreshing,
+    onRefresh = onRefresh,
+    layoutModifier = layoutModifier,
     content = content,
   )
 }

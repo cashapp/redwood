@@ -20,6 +20,7 @@ import app.cash.redwood.schema.Schema
 @Schema(
   [
     LazyList::class,
+    RefreshableLazyList::class,
   ],
 )
 public interface RedwoodLazyLayout

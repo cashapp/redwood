@@ -36,6 +36,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.10.1" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.3.0" }
+androidx-swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"

@@ -34,7 +34,7 @@ import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
-import kotlinx.serialization.decodeFromString
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(
@@ -57,6 +57,9 @@ interface ColumnProvider {
   @Composable
   fun <T> create(
     items: List<T>,
+    refreshing: Boolean,
+    onRefresh: (() -> Unit)?,
+    layoutModifier: LayoutModifier,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -66,23 +69,26 @@ fun EmojiSearch(
   httpClient: HttpClient,
   columnProvider: ColumnProvider,
 ) {
-  val allEmojis = remember {
-    mutableStateListOf(
-      EmojiImage(
-        label = "loading…",
-        url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
-      ),
-    )
-  }
-  LaunchedEffect(Unit) {
-    val emojisJson = httpClient.call(
-      url = "https://api.github.com/emojis",
-      headers = mapOf("Accept" to "application/vnd.github.v3+json"),
-    )
-    val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
+  val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
-    allEmojis.clear()
-    allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+  // Simple counter that allows us to trigger refreshes by simple incrementing the value
+  var refreshSignal by remember { mutableStateOf(0) }
+  var refreshing by remember { mutableStateOf(false) }
+
+  LaunchedEffect(refreshSignal) {
+    try {
+      refreshing = true
+      val emojisJson = httpClient.call(
+        url = "https://api.github.com/emojis",
+        headers = mapOf("Accept" to "application/vnd.github.v3+json"),
+      )
+      val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
+
+      allEmojis.clear()
+      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+    } finally {
+      refreshing = false
+    }
   }
 
   var searchTerm by remember { mutableStateOf(TextFieldState()) }
@@ -104,7 +110,10 @@ fun EmojiSearch(
       onChange = { searchTerm = it },
     )
     columnProvider.create(
-      filteredEmojis,
+      items = filteredEmojis,
+      refreshing = refreshing,
+      onRefresh = { refreshSignal++ },
+      layoutModifier = LayoutModifier.grow(1.0)
     ) { image ->
       Row(
         width = Constraint.Fill,
