@@ -17,7 +17,6 @@ kotlin {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.treehouse.lazylayout.uiview'))
       dependencies {
         api projects.redwoodTreehouseLazylayoutWidget
-        implementation projects.redwoodTreehouseHost
         implementation projects.redwoodWidgetCompose
       }
     }
