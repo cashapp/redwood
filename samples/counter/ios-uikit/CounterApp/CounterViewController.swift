@@ -19,8 +19,7 @@ class CounterViewController : UIViewController {
         container.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         container.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
 
-        let delegate = CounterViewControllerDelegate(root: container)
-        self.delegate = delegate
+        self.delegate = CounterViewControllerDelegate(root: container)
     }
 
     override func viewDidAppear(_ animated: Bool) {

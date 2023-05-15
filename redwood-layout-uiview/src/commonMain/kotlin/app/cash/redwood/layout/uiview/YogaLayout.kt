@@ -55,15 +55,13 @@ internal class YogaLayout {
     YGAttachNodesFromViewHierachy(this)
 
     val size = view.bounds.useContents {
-      val widthBounds = if (width == Constraint.Wrap) {
-        YGUndefined
-      } else {
-        size.width.toFloat()
+      val widthBounds = when (width) {
+          Constraint.Wrap -> YGUndefined
+          else -> size.width.toFloat()
       }
-      val heightBounds = if (height == Constraint.Wrap) {
-        YGUndefined
-      } else {
-        size.height.toFloat()
+      val heightBounds = when (height) {
+          Constraint.Wrap -> YGUndefined
+          else -> size.height.toFloat()
       }
       YGSize(widthBounds, heightBounds)
     }
@@ -100,7 +98,7 @@ internal class YogaLayout {
 }
 
 private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
-  if (yoga.view.subviews.isEmpty()) {
+  if (yoga.view.typedSubviews.isEmpty()) {
     yoga.rootNode.removeAllChildren()
     yoga.rootNode.setMeasureFunc(ViewMeasureFunction(yoga.view))
     return
@@ -127,24 +125,22 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     height: Float,
     heightMode: YGMeasureMode,
   ): YGSize {
-    val constrainedWidth = if (widthMode == YGMeasureModeUndefined) {
-      Double.MAX_VALUE
-    } else {
-      width.toDouble()
+    val constrainedWidth = when (widthMode) {
+        YGMeasureModeUndefined -> Double.MAX_VALUE
+        else -> width.toDouble()
     }
-    val constrainedHeight = if (heightMode == YGMeasureModeUndefined) {
-      Double.MAX_VALUE
-    } else {
-      height.toDouble()
+    val constrainedHeight = when (heightMode) {
+        YGMeasureModeUndefined -> Double.MAX_VALUE
+        else -> height.toDouble()
     }
 
     // The default implementation of sizeThatFits: returns the existing size of
     // the view. That means that if we want to layout an empty UIView, which
-    // already has got a frame set, its measured size should be CGSizeZero, but
+    // already has a frame set, its measured size should be CGSizeZero, but
     // UIKit returns the existing size.
     //
     // See https://github.com/facebook/yoga/issues/606 for more information.
-    val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.subviews.isEmpty()) {
+    val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
       Size.Zero
     } else {
       view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toSize()
@@ -163,7 +159,7 @@ private fun YGSanitizeMeasurement(
   measureMode: YGMeasureMode,
 ): Double = when (measureMode) {
   YGMeasureModeExactly -> constrainedSize
-  YGMeasureModeAtMost -> constrainedSize
+  YGMeasureModeAtMost -> measuredSize
   YGMeasureModeUndefined -> measuredSize
 }
 

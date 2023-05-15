@@ -397,7 +397,7 @@ object Yoga {
       ownerWidth = ownerWidth,
       ownerHeight = ownerHeight,
       ownerDirection = ownerDirection,
-      layoutContext = null
+      layoutContext = null,
     )
   }
 
