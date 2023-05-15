@@ -123,8 +123,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateWidgetTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DuplicateWidgetTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -161,8 +159,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateLayoutModifierTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DuplicateLayoutModifierTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -326,8 +322,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(InvalidChildrenTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -348,8 +342,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(InvalidChildrenLambdaReturnTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -370,8 +362,6 @@ class SchemaParserTest(
   )
 
   @Test fun childrenArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -633,8 +623,6 @@ class SchemaParserTest(
   )
 
   @Test fun schemaTagDefault() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(SchemaTag::class).schema
 
     val widget = schema.widgets.single()
@@ -848,13 +836,11 @@ class SchemaParserTest(
   )
 
   @Test fun deprecationHiddenThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DeprecationHiddenSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support level HIDDEN: " +
-          "val app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a: kotlin.String",
+          "app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a",
       )
   }
 
@@ -871,13 +857,11 @@ class SchemaParserTest(
   object DeprecationReplaceWithWidget
 
   @Test fun deprecationReplaceWithThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DeprecationReplaceWithSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support replacements: " +
-          "class app.cash.redwood.tooling.schema.SchemaParserTest\$DeprecationReplaceWithWidget",
+          "app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationReplaceWithWidget",
       )
   }
 

@@ -242,9 +242,10 @@ private fun parseWidget(
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
+  val memberFqType = memberType.toFqType()
   val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
-    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
+    "@Widget $memberFqType tag must be in range [1, $maxMemberTag): $tag"
   }
 
   val traits = if (memberType.isData) {
@@ -256,7 +257,7 @@ private fun parseWidget(
       val property = kProperty.findAnnotation<PropertyAnnotation>()
       val children = kProperty.findAnnotation<ChildrenAnnotation>()
       val defaultExpression = kProperty.findAnnotation<DefaultAnnotation>()?.expression
-      val deprecation = kProperty.parseDeprecation()
+      val deprecation = kProperty.parseDeprecation { "$memberFqType.$name" }
 
       if (property != null) {
         if (type.isSubtypeOf(eventType) || type.isSubtypeOf(optionalEventType)) {
@@ -350,8 +351,8 @@ private fun parseWidget(
 
   return ParsedProtocolWidget(
     tag = tag,
-    type = memberType.toFqType(),
-    deprecation = memberType.parseDeprecation(),
+    type = memberFqType,
+    deprecation = memberType.parseDeprecation { memberFqType.toString() },
     traits = traits,
   )
 }
@@ -360,12 +361,13 @@ private fun parseLayoutModifier(
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): ParsedProtocolLayoutModifier {
+  val memberFqType = memberType.toFqType()
   val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
-    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
+    "@LayoutModifier $memberFqType tag must be in range [1, $maxMemberTag): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
-    "@LayoutModifier ${memberType.qualifiedName} must have at least one scope."
+    "@LayoutModifier $memberFqType must have at least one scope."
   }
 
   val properties = if (memberType.isData) {
@@ -381,7 +383,7 @@ private fun parseLayoutModifier(
           annotation.annotationClass.qualifiedName == "kotlinx.serialization.Serializable"
         }
         ?: false
-      val deprecation = kProperty.parseDeprecation()
+      val deprecation = kProperty.parseDeprecation { "$memberFqType.$name" }
 
       ParsedProtocolLayoutModifierProperty(
         name = name,
@@ -402,17 +404,17 @@ private fun parseLayoutModifier(
   return ParsedProtocolLayoutModifier(
     tag = tag,
     scopes = annotation.scopes.map { it.toFqType() },
-    type = memberType.toFqType(),
-    deprecation = memberType.parseDeprecation(),
+    type = memberFqType,
+    deprecation = memberType.parseDeprecation { memberFqType.toString() },
     properties = properties,
   )
 }
 
-private fun KAnnotatedElement.parseDeprecation(): ParsedDeprecation? {
+private fun KAnnotatedElement.parseDeprecation(source: () -> String): ParsedDeprecation? {
   return findAnnotation<Deprecated>()
     ?.let { deprecated ->
       require(deprecated.replaceWith.expression.isEmpty() && deprecated.replaceWith.imports.isEmpty()) {
-        "Schema deprecation does not support replacements: $this"
+        "Schema deprecation does not support replacements: ${source()}"
       }
       ParsedDeprecation(
         level = when (deprecated.level) {
@@ -420,7 +422,7 @@ private fun KAnnotatedElement.parseDeprecation(): ParsedDeprecation? {
           ERROR -> Level.ERROR
           else -> {
             throw IllegalArgumentException(
-              "Schema deprecation does not support level ${deprecated.level}: $this",
+              "Schema deprecation does not support level ${deprecated.level}: ${source()}",
             )
           }
         },
