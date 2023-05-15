@@ -21,7 +21,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.treehouse.lazylayout.RedwoodTreehouseLazyLayout
+import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import example.values.TextFieldState
 
 @Schema(
@@ -32,7 +32,7 @@ import example.values.TextFieldState
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
-    Dependency(2, RedwoodTreehouseLazyLayout::class),
+    Dependency(2, RedwoodLazyLayout::class),
   ],
 )
 interface EmojiSearch

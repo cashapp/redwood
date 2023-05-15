@@ -17,8 +17,8 @@ package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.treehouse.TreehouseUi
-import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
-import app.cash.redwood.treehouse.lazylayout.compose.items
+import app.cash.redwood.lazylayout.compose.LazyColumn
+import app.cash.redwood.lazylayout.compose.items
 
 class EmojiSearchTreehouseUi(
   private val httpClient: HttpClient,
