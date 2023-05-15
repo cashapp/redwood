@@ -262,13 +262,10 @@ private fun parseWidget(
       if (property != null) {
         if (type.isSubtypeOf(eventType) || type.isSubtypeOf(optionalEventType)) {
           val arguments = type.arguments.dropLast(1) // Drop return type.
-          require(arguments.size <= 1) {
-            "@Property ${memberType.qualifiedName}#$name lambda type can only have zero or one arguments. Found: $arguments"
-          }
           ParsedProtocolEvent(
             tag = property.tag,
             name = name,
-            parameterType = arguments.singleOrNull()?.type?.toFqType(),
+            parameterTypes = arguments.map { it.type!!.toFqType() },
             isNullable = type.isMarkedNullable,
             defaultExpression = defaultExpression,
             deprecation = deprecation,

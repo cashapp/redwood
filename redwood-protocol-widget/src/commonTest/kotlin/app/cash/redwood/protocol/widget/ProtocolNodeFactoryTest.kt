@@ -330,7 +330,7 @@ class ProtocolNodeFactoryTest {
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
     assertThat(eventSink.events.single())
-      .isEqualTo(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
+      .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
   }
 
   class RecordingTextInput : TextInput<Nothing> {

@@ -135,7 +135,7 @@ class GeneratedProtocolBridgeTest {
       argument = it
     }
 
-    protocolWidget.sendEvent(Event(Id(1), EventTag(4), JsonPrimitive("PT10S")))
+    protocolWidget.sendEvent(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
 
     assertThat(argument).isEqualTo(10.seconds)
   }
