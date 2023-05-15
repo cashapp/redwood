@@ -91,6 +91,12 @@ internal class YogaLayout {
       return calculateLayoutWithSize(YGSize(YGUndefined, YGUndefined)).toCGSize()
     }
 
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      return size.useContents {
+        calculateLayoutWithSize(YGSize(width.toFloat(), height.toFloat())).toCGSize()
+      }
+    }
+
     override fun setNeedsLayout() {
       applyLayout(width, height, true)
     }
