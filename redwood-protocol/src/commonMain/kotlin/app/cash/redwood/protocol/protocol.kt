@@ -37,7 +37,7 @@ public data class Event(
   val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
   val tag: EventTag,
-  val value: JsonElement = JsonNull,
+  val args: List<JsonElement> = emptyList(),
 )
 
 @Serializable

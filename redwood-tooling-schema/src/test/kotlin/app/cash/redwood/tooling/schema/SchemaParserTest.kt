@@ -28,11 +28,11 @@ import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.hasMessage
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isNull
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import example.redwood.ExampleSchema
@@ -471,8 +471,10 @@ class SchemaParserTest(
   @Widget(1)
   data class EventArgumentsWidget(
     @Property(1) val noArguments: () -> Unit,
-    @Property(2) val argument: (String) -> Unit,
-    @Property(3) val argumentOptionalLambda: ((String) -> Unit)?,
+    @Property(2) val oneArgument: (String) -> Unit,
+    @Property(3) val oneArgumentOptional: ((String) -> Unit)?,
+    @Property(4) val manyArguments: (String, Boolean, Long) -> Unit,
+    @Property(5) val manyArgumentsOptional: ((String, Boolean, Long) -> Unit)?,
   )
 
   @Test fun eventArguments() {
@@ -482,34 +484,15 @@ class SchemaParserTest(
     val widget = schema.widgets.single()
 
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
-    assertThat(noArguments.parameterType).isNull()
-    val argument = widget.traits.single { it.name == "argument" } as Event
-    assertThat(argument.parameterType).isEqualTo(String::class.toFqType())
-    val argumentOptionalLambda = widget.traits.single { it.name == "argumentOptionalLambda" } as Event
-    assertThat(argumentOptionalLambda.parameterType).isEqualTo(String::class.toFqType())
-  }
-
-  @Schema(
-    [
-      EventArgumentsInvalidWidget::class,
-    ],
-  )
-  interface EventArgumentsInvalidSchema
-
-  @Widget(1)
-  data class EventArgumentsInvalidWidget(
-    @Property(3) val tooManyArguments: ((String, Boolean, Long) -> Unit)?,
-  )
-
-  @Test fun eventArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
-    assertFailure { parser.parse(EventArgumentsInvalidSchema::class) }
-      .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "@Property app.cash.redwood.tooling.schema.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
-          "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]",
-      )
+    assertThat(noArguments.parameterTypes).isEmpty()
+    val oneArgument = widget.traits.single { it.name == "oneArgument" } as Event
+    assertThat(oneArgument.parameterTypes).containsExactly(String::class.toFqType())
+    val oneArgumentOptional = widget.traits.single { it.name == "oneArgumentOptional" } as Event
+    assertThat(oneArgumentOptional.parameterTypes).containsExactly(String::class.toFqType())
+    val manyArguments = widget.traits.single { it.name == "manyArguments" } as Event
+    assertThat(manyArguments.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
+    val manyArgumentOptional = widget.traits.single { it.name == "manyArgumentsOptional" } as Event
+    assertThat(manyArgumentOptional.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
   }
 
   @Schema(

@@ -130,7 +130,7 @@ internal data class ParsedProtocolProperty(
 internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
-  override val parameterType: FqType?,
+  override val parameterTypes: List<FqType> = emptyList(),
   override val isNullable: Boolean,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,

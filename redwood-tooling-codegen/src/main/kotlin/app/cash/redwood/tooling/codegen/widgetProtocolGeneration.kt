@@ -23,6 +23,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
@@ -34,6 +35,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 /*
 @ObjCName("ExampleProtocolNodeFactory", exact = true)
@@ -261,26 +263,32 @@ internal fun generateProtocolNode(
                         KotlinxSerialization.jsonPrimitive,
                         KotlinxSerialization.jsonBoolean,
                       )
-                      val parameterType = trait.parameterType?.asTypeName()
-                      if (parameterType != null) {
+                      val arguments = mutableListOf<CodeBlock>()
+                      for ((index, parameterFqType) in trait.parameterTypes.withIndex()) {
+                        val parameterType = parameterFqType.asTypeName()
                         val serializerId = serializerIds.computeIfAbsent(parameterType) {
                           nextSerializerId++
                         }
-                        addStatement(
-                          "{ eventSink.sendEvent(%T(change.id, %T(%L), json.encodeToJsonElement(serializer_%L, it))) }",
-                          Protocol.Event,
-                          Protocol.EventTag,
-                          trait.tag,
+                        arguments += CodeBlock.of(
+                          "json.encodeToJsonElement(serializer_%L, arg%L)",
                           serializerId,
-                        )
-                      } else {
-                        addStatement(
-                          "{ eventSink.sendEvent(%T(change.id, %T(%L))) }",
-                          Protocol.Event,
-                          Protocol.EventTag,
-                          trait.tag,
+                          index,
                         )
                       }
+                      if (trait.parameterTypes.isEmpty()) {
+                        beginControlFlow("{")
+                      } else {
+                        beginControlFlow("{ %L ->", trait.parameterTypes.indices.map { CodeBlock.of("arg$it") }.joinToCode())
+                      }
+                      addStatement(
+                        "eventSink.sendEvent(%T(change.id, %T(%L), listOf(%L)))",
+                        Protocol.Event,
+                        Protocol.EventTag,
+                        trait.tag,
+                        arguments.joinToCode(),
+                      )
+                      endControlFlow()
+
                       nextControlFlow("else")
                       if (trait.isNullable) {
                         addStatement("null")
