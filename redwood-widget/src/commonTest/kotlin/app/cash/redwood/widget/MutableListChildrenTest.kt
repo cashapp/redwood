@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
+
 class MutableListChildrenTest : AbstractWidgetChildrenTest<String>() {
   override val children = MutableListChildren<String>()
   override fun widget(name: String) = name

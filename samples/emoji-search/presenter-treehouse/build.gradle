@@ -1,5 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.zipline'
 
 kotlin {
@@ -10,6 +9,8 @@ kotlin {
   jvm()
 
   js {
+    // The name of the JS module which needs to be unique within the repo.
+    moduleName = 'emoji-search-presenter-treehouse'
     browser()
     binaries.executable()
   }
@@ -18,7 +19,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodTreehouse
-        api projects.redwoodTreehouseLazylayoutApi
       }
     }
 

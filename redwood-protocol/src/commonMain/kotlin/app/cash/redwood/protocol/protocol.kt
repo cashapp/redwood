@@ -41,27 +41,35 @@ public data class Event(
 )
 
 @Serializable
-public data class Diff(
-  val childrenDiffs: List<ChildrenDiff> = emptyList(),
-  val layoutModifiers: List<LayoutModifiers> = emptyList(),
-  val propertyDiffs: List<PropertyDiff> = emptyList(),
-)
+public sealed interface Change {
+  /** Identifier for the widget which is the subject of this change. */
+  public val id: Id
+}
 
 @Serializable
-public data class PropertyDiff(
-  /** Identifier for the widget whose property has changed. */
-  val id: Id,
+@SerialName("create")
+public data class Create(
+  override val id: Id,
+  val tag: WidgetTag,
+) : Change
+
+public sealed interface ValueChange : Change
+
+@Serializable
+@SerialName("property")
+public data class PropertyChange(
+  override val id: Id,
   /** Identifies which property changed on the widget with [id]. */
   val tag: PropertyTag,
   val value: JsonElement = JsonNull,
-)
+) : ValueChange
 
 @Serializable
-public data class LayoutModifiers(
-  /** Identifier for the widget whose layout modifier has changed. */
-  val id: Id,
+@SerialName("modifier")
+public data class LayoutModifierChange(
+  override val id: Id,
   val elements: List<LayoutModifierElement> = emptyList(),
-)
+) : ValueChange
 
 @Serializable(with = LayoutModifierElementSerializer::class)
 public data class LayoutModifierElement(
@@ -104,22 +112,18 @@ private object LayoutModifierElementSerializer : KSerializer<LayoutModifierEleme
 }
 
 @Serializable
-public sealed class ChildrenDiff {
-  /** Identifier for the widget whose children have changed. */
-  public abstract val id: Id
-
+public sealed interface ChildrenChange : Change {
   /** Identifies which group of children changed on the widget with [id]. */
-  public abstract val tag: ChildrenTag
+  public val tag: ChildrenTag
 
   @Serializable
-  @SerialName("insert")
-  public data class Insert(
+  @SerialName("add")
+  public data class Add(
     override val id: Id,
     override val tag: ChildrenTag,
     val childId: Id,
-    val widgetTag: WidgetTag,
     val index: Int,
-  ) : ChildrenDiff()
+  ) : ChildrenChange
 
   @Serializable
   @SerialName("move")
@@ -129,7 +133,7 @@ public sealed class ChildrenDiff {
     val fromIndex: Int,
     val toIndex: Int,
     val count: Int,
-  ) : ChildrenDiff()
+  ) : ChildrenChange
 
   @Serializable
   @SerialName("remove")
@@ -138,5 +142,12 @@ public sealed class ChildrenDiff {
     override val tag: ChildrenTag,
     val index: Int,
     val count: Int,
-  ) : ChildrenDiff()
+    val removedIds: List<Id>,
+  ) : ChildrenChange {
+    init {
+      require(count == removedIds.size) {
+        "Count $count != Removed ID list size ${removedIds.size}"
+      }
+    }
+  }
 }

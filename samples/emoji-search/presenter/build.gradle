@@ -13,15 +13,15 @@ kotlin {
         api projects.samples.emojiSearch.schema.compose
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose
-        api projects.redwoodTreehouseLazylayoutApi
       }
     }
     commonTest {
       dependencies {
-        api projects.redwoodComposeTesting
-        api projects.samples.emojiSearch.schema.testing
         implementation libs.kotlin.test
+        implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
+        implementation projects.redwoodComposeTesting
+        implementation projects.samples.emojiSearch.schema.testing
       }
     }
   }

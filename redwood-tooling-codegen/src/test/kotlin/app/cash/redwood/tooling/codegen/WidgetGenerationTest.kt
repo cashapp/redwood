@@ -19,8 +19,10 @@ import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseSchema
-import com.google.common.truth.Truth.assertThat
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
 import kotlin.DeprecationLevel.ERROR
 import org.junit.Test
 
@@ -41,17 +43,17 @@ class WidgetGenerationTest {
   data class Button(@Property(1) val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains("fun WidgetGenerationTestNavigationBarButton()")
       contains("fun WidgetGenerationTestButton()")
     }
   }
 
   @Test fun tagInWidgetFactoryKDoc() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).contains(
@@ -64,15 +66,20 @@ class WidgetGenerationTest {
   }
 
   @Test fun tagInWidgetKdoc() {
-    val schema = parseSchema(SimpleNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
     val button = schema.widgets.single { it.type.flatName == "WidgetGenerationTestButton" }
 
     val fileSpec = generateWidget(schema, button)
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains(
         """
         | * {tag=3}
         | */
+        |@OptIn(ExperimentalObjCName::class)
+        |@ObjCName(
+        |  "WidgetGenerationTestButton",
+        |  exact = true,
+        |)
         |public interface WidgetGenerationTestButton
         """.trimMargin(),
       )
@@ -109,11 +116,11 @@ class WidgetGenerationTest {
   )
 
   @Test fun deprecation() {
-    val schema = parseSchema(DeprecatedSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
 
     val widget = schema.widgets.single()
     val fileSpec = generateWidget(schema, widget)
-    assertThat(fileSpec.toString()).apply {
+    assertThat(fileSpec.toString()).all {
       contains(
         """
         |@Deprecated(

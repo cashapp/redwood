@@ -15,23 +15,27 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.protocol.ChildrenDiff
+import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Diff
+import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
-import example.redwood.widget.ExampleSchemaDiffConsumingNodeFactory
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlinx.serialization.json.JsonPrimitive
 
 class ProtocolBridgeTest {
-  @Test fun insertRootIdThrows() {
+  @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaDiffConsumingNodeFactory(
+      factory = ExampleSchemaProtocolNodeFactory(
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -39,27 +43,22 @@ class ProtocolBridgeTest {
       ),
       eventSink = ::error,
     )
-    val diff = Diff(
-      childrenDiffs = listOf(
-        ChildrenDiff.Insert(
-          id = Id.Root,
-          tag = ChildrenTag.Root,
-          childId = Id.Root,
-          widgetTag = WidgetTag(4) /* button */,
-          index = 0,
-        ),
+    val changes = listOf(
+      Create(
+        id = Id.Root,
+        tag = WidgetTag(4), /* button */
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendDiff(diff)
+      bridge.sendChanges(changes)
     }
-    assertEquals("Insert attempted to replace existing widget with ID 0", t.message)
+    assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 0")
   }
 
   @Test fun duplicateIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaDiffConsumingNodeFactory(
+      factory = ExampleSchemaProtocolNodeFactory(
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -67,21 +66,71 @@ class ProtocolBridgeTest {
       ),
       eventSink = ::error,
     )
-    val diff = Diff(
-      childrenDiffs = listOf(
-        ChildrenDiff.Insert(
+    val changes = listOf(
+      Create(
+        id = Id(1),
+        tag = WidgetTag(4), /* button */
+      ),
+    )
+    bridge.sendChanges(changes)
+    val t = assertFailsWith<IllegalArgumentException> {
+      bridge.sendChanges(changes)
+    }
+    assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
+  }
+
+  @Test fun removeRemoves() {
+    val bridge = ProtocolBridge(
+      container = MutableListChildren(),
+      factory = ExampleSchemaProtocolNodeFactory(
+        provider = ExampleSchemaWidgetFactories(
+          ExampleSchema = EmptyExampleSchemaWidgetFactory(),
+          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        ),
+      ),
+      eventSink = ::error,
+    )
+
+    // Add a button.
+    bridge.sendChanges(
+      listOf(
+        Create(
+          id = Id(1),
+          tag = WidgetTag(4), /* button */
+        ),
+        ChildrenChange.Add(
           id = Id.Root,
           tag = ChildrenTag.Root,
           childId = Id(1),
-          widgetTag = WidgetTag(4) /* button */,
           index = 0,
         ),
       ),
     )
-    bridge.sendDiff(diff)
-    val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendDiff(diff)
+
+    // Remove the button.
+    bridge.sendChanges(
+      listOf(
+        ChildrenChange.Remove(
+          id = Id.Root,
+          tag = ChildrenTag.Root,
+          index = 0,
+          count = 1,
+          removedIds = listOf(Id(1)),
+        ),
+      ),
+    )
+
+    // Ensure targeting the button fails.
+    val updateButtonText = listOf(
+      PropertyChange(
+        id = Id(1),
+        tag = PropertyTag(1), /* text */
+        value = JsonPrimitive("hello"),
+      ),
+    )
+    val t = assertFailsWith<IllegalStateException> {
+      bridge.sendChanges(updateButtonText)
     }
-    assertEquals("Insert attempted to replace existing widget with ID 1", t.message)
+    assertThat(t).hasMessage("Unknown widget ID 1")
   }
 }

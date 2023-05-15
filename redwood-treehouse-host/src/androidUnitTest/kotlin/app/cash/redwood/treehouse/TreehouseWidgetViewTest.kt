@@ -31,8 +31,10 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
-import kotlin.test.assertEquals
-import kotlin.test.assertSame
+import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -53,8 +55,8 @@ class TreehouseWidgetViewTest {
 
     val view = View(context)
     layout.children.insert(0, viewWidget(view))
-    assertEquals(1, layout.childCount)
-    assertSame(view, layout.getChildAt(0))
+    assertThat(layout.childCount).isEqualTo(1)
+    assertThat(layout.getChildAt(0)).isSameAs(view)
   }
 
   @Test fun attachAndDetachSendsStateChange() {
@@ -64,23 +66,23 @@ class TreehouseWidgetViewTest {
     val listener = CountingReadyForContentChangeListener()
 
     layout.readyForContentChangeListener = listener
-    assertEquals(0, listener.count)
+    assertThat(listener.count).isEqualTo(0)
 
     parent.addView(layout)
-    assertEquals(1, listener.count)
+    assertThat(listener.count).isEqualTo(1)
 
     parent.removeView(layout)
-    assertEquals(2, listener.count)
+    assertThat(listener.count).isEqualTo(2)
   }
 
   @Test fun resetClearsUntrackedChildren() {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
 
     layout.addView(View(context))
-    assertEquals(1, layout.childCount)
+    assertThat(layout.childCount).isEqualTo(1)
 
     layout.reset()
-    assertEquals(0, layout.childCount)
+    assertThat(layout.childCount).isEqualTo(0)
   }
 
   @Test fun resetClearsTrackedWidgets() {
@@ -90,10 +92,10 @@ class TreehouseWidgetViewTest {
     val children = layout.children as ViewGroupChildren
 
     children.insert(0, viewWidget(View(context)))
-    assertEquals(1, children.widgets.size)
+    assertThat(children.widgets).hasSize(1)
 
     layout.reset()
-    assertEquals(0, children.widgets.size)
+    assertThat(children.widgets).hasSize(0)
   }
 
   @Test fun hostConfigurationReflectsInitialUiMode() {
@@ -101,26 +103,26 @@ class TreehouseWidgetViewTest {
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = context.createConfigurationContext(newConfig) // Needs API 26.
     val layout = TreehouseWidgetView(newContext, throwingWidgetSystem)
-    assertEquals(HostConfiguration(darkMode = true), layout.hostConfiguration.value)
+    assertThat(layout.hostConfiguration.value).isEqualTo(HostConfiguration(darkMode = true))
   }
 
   @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
     layout.hostConfiguration.test {
-      assertEquals(HostConfiguration(darkMode = false), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = false))
 
       val newConfig = Configuration(context.resources.configuration)
       newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
 
       layout.dispatchConfigurationChanged(newConfig)
-      assertEquals(HostConfiguration(darkMode = true), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = true))
     }
   }
 
   @Test fun hostConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
     layout.hostConfiguration.test {
-      assertEquals(HostConfiguration(safeAreaInsets = Margin.Zero), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(safeAreaInsets = Margin.Zero))
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
@@ -134,7 +136,7 @@ class TreehouseWidgetViewTest {
           bottom = insets.bottom.toDp(),
         )
       }
-      assertEquals(HostConfiguration(safeAreaInsets = expectedInsets), awaitItem())
+      assertThat(awaitItem()).isEqualTo(HostConfiguration(safeAreaInsets = expectedInsets))
     }
   }
 

@@ -19,7 +19,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
@@ -32,12 +31,11 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchDiffConsumingNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 
 class EmojiSearchActivity : ComponentActivity() {
@@ -50,18 +48,12 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
-    val widgetSystem = object : TreehouseView.WidgetSystem {
-      override fun widgetFactory(
-        json: Json,
-        protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = EmojiSearchDiffConsumingNodeFactory(
+    val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
+      EmojiSearchProtocolNodeFactory(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(
-            context = context,
-            treehouseApp = treehouseApp,
-          ),
+          EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context, treehouseApp, this),
+          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context),
         ),
         json = json,
         mismatchHandler = protocolMismatchHandler,

@@ -27,8 +27,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-@Suppress("unused") // Invoked reflectively by Gradle.
-class ComposePlugin : KotlinCompilerPluginSupportPlugin {
+internal class ComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>) = true
 
   override fun getCompilerPluginId() = "app.cash.redwood.tools.compose"

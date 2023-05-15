@@ -18,7 +18,7 @@ import Foundation
 import EmojiSearchKt
 import UIKit
 
-class TextBinding: WidgetText {
+class TextBinding: Text {
     private let root: UILabel = {
         let view = UILabel()
         return view

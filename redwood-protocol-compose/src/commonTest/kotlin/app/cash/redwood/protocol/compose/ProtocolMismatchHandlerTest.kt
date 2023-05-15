@@ -18,8 +18,9 @@ package app.cash.redwood.protocol.compose
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
+import assertk.assertThat
+import assertk.assertions.hasMessage
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class ProtocolMismatchHandlerTest {
@@ -27,13 +28,13 @@ class ProtocolMismatchHandlerTest {
     val t = assertFailsWith<IllegalArgumentException> {
       ProtocolMismatchHandler.Throwing.onUnknownEvent(WidgetTag(1), EventTag(2))
     }
-    assertEquals("Unknown event tag 2 for widget tag 1", t.message)
+    assertThat(t).hasMessage("Unknown event tag 2 for widget tag 1")
   }
 
   @Test fun throwingUnknownEventNode() {
     val t = assertFailsWith<IllegalArgumentException> {
       ProtocolMismatchHandler.Throwing.onUnknownEventNode(Id(1), EventTag(2))
     }
-    assertEquals("Unknown node ID 1 for event with tag 2", t.message)
+    assertThat(t).hasMessage("Unknown node ID 1 for event with tag 2")
   }
 }

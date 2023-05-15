@@ -16,6 +16,9 @@
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.ViewTree
 
 /**
  * A widget that's implemented as a value class, appropriate for use in tests.
@@ -29,6 +32,12 @@ public interface WidgetValue {
   /** Returns all of the direct children of this widget, grouped by slot. */
   public val childrenLists: List<List<WidgetValue>>
     get() = listOf()
+
+  public fun addTo(
+    parentId: Id,
+    childrenTag: ChildrenTag,
+    builder: ViewTree.Builder,
+  )
 }
 
 /**

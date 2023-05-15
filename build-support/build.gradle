@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
@@ -23,15 +26,18 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
+  implementation libs.gradleMavenPublishPlugin
+  implementation libs.dokkaPlugin
+  implementation libs.spotlessPlugin
 }
 
 gradlePlugin {
   plugins {
-    jetbrainsCompose {
-      id = "app.cash.redwood.build.compose"
-      displayName = "JetBrains Compose"
-      description = "Gradle plugin to apply JetBrains Compose compiler"
-      implementationClass = "app.cash.redwood.buildsupport.ComposePlugin"
+    redwoodBuild {
+      id = "app.cash.redwood.build"
+      displayName = "Redwood Build plugin"
+      description = "Gradle plugin for Redwood build things"
+      implementationClass = "app.cash.redwood.buildsupport.RedwoodBuildPlugin"
     }
   }
 }
@@ -46,4 +52,15 @@ buildConfig {
   buildConfigField("String", "composeCompilerGroupId", "\"${libs.jetbrains.compose.compiler.get().module.group}\"")
   buildConfigField("String", "composeCompilerArtifactId", "\"${libs.jetbrains.compose.compiler.get().module.name}\"")
   buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
+}
+
+tasks.withType(JavaCompile).configureEach {
+  sourceCompatibility = JavaVersion.VERSION_11.toString()
+  targetCompatibility = JavaVersion.VERSION_11.toString()
+}
+
+tasks.withType(KotlinJvmCompile).configureEach {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
+  }
 }

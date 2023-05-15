@@ -18,7 +18,7 @@ import Foundation
 import EmojiSearchKt
 import UIKit
 
-class ImageBinding: WidgetImage {
+class ImageBinding: Image {
     private let root: UIImageView = {
         let view = ImageView()
         view.contentMode = .scaleAspectFit

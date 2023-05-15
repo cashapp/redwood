@@ -1,0 +1,46 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.kotlin.test
+        implementation libs.assertk
+        api projects.redwoodWidget
+      }
+    }
+  }
+}
+
+dependencies {
+  // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+  // as a test dependency this selection is transparent. But since we are publishing a library
+  // we need to select one ourselves at compilation time.
+  def configurationNames = [
+    "jvmMainImplementation",
+    "debugImplementation",
+    "releaseImplementation",
+  ]
+  for (configurationName in configurationNames) {
+    add(configurationName, libs.kotlin.test) {
+      capabilities {
+        requireCapability(
+          "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.widget.testing'
+}

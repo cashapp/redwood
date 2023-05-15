@@ -16,8 +16,13 @@
 package app.cash.redwood.compose.testing
 
 import app.cash.redwood.LayoutModifier
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.ViewTree
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class WidgetValueTest {
   @Test
@@ -26,18 +31,12 @@ class WidgetValueTest {
     val b = SimpleWidgetValue()
     val c = SimpleWidgetValue()
 
-    assertEquals(
-      listOf(),
-      listOf<WidgetValue>().flatten().toList(),
-    )
-    assertEquals(
-      listOf(a),
-      listOf<WidgetValue>(a).flatten().toList(),
-    )
-    assertEquals(
-      listOf(a, b, c),
-      listOf<WidgetValue>(a, b, c).flatten().toList(),
-    )
+    assertThat(listOf<WidgetValue>().flatten().toList())
+      .isEmpty()
+    assertThat(listOf<WidgetValue>(a).flatten().toList())
+      .containsExactly(a)
+    assertThat(listOf<WidgetValue>(a, b, c).flatten().toList())
+      .containsExactly(a, b, c)
   }
 
   @Test
@@ -46,14 +45,10 @@ class WidgetValueTest {
     val aa = SimpleWidgetValue(childrenLists = listOf(listOf(a)))
     val aaa = SimpleWidgetValue(childrenLists = listOf(listOf(aa)))
 
-    assertEquals(
-      listOf(aa, a),
-      listOf<WidgetValue>(aa).flatten().toList(),
-    )
-    assertEquals(
-      listOf(aaa, aa, a),
-      listOf<WidgetValue>(aaa).flatten().toList(),
-    )
+    assertThat(listOf<WidgetValue>(aa).flatten().toList())
+      .containsExactly(aa, a)
+    assertThat(listOf<WidgetValue>(aaa).flatten().toList())
+      .containsExactly(aaa, aa, a)
   }
 
   @Test
@@ -63,18 +58,18 @@ class WidgetValueTest {
     val aaa = SimpleWidgetValue(childrenLists = listOf(listOf(aa)))
     val b = SimpleWidgetValue()
 
-    assertEquals(
-      listOf(aa, a, b),
-      listOf<WidgetValue>(aa, b).flatten().toList(),
-    )
-    assertEquals(
-      listOf(aaa, aa, a, b),
-      listOf<WidgetValue>(aaa, b).flatten().toList(),
-    )
+    assertThat(listOf<WidgetValue>(aa, b).flatten().toList())
+      .containsExactly(aa, a, b)
+    assertThat(listOf<WidgetValue>(aaa, b).flatten().toList())
+      .containsExactly(aaa, aa, a, b)
   }
 
   class SimpleWidgetValue(
     override val layoutModifiers: LayoutModifier = LayoutModifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
-  ) : WidgetValue
+  ) : WidgetValue {
+    override fun addTo(parentId: Id, childrenTag: ChildrenTag, builder: ViewTree.Builder) {
+      throw AssertionError()
+    }
+  }
 }

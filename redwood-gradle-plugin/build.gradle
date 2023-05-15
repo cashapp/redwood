@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.github.gmazzo.buildconfig'
@@ -8,7 +11,22 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 //
 // We only want to publish when it's being built in the root project.
 if (rootProject.name == 'redwood') {
-  apply plugin: 'com.vanniktech.maven.publish'
+  apply plugin: 'app.cash.redwood.build'
+
+  redwoodBuild {
+    publishing()
+  }
+}
+
+tasks.withType(JavaCompile).configureEach {
+  sourceCompatibility = JavaVersion.VERSION_11.toString()
+  targetCompatibility = JavaVersion.VERSION_11.toString()
+}
+
+tasks.withType(KotlinJvmCompile).configureEach {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
+  }
 }
 
 dependencies {
@@ -18,7 +36,7 @@ dependencies {
 
   testImplementation libs.junit
   testImplementation libs.testParameterInjector
-  testImplementation libs.truth
+  testImplementation libs.assertk
   testImplementation gradleTestKit()
 }
 
@@ -82,7 +100,6 @@ gradlePlugin {
 }
 
 test {
-  dependsOn(':redwood-cli:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-flexbox:publishAllPublicationsToLocalMavenRepository')

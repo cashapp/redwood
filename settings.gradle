@@ -1,6 +1,44 @@
+pluginManagement {
+  repositories {
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+  }
+}
+
+plugins {
+  id "com.gradle.enterprise" version "3.13.2"
+}
+
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    google()
+  }
+}
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+    if (System.getenv("CI")) {
+      publishAlways()
+      tag "CI"
+    }
+  }
+}
+
+includeBuild('build-support') {
+  dependencySubstitution {
+    substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
+    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
+  }
+}
+
+enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+
 rootProject.name = 'redwood'
 
-include ':redwood-cli'
 include ':redwood-compose'
 include ':redwood-compose-testing'
 include ':redwood-flexbox'
@@ -32,7 +70,6 @@ include ':redwood-treehouse-configuration'
 include ':redwood-treehouse-guest'
 include ':redwood-treehouse-guest-compose'
 include ':redwood-treehouse-host'
-include ':redwood-treehouse-lazylayout-api'
 include ':redwood-treehouse-lazylayout-compose'
 include ':redwood-treehouse-lazylayout-composeui'
 include ':redwood-treehouse-lazylayout-paging'
@@ -43,8 +80,8 @@ include ':redwood-treehouse-lazylayout-view'
 include ':redwood-treehouse-lazylayout-widget'
 include ':redwood-widget'
 include ':redwood-widget-compose'
+include ':redwood-widget-testing'
 include ':redwood-yoga'
-include ':redwood-yoga-java'
 
 include ':test-schema'
 include ':test-schema:compose'
@@ -81,13 +118,14 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'
   include ':samples:emoji-search:values'
-}
 
-enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
-
-includeBuild('build-support') {
-  dependencySubstitution {
-    substitute module('app.cash.redwood.build:gradle-plugin') using project(':')
-    substitute module('app.cash.redwood:redwood-gradle-plugin') using project(':redwood-gradle-plugin')
-  }
+  include ':samples:repo-search:android-views'
+  include ':samples:repo-search:launcher'
+  include ':samples:repo-search:presenter'
+  include ':samples:repo-search:presenter-treehouse'
+  include ':samples:repo-search:schema'
+  include ':samples:repo-search:schema:compose'
+  include ':samples:repo-search:schema:compose:protocol'
+  include ':samples:repo-search:schema:widget'
+  include ':samples:repo-search:schema:widget:protocol'
 }

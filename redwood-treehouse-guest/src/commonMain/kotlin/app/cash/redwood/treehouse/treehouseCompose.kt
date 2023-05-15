@@ -21,9 +21,6 @@ import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.plus
 
@@ -31,17 +28,19 @@ import kotlinx.coroutines.plus
  * The Kotlin/JS side of a treehouse UI.
  */
 public fun TreehouseUi.asZiplineTreehouseUi(
-  bridge: ProtocolBridge,
-  widgetVersion: UInt,
+  appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  return RedwoodZiplineTreehouseUi(bridge, widgetVersion, this)
+  val bridge =
+    appLifecycle.protocolBridgeFactory.create(appLifecycle.json, appLifecycle.mismatchHandler)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
 }
 
 private class RedwoodZiplineTreehouseUi(
-  private val bridge: ProtocolBridge,
-  private val widgetVersion: UInt,
+  private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
+  private val bridge: ProtocolBridge,
 ) : ZiplineTreehouseUi, ZiplineScoped, EventSink by bridge {
+
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
    * and will all be closed when the scope is closed. This is the only mechanism that can close the
@@ -52,14 +51,14 @@ private class RedwoodZiplineTreehouseUi(
   private lateinit var composition: RedwoodComposition
 
   override fun start(
-    diffSink: DiffSinkService,
+    changesSink: ChangesSinkService,
     hostConfigurations: StateFlow<HostConfiguration>,
   ) {
     val composition = ProtocolRedwoodComposition(
-      scope = coroutineScope + StandardFrameClock,
+      scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
-      widgetVersion = widgetVersion,
-      diffSink = diffSink,
+      widgetVersion = appLifecycle.widgetVersion,
+      changesSink = changesSink,
     )
     this.composition = composition
 
@@ -72,6 +71,3 @@ private class RedwoodZiplineTreehouseUi(
     scope.close()
   }
 }
-
-@OptIn(DelicateCoroutinesApi::class)
-private val coroutineScope: CoroutineScope = GlobalScope

@@ -19,7 +19,7 @@ import Foundation
 import UIKit
 import EmojiSearchKt
 
-class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory {
+class IosEmojiSearchWidgetFactory<A : AnyObject>: EmojiSearchWidgetFactory {
     let treehouseApp: TreehouseApp<A>
     let widgetSystem: TreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()
@@ -29,13 +29,13 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: WidgetEmojiSearchWidgetFactory
         self.widgetSystem = widgetSystem
     }
 
-    func TextInput() -> WidgetTextInput {
+    func TextInput() -> TextInput {
         return TextInputBinding()
     }
-    func Text() -> WidgetText {
+    func Text() -> Text {
         return TextBinding()
     }
-    func Image() -> WidgetImage {
+    func Image() -> Image {
         return ImageBinding(imageLoader: imageLoader)
     }
 }

@@ -63,15 +63,12 @@ class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
     func widgetFactory(
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
-    ) -> DiffConsumingNodeFactory {
-        return ProtocolEmojiSearchDiffConsumingNodeFactory<UIView>(
-            provider: WidgetEmojiSearchWidgetFactories<UIView>(
+    ) -> ProtocolNodeFactory {
+        return EmojiSearchProtocolNodeFactory<UIView>(
+            provider: EmojiSearchWidgetFactories<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
-                RedwoodTreehouseLazyLayout: UIViewRedwoodTreehouseLazyLayoutWidgetFactory(
-                    treehouseApp: treehouseApp,
-                    widgetSystem: self
-                )
+                RedwoodTreehouseLazyLayout: UIViewRedwoodTreehouseLazyLayoutWidgetFactory()
             ),
             json: json,
             mismatchHandler: protocolMismatchHandler

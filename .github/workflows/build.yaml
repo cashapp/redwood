@@ -21,11 +21,11 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule --parallel -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule -PredwoodNoSamples
 
       # If we're on the integration branch, save the site to deploy from the publish job.
       - uses: actions/upload-artifact@v3
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
       - uses: gradle/gradle-build-action@v2
 
       - run: ./gradlew verifyPaparazziDebug
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -98,7 +98,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 
@@ -110,6 +110,19 @@ jobs:
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
+  sample-repo:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3.11.0
+        with:
+          distribution: 'zulu'
+          java-version: 20
+
+      - uses: gradle/gradle-build-action@v2
+
+      - run: ./gradlew -p samples/repo-search build
+
   publish:
     runs-on: macos-latest
     if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
@@ -119,6 +132,7 @@ jobs:
       - paparazzi
       - sample-counter
       - sample-emoji
+      - sample-repo
     steps:
       - uses: actions/checkout@v3
 
@@ -130,7 +144,7 @@ jobs:
       - uses: actions/setup-java@v3.11.0
         with:
           distribution: 'zulu'
-          java-version: 19
+          java-version: 20
 
       - uses: gradle/gradle-build-action@v2
 

@@ -44,6 +44,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
   val paparazzi = Paparazzi(
     deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
+    showSystemUi = false,
   )
 
   override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)

@@ -169,12 +169,12 @@ public class TreehouseApp<A : AppService> private constructor(
         app = this@TreehouseApp,
         appScope = appScope,
         sessionScope = sessionScope,
-        zipline = zipline,
         appService = appService,
-        isInitialLaunch = previous == null,
+        zipline = zipline,
+        frameClock = factory.frameClock,
       )
 
-      next.startFrameClock()
+      next.start()
 
       for (content in boundContents) {
         content.receiveZiplineSession(next)
@@ -214,6 +214,7 @@ public class TreehouseApp<A : AppService> private constructor(
     public val dispatchers: TreehouseDispatchers,
     eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
+    internal val frameClock: FrameClock,
     internal val manifestVerifier: ManifestVerifier,
     internal val embeddedDir: Path?,
     internal val embeddedFileSystem: FileSystem?,

@@ -84,12 +84,12 @@ internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName 
   return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
 }
 
-internal fun Schema.diffConsumingNodeFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}DiffConsumingNodeFactory")
+internal fun Schema.protocolNodeFactoryType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}ProtocolNodeFactory")
 }
 
-internal fun Schema.diffConsumingNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "DiffConsuming${widget.type.flatName}")
+internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
+  return ClassName(widgetPackage(host), "Protocol${widget.type.flatName}")
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
@@ -101,7 +101,7 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
 }
 
 internal fun Schema.getMutableWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "Mutable${type.flatName}WidgetFactory")
+  return ClassName(widgetPackage(), "${type.flatName}MutableWidgetFactory")
 }
 
 internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
@@ -131,7 +131,7 @@ internal fun Schema.widgetPackage(host: Schema? = null): String {
 }
 
 internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(type.names[0], layoutModifier.type.flatName)
+  return ClassName(type.names[0] + ".modifier", layoutModifier.type.flatName)
 }
 
 internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, host: Schema): ClassName {

@@ -18,8 +18,11 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.parseProtocolSchema
-import com.google.common.truth.Truth.assertThat
+import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
+import example.redwood.ExampleSchema
 import org.junit.Test
 
 class ComposeProtocolGenerationTest {
@@ -37,24 +40,24 @@ class ComposeProtocolGenerationTest {
   )
 
   @Test fun `id property does not collide`() {
-    val schema = parseProtocolSchema(IdPropertyNameCollisionSchema::class).schema
+    val schema = ProtocolSchemaSet.parse(IdPropertyNameCollisionSchema::class).schema
 
     val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
       |  public override fun id(id: String): Unit {
-      |    this.state.append(PropertyDiff(this.id,
+      |    this.state.append(PropertyChange(this.id,
       """.trimMargin(),
     )
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
-    val schemaSet = parseProtocolSchema(PrimarySchema::class)
+    val schemaSet = ProtocolSchemaSet.parse(ExampleSchema::class)
 
-    val fileSpec = generateProtocolLayoutModifierSerialization(schemaSet)
-    assertThat(fileSpec.toString()).apply {
-      contains("is PrimaryModifier -> PrimaryModifierSerializer.encode(json, this)")
-      contains("is SecondaryModifier -> SecondaryModifierSerializer.encode(json, this)")
+    val fileSpec = generateComposeProtocolLayoutModifierSerialization(schemaSet)
+    assertThat(fileSpec.toString()).all {
+      contains("is RowVerticalAlignment -> RowVerticalAlignmentSerializer.encode(json, this)")
+      contains("is Grow -> GrowSerializer.encode(json, this)")
     }
   }
 }

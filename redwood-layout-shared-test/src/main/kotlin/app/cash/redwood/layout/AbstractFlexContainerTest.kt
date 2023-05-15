@@ -23,6 +23,8 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.dp
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.widget.Widget
 import org.junit.Test
 

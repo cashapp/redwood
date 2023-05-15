@@ -18,106 +18,159 @@ package app.cash.redwood.tooling.schema
 import DefaultPackage
 import app.cash.redwood.tooling.schema.FqType.Variance.In
 import app.cash.redwood.tooling.schema.FqType.Variance.Out
+import assertk.assertFailure
+import assertk.assertThat
+import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import java.util.PrimitiveIterator
 import kotlin.reflect.typeOf
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FqTypeTest {
   @Test fun classes() {
-    assertEquals(FqType(listOf("kotlin", "String")), String::class.toFqType())
-    assertEquals(FqType(listOf("app.cash.redwood.tooling.schema", "FqTypeTest")), FqTypeTest::class.toFqType())
-    assertEquals(FqType(listOf("java.util", "PrimitiveIterator", "OfInt")), PrimitiveIterator.OfInt::class.toFqType())
-    assertEquals(FqType(listOf("", "DefaultPackage")), DefaultPackage::class.toFqType())
-    assertEquals(FqType(listOf("", "DefaultPackage", "Nested")), DefaultPackage.Nested::class.toFqType())
+    assertThat(String::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "String")))
+    assertThat(FqTypeTest::class.toFqType())
+      .isEqualTo(FqType(listOf("app.cash.redwood.tooling.schema", "FqTypeTest")))
+    assertThat(PrimitiveIterator.OfInt::class.toFqType())
+      .isEqualTo(FqType(listOf("java.util", "PrimitiveIterator", "OfInt")))
+    assertThat(DefaultPackage::class.toFqType())
+      .isEqualTo(FqType(listOf("", "DefaultPackage")))
+    assertThat(DefaultPackage.Nested::class.toFqType())
+      .isEqualTo(FqType(listOf("", "DefaultPackage", "Nested")))
   }
 
   @Test fun classSpecialCases() {
-    assertEquals(FqType(listOf("kotlin", "Boolean", "Companion")), Boolean.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Byte", "Companion")), Byte.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Char", "Companion")), Char.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Double", "Companion")), Double.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Enum", "Companion")), Enum.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Float", "Companion")), Float.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Int", "Companion")), Int.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Long", "Companion")), Long.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "Short", "Companion")), Short.Companion::class.toFqType())
-    assertEquals(FqType(listOf("kotlin", "String", "Companion")), String.Companion::class.toFqType())
+    assertThat(Boolean.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Boolean", "Companion")))
+    assertThat(Byte.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Byte", "Companion")))
+    assertThat(Char.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Char", "Companion")))
+    assertThat(Double.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Double", "Companion")))
+    assertThat(Enum.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Enum", "Companion")))
+    assertThat(Float.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Float", "Companion")))
+    assertThat(Int.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Int", "Companion")))
+    assertThat(Long.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Long", "Companion")))
+    assertThat(Short.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "Short", "Companion")))
+    assertThat(String.Companion::class.toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "String", "Companion")))
   }
 
   @Test fun types() {
-    assertEquals(
-      FqType(listOf("kotlin", "String"), nullable = true),
-      typeOf<String?>().toFqType(),
+    assertThat(typeOf<String?>().toFqType())
+      .isEqualTo(FqType(listOf("kotlin", "String"), nullable = true))
+
+    assertThat(typeOf<Array<String>>().toFqType()).isEqualTo(
+      FqType(
+        listOf("kotlin", "Array"),
+        parameterTypes = listOf(FqType(listOf("kotlin", "String"))),
+      ),
     )
 
-    assertEquals(
-      FqType(listOf("kotlin", "Array"), parameterTypes = listOf(FqType(listOf("kotlin", "String")))),
-      typeOf<Array<String>>().toFqType(),
-    )
-
-    assertEquals(
+    assertThat(typeOf<Array<out String>>().toFqType()).isEqualTo(
       FqType(
         names = listOf("kotlin", "Array"),
         parameterTypes = listOf(FqType(listOf("kotlin", "String"), variance = Out)),
       ),
-      typeOf<Array<out String>>().toFqType(),
     )
 
-    assertEquals(
+    assertThat(typeOf<Array<in String>>().toFqType()).isEqualTo(
       FqType(
         names = listOf("kotlin", "Array"),
         parameterTypes = listOf(FqType(listOf("kotlin", "String"), variance = In)),
       ),
-      typeOf<Array<in String>>().toFqType(),
     )
 
-    assertEquals(
-      FqType(listOf("kotlin", "Array"), parameterTypes = listOf(FqType.Star)),
-      typeOf<Array<*>>().toFqType(),
+    assertThat(typeOf<Array<*>>().toFqType()).isEqualTo(
+      FqType(
+        listOf("kotlin", "Array"),
+        parameterTypes = listOf(FqType.Star),
+      ),
     )
   }
 
   @Test fun classTooFewNamesThrows() {
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf())
-    }.hasMessageThat()
-      .isEqualTo("At least two names are required: package and a simple name: []")
+    assertFailure { FqType(listOf()) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("At least two names are required: package and a simple name: []")
 
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("kotlin"))
-    }.hasMessageThat()
-      .isEqualTo("At least two names are required: package and a simple name: [kotlin]")
+    assertFailure { FqType(listOf("kotlin")) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("At least two names are required: package and a simple name: [kotlin]")
   }
 
   @Test fun star() {
-    assertEquals(FqType(listOf("", "*")), FqType.Star)
+    assertThat(FqType.Star).isEqualTo(FqType(listOf("", "*")))
   }
 
   @Test fun starOtherPropertiesThrows() {
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("kotlin", "*"))
-    }.hasMessageThat()
-      .isEqualTo("Star projection must use empty package name: kotlin")
+    assertFailure { FqType(listOf("kotlin", "*")) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Star projection must use empty package name: kotlin")
 
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("", "*", "Nested"))
-    }.hasMessageThat()
-      .isEqualTo("Star projection cannot have nested types: [*, Nested]")
+    assertFailure { FqType(listOf("", "*", "Nested")) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Star projection cannot have nested types: [*, Nested]")
 
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("", "*"), parameterTypes = listOf(Int::class.toFqType()))
-    }.hasMessageThat()
-      .isEqualTo("Star projection must not have parameter types: [kotlin.Int]")
+    assertFailure {
+      FqType(
+        listOf("", "*"),
+        parameterTypes = listOf(Int::class.toFqType()),
+      )
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Star projection must not have parameter types: [kotlin.Int]")
 
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("", "*"), variance = In)
-    }.hasMessageThat()
-      .isEqualTo("Star projection must be Invariant: In")
+    assertFailure { FqType(listOf("", "*"), variance = In) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Star projection must be Invariant: In")
 
-    assertThrows<IllegalArgumentException> {
-      FqType(listOf("", "*"), nullable = true)
-    }.hasMessageThat()
-      .isEqualTo("Star projection must not be nullable")
+    assertFailure {
+      FqType(
+        listOf("", "*"),
+        nullable = true,
+      )
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Star projection must not be nullable")
+  }
+
+  @Test fun bestGuessValid() {
+    assertThat(FqType.bestGuess("Map"))
+      .isEqualTo(FqType(listOf("", "Map")))
+    assertThat(FqType.bestGuess("Map.Entry"))
+      .isEqualTo(FqType(listOf("", "Map", "Entry")))
+    assertThat(FqType.bestGuess("java.Map.Entry"))
+      .isEqualTo(FqType(listOf("java", "Map", "Entry")))
+    assertThat(FqType.bestGuess("java.util.concurrent.Map.Entry"))
+      .isEqualTo(FqType(listOf("java.util.concurrent", "Map", "Entry")))
+  }
+
+  @Test fun bestGuessInvalid() {
+    assertFailure { FqType.bestGuess("java") }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Couldn't guess: java")
+
+    assertFailure { FqType.bestGuess("java.util.concurrent") }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Couldn't guess: java.util.concurrent")
+
+    assertFailure { FqType.bestGuess("java..concurrent") }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Couldn't guess: java..concurrent")
+
+    assertFailure { FqType.bestGuess("java.util.concurrent.Map..Entry") }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Couldn't guess: java.util.concurrent.Map..Entry")
+
+    assertFailure { FqType.bestGuess("java.util.concurrent.Map.entry") }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Couldn't guess: java.util.concurrent.Map.entry")
   }
 }

@@ -4,15 +4,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.paparazzi'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
 
 dependencies {
   api projects.redwoodLayoutWidget
   implementation projects.redwoodFlexbox
   implementation projects.redwoodYoga
   implementation libs.androidx.core
-  //implementation projects.redwoodYogaJava
   testImplementation projects.redwoodLayoutSharedTest
 }
 

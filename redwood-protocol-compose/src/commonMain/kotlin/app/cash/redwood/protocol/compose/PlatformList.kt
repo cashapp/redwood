@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.compose
 
 internal expect class PlatformList<E>() {
+  val size: Int
   fun add(element: E)
 }
 

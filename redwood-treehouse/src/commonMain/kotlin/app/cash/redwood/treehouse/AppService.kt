@@ -27,5 +27,5 @@ import kotlin.native.ObjCName
  */
 @ObjCName("AppService", exact = true)
 public interface AppService : ZiplineService {
-  public val frameClockService: FrameClockService
+  public val appLifecycle: AppLifecycle
 }

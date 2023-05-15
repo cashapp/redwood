@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 buildscript {
   dependencies {
     classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
@@ -23,10 +26,24 @@ allprojects {
     mavenCentral()
     google()
   }
+
+  tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
+  }
+
+  tasks.withType(KotlinJvmCompile).configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+  }
 }
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood.schema'
 
 dependencies {
   api "app.cash.redwood:redwood-schema:$redwoodVersion"
+}
+
+redwoodSchema {
+  type = 'example.counter.Counter'
 }

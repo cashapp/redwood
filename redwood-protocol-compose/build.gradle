@@ -3,9 +3,12 @@ import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
-apply plugin: 'app.cash.redwood.build.compose'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
 
 kotlin {
   KmpTargets.addAllTargets(project)
@@ -21,7 +24,9 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
+        implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
+        implementation projects.redwoodComposeTesting
         implementation projects.testSchema.compose
         implementation projects.testSchema.compose.protocol
       }
@@ -46,14 +51,5 @@ android {
 
   testOptions {
     unitTests.returnDefaultValues = true
-  }
-}
-
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/protocol/compose/utils.kt",
-    )
   }
 }

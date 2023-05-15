@@ -26,17 +26,21 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
 internal object Protocol {
+  val Create = ClassName("app.cash.redwood.protocol", "Create")
+  val Change = ClassName("app.cash.redwood.protocol", "Change")
+  val ChildrenChangeAdd = ClassName("app.cash.redwood.protocol", "ChildrenChange", "Add")
   val ChildrenTag = ClassName("app.cash.redwood.protocol", "ChildrenTag")
-  val Diff = ClassName("app.cash.redwood.protocol", "Diff")
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
-  val LayoutModifiers = ClassName("app.cash.redwood.protocol", "LayoutModifiers")
+  val LayoutModifierChange = ClassName("app.cash.redwood.protocol", "LayoutModifierChange")
   val LayoutModifierElement = ClassName("app.cash.redwood.protocol", "LayoutModifierElement")
   val LayoutModifierTag = ClassName("app.cash.redwood.protocol", "LayoutModifierTag")
-  val PropertyDiff = ClassName("app.cash.redwood.protocol", "PropertyDiff")
+  val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
+  val ViewTree = ClassName("app.cash.redwood.protocol", "ViewTree")
+  val ViewTreeBuilder = ViewTree.nestedClass("Builder")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
@@ -50,10 +54,10 @@ internal object ComposeProtocol {
 }
 
 internal object WidgetProtocol {
-  val DiffConsumingNode = ClassName("app.cash.redwood.protocol.widget", "DiffConsumingNode")
-  val DiffConsumingNodeFactory = DiffConsumingNode.nestedClass("Factory")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
+  val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
+  val ProtocolNodeFactory = ProtocolNode.nestedClass("Factory")
 }
 
 internal object Redwood {
@@ -67,8 +71,7 @@ internal object Redwood {
 }
 
 internal object RedwoodTesting {
-  val MutableWidget = ClassName("app.cash.redwood.compose.testing", "MutableWidget")
-  val RedwoodTester = ClassName("app.cash.redwood.compose.testing", "RedwoodTester")
+  val TestRedwoodComposition = ClassName("app.cash.redwood.compose.testing", "TestRedwoodComposition")
   val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
 }
 
@@ -82,6 +85,7 @@ internal object RedwoodWidget {
 
 internal object RedwoodCompose {
   val RedwoodComposeNode = MemberName("app.cash.redwood.compose", "RedwoodComposeNode")
+  val WidgetNode = ClassName("app.cash.redwood.compose", "WidgetNode")
 }
 
 internal object ComposeRuntime {
@@ -104,7 +108,9 @@ internal fun composableLambda(
 
 internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
+  val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
+  val ObjCName = ClassName("kotlin.native", "ObjCName")
   val OptIn = ClassName("kotlin", "OptIn")
   val buildList = MemberName("kotlin.collections", "buildList")
   val listOf = MemberName("kotlin.collections", "listOf")
@@ -123,6 +129,7 @@ internal object KotlinxSerialization {
   val SerialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")
   val buildClassSerialDescriptor = MemberName("kotlinx.serialization.descriptors", "buildClassSerialDescriptor")
   val element = MemberName("kotlinx.serialization.descriptors", "element")
+  val encodeToJsonElement = MemberName("kotlinx.serialization.json", "encodeToJsonElement")
 
   val Decoder = ClassName("kotlinx.serialization.encoding", "Decoder")
   val Encoder = ClassName("kotlinx.serialization.encoding", "Encoder")
@@ -136,5 +143,5 @@ internal object KotlinxSerialization {
 }
 
 internal object KotlinxCoroutines {
-  val CoroutineScope = ClassName("kotlinx.coroutines", "CoroutineScope")
+  val coroutineScope = MemberName("kotlinx.coroutines", "coroutineScope")
 }

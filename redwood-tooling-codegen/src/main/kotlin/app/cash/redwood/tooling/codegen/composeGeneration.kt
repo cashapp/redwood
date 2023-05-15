@@ -47,12 +47,12 @@ fun Row(
   layoutModifier: LayoutModifier = LayoutModifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  _RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
+  RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
     factory = { it.RedwoodLayout.Row() },
     update = {
-      set(layoutModifier, Widget.SetLayoutModifiers)
-      set(margin, Row<*>::margin)
-      set(overflow, Row<*>::overflow)
+      set(layoutModifier, WidgetNode.SetLayoutModifiers)
+      set(margin) { widget.margin(it) }
+      set(overflow) { widget.overflow(it) }
     },
     content = {
       into(Row<*>::children) {
@@ -127,7 +127,7 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(layoutModifier, %T.SetLayoutModifiers)\n", RedwoodWidget.Widget)
+            .add("set(layoutModifier, %T.SetLayoutModifiers)\n", RedwoodCompose.WidgetNode)
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
@@ -135,7 +135,7 @@ internal fun generateComposable(
               is Property,
               is Event,
               -> {
-                updateLambda.add("set(%1N, %2T::%1N)\n", trait.name, widgetType)
+                updateLambda.add("set(%1N) { widget.%1N(it) }\n", trait.name)
               }
               is Children -> {
                 childrenLambda.apply {

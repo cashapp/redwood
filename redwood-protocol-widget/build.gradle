@@ -3,8 +3,11 @@ import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
 
 kotlin {
   KmpTargets.addAllTargets(project)
@@ -19,9 +22,10 @@ kotlin {
     }
     commonTest {
       dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
         implementation projects.testSchema.compose
         implementation projects.testSchema.widget.protocol
-        implementation libs.kotlin.test
       }
     }
   }
@@ -29,13 +33,4 @@ kotlin {
 
 android {
   namespace 'app.cash.redwood.protocol.widget'
-}
-
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/protocol/widget/utils.kt",
-    )
-  }
 }

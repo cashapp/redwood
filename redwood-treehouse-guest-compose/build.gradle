@@ -1,9 +1,12 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
-apply plugin: 'app.cash.redwood.build.compose'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
 
 kotlin {
   KmpTargets.addAllTargets(project)

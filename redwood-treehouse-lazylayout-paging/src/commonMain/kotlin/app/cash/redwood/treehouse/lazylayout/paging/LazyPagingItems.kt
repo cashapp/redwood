@@ -33,9 +33,7 @@ public fun <T : Any> LazyListScope.items(
   items: LazyPagingItems<T>,
   itemContent: @Composable (value: T?) -> Unit,
 ) {
-  items(
-    count = items.itemCount,
-  ) { index ->
+  items(items.itemCount) { index ->
     itemContent(items[index])
   }
 }
@@ -55,9 +53,7 @@ public fun <T : Any> LazyListScope.itemsIndexed(
   items: LazyPagingItems<T>,
   itemContent: @Composable (index: Int, value: T?) -> Unit,
 ) {
-  items(
-    count = items.itemCount,
-  ) { index ->
+  items(items.itemCount) { index ->
     itemContent(index, items[index])
   }
 }

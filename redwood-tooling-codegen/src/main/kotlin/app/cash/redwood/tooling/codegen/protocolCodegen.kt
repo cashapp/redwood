@@ -16,16 +16,12 @@
 package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
-import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Json
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import java.nio.file.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.writeText
 
 public enum class ProtocolCodegenType {
   Compose,
-  Json,
   Widget,
 }
 
@@ -33,7 +29,7 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
   when (type) {
     Compose -> {
       generateProtocolBridge(this).writeTo(destination)
-      generateProtocolLayoutModifierSerialization(this).writeTo(destination)
+      generateComposeProtocolLayoutModifierSerialization(this).writeTo(destination)
       for (dependency in all) {
         generateProtocolWidgetFactory(dependency, host = schema).writeTo(destination)
         generateProtocolLayoutModifierSerializers(dependency, host = schema)?.writeTo(destination)
@@ -42,19 +38,13 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
         }
       }
     }
-    Json -> {
-      val embeddedSchema = schema.toEmbeddedSchema()
-      val path = destination.resolve(embeddedSchema.path)
-      path.parent.createDirectories()
-      path.writeText(embeddedSchema.json)
-    }
     Widget -> {
-      generateDiffConsumingNodeFactory(this).writeTo(destination)
-      generateDiffConsumingLayoutModifierSerialization(this).writeTo(destination)
+      generateProtocolNodeFactory(this).writeTo(destination)
+      generateWidgetProtocolLayoutModifierSerialization(this).writeTo(destination)
       for (dependency in all) {
-        generateDiffConsumingLayoutModifierImpls(dependency, host = schema).writeTo(destination)
+        generateProtocolLayoutModifierImpls(dependency, host = schema)?.writeTo(destination)
         for (widget in dependency.widgets) {
-          generateDiffConsumingWidget(dependency, widget, host = schema).writeTo(destination)
+          generateProtocolNode(dependency, widget, host = schema).writeTo(destination)
         }
       }
     }

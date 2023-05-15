@@ -27,16 +27,16 @@ import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
-import app.cash.redwood.layout.Grow
-import app.cash.redwood.layout.HorizontalAlignment
-import app.cash.redwood.layout.Shrink
-import app.cash.redwood.layout.VerticalAlignment
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ViewGroupChildren
@@ -69,7 +69,7 @@ internal class ViewFlexContainer(
           is Shrink -> {
             Yoga.YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
           }
-          is app.cash.redwood.layout.Margin -> {
+          is app.cash.redwood.layout.modifier.Margin -> {
             Yoga.YGNodeStyleSetMargin(
               node = childNode,
               edge = YGEdge.YGEdgeLeft,
@@ -101,6 +101,7 @@ internal class ViewFlexContainer(
       }
     }
   )
+
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   private var width = Constraint.Wrap

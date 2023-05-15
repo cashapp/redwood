@@ -198,15 +198,15 @@ private fun Project.createRedwoodLintTask(
   sourceDirs: () -> Collection<File>,
   classpath: () -> Configuration,
 ): TaskProvider<out Task> {
-  val configuration = configurations.maybeCreate("redwood")
-  dependencies.add(configuration.name, project.redwoodDependency("redwood-cli"))
+  val configuration = configurations.maybeCreate("redwoodToolingLint")
+  dependencies.add(configuration.name, project.redwoodDependency("redwood-tooling-lint"))
 
   return tasks.register(name, RedwoodLintTask::class.java) { task ->
     task.group = VERIFICATION_GROUP
     task.description = taskDescription(descriptionTarget)
 
     task.toolClasspath.setFrom(configuration.incoming.artifacts.artifactFiles)
-    task.projectDirectory.set(project.projectDir)
+    task.projectDirectoryPath.set(project.projectDir.absolutePath)
     task.sourceDirectories.set(sourceDirs())
     task.classpath.setFrom(
       classpath().incoming.artifactView {

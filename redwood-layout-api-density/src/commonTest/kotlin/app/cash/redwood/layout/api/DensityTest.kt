@@ -15,28 +15,29 @@
  */
 package app.cash.redwood.layout.api
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class DensityTest {
 
   @Test fun dpToPxConversionIsSymmetric() {
     with(Density(2.0)) {
       var dp = 4.dp
-      assertEquals(dp, dp.toPx().toDp())
+      assertThat(dp.toPx().toDp()).isEqualTo(dp)
 
       dp = 20.dp
-      assertEquals(dp, dp.toPx().toDp())
+      assertThat(dp.toPx().toDp()).isEqualTo(dp)
     }
   }
 
   @Test fun pxToDpConversionIsSymmetric() {
     with(Density(2.0)) {
       var px = 4.0
-      assertEquals(px, px.toDp().toPx())
+      assertThat(px.toDp().toPx()).isEqualTo(px)
 
       px = 20.0
-      assertEquals(px, px.toDp().toPx())
+      assertThat(px.toDp().toPx()).isEqualTo(px)
     }
   }
 }

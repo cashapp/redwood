@@ -1,6 +1,11 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'com.vanniktech.maven.publish'
-apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
 
 kotlin {
   iosArm64()
@@ -9,6 +14,7 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.treehouse.lazylayout.uiview'))
       dependencies {
         api projects.redwoodTreehouseLazylayoutWidget
         implementation projects.redwoodTreehouseHost

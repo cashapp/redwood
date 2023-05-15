@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.compose.Column
@@ -35,7 +34,6 @@ import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(
@@ -44,7 +42,9 @@ private data class EmojiImage(
 )
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
-interface HttpClient {
+// https://youtrack.jetbrains.com/issue/KTIJ-7642
+@Suppress("FUN_INTERFACE_WITH_SUSPEND_FUNCTION")
+fun interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
 }
 

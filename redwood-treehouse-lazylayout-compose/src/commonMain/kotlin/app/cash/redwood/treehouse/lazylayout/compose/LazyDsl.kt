@@ -33,9 +33,7 @@ public interface LazyListScope {
 public inline fun <T> LazyListScope.items(
   items: List<T>,
   crossinline itemContent: @Composable (item: T) -> Unit,
-): Unit = items(
-  count = items.size,
-) {
+): Unit = items(items.size) {
   itemContent(items[it])
 }
 
@@ -43,7 +41,7 @@ public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  count = items.size,
+  items.size,
 ) {
   itemContent(it, items[it])
 }
@@ -52,7 +50,7 @@ public inline fun <T> LazyListScope.items(
   items: Array<T>,
   crossinline itemContent: @Composable (item: T) -> Unit,
 ): Unit = items(
-  count = items.size,
+  items.size,
 ) {
   itemContent(items[it])
 }
@@ -61,7 +59,27 @@ public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
 ): Unit = items(
-  count = items.size,
+  items.size,
 ) {
   itemContent(it, items[it])
+}
+
+@Composable
+public fun LazyRow(
+  content: LazyListScope.() -> Unit,
+) {
+  LazyList(
+    isVertical = false,
+    content = content,
+  )
+}
+
+@Composable
+public fun LazyColumn(
+  content: LazyListScope.() -> Unit,
+) {
+  LazyList(
+    isVertical = true,
+    content = content,
+  )
 }

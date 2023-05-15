@@ -23,6 +23,7 @@ import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
@@ -33,13 +34,14 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
-class SunspotWidgetFactories<W : Any>(
-  override val Sunspot: SunspotWidgetFactory<W>,
+@ObjCName("ExampleWidgetFactories", exact = true)
+class ExampleWidgetFactories<W : Any>(
+  override val Example: ExampleWidgetFactory<W>,
   override val RedwoodLayout: RedwoodLayoutWidgetFactory<W>,
-) : SunspotWidgetFactoryProvider<W>
+) : ExampleWidgetFactoryProvider<W>
 
-interface SunspotWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProvider<W> {
-  val Sunspot: SunspotWidgetFactory<W>
+interface ExampleWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProvider<W> {
+  val Example: ExampleWidgetFactory<W>
 }
  */
 internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
@@ -50,6 +52,17 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
       TypeSpec.classBuilder(widgetFactoriesType)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.OptIn)
+            .addMember("%T::class", Stdlib.ExperimentalObjCName)
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.ObjCName)
+            .addMember("%S", widgetFactoriesType.simpleName)
+            .addMember("exact = true")
+            .build(),
+        )
         .apply {
           val constructorBuilder = FunSpec.constructorBuilder()
 
@@ -83,11 +96,12 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
 }
 
 /*
-interface SunspotWidgetFactory<W : Any> : Widget.Factory<W> {
+@ObjCName("ExampleWidgetFactory", exact = true)
+interface ExampleWidgetFactory<W : Any> : Widget.Factory<W> {
   /** {tag=1} */
-  fun SunspotText(): SunspotText<W>
+  fun Text(): Text<W>
   /** {tag=2} */
-  fun SunspotButton(): SunspotButton<W>
+  fun Button(): Button<W>
 }
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
@@ -96,6 +110,17 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.OptIn)
+            .addMember("%T::class", Stdlib.ExperimentalObjCName)
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.ObjCName)
+            .addMember("%S", widgetFactoryType.simpleName)
+            .addMember("exact = true")
+            .build(),
+        )
         .apply {
           for (widget in schema.widgets) {
             addFunction(
@@ -121,7 +146,8 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 
 /*
 /** {tag=2} */
-interface SunspotButton<W: Any> : Widget<W> {
+@ObjCName("Button", exact = true)
+interface Button<W: Any> : Widget<W> {
   /** {tag=1} */
   fun text(text: String?)
   /** {tag=2} */
@@ -138,6 +164,17 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.OptIn)
+            .addMember("%T::class", Stdlib.ExperimentalObjCName)
+            .build(),
+        )
+        .addAnnotation(
+          AnnotationSpec.builder(Stdlib.ObjCName)
+            .addMember("%S", flatName)
+            .addMember("exact = true")
+            .build(),
+        )
         .apply {
           widget.deprecation?.let { deprecation ->
             addAnnotation(deprecation.toAnnotationSpec())

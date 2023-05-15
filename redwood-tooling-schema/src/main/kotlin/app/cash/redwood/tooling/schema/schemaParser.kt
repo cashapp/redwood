@@ -24,6 +24,7 @@ import app.cash.redwood.schema.Widget as WidgetAnnotation
 import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import java.io.InputStream
 import kotlin.DeprecationLevel.ERROR
 import kotlin.DeprecationLevel.WARNING
 import kotlin.reflect.KAnnotatedElement
@@ -41,20 +42,54 @@ private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
 private const val maxSchemaTag = 2_000
-private const val maxMemberTag = 1_000_000
+internal const val maxMemberTag = 1_000_000
 
 private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
 }
 
-public fun parseSchema(schemaType: KClass<*>): SchemaSet {
-  return parseProtocolSchema(schemaType)
+internal fun loadProtocolSchemaSet(
+  type: FqType,
+  classLoader: ClassLoader,
+): ProtocolSchemaSet {
+  val schema = loadProtocolSchema(type, classLoader)
+  val dependencies = schema.taggedDependencies.map { (tag, dependency) ->
+    loadProtocolSchema(dependency, classLoader, tag)
+  }
+  return ParsedProtocolSchemaSet(
+    schema = schema,
+    dependencies = dependencies.associateBy { it.type },
+  )
 }
 
-public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSchemaSet {
-  val schemaAnnotation = schemaType.schemaAnnotation
-  require(tag in 0..maxSchemaTag) { "Schema tag must be in range [0, $maxSchemaTag]: $tag" }
+internal fun loadProtocolSchema(
+  type: FqType,
+  classLoader: ClassLoader,
+  tag: Int = 0,
+): ProtocolSchema {
+  require(tag in 0..maxSchemaTag) {
+    "$type tag must be 0 for the root or in range (0, $maxSchemaTag] as a dependency: $tag"
+  }
+  val tagOffset = tag * maxMemberTag
 
+  val path = ParsedProtocolSchema.toEmbeddedPath(type)
+  val schema = classLoader
+    .getResourceAsStream(path)
+    ?.use(InputStream::readBytes)
+    ?.decodeToString()
+    ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json, tagOffset) }
+    ?: throw IllegalArgumentException("Unable to locate JSON for $type at $path")
+
+  require(tag == 0 || schema.dependencies.isEmpty()) {
+    "Schema dependency $type also has its own dependencies. " +
+      "For now, only a single level of dependencies is supported."
+  }
+
+  return schema
+}
+
+internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
+  val schemaAnnotation = schemaType.schemaAnnotation
   val memberTypes = schemaAnnotation.members
 
   val duplicatedMembers = memberTypes.groupBy { it }.filterValues { it.size > 1 }.keys
@@ -81,9 +116,9 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
         "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier",
       )
     } else if (widgetAnnotation != null) {
-      widgets += parseWidget(tag, memberType, widgetAnnotation)
+      widgets += parseWidget(memberType, widgetAnnotation)
     } else if (layoutModifierAnnotation != null) {
-      layoutModifiers += parseLayoutModifier(tag, memberType, layoutModifierAnnotation)
+      layoutModifiers += parseLayoutModifier(memberType, layoutModifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -156,28 +191,31 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
   }
 
   val dependencies = schemaAnnotation.dependencies
-    .map {
-      require(it.tag in 1..maxSchemaTag) {
-        "Dependency ${it.schema.qualifiedName} tag must be in range (0, $maxSchemaTag]: ${it.tag}"
+    .associate {
+      val dependencyTag = it.tag
+      val dependencyType = it.schema.toFqType()
+      require(dependencyTag != 0) {
+        "Dependency $dependencyType tag must not be non-zero"
       }
-      val schema = parseProtocolSchema(it.schema, it.tag).schema
-      require(schema.dependencies.isEmpty()) {
-        "Schema dependency ${it.schema.qualifiedName} also has its own dependencies. " +
-          "For now, only a single level of dependencies is supported."
-      }
-      schema
+
+      val schema = loadProtocolSchema(
+        type = dependencyType,
+        classLoader = schemaType.java.classLoader,
+        tag = dependencyTag,
+      )
+      dependencyTag to schema
     }
 
   val schema = ParsedProtocolSchema(
-    schemaType.toFqType(),
-    scopes.toList(),
-    widgets,
-    layoutModifiers,
-    dependencies.map { it.type },
+    type = schemaType.toFqType(),
+    scopes = scopes.toList(),
+    widgets = widgets,
+    layoutModifiers = layoutModifiers,
+    taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
     schema,
-    dependencies.associateBy { it.type },
+    dependencies.values.associateBy { it.type },
   )
 
   val duplicatedWidgets = schemaSet.all
@@ -201,14 +239,13 @@ public fun parseProtocolSchema(schemaType: KClass<*>, tag: Int = 0): ProtocolSch
 }
 
 private fun parseWidget(
-  schemaTag: Int,
   memberType: KClass<*>,
   annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
-  require(annotation.tag in 1 until maxMemberTag) {
-    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
+  val tag = annotation.tag
+  require(tag in 1 until maxMemberTag) {
+    "@Widget ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val traits = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->
@@ -320,17 +357,16 @@ private fun parseWidget(
 }
 
 private fun parseLayoutModifier(
-  schemaTag: Int,
   memberType: KClass<*>,
   annotation: LayoutModifierAnnotation,
 ): ParsedProtocolLayoutModifier {
-  require(annotation.tag in 1 until maxMemberTag) {
-    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): ${annotation.tag}"
+  val tag = annotation.tag
+  require(tag in 1 until maxMemberTag) {
+    "@LayoutModifier ${memberType.qualifiedName} tag must be in range [1, $maxMemberTag): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@LayoutModifier ${memberType.qualifiedName} must have at least one scope."
   }
-  val tag = schemaTag * maxMemberTag + annotation.tag
 
   val properties = if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->

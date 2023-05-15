@@ -15,33 +15,27 @@
  */
 package com.example.redwood.emojisearch.treehouse
 
-import app.cash.redwood.treehouse.StandardFrameClockService
+import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import com.example.redwood.emojisearch.compose.EmojiSearchProtocolBridge
 import com.example.redwood.emojisearch.presenter.EmojiSearchTreehouseUi
-import com.example.redwood.emojisearch.presenter.HttpClient
 import kotlinx.serialization.json.Json
 
 class RealEmojiSearchPresenter(
   private val hostApi: HostApi,
-  private val json: Json,
+  json: Json,
 ) : EmojiSearchPresenter {
-  override val frameClockService = StandardFrameClockService
+  override val appLifecycle = StandardAppLifecycle(
+    protocolBridgeFactory = EmojiSearchProtocolBridge,
+    json = json,
+    widgetVersion = 0U,
+  )
 
   override fun launch(): ZiplineTreehouseUi {
-    val bridge = EmojiSearchProtocolBridge.create(json)
-    val treehouseUi = EmojiSearchTreehouseUi(
-      httpClient = object : HttpClient {
-        override suspend fun call(url: String, headers: Map<String, String>): String {
-          return hostApi.httpCall(url, headers)
-        }
-      },
-      bridge = bridge
-    )
+    val treehouseUi = EmojiSearchTreehouseUi(hostApi::httpCall)
     return treehouseUi.asZiplineTreehouseUi(
-      bridge = bridge,
-      widgetVersion = 0U,
+      appLifecycle = appLifecycle,
     )
   }
 }

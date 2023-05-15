@@ -28,7 +28,6 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.Snapshot
-import app.cash.redwood.LayoutModifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -71,20 +70,14 @@ public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
   provider: Widget.Provider<W>,
+  onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, WidgetApplier(provider, container))
-}
-
-public fun RedwoodComposition(
-  scope: CoroutineScope,
-  applier: WidgetApplier<*>,
-): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, applier)
+  return WidgetRedwoodComposition(scope, NodeApplier(provider, container, onEndChanges))
 }
 
 private class WidgetRedwoodComposition(
   private val scope: CoroutineScope,
-  applier: WidgetApplier<*>,
+  applier: NodeApplier<*>,
 ) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
@@ -118,6 +111,12 @@ private class WidgetRedwoodComposition(
   }
 }
 
+/** @suppress For generated code usage only. */
+@RedwoodCodegenApi
+public interface RedwoodApplier<W : Any> {
+  public val provider: Widget.Provider<W>
+}
+
 /**
  * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
  * we expose the provider type [P] to our factory function so the correct widget can be created.
@@ -128,7 +127,7 @@ private class WidgetRedwoodComposition(
 @RedwoodCodegenApi
 public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
   crossinline factory: (P) -> W,
-  update: @DisallowComposableCalls Updater<W>.() -> Unit,
+  update: @DisallowComposableCalls Updater<WidgetNode<W, *>>.() -> Unit,
   content: @Composable RedwoodComposeContent<W>.() -> Unit,
 ) {
   // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
@@ -137,16 +136,16 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
 
   if (currentComposer.inserting) {
     @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as WidgetApplier<P>
+    val applier = currentComposer.applier as RedwoodApplier<P>
     currentComposer.createNode {
       @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-      factory(applier.provider as P)
+      WidgetNode(factory(applier.provider as P) as Widget<Any>)
     }
   } else {
     currentComposer.useNode()
   }
 
-  Updater<W>(currentComposer).update()
+  Updater<WidgetNode<W, *>>(currentComposer).update()
   RedwoodComposeContent.Instance.content()
 
   currentComposer.endNode()
@@ -162,10 +161,10 @@ public class RedwoodComposeContent<out W : Widget<*>> {
     accessor: (W) -> Widget.Children<*>,
     content: @Composable () -> Unit,
   ) {
-    ComposeNode<ChildrenWidget<*>, Applier<*>>(
+    ComposeNode<ChildrenNode<*>, Applier<*>>(
       factory = {
         @Suppress("UNCHECKED_CAST")
-        ChildrenWidget(accessor as (Widget<Any>) -> Widget.Children<Any>)
+        ChildrenNode(accessor as (Widget<Any>) -> Widget.Children<Any>)
       },
       update = {},
       content = content,
@@ -175,29 +174,4 @@ public class RedwoodComposeContent<out W : Widget<*>> {
   public companion object {
     public val Instance: RedwoodComposeContent<Nothing> = RedwoodComposeContent()
   }
-}
-
-/**
- * A synthetic widget which allows the applier to differentiate between multiple groups of children.
- *
- * Compose's tree assumes each node only has single list of children. Or, put another way, even if
- * you apply multiple children Compose treats them as a single list of child nodes. In order to
- * differentiate between these children lists we introduce synthetic nodes. Every real node which
- * supports one or more groups of children will have one or more of these synthetic nodes as its
- * direct descendants. The nodes which are produced by each group of children will then become the
- * descendants of those synthetic nodes.
- *
- * @suppress For generated code usage only.
- */
-internal class ChildrenWidget<W : Any> private constructor(
-  var accessor: ((Widget<W>) -> Widget.Children<W>)?,
-  var children: Widget.Children<W>?,
-) : Widget<W> {
-  constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null)
-  constructor(children: Widget.Children<W>) : this(null, children)
-
-  override val value: Nothing get() = throw AssertionError()
-  override var layoutModifiers: LayoutModifier
-    get() = throw AssertionError()
-    set(_) { throw AssertionError() }
 }

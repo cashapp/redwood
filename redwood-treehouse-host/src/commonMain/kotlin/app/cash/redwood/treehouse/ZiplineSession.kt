@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** The host state for a single code load. We get a new session each time we get new code. */
@@ -30,21 +32,16 @@ internal class ZiplineSession<A : AppService>(
   val sessionScope: CoroutineScope,
   val appService: A,
   val zipline: Zipline,
-  val isInitialLaunch: Boolean,
+  private val frameClock: FrameClock,
 ) {
   private val ziplineScope = ZiplineScope()
 
-  fun startFrameClock() {
+  fun start() {
+    frameClock.start(sessionScope, app.dispatchers)
     sessionScope.launch(app.dispatchers.zipline) {
-      val clockService = appService.withScope(ziplineScope).frameClockService
-      val ticksPerSecond = 60
-      var now = 0L
-      val delayNanos = 1_000_000_000L / ticksPerSecond
-      while (true) {
-        clockService.sendFrame(now)
-        delay(delayNanos / 1_000_000)
-        now += delayNanos
-      }
+      val appLifecycle = appService.withScope(ziplineScope).appLifecycle
+      val host = RealAppLifecycleHost(appLifecycle, app, frameClock)
+      appLifecycle.start(host)
     }
   }
 
@@ -54,5 +51,30 @@ internal class ZiplineSession<A : AppService>(
       ziplineScope.close()
       zipline.close()
     }
+  }
+}
+
+/** Platform features to the guest application. */
+private class RealAppLifecycleHost(
+  val appLifecycle: AppLifecycle,
+  val app: TreehouseApp<*>,
+  val frameClock: FrameClock,
+) : AppLifecycle.Host {
+  override fun requestFrame() {
+    frameClock.requestFrame(appLifecycle)
+  }
+
+  override fun onUnknownEvent(
+    widgetTag: WidgetTag,
+    tag: EventTag,
+  ) {
+    app.eventPublisher.onUnknownEvent(app, widgetTag, tag)
+  }
+
+  override fun onUnknownEventNode(
+    id: Id,
+    tag: EventTag,
+  ) {
+    app.eventPublisher.onUnknownEventNode(app, id, tag)
   }
 }
