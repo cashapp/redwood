@@ -97,8 +97,9 @@ internal class YogaLayout {
       }
     }
 
-    override fun setNeedsLayout() {
-      applyLayout(width, height, true)
+    override fun layoutSubviews() {
+      super.layoutSubviews()
+      applyLayout(width, height, preserveOrigin = true)
     }
   }
 }
