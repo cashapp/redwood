@@ -22,7 +22,7 @@ import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.matchesPredicate
+import assertk.assertions.containsMatch
 import example.redwood.ExampleSchema
 import kotlin.text.RegexOption.MULTILINE
 import org.junit.Test
@@ -54,10 +54,8 @@ class WidgetProtocolGenerationTest {
     val schema = ProtocolSchemaSet.parse(SortedByTagSchema::class)
 
     val fileSpec = generateProtocolNodeFactory(schema)
-
-    // https://github.com/willowtreeapps/assertk/issues/452
-    val regex = Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE)
-    assertThat(fileSpec.toString()).matchesPredicate(regex::containsMatchIn)
+    assertThat(fileSpec.toString())
+      .containsMatch(Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE))
   }
 
   @Test fun `dependency layout modifiers are included in serialization`() {
