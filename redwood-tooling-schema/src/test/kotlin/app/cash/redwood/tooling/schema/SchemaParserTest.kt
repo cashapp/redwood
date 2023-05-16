@@ -26,13 +26,18 @@ import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
+import assertk.all
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.containsExactly
+import assertk.assertions.containsMatch
 import assertk.assertions.hasMessage
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
+import assertk.assertions.message
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import example.redwood.ExampleSchema
@@ -383,8 +388,6 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -406,14 +409,14 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
-          "Found: kotlin.collections.List<kotlin.Int>",
-      )
+      .message()
+      .isNotNull()
+      .all {
+        contains("@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class.")
+        containsMatch(Regex("""Found: (kotlin\.collections\.)?List<(kotlin\.)?Int>"""))
+      }
   }
 
   @Schema(
@@ -429,8 +432,6 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenTypeParameterInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenTypeParameterInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -453,8 +454,6 @@ class SchemaParserTest(
   )
 
   @Test fun eventTypes() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
@@ -478,8 +477,6 @@ class SchemaParserTest(
   )
 
   @Test fun eventArguments() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(EventArgumentsSchema::class).schema
     val widget = schema.widgets.single()
 
