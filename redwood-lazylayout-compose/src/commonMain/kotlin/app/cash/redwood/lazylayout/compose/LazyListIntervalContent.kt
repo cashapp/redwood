@@ -25,12 +25,13 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultInvalid
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
+import app.cash.redwood.lazylayout.compose.layout.LazyLayoutIntervalContent
 import app.cash.redwood.lazylayout.compose.layout.MutableIntervalList
 
 internal class LazyListIntervalContent(
   content: LazyListScope.() -> Unit,
-) : LazyListScope {
-  val intervals = MutableIntervalList<LazyListInterval>()
+) : LazyLayoutIntervalContent<LazyListInterval>(), LazyListScope {
+  override val intervals: MutableIntervalList<LazyListInterval> = MutableIntervalList()
 
   init {
     apply(content)
@@ -60,7 +61,7 @@ internal class LazyListIntervalContent(
 
 internal data class LazyListInterval(
   val item: @Composable (index: Int) -> Unit,
-)
+) : LazyLayoutIntervalContent.Interval
 
 internal class ItemPagingSource(
   private val scope: LazyListIntervalContent,
@@ -70,12 +71,11 @@ internal class ItemPagingSource(
     params: PagingSourceLoadParams<Int>,
   ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
     val key = params.key ?: 0
-    val count = scope.intervals.size
     val limit = when (params) {
       is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
       is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
       else -> params.loadSize
-    }.coerceAtMost(count)
+    }.coerceAtMost(scope.itemCount)
     val offset = when (params) {
       is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
       is PagingSourceLoadParamsAppend<*> -> key
@@ -84,14 +84,15 @@ internal class ItemPagingSource(
     }
     val nextPosToLoad = offset + limit
     val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
-      data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
-        val interval = scope.intervals[index + offset]
-        { interval.value.item.invoke(index + offset - interval.startIndex) }
+      data = List(if (nextPosToLoad <= scope.itemCount) limit else scope.itemCount - offset) { index ->
+        scope.withInterval(index + offset) { localIntervalIndex, content ->
+          { content.item.invoke(localIntervalIndex) }
+        }
       },
       prevKey = offset.takeIf { it > 0 && limit > 0 },
-      nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
+      nextKey = nextPosToLoad.takeIf { limit > 0 && it < scope.itemCount },
       itemsBefore = offset,
-      itemsAfter = maxOf(0, count - nextPosToLoad),
+      itemsAfter = maxOf(0, scope.itemCount - nextPosToLoad),
     )
 
     return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
