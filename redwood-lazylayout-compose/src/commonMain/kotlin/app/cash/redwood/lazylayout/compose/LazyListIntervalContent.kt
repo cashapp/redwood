@@ -25,11 +25,12 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultInvalid
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
+import app.cash.redwood.lazylayout.compose.layout.MutableIntervalList
 
 internal class LazyListIntervalContent(
   content: LazyListScope.() -> Unit,
 ) : LazyListScope {
-  val intervals = mutableListOf<LazyListInterval>()
+  val intervals = MutableIntervalList<LazyListInterval>()
 
   init {
     apply(content)
@@ -39,23 +40,26 @@ internal class LazyListIntervalContent(
     count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   ) {
-    intervals += LazyListInterval(
+    intervals.addInterval(
       count,
-      itemContent = itemContent,
+      LazyListInterval(
+        item = itemContent,
+      ),
     )
   }
 
   override fun item(content: @Composable () -> Unit) {
-    intervals += LazyListInterval(
+    intervals.addInterval(
       1,
-      itemContent = { content() },
+      LazyListInterval(
+        item = { content() },
+      ),
     )
   }
 }
 
 internal data class LazyListInterval(
-  val count: Int,
-  val itemContent: @Composable (index: Int) -> Unit,
+  val item: @Composable (index: Int) -> Unit,
 )
 
 internal class ItemPagingSource(
@@ -66,7 +70,7 @@ internal class ItemPagingSource(
     params: PagingSourceLoadParams<Int>,
   ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
     val key = params.key ?: 0
-    val count = scope.intervals.sumOf { it.count }
+    val count = scope.intervals.size
     val limit = when (params) {
       is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
       is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
@@ -81,12 +85,8 @@ internal class ItemPagingSource(
     val nextPosToLoad = offset + limit
     val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
       data = List(if (nextPosToLoad <= count) limit else count - offset) { index ->
-        var interval = IndexedValue(index + offset, scope.intervals.first())
-        for (nextInterval in scope.intervals.drop(1)) {
-          if (interval.index < interval.value.count) break
-          interval = IndexedValue(interval.index - interval.value.count, nextInterval)
-        }
-        { interval.value.itemContent.invoke(interval.index) }
+        val interval = scope.intervals[index + offset]
+        { interval.value.item.invoke(index + offset - interval.startIndex) }
       },
       prevKey = offset.takeIf { it > 0 && limit > 0 },
       nextKey = nextPosToLoad.takeIf { limit > 0 && it < count },
