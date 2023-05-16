@@ -39,6 +39,7 @@ import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaLayout {
   val rootNode = Yoga.YGNodeNew()
@@ -93,7 +94,9 @@ internal class YogaLayout {
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
       return size.useContents {
-        calculateLayoutWithSize(YGSize(width.toFloat(), height.toFloat())).toCGSize()
+        val width = if (width == UIViewNoIntrinsicMetric) YGUndefined else width.toFloat()
+        val height = if (height == UIViewNoIntrinsicMetric) YGUndefined else height.toFloat()
+        calculateLayoutWithSize(YGSize(width, height)).toCGSize()
       }
     }
 
