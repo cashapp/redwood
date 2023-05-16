@@ -49,8 +49,9 @@ fun main() {
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodLazyLayout = object : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
-        // For now we use a ColumnProvider to replace this with a normal Column.
+        // For now we use a ColumnProvider to replace these with a normal Column.
         override fun LazyList() = throw UnsupportedOperationException()
+        override fun RefreshableLazyList() = throw UnsupportedOperationException()
       },
     ),
   )
