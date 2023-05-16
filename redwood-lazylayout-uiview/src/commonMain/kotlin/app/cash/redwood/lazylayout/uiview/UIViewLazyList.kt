@@ -135,13 +135,13 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
 }
 
 internal class UIViewRefreshableLazyListImpl(
-  private val refreshControlFactory: (() -> UIRefreshControl)? = null,
+  private val refreshControlFactory: () -> UIRefreshControl,
 ) : UIViewLazyListImpl(), RefreshableLazyList<UIView> {
 
   private var onRefresh: (() -> Unit)? = null
 
   private val refreshControl by lazy {
-    refreshControlFactory?.invoke()?.apply {
+    refreshControlFactory().apply {
       setEventHandler(UIControlEventValueChanged) {
         onRefresh?.invoke()
       }
@@ -149,35 +149,24 @@ internal class UIViewRefreshableLazyListImpl(
   }
 
   override fun refreshing(refreshing: Boolean) {
-    requireNotNull(refreshControl) {
-      "UIRefreshControl is null. Are you using RefreshableLazyList?"
-    }
-    refreshControl?.let { control ->
-      if (refreshing != control.refreshing) {
-        if (refreshing) {
-          control.beginRefreshing()
-        } else {
-          control.endRefreshing()
-        }
+    if (refreshing != refreshControl.refreshing) {
+      if (refreshing) {
+        refreshControl.beginRefreshing()
+      } else {
+        refreshControl.endRefreshing()
       }
     }
   }
 
   override fun onRefresh(onRefresh: (() -> Unit)?) {
-    requireNotNull(refreshControl) {
-      "UIRefreshControl is null. Are you using RefreshableLazyList?"
-    }
-
     this.onRefresh = onRefresh
 
-    refreshControl?.let { control ->
-      if (onRefresh != null) {
-        if (tableView.refreshControl != control) {
-          tableView.refreshControl = control
-        }
-      } else {
-        control.removeFromSuperview()
+    if (onRefresh != null) {
+      if (tableView.refreshControl != refreshControl) {
+        tableView.refreshControl = refreshControl
       }
+    } else {
+      refreshControl.removeFromSuperview()
     }
   }
 }
