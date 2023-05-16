@@ -18,20 +18,10 @@ package app.cash.redwood.layout.uiview
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.MeasureSpec
-import app.cash.redwood.flexbox.MeasureSpecMode
-import app.cash.redwood.flexbox.Size
-import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.yoga.enums.YGAlign
 import app.cash.redwood.yoga.enums.YGFlexDirection
 import app.cash.redwood.yoga.enums.YGJustify
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGSize
-import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
-import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal fun FlexDirection.toYoga() = when (this) {
   FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
@@ -57,14 +47,6 @@ internal fun JustifyContent.toYoga() = when (this) {
   JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
   JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
   JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
-  else -> throw AssertionError()
-}
-
-internal fun CrossAxisAlignment.toYoga() = when (this) {
-  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
-  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
-  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
-  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
   else -> throw AssertionError()
 }
 
