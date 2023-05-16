@@ -25,3 +25,12 @@ redwoodSchema {
   source = projects.redwoodLazylayoutSchema
   type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/IntervalList.kt",
+    )
+  }
+}
