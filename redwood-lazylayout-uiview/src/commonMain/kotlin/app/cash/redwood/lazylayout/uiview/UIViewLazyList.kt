@@ -22,10 +22,13 @@ package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCClass
 import platform.Foundation.NSIndexPath
 import platform.Foundation.classForCoder
+import platform.UIKit.UIControlEventValueChanged
+import platform.UIKit.UIRefreshControl
 import platform.UIKit.UITableView
 import platform.UIKit.UITableViewCell
 import platform.UIKit.UITableViewCellStyle
@@ -39,7 +42,16 @@ import platform.darwin.NSObject
 
 private const val reuseIdentifier = "cell"
 
-internal class UIViewLazyList : LazyList<UIView> {
+/**
+ * Public function to allow downstream factories to create their own ViewLazyList
+ */
+public fun UIViewLazyList(): LazyList<UIView> = UIViewLazyListImpl()
+
+public fun UIViewRefreshableLazyList(
+  refreshControlFactory: () -> UIRefreshControl,
+): RefreshableLazyList<UIView> = UIViewRefreshableLazyListImpl(refreshControlFactory)
+
+internal open class UIViewLazyListImpl() : LazyList<UIView> {
 
   private val itemsList = mutableListOf<Widget<UIView>>()
 
@@ -92,7 +104,7 @@ internal class UIViewLazyList : LazyList<UIView> {
       ): UITableViewCell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as Cell
     }
 
-  private val tableView = UITableView()
+  internal val tableView = UITableView()
     .apply {
       dataSource = tableViewDataSource
       delegate = tableViewDelegate
@@ -120,6 +132,43 @@ internal class UIViewLazyList : LazyList<UIView> {
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
   override val value: UIView get() = tableView
+}
+
+internal class UIViewRefreshableLazyListImpl(
+  private val refreshControlFactory: () -> UIRefreshControl,
+) : UIViewLazyListImpl(), RefreshableLazyList<UIView> {
+
+  private var onRefresh: (() -> Unit)? = null
+
+  private val refreshControl by lazy {
+    refreshControlFactory().apply {
+      setEventHandler(UIControlEventValueChanged) {
+        onRefresh?.invoke()
+      }
+    }
+  }
+
+  override fun refreshing(refreshing: Boolean) {
+    if (refreshing != refreshControl.refreshing) {
+      if (refreshing) {
+        refreshControl.beginRefreshing()
+      } else {
+        refreshControl.endRefreshing()
+      }
+    }
+  }
+
+  override fun onRefresh(onRefresh: (() -> Unit)?) {
+    this.onRefresh = onRefresh
+
+    if (onRefresh != null) {
+      if (tableView.refreshControl != refreshControl) {
+        tableView.refreshControl = refreshControl
+      }
+    } else {
+      refreshControl.removeFromSuperview()
+    }
+  }
 }
 
 private class Cell(

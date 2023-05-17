@@ -16,6 +16,7 @@
 package com.example.redwood.emojisearch.browser
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.compose.Column
@@ -48,8 +49,9 @@ fun main() {
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodLazyLayout = object : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
-        // For now we use a ColumnProvider to replace this with a normal Column.
+        // For now we use a ColumnProvider to replace these with a normal Column.
         override fun LazyList() = throw UnsupportedOperationException()
+        override fun RefreshableLazyList() = throw UnsupportedOperationException()
       },
     ),
   )
@@ -78,9 +80,12 @@ private object TruncatingColumnProvider : ColumnProvider {
   @Composable
   override fun <T> create(
     items: List<T>,
+    refreshing: Boolean,
+    onRefresh: (() -> Unit)?,
+    layoutModifier: LayoutModifier,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    Column {
+    Column(layoutModifier = layoutModifier) {
       for (item in items.take(25)) {
         itemContent(item)
       }

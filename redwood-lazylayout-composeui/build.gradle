@@ -27,6 +27,7 @@ kotlin {
         api projects.redwoodLazylayoutWidget
         implementation projects.redwoodWidgetCompose
         implementation libs.jetbrains.compose.foundation
+        implementation libs.jetbrains.compose.material
       }
     }
   }

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("FunctionName")
+
 package app.cash.redwood.lazylayout.view
 
 import android.view.View
@@ -20,10 +22,13 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.core.view.doOnDetach
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.MainScope
@@ -55,35 +60,51 @@ internal class Items<VH : RecyclerView.ViewHolder>(
   }
 }
 
-internal class ViewLazyList(
-  override val value: RecyclerView,
+/**
+ * Public function to allow downstream factories to create their own LazyList
+ */
+public fun ViewLazyList(
+  recyclerViewFactory: () -> RecyclerView,
+): LazyList<View> = ViewLazyListImpl(recyclerViewFactory)
+
+/**
+ * Public function to allow downstream factories to create their own RefreshableLazyList
+ */
+public fun ViewRefreshableLazyList(
+  recyclerViewFactory: () -> RecyclerView,
+  swipeRefreshLayoutFactory: () -> SwipeRefreshLayout,
+): RefreshableLazyList<View> = RefreshableViewLazyListImpl(recyclerViewFactory, swipeRefreshLayoutFactory)
+
+internal open class ViewLazyListImpl(
+  recyclerViewFactory: () -> RecyclerView,
 ) : LazyList<View> {
   private val scope = MainScope()
 
+  internal val recyclerView: RecyclerView by lazy { recyclerViewFactory() }
+
   override var layoutModifiers: LayoutModifier = LayoutModifier
 
-  private val linearLayoutManager = LinearLayoutManager(value.context)
+  private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
   private val adapter = LazyContentItemListAdapter()
 
-  override val items = Items(adapter)
+  override val value: View get() = recyclerView
+
+  final override val items = Items(adapter)
 
   init {
     adapter.items = items
-    value.apply {
+    recyclerView.apply {
+      setHasFixedSize(true)
       layoutManager = linearLayoutManager
-      layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-    }
-    value.adapter = adapter
-    value.addOnAttachStateChangeListener(
-      object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(view: View) {}
 
-        override fun onViewDetachedFromWindow(view: View) {
-          view.removeOnAttachStateChangeListener(this)
-          scope.cancel()
-        }
-      },
-    )
+      // TODO: sizing should be controlled by LayoutModifiers
+      layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+
+      doOnDetach {
+        scope.cancel()
+      }
+    }
+    recyclerView.adapter = adapter
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -117,4 +138,30 @@ internal class ViewLazyList(
   }
 
   class ViewHolder(val container: FrameLayout) : RecyclerView.ViewHolder(container)
+}
+
+internal class RefreshableViewLazyListImpl(
+  recyclerViewFactory: () -> RecyclerView,
+  swipeRefreshLayoutFactory: () -> SwipeRefreshLayout,
+) : ViewLazyListImpl(recyclerViewFactory), RefreshableLazyList<View> {
+
+  private val swipeRefreshLayout by lazy { swipeRefreshLayoutFactory() }
+
+  override val value: View get() = swipeRefreshLayout
+
+  init {
+    swipeRefreshLayout.apply {
+      addView(recyclerView)
+      layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+    }
+  }
+
+  override fun refreshing(refreshing: Boolean) {
+    swipeRefreshLayout.isRefreshing = refreshing
+  }
+
+  override fun onRefresh(onRefresh: (() -> Unit)?) {
+    swipeRefreshLayout.isEnabled = onRefresh != null
+    swipeRefreshLayout.setOnRefreshListener(onRefresh)
+  }
 }

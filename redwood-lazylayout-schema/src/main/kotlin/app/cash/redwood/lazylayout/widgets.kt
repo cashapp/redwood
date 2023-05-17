@@ -25,3 +25,12 @@ public data class LazyList(
   @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
   @Children(1) val items: () -> Unit,
 )
+
+@Widget(2)
+public data class RefreshableLazyList(
+  @Property(1) val isVertical: Boolean,
+  @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
+  @Property(3) val refreshing: Boolean,
+  @Property(4) val onRefresh: (() -> Unit)?,
+  @Children(1) val items: () -> Unit,
+)

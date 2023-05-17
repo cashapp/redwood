@@ -17,9 +17,15 @@ package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import platform.UIKit.UIRefreshControl
 import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodLazyLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<UIView> {
   override fun LazyList(): LazyList<UIView> = UIViewLazyList()
+
+  override fun RefreshableLazyList(): RefreshableLazyList<UIView> = UIViewRefreshableLazyList(
+    refreshControlFactory = { UIRefreshControl() },
+  )
 }

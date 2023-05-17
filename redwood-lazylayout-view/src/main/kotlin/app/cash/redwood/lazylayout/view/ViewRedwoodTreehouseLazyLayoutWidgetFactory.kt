@@ -18,11 +18,20 @@ package app.cash.redwood.lazylayout.view
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 
 public class ViewRedwoodLazyLayoutWidgetFactory(
   private val context: Context,
 ) : RedwoodLazyLayoutWidgetFactory<View> {
-  public override fun LazyList(): LazyList<View> = ViewLazyList(RecyclerView(context))
+  public override fun LazyList(): LazyList<View> = ViewLazyList(
+    recyclerViewFactory = { RecyclerView(context) },
+  )
+
+  public override fun RefreshableLazyList(): RefreshableLazyList<View> = ViewRefreshableLazyList(
+    recyclerViewFactory = { RecyclerView(context) },
+    swipeRefreshLayoutFactory = { SwipeRefreshLayout(context) },
+  )
 }
