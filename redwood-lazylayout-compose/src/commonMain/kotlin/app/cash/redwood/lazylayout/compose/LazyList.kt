@@ -25,6 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingSourceLoadParams
+import app.cash.paging.PagingSourceLoadParamsAppend
+import app.cash.paging.PagingSourceLoadParamsPrepend
+import app.cash.paging.PagingSourceLoadParamsRefresh
+import app.cash.paging.PagingSourceLoadResult
+import app.cash.paging.PagingSourceLoadResultInvalid
+import app.cash.paging.PagingSourceLoadResultPage
+import app.cash.paging.PagingState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.LayoutModifier
@@ -107,4 +116,42 @@ internal fun RefreshableLazyList(
       }
     },
   )
+}
+
+private class ItemPagingSource(
+  private val scope: LazyListIntervalContent,
+) : PagingSource<Int, @Composable () -> Unit>() {
+
+  override suspend fun load(
+    params: PagingSourceLoadParams<Int>,
+  ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
+    val key = params.key ?: 0
+    val limit = when (params) {
+      is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
+      is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
+      else -> params.loadSize
+    }.coerceAtMost(scope.itemCount)
+    val offset = when (params) {
+      is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
+      is PagingSourceLoadParamsAppend<*> -> key
+      is PagingSourceLoadParamsRefresh<*> -> 0
+      else -> error("Shouldn't happen")
+    }
+    val nextPosToLoad = offset + limit
+    val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
+      data = List(if (nextPosToLoad <= scope.itemCount) limit else scope.itemCount - offset) { index ->
+        scope.withInterval(index + offset) { localIntervalIndex, content ->
+          { content.item.invoke(localIntervalIndex) }
+        }
+      },
+      prevKey = offset.takeIf { it > 0 && limit > 0 },
+      nextKey = nextPosToLoad.takeIf { limit > 0 && it < scope.itemCount },
+      itemsBefore = offset,
+      itemsAfter = maxOf(0, scope.itemCount - nextPosToLoad),
+    )
+
+    return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
+  }
+
+  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int = state.pages.sumOf { it.data.size }
 }

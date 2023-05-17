@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,11 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadParamsAppend
-import app.cash.paging.PagingSourceLoadParamsPrepend
-import app.cash.paging.PagingSourceLoadParamsRefresh
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingSourceLoadResultInvalid
-import app.cash.paging.PagingSourceLoadResultPage
-import app.cash.paging.PagingState
 import app.cash.redwood.lazylayout.compose.layout.LazyLayoutIntervalContent
 import app.cash.redwood.lazylayout.compose.layout.MutableIntervalList
+
+// Copied from https://github.com/androidx/androidx/blob/5c0f6611fe87e4ed29b1e5881e084581283169c1/compose/foundation/foundation/src/commonMain/kotlin/androidx/compose/foundation/lazy/LazyListIntervalContent.kt
+// Removed support for keys, content types, and sticky headers.
 
 internal class LazyListIntervalContent(
   content: LazyListScope.() -> Unit,
@@ -59,44 +53,6 @@ internal class LazyListIntervalContent(
   }
 }
 
-internal data class LazyListInterval(
+internal class LazyListInterval(
   val item: @Composable (index: Int) -> Unit,
 ) : LazyLayoutIntervalContent.Interval
-
-internal class ItemPagingSource(
-  private val scope: LazyListIntervalContent,
-) : PagingSource<Int, @Composable () -> Unit>() {
-
-  override suspend fun load(
-    params: PagingSourceLoadParams<Int>,
-  ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
-    val key = params.key ?: 0
-    val limit = when (params) {
-      is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
-      is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
-      else -> params.loadSize
-    }.coerceAtMost(scope.itemCount)
-    val offset = when (params) {
-      is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
-      is PagingSourceLoadParamsAppend<*> -> key
-      is PagingSourceLoadParamsRefresh<*> -> 0
-      else -> error("Shouldn't happen")
-    }
-    val nextPosToLoad = offset + limit
-    val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
-      data = List(if (nextPosToLoad <= scope.itemCount) limit else scope.itemCount - offset) { index ->
-        scope.withInterval(index + offset) { localIntervalIndex, content ->
-          { content.item.invoke(localIntervalIndex) }
-        }
-      },
-      prevKey = offset.takeIf { it > 0 && limit > 0 },
-      nextKey = nextPosToLoad.takeIf { limit > 0 && it < scope.itemCount },
-      itemsBefore = offset,
-      itemsAfter = maxOf(0, scope.itemCount - nextPosToLoad),
-    )
-
-    return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
-  }
-
-  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int = state.pages.sumOf { it.data.size }
-}
