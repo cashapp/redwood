@@ -20,6 +20,8 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.paging.ItemSnapshotList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.cash.redwood.LayoutModifier
@@ -33,22 +35,22 @@ internal class Items<VH : RecyclerView.ViewHolder>(
   private val adapter: RecyclerView.Adapter<VH>,
 ) : Widget.Children<View> {
   private val _widgets = MutableListChildren<View>()
-  val widgets: List<Widget<View>> get() = _widgets
+  var itemSnapshotList = ItemSnapshotList(0, 0, _widgets)
 
   override fun insert(index: Int, widget: Widget<View>) {
     _widgets.insert(index, widget)
-    adapter.notifyItemInserted(index)
+    adapter.notifyItemInserted(itemSnapshotList.placeholdersBefore + index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
     check(count == 1)
-    adapter.notifyItemMoved(fromIndex, toIndex) // TODO Support arbitrary count.
+    adapter.notifyItemMoved(itemSnapshotList.placeholdersBefore + fromIndex, itemSnapshotList.placeholdersBefore + toIndex) // TODO Support arbitrary count.
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
-    adapter.notifyItemRangeRemoved(index, count)
+    adapter.notifyItemRangeRemoved(itemSnapshotList.placeholdersBefore + index, count)
   }
 
   override fun onLayoutModifierUpdated() {
@@ -94,12 +96,35 @@ internal class ViewLazyList(
     adapter.onPositionDisplayed = onPositionDisplayed
   }
 
+  override fun placeholdersBefore(placeholdersBefore: Int) {
+    val delta = placeholdersBefore - items.itemSnapshotList.placeholdersBefore
+    items.itemSnapshotList = items.itemSnapshotList.copy(placeholdersBefore = placeholdersBefore)
+
+    if (delta > 0) {
+      adapter.notifyItemRangeInserted(placeholdersBefore - delta, delta)
+    } else {
+      adapter.notifyItemRangeRemoved(placeholdersBefore, -delta)
+    }
+  }
+
+  override fun placeholdersAfter(placeholdersAfter: Int) {
+    val delta = placeholdersAfter - items.itemSnapshotList.placeholdersAfter
+    items.itemSnapshotList = items.itemSnapshotList.copy(placeholdersAfter = placeholdersAfter)
+
+    val positionStart = items.itemSnapshotList.placeholdersBefore + items.itemSnapshotList.items.size
+    if (delta > 0) {
+      adapter.notifyItemRangeInserted(positionStart, delta)
+    } else {
+      adapter.notifyItemRangeRemoved(positionStart, -delta)
+    }
+  }
+
   private class LazyContentItemListAdapter : RecyclerView.Adapter<ViewHolder>() {
     var onPositionDisplayed: ((Int) -> Unit)? = null
 
     lateinit var items: Items<ViewHolder>
 
-    override fun getItemCount(): Int = items.widgets.size
+    override fun getItemCount(): Int = items.itemSnapshotList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
       FrameLayout(parent.context).apply {
@@ -108,8 +133,16 @@ internal class ViewLazyList(
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      onPositionDisplayed!!.invoke(position)
-      val view = items.widgets[position].value
+      onPositionDisplayed!!(position)
+      val index = position - items.itemSnapshotList.placeholdersBefore
+      val view = if (index !in items.itemSnapshotList.items.indices) {
+        TextView(holder.itemView.context).apply {
+          layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 100)
+          text = "Placeholder"
+        }
+      } else {
+        items.itemSnapshotList.items[index].value
+      }
       holder.container.removeAllViews()
       (view.parent as? FrameLayout)?.removeAllViews()
       holder.container.addView(view)
@@ -118,3 +151,13 @@ internal class ViewLazyList(
 
   class ViewHolder(val container: FrameLayout) : RecyclerView.ViewHolder(container)
 }
+
+private fun <T : Any> ItemSnapshotList<T>.copy(
+  placeholdersBefore: Int = this.placeholdersBefore,
+  placeholdersAfter: Int = this.placeholdersAfter,
+  items: List<T> = this.items,
+) = ItemSnapshotList(
+  placeholdersBefore,
+  placeholdersAfter,
+  items,
+)

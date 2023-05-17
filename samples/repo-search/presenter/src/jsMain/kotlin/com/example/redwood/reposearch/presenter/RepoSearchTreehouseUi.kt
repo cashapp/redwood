@@ -66,16 +66,10 @@ private class RepositoryPagingSource(
   }
 
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
-    val page = params.key ?: FIRST_PAGE_INDEX
-    val repositoriesJson = httpClient.call(
-      "https://api.github.com/search/repositories?page=$page&per_page=${params.loadSize}&sort=stars&q=$searchTerm",
-      mapOf("Accept" to "application/vnd.github.v3+json"),
-    )
-    val repositories = json.decodeFromString<Repositories>(repositoriesJson)
     return LoadResult.Page(
-      data = repositories.items,
-      prevKey = (page - 1).takeIf { it >= FIRST_PAGE_INDEX },
-      nextKey = if (repositories.items.isNotEmpty()) page + 1 else null,
+      data = List(params.loadSize) { Repository(((params.key ?: 0) + it).toString(), 0) },
+      prevKey = params.key,
+      nextKey = (params.key ?: 0) + params.loadSize,
     )
   }
 

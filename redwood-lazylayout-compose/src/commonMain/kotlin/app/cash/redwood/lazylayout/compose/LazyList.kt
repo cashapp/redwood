@@ -19,10 +19,13 @@ package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -37,9 +40,8 @@ internal fun LazyList(
   val scope = LazyListIntervalContent(content)
   val pagerFlow = remember {
     // TODO Don't hardcode pageSizes
-    // TODO Enable placeholder support
     // TODO Set a maxSize so we don't keep _too_ many views in memory
-    val pager = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)) {
+    val pager = Pager(PagingConfig(pageSize = 20)) {
       itemPagingSource!!
     }
     pager.flow
@@ -51,8 +53,12 @@ internal fun LazyList(
       itemPagingSource?.invalidate()
     }
   }
+  val placeholdersBefore by remember { derivedStateOf(structuralEqualityPolicy()) { lazyPagingItems.itemSnapshotList.placeholdersBefore } }
+  val placeholdersAfter by remember { derivedStateOf(structuralEqualityPolicy()) { lazyPagingItems.itemSnapshotList.placeholdersAfter } }
   LazyList(
     isVertical,
+    placeholdersBefore = placeholdersBefore,
+    placeholdersAfter = placeholdersAfter,
     onPositionDisplayed = { position ->
       /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
       if (position < lazyPagingItems.itemCount) {
@@ -60,9 +66,11 @@ internal fun LazyList(
       }
     },
     items = {
-      repeat(lazyPagingItems.itemCount) { index ->
-        // Only invokes Composable lambdas that are loaded.
-        lazyPagingItems.peek(index)!!()
+      // Only invokes Composable lambdas that are loaded.
+      for (index in placeholdersBefore until lazyPagingItems.itemCount - placeholdersAfter) {
+        key(index) {
+          lazyPagingItems.peek(index)!!()
+        }
       }
     },
   )
