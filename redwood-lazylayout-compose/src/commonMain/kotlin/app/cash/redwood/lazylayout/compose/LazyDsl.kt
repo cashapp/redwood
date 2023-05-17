@@ -65,7 +65,7 @@ public inline fun <T> LazyListScope.itemsIndexed(
   itemContent(it, items[it])
 }
 
-@RequiresOptIn("This API is for use by Redwood's generated code only")
+@RequiresOptIn("This Redwood LazyLayout API is experimental and may change in the future.")
 public annotation class ExperimentalRedwoodLazyLayoutApi
 
 @Composable
