@@ -25,16 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
+import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.LayoutModifier
 import kotlin.jvm.JvmName
 
 @Composable
-internal fun LazyList(
-  isVertical: Boolean,
-  layoutModifier: LayoutModifier = LayoutModifier,
+private fun lazyPagingItems(
   content: LazyListScope.() -> Unit,
-) {
+): LazyPagingItems<@Composable () -> Unit> {
   var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
   val scope = LazyListIntervalContent(content)
   val pagerFlow = remember {
@@ -53,6 +52,16 @@ internal fun LazyList(
       itemPagingSource?.invalidate()
     }
   }
+  return lazyPagingItems
+}
+
+@Composable
+internal fun LazyList(
+  isVertical: Boolean,
+  layoutModifier: LayoutModifier = LayoutModifier,
+  content: LazyListScope.() -> Unit,
+) {
+  val lazyPagingItems = lazyPagingItems(content)
   LazyList(
     isVertical,
     onPositionDisplayed = { position ->
@@ -79,24 +88,7 @@ internal fun RefreshableLazyList(
   layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
-  var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
-  val scope = LazyListIntervalContent(content)
-  val pagerFlow = remember {
-    // TODO Don't hardcode pageSizes
-    // TODO Enable placeholder support
-    // TODO Set a maxSize so we don't keep _too_ many views in memory
-    val pager = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)) {
-      itemPagingSource!!
-    }
-    pager.flow
-  }
-  val lazyPagingItems = pagerFlow.collectAsLazyPagingItems()
-  DisposableEffect(scope) {
-    itemPagingSource = ItemPagingSource(scope)
-    onDispose {
-      itemPagingSource?.invalidate()
-    }
-  }
+  val lazyPagingItems = lazyPagingItems(content)
   RefreshableLazyList(
     isVertical,
     onPositionDisplayed = { position ->
