@@ -35,8 +35,10 @@ import assertk.assertions.containsMatch
 import assertk.assertions.hasMessage
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
 import assertk.assertions.message
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -44,6 +46,7 @@ import example.redwood.ExampleSchema
 import java.io.File
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
+import kotlinx.serialization.Serializable
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -800,6 +803,37 @@ class SchemaParserTest(
         "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedLayoutModifier " +
           "must have at least one scope.",
       )
+  }
+
+  @Schema(
+    [
+      SerializationLayoutModifier::class,
+    ],
+  )
+  interface SerializationSchema
+
+  @LayoutModifier(1, TestScope::class)
+  data class SerializationLayoutModifier(
+    val no: String,
+    val yes: SerializableType,
+  )
+
+  @Serializable
+  data class SerializableType(
+    val whevs: String,
+  )
+
+  @Test fun serializableLayoutModifierProperties() {
+    assumeTrue(parser != SchemaParser.Fir)
+
+    val schema = parser.parse(SerializationSchema::class).schema
+    val modifier = schema.layoutModifiers.single()
+
+    val yesProperty = modifier.properties.single { it.name == "yes" }
+    assertThat(yesProperty.isSerializable).isTrue()
+
+    val noProperty = modifier.properties.single { it.name == "no" }
+    assertThat(noProperty.isSerializable).isFalse()
   }
 
   @Schema(
