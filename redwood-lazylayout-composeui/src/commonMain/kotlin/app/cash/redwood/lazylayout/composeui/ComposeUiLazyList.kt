@@ -21,14 +21,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +46,9 @@ internal class ComposeUiLazyList :
   LazyList<@Composable () -> Unit>,
   RefreshableLazyList<@Composable () -> Unit> {
   private var isVertical by mutableStateOf(false)
-  private var onPositionDisplayed: ((Int) -> Unit)? by mutableStateOf(null)
+  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
+  private var itemsBefore by mutableStateOf(0)
+  private var itemsAfter by mutableStateOf(0)
   private var isRefreshing by mutableStateOf(false)
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
 
@@ -54,8 +60,16 @@ internal class ComposeUiLazyList :
     this.isVertical = isVertical
   }
 
-  override fun onPositionDisplayed(onPositionDisplayed: (Int) -> Unit) {
-    this.onPositionDisplayed = onPositionDisplayed
+  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+    this.onViewportChanged = onViewportChanged
+  }
+
+  override fun itemsBefore(itemsBefore: Int) {
+    this.itemsBefore = itemsBefore
+  }
+
+  override fun itemsAfter(itemsAfter: Int) {
+    this.itemsAfter = itemsAfter
   }
 
   override fun refreshing(refreshing: Boolean) {
@@ -68,8 +82,7 @@ internal class ComposeUiLazyList :
 
   override val value = @Composable {
     val content: LazyListScope.() -> Unit = {
-      itemsIndexed(this@ComposeUiLazyList.items.widgets) { index, item ->
-        onPositionDisplayed!!.invoke(index)
+      items(items.widgets) { item ->
         item.value.invoke()
       }
     }
@@ -91,11 +104,23 @@ internal class ComposeUiLazyList :
         modifier = Modifier.align(Alignment.TopCenter),
       )
 
+      // TODO Fix item count truncation
+      val state = rememberLazyListState()
+      val lastVisibleItemIndex by remember {
+        derivedStateOf { state.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+      }
+      LaunchedEffect(lastVisibleItemIndex) {
+        lastVisibleItemIndex?.let { lastVisibleItemIndex ->
+          onViewportChanged!!(state.firstVisibleItemIndex, lastVisibleItemIndex)
+        }
+      }
+
       if (isVertical) {
         LazyColumn(
           modifier = Modifier
             .fillMaxWidth()
             .pullRefresh(state = refreshState, enabled = onRefresh != null),
+          state = state,
           horizontalAlignment = Alignment.CenterHorizontally,
           content = content,
         )
@@ -104,6 +129,7 @@ internal class ComposeUiLazyList :
           modifier = Modifier
             .fillMaxHeight()
             .pullRefresh(state = refreshState, enabled = onRefresh != null),
+          state = state,
           verticalAlignment = Alignment.CenterVertically,
           content = content,
         )

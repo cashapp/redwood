@@ -20,6 +20,7 @@ package app.cash.redwood.lazylayout.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import kotlin.jvm.JvmName
 
 @Composable
 private fun lazyPagingItems(
+  pagingConfig: PagingConfig,
   content: LazyListScope.() -> Unit,
 ): LazyPagingItems<@Composable () -> Unit> {
   var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
@@ -49,7 +51,7 @@ private fun lazyPagingItems(
     // TODO Don't hardcode pageSizes
     // TODO Enable placeholder support
     // TODO Set a maxSize so we don't keep _too_ many views in memory
-    val pager = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)) {
+    val pager = Pager(pagingConfig) {
       itemPagingSource!!
     }
     pager.flow
@@ -70,20 +72,28 @@ internal fun LazyList(
   layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
-  val lazyPagingItems = lazyPagingItems(content)
+  val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
+  val lazyPagingItems = lazyPagingItems(pagingConfig, content)
+  var window by remember { mutableStateOf(0 until pagingConfig.initialLoadSize) }
   LazyList(
     isVertical,
-    onPositionDisplayed = { position ->
-      /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
-      if (position < lazyPagingItems.itemCount) {
-        lazyPagingItems[position]
-      }
+    itemsBefore = window.first,
+    itemsAfter = (lazyPagingItems.itemCount - (window.last + 1)).coerceAtLeast(0),
+    onViewportChanged = { firstVisibleItemIndex, lastVisibleItemIndex ->
+      val newWindow = (firstVisibleItemIndex - pagingConfig.prefetchDistance).coerceAtLeast(0) until (lastVisibleItemIndex + 1 + pagingConfig.prefetchDistance)
+      window = newWindow
+
+      // Trigger load of everything in the range.
+      if (lazyPagingItems.itemCount > 0) lazyPagingItems[firstVisibleItemIndex]
+      if (lazyPagingItems.itemCount >= (lastVisibleItemIndex + 1)) lazyPagingItems[lastVisibleItemIndex]
     },
     layoutModifier = layoutModifier,
     items = {
-      repeat(lazyPagingItems.itemCount) { index ->
+      for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
         // Only invokes Composable lambdas that are loaded.
-        lazyPagingItems.peek(index)!!()
+        key(index) {
+          lazyPagingItems.peek(index)?.invoke()
+        }
       }
     },
   )
@@ -97,22 +107,30 @@ internal fun RefreshableLazyList(
   layoutModifier: LayoutModifier = LayoutModifier,
   content: LazyListScope.() -> Unit,
 ) {
-  val lazyPagingItems = lazyPagingItems(content)
+  val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
+  val lazyPagingItems = lazyPagingItems(pagingConfig, content)
+  var window by remember { mutableStateOf(0 until pagingConfig.initialLoadSize) }
   RefreshableLazyList(
     isVertical,
-    onPositionDisplayed = { position ->
-      /** Triggers load at position, loading all items within [PagingConfig.prefetchDistance] of the [position]. */
-      if (position < lazyPagingItems.itemCount) {
-        lazyPagingItems[position]
-      }
+    itemsBefore = window.first,
+    itemsAfter = (lazyPagingItems.itemCount - (window.last + 1)).coerceAtLeast(0),
+    onViewportChanged = { firstVisibleItemIndex, lastVisibleItemIndex ->
+      val newWindow = (firstVisibleItemIndex - pagingConfig.prefetchDistance).coerceAtLeast(0) until (lastVisibleItemIndex + 1 + pagingConfig.prefetchDistance)
+      window = newWindow
+
+      // Trigger load of everything in the range.
+      if (lazyPagingItems.itemCount > 0) lazyPagingItems[firstVisibleItemIndex]
+      if (lazyPagingItems.itemCount >= lastVisibleItemIndex) lazyPagingItems[lastVisibleItemIndex - 1]
     },
     refreshing = refreshing,
     onRefresh = onRefresh,
     layoutModifier = layoutModifier,
     items = {
-      repeat(lazyPagingItems.itemCount) { index ->
+      for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
         // Only invokes Composable lambdas that are loaded.
-        lazyPagingItems.peek(index)!!()
+        key(index) {
+          lazyPagingItems.peek(index)?.invoke()
+        }
       }
     },
   )

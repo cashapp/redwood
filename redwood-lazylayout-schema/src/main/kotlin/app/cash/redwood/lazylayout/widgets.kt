@@ -22,15 +22,19 @@ import app.cash.redwood.schema.Widget
 @Widget(1)
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
-  @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
+  @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
+  @Property(3) val itemsBefore: Int,
+  @Property(4) val itemsAfter: Int,
   @Children(1) val items: () -> Unit,
 )
 
 @Widget(2)
 public data class RefreshableLazyList(
   @Property(1) val isVertical: Boolean,
-  @Property(2) val onPositionDisplayed: (position: Int) -> Unit,
-  @Property(3) val refreshing: Boolean,
-  @Property(4) val onRefresh: (() -> Unit)?,
+  @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
+  @Property(3) val itemsBefore: Int,
+  @Property(4) val itemsAfter: Int,
+  @Property(5) val refreshing: Boolean,
+  @Property(6) val onRefresh: (() -> Unit)?,
   @Children(1) val items: () -> Unit,
 )
