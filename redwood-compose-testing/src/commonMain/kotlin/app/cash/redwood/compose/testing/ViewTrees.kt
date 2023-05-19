@@ -24,16 +24,12 @@ public val List<WidgetValue>.viewTree: ViewTree
     val builder = ViewTree.Builder()
     val root = builder.nextId++
 
-    for (widget in this) {
-      widget.addTo(Id(root), ChildrenTag.Root, builder)
+    for ((index, widget) in this.withIndex()) {
+      widget.addTo(Id(root), ChildrenTag.Root, index, builder)
     }
 
     return builder.build()
   }
 
 public val WidgetValue.viewTree: ViewTree
-  get() {
-    val builder = ViewTree.Builder()
-    addTo(Id(builder.nextId++), ChildrenTag.Root, builder)
-    return builder.build()
-  }
+  get() = listOf(this).viewTree

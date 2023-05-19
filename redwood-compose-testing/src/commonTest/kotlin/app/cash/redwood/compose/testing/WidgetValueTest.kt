@@ -68,7 +68,7 @@ class WidgetValueTest {
     override val layoutModifiers: LayoutModifier = LayoutModifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
   ) : WidgetValue {
-    override fun addTo(parentId: Id, childrenTag: ChildrenTag, builder: ViewTree.Builder) {
+    override fun addTo(parentId: Id, childrenTag: ChildrenTag, childrenIndex: Int, builder: ViewTree.Builder) {
       throw AssertionError()
     }
   }

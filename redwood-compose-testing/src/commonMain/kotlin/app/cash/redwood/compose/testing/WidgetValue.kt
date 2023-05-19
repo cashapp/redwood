@@ -36,6 +36,7 @@ public interface WidgetValue {
   public fun addTo(
     parentId: Id,
     childrenTag: ChildrenTag,
+    childrenIndex: Int,
     builder: ViewTree.Builder,
   )
 }
