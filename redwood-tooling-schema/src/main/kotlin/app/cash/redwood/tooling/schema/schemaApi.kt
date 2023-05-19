@@ -34,6 +34,7 @@ public interface SchemaSet {
 
 public interface Schema {
   public val type: FqType
+  public val documentation: String?
   public val scopes: List<FqType>
   public val widgets: List<Widget>
   public val layoutModifiers: List<LayoutModifier>
@@ -59,6 +60,8 @@ public interface Widget {
   /** Either a 'data class' or 'object'. */
   public val type: FqType
 
+  public val documentation: String?
+
   /** Non-null if this widget is deprecated. */
   public val deprecation: Deprecation?
 
@@ -67,6 +70,7 @@ public interface Widget {
 
   public sealed interface Trait {
     public val name: String
+    public val documentation: String?
     public val defaultExpression: String?
 
     /** Non-null if this trait is deprecated. */
@@ -93,6 +97,8 @@ public interface LayoutModifier {
   /** Either a 'data class' or 'object'. */
   public val type: FqType
 
+  public val documentation: String?
+
   /** Non-null if this layout modifier is deprecated. */
   public val deprecation: Deprecation?
 
@@ -101,6 +107,7 @@ public interface LayoutModifier {
 
   public interface Property {
     public val name: String
+    public val documentation: String?
     public val type: FqType
     public val isSerializable: Boolean
     public val defaultExpression: String?

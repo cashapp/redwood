@@ -27,6 +27,7 @@ import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
 import assertk.all
+import assertk.assertAll
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.contains
@@ -45,6 +46,7 @@ import java.io.File
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
 import org.junit.Assume.assumeTrue
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -843,6 +845,68 @@ class SchemaParserTest(
         "Schema deprecation does not support replacements: " +
           "app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationReplaceWithWidget",
       )
+  }
+
+  /** Schema single-line documentation. */
+  @Schema(
+    [
+      CommentsWidget::class,
+      CommentsLayoutModifier::class,
+    ],
+  )
+  interface CommentsSchema
+
+  /**
+   * Widget
+   * multi-line
+   * documentation.
+   */
+  @Widget(1)
+  data class CommentsWidget(
+    /**
+Property
+     weird formatting
+     documentation.
+     */
+    @Property(1) val id: Int,
+    /**Children
+     *missing
+     *spaces documentation.*/
+    @Children(1) val content: () -> Unit,
+  )
+
+  /**
+   * Layout modifier
+   * multi-line
+   * documentation.
+   */
+  @LayoutModifier(1, TestScope::class)
+  data class CommentsLayoutModifier(
+    /** Property same line documentation. */ val id: Int,
+  )
+
+  @Ignore("Missing handling of '/** */' noise")
+  @Test
+  fun comments() = assertAll {
+    assumeTrue(parser == SchemaParser.Fir) // Comments are only available through the AST.
+
+    val schema = parser.parse(CommentsSchema::class).schema
+    assertThat(schema.documentation).isEqualTo("Schema single-line documentation.")
+
+    val widget = schema.widgets.single()
+    assertThat(widget.documentation).isEqualTo("Widget multi-line documentation.")
+
+    val widgetProperty = widget.traits.single { it is PropertyTrait }
+    assertThat(widgetProperty.documentation).isEqualTo("Property weird formatting documentation.")
+
+    val widgetChildren = widget.traits.single { it is ChildrenTrait }
+    assertThat(widgetChildren.documentation).isEqualTo("Children missing spaces documentation.")
+
+    val modifier = schema.layoutModifiers.single()
+    assertThat(modifier.documentation).isEqualTo("Layout modifier multi-line documentation.")
+
+    val modifierProperty = modifier.properties.single()
+    assertThat(modifierProperty.documentation).isEqualTo("Property same line documentation.")
   }
 
   @Suppress("unused") // Values used by TestParameterInjector.
