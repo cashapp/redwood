@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Margin
 import kotlinx.serialization.Serializable
 
 @Serializable

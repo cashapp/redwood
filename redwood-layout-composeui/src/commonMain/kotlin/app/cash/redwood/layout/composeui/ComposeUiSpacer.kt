@@ -23,9 +23,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.api.Dp
-import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.dp
 
 internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
   private var width by mutableStateOf(0.dp)

@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.api
+package app.cash.redwood.ui
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import kotlin.test.Test
+import android.content.res.Resources
 
-class DensityTest {
+// Android uses 2.75 as a density scale for most recent Pixel devices and iOS
+// uses 3. This aligns the two so the generic values used by Redwood layout are
+// visually similar on both platforms.
+internal actual const val DensityMultiplier = 1.1
 
-  @Test fun dpToPxConversionIsSymmetric() {
-    with(Density(2.0)) {
-      var dp = 4.dp
-      assertThat(dp.toPx().toDp()).isEqualTo(dp)
-
-      dp = 20.dp
-      assertThat(dp.toPx().toDp()).isEqualTo(dp)
-    }
-  }
-
-  @Test fun pxToDpConversionIsSymmetric() {
-    with(Density(2.0)) {
-      var px = 4.0
-      assertThat(px.toDp().toPx()).isEqualTo(px)
-
-      px = 20.0
-      assertThat(px.toDp().toPx()).isEqualTo(px)
-    }
-  }
+/**
+ * Create a [Density] from the device's [Resources].
+ */
+public fun Density(resources: Resources): Density {
+  return Density(resources.displayMetrics.density.toDouble())
 }

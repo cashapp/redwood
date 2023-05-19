@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.api
+package app.cash.redwood.ui
 
-/** MacOS's coordinate system accounts for density automatically. */
+/** iOS's coordinate system accounts for density automatically. */
 public val Density.Companion.Default: Density get() = DefaultDensity
 
 private val DefaultDensity = Density(1.0)

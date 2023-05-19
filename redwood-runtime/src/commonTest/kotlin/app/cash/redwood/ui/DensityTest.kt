@@ -13,6 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.api
+package app.cash.redwood.ui
 
-internal actual const val DensityMultiplier = 1.0
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
+
+class DensityTest {
+
+  @Test fun dpToPxConversionIsSymmetric() {
+    with(Density(2.0)) {
+      var dp = 4.dp
+      assertThat(dp.toPx().toDp()).isEqualTo(dp)
+
+      dp = 20.dp
+      assertThat(dp.toPx().toDp()).isEqualTo(dp)
+    }
+  }
+
+  @Test fun pxToDpConversionIsSymmetric() {
+    with(Density(2.0)) {
+      var px = 4.0
+      assertThat(px.toDp().toPx()).isEqualTo(px)
+
+      px = 20.0
+      assertThat(px.toDp().toPx()).isEqualTo(px)
+    }
+  }
+}

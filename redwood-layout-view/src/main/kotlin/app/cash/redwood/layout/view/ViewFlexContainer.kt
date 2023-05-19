@@ -31,12 +31,12 @@ import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
 
 internal class ViewFlexContainer(

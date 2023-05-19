@@ -19,8 +19,8 @@ package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import java.awt.GraphicsEnvironment
 import java.awt.Insets
 import java.awt.Toolkit

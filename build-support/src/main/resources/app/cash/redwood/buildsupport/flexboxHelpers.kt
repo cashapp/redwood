@@ -28,14 +28,14 @@ import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
 import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart

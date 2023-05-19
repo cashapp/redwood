@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.api
+package app.cash.redwood.ui
 
 internal actual const val DensityMultiplier = 1.0

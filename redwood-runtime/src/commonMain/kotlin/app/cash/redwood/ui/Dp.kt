@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.api
+package app.cash.redwood.ui
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
