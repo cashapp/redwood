@@ -19,16 +19,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import app.cash.redwood.compose.RedwoodComposition
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 // Inline at callsite once https://github.com/Kotlin/kotlinx.serialization/issues/1454 is fixed.
 public fun RedwoodComposition.bind(
   treehouseUi: TreehouseUi,
-  initialHostConfiguration: HostConfiguration,
-  hostConfigurationFlow: Flow<HostConfiguration>,
+  hostConfigurations: StateFlow<HostConfiguration>,
 ) {
   setContent {
-    val hostConfiguration by hostConfigurationFlow.collectAsState(initialHostConfiguration)
+    val hostConfiguration by hostConfigurations.collectAsState()
     CompositionLocalProvider(LocalHostConfiguration provides hostConfiguration) {
       treehouseUi.Show()
     }

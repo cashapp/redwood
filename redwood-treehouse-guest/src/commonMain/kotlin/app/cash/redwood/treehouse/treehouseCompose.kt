@@ -62,7 +62,7 @@ private class RedwoodZiplineTreehouseUi(
     )
     this.composition = composition
 
-    composition.bind(treehouseUi, hostConfigurations.value, hostConfigurations)
+    composition.bind(treehouseUi, hostConfigurations)
   }
 
   override fun close() {
