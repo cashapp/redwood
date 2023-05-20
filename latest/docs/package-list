@@ -11,8 +11,6 @@ module:redwood-gradle-plugin
 app.cash.redwood.gradle
 module:redwood-layout-api
 app.cash.redwood.layout.api
-module:redwood-layout-api-density
-app.cash.redwood.layout.api
 module:redwood-layout-compose
 app.cash.redwood.layout.compose
 module:redwood-layout-composeui
@@ -53,6 +51,7 @@ module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
+app.cash.redwood.ui
 module:redwood-schema
 app.cash.redwood.schema
 module:redwood-tooling-codegen
