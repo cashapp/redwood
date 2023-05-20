@@ -21,6 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.SchemaAnnotation.DependencyAnnotation
 import java.io.File
 import java.net.URLClassLoader
+import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
@@ -43,6 +44,7 @@ import org.jetbrains.kotlin.config.CommonConfigurationKeys.USE_FIR
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.descriptors.ClassKind.OBJECT
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporterFactory
+import org.jetbrains.kotlin.diagnostics.getChildrenArray
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
@@ -68,6 +70,7 @@ import org.jetbrains.kotlin.fir.types.isNullable
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.type
+import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.FqName
@@ -335,8 +338,11 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
+  val documentation = firClass.source?.findAndParseKDoc()
+
   return ParsedProtocolSchema(
     type = type,
+    documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
     layoutModifiers = layoutModifiers,
@@ -364,6 +370,7 @@ private fun FirContext.parseWidget(
       val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
       val deprecation = findDeprecationAnnotation(parameter.annotations)
         ?.toDeprecation { "$memberType.$name" }
+      val documentation = parameter.source?.findAndParseKDoc()
 
       if (propertyAnnotation != null) {
         if (type.isFunctionalType(firSession)) {
@@ -371,6 +378,7 @@ private fun FirContext.parseWidget(
           ParsedProtocolEvent(
             tag = propertyAnnotation.tag,
             name = name,
+            documentation = documentation,
             parameterTypes = arguments.map { it.type!!.classId!!.asSingleFqName().toFqType() },
             isNullable = type.isNullable,
             defaultExpression = defaultAnnotation?.expression,
@@ -380,6 +388,7 @@ private fun FirContext.parseWidget(
           ParsedProtocolProperty(
             tag = propertyAnnotation.tag,
             name = name,
+            documentation = documentation,
             type = type.classId!!.asSingleFqName().toFqType(),
             defaultExpression = defaultAnnotation?.expression,
             deprecation = deprecation,
@@ -406,6 +415,7 @@ private fun FirContext.parseWidget(
         ParsedProtocolChildren(
           tag = childrenAnnotation.tag,
           name = name,
+          documentation = documentation,
           scope = scope?.type?.classId?.asSingleFqName()?.toFqType(),
           defaultExpression = defaultAnnotation?.expression,
           deprecation = deprecation,
@@ -454,10 +464,12 @@ private fun FirContext.parseWidget(
 
   val deprecation = findDeprecationAnnotation(firClass.annotations)
     ?.toDeprecation { memberType.toString() }
+  val documentation = firClass.source?.findAndParseKDoc()
 
   return ParsedProtocolWidget(
     tag = tag,
     type = memberType,
+    documentation = documentation,
     deprecation = deprecation,
     traits = traits,
   )
@@ -484,9 +496,11 @@ private fun FirContext.parseLayoutModifier(
       val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
       val deprecation = findDeprecationAnnotation(parameter.annotations)
         ?.toDeprecation { "$memberType.$name" }
+      val documentation = parameter.source?.findAndParseKDoc()
 
       ParsedProtocolLayoutModifierProperty(
         name = name,
+        documentation = documentation,
         type = parameterType,
         isSerializable = false, // TODO Parse @Serializable on parameter type.
         defaultExpression = defaultAnnotation?.expression,
@@ -503,14 +517,23 @@ private fun FirContext.parseLayoutModifier(
 
   val deprecation = findDeprecationAnnotation(firClass.annotations)
     ?.toDeprecation { memberType.toString() }
+  val documentation = firClass.source?.findAndParseKDoc()
 
   return ParsedProtocolLayoutModifier(
     tag = tag,
     scopes = annotation.scopes,
     type = memberType,
+    documentation = documentation,
     deprecation = deprecation,
     properties = properties,
   )
+}
+
+private fun KtSourceElement.findAndParseKDoc(): String? {
+  return treeStructure.getChildrenArray(lighterASTNode)
+    .filterNotNull()
+    .firstOrNull { it.tokenType == KDocTokens.KDOC }
+    ?.let { treeStructure.toString(it).toString() }
 }
 
 private fun FirContext.findSchemaAnnotation(
@@ -725,8 +748,6 @@ private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")
   val Default = FqName("app.cash.redwood.schema.Default")
   val Deprecated = FqName("kotlin.Deprecated")
-  val Function0 = FqName("kotlin.Function0")
-  val Function1 = FqName("kotlin.Function1")
   val LayoutModifier = FqName("app.cash.redwood.schema.LayoutModifier")
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")
