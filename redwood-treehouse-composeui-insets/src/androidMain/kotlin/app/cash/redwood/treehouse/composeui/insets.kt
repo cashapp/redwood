@@ -24,9 +24,9 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import app.cash.redwood.layout.api.Dp
-import app.cash.redwood.layout.api.Margin
-import app.cash.redwood.layout.api.fromPlatformDp
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.fromPlatformDp
 
 @Composable
 public actual fun safeAreaInsets(): Margin {

@@ -16,8 +16,8 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.schema.LayoutModifier
+import app.cash.redwood.ui.Margin
 
 /**
  * Configure how much of the remaining space in the layout should be assigned to this item.

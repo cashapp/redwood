@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Margin
 
 /** Return the device's insets in screen density-independent pixels. */
 @Composable

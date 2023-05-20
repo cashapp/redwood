@@ -17,14 +17,14 @@ package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
 
 @Widget(1)
 public data class Row(

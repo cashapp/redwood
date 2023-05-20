@@ -19,8 +19,8 @@ import android.view.View
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 
 internal fun Insets.toMargin(density: Density) = with(density) {
   Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())

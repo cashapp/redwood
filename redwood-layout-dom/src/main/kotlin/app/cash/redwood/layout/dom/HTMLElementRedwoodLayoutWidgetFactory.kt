@@ -18,14 +18,14 @@ package app.cash.redwood.layout.dom
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.HTMLElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement

@@ -23,8 +23,8 @@ import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
 import app.cash.redwood.flexbox.MeasureSpec
 import app.cash.redwood.flexbox.MeasureSpecMode
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.layout.api.Dp as RedwoodDp
-import app.cash.redwood.layout.api.toPlatformDp
+import app.cash.redwood.ui.Dp as RedwoodDp
+import app.cash.redwood.ui.toPlatformDp
 
 internal fun RedwoodDp.toDp(): Dp {
   return Dp(toPlatformDp().toFloat())
