@@ -21,12 +21,9 @@ import androidx.compose.runtime.Immutable
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 
-// TODO make value classes have private ctors and private vals.
-//  Blocked by https://issuetracker.google.com/issues/251430194.
-
 /** Controls how the container should determine its width/height. */
 @[Immutable JvmInline Serializable]
-public value class Constraint internal constructor(internal val ordinal: Int) {
+public value class Constraint private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Wrap"
@@ -42,7 +39,7 @@ public value class Constraint internal constructor(internal val ordinal: Int) {
 
 /** Equivalent to `justify-content`. */
 @[Immutable JvmInline Serializable]
-public value class MainAxisAlignment internal constructor(internal val ordinal: Int) {
+public value class MainAxisAlignment private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Start"
@@ -66,7 +63,7 @@ public value class MainAxisAlignment internal constructor(internal val ordinal: 
 
 /** Equivalent to `align-items`. */
 @[Immutable JvmInline Serializable]
-public value class CrossAxisAlignment internal constructor(internal val ordinal: Int) {
+public value class CrossAxisAlignment private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Start"
@@ -86,7 +83,7 @@ public value class CrossAxisAlignment internal constructor(internal val ordinal:
 
 /** Equivalent to `overflow-x`/`overflow-y`. */
 @[Immutable JvmInline Serializable]
-public value class Overflow internal constructor(internal val ordinal: Int) {
+public value class Overflow private constructor(private val ordinal: Int) {
 
   override fun toString(): String = when (ordinal) {
     0 -> "Clip"

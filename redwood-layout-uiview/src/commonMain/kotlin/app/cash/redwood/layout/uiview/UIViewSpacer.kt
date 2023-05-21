@@ -16,10 +16,10 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.api.Default
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.ui.Default
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Dp
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSizeMake

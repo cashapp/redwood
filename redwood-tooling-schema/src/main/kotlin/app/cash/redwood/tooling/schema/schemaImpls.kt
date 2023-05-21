@@ -43,6 +43,7 @@ internal data class ParsedProtocolSchema(
   @EncodeDefault(ALWAYS)
   val version: Int = 1,
   override val type: FqType,
+  override val documentation: String? = null,
   override val scopes: List<FqType> = emptyList(),
   override val widgets: List<ParsedProtocolWidget> = emptyList(),
   override val layoutModifiers: List<ParsedProtocolLayoutModifier> = emptyList(),
@@ -112,6 +113,7 @@ internal data class ParsedProtocolWidget(
   override val tag: Int,
   override val type: FqType,
   override val deprecation: ParsedDeprecation? = null,
+  override val documentation: String? = null,
   override val traits: List<ProtocolTrait> = emptyList(),
 ) : ProtocolWidget
 
@@ -123,6 +125,7 @@ internal data class ParsedProtocolProperty(
   override val type: FqType,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,
+  override val documentation: String? = null,
 ) : ProtocolProperty
 
 @Serializable
@@ -130,10 +133,11 @@ internal data class ParsedProtocolProperty(
 internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
-  override val parameterType: FqType?,
+  override val parameterTypes: List<FqType> = emptyList(),
   override val isNullable: Boolean,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,
+  override val documentation: String? = null,
 ) : ProtocolEvent
 
 @Serializable
@@ -143,6 +147,7 @@ internal data class ParsedProtocolChildren(
   override val name: String,
   override val scope: FqType? = null,
   override val defaultExpression: String? = null,
+  override val documentation: String? = null,
   override val deprecation: ParsedDeprecation? = null,
 ) : ProtocolChildren
 
@@ -152,6 +157,7 @@ internal data class ParsedProtocolLayoutModifier(
   override val scopes: List<FqType>,
   override val type: FqType,
   override val deprecation: ParsedDeprecation? = null,
+  override val documentation: String? = null,
   override val properties: List<ParsedProtocolLayoutModifierProperty> = emptyList(),
 ) : ProtocolLayoutModifier
 
@@ -162,4 +168,5 @@ internal data class ParsedProtocolLayoutModifierProperty(
   override val isSerializable: Boolean,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,
+  override val documentation: String? = null,
 ) : Property

@@ -1,0 +1,24 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  sourceSets {
+    commonMain {
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.lazylayout.uiview'))
+      dependencies {
+        api projects.redwoodLazylayoutWidget
+        implementation projects.redwoodWidgetCompose
+      }
+    }
+  }
+}

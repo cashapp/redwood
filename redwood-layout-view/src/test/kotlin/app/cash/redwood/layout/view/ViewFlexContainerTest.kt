@@ -29,7 +29,7 @@ import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
 import org.junit.Rule
 import org.junit.runner.RunWith

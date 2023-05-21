@@ -21,6 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.SchemaAnnotation.DependencyAnnotation
 import java.io.File
 import java.net.URLClassLoader
+import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
@@ -43,6 +44,7 @@ import org.jetbrains.kotlin.config.CommonConfigurationKeys.USE_FIR
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.descriptors.ClassKind.OBJECT
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporterFactory
+import org.jetbrains.kotlin.diagnostics.getChildrenArray
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
@@ -54,12 +56,21 @@ import org.jetbrains.kotlin.fir.expressions.FirArrayOfCall
 import org.jetbrains.kotlin.fir.expressions.FirConstExpression
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirGetClassCall
+import org.jetbrains.kotlin.fir.expressions.FirPropertyAccessExpression
 import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.builder.toAnnotationArgumentMapping
+import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
+import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
 import org.jetbrains.kotlin.fir.types.classId
+import org.jetbrains.kotlin.fir.types.isFunctionalType
+import org.jetbrains.kotlin.fir.types.isNullable
+import org.jetbrains.kotlin.fir.types.receiverType
+import org.jetbrains.kotlin.fir.types.renderReadable
+import org.jetbrains.kotlin.fir.types.type
+import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.FqName
@@ -327,8 +338,11 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
+  val documentation = firClass.source?.findAndParseKDoc()
+
   return ParsedProtocolSchema(
     type = type,
+    documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
     layoutModifiers = layoutModifiers,
@@ -349,28 +363,60 @@ private fun FirContext.parseWidget(
   val traits = if (firClass.isData) {
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
+      val type = parameter.resolvedReturnType
 
       val propertyAnnotation = findPropertyAnnotation(parameter.annotations)
       val childrenAnnotation = findChildrenAnnotation(parameter.annotations)
       val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
       val deprecation = findDeprecationAnnotation(parameter.annotations)
-        ?.toDeprecation()
+        ?.toDeprecation { "$memberType.$name" }
+      val documentation = parameter.source?.findAndParseKDoc()
 
       if (propertyAnnotation != null) {
-        val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
-        ParsedProtocolProperty(
-          tag = propertyAnnotation.tag,
-          name = name,
-          type = parameterType,
-          defaultExpression = defaultAnnotation?.expression,
-          deprecation = deprecation,
-        )
+        if (type.isFunctionalType(firSession)) {
+          val arguments = type.typeArguments.dropLast(1) // Drop Unit return type.
+          ParsedProtocolEvent(
+            tag = propertyAnnotation.tag,
+            name = name,
+            documentation = documentation,
+            parameterTypes = arguments.map { it.type!!.classId!!.asSingleFqName().toFqType() },
+            isNullable = type.isNullable,
+            defaultExpression = defaultAnnotation?.expression,
+            deprecation = deprecation,
+          )
+        } else {
+          ParsedProtocolProperty(
+            tag = propertyAnnotation.tag,
+            name = name,
+            documentation = documentation,
+            type = type.classId!!.asSingleFqName().toFqType(),
+            defaultExpression = defaultAnnotation?.expression,
+            deprecation = deprecation,
+          )
+        }
       } else if (childrenAnnotation != null) {
-        val scope: FqType? = null
+        val typeArguments = type.typeArguments
+        val lastArgument = typeArguments.lastOrNull()?.type?.classId?.asSingleFqName()
+        require(lastArgument == FqNames.Unit) {
+          "@Children $memberType#$name must be of type '() -> Unit'"
+        }
+        var arguments = typeArguments.dropLast(1) // Drop Unit return type.
+        val scope = type.receiverType(firSession)
+        if (scope != null) {
+          require(scope.typeArguments.isEmpty() && scope !is ConeTypeParameterType) {
+            "@Children $memberType#$name lambda receiver can only be a class. Found: ${scope.renderReadable()}"
+          }
+          arguments = arguments.drop(1)
+        }
+        require(arguments.isEmpty()) {
+          "@Children $memberType#$name lambda type must not have any arguments. " +
+            "Found: ${arguments.map { it.type!!.classId!!.asSingleFqName() }}"
+        }
         ParsedProtocolChildren(
           tag = childrenAnnotation.tag,
           name = name,
-          scope = scope,
+          documentation = documentation,
+          scope = scope?.type?.classId?.asSingleFqName()?.toFqType(),
           defaultExpression = defaultAnnotation?.expression,
           deprecation = deprecation,
         )
@@ -417,11 +463,13 @@ private fun FirContext.parseWidget(
   }
 
   val deprecation = findDeprecationAnnotation(firClass.annotations)
-    ?.toDeprecation()
+    ?.toDeprecation { memberType.toString() }
+  val documentation = firClass.source?.findAndParseKDoc()
 
   return ParsedProtocolWidget(
     tag = tag,
     type = memberType,
+    documentation = documentation,
     deprecation = deprecation,
     traits = traits,
   )
@@ -441,9 +489,26 @@ private fun FirContext.parseLayoutModifier(
   }
 
   val properties = if (firClass.isData) {
-    TODO()
+    firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
+      val name = parameter.name.identifier
+      val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
+
+      val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
+      val deprecation = findDeprecationAnnotation(parameter.annotations)
+        ?.toDeprecation { "$memberType.$name" }
+      val documentation = parameter.source?.findAndParseKDoc()
+
+      ParsedProtocolLayoutModifierProperty(
+        name = name,
+        documentation = documentation,
+        type = parameterType,
+        isSerializable = false, // TODO Parse @Serializable on parameter type.
+        defaultExpression = defaultAnnotation?.expression,
+        deprecation = deprecation,
+      )
+    }
   } else if (firClass.classKind == OBJECT) {
-    emptyList<ParsedProtocolLayoutModifierProperty>()
+    emptyList()
   } else {
     throw IllegalArgumentException(
       "@LayoutModifier $memberType must be 'data' class or 'object'",
@@ -451,21 +516,30 @@ private fun FirContext.parseLayoutModifier(
   }
 
   val deprecation = findDeprecationAnnotation(firClass.annotations)
-    ?.toDeprecation()
+    ?.toDeprecation { memberType.toString() }
+  val documentation = firClass.source?.findAndParseKDoc()
 
   return ParsedProtocolLayoutModifier(
     tag = tag,
     scopes = annotation.scopes,
     type = memberType,
+    documentation = documentation,
     deprecation = deprecation,
     properties = properties,
   )
 }
 
+private fun KtSourceElement.findAndParseKDoc(): String? {
+  return treeStructure.getChildrenArray(lighterASTNode)
+    .filterNotNull()
+    .firstOrNull { it.tokenType == KDocTokens.KDOC }
+    ?.let { treeStructure.toString(it).toString() }
+}
+
 private fun FirContext.findSchemaAnnotation(
   annotations: List<FirAnnotation>,
 ): SchemaAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Schema }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Schema }
     ?: return null
 
   val membersArray = annotation.argumentMapping
@@ -523,7 +597,7 @@ private data class SchemaAnnotation(
 private fun FirContext.findWidgetAnnotation(
   annotations: List<FirAnnotation>,
 ): WidgetAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Widget }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Widget }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -541,7 +615,7 @@ private data class WidgetAnnotation(
 private fun FirContext.findPropertyAnnotation(
   annotations: List<FirAnnotation>,
 ): PropertyAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Property }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Property }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -559,7 +633,7 @@ private data class PropertyAnnotation(
 private fun FirContext.findChildrenAnnotation(
   annotations: List<FirAnnotation>,
 ): ChildrenAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Children }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Children }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -578,7 +652,7 @@ private data class ChildrenAnnotation(
 private fun FirContext.findDefaultAnnotation(
   annotations: List<FirAnnotation>,
 ): DefaultAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Default }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Default }
     ?: return null
 
   val expression = annotation.argumentMapping
@@ -596,7 +670,7 @@ private data class DefaultAnnotation(
 private fun FirContext.findLayoutModifierAnnotation(
   annotations: List<FirAnnotation>,
 ): LayoutModifierAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.LayoutModifier }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.LayoutModifier }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -626,7 +700,7 @@ private data class LayoutModifierAnnotation(
 private fun FirContext.findDeprecationAnnotation(
   annotations: List<FirAnnotation>,
 ): DeprecationAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == Annotations.Deprecated }
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Deprecated }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -634,27 +708,33 @@ private fun FirContext.findDeprecationAnnotation(
     .mapping[Name.identifier("message")] as? FirConstExpression<String>
     ?: throw AssertionError(annotation.source?.text)
 
-  @Suppress("UNCHECKED_CAST")
   val levelExpression = annotation.argumentMapping
-    .mapping[Name.identifier("level")] as? FirConstExpression<String>
-    ?: throw AssertionError(annotation.source?.text)
+    .mapping[Name.identifier("level")] as? FirPropertyAccessExpression
+  val levelReference = levelExpression?.calleeReference as? FirNamedReference
+  val level = levelReference?.name?.identifier ?: "WARNING"
 
-  return DeprecationAnnotation(messageExpression.value, levelExpression.value)
+  val hasReplaceWith = Name.identifier("replaceWith") in annotation.argumentMapping.mapping
+
+  return DeprecationAnnotation(messageExpression.value, level, hasReplaceWith)
 }
 
 private data class DeprecationAnnotation(
   val message: String,
   val level: String,
+  val hasReplaceWith: Boolean,
 )
 
-private fun DeprecationAnnotation.toDeprecation(): ParsedDeprecation {
+private fun DeprecationAnnotation.toDeprecation(source: () -> String): ParsedDeprecation {
+  require(!hasReplaceWith) {
+    "Schema deprecation does not support replacements: ${source()}"
+  }
   return ParsedDeprecation(
     level = when (level) {
       "WARNING" -> Level.WARNING
       "ERROR" -> Level.ERROR
       else -> {
         throw IllegalArgumentException(
-          "Schema deprecation does not support level $level: $this",
+          "Schema deprecation does not support level $level: ${source()}",
         )
       }
     },
@@ -664,7 +744,7 @@ private fun DeprecationAnnotation.toDeprecation(): ParsedDeprecation {
 
 private fun FqName.toFqType() = FqType.bestGuess(asString())
 
-private object Annotations {
+private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")
   val Default = FqName("app.cash.redwood.schema.Default")
   val Deprecated = FqName("kotlin.Deprecated")
@@ -672,4 +752,5 @@ private object Annotations {
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")
   val Widget = FqName("app.cash.redwood.schema.Widget")
+  val Unit = FqName("kotlin.Unit")
 }

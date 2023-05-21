@@ -21,8 +21,7 @@ kotlin {
     jsMain {
       dependencies {
         implementation projects.redwoodTreehouseGuest
-        implementation projects.redwoodTreehouseLazylayoutCompose
-        implementation projects.redwoodTreehouseLazylayoutPaging
+        implementation projects.redwoodLazylayoutCompose
       }
     }
   }

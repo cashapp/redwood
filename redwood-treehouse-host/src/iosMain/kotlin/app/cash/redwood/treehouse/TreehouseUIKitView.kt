@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.layout.api.Default
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.ui.Default
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.cValue

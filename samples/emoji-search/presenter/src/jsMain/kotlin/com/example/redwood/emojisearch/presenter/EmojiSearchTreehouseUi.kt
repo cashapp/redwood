@@ -16,9 +16,11 @@
 package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutModifier
+import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.treehouse.TreehouseUi
-import app.cash.redwood.treehouse.lazylayout.compose.LazyColumn
-import app.cash.redwood.treehouse.lazylayout.compose.items
+import app.cash.redwood.lazylayout.compose.LazyColumn
+import app.cash.redwood.lazylayout.compose.items
 
 class EmojiSearchTreehouseUi(
   private val httpClient: HttpClient,
@@ -32,12 +34,20 @@ class EmojiSearchTreehouseUi(
 }
 
 private class LazyColumnProvider : ColumnProvider {
+  @OptIn(ExperimentalRedwoodLazyLayoutApi::class)
   @Composable
   override fun <T> create(
     items: List<T>,
+    refreshing: Boolean,
+    onRefresh: (() -> Unit)?,
+    layoutModifier: LayoutModifier,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    LazyColumn {
+    LazyColumn(
+      refreshing = refreshing,
+      onRefresh = onRefresh,
+      layoutModifier = layoutModifier,
+    ) {
       items(items, itemContent)
     }
   }

@@ -25,7 +25,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.treehouse.lazylayout.view.ViewRedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
@@ -53,7 +53,7 @@ class EmojiSearchActivity : ComponentActivity() {
         provider = EmojiSearchWidgetFactories(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodTreehouseLazyLayout = ViewRedwoodTreehouseLazyLayoutWidgetFactory(context),
+          RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
         ),
         json = json,
         mismatchHandler = protocolMismatchHandler,

@@ -1,0 +1,38 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.compose'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLazylayoutWidget
+        implementation libs.paging.compose.common
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.redwoodLazylayoutSchema
+  type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/LazyListIntervalContent.kt",
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/IntervalList.kt",
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/LazyLayoutIntervalContent.kt",
+    )
+  }
+}

@@ -29,9 +29,7 @@ import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.Density
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.HorizontalAlignment
@@ -39,6 +37,8 @@ import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.enums.YGEdge

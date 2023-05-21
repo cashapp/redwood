@@ -16,11 +16,12 @@
 package com.example.redwood.emojisearch.browser
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.LayoutModifier
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
-import app.cash.redwood.treehouse.lazylayout.widget.RedwoodTreehouseLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
@@ -47,9 +48,10 @@ fun main() {
     provider = EmojiSearchWidgetFactories(
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
-      RedwoodTreehouseLazyLayout = object : RedwoodTreehouseLazyLayoutWidgetFactory<HTMLElement> {
-        // For now we use a ColumnProvider to replace this with a normal Column.
+      RedwoodLazyLayout = object : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
+        // For now we use a ColumnProvider to replace these with a normal Column.
         override fun LazyList() = throw UnsupportedOperationException()
+        override fun RefreshableLazyList() = throw UnsupportedOperationException()
       },
     ),
   )
@@ -78,9 +80,12 @@ private object TruncatingColumnProvider : ColumnProvider {
   @Composable
   override fun <T> create(
     items: List<T>,
+    refreshing: Boolean,
+    onRefresh: (() -> Unit)?,
+    layoutModifier: LayoutModifier,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    Column {
+    Column(layoutModifier = layoutModifier) {
       for (item in items.take(25)) {
         itemContent(item)
       }

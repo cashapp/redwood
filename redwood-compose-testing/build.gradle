@@ -26,6 +26,9 @@ kotlin {
       dependencies {
         implementation libs.kotlin.test
         implementation libs.assertk
+        implementation libs.kotlinx.coroutines.test
+        implementation projects.testSchema.compose
+        implementation projects.testSchema.testing
       }
     }
   }
@@ -33,4 +36,8 @@ kotlin {
 
 android {
   namespace 'app.cash.redwood.compose.testing'
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }

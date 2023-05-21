@@ -26,20 +26,30 @@ import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
+import assertk.all
+import assertk.assertAll
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.containsExactly
+import assertk.assertions.containsMatch
 import assertk.assertions.hasMessage
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isNull
+import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
+import assertk.assertions.message
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import example.redwood.ExampleSchema
 import java.io.File
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
+import kotlinx.serialization.Serializable
 import org.junit.Assume.assumeTrue
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -123,8 +133,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateWidgetTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DuplicateWidgetTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -161,8 +169,6 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateLayoutModifierTagThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DuplicateLayoutModifierTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -326,8 +332,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(InvalidChildrenTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -348,8 +352,6 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(InvalidChildrenLambdaReturnTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -370,8 +372,6 @@ class SchemaParserTest(
   )
 
   @Test fun childrenArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -393,8 +393,6 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -416,14 +414,14 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class. " +
-          "Found: kotlin.collections.List<kotlin.Int>",
-      )
+      .message()
+      .isNotNull()
+      .all {
+        contains("@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class.")
+        containsMatch(Regex("""Found: (kotlin\.collections\.)?List<(kotlin\.)?Int>"""))
+      }
   }
 
   @Schema(
@@ -439,8 +437,6 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenTypeParameterInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(ScopedChildrenTypeParameterInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
@@ -463,8 +459,6 @@ class SchemaParserTest(
   )
 
   @Test fun eventTypes() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
@@ -481,45 +475,26 @@ class SchemaParserTest(
   @Widget(1)
   data class EventArgumentsWidget(
     @Property(1) val noArguments: () -> Unit,
-    @Property(2) val argument: (String) -> Unit,
-    @Property(3) val argumentOptionalLambda: ((String) -> Unit)?,
+    @Property(2) val oneArgument: (String) -> Unit,
+    @Property(3) val oneArgumentOptional: ((String) -> Unit)?,
+    @Property(4) val manyArguments: (String, Boolean, Long) -> Unit,
+    @Property(5) val manyArgumentsOptional: ((String, Boolean, Long) -> Unit)?,
   )
 
   @Test fun eventArguments() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(EventArgumentsSchema::class).schema
     val widget = schema.widgets.single()
 
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
-    assertThat(noArguments.parameterType).isNull()
-    val argument = widget.traits.single { it.name == "argument" } as Event
-    assertThat(argument.parameterType).isEqualTo(String::class.toFqType())
-    val argumentOptionalLambda = widget.traits.single { it.name == "argumentOptionalLambda" } as Event
-    assertThat(argumentOptionalLambda.parameterType).isEqualTo(String::class.toFqType())
-  }
-
-  @Schema(
-    [
-      EventArgumentsInvalidWidget::class,
-    ],
-  )
-  interface EventArgumentsInvalidSchema
-
-  @Widget(1)
-  data class EventArgumentsInvalidWidget(
-    @Property(3) val tooManyArguments: ((String, Boolean, Long) -> Unit)?,
-  )
-
-  @Test fun eventArgumentsInvalid() {
-    assumeTrue(parser != SchemaParser.Fir)
-
-    assertFailure { parser.parse(EventArgumentsInvalidSchema::class) }
-      .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "@Property app.cash.redwood.tooling.schema.SchemaParserTest.EventArgumentsInvalidWidget#tooManyArguments lambda type can only have zero or one arguments. " +
-          "Found: [kotlin.String, kotlin.Boolean, kotlin.Long]",
-      )
+    assertThat(noArguments.parameterTypes).isEmpty()
+    val oneArgument = widget.traits.single { it.name == "oneArgument" } as Event
+    assertThat(oneArgument.parameterTypes).containsExactly(String::class.toFqType())
+    val oneArgumentOptional = widget.traits.single { it.name == "oneArgumentOptional" } as Event
+    assertThat(oneArgumentOptional.parameterTypes).containsExactly(String::class.toFqType())
+    val manyArguments = widget.traits.single { it.name == "manyArguments" } as Event
+    assertThat(manyArguments.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
+    val manyArgumentOptional = widget.traits.single { it.name == "manyArgumentsOptional" } as Event
+    assertThat(manyArgumentOptional.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
   }
 
   @Schema(
@@ -633,8 +608,6 @@ class SchemaParserTest(
   )
 
   @Test fun schemaTagDefault() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(SchemaTag::class).schema
 
     val widget = schema.widgets.single()
@@ -836,6 +809,37 @@ class SchemaParserTest(
 
   @Schema(
     [
+      SerializationLayoutModifier::class,
+    ],
+  )
+  interface SerializationSchema
+
+  @LayoutModifier(1, TestScope::class)
+  data class SerializationLayoutModifier(
+    val no: String,
+    val yes: SerializableType,
+  )
+
+  @Serializable
+  data class SerializableType(
+    val whevs: String,
+  )
+
+  @Test fun serializableLayoutModifierProperties() {
+    assumeTrue(parser != SchemaParser.Fir)
+
+    val schema = parser.parse(SerializationSchema::class).schema
+    val modifier = schema.layoutModifiers.single()
+
+    val yesProperty = modifier.properties.single { it.name == "yes" }
+    assertThat(yesProperty.isSerializable).isTrue()
+
+    val noProperty = modifier.properties.single { it.name == "no" }
+    assertThat(noProperty.isSerializable).isFalse()
+  }
+
+  @Schema(
+    [
       DeprecationHiddenWidget::class,
     ],
   )
@@ -848,13 +852,11 @@ class SchemaParserTest(
   )
 
   @Test fun deprecationHiddenThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DeprecationHiddenSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support level HIDDEN: " +
-          "val app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a: kotlin.String",
+          "app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationHiddenWidget.a",
       )
   }
 
@@ -871,14 +873,74 @@ class SchemaParserTest(
   object DeprecationReplaceWithWidget
 
   @Test fun deprecationReplaceWithThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     assertFailure { parser.parse(DeprecationReplaceWithSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support replacements: " +
-          "class app.cash.redwood.tooling.schema.SchemaParserTest\$DeprecationReplaceWithWidget",
+          "app.cash.redwood.tooling.schema.SchemaParserTest.DeprecationReplaceWithWidget",
       )
+  }
+
+  /** Schema single-line documentation. */
+  @Schema(
+    [
+      CommentsWidget::class,
+      CommentsLayoutModifier::class,
+    ],
+  )
+  interface CommentsSchema
+
+  /**
+   * Widget
+   * multi-line
+   * documentation.
+   */
+  @Widget(1)
+  data class CommentsWidget(
+    /**
+Property
+     weird formatting
+     documentation.
+     */
+    @Property(1) val id: Int,
+    /**Children
+     *missing
+     *spaces documentation.*/
+    @Children(1) val content: () -> Unit,
+  )
+
+  /**
+   * Layout modifier
+   * multi-line
+   * documentation.
+   */
+  @LayoutModifier(1, TestScope::class)
+  data class CommentsLayoutModifier(
+    /** Property same line documentation. */ val id: Int,
+  )
+
+  @Ignore("Missing handling of '/** */' noise")
+  @Test
+  fun comments() = assertAll {
+    assumeTrue(parser == SchemaParser.Fir) // Comments are only available through the AST.
+
+    val schema = parser.parse(CommentsSchema::class).schema
+    assertThat(schema.documentation).isEqualTo("Schema single-line documentation.")
+
+    val widget = schema.widgets.single()
+    assertThat(widget.documentation).isEqualTo("Widget multi-line documentation.")
+
+    val widgetProperty = widget.traits.single { it is PropertyTrait }
+    assertThat(widgetProperty.documentation).isEqualTo("Property weird formatting documentation.")
+
+    val widgetChildren = widget.traits.single { it is ChildrenTrait }
+    assertThat(widgetChildren.documentation).isEqualTo("Children missing spaces documentation.")
+
+    val modifier = schema.layoutModifiers.single()
+    assertThat(modifier.documentation).isEqualTo("Layout modifier multi-line documentation.")
+
+    val modifierProperty = modifier.properties.single()
+    assertThat(modifierProperty.documentation).isEqualTo("Property same line documentation.")
   }
 
   @Suppress("unused") // Values used by TestParameterInjector.

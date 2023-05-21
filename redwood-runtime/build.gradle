@@ -1,6 +1,7 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.android.library'
 apply plugin: 'app.cash.redwood.build'
 
@@ -16,6 +17,13 @@ kotlin {
     commonMain {
       dependencies {
         implementation libs.jetbrains.compose.runtime
+        implementation libs.kotlinx.serialization.core
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
       }
     }
   }

@@ -36,7 +36,5 @@
    $ git push && git push --tags
    ```
 
-   The tag will trigger a GitHub Action workflow which will upload the artifacts to Sonatype Nexus,
+   The tag will trigger a GitHub Action workflow which will upload the artifacts to Maven Central,
    create a GitHub release, and deploy the documentation to the website.
-
-9. Visit [Sonatype Nexus](https://oss.sonatype.org/) to close and release the repository.

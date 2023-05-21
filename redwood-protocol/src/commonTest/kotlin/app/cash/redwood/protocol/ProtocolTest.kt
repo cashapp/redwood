@@ -40,14 +40,14 @@ class ProtocolTest {
     assertThat(ChildrenTag.Root.value).isEqualTo(1)
   }
 
-  @Test fun eventNonNullValue() {
-    val model = Event(Id(1), EventTag(2), JsonPrimitive("Hello"))
-    val json = """{"id":1,"tag":2,"value":"Hello"}"""
+  @Test fun eventNonEmptyArgs() {
+    val model = Event(Id(1), EventTag(2), listOf(JsonPrimitive("Hello"), JsonPrimitive(2)))
+    val json = """{"id":1,"tag":2,"args":["Hello",2]}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
-  @Test fun eventNullValue() {
-    val model = Event(Id(1), EventTag(2))
+  @Test fun eventEmptyArgs() {
+    val model = Event(Id(1), EventTag(2), listOf())
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }

@@ -19,9 +19,9 @@ import android.content.Context
 import android.view.View
 import android.widget.Space
 import app.cash.redwood.LayoutModifier
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Dp
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Dp
 import kotlin.math.roundToInt
 
 internal class ViewSpacer(

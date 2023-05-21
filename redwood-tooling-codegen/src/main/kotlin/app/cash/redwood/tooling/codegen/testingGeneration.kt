@@ -31,6 +31,7 @@ import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -42,36 +43,35 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.TypeVariableName
 
 /*
-suspend fun ExampleTester(
-  body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> Unit,
-) {
+suspend fun <R> ExampleTester(
+  body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
+): R = coroutineScope {
   val factories = ExampleWidgetFactories(
     Sunspot = MutableExampleWidgetFactory(),
     RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
-  coroutineScope {
-    val tester = TestRedwoodComposition(this, factories, container) {
-      container.map { it.value }
-    }
-    try {
-      tester.body()
-    } finally {
-      tester.cancel()
-    }
+  val tester = TestRedwoodComposition(this, factories, container) {
+    container.map { it.value }
+  }
+  try {
+    tester.body()
+  } finally {
+    tester.cancel()
   }
 }
 */
 internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
   val testerFunction = schema.getTesterFunction()
+  val typeVarR = TypeVariableName("R")
   val bodyType = LambdaTypeName.get(
     receiver = RedwoodTesting.TestRedwoodComposition
       .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
-    returnType = UNIT,
+    returnType = typeVarR,
   ).copy(suspending = true)
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
     .addFunction(
@@ -79,6 +79,9 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .addModifiers(SUSPEND)
         .addParameter("body", bodyType)
+        .addTypeVariable(typeVarR)
+        .returns(typeVarR)
+        .beginControlFlow("return %M", KotlinxCoroutines.coroutineScope)
         .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schemaSet.all) {
@@ -87,7 +90,6 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("%M", KotlinxCoroutines.coroutineScope)
         .beginControlFlow("val tester = %T(this, factories, container)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
@@ -314,7 +316,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
       |  parentId,
       |  childrenTag,
       |  widgetId,
-      |  builder.changes.size,
+      |  childrenIndex,
       |)
       |
       """.trimMargin(),
@@ -392,8 +394,8 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   addToBuilder
     .beginControlFlow("for (childrenList in childrenLists)")
     .addStatement("val nextChildrenTag = childrenTag.value + 1")
-    .beginControlFlow("for (child in childrenList)")
-    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), builder)", Protocol.ChildrenTag)
+    .beginControlFlow("for ((index, child) in childrenList.withIndex())")
+    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
     .endControlFlow()
     .endControlFlow()
 
@@ -441,6 +443,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("parentId", Id)
             .addParameter("childrenTag", ChildrenTag)
+            .addParameter("childrenIndex", INT)
             .addParameter("builder", ViewTreeBuilder)
             .addCode(addToBuilder.build())
             .build(),

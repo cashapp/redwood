@@ -15,9 +15,9 @@
  */
 package app.cash.redwood.treehouse.composeui
 
-import app.cash.redwood.layout.api.Default
-import app.cash.redwood.layout.api.Density
-import app.cash.redwood.layout.api.Margin
+import app.cash.redwood.ui.Default
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import kotlinx.cinterop.useContents
 import platform.UIKit.UIApplication
 

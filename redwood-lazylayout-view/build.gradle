@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
+
+dependencies {
+  api projects.redwoodLazylayoutWidget
+  implementation libs.androidx.core
+  implementation libs.androidx.paging.runtime
+  implementation libs.androidx.recyclerview
+  implementation libs.androidx.swipeRefreshLayout
+}
+
+android {
+  namespace 'app.cash.redwood.lazylayout.view'
+}

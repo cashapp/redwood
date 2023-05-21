@@ -422,20 +422,24 @@ internal fun generateProtocolWidget(
               .beginControlFlow("when (event.tag.value)")
               .apply {
                 for (event in widget.traits.filterIsInstance<ProtocolEvent>()) {
-                  val parameterType = event.parameterType?.asTypeName()
-                  if (parameterType != null) {
+                  val arguments = mutableListOf<CodeBlock>()
+                  for ((index, parameterFqType) in event.parameterTypes.withIndex()) {
+                    val parameterType = parameterFqType.asTypeName()
                     val serializerId = serializerIds.computeIfAbsent(parameterType) {
                       nextSerializerId++
                     }
-                    addStatement(
-                      "%L -> %N?.invoke(json.decodeFromJsonElement(serializer_%L, event.value))",
-                      event.tag,
-                      event.name,
+                    arguments += CodeBlock.of(
+                      "json.decodeFromJsonElement(serializer_%L, event.args[%L])",
                       serializerId,
+                      index,
                     )
-                  } else {
-                    addStatement("%L -> %N?.invoke()", event.tag, event.name)
                   }
+                  addStatement(
+                    "%L -> %N?.invoke(%L)",
+                    event.tag,
+                    event.name,
+                    arguments.joinToCode(),
+                  )
                 }
               }
               .addStatement("else -> mismatchHandler.onUnknownEvent(tag, event.tag)")

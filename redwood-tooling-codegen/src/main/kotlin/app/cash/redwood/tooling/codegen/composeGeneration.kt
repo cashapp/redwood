@@ -75,6 +75,10 @@ internal fun generateComposable(
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .apply {
+          widget.documentation?.let { documentation ->
+            addKdoc(documentation)
+          }
+
           widget.deprecation?.let { deprecation ->
             addAnnotation(deprecation.toAnnotationSpec())
           }
@@ -102,6 +106,9 @@ internal fun generateComposable(
                   ParameterSpec.builder(trait.name, trait.type.asTypeName())
                     .apply {
                       trait.defaultExpression?.let { defaultValue(it) }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
+                      }
                     }
                     .build()
                 }
@@ -109,6 +116,9 @@ internal fun generateComposable(
                   ParameterSpec.builder(trait.name, trait.lambdaType)
                     .apply {
                       trait.defaultExpression?.let { defaultValue(it) }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
+                      }
                     }
                     .build()
                 }
@@ -117,6 +127,9 @@ internal fun generateComposable(
                   ParameterSpec.builder(trait.name, composableLambda(scope))
                     .apply {
                       trait.defaultExpression?.let { defaultValue(it) }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
+                      }
                     }
                     .build()
                 }
@@ -250,6 +263,10 @@ private fun generateLayoutModifierFunction(
     .receiver(Redwood.LayoutModifier)
     .returns(Redwood.LayoutModifier)
     .apply {
+      layoutModifier.documentation?.let { documentation ->
+        addKdoc(documentation)
+      }
+
       val arguments = mutableListOf<CodeBlock>()
       for (property in layoutModifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
@@ -258,6 +275,9 @@ private fun generateLayoutModifierFunction(
           ParameterSpec.builder(property.name, property.type.asTypeName())
             .apply {
               property.defaultExpression?.let { defaultValue(it) }
+              property.documentation?.let { documentation ->
+                addKdoc(documentation)
+              }
             }
             .build(),
         )

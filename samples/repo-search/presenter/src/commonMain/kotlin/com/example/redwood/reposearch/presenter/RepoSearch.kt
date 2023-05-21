@@ -16,8 +16,8 @@
 package com.example.redwood.reposearch.presenter
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.layout.api.Margin
-import app.cash.redwood.layout.api.dp
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.dp
 import app.cash.redwood.layout.compose.Column
 import com.example.redwood.reposearch.compose.Text
 

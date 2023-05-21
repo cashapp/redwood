@@ -122,6 +122,10 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
             .build(),
         )
         .apply {
+          schema.documentation?.let { documentation ->
+            addKdoc(documentation)
+          }
+
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
@@ -130,6 +134,9 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
                 .apply {
                   widget.deprecation?.let { deprecation ->
                     addAnnotation(deprecation.toAnnotationSpec())
+                  }
+                  widget.documentation?.let { documentation ->
+                    addKdoc(documentation)
                   }
                   if (widget is ProtocolWidget) {
                     addKdoc("{tag=${widget.tag}}")
@@ -180,6 +187,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
             addAnnotation(deprecation.toAnnotationSpec())
           }
 
+          widget.documentation?.let { documentation ->
+            addKdoc(documentation)
+          }
           if (widget is ProtocolWidget) {
             addKdoc("{tag=${widget.tag}}")
           }
@@ -194,6 +204,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .apply {
                       trait.deprecation?.let { deprecation ->
                         addAnnotation(deprecation.toAnnotationSpec())
+                      }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
                       }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
@@ -211,6 +224,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                       trait.deprecation?.let { deprecation ->
                         addAnnotation(deprecation.toAnnotationSpec())
                       }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
+                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -225,6 +241,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .apply {
                       trait.deprecation?.let { deprecation ->
                         addAnnotation(deprecation.toAnnotationSpec())
+                      }
+                      trait.documentation?.let { documentation ->
+                        addKdoc(documentation)
                       }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")

@@ -36,6 +36,7 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.UNIT
@@ -50,17 +51,11 @@ internal val FqType.flatName: String
   get() = names.drop(1).joinToString("")
 
 internal val Event.lambdaType: TypeName
-  get() {
-    val lambda = parameterType
-      ?.let { parameterType ->
-        LambdaTypeName.get(null, parameterType.asTypeName(), returnType = UNIT)
-      }
-      ?: noArgumentEventLambda
-
-    return lambda.copy(nullable = isNullable)
-  }
-
-private val noArgumentEventLambda = LambdaTypeName.get(returnType = UNIT)
+  get() = LambdaTypeName.get(
+    null,
+    parameterTypes.map { ParameterSpec.unnamed(it.asTypeName()) },
+    returnType = UNIT,
+  ).copy(nullable = isNullable)
 
 internal fun Schema.composePackage(host: Schema? = null): String {
   return if (host == null) {
