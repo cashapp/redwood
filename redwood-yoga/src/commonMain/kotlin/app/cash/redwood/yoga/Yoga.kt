@@ -736,7 +736,7 @@ object Yoga {
     ) { obj: YGStyle -> obj.margin() }
   }
 
-  private fun <T : Enum<T>?> updateStyleIndexed(
+  private fun <T : Enum<T>> updateStyleIndexed(
     node: YGNode,
     edge: T,
     value: Float,
