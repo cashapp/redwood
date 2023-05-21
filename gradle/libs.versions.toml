@@ -7,7 +7,7 @@ androidx-activity = "1.7.1"
 jbCompose = "1.4.0"
 lint = "31.0.1"
 zipline = "0.9.18"
-coil = "2.3.0"
+coil = "2.4.0"
 
 [libraries]
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
