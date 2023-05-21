@@ -26,10 +26,13 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.LayoutModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Margin
 import app.cash.redwood.layout.api.dp
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.layout.compose.Spacer
+import app.cash.redwood.treehouse.LocalHostConfiguration
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
@@ -42,8 +45,7 @@ private data class EmojiImage(
 )
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
-// https://youtrack.jetbrains.com/issue/KTIJ-7642
-@Suppress("FUN_INTERFACE_WITH_SUSPEND_FUNCTION")
+@Suppress("FUN_INTERFACE_WITH_SUSPEND_FUNCTION") // https://youtrack.jetbrains.com/issue/KTIJ-7642
 fun interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
 }
@@ -98,28 +100,27 @@ fun EmojiSearch(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = Margin(horizontal = 24.dp),
+    margin = LocalHostConfiguration.current.safeAreaInsets,
   ) {
     TextInput(
       state = searchTerm,
       hint = "Search",
       onChange = { searchTerm = it },
     )
-    filteredEmojis.take(5).forEach { image ->
+    filteredEmojis.take(10).forEach { image ->
       Row(
+        margin = Margin(top = 20.dp),
         width = Constraint.Fill,
+        horizontalAlignment = MainAxisAlignment.Center,
         verticalAlignment = CrossAxisAlignment.Center,
       ) {
         Image(
-          url = image.url,
+          image.url,
           layoutModifier = LayoutModifier
-            .margin(Margin(8.dp)),
+            .margin(Margin(4.dp))
         )
-        Text(
-          text = image.label,
-          layoutModifier = LayoutModifier
-            .grow(1.0),
-        )
+        Spacer(width = 4.dp)
+        Text(image.label)
       }
     }
   }

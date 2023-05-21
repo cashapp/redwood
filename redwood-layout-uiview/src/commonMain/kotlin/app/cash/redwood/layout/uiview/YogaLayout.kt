@@ -48,11 +48,7 @@ internal class YogaLayout {
   var width = Constraint.Wrap
   var height = Constraint.Wrap
 
-  fun applyLayout(
-    width: Constraint,
-    height: Constraint,
-    preserveOrigin: Boolean,
-  ) {
+  fun applyLayout(preserveOrigin: Boolean) {
     YGAttachNodesFromViewHierachy(this)
 
     val size = view.bounds.useContents {
@@ -68,7 +64,7 @@ internal class YogaLayout {
     }
     calculateLayoutWithSize(size)
 
-    YGApplyLayoutToViewHierarchy(rootNode, view, preserveOrigin)
+    YGApplyLayoutToViewHierarchy(rootNode, view, preserveOrigin, isRootNode = true)
   }
 
   private fun calculateLayoutWithSize(size: YGSize): Size {
@@ -102,7 +98,7 @@ internal class YogaLayout {
 
     override fun layoutSubviews() {
       super.layoutSubviews()
-      applyLayout(width, height, preserveOrigin = true)
+      applyLayout(preserveOrigin = true)
     }
   }
 }
@@ -120,10 +116,13 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
   val currentViews = yoga.rootNode.getChildren().mapNotNull { it.view }
   val subviews = yoga.view.typedSubviews
   if (currentViews != subviews) {
+    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
     yoga.rootNode.removeAllChildren()
     for (view in subviews) {
       Yoga.YGNodeAddChild(yoga.rootNode, view.asNode())
     }
+  } else {
+    println("YGAttachNodesFromViewHierachy - currentViews == subviews")
   }
 }
 
@@ -135,6 +134,8 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     height: Float,
     heightMode: YGMeasureMode,
   ): YGSize {
+    println("ViewMeasureFunction ${node.view} $width $widthMode $height $heightMode")
+
     val constrainedWidth = when (widthMode) {
         YGMeasureModeUndefined -> Double.MAX_VALUE
         else -> width.toDouble()
@@ -147,9 +148,8 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     // The default implementation of sizeThatFits: returns the existing size of
     // the view. That means that if we want to layout an empty UIView, which
     // already has a frame set, its measured size should be CGSizeZero, but
-    // UIKit returns the existing size.
-    //
-    // See https://github.com/facebook/yoga/issues/606 for more information.
+    // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
+    // for more information.
     val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
       Size.Zero
     } else {
@@ -177,7 +177,10 @@ private fun YGApplyLayoutToViewHierarchy(
   node: YGNode,
   view: UIView = node.view!!,
   preserveOrigin: Boolean,
+  isRootNode: Boolean = false,
 ) {
+  println("YGApplyLayoutToViewHierarchy ${node.getStyle().flexDirection()}")
+
   val left = YGNodeLayoutGetLeft(node)
   val top = YGNodeLayoutGetTop(node)
 
@@ -186,7 +189,7 @@ private fun YGApplyLayoutToViewHierarchy(
   val y = top + origin.y
   val width = YGNodeLayoutGetWidth(node).toDouble()
   val height = YGNodeLayoutGetHeight(node).toDouble()
-  view.setFrame(CGRectMake(x, y, width, height))
+  if (!isRootNode) view.setFrame(CGRectMake(x, y, width, height))
 
   for (childNode in node.getChildren()) {
     YGApplyLayoutToViewHierarchy(childNode, preserveOrigin = false)
