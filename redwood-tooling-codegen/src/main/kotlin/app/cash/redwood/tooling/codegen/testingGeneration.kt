@@ -31,6 +31,7 @@ import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -315,7 +316,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
       |  parentId,
       |  childrenTag,
       |  widgetId,
-      |  builder.changes.size,
+      |  childrenIndex,
       |)
       |
       """.trimMargin(),
@@ -393,8 +394,8 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   addToBuilder
     .beginControlFlow("for (childrenList in childrenLists)")
     .addStatement("val nextChildrenTag = childrenTag.value + 1")
-    .beginControlFlow("for (child in childrenList)")
-    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), builder)", Protocol.ChildrenTag)
+    .beginControlFlow("for ((index, child) in childrenList.withIndex())")
+    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
     .endControlFlow()
     .endControlFlow()
 
@@ -442,6 +443,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("parentId", Id)
             .addParameter("childrenTag", ChildrenTag)
+            .addParameter("childrenIndex", INT)
             .addParameter("builder", ViewTreeBuilder)
             .addCode(addToBuilder.build())
             .build(),
