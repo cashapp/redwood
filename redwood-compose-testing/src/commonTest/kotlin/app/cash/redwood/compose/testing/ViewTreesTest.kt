@@ -79,9 +79,9 @@ class ViewTreesTest {
       Add(Id.Root, ChildrenTag.Root, Id(1), 0),
     )
 
-    assertThat(snapshot.toViewTree(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.toChangeList(ExampleSchemaProtocolBridge).changes)
       .isEqualTo(expected)
-    assertThat(snapshot.single().toViewTree(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.single().toChangeList(ExampleSchemaProtocolBridge).changes)
       .isEqualTo(expected)
   }
 }
