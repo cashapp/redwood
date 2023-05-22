@@ -122,7 +122,7 @@ public open class EventListener {
   }
 
   /**
-   * Invoked on a request to create an unknown layout modifier [tag].
+   * Invoked on a request to create an unknown modifier [tag].
    */
   public open fun onUnknownModifier(
     app: TreehouseApp<*>,
