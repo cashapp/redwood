@@ -17,13 +17,13 @@ package com.example.redwood.counter.android.views
 
 import android.widget.Button as WidgetButton
 import android.view.View
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Button
 
 internal class AndroidButton(
   override val value: WidgetButton,
 ) : Button<View> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text

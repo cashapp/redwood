@@ -142,7 +142,7 @@ class ApiMergerTest {
     )
   }
 
-  @Test fun layoutModifierTakesHigherSince() {
+  @Test fun modifierTakesHigherSince() {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
@@ -167,7 +167,7 @@ class ApiMergerTest {
     )
   }
 
-  @Test fun layoutModifierRemovedIfNotPresentInAll() {
+  @Test fun modifierRemovedIfNotPresentInAll() {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
@@ -188,7 +188,7 @@ class ApiMergerTest {
     )
   }
 
-  @Test fun layoutModifierPropertyTakesHigherSince() {
+  @Test fun modifierPropertyTakesHigherSince() {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
@@ -219,7 +219,7 @@ class ApiMergerTest {
     )
   }
 
-  @Test fun layoutModifierRemovedIfNotInAll() {
+  @Test fun modifierRemovedIfNotInAll() {
     val merger = ApiMerger()
     merger += """
       |<api version="1">

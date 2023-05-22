@@ -15,23 +15,23 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.schema.LayoutModifier
+import app.cash.redwood.tooling.schema.Modifier
 import app.cash.redwood.tooling.schema.Schema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun generateLayoutModifierInterface(schema: Schema, layoutModifier: LayoutModifier): FileSpec {
-  val type = schema.layoutModifierType(layoutModifier)
+internal fun generateModifierInterface(schema: Schema, modifier: Modifier): FileSpec {
+  val type = schema.modifierType(modifier)
   return FileSpec.builder(type.packageName, type.simpleName)
     .addType(
       TypeSpec.interfaceBuilder(type)
-        .addSuperinterface(Redwood.LayoutModifierElement)
+        .addSuperinterface(Redwood.ModifierElement)
         .apply {
-          layoutModifier.deprecation?.let { deprecation ->
+          modifier.deprecation?.let { deprecation ->
             addAnnotation(deprecation.toAnnotationSpec())
           }
-          for (property in layoutModifier.properties) {
+          for (property in modifier.properties) {
             addProperty(
               PropertySpec.builder(property.name, property.type.asTypeName())
                 .apply {

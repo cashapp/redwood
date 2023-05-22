@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.schema.LayoutModifier
+import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import assertk.all
@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
 
-class LayoutModifierGenerationTest {
+class ModifierGenerationTest {
   @Schema(
     [
       NavigationBar.ContentDescription::class,
@@ -40,73 +40,73 @@ class LayoutModifierGenerationTest {
   object SimpleNameCollisionScope
 
   interface NavigationBar {
-    @LayoutModifier(1, SimpleNameCollisionScope::class)
+    @Modifier(1, SimpleNameCollisionScope::class)
     data class ContentDescription(val text: String)
   }
 
-  @LayoutModifier(2, SimpleNameCollisionScope::class)
+  @Modifier(2, SimpleNameCollisionScope::class)
   data class ContentDescription(val text: String)
 
   @Test fun `simple names do not collide`() {
     val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
 
-    val topType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestContentDescription" }
-    val topTypeSpec = generateLayoutModifierInterface(schema, topType)
-    assertThat(topTypeSpec.toString()).contains("interface LayoutModifierGenerationTestContentDescription")
+    val topType = schema.modifiers.single { it.type.flatName == "ModifierGenerationTestContentDescription" }
+    val topTypeSpec = generateModifierInterface(schema, topType)
+    assertThat(topTypeSpec.toString()).contains("interface ModifierGenerationTestContentDescription")
 
-    val nestedType = schema.layoutModifiers.single { it.type.flatName == "LayoutModifierGenerationTestNavigationBarContentDescription" }
-    val nestedTypeSpec = generateLayoutModifierInterface(schema, nestedType)
-    assertThat(nestedTypeSpec.toString()).contains("interface LayoutModifierGenerationTestNavigationBarContentDescription")
+    val nestedType = schema.modifiers.single { it.type.flatName == "ModifierGenerationTestNavigationBarContentDescription" }
+    val nestedTypeSpec = generateModifierInterface(schema, nestedType)
+    assertThat(nestedTypeSpec.toString()).contains("interface ModifierGenerationTestNavigationBarContentDescription")
   }
 
   @Schema(
     [
-      ScopedLayoutModifier::class,
+      ScopedModifier::class,
     ],
   )
   interface ScopedModifierSchema
 
-  object LayoutModifierScope
+  object ModifierScope
 
-  @LayoutModifier(1, LayoutModifierScope::class)
-  object ScopedLayoutModifier
+  @Modifier(1, ModifierScope::class)
+  object ScopedModifier
 
   @Test fun `layout modifier functions are stable`() {
     val schema = ProtocolSchemaSet.parse(ScopedModifierSchema::class).schema
 
-    val modifier = schema.layoutModifiers.single { it.type.names.last() == "ScopedLayoutModifier" }
-    val scope = modifier.scopes.single { it.names.last() == "LayoutModifierScope" }
+    val modifier = schema.modifiers.single { it.type.names.last() == "ScopedModifier" }
+    val scope = modifier.scopes.single { it.names.last() == "ModifierScope" }
     val scopeSpec = generateScope(schema, scope)
     assertThat(scopeSpec.toString()).contains(
       """
       |  @Stable
-      |  public fun LayoutModifier.layoutModifierGenerationTestScopedLayoutModifier(): LayoutModifier
+      |  public fun Modifier.modifierGenerationTestScopedModifier(): Modifier
       """.trimMargin(),
     )
   }
 
   @Test fun `layout modifier implements toString`() = with(object : TestScope {}) {
-    var type = app.cash.redwood.LayoutModifier.customType(20.seconds)
+    var type = app.cash.redwood.Modifier.customType(20.seconds)
     assertThat(type.toString()).isEqualTo("CustomType(customType=20s)")
 
-    type = app.cash.redwood.LayoutModifier.customTypeStateless()
+    type = app.cash.redwood.Modifier.customTypeStateless()
     assertThat(type.toString()).isEqualTo("CustomTypeStateless")
 
-    type = app.cash.redwood.LayoutModifier.customTypeWithDefault(40.minutes, "hello")
+    type = app.cash.redwood.Modifier.customTypeWithDefault(40.minutes, "hello")
     assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
   }
 
   @Suppress("DEPRECATION")
   @Schema(
     [
-      DeprecatedLayoutModifier::class,
+      DeprecatedModifier::class,
     ],
   )
   interface DeprecatedSchema
 
-  @LayoutModifier(1, LayoutModifierScope::class)
+  @Modifier(1, ModifierScope::class)
   @Deprecated("Hey")
-  data class DeprecatedLayoutModifier(
+  data class DeprecatedModifier(
     @Deprecated("Hello", level = ERROR)
     val a: String,
   )
@@ -114,8 +114,8 @@ class LayoutModifierGenerationTest {
   @Test fun deprecation() {
     val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
 
-    val modifier = schema.layoutModifiers.single()
-    val fileSpec = generateLayoutModifierInterface(schema, modifier)
+    val modifier = schema.modifiers.single()
+    val fileSpec = generateModifierInterface(schema, modifier)
     assertThat(fileSpec.toString()).all {
       contains(
         """
@@ -123,7 +123,7 @@ class LayoutModifierGenerationTest {
         |  "Hey",
         |  level = WARNING,
         |)
-        |public interface LayoutModifierGenerationTestDeprecatedLayoutModifier
+        |public interface ModifierGenerationTestDeprecatedModifier
         """.trimMargin(),
       )
 

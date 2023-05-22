@@ -23,7 +23,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.widget.Widget
 
 public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private var layoutModifierTick by mutableStateOf(0)
+  private var modifierTick by mutableStateOf(0)
 
   private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
   public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
@@ -31,7 +31,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
   @Composable
   public fun render() {
     // Observe the layout modifier count so we recompose if it changes.
-    layoutModifierTick
+    modifierTick
 
     for (index in _widgets.indices) {
       _widgets[index].value()
@@ -50,7 +50,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
     _widgets.remove(index, count)
   }
 
-  override fun onLayoutModifierUpdated() {
-    layoutModifierTick++
+  override fun onModifierUpdated() {
+    modifierTick++
   }
 }

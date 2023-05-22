@@ -37,7 +37,7 @@ public interface Schema {
   public val documentation: String?
   public val scopes: List<FqType>
   public val widgets: List<Widget>
-  public val layoutModifiers: List<LayoutModifier>
+  public val modifiers: List<Modifier>
   public val dependencies: List<FqType>
 }
 
@@ -91,7 +91,7 @@ public interface Widget {
   }
 }
 
-public interface LayoutModifier {
+public interface Modifier {
   public val scopes: List<FqType>
 
   /** Either a 'data class' or 'object'. */
@@ -140,7 +140,7 @@ public interface ProtocolSchemaSet : SchemaSet {
 
 public interface ProtocolSchema : Schema {
   override val widgets: List<ProtocolWidget>
-  override val layoutModifiers: List<ProtocolLayoutModifier>
+  override val modifiers: List<ProtocolModifier>
   override val dependencies: List<FqType> get() = taggedDependencies.values.toList()
   public val taggedDependencies: Map<Int, FqType>
 
@@ -163,6 +163,6 @@ public interface ProtocolWidget : Widget {
   public interface ProtocolChildren : Children, ProtocolTrait
 }
 
-public interface ProtocolLayoutModifier : LayoutModifier {
+public interface ProtocolModifier : Modifier {
   public val tag: Int
 }

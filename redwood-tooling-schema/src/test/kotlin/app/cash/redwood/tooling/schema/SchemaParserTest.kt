@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.schema
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.layout.Row
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.LayoutModifier
+import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
@@ -83,7 +83,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(NonAnnotatedWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @LayoutModifier",
+        "app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @Modifier",
       )
   }
 
@@ -95,7 +95,7 @@ class SchemaParserTest(
   interface DoubleAnnotatedWidgetSchema
 
   @Widget(1)
-  @LayoutModifier(1, TestScope::class)
+  @Modifier(1, TestScope::class)
   data class DoubleAnnotatedWidget(
     @Property(1) val name: String,
   )
@@ -104,7 +104,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(DoubleAnnotatedWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "app.cash.redwood.tooling.schema.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @LayoutModifier",
+        "app.cash.redwood.tooling.schema.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @Modifier",
       )
   }
 
@@ -146,36 +146,36 @@ class SchemaParserTest(
 
   @Schema(
     [
-      DuplicateLayoutModifierTagA::class,
-      NonDuplicateLayoutModifierTag::class,
-      DuplicateLayoutModifierTagB::class,
+      DuplicateModifierTagA::class,
+      NonDuplicateModifierTag::class,
+      DuplicateModifierTagB::class,
     ],
   )
-  interface DuplicateLayoutModifierTagSchema
+  interface DuplicateModifierTagSchema
 
-  @LayoutModifier(1, TestScope::class)
-  data class DuplicateLayoutModifierTagA(
+  @Modifier(1, TestScope::class)
+  data class DuplicateModifierTagA(
     val name: String,
   )
 
-  @LayoutModifier(2, TestScope::class)
-  data class NonDuplicateLayoutModifierTag(
+  @Modifier(2, TestScope::class)
+  data class NonDuplicateModifierTag(
     val name: String,
   )
 
-  @LayoutModifier(1, TestScope::class)
-  data class DuplicateLayoutModifierTagB(
+  @Modifier(1, TestScope::class)
+  data class DuplicateModifierTagB(
     val name: String,
   )
 
-  @Test fun duplicateLayoutModifierTagThrows() {
-    assertFailure { parser.parse(DuplicateLayoutModifierTagSchema::class) }
+  @Test fun duplicateModifierTagThrows() {
+    assertFailure { parser.parse(DuplicateModifierTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
-        |Schema @LayoutModifier tags must be unique
+        |Schema @Modifier tags must be unique
         |
-        |- @LayoutModifier(1): app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateLayoutModifierTagA, app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateLayoutModifierTagB
+        |- @Modifier(1): app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateModifierTagA, app.cash.redwood.tooling.schema.SchemaParserTest.DuplicateModifierTagB
         """.trimMargin(),
       )
   }
@@ -301,21 +301,21 @@ class SchemaParserTest(
 
   @Schema(
     [
-      NonDataClassLayoutModifier::class,
+      NonDataClassModifier::class,
     ],
   )
-  interface NonDataClassLayoutModifierSchema
+  interface NonDataClassModifierSchema
 
-  @LayoutModifier(1, TestScope::class)
-  class NonDataClassLayoutModifier(
+  @Modifier(1, TestScope::class)
+  class NonDataClassModifier(
     val name: String,
   )
 
-  @Test fun nonDataClassLayoutModifierThrows() {
-    assertFailure { parser.parse(NonDataClassLayoutModifierSchema::class) }
+  @Test fun nonDataClassModifierThrows() {
+    assertFailure { parser.parse(NonDataClassModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassLayoutModifier must be 'data' class or 'object'",
+        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassModifier must be 'data' class or 'object'",
       )
   }
 
@@ -553,47 +553,47 @@ class SchemaParserTest(
 
   @Schema(
     [
-      OneMillionLayoutModifier::class,
+      OneMillionModifier::class,
     ],
   )
-  interface OneMillionLayoutModifierSchema
+  interface OneMillionModifierSchema
 
-  @LayoutModifier(1_000_000, TestScope::class)
-  data class OneMillionLayoutModifier(
+  @Modifier(1_000_000, TestScope::class)
+  data class OneMillionModifier(
     val value: Int,
   )
 
-  @Test fun layoutModifierTagOneMillionThrows() {
-    assertFailure { parser.parse(OneMillionLayoutModifierSchema::class) }
+  @Test fun modifierTagOneMillionThrows() {
+    assertFailure { parser.parse(OneMillionModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionLayoutModifier " +
+        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionModifier " +
           "tag must be in range [1, 1000000): 1000000",
       )
   }
 
   @Schema(
     [
-      ZeroLayoutModifier::class,
+      ZeroModifier::class,
     ],
   )
-  interface ZeroLayoutModifierSchema
+  interface ZeroModifierSchema
 
-  @LayoutModifier(0, TestScope::class)
-  data class ZeroLayoutModifier(
+  @Modifier(0, TestScope::class)
+  data class ZeroModifier(
     val value: Int,
   )
 
-  @Test fun layoutModifierTagZeroThrows() {
-    assertFailure { parser.parse(ZeroLayoutModifierSchema::class) }
+  @Test fun modifierTagZeroThrows() {
+    assertFailure { parser.parse(ZeroModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.ZeroLayoutModifier " +
+        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.ZeroModifier " +
           "tag must be in range [1, 1000000): 0",
       )
   }
 
-  @Schema([SomeWidget::class, SomeLayoutModifier::class])
+  @Schema([SomeWidget::class, SomeModifier::class])
   interface SchemaTag
 
   @Widget(1)
@@ -602,8 +602,8 @@ class SchemaParserTest(
     @Children(1) val children: () -> Unit,
   )
 
-  @LayoutModifier(1, TestScope::class)
-  data class SomeLayoutModifier(
+  @Modifier(1, TestScope::class)
+  data class SomeModifier(
     val value: Int,
   )
 
@@ -615,8 +615,8 @@ class SchemaParserTest(
     assertThat(widget.traits[0].tag).isEqualTo(1)
     assertThat(widget.traits[1].tag).isEqualTo(1)
 
-    val layoutModifier = schema.layoutModifiers.single()
-    assertThat(layoutModifier.tag).isEqualTo(1)
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.tag).isEqualTo(1)
   }
 
   @Schema(
@@ -638,8 +638,8 @@ class SchemaParserTest(
     val widgetChildren = widget.traits.first { it is ChildrenTrait }
     assertThat(widgetChildren.tag).isEqualTo(1)
 
-    val layoutModifier = dependency.layoutModifiers.single { it.type.names.last() == "Grow" }
-    assertThat(layoutModifier.tag).isEqualTo(4_000_001)
+    val modifier = dependency.modifiers.single { it.type.names.last() == "Grow" }
+    assertThat(modifier.tag).isEqualTo(4_000_001)
   }
 
   @Schema(
@@ -790,32 +790,32 @@ class SchemaParserTest(
 
   @Schema(
     members = [
-      UnscopedLayoutModifier::class,
+      UnscopedModifier::class,
     ],
   )
   interface UnscopedModifierSchema
 
-  @LayoutModifier(1)
-  object UnscopedLayoutModifier
+  @Modifier(1)
+  object UnscopedModifier
 
   @Test fun `layout modifier must have at least one scope`() {
     assertFailure { parser.parse(UnscopedModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@LayoutModifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedLayoutModifier " +
+        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedModifier " +
           "must have at least one scope.",
       )
   }
 
   @Schema(
     [
-      SerializationLayoutModifier::class,
+      SerializationModifier::class,
     ],
   )
   interface SerializationSchema
 
-  @LayoutModifier(1, TestScope::class)
-  data class SerializationLayoutModifier(
+  @Modifier(1, TestScope::class)
+  data class SerializationModifier(
     val no: String,
     val yes: SerializableType,
   )
@@ -825,11 +825,11 @@ class SchemaParserTest(
     val whevs: String,
   )
 
-  @Test fun serializableLayoutModifierProperties() {
+  @Test fun serializableModifierProperties() {
     assumeTrue(parser != SchemaParser.Fir)
 
     val schema = parser.parse(SerializationSchema::class).schema
-    val modifier = schema.layoutModifiers.single()
+    val modifier = schema.modifiers.single()
 
     val yesProperty = modifier.properties.single { it.name == "yes" }
     assertThat(yesProperty.isSerializable).isTrue()
@@ -885,7 +885,7 @@ class SchemaParserTest(
   @Schema(
     [
       CommentsWidget::class,
-      CommentsLayoutModifier::class,
+      CommentsModifier::class,
     ],
   )
   interface CommentsSchema
@@ -914,8 +914,8 @@ Property
    * multi-line
    * documentation.
    */
-  @LayoutModifier(1, TestScope::class)
-  data class CommentsLayoutModifier(
+  @Modifier(1, TestScope::class)
+  data class CommentsModifier(
     /** Property same line documentation. */ val id: Int,
   )
 
@@ -936,7 +936,7 @@ Property
     val widgetChildren = widget.traits.single { it is ChildrenTrait }
     assertThat(widgetChildren.documentation).isEqualTo("Children missing spaces documentation.")
 
-    val modifier = schema.layoutModifiers.single()
+    val modifier = schema.modifiers.single()
     assertThat(modifier.documentation).isEqualTo("Layout modifier multi-line documentation.")
 
     val modifierProperty = modifier.properties.single()

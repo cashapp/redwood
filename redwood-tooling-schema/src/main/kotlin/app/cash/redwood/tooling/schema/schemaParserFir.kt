@@ -251,22 +251,22 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val layoutModifiers = mutableListOf<ParsedProtocolLayoutModifier>()
+  val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in schemaAnnotation.members) {
     val memberClass = firClassByName[memberType]
       ?: throw IllegalArgumentException("Unable to locate schema type $memberType")
 
     val widgetAnnotation = findWidgetAnnotation(memberClass.annotations)
-    val layoutModifierAnnotation = findLayoutModifierAnnotation(memberClass.annotations)
+    val modifierAnnotation = findModifierAnnotation(memberClass.annotations)
 
-    if ((widgetAnnotation == null) == (layoutModifierAnnotation == null)) {
+    if ((widgetAnnotation == null) == (modifierAnnotation == null)) {
       throw IllegalArgumentException(
-        "$memberType must be annotated with either @Widget or @LayoutModifier",
+        "$memberType must be annotated with either @Widget or @Modifier",
       )
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, memberClass, widgetAnnotation)
-    } else if (layoutModifierAnnotation != null) {
-      layoutModifiers += parseLayoutModifier(memberType, memberClass, layoutModifierAnnotation)
+    } else if (modifierAnnotation != null) {
+      modifiers += parseModifier(memberType, memberClass, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -285,13 +285,13 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
-  val badLayoutModifiers = layoutModifiers.groupBy(ProtocolLayoutModifier::tag).filterValues { it.size > 1 }
-  if (badLayoutModifiers.isNotEmpty()) {
+  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
-        appendLine("Schema @LayoutModifier tags must be unique")
-        for ((modifierTag, group) in badLayoutModifiers) {
-          append("\n- @LayoutModifier($modifierTag): ")
+        appendLine("Schema @Modifier tags must be unique")
+        for ((modifierTag, group) in badModifiers) {
+          append("\n- @Modifier($modifierTag): ")
           group.joinTo(this) { it.type.toString() }
         }
       },
@@ -302,11 +302,11 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val layoutModifierScopes = layoutModifiers
+  val modifierScopes = modifiers
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
-    addAll(layoutModifierScopes)
+    addAll(modifierScopes)
   }
 
   val badDependencyTags = schemaAnnotation.dependencies
@@ -345,7 +345,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
-    layoutModifiers = layoutModifiers,
+    modifiers = modifiers,
     taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema },
   )
 }
@@ -475,17 +475,17 @@ private fun FirContext.parseWidget(
   )
 }
 
-private fun FirContext.parseLayoutModifier(
+private fun FirContext.parseModifier(
   memberType: FqType,
   firClass: FirRegularClass,
-  annotation: LayoutModifierAnnotation,
-): ParsedProtocolLayoutModifier {
+  annotation: ModifierAnnotation,
+): ParsedProtocolModifier {
   val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
-    "@LayoutModifier $memberType tag must be in range [1, $maxMemberTag): $tag"
+    "@Modifier $memberType tag must be in range [1, $maxMemberTag): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
-    "@LayoutModifier $memberType must have at least one scope."
+    "@Modifier $memberType must have at least one scope."
   }
 
   val properties = if (firClass.isData) {
@@ -498,7 +498,7 @@ private fun FirContext.parseLayoutModifier(
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
 
-      ParsedProtocolLayoutModifierProperty(
+      ParsedProtocolModifierProperty(
         name = name,
         documentation = documentation,
         type = parameterType,
@@ -511,7 +511,7 @@ private fun FirContext.parseLayoutModifier(
     emptyList()
   } else {
     throw IllegalArgumentException(
-      "@LayoutModifier $memberType must be 'data' class or 'object'",
+      "@Modifier $memberType must be 'data' class or 'object'",
     )
   }
 
@@ -519,7 +519,7 @@ private fun FirContext.parseLayoutModifier(
     ?.toDeprecation { memberType.toString() }
   val documentation = firClass.source?.findAndParseKDoc()
 
-  return ParsedProtocolLayoutModifier(
+  return ParsedProtocolModifier(
     tag = tag,
     scopes = annotation.scopes,
     type = memberType,
@@ -667,10 +667,10 @@ private data class DefaultAnnotation(
 )
 
 @Suppress("UNCHECKED_CAST")
-private fun FirContext.findLayoutModifierAnnotation(
+private fun FirContext.findModifierAnnotation(
   annotations: List<FirAnnotation>,
-): LayoutModifierAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == FqNames.LayoutModifier }
+): ModifierAnnotation? {
+  val annotation = annotations.find { it.fqName(firSession) == FqNames.Modifier }
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
@@ -689,10 +689,10 @@ private fun FirContext.findLayoutModifierAnnotation(
       classId.asSingleFqName().toFqType()
     }
 
-  return LayoutModifierAnnotation(tagExpression.value, scopes)
+  return ModifierAnnotation(tagExpression.value, scopes)
 }
 
-private data class LayoutModifierAnnotation(
+private data class ModifierAnnotation(
   val tag: Int,
   val scopes: List<FqType>,
 )
@@ -748,7 +748,7 @@ private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")
   val Default = FqName("app.cash.redwood.schema.Default")
   val Deprecated = FqName("kotlin.Deprecated")
-  val LayoutModifier = FqName("app.cash.redwood.schema.LayoutModifier")
+  val Modifier = FqName("app.cash.redwood.schema.Modifier")
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")
   val Widget = FqName("app.cash.redwood.schema.Widget")

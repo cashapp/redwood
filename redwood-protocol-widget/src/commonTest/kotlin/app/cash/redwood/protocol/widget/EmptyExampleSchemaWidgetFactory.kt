@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import example.redwood.widget.Button
 import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
@@ -30,7 +30,7 @@ open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing>
   override fun Text(): Text<Nothing> = TODO()
   override fun Button() = object : Button<Nothing> {
     override val value get() = TODO()
-    override var layoutModifiers: LayoutModifier
+    override var modifiers: Modifier
       get() = TODO()
       set(_) { TODO() }
 

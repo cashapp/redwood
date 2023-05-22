@@ -17,7 +17,7 @@ package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.schema.Children as ChildrenAnnotation
 import app.cash.redwood.schema.Default as DefaultAnnotation
-import app.cash.redwood.schema.LayoutModifier as LayoutModifierAnnotation
+import app.cash.redwood.schema.Modifier as ModifierAnnotation
 import app.cash.redwood.schema.Property as PropertyAnnotation
 import app.cash.redwood.schema.Schema as SchemaAnnotation
 import app.cash.redwood.schema.Widget as WidgetAnnotation
@@ -106,19 +106,19 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val layoutModifiers = mutableListOf<ParsedProtocolLayoutModifier>()
+  val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
-    val layoutModifierAnnotation = memberType.findAnnotation<LayoutModifierAnnotation>()
+    val modifierAnnotation = memberType.findAnnotation<ModifierAnnotation>()
 
-    if ((widgetAnnotation == null) == (layoutModifierAnnotation == null)) {
+    if ((widgetAnnotation == null) == (modifierAnnotation == null)) {
       throw IllegalArgumentException(
-        "${memberType.qualifiedName} must be annotated with either @Widget or @LayoutModifier",
+        "${memberType.qualifiedName} must be annotated with either @Widget or @Modifier",
       )
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, widgetAnnotation)
-    } else if (layoutModifierAnnotation != null) {
-      layoutModifiers += parseLayoutModifier(memberType, layoutModifierAnnotation)
+    } else if (modifierAnnotation != null) {
+      modifiers += parseModifier(memberType, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -137,13 +137,13 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
-  val badLayoutModifiers = layoutModifiers.groupBy(ProtocolLayoutModifier::tag).filterValues { it.size > 1 }
-  if (badLayoutModifiers.isNotEmpty()) {
+  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
-        appendLine("Schema @LayoutModifier tags must be unique")
-        for ((modifierTag, group) in badLayoutModifiers) {
-          append("\n- @LayoutModifier($modifierTag): ")
+        appendLine("Schema @Modifier tags must be unique")
+        for ((modifierTag, group) in badModifiers) {
+          append("\n- @Modifier($modifierTag): ")
           group.joinTo(this) { it.type.toString() }
         }
       },
@@ -154,11 +154,11 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val layoutModifierScopes = layoutModifiers
+  val modifierScopes = modifiers
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
-    addAll(layoutModifierScopes)
+    addAll(modifierScopes)
   }
 
   val badDependencyTags = schemaAnnotation.dependencies
@@ -210,7 +210,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
-    layoutModifiers = layoutModifiers,
+    modifiers = modifiers,
     taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
@@ -354,17 +354,17 @@ private fun parseWidget(
   )
 }
 
-private fun parseLayoutModifier(
+private fun parseModifier(
   memberType: KClass<*>,
-  annotation: LayoutModifierAnnotation,
-): ParsedProtocolLayoutModifier {
+  annotation: ModifierAnnotation,
+): ParsedProtocolModifier {
   val memberFqType = memberType.toFqType()
   val tag = annotation.tag
   require(tag in 1 until maxMemberTag) {
-    "@LayoutModifier $memberFqType tag must be in range [1, $maxMemberTag): $tag"
+    "@Modifier $memberFqType tag must be in range [1, $maxMemberTag): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
-    "@LayoutModifier $memberFqType must have at least one scope."
+    "@Modifier $memberFqType must have at least one scope."
   }
 
   val properties = if (memberType.isData) {
@@ -382,7 +382,7 @@ private fun parseLayoutModifier(
         ?: false
       val deprecation = kProperty.parseDeprecation { "$memberFqType.$name" }
 
-      ParsedProtocolLayoutModifierProperty(
+      ParsedProtocolModifierProperty(
         name = name,
         type = type.toFqType(),
         isSerializable = isSerializable,
@@ -394,11 +394,11 @@ private fun parseLayoutModifier(
     emptyList()
   } else {
     throw IllegalArgumentException(
-      "@LayoutModifier ${memberType.qualifiedName} must be 'data' class or 'object'",
+      "@Modifier ${memberType.qualifiedName} must be 'data' class or 'object'",
     )
   }
 
-  return ParsedProtocolLayoutModifier(
+  return ParsedProtocolModifier(
     tag = tag,
     scopes = annotation.scopes.map { it.toFqType() },
     type = memberFqType,

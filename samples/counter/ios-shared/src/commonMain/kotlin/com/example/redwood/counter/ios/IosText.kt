@@ -15,7 +15,7 @@
  */
 package com.example.redwood.counter.ios
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Text
 import platform.UIKit.NSTextAlignmentCenter
 import platform.UIKit.UIColor
@@ -28,7 +28,7 @@ class IosText : Text<UIView> {
     textAlignment = NSTextAlignmentCenter
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text

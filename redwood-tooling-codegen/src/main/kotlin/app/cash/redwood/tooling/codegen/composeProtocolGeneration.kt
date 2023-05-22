@@ -257,13 +257,13 @@ internal class ProtocolButton(
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
-  override var layoutModifiers: LayoutModifier
+  override var modifiers: Modifier
     get() = throw AssertionError()
     set(value) {
       val json = buildJsonArray {
         value.forEach { element -> add(element.toJsonElement(json))
       }
-      state.append(LayoutModifierChange(id, json))
+      state.append(ModifierChange(id, json))
     }
 
   override fun text(text: String?) {
@@ -452,7 +452,7 @@ internal fun generateProtocolWidget(
           }
         }
         .addProperty(
-          PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier, OVERRIDE)
+          PropertySpec.builder("modifiers", Redwood.Modifier, OVERRIDE)
             .mutable()
             .getter(
               FunSpec.getterBuilder()
@@ -461,8 +461,8 @@ internal fun generateProtocolWidget(
             )
             .setter(
               FunSpec.setterBuilder()
-                .addParameter("value", Redwood.LayoutModifier)
-                .addStatement("state.append(%T(id, value.%M(json)))", Protocol.LayoutModifierChange, host.layoutModifierToProtocol)
+                .addParameter("value", Redwood.Modifier)
+                .addStatement("state.append(%T(id, value.%M(json)))", Protocol.ModifierChange, host.modifierToProtocol)
                 .build(),
             )
             .build(),
@@ -489,25 +489,25 @@ internal object GrowSerializer : KSerializer<Grow> {
     throw AssertionError()
   }
 
-  fun encode(json: Json, value: Grow): LayoutModifierElement {
+  fun encode(json: Json, value: Grow): ModifierElement {
     val element = json.encodeToJsonElement(this, value)
-    return LayoutModifierElement(LayoutModifierTag(3), element)
+    return ModifierElement(ModifierTag(3), element)
   }
 }
 */
-internal fun generateProtocolLayoutModifierSerializers(
+internal fun generateProtocolModifierSerializers(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec? {
-  val serializableLayoutModifiers = schema.layoutModifiers.filter { it.properties.isNotEmpty() }
-  if (serializableLayoutModifiers.isEmpty()) {
+  val serializableModifiers = schema.modifiers.filter { it.properties.isNotEmpty() }
+  if (serializableModifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.composePackage(host), "layoutModifierSerializers")
+  return FileSpec.builder(schema.composePackage(host), "modifierSerializers")
     .apply {
-      for (layoutModifier in serializableLayoutModifiers) {
-        val serializerType = schema.layoutModifierSerializer(layoutModifier, host)
-        val modifierType = schema.layoutModifierType(layoutModifier)
+      for (modifier in serializableModifiers) {
+        val serializerType = schema.modifierSerializer(modifier, host)
+        val modifierType = schema.modifierType(modifier)
 
         var nextSerializerId = 0
         val serializerIds = mutableMapOf<TypeName, Int>()
@@ -515,7 +515,7 @@ internal fun generateProtocolLayoutModifierSerializers(
 
         val descriptorBody = CodeBlock.builder()
         val serializerBody = CodeBlock.builder()
-        for ((index, property) in layoutModifier.properties.withIndex()) {
+        for ((index, property) in modifier.properties.withIndex()) {
           val propertyType = property.type.asTypeName()
           descriptorBody.addStatement("%M<%T>(%S)", KotlinxSerialization.element, propertyType, property.name)
 
@@ -643,7 +643,7 @@ internal fun generateProtocolLayoutModifierSerializers(
                 .addParameter("encoder", KotlinxSerialization.Encoder)
                 .addParameter("value", modifierType)
                 .apply {
-                  if (layoutModifier.properties.any { it.defaultExpression != null }) {
+                  if (modifier.properties.any { it.defaultExpression != null }) {
                     addAnnotation(
                       AnnotationSpec.builder(Stdlib.OptIn)
                         .addMember("%T::class", KotlinxSerialization.ExperimentalSerializationApi)
@@ -668,13 +668,13 @@ internal fun generateProtocolLayoutModifierSerializers(
               FunSpec.builder("encode")
                 .addParameter("json", KotlinxSerialization.Json)
                 .addParameter("value", modifierType)
-                .returns(Protocol.LayoutModifierElement)
+                .returns(Protocol.ModifierElement)
                 .addStatement("val element = json.encodeToJsonElement(this, value)")
                 .addStatement(
                   "return %T(%T(%L), element)",
-                  Protocol.LayoutModifierElement,
-                  Protocol.LayoutModifierTag,
-                  layoutModifier.tag,
+                  Protocol.ModifierElement,
+                  Protocol.ModifierTag,
+                  modifier.tag,
                 )
                 .build(),
             )
@@ -685,53 +685,53 @@ internal fun generateProtocolLayoutModifierSerializers(
     .build()
 }
 
-internal fun generateComposeProtocolLayoutModifierSerialization(
+internal fun generateComposeProtocolModifierSerialization(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
-  val name = schema.layoutModifierToProtocol.simpleName
-  return FileSpec.builder(schema.composePackage(), "layoutModifierSerialization")
+  val name = schema.modifierToProtocol.simpleName
+  return FileSpec.builder(schema.composePackage(), "modifierSerialization")
     .addFunction(
       FunSpec.builder(name)
         .addModifiers(INTERNAL)
-        .receiver(Redwood.LayoutModifier)
+        .receiver(Redwood.Modifier)
         .addParameter("json", KotlinxSerialization.Json)
-        .returns(LIST.parameterizedBy(Protocol.LayoutModifierElement))
+        .returns(LIST.parameterizedBy(Protocol.ModifierElement))
         .beginControlFlow("return %M", Stdlib.buildList)
         .addStatement(
           "this@%L.forEach { element -> add(element.%M(json)) }",
           name,
-          schema.layoutModifierToProtocol,
+          schema.modifierToProtocol,
         )
         .endControlFlow()
         .build(),
     )
     .addFunction(
-      FunSpec.builder(schema.layoutModifierToProtocol.simpleName)
+      FunSpec.builder(schema.modifierToProtocol.simpleName)
         .addModifiers(PRIVATE)
-        .receiver(Redwood.LayoutModifierElement)
+        .receiver(Redwood.ModifierElement)
         .addParameter("json", KotlinxSerialization.Json)
-        .returns(Protocol.LayoutModifierElement)
+        .returns(Protocol.ModifierElement)
         .beginControlFlow("return when (this)")
         .apply {
-          val layoutModifiers = schemaSet.allLayoutModifiers()
-          if (layoutModifiers.isEmpty()) {
+          val modifiers = schemaSet.allModifiers()
+          if (modifiers.isEmpty()) {
             addAnnotation(
               AnnotationSpec.builder(Suppress::class)
                 .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
                 .build(),
             )
           } else {
-            for ((localSchema, layoutModifier) in layoutModifiers) {
-              val modifierType = localSchema.layoutModifierType(layoutModifier)
-              val surrogate = localSchema.layoutModifierSerializer(layoutModifier, schema)
-              if (layoutModifier.properties.isEmpty()) {
+            for ((localSchema, modifier) in modifiers) {
+              val modifierType = localSchema.modifierType(modifier)
+              val surrogate = localSchema.modifierSerializer(modifier, schema)
+              if (modifier.properties.isEmpty()) {
                 addStatement(
                   "is %T -> %T(%T(%L))",
                   modifierType,
-                  Protocol.LayoutModifierElement,
-                  Protocol.LayoutModifierTag,
-                  layoutModifier.tag,
+                  Protocol.ModifierElement,
+                  Protocol.ModifierTag,
+                  modifier.tag,
                 )
               } else {
                 addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)

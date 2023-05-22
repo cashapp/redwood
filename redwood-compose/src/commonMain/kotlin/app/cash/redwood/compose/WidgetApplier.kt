@@ -17,7 +17,7 @@ package app.cash.redwood.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
 
@@ -129,9 +129,9 @@ public class WidgetNode<W : Widget<V>, V : Any>(
   public var container: Widget.Children<V>? = null
 
   public companion object {
-    public val SetLayoutModifiers: WidgetNode<*, *>.(LayoutModifier) -> Unit = {
-      widget.layoutModifiers = it
-      container?.onLayoutModifierUpdated()
+    public val SetModifiers: WidgetNode<*, *>.(Modifier) -> Unit = {
+      widget.modifiers = it
+      container?.onModifierUpdated()
     }
   }
 }

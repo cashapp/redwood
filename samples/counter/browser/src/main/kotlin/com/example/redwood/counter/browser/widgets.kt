@@ -15,7 +15,7 @@
  */
 package com.example.redwood.counter.browser
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Button
 import com.example.redwood.counter.widget.Text
 import org.w3c.dom.HTMLButtonElement
@@ -25,7 +25,7 @@ import org.w3c.dom.HTMLSpanElement
 class HtmlText(
   override val value: HTMLSpanElement,
 ) : Text<HTMLElement> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override fun text(text: String?) {
     value.textContent = text
@@ -35,7 +35,7 @@ class HtmlText(
 class HtmlButton(
   override val value: HTMLButtonElement,
 ) : Button<HTMLElement> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override fun text(text: String?) {
     value.textContent = text

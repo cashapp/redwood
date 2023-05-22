@@ -66,14 +66,14 @@ public data class PropertyChange(
 
 @Serializable
 @SerialName("modifier")
-public data class LayoutModifierChange(
+public data class ModifierChange(
   override val id: Id,
-  val elements: List<LayoutModifierElement> = emptyList(),
+  val elements: List<ModifierElement> = emptyList(),
 ) : ValueChange
 
-@Serializable(with = LayoutModifierElementSerializer::class)
-public data class LayoutModifierElement(
-  val tag: LayoutModifierTag,
+@Serializable(with = ModifierElementSerializer::class)
+public data class ModifierElement(
+  val tag: ModifierTag,
   val value: JsonElement = DefaultValue,
 ) {
   internal companion object {
@@ -81,29 +81,29 @@ public data class LayoutModifierElement(
   }
 }
 
-private object LayoutModifierElementSerializer : KSerializer<LayoutModifierElement> {
-  override val descriptor = buildClassSerialDescriptor("LayoutModifierElement") {
-    element<LayoutModifierTag>("tag")
+private object ModifierElementSerializer : KSerializer<ModifierElement> {
+  override val descriptor = buildClassSerialDescriptor("ModifierElement") {
+    element<ModifierTag>("tag")
     element<JsonElement>("value")
   }
 
-  override fun deserialize(decoder: Decoder): LayoutModifierElement {
+  override fun deserialize(decoder: Decoder): ModifierElement {
     check(decoder is JsonDecoder) { "Can be deserialized only by JSON" }
     val decoded = decoder.decodeJsonElement().jsonArray
     check(decoded.size in 1..2) {
-      "LayoutModifierElement array may only have 1 or 2 values. Found: ${decoded.size}"
+      "ModifierElement array may only have 1 or 2 values. Found: ${decoded.size}"
     }
-    val tag = LayoutModifierTag(decoded[0].jsonPrimitive.content.toInt())
-    val value = decoded.getOrElse(1) { LayoutModifierElement.DefaultValue }
-    return LayoutModifierElement(tag, value)
+    val tag = ModifierTag(decoded[0].jsonPrimitive.content.toInt())
+    val value = decoded.getOrElse(1) { ModifierElement.DefaultValue }
+    return ModifierElement(tag, value)
   }
 
-  override fun serialize(encoder: Encoder, value: LayoutModifierElement) {
+  override fun serialize(encoder: Encoder, value: ModifierElement) {
     check(encoder is JsonEncoder) { "Can be serialized only by JSON" }
     encoder.encodeJsonElement(
       buildJsonArray {
         add(JsonPrimitive(value.tag.value))
-        if (value.value != LayoutModifierElement.DefaultValue) {
+        if (value.value != ModifierElement.DefaultValue) {
           add(value.value)
         }
       },

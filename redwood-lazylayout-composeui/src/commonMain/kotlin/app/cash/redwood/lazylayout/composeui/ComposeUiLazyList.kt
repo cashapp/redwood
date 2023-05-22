@@ -36,7 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -52,7 +52,7 @@ internal class ComposeUiLazyList :
   private var isRefreshing by mutableStateOf(false)
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: RedwoodModifier = RedwoodModifier
 
   override val items = ComposeWidgetChildren()
 

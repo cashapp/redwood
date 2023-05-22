@@ -18,7 +18,7 @@ package app.cash.redwood.layout.view
 import android.content.Context
 import android.view.View
 import android.widget.Space
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
@@ -31,7 +31,7 @@ internal class ViewSpacer(
 
   override val value = Space(context)
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override fun width(width: Dp) {
     value.minimumWidth = with(density) { width.toPx() }.roundToInt()

@@ -22,14 +22,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import coil.compose.AsyncImage
 import com.example.redwood.emojisearch.widget.Image
 
 internal class ComposeUiImage : Image<@Composable () -> Unit> {
   private var url by mutableStateOf("")
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
     AsyncImage(

@@ -17,7 +17,7 @@ package app.cash.redwood.gradle
 
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Compose
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ComposeProtocol
-import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.LayoutModifiers
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Modifiers
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Testing
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Widget
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.WidgetProtocol
@@ -34,7 +34,7 @@ public class RedwoodComposeGeneratorPlugin : RedwoodGeneratorPlugin(Compose)
 public class RedwoodComposeProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ComposeProtocol)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodLayoutModifiersGeneratorPlugin : RedwoodGeneratorPlugin(LayoutModifiers)
+public class RedwoodModifiersGeneratorPlugin : RedwoodGeneratorPlugin(Modifiers)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodTestingGeneratorPlugin : RedwoodGeneratorPlugin(Testing)
@@ -54,7 +54,7 @@ public abstract class RedwoodGeneratorPlugin(
   ) {
     Compose("--compose", "redwood-compose"),
     ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
-    LayoutModifiers("--layout-modifiers", "redwood-runtime"),
+    Modifiers("--layout-modifiers", "redwood-runtime"),
     Testing("--testing", "redwood-compose-testing"),
     Widget("--widget", "redwood-widget"),
     WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),

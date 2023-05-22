@@ -21,13 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Text
 
 internal class ComposeUiText : Text<@Composable () -> Unit> {
   private var text by mutableStateOf("")
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override val value = @Composable {
     Text(

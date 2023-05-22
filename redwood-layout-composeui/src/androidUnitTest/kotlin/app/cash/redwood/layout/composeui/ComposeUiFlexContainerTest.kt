@@ -24,7 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
@@ -49,7 +49,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
 
   override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
 
-  override fun widget(text: String, layoutModifier: LayoutModifier) = object : Widget<@Composable () -> Unit> {
+  override fun widget(text: String, modifier: RedwoodModifier) = object : Widget<@Composable () -> Unit> {
     override val value = @Composable {
       BasicText(
         text = text,
@@ -57,7 +57,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
         modifier = Modifier.background(Color.Green),
       )
     }
-    override var layoutModifiers = layoutModifier
+    override var modifiers = modifier
   }
 
   override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>) {

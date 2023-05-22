@@ -16,7 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.LayoutModifierTag
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
@@ -32,9 +32,9 @@ class ProtocolMismatchHandlerTest {
     assertThat(t).hasMessage("Unknown widget tag 1")
   }
 
-  @Test fun throwingUnknownLayoutModifier() {
+  @Test fun throwingUnknownModifier() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ProtocolMismatchHandler.Throwing.onUnknownLayoutModifier(LayoutModifierTag(1))
+      ProtocolMismatchHandler.Throwing.onUnknownModifier(ModifierTag(1))
     }
     assertThat(t).hasMessage("Unknown layout modifier tag 1")
   }

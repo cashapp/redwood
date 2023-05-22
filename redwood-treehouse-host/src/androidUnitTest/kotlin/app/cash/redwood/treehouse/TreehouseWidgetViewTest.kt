@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
@@ -142,7 +142,7 @@ class TreehouseWidgetViewTest {
 
   private fun viewWidget(view: View) = object : Widget<View> {
     override val value: View get() = view
-    override var layoutModifiers: LayoutModifier = LayoutModifier
+    override var modifiers: Modifier = Modifier
   }
 
   private val throwingWidgetSystem =

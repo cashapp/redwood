@@ -61,7 +61,7 @@ class WidgetProtocolGenerationTest {
   @Test fun `dependency layout modifiers are included in serialization`() {
     val schema = ProtocolSchemaSet.parse(ExampleSchema::class)
 
-    val fileSpec = generateWidgetProtocolLayoutModifierSerialization(schema)
+    val fileSpec = generateWidgetProtocolModifierSerialization(schema)
     assertThat(fileSpec.toString()).all {
       contains("1 -> RowVerticalAlignmentImpl.serializer()")
       contains("1_000_001 -> GrowImpl.serializer()")

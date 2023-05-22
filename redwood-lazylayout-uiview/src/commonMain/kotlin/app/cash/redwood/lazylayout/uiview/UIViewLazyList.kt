@@ -20,7 +20,7 @@
 
 package app.cash.redwood.lazylayout.uiview
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.Widget
@@ -71,7 +71,7 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
       tableView.reloadData()
     }
 
-    override fun onLayoutModifierUpdated() {
+    override fun onModifierUpdated() {
     }
   }
 
@@ -139,7 +139,7 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
     this.itemsAfter = itemsAfter
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   override val value: UIView get() = tableView
 }

@@ -15,7 +15,7 @@
  */
 package com.example
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.AlignSelf
 import app.cash.redwood.flexbox.JustifyContent
@@ -75,14 +75,14 @@ internal fun Margin.toSpacing(density: Density) = with(density) {
 internal fun newFlexItem(
   direction: FlexDirection,
   density: Density,
-  layoutModifiers: LayoutModifier,
+  modifiers: Modifier,
   measurable: Measurable,
 ): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
   var spacing = Spacing.Zero
   var alignSelf = AlignSelf.Auto
-  layoutModifiers.forEach { modifier ->
+  modifiers.forEach { modifier ->
     when (modifier) {
       is GrowModifier -> {
         flexGrow = modifier.value

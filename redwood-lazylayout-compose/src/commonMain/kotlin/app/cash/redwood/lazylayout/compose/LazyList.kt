@@ -37,7 +37,7 @@ import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import kotlin.jvm.JvmName
 
 @Composable
@@ -69,7 +69,7 @@ private fun lazyPagingItems(
 @Composable
 internal fun LazyList(
   isVertical: Boolean,
-  layoutModifier: LayoutModifier = LayoutModifier,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
@@ -87,7 +87,7 @@ internal fun LazyList(
       if (lazyPagingItems.itemCount > 0) lazyPagingItems[firstVisibleItemIndex]
       if (lazyPagingItems.itemCount >= (lastVisibleItemIndex + 1)) lazyPagingItems[lastVisibleItemIndex]
     },
-    layoutModifier = layoutModifier,
+    modifier = modifier,
     items = {
       for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
         // Only invokes Composable lambdas that are loaded.
@@ -104,7 +104,7 @@ internal fun RefreshableLazyList(
   isVertical: Boolean,
   refreshing: Boolean = false,
   onRefresh: (() -> Unit)? = null,
-  layoutModifier: LayoutModifier = LayoutModifier,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
@@ -124,7 +124,7 @@ internal fun RefreshableLazyList(
     },
     refreshing = refreshing,
     onRefresh = onRefresh,
-    layoutModifier = layoutModifier,
+    modifier = modifier,
     items = {
       for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
         // Only invokes Composable lambdas that are loaded.

@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.dom
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -103,7 +103,7 @@ private class HTMLFlexContainer(
     value.style.alignItems = verticalAlignment.toCss()
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 }
 
 private class HTMLSpacer(
@@ -117,5 +117,5 @@ private class HTMLSpacer(
     value.style.height = height.toPxString()
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 }

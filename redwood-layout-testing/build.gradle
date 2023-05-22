@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutLayoutmodifiers
+        api projects.redwoodModifiers
         api projects.redwoodLayoutWidget
       }
     }

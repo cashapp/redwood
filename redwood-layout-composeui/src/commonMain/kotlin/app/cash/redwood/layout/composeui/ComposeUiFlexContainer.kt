@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
@@ -55,7 +55,7 @@ internal class ComposeUiFlexContainer(
 
   override val children = ComposeWidgetChildren()
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: RedwoodModifier = RedwoodModifier
 
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
@@ -171,7 +171,7 @@ internal class ComposeUiFlexContainer(
       container.items += newFlexItem(
         direction = direction,
         density = density,
-        layoutModifiers = children.widgets[index].layoutModifiers,
+        modifiers = children.widgets[index].modifiers,
         measurable = ComposeMeasurable(measurable),
       )
     }

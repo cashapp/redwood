@@ -172,9 +172,9 @@ internal class ProtocolButton<W : Any>(
     mismatchHandler.onUnknownChildren(WidgetTag(2), tag)
   }
 
-  public override fun updateLayoutModifiers() {
-    widget.layoutModifiers = elements.toLayoutModifiers(json, mismatchHandler)
-    container?.onLayoutModifierUpdated()
+  public override fun updateModifiers() {
+    widget.modifiers = elements.toModifiers(json, mismatchHandler)
+    container?.onModifierUpdated()
   }
 
   public override fun attachTo(container: Widget.Children<W>) {
@@ -358,11 +358,11 @@ internal fun generateProtocolNode(
           )
         }
         .addFunction(
-          FunSpec.builder("updateLayoutModifier")
+          FunSpec.builder("updateModifier")
             .addModifiers(OVERRIDE)
-            .addParameter("elements", LIST.parameterizedBy(Protocol.LayoutModifierElement))
-            .addStatement("widget.layoutModifiers = elements.%M(json, mismatchHandler)", host.toLayoutModifier)
-            .addStatement("container?.onLayoutModifierUpdated()")
+            .addParameter("elements", LIST.parameterizedBy(Protocol.ModifierElement))
+            .addStatement("widget.modifiers = elements.%M(json, mismatchHandler)", host.toModifier)
+            .addStatement("container?.onModifierUpdated()")
             .build(),
         )
         .addFunction(
@@ -378,34 +378,34 @@ internal fun generateProtocolNode(
     .build()
 }
 
-internal fun generateWidgetProtocolLayoutModifierSerialization(
+internal fun generateWidgetProtocolModifierSerialization(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
-  return FileSpec.builder(schemaSet.schema.widgetPackage(), "layoutModifierSerialization")
-    .addFunction(generateJsonArrayToLayoutModifier(schemaSet.schema))
-    .addFunction(generateJsonElementToLayoutModifier(schemaSet))
+  return FileSpec.builder(schemaSet.schema.widgetPackage(), "modifierSerialization")
+    .addFunction(generateJsonArrayToModifier(schemaSet.schema))
+    .addFunction(generateJsonElementToModifier(schemaSet))
     .build()
 }
 
-internal fun generateProtocolLayoutModifierImpls(
+internal fun generateProtocolModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec? {
-  if (schema.layoutModifiers.isEmpty()) {
+  if (schema.modifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.widgetPackage(host), "layoutModifierImpls")
+  return FileSpec.builder(schema.widgetPackage(host), "modifierImpls")
     .apply {
-      for (layoutModifier in schema.layoutModifiers) {
-        val typeName = ClassName(schema.widgetPackage(host), layoutModifier.type.flatName + "Impl")
-        val typeBuilder = if (layoutModifier.properties.isEmpty()) {
+      for (modifier in schema.modifiers) {
+        val typeName = ClassName(schema.widgetPackage(host), modifier.type.flatName + "Impl")
+        val typeBuilder = if (modifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
         } else {
           TypeSpec.classBuilder(typeName)
             .addAnnotation(KotlinxSerialization.Serializable)
             .apply {
               val primaryConstructor = FunSpec.constructorBuilder()
-              for (property in layoutModifier.properties) {
+              for (property in modifier.properties) {
                 val propertyType = property.type.asTypeName()
 
                 primaryConstructor.addParameter(
@@ -430,10 +430,10 @@ internal fun generateProtocolLayoutModifierImpls(
         addType(
           typeBuilder
             .addModifiers(INTERNAL)
-            .addSuperinterface(schema.layoutModifierType(layoutModifier))
-            .addFunction(layoutModifierEquals(schema, layoutModifier))
-            .addFunction(layoutModifierHashCode(layoutModifier))
-            .addFunction(layoutModifierToString(layoutModifier))
+            .addSuperinterface(schema.modifierType(modifier))
+            .addFunction(modifierEquals(schema, modifier))
+            .addFunction(modifierHashCode(modifier))
+            .addFunction(modifierToString(modifier))
             .build(),
         )
       }
@@ -441,10 +441,10 @@ internal fun generateProtocolLayoutModifierImpls(
     .build()
 }
 
-private fun generateJsonArrayToLayoutModifier(schema: ProtocolSchema): FunSpec {
-  return FunSpec.builder("toLayoutModifier")
+private fun generateJsonArrayToModifier(schema: ProtocolSchema): FunSpec {
+  return FunSpec.builder("toModifier")
     .addModifiers(INTERNAL)
-    .receiver(LIST.parameterizedBy(Protocol.LayoutModifierElement))
+    .receiver(LIST.parameterizedBy(Protocol.ModifierElement))
     .addParameter("json", KotlinxSerialization.Json)
     .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
     .addStatement(
@@ -453,25 +453,25 @@ private fun generateJsonArrayToLayoutModifier(schema: ProtocolSchema): FunSpec {
       |  modifier then element.%3M(json, mismatchHandler)
       |}
       """.trimMargin(),
-      Protocol.LayoutModifierElement,
-      Redwood.LayoutModifier,
-      schema.toLayoutModifier,
+      Protocol.ModifierElement,
+      Redwood.Modifier,
+      schema.toModifier,
     )
-    .returns(Redwood.LayoutModifier)
+    .returns(Redwood.Modifier)
     .build()
 }
 
-private fun generateJsonElementToLayoutModifier(schemaSet: ProtocolSchemaSet): FunSpec {
-  return FunSpec.builder("toLayoutModifier")
+private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec {
+  return FunSpec.builder("toModifier")
     .addModifiers(PRIVATE)
-    .receiver(Protocol.LayoutModifierElement)
+    .receiver(Protocol.ModifierElement)
     .addParameter("json", KotlinxSerialization.Json)
     .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
-    .returns(Redwood.LayoutModifier)
+    .returns(Redwood.Modifier)
     .beginControlFlow("val serializer = when (tag.value)")
     .apply {
-      val layoutModifiers = schemaSet.allLayoutModifiers()
-      if (layoutModifiers.isEmpty()) {
+      val modifiers = schemaSet.allModifiers()
+      if (modifiers.isEmpty()) {
         addAnnotation(
           AnnotationSpec.builder(Suppress::class)
             .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
@@ -479,19 +479,19 @@ private fun generateJsonElementToLayoutModifier(schemaSet: ProtocolSchemaSet): F
         )
       } else {
         val host = schemaSet.schema
-        for ((localSchema, layoutModifier) in layoutModifiers) {
-          val typeName = ClassName(localSchema.widgetPackage(host), layoutModifier.type.flatName + "Impl")
-          if (layoutModifier.properties.isEmpty()) {
-            addStatement("%L -> return %T", layoutModifier.tag, typeName)
+        for ((localSchema, modifier) in modifiers) {
+          val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
+          if (modifier.properties.isEmpty()) {
+            addStatement("%L -> return %T", modifier.tag, typeName)
           } else {
-            addStatement("%L -> %T.serializer()", layoutModifier.tag, typeName)
+            addStatement("%L -> %T.serializer()", modifier.tag, typeName)
           }
         }
       }
     }
     .beginControlFlow("else ->")
-    .addStatement("mismatchHandler.onUnknownLayoutModifier(tag)")
-    .addStatement("return %T", Redwood.LayoutModifier)
+    .addStatement("mismatchHandler.onUnknownModifier(tag)")
+    .addStatement("return %T", Redwood.Modifier)
     .endControlFlow()
     .endControlFlow()
     .addStatement("return json.decodeFromJsonElement(serializer, value)")

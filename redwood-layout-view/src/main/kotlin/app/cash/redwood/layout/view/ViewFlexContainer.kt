@@ -22,7 +22,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
@@ -56,7 +56,7 @@ internal class ViewFlexContainer(
 
   override val children = ViewGroupChildren(hostView)
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: Modifier = Modifier
 
   private var scrollEnabled = false
 
@@ -168,7 +168,7 @@ internal class ViewFlexContainer(
         container.items += newFlexItem(
           direction = direction,
           density = density,
-          layoutModifiers = widget.layoutModifiers,
+          modifiers = widget.modifiers,
           measurable = ViewMeasurable(widget.value),
         )
       }

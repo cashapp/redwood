@@ -19,8 +19,8 @@ import app.cash.redwood.tooling.schema.Deprecation
 import app.cash.redwood.tooling.schema.Deprecation.Level.ERROR
 import app.cash.redwood.tooling.schema.Deprecation.Level.WARNING
 import app.cash.redwood.tooling.schema.FqType
-import app.cash.redwood.tooling.schema.LayoutModifier
-import app.cash.redwood.tooling.schema.ProtocolLayoutModifier
+import app.cash.redwood.tooling.schema.Modifier
+import app.cash.redwood.tooling.schema.ProtocolModifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.Schema
@@ -125,43 +125,43 @@ internal fun Schema.widgetPackage(host: Schema? = null): String {
   }
 }
 
-internal fun Schema.layoutModifierType(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(type.names[0] + ".modifier", layoutModifier.type.flatName)
+internal fun Schema.modifierType(modifier: Modifier): ClassName {
+  return ClassName(type.names[0] + ".modifier", modifier.type.flatName)
 }
 
-internal fun Schema.layoutModifierSerializer(layoutModifier: LayoutModifier, host: Schema): ClassName {
-  return ClassName(composePackage(host), layoutModifier.type.flatName + "Serializer")
+internal fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
+  return ClassName(composePackage(host), modifier.type.flatName + "Serializer")
 }
 
-internal fun Schema.layoutModifierImpl(layoutModifier: LayoutModifier): ClassName {
-  return ClassName(composePackage(), layoutModifier.type.flatName + "Impl")
+internal fun Schema.modifierImpl(modifier: Modifier): ClassName {
+  return ClassName(composePackage(), modifier.type.flatName + "Impl")
 }
 
 internal fun Schema.getTesterFunction(): MemberName {
   return MemberName(widgetPackage(), "${type.flatName}Tester")
 }
 
-internal val Schema.toLayoutModifier: MemberName get() =
-  MemberName(widgetPackage(), "toLayoutModifier")
+internal val Schema.toModifier: MemberName get() =
+  MemberName(widgetPackage(), "toModifier")
 
-internal val Schema.layoutModifierToProtocol: MemberName get() =
+internal val Schema.modifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
 
-internal fun ProtocolSchemaSet.allLayoutModifiers(): List<Pair<ProtocolSchema, ProtocolLayoutModifier>> {
+internal fun ProtocolSchemaSet.allModifiers(): List<Pair<ProtocolSchema, ProtocolModifier>> {
   return all.flatMap { schema ->
-    schema.layoutModifiers.map { schema to it }
+    schema.modifiers.map { schema to it }
   }
 }
 
-internal fun layoutModifierEquals(schema: Schema, layoutModifier: LayoutModifier): FunSpec {
-  val interfaceType = schema.layoutModifierType(layoutModifier)
+internal fun modifierEquals(schema: Schema, modifier: Modifier): FunSpec {
+  val interfaceType = schema.modifierType(modifier)
   return FunSpec.builder("equals")
     .addModifiers(KModifier.OVERRIDE)
     .addParameter("other", ANY.copy(nullable = true))
     .returns(BOOLEAN)
     .apply {
       val conditions = mutableListOf(CodeBlock.of("other is %T", interfaceType))
-      for (property in layoutModifier.properties) {
+      for (property in modifier.properties) {
         conditions += CodeBlock.of("other.%1N == %1N", property.name)
       }
       addStatement("return %L", conditions.joinToCode("\n&& "))
@@ -169,16 +169,16 @@ internal fun layoutModifierEquals(schema: Schema, layoutModifier: LayoutModifier
     .build()
 }
 
-internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
+internal fun modifierHashCode(modifier: Modifier): FunSpec {
   return FunSpec.builder("hashCode")
     .addModifiers(KModifier.OVERRIDE)
     .returns(INT)
     .apply {
-      if (layoutModifier.properties.isEmpty()) {
-        addStatement("return %L", layoutModifier.type.flatName.hashCode())
+      if (modifier.properties.isEmpty()) {
+        addStatement("return %L", modifier.type.flatName.hashCode())
       } else {
         addStatement("var hash = 17")
-        for (property in layoutModifier.properties) {
+        for (property in modifier.properties) {
           addStatement("hash = 31 * hash + %N.hashCode()", property.name)
         }
         addStatement("return hash")
@@ -187,18 +187,18 @@ internal fun layoutModifierHashCode(layoutModifier: LayoutModifier): FunSpec {
     .build()
 }
 
-internal fun layoutModifierToString(layoutModifier: LayoutModifier): FunSpec {
-  val simpleName = layoutModifier.type.flatName
+internal fun modifierToString(modifier: Modifier): FunSpec {
+  val simpleName = modifier.type.flatName
   return FunSpec.builder("toString")
     .addModifiers(KModifier.OVERRIDE)
     .returns(STRING)
     .apply {
-      if (layoutModifier.properties.isEmpty()) {
+      if (modifier.properties.isEmpty()) {
         addStatement("return %S", simpleName)
       } else {
         val statement = StringBuilder().append(simpleName).append("(")
-        val lastIndex = layoutModifier.properties.lastIndex
-        for ((index, property) in layoutModifier.properties.withIndex()) {
+        val lastIndex = modifier.properties.lastIndex
+        for ((index, property) in modifier.properties.withIndex()) {
           val suffix = if (index != lastIndex) ", " else ")"
           statement.append(property.name).append("=$").append(property.name).append(suffix)
         }

@@ -22,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.dp
@@ -35,7 +35,7 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
     Spacer(Modifier.defaultMinSize(width.toDp(), height.toDp()))
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: RedwoodModifier = RedwoodModifier
 
   override fun width(width: Dp) {
     this.width = width

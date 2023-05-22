@@ -24,7 +24,7 @@ class TextBinding: Text {
         return view
     }()
 
-    var layoutModifiers: LayoutModifier = ExposedKt.layoutModifier()
+    var modifiers: Modifier = ExposedKt.modifier()
     var value: Any { root }
 
     func text(text: String) {

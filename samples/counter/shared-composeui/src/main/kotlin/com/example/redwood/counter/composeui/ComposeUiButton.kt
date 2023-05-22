@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import com.example.redwood.counter.widget.Button
 
 internal class ComposeUiButton : Button<@Composable () -> Unit> {
@@ -31,7 +31,7 @@ internal class ComposeUiButton : Button<@Composable () -> Unit> {
   private var isEnabled by mutableStateOf(false)
   private var onClick by mutableStateOf({})
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifiers: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
     Button(
