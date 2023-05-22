@@ -298,30 +298,6 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   val toStringBuilder = StringBuilder()
     .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
   val addToBuilder = CodeBlock.builder()
-    .addStatement("val widgetId = %T(builder.nextId++)", Protocol.Id)
-    .addStatement("val widgetTag = %T(%L)", Protocol.WidgetTag, (widget as ProtocolWidget).tag)
-    .addStatement(
-      """
-      |builder.changes += %T(
-      |  widgetId,
-      |  widgetTag,
-      |)
-      |
-      """.trimMargin(),
-      Protocol.Create,
-    )
-    .addStatement(
-      """
-      |builder.changes += %T(
-      |  parentId,
-      |  childrenTag,
-      |  widgetId,
-      |  childrenIndex,
-      |)
-      |
-      """.trimMargin(),
-      Protocol.ChildrenChangeAdd,
-    )
 
   for (trait in widget.traits) {
     val type = when (trait) {
@@ -391,14 +367,6 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
 
   toStringBuilder.append(")")
 
-  addToBuilder
-    .beginControlFlow("for (childrenList in childrenLists)")
-    .addStatement("val nextChildrenTag = childrenTag.value + 1")
-    .beginControlFlow("for ((index, child) in childrenList.withIndex())")
-    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
-    .endControlFlow()
-    .endControlFlow()
-
   return FileSpec.builder(widgetValueType)
     .addType(
       classBuilder
@@ -445,7 +413,23 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addParameter("childrenTag", ChildrenTag)
             .addParameter("childrenIndex", INT)
             .addParameter("builder", ViewTreeBuilder)
+            .addStatement("val widgetId = %T(builder.nextId++)", Id)
+            .addStatement("builder.changes += %T(widgetId, %T(%L))", Protocol.Create, Protocol.WidgetTag, (widget as ProtocolWidget).tag)
+            .addStatement("")
+            .beginControlFlow("for (childrenList in childrenLists)")
+            .addStatement("val nextChildrenTag = childrenTag.value + 1")
+            .beginControlFlow("for ((index, child) in childrenList.withIndex())")
+            .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
+            .endControlFlow()
+            .endControlFlow()
+            .addStatement("")
             .addCode(addToBuilder.build())
+            .apply {
+              if (addToBuilder.isNotEmpty()) {
+                addStatement("")
+              }
+            }
+            .addStatement("builder.changes += %T(parentId, childrenTag, widgetId, childrenIndex)", Protocol.ChildrenChangeAdd)
             .build(),
         )
         .build(),
