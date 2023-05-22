@@ -94,7 +94,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
   private fun removeViewFromYogaTree(view: View, inLayout: Boolean) {
     val childNode = nodes[view] ?: return
-    val owner = childNode.getOwner() ?: return
+    val owner = childNode.owner ?: return
 
     Yoga.YGNodeRemoveChild(owner, childNode)
     nodes -= view
@@ -104,13 +104,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
         node = rootNode,
         ownerWidth = YGUndefined,
         ownerHeight = YGUndefined,
-        ownerDirection = rootNode.getStyle().direction(),
+        ownerDirection = rootNode.style.direction(),
       )
     }
   }
 
   private fun applyLayoutRecursive(node: YGNode, xOffset: Float, yOffset: Float) {
-    val view = (node.getMeasure().noContext as ViewMeasureFunction?)?.view
+    val view = (node.measure.noContext as ViewMeasureFunction?)?.view
     if (view != null && view !== this) {
       if (view.visibility == GONE) return
 
@@ -127,11 +127,11 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     }
 
     if (view === this) {
-      for (child in node.getChildren()) {
+      for (child in node.children) {
         applyLayoutRecursive(child, xOffset, yOffset)
       }
     } else if (view !is YogaLayout) {
-      for (child in node.getChildren()) {
+      for (child in node.children) {
         applyLayoutRecursive(
           node = child,
           xOffset = xOffset + Yoga.YGNodeLayoutGetLeft(node),
@@ -192,7 +192,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       node = rootNode,
       ownerWidth = YGUndefined,
       ownerHeight = YGUndefined,
-      ownerDirection = rootNode.getStyle().direction(),
+      ownerDirection = rootNode.style.direction(),
     )
   }
 

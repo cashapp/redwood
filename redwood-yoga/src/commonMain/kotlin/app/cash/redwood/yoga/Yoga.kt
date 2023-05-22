@@ -243,23 +243,23 @@ object Yoga {
 
   fun YGNodeClone(oldNode: YGNode): YGNode {
     val node = YGNode(oldNode)
-    Event.publish(node, NodeAllocationEventData(node.getConfig()))
-    node.setOwner(null)
+    Event.publish(node, NodeAllocationEventData(node.config))
+    node.owner = null
     return node
   }
 
   fun YGNodeFree(node: YGNode) {
-    val owner = node.getOwner()
+    val owner = node.owner
     if (owner != null) {
       owner.removeChild(node)
-      node.setOwner(null)
+      node.owner = null
     }
     val childCount = YGNodeGetChildCount(node)
     for (i in 0 until childCount) {
-      YGNodeGetChild(node, i)?.setOwner(null)
+      YGNodeGetChild(node, i)?.owner = null
     }
     node.clearChildren()
-    Event.publish(node, NodeDeallocationEventData(node.getConfig()))
+    Event.publish(node, NodeDeallocationEventData(node.config))
   }
 
   fun YGNodeFreeRecursiveWithCleanupFunc(
@@ -270,7 +270,7 @@ object Yoga {
     while (YGNodeGetChildCount(root) > skipped) {
       val child = YGNodeGetChild(root, skipped)
       if (child != null) {
-        if (child.getOwner() !== root) {
+        if (child.owner !== root) {
           skipped += 1
         } else {
           YGNodeRemoveChild(root, child)
@@ -294,7 +294,7 @@ object Yoga {
     owner: YGNode,
     child: YGNode,
   ) {
-    YGNodeInsertChild(owner, child, owner.getChildren().size)
+    YGNodeInsertChild(owner, child, owner.children.size)
   }
 
   fun YGNodeInsertChild(
@@ -304,7 +304,7 @@ object Yoga {
   ) {
     YGAssertWithNode(
       owner,
-      child.getOwner() == null,
+      child.owner == null,
       "Child already has a owner, it must be removed first.",
     )
     YGAssertWithNode(
@@ -313,7 +313,7 @@ object Yoga {
       "Cannot add child: Nodes with measure functions cannot have children.",
     )
     owner.insertChild(child, index)
-    child.setOwner(owner)
+    child.owner = owner
     owner.markDirtyAndPropogate()
   }
 
@@ -323,7 +323,7 @@ object Yoga {
     index: Int,
   ) {
     owner.replaceChild(child, index)
-    child.setOwner(owner)
+    child.owner = owner
   }
 
   fun YGNodeRemoveChild(
@@ -333,11 +333,11 @@ object Yoga {
     if (YGNodeGetChildCount(owner) == 0) {
       return
     }
-    val childOwner = excludedChild.getOwner()
+    val childOwner = excludedChild.owner
     if (owner.removeChild(excludedChild)) {
       if (owner === childOwner) {
-        excludedChild.setLayout(null)
-        excludedChild.setOwner(null)
+        excludedChild.layout = null
+        excludedChild.owner = null
       }
       owner.markDirtyAndPropogate()
     }
@@ -349,17 +349,17 @@ object Yoga {
       return
     }
     val firstChild = YGNodeGetChild(owner, 0)
-    if (firstChild != null && firstChild.getOwner() === owner) {
+    if (firstChild != null && firstChild.owner === owner) {
       for (i in 0 until childCount) {
         val oldChild = YGNodeGetChild(owner, i)
-        oldChild!!.setLayout(null)
-        oldChild.setOwner(null)
+        oldChild!!.layout = null
+        oldChild.owner = null
       }
       owner.clearChildren()
       owner.markDirtyAndPropogate()
       return
     }
-    owner.getChildren().clear()
+    owner.children.clear()
     owner.markDirtyAndPropogate()
   }
 
@@ -367,13 +367,13 @@ object Yoga {
     node: YGNode,
     index: Int,
   ): YGNode? {
-    return if (index < node.getChildren().size) {
+    return if (index < node.children.size) {
       node.getChild(index)
     } else null
   }
 
   fun YGNodeGetChildCount(node: YGNode): Int {
-    return node.getChildren().size
+    return node.children.size
   }
 
   fun YGNodeSetIsReferenceBaseline(
@@ -483,8 +483,8 @@ object Yoga {
     dstNode: YGNode,
     srcNode: YGNode,
   ) {
-    if (!(dstNode.getStyle() === srcNode.getStyle())) {
-      dstNode.setStyle(srcNode.getStyle())
+    if (!(dstNode.style === srcNode.style)) {
+      dstNode.style = srcNode.style
       dstNode.markDirtyAndPropogate()
     }
   }
@@ -720,7 +720,7 @@ object Yoga {
     node: YGNode,
     edge: YGEdge,
   ): YGValue {
-    return node.getStyle().position[edge.ordinal]
+    return node.style.position[edge.ordinal]
   }
 
   fun YGNodeStyleSetMargin(
@@ -756,11 +756,11 @@ object Yoga {
       node, value,
       { _: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          values.invoke(node.getStyle()).getCompactValue(edge!!.ordinal), value,
+          values.invoke(node.style).getCompactValue(edge!!.ordinal), value,
         )
       },
     ) { _: YGStyle, _: CompactValue? ->
-      values.invoke(node.getStyle())[edge!!.ordinal] = value
+      values.invoke(node.style)[edge!!.ordinal] = value
     }
   }
 
@@ -863,27 +863,27 @@ object Yoga {
   }
 
   fun YGNodeLayoutGetLeft(node: YGNode): Float {
-    return node.getLayout()!!.position[YGEdge.YGEdgeLeft.ordinal]
+    return node.layout!!.position[YGEdge.YGEdgeLeft.ordinal]
   }
 
   fun YGNodeLayoutGetTop(node: YGNode): Float {
-    return node.getLayout()!!.position[YGEdge.YGEdgeTop.ordinal]
+    return node.layout!!.position[YGEdge.YGEdgeTop.ordinal]
   }
 
   fun YGNodeLayoutGetRight(node: YGNode): Float {
-    return node.getLayout()!!.position[YGEdge.YGEdgeRight.ordinal]
+    return node.layout!!.position[YGEdge.YGEdgeRight.ordinal]
   }
 
   fun YGNodeLayoutGetBottom(node: YGNode): Float {
-    return node.getLayout()!!.position[YGEdge.YGEdgeBottom.ordinal]
+    return node.layout!!.position[YGEdge.YGEdgeBottom.ordinal]
   }
 
   fun YGNodeLayoutGetWidth(node: YGNode): Float {
-    return node.getLayout()!!.dimensions[YGDimension.YGDimensionWidth.ordinal]
+    return node.layout!!.dimensions[YGDimension.YGDimensionWidth.ordinal]
   }
 
   fun YGNodeLayoutGetHeight(node: YGNode): Float {
-    return node.getLayout()!!.dimensions[YGDimension.YGDimensionHeight.ordinal]
+    return node.layout!!.dimensions[YGDimension.YGDimensionHeight.ordinal]
   }
 
   @OptIn(ExperimentalContracts::class)
@@ -995,29 +995,29 @@ object Yoga {
 
   fun YGNodeDeepClone(oldNode: YGNode): YGNode {
     var config: YGConfig? = null
-    if (oldNode.getConfig() != null) {
-      config = YGConfigClone(oldNode.getConfig()!!)
+    if (oldNode.config != null) {
+      config = YGConfigClone(oldNode.config!!)
     }
     val node = YGNode(oldNode, config!!)
-    node.setOwner(null)
-    Event.publish(node, NodeAllocationEventData(node.getConfig()))
+    node.owner = null
+    Event.publish(node, NodeAllocationEventData(node.config))
     val vec = ArrayList<YGNode>()
-    vec.ensureCapacity(oldNode.getChildren().size)
+    vec.ensureCapacity(oldNode.children.size)
     var childNode: YGNode
-    for (item in oldNode.getChildren()) {
+    for (item in oldNode.children) {
       childNode = YGNodeDeepClone(item)
-      childNode.setOwner(node)
+      childNode.owner = node
       vec.add(childNode)
     }
-    node.setChildren(vec)
+    node.children = vec
     return YGNode(node)
   }
 
   fun YGConfigFreeRecursive(root: YGNode) {
-    if (root.getConfig() != null) {
-      root.setConfig(null)
+    if (root.config != null) {
+      root.config = null
     }
-    for (child in root.getChildren()) {
+    for (child in root.children) {
       YGConfigFreeRecursive(child)
     }
   }
@@ -1032,9 +1032,9 @@ object Yoga {
       node,
       value,
       { _: YGStyle, newVal: T ->
-        fieldRef.invoke(node.getStyle()).getValue(enumClazz) !== newVal
+        fieldRef.invoke(node.style).getValue(enumClazz) !== newVal
       },
-    ) { _: YGStyle, newVal: T -> fieldRef.invoke(node.getStyle()).setValue(newVal) }
+    ) { _: YGStyle, newVal: T -> fieldRef.invoke(node.style).setValue(newVal) }
   }
 
   fun <T> updateStyle(
@@ -1043,8 +1043,8 @@ object Yoga {
     needsUpdate: (YGStyle, T) -> Boolean,
     update: (YGStyle, T) -> Unit,
   ) {
-    if (needsUpdate.invoke(node.getStyle(), value)) {
-      update.invoke(node.getStyle(), value)
+    if (needsUpdate.invoke(node.style, value)) {
+      update.invoke(node.style, value)
       node.markDirtyAndPropogate()
     }
   }
@@ -1067,7 +1067,7 @@ object Yoga {
     generationCount: Int,
   ): Boolean {
     var depth = depth
-    val layout = node.getLayout()
+    val layout = node.layout
     depth++
     val needToVisitNode =
       node.isDirty() && layout!!.generationCount != generationCount || layout!!.lastOwnerDirection != ownerDirection
@@ -1274,11 +1274,11 @@ object Yoga {
     }
     if (performLayout) {
       node.setLayoutDimension(
-        node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
+        node.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
         YGDimension.YGDimensionWidth.ordinal,
       )
       node.setLayoutDimension(
-        node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
+        node.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
         YGDimension.YGDimensionHeight.ordinal,
       )
       node.setHasNewLayout(true)
@@ -1306,10 +1306,10 @@ object Yoga {
   }
 
   fun YGNodeAlignItem(node: YGNode, child: YGNode): YGAlign {
-    val align = if (child.getStyle().alignSelf() == YGAlign.YGAlignAuto) node.getStyle()
-      .alignItems() else child.getStyle().alignSelf()
+    val align = if (child.style.alignSelf() == YGAlign.YGAlignAuto) node.style
+      .alignItems() else child.style.alignSelf()
     return if (align == YGAlign.YGAlignBaseline && YGFlexDirectionIsColumn(
-        node.getStyle().flexDirection(),
+        node.style.flexDirection(),
       )
     ) {
       YGAlign.YGAlignFlexStart
@@ -1322,8 +1322,8 @@ object Yoga {
       /* Event.NodeBaselineStart */
       Event.publish(node)
       val baseline = node.baseline(
-        node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
-        node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
+        node.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
+        node.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
         layoutContext,
       )
 
@@ -1339,10 +1339,10 @@ object Yoga {
     val childCount = YGNodeGetChildCount(node)
     for (i in 0 until childCount) {
       val child = YGNodeGetChild(node, i)
-      if (child != null && child.getLineIndex() > 0) {
+      if (child != null && child.lineIndex > 0) {
         break
       }
-      if (child!!.getStyle().positionType() == YGPositionType.YGPositionTypeAbsolute) {
+      if (child!!.style.positionType() == YGPositionType.YGPositionTypeAbsolute) {
         continue
       }
       if (YGNodeAlignItem(
@@ -1358,27 +1358,27 @@ object Yoga {
       }
     }
     if (baselineChild == null) {
-      return node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal]
+      return node.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal]
     }
     val baseline = YGBaseline(baselineChild, layoutContext)
-    return baseline + baselineChild.getLayout()!!.position[YGEdge.YGEdgeTop.ordinal]
+    return baseline + baselineChild.layout!!.position[YGEdge.YGEdgeTop.ordinal]
   }
 
   fun YGIsBaselineLayout(node: YGNode): Boolean {
     if (YGFlexDirectionIsColumn(
-        node.getStyle().flexDirection(),
+        node.style.flexDirection(),
       )
     ) {
       return false
     }
-    if (node.getStyle().alignItems() == YGAlign.YGAlignBaseline) {
+    if (node.style.alignItems() == YGAlign.YGAlignBaseline) {
       return true
     }
     val childCount = YGNodeGetChildCount(node)
     for (i in 0 until childCount) {
       val child = YGNodeGetChild(node, i)
-      if (child != null && child.getStyle()
-          .positionType() != YGPositionType.YGPositionTypeAbsolute && child.getStyle()
+      if (child != null && child.style
+          .positionType() != YGPositionType.YGPositionTypeAbsolute && child.style
           .alignSelf() == YGAlign.YGAlignBaseline
       ) {
         return true
@@ -1389,7 +1389,7 @@ object Yoga {
 
   fun YGNodeDimWithMargin(node: YGNode, axis: YGFlexDirection, widthSize: Float): Float {
     return plus(
-      YGFloatOptional(node.getLayout()!!.measuredDimensions[dim[axis.ordinal].ordinal]),
+      YGFloatOptional(node.layout!!.measuredDimensions[dim[axis.ordinal].ordinal]),
       plus(node.getLeadingMargin(axis, widthSize), node.getTrailingMargin(axis, widthSize)),
     ).unwrap()
   }
@@ -1409,7 +1409,7 @@ object Yoga {
   }
 
   fun YGNodeIsLayoutDimDefined(node: YGNode, axis: YGFlexDirection): Boolean {
-    val value = node.getLayout()!!.measuredDimensions[dim[axis.ordinal].ordinal]
+    val value = node.layout!!.measuredDimensions[dim[axis.ordinal].ordinal]
     return !isUndefined(value) && value >= 0.0f
   }
 
@@ -1423,20 +1423,20 @@ object Yoga {
     var max = YGFloatOptional()
     if (YGFlexDirectionIsColumn(axis)) {
       min = YGResolveValue(
-        node.getStyle().minDimensions[YGDimension.YGDimensionHeight.ordinal],
+        node.style.minDimensions[YGDimension.YGDimensionHeight.ordinal],
         axisSize,
       )
       max = YGResolveValue(
-        node.getStyle().maxDimensions[YGDimension.YGDimensionHeight.ordinal],
+        node.style.maxDimensions[YGDimension.YGDimensionHeight.ordinal],
         axisSize,
       )
     } else if (YGFlexDirectionIsRow(axis)) {
       min = YGResolveValue(
-        node.getStyle().minDimensions[YGDimension.YGDimensionWidth.ordinal],
+        node.style.minDimensions[YGDimension.YGDimensionWidth.ordinal],
         axisSize,
       )
       max = YGResolveValue(
-        node.getStyle().maxDimensions[YGDimension.YGDimensionWidth.ordinal],
+        node.style.maxDimensions[YGDimension.YGDimensionWidth.ordinal],
         axisSize,
       )
     }
@@ -1476,9 +1476,9 @@ object Yoga {
   }
 
   fun YGNodeSetChildTrailingPosition(node: YGNode, child: YGNode, axis: YGFlexDirection) {
-    val size = child.getLayout()!!.measuredDimensions[dim[axis.ordinal].ordinal]
+    val size = child.layout!!.measuredDimensions[dim[axis.ordinal].ordinal]
     child.setLayoutPosition(
-      node.getLayout()!!.measuredDimensions[dim[axis.ordinal].ordinal] - size - child.getLayout()!!.position[pos[axis.ordinal].ordinal],
+      node.layout!!.measuredDimensions[dim[axis.ordinal].ordinal] - size - child.layout!!.position[pos[axis.ordinal].ordinal],
       trailing[axis.ordinal].ordinal,
     )
   }
@@ -1493,7 +1493,7 @@ object Yoga {
   ) {
     val maxSize = plus(
       YGResolveValue(
-        node.getStyle().maxDimensions.getCompactValue(dim[axis.ordinal].ordinal),
+        node.style.maxDimensions.getCompactValue(dim[axis.ordinal].ordinal),
         ownerAxisSize,
       ),
       node.getMarginForAxis(axis, ownerWidth),
@@ -1531,7 +1531,7 @@ object Yoga {
     generationCount: Int,
   ) {
     val mainAxis = YGResolveFlexDirection(
-      node.getStyle().flexDirection(), direction,
+      node.style.flexDirection(), direction,
     )
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
     val mainAxisSize = if (isMainAxisRow) width else height
@@ -1553,7 +1553,7 @@ object Yoga {
       ownerHeight,
     )
     if (!resolvedFlexBasis.isUndefined() && !isUndefined(mainAxisSize)) {
-      if (child.getConfig() != null && child.getLayout()!!.computedFlexBasis.isUndefined()) {
+      if (child.config != null && child.layout!!.computedFlexBasis.isUndefined()) {
         val paddingAndBorder = YGFloatOptional(
           YGNodePaddingAndBorderForAxis(child, mainAxis, ownerWidth),
         )
@@ -1571,7 +1571,7 @@ object Yoga {
       child.setLayoutComputedFlexBasis(
         YGFloatOptionalMax(
           YGResolveValue(
-            child.getResolvedDimensions()[YGDimension.YGDimensionWidth.ordinal],
+            child.resolvedDimensions[YGDimension.YGDimensionWidth.ordinal],
             ownerWidth,
           ),
           paddingAndBorder,
@@ -1588,7 +1588,7 @@ object Yoga {
       child.setLayoutComputedFlexBasis(
         YGFloatOptionalMax(
           YGResolveValue(
-            child.getResolvedDimensions()[YGDimension.YGDimensionHeight.ordinal],
+            child.resolvedDimensions[YGDimension.YGDimensionHeight.ordinal],
             ownerHeight,
           ),
           paddingAndBorder,
@@ -1605,20 +1605,20 @@ object Yoga {
         child.getMarginForAxis(YGFlexDirection.YGFlexDirectionColumn, ownerWidth).unwrap()
       if (isRowStyleDimDefined) {
         childWidth = YGResolveValue(
-          child.getResolvedDimensions()[YGDimension.YGDimensionWidth.ordinal],
+          child.resolvedDimensions[YGDimension.YGDimensionWidth.ordinal],
           ownerWidth,
         ).unwrap() + marginRow
         childWidthMeasureMode = YGMeasureMode.YGMeasureModeExactly
       }
       if (isColumnStyleDimDefined) {
         childHeight = YGResolveValue(
-          child.getResolvedDimensions()[YGDimension.YGDimensionHeight.ordinal],
+          child.resolvedDimensions[YGDimension.YGDimensionHeight.ordinal],
           ownerHeight,
         ).unwrap() + marginColumn
         childHeightMeasureMode = YGMeasureMode.YGMeasureModeExactly
       }
-      if (!isMainAxisRow && node.getStyle()
-          .overflow() == YGOverflow.YGOverflowScroll || node.getStyle()
+      if (!isMainAxisRow && node.style
+          .overflow() == YGOverflow.YGOverflowScroll || node.style
           .overflow() != YGOverflow.YGOverflowScroll
       ) {
         if (isUndefined(childWidth) && !isUndefined(width)) {
@@ -1626,8 +1626,8 @@ object Yoga {
           childWidthMeasureMode = YGMeasureMode.YGMeasureModeAtMost
         }
       }
-      if (isMainAxisRow && node.getStyle()
-          .overflow() == YGOverflow.YGOverflowScroll || node.getStyle()
+      if (isMainAxisRow && node.style
+          .overflow() == YGOverflow.YGOverflowScroll || node.style
           .overflow() != YGOverflow.YGOverflowScroll
       ) {
         if (isUndefined(childHeight) && !isUndefined(height)) {
@@ -1635,7 +1635,7 @@ object Yoga {
           childHeightMeasureMode = YGMeasureMode.YGMeasureModeAtMost
         }
       }
-      val childStyle = child.getStyle()
+      val childStyle = child.style
       if (!childStyle.aspectRatio.isUndefined()) {
         if (!isMainAxisRow && childWidthMeasureMode == YGMeasureMode.YGMeasureModeExactly) {
           childHeight =
@@ -1714,7 +1714,7 @@ object Yoga {
       child.setLayoutComputedFlexBasis(
         YGFloatOptional(
           YGFloatMax(
-            child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal],
+            child.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal],
             YGNodePaddingAndBorderForAxis(child, mainAxis, ownerWidth),
           ),
         ),
@@ -1737,7 +1737,7 @@ object Yoga {
     generationCount: Int,
   ) {
     val mainAxis = YGResolveFlexDirection(
-      node.getStyle().flexDirection(), direction,
+      node.style.flexDirection(), direction,
     )
     val crossAxis = YGFlexDirectionCross(mainAxis, direction)
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
@@ -1750,7 +1750,7 @@ object Yoga {
       child.getMarginForAxis(YGFlexDirection.YGFlexDirectionColumn, width).unwrap()
     if (YGNodeIsStyleDimDefined(child, YGFlexDirection.YGFlexDirectionRow, width)) {
       childWidth = YGResolveValue(
-        child.getResolvedDimensions()[YGDimension.YGDimensionWidth.ordinal],
+        child.resolvedDimensions[YGDimension.YGDimensionWidth.ordinal],
         width,
       ).unwrap() + marginRow
     } else {
@@ -1759,7 +1759,7 @@ object Yoga {
         )
       ) {
         childWidth =
-          node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] - (node.getLeadingBorder(
+          node.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] - (node.getLeadingBorder(
             YGFlexDirection.YGFlexDirectionRow,
           ) + node.getTrailingBorder(YGFlexDirection.YGFlexDirectionRow)) - (child.getLeadingPosition(
             YGFlexDirection.YGFlexDirectionRow,
@@ -1779,7 +1779,7 @@ object Yoga {
     }
     if (YGNodeIsStyleDimDefined(child, YGFlexDirection.YGFlexDirectionColumn, height)) {
       childHeight = YGResolveValue(
-        child.getResolvedDimensions()[YGDimension.YGDimensionHeight.ordinal],
+        child.resolvedDimensions[YGDimension.YGDimensionHeight.ordinal],
         height,
       ).unwrap() + marginColumn
     } else {
@@ -1788,7 +1788,7 @@ object Yoga {
         )
       ) {
         childHeight =
-          node.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] - (node.getLeadingBorder(
+          node.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] - (node.getLeadingBorder(
             YGFlexDirection.YGFlexDirectionColumn,
           ) + node.getTrailingBorder(YGFlexDirection.YGFlexDirectionColumn)) - (child.getLeadingPosition(
             YGFlexDirection.YGFlexDirectionColumn,
@@ -1806,7 +1806,7 @@ object Yoga {
         )
       }
     }
-    val childStyle = child.getStyle()
+    val childStyle = child.style
     if (isUndefined(childWidth) xor isUndefined(childHeight)) {
       if (!childStyle.aspectRatio.isUndefined()) {
         if (isUndefined(childWidth)) {
@@ -1850,12 +1850,12 @@ object Yoga {
         generationCount = generationCount,
       )
       childWidth =
-        child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
+        child.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
           YGFlexDirection.YGFlexDirectionRow,
           width,
         ).unwrap()
       childHeight =
-        child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
+        child.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
           YGFlexDirection.YGFlexDirectionColumn,
           width,
         ).unwrap()
@@ -1879,7 +1879,7 @@ object Yoga {
     )
     if (child.isTrailingPosDefined(mainAxis) && !child.isLeadingPositionDefined(mainAxis)) {
       child.setLayoutPosition(
-        node.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - node.getTrailingBorder(
+        node.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - node.getTrailingBorder(
           mainAxis,
         ) - child.getTrailingMargin(mainAxis, width).unwrap() - child.getTrailingPosition(
           mainAxis,
@@ -1887,24 +1887,24 @@ object Yoga {
         ).unwrap(),
         leading[mainAxis.ordinal].ordinal,
       )
-    } else if (!child.isLeadingPositionDefined(mainAxis) && node.getStyle()
+    } else if (!child.isLeadingPositionDefined(mainAxis) && node.style
         .justifyContent() == YGJustify.YGJustifyCenter
     ) {
       child.setLayoutPosition(
-        (node.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal]) / 2.0f,
+        (node.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal]) / 2.0f,
         leading[mainAxis.ordinal].ordinal,
       )
-    } else if (!child.isLeadingPositionDefined(mainAxis) && node.getStyle()
+    } else if (!child.isLeadingPositionDefined(mainAxis) && node.style
         .justifyContent() == YGJustify.YGJustifyFlexEnd
     ) {
       child.setLayoutPosition(
-        node.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal],
+        node.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal],
         leading[mainAxis.ordinal].ordinal,
       )
     }
     if (child.isTrailingPosDefined(crossAxis) && !child.isLeadingPositionDefined(crossAxis)) {
       child.setLayoutPosition(
-        node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - node.getTrailingBorder(
+        node.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - node.getTrailingBorder(
           crossAxis,
         ) - child.getTrailingMargin(crossAxis, width).unwrap() - child.getTrailingPosition(
           crossAxis, if (isMainAxisRow) height else width,
@@ -1917,17 +1917,17 @@ object Yoga {
       ) == YGAlign.YGAlignCenter
     ) {
       child.setLayoutPosition(
-        (node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal]) / 2.0f,
+        (node.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal]) / 2.0f,
         leading[crossAxis.ordinal].ordinal,
       )
     } else if (!child.isLeadingPositionDefined(crossAxis) && (YGNodeAlignItem(
         node,
         child,
-      ) == YGAlign.YGAlignFlexEnd) xor (node.getStyle()
+      ) == YGAlign.YGAlignFlexEnd) xor (node.style
         .flexWrap() == YGWrap.YGWrapWrapReverse)
     ) {
       child.setLayoutPosition(
-        node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
+        node.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] - child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
         leading[crossAxis.ordinal].ordinal,
       )
     }
@@ -1958,8 +1958,8 @@ object Yoga {
     if (heightMeasureMode == YGMeasureMode.YGMeasureModeUndefined) {
       availableHeight = YGUndefined
     }
-    val padding = node.getLayout()!!.padding
-    val border = node.getLayout()!!.border
+    val padding = node.layout!!.padding
+    val border = node.layout!!.border
     val paddingAndBorderAxisRow =
       padding[YGEdge.YGEdgeLeft.ordinal] + padding[YGEdge.YGEdgeRight.ordinal] + border[YGEdge.YGEdgeLeft.ordinal] + border[YGEdge.YGEdgeRight.ordinal]
     val paddingAndBorderAxisColumn =
@@ -2035,8 +2035,8 @@ object Yoga {
     ownerWidth: Float,
     ownerHeight: Float,
   ) {
-    val padding = node.getLayout()!!.padding
-    val border = node.getLayout()!!.border
+    val padding = node.layout!!.padding
+    val border = node.layout!!.border
     var width = availableWidth
     if (widthMeasureMode == YGMeasureMode.YGMeasureModeUndefined || widthMeasureMode == YGMeasureMode.YGMeasureModeAtMost) {
       width =
@@ -2106,7 +2106,7 @@ object Yoga {
   }
 
   fun YGZeroOutLayoutRecursivly(node: YGNode, layoutContext: Any?) {
-    node.setLayout(null)
+    node.layout = null
     node.setLayoutDimension(0f, 0)
     node.setLayoutDimension(0f, 1)
     node.setHasNewLayout(true)
@@ -2126,12 +2126,12 @@ object Yoga {
     var availableInnerDim = availableDim - paddingAndBorder
     if (!isUndefined(availableInnerDim)) {
       val minDimensionOptional = YGResolveValue(
-        node.getStyle().minDimensions[dimension.ordinal], ownerDim,
+        node.style.minDimensions[dimension.ordinal], ownerDim,
       )
       val minInnerDim =
         if (minDimensionOptional.isUndefined()) 0.0f else minDimensionOptional.unwrap() - paddingAndBorder
       val maxDimensionOptional = YGResolveValue(
-        node.getStyle().maxDimensions[dimension.ordinal], ownerDim,
+        node.style.maxDimensions[dimension.ordinal], ownerDim,
       )
       val maxInnerDim =
         if (maxDimensionOptional.isUndefined()) Float.MAX_VALUE else maxDimensionOptional.unwrap() - paddingAndBorder
@@ -2157,7 +2157,7 @@ object Yoga {
   ): Float {
     var totalOuterFlexBasis = 0.0f
     var singleFlexChild: YGNode? = null
-    val children = node.getChildren()
+    val children = node.children
     val measureModeMainDim =
       if (YGFlexDirectionIsRow(mainAxis)) widthMeasureMode else heightMeasureMode
     if (measureModeMainDim == YGMeasureMode.YGMeasureModeExactly) {
@@ -2180,7 +2180,7 @@ object Yoga {
     }
     for (child in children) {
       child.resolveDimension()
-      if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
+      if (child.style.display() == YGDisplay.YGDisplayNone) {
         YGZeroOutLayoutRecursivly(child, layoutContext)
         child.setHasNewLayout(true)
         child.setDirty(false)
@@ -2194,7 +2194,7 @@ object Yoga {
           if (YGFlexDirectionIsRow(mainAxis)) availableInnerHeight else availableInnerWidth
         child.setPosition(childDirection, mainDim, crossDim, availableInnerWidth)
       }
-      if (child.getStyle().positionType() == YGPositionType.YGPositionTypeAbsolute) {
+      if (child.style.positionType() == YGPositionType.YGPositionTypeAbsolute) {
         continue
       }
       if (child === singleFlexChild) {
@@ -2207,7 +2207,7 @@ object Yoga {
           layoutMarkerData, layoutContext, depth, generationCount,
         )
       }
-      totalOuterFlexBasis += child.getLayout()!!.computedFlexBasis.unwrap() + child.getMarginForAxis(
+      totalOuterFlexBasis += child.layout!!.computedFlexBasis.unwrap() + child.getMarginForAxis(
         mainAxis,
         availableInnerWidth,
       ).unwrap()
@@ -2225,27 +2225,27 @@ object Yoga {
     lineCount: Int,
   ): YGCollectFlexItemsRowValues {
     val flexAlgoRowMeasurement = YGCollectFlexItemsRowValues()
-    flexAlgoRowMeasurement.relativeChildren.ensureCapacity(node.getChildren().size)
+    flexAlgoRowMeasurement.relativeChildren.ensureCapacity(node.children.size)
     var sizeConsumedOnCurrentLineIncludingMinConstraint = 0f
     val mainAxis = YGResolveFlexDirection(
-      node.getStyle().flexDirection(),
+      node.style.flexDirection(),
       node.resolveDirection(ownerDirection),
     )
-    val isNodeFlexWrap = node.getStyle().flexWrap() != YGWrap.YGWrapNoWrap
+    val isNodeFlexWrap = node.style.flexWrap() != YGWrap.YGWrapNoWrap
     var endOfLineIndex = startOfLineIndex
-    while (endOfLineIndex < node.getChildren().size) {
+    while (endOfLineIndex < node.children.size) {
       val child = node.getChild(endOfLineIndex)
-      if (child.getStyle().display() == YGDisplay.YGDisplayNone || child.getStyle()
+      if (child.style.display() == YGDisplay.YGDisplayNone || child.style
           .positionType() == YGPositionType.YGPositionTypeAbsolute
       ) {
         endOfLineIndex++
         continue
       }
-      child.setLineIndex(lineCount)
+      child.lineIndex = lineCount
       val childMarginMainAxis = child.getMarginForAxis(mainAxis, availableInnerWidth).unwrap()
       val flexBasisWithMinAndMaxConstraints = YGNodeBoundAxisWithinMinAndMax(
         child, mainAxis,
-        child.getLayout()!!.computedFlexBasis, mainAxisownerSize,
+        child.layout!!.computedFlexBasis, mainAxisownerSize,
       ).unwrap()
       if (sizeConsumedOnCurrentLineIncludingMinConstraint + flexBasisWithMinAndMaxConstraints + childMarginMainAxis > availableInnerMainDim && isNodeFlexWrap && flexAlgoRowMeasurement.itemsOnLine > 0) {
         break
@@ -2255,7 +2255,7 @@ object Yoga {
       flexAlgoRowMeasurement.itemsOnLine++
       if (child.isNodeFlexible()) {
         flexAlgoRowMeasurement.totalFlexGrowFactors += child.resolveFlexGrow()
-        flexAlgoRowMeasurement.totalFlexShrinkScaledFactors += -child.resolveFlexShrink() * child.getLayout()!!.computedFlexBasis.unwrap()
+        flexAlgoRowMeasurement.totalFlexShrinkScaledFactors += -child.resolveFlexShrink() * child.layout!!.computedFlexBasis.unwrap()
       }
       flexAlgoRowMeasurement.relativeChildren.add(child)
       endOfLineIndex++
@@ -2294,11 +2294,11 @@ object Yoga {
     var flexGrowFactor: Float
     var deltaFreeSpace = 0f
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
-    val isNodeFlexWrap = node.getStyle().flexWrap() != YGWrap.YGWrapNoWrap
+    val isNodeFlexWrap = node.style.flexWrap() != YGWrap.YGWrapNoWrap
     for (currentRelativeChild in collectedFlexItemsValues.relativeChildren) {
       childFlexBasis = YGNodeBoundAxisWithinMinAndMax(
         currentRelativeChild, mainAxis,
-        currentRelativeChild.getLayout()!!.computedFlexBasis, mainAxisownerSize,
+        currentRelativeChild.layout!!.computedFlexBasis, mainAxisownerSize,
       ).unwrap()
       var updatedMainSize = childFlexBasis
       if (!isUndefined(collectedFlexItemsValues.remainingFreeSpace) && collectedFlexItemsValues.remainingFreeSpace < 0f
@@ -2337,7 +2337,7 @@ object Yoga {
       val childMainSize = RefObject(updatedMainSize + marginMain)
       var childCrossMeasureMode: YGMeasureMode
       val childMainMeasureMode = YGMeasureMode.YGMeasureModeExactly
-      val childStyle = currentRelativeChild.getStyle()
+      val childStyle = currentRelativeChild.style
       if (!childStyle.aspectRatio.isUndefined()) {
         childCrossSize.argValue =
           if (isMainAxisRow) (childMainSize.argValue - marginMain) / childStyle.aspectRatio
@@ -2419,7 +2419,7 @@ object Yoga {
         node = currentRelativeChild,
         availableWidth = childWidth.argValue,
         availableHeight = childHeight.argValue,
-        ownerDirection = node.getLayout()!!.direction(),
+        ownerDirection = node.layout!!.direction(),
         widthMeasureMode = childWidthMeasureMode,
         heightMeasureMode = childHeightMeasureMode,
         ownerWidth = availableInnerWidth,
@@ -2433,7 +2433,7 @@ object Yoga {
         generationCount = generationCount,
       )
       node.setLayoutHadOverflow(
-        node.getLayout()!!.hadOverflow() or currentRelativeChild.getLayout()!!.hadOverflow(),
+        node.layout!!.hadOverflow() or currentRelativeChild.layout!!.hadOverflow(),
       )
     }
     return deltaFreeSpace
@@ -2454,7 +2454,7 @@ object Yoga {
     for (currentRelativeChild in collectedFlexItemsValues.relativeChildren) {
       val childFlexBasis = YGNodeBoundAxisWithinMinAndMax(
         currentRelativeChild, mainAxis,
-        currentRelativeChild.getLayout()!!.computedFlexBasis, mainAxisownerSize,
+        currentRelativeChild.layout!!.computedFlexBasis, mainAxisownerSize,
       ).unwrap()
       if (collectedFlexItemsValues.remainingFreeSpace < 0f) {
         flexShrinkScaledFactor = -currentRelativeChild.resolveFlexShrink() * childFlexBasis
@@ -2468,7 +2468,7 @@ object Yoga {
           if (!isUndefined(baseMainSize) && !isUndefined(boundMainSize) && baseMainSize != boundMainSize
           ) {
             deltaFreeSpace += boundMainSize - childFlexBasis
-            collectedFlexItemsValues.totalFlexShrinkScaledFactors -= -currentRelativeChild.resolveFlexShrink() * currentRelativeChild.getLayout()!!.computedFlexBasis.unwrap()
+            collectedFlexItemsValues.totalFlexShrinkScaledFactors -= -currentRelativeChild.resolveFlexShrink() * currentRelativeChild.layout!!.computedFlexBasis.unwrap()
           }
         }
       } else if (!isUndefined(collectedFlexItemsValues.remainingFreeSpace) && collectedFlexItemsValues.remainingFreeSpace > 0f
@@ -2554,7 +2554,7 @@ object Yoga {
     performLayout: Boolean,
     layoutContext: Any?,
   ) {
-    val style = node.getStyle()
+    val style = node.style
     val leadingPaddingAndBorderMain =
       node.getLeadingPaddingAndBorder(mainAxis, ownerWidth).unwrap()
     val trailingPaddingAndBorderMain =
@@ -2583,7 +2583,7 @@ object Yoga {
     var numberOfAutoMarginsOnCurrentLine = 0
     for (i in startOfLineIndex until collectedFlexItemsValues.endOfLineIndex) {
       val child = node.getChild(i)
-      if (child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
+      if (child.style.positionType() != YGPositionType.YGPositionTypeAbsolute) {
         if (child.marginLeadingValue(mainAxis).unit == YGUnit.YGUnitAuto) {
           numberOfAutoMarginsOnCurrentLine++
         }
@@ -2594,7 +2594,7 @@ object Yoga {
     }
     var leadingMainDim = 0f
     var betweenMainDim = 0f
-    val justifyContent = node.getStyle().justifyContent()
+    val justifyContent = node.style.justifyContent()
     if (numberOfAutoMarginsOnCurrentLine == 0) {
       when (justifyContent) {
         YGJustify.YGJustifyCenter -> leadingMainDim =
@@ -2635,8 +2635,8 @@ object Yoga {
     val isNodeBaselineLayout = YGIsBaselineLayout(node)
     for (i in startOfLineIndex until collectedFlexItemsValues.endOfLineIndex) {
       val child = node.getChild(i)
-      val childStyle = child.getStyle()
-      val childLayout = child.getLayout()
+      val childStyle = child.style
+      val childLayout = child.layout
       if (childStyle.display() == YGDisplay.YGDisplayNone) {
         continue
       }
@@ -2688,7 +2688,7 @@ object Yoga {
                 availableInnerWidth,
               ).unwrap()
               val descent =
-                child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
+                child.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
                   YGFlexDirection.YGFlexDirectionColumn,
                   availableInnerWidth,
                 ).unwrap() - ascent
@@ -2763,7 +2763,7 @@ object Yoga {
   //
   // Details:
   //    This routine is called recursively to lay out subtrees of flexbox
-  //    elements. It uses the information in node.getStyle(), which is treated as a
+  //    elements. It uses the information in node.style, which is treated as a
   //    read-only input. It is responsible for setting the layout.direction and
   //    layout.measuredDimensions fields for the input node as well as the
   //    layout.position and layout.lineIndex fields for its child nodes. The
@@ -2908,10 +2908,10 @@ object Yoga {
 
     // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
 
-    val mainAxis = YGResolveFlexDirection(node.getStyle().flexDirection(), direction)
+    val mainAxis = YGResolveFlexDirection(node.style.flexDirection(), direction)
     val crossAxis = YGFlexDirectionCross(mainAxis, direction)
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
-    val isNodeFlexWrap = node.getStyle().flexWrap() != YGWrap.YGWrapNoWrap
+    val isNodeFlexWrap = node.style.flexWrap() != YGWrap.YGWrapNoWrap
     val mainAxisownerSize = if (isMainAxisRow) ownerWidth else ownerHeight
     val crossAxisownerSize = if (isMainAxisRow) ownerHeight else ownerWidth
     val paddingAndBorderAxisMain = YGNodePaddingAndBorderForAxis(node, mainAxis, ownerWidth)
@@ -3009,8 +3009,8 @@ object Yoga {
       // If we don't measure with exact main dimension we want to ensure we don't
       // violate min and max
       if (measureModeMainDim != YGMeasureMode.YGMeasureModeExactly) {
-        val minDimensions = node.getStyle().minDimensions
-        val maxDimensions = node.getStyle().maxDimensions
+        val minDimensions = node.style.minDimensions
+        val maxDimensions = node.style.maxDimensions
         val minInnerWidth = YGResolveValue(
           minDimensions[YGDimension.YGDimensionWidth.ordinal],
           ownerWidth,
@@ -3034,7 +3034,7 @@ object Yoga {
         } else if (!isUndefined(maxInnerMainDim) && collectedFlexItemsValues.sizeConsumedOnCurrentLine > maxInnerMainDim) {
           availableInnerMainDim = maxInnerMainDim
         } else {
-          if (!node.getConfig()!!.useLegacyStretchBehaviour &&
+          if (!node.config!!.useLegacyStretchBehaviour &&
             (isUndefined(collectedFlexItemsValues.totalFlexGrowFactors) &&
               collectedFlexItemsValues.totalFlexGrowFactors == 0f ||
               isUndefined(node.resolveFlexGrow()) && node.resolveFlexGrow() == 0f)
@@ -3044,10 +3044,10 @@ object Yoga {
             // should be shrunk to minimum
             availableInnerMainDim = collectedFlexItemsValues.sizeConsumedOnCurrentLine
           }
-          if (node.getConfig()!!.useLegacyStretchBehaviour) {
+          if (node.config!!.useLegacyStretchBehaviour) {
             node.setLayoutDidUseLegacyFlag(true)
           }
-          sizeBasedOnContent = !node.getConfig()!!.useLegacyStretchBehaviour
+          sizeBasedOnContent = !node.config!!.useLegacyStretchBehaviour
         }
       }
       if (!sizeBasedOnContent && !isUndefined(availableInnerMainDim)) {
@@ -3083,7 +3083,7 @@ object Yoga {
         )
       }
       node.setLayoutHadOverflow(
-        node.getLayout()!!.hadOverflow() || (collectedFlexItemsValues.remainingFreeSpace < 0),
+        node.layout!!.hadOverflow() || (collectedFlexItemsValues.remainingFreeSpace < 0),
       )
 
       // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
@@ -3142,10 +3142,10 @@ object Yoga {
       if (performLayout) {
         for (i in startOfLineIndex until endOfLineIndex) {
           val child = node.getChild(i)
-          if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
+          if (child.style.display() == YGDisplay.YGDisplayNone) {
             continue
           }
-          if (child.getStyle().positionType() == YGPositionType.YGPositionTypeAbsolute) {
+          if (child.style.positionType() == YGPositionType.YGPositionTypeAbsolute) {
             // If the child is absolutely positioned and has a
             // top/left/bottom/right set, override all the previously computed
             // positions to set it correctly.
@@ -3160,7 +3160,7 @@ object Yoga {
             }
             // If leading position is not defined or calculations result in Nan,
             // default to border + margin
-            if (!isChildLeadingPosDefined || isUndefined(child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal])) {
+            if (!isChildLeadingPosDefined || isUndefined(child.layout!!.position[pos[crossAxis.ordinal].ordinal])) {
               child.setLayoutPosition(
                 node.getLeadingBorder(crossAxis) +
                   child.getLeadingMargin(crossAxis, availableInnerWidth).unwrap(),
@@ -3186,8 +3186,8 @@ object Yoga {
               // no need to stretch.
               if (!YGNodeIsStyleDimDefined(child, crossAxis, availableInnerCrossDim)) {
                 val childMainSize =
-                  RefObject(child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal])
-                val childStyle = child.getStyle()
+                  RefObject(child.layout!!.measuredDimensions[dim[mainAxis.ordinal].ordinal])
+                val childStyle = child.style
                 val childCrossSize = RefObject(
                   if (!childStyle.aspectRatio.isUndefined()) {
                     child.getMarginForAxis(crossAxis, availableInnerWidth)
@@ -3220,7 +3220,7 @@ object Yoga {
                   if (isMainAxisRow) childMainSize.argValue else childCrossSize.argValue
                 val childHeight =
                   if (!isMainAxisRow) childMainSize.argValue else childCrossSize.argValue
-                val alignContent = node.getStyle().alignContent()
+                val alignContent = node.style.alignContent()
                 val crossAxisDoesNotGrow = alignContent != YGAlign.YGAlignStretch && isNodeFlexWrap
                 val childWidthMeasureMode =
                   if (isUndefined(childWidth) || !isMainAxisRow && crossAxisDoesNotGrow) {
@@ -3274,7 +3274,7 @@ object Yoga {
             }
             // And we apply the position
             child.setLayoutPosition(
-              child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal] + totalLineCrossDim + leadingCrossDim,
+              child.layout!!.position[pos[crossAxis.ordinal].ordinal] + totalLineCrossDim + leadingCrossDim,
               pos[crossAxis.ordinal].ordinal,
             )
           }
@@ -3294,7 +3294,7 @@ object Yoga {
       var currentLead = leadingPaddingAndBorderCross
       if (!isUndefined(availableInnerCrossDim)) {
         val remainingAlignContentDim = availableInnerCrossDim - totalLineCrossDim
-        when (node.getStyle().alignContent()) {
+        when (node.style.alignContent()) {
           YGAlign.YGAlignFlexEnd -> currentLead += remainingAlignContentDim
           YGAlign.YGAlignCenter -> currentLead += remainingAlignContentDim / 2
           YGAlign.YGAlignStretch -> if (availableInnerCrossDim > totalLineCrossDim) {
@@ -3329,18 +3329,18 @@ object Yoga {
         ii = startIndex
         while (ii < childCount) {
           val child = node.getChild(ii)
-          if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
+          if (child.style.display() == YGDisplay.YGDisplayNone) {
             ii++
             continue
           }
-          if (child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
-            if (child.getLineIndex() != i) {
+          if (child.style.positionType() != YGPositionType.YGPositionTypeAbsolute) {
+            if (child.lineIndex != i) {
               break
             }
             if (YGNodeIsLayoutDimDefined(child, crossAxis)) {
               lineHeight = YGFloatMax(
                 lineHeight,
-                child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] + child.getMarginForAxis(
+                child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] + child.getMarginForAxis(
                   crossAxis,
                   availableInnerWidth,
                 ).unwrap(),
@@ -3352,7 +3352,7 @@ object Yoga {
                   YGFlexDirection.YGFlexDirectionColumn,
                   availableInnerWidth
                 ).unwrap()
-              val descent = child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] +
+              val descent = child.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] +
                 child.getMarginForAxis(
                   YGFlexDirection.YGFlexDirectionColumn,
                   availableInnerWidth
@@ -3373,11 +3373,11 @@ object Yoga {
           ii = startIndex
           while (ii < endIndex) {
             val child = node.getChild(ii)
-            if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
+            if (child.style.display() == YGDisplay.YGDisplayNone) {
               ii++
               continue
             }
-            if (child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
+            if (child.style.positionType() != YGPositionType.YGPositionTypeAbsolute) {
               when (YGNodeAlignItem(node, child)) {
                 YGAlign.YGAlignFlexStart -> {
                   child.setLayoutPosition(
@@ -3396,14 +3396,14 @@ object Yoga {
                       crossAxis,
                       availableInnerWidth,
                     )
-                      .unwrap() - child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
+                      .unwrap() - child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
                     pos[crossAxis.ordinal].ordinal,
                   )
                 }
 
                 YGAlign.YGAlignCenter -> {
                   val childHeight =
-                    child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal]
+                    child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal]
                   child.setLayoutPosition(
                     currentLead + (lineHeight - childHeight) / 2,
                     pos[crossAxis.ordinal].ordinal,
@@ -3420,21 +3420,21 @@ object Yoga {
                   // measured with the owners height yet.
                   if (!YGNodeIsStyleDimDefined(child, crossAxis, availableInnerCrossDim)) {
                     val childWidth =
-                      if (isMainAxisRow) child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
+                      if (isMainAxisRow) child.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal] + child.getMarginForAxis(
                         mainAxis,
                         availableInnerWidth,
                       ).unwrap() else lineHeight
                     val childHeight =
-                      if (!isMainAxisRow) child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
+                      if (!isMainAxisRow) child.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal] + child.getMarginForAxis(
                         crossAxis,
                         availableInnerWidth,
                       ).unwrap() else lineHeight
                     if (!(YGFloatsEqual(
                         childWidth,
-                        child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
+                        child.layout!!.measuredDimensions[YGDimension.YGDimensionWidth.ordinal],
                       ) && YGFloatsEqual(
                         childHeight,
-                        child.getLayout()!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
+                        child.layout!!.measuredDimensions[YGDimension.YGDimensionHeight.ordinal],
                       ))
                     ) {
                       YGLayoutNodeInternal(
@@ -3505,7 +3505,7 @@ object Yoga {
 
     // If the user didn't specify a width or height for the node, set the
     // dimensions based on the children.
-    if (measureModeMainDim == YGMeasureMode.YGMeasureModeUndefined || node.getStyle()
+    if (measureModeMainDim == YGMeasureMode.YGMeasureModeUndefined || node.style
         .overflow() != YGOverflow.YGOverflowScroll && measureModeMainDim == YGMeasureMode.YGMeasureModeAtMost
     ) {
       // Clamp the size to the min/max size, if specified, and make sure it
@@ -3514,7 +3514,7 @@ object Yoga {
         YGNodeBoundAxis(node, mainAxis, maxLineMainDim, mainAxisownerSize, ownerWidth),
         dim[mainAxis.ordinal].ordinal,
       )
-    } else if (measureModeMainDim == YGMeasureMode.YGMeasureModeAtMost && node.getStyle()
+    } else if (measureModeMainDim == YGMeasureMode.YGMeasureModeAtMost && node.style
         .overflow() == YGOverflow.YGOverflowScroll
     ) {
       node.setLayoutMeasuredDimension(
@@ -3533,7 +3533,7 @@ object Yoga {
         dim[mainAxis.ordinal].ordinal,
       )
     }
-    if (measureModeCrossDim == YGMeasureMode.YGMeasureModeUndefined || node.getStyle()
+    if (measureModeCrossDim == YGMeasureMode.YGMeasureModeUndefined || node.style
         .overflow() != YGOverflow.YGOverflowScroll && measureModeCrossDim == YGMeasureMode.YGMeasureModeAtMost
     ) {
       // Clamp the size to the min/max size, if specified, and make sure it
@@ -3548,7 +3548,7 @@ object Yoga {
         ),
         dim[crossAxis.ordinal].ordinal,
       )
-    } else if (measureModeCrossDim == YGMeasureMode.YGMeasureModeAtMost && node.getStyle()
+    } else if (measureModeCrossDim == YGMeasureMode.YGMeasureModeAtMost && node.style
         .overflow() == YGOverflow.YGOverflowScroll
     ) {
       node.setLayoutMeasuredDimension(
@@ -3570,14 +3570,14 @@ object Yoga {
 
     // As we only wrapped in normal direction yet, we need to reverse the
     // positions on wrap-reverse.
-    if (performLayout && node.getStyle().flexWrap() == YGWrap.YGWrapWrapReverse) {
+    if (performLayout && node.style.flexWrap() == YGWrap.YGWrapWrapReverse) {
       for (i in 0 until childCount) {
         val child = YGNodeGetChild(node, i)
-        if (child!!.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute) {
+        if (child!!.style.positionType() != YGPositionType.YGPositionTypeAbsolute) {
           child.setLayoutPosition(
-            node.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] -
-              child.getLayout()!!.position[pos[crossAxis.ordinal].ordinal] -
-              child.getLayout()!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
+            node.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal] -
+              child.layout!!.position[pos[crossAxis.ordinal].ordinal] -
+              child.layout!!.measuredDimensions[dim[crossAxis.ordinal].ordinal],
             pos[crossAxis.ordinal].ordinal,
           )
         }
@@ -3585,9 +3585,9 @@ object Yoga {
     }
     if (performLayout) {
       // STEP 10: SIZING AND POSITIONING ABSOLUTE CHILDREN
-      for (child in node.getChildren()) {
-        if (child.getStyle().display() == YGDisplay.YGDisplayNone ||
-          child.getStyle().positionType() != YGPositionType.YGPositionTypeAbsolute
+      for (child in node.children) {
+        if (child.style.display() == YGDisplay.YGDisplayNone ||
+          child.style.positionType() != YGPositionType.YGPositionTypeAbsolute
         ) {
           continue
         }
@@ -3616,7 +3616,7 @@ object Yoga {
       if (needsMainTrailingPos || needsCrossTrailingPos) {
         for (i in 0 until childCount) {
           val child = node.getChild(i)
-          if (child.getStyle().display() == YGDisplay.YGDisplayNone) {
+          if (child.style.display() == YGDisplay.YGDisplayNone) {
             continue
           }
           if (needsMainTrailingPos) {
@@ -3683,12 +3683,12 @@ object Yoga {
     if (pointScaleFactor == 0.0) {
       return
     }
-    val nodeLeft = node.getLayout()!!.position[YGEdge.YGEdgeLeft.ordinal].toDouble()
-    val nodeTop = node.getLayout()!!.position[YGEdge.YGEdgeTop.ordinal].toDouble()
+    val nodeLeft = node.layout!!.position[YGEdge.YGEdgeLeft.ordinal].toDouble()
+    val nodeTop = node.layout!!.position[YGEdge.YGEdgeTop.ordinal].toDouble()
     val nodeWidth =
-      node.getLayout()!!.dimensions[YGDimension.YGDimensionWidth.ordinal].toDouble()
+      node.layout!!.dimensions[YGDimension.YGDimensionWidth.ordinal].toDouble()
     val nodeHeight =
-      node.getLayout()!!.dimensions[YGDimension.YGDimensionHeight.ordinal].toDouble()
+      node.layout!!.dimensions[YGDimension.YGDimensionHeight.ordinal].toDouble()
     val absoluteNodeLeft = absoluteLeft + nodeLeft
     val absoluteNodeTop = absoluteTop + nodeTop
     val absoluteNodeRight = absoluteNodeLeft + nodeWidth
@@ -3742,10 +3742,10 @@ object Yoga {
   }
 
   fun unsetUseLegacyFlagRecursively(node: YGNode) {
-    if (node.getConfig() != null) {
-      node.getConfig()!!.useLegacyStretchBehaviour = false
+    if (node.config != null) {
+      node.config!!.useLegacyStretchBehaviour = false
     }
-    for (child in node.getChildren()) {
+    for (child in node.children) {
       unsetUseLegacyFlagRecursively(child)
     }
   }
@@ -3764,7 +3764,7 @@ object Yoga {
     node.resolveDimension()
     val width: Float
     val widthMeasureMode: YGMeasureMode
-    val maxDimensions = node.getStyle().maxDimensions
+    val maxDimensions = node.style.maxDimensions
     if (YGNodeIsStyleDimDefined(node, YGFlexDirection.YGFlexDirectionRow, ownerWidth)) {
       width = YGResolveValue(
         node.getResolvedDimension(dim[YGFlexDirection.YGFlexDirectionRow.ordinal].ordinal),
@@ -3818,18 +3818,18 @@ object Yoga {
         ownerHeight = ownerHeight,
         performLayout = true,
         reason = LayoutPassReason.kInitial,
-        config = node.getConfig(),
+        config = node.config,
         layoutMarkerData = markerData,
         layoutContext = layoutContext,
         depth = 0,
         generationCount = currentGenerationCount.value,
       )
     ) {
-      node.setPosition(node.getLayout()!!.direction(), ownerWidth, ownerHeight, ownerWidth)
-      if (node.getConfig() != null) {
+      node.setPosition(node.layout!!.direction(), ownerWidth, ownerHeight, ownerWidth)
+      if (node.config != null) {
         YGRoundToPixelGrid(
           node = node,
-          pointScaleFactor = node.getConfig()!!.pointScaleFactor.toDouble(),
+          pointScaleFactor = node.config!!.pointScaleFactor.toDouble(),
           absoluteLeft = 0.0,
           absoluteTop = 0.0
         )
@@ -3840,7 +3840,7 @@ object Yoga {
       node,
       LayoutPassEndEventData(layoutContext, markerData),
     )
-    if (node.getConfig() != null && node.getConfig()!!.shouldDiffLayoutWithoutLegacyStretchBehaviour && node.didUseLegacyFlag()) {
+    if (node.config != null && node.config!!.shouldDiffLayoutWithoutLegacyStretchBehaviour && node.didUseLegacyFlag()) {
       val nodeWithoutLegacyFlag = YGNodeDeepClone(node)
       nodeWithoutLegacyFlag.resolveDimension()
       nodeWithoutLegacyFlag.markDirtyAndPropogateDownwards()
@@ -3858,7 +3858,7 @@ object Yoga {
           ownerHeight = ownerHeight,
           performLayout = true,
           reason = LayoutPassReason.kInitial,
-          config = nodeWithoutLegacyFlag.getConfig(),
+          config = nodeWithoutLegacyFlag.config,
           layoutMarkerData = layoutMarkerData,
           layoutContext = layoutContext,
           depth = 0,
@@ -3866,12 +3866,12 @@ object Yoga {
         )
       ) {
         nodeWithoutLegacyFlag.setPosition(
-          nodeWithoutLegacyFlag.getLayout()!!.direction(), ownerWidth,
+          nodeWithoutLegacyFlag.layout!!.direction(), ownerWidth,
           ownerHeight, ownerWidth,
         )
         YGRoundToPixelGrid(
           node = nodeWithoutLegacyFlag,
-          pointScaleFactor = nodeWithoutLegacyFlag.getConfig()!!.pointScaleFactor.toDouble(),
+          pointScaleFactor = nodeWithoutLegacyFlag.config!!.pointScaleFactor.toDouble(),
           absoluteLeft = 0.0,
           absoluteTop = 0.0,
         )

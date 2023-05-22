@@ -26,56 +26,56 @@ import app.cash.redwood.yoga.interfaces.MeasureWithContextFn
 import app.cash.redwood.yoga.detail.Values
 
 class YGNode {
-  private var context_: Any? = null
+  var context: Any? = null
+  var reserved: Byte = 0
+  var measure = measure_Struct()
+  var baseline = baseline_Struct()
+  var print = print_Struct()
+  var dirtied: YGDirtiedFunc? = null
+  var style: YGStyle = YGStyle()
+  var layout: YGLayout? = YGLayout()
+  var lineIndex = 0
+  var owner: YGNode? = null
+  var children = mutableListOf<YGNode>()
+  var config: YGConfig? = YGConfig()
+  var resolvedDimensions = MutableList(2) { Yoga.YGValueUndefined }
   private var flags = mutableMapOf<Any?, Any>()
-  private var reserved_: Byte = 0
-  private var measure_ = measure_Struct()
-  private var baseline_ = baseline_Struct()
-  private var print_ = print_Struct()
-  private var dirtied_: YGDirtiedFunc? = null
-  private var style_: YGStyle = YGStyle()
-  private var layout_: YGLayout? = YGLayout()
-  private var lineIndex_ = 0
-  private var owner_: YGNode? = null
-  private var children_ = mutableListOf<YGNode>()
-  private var config_: YGConfig? = YGConfig()
-  private var resolvedDimensions_ = MutableList(2) { Yoga.YGValueUndefined }
 
   constructor(node: YGNode) {
-    context_ = node.context_
+    context = node.context
     flags = node.flags
-    measure_ = node.measure_
-    baseline_ = node.baseline_
-    print_ = node.print_
-    dirtied_ = node.dirtied_
-    style_ = node.style_
-    layout_ = node.layout_
-    lineIndex_ = node.lineIndex_
-    owner_ = node.owner_
-    children_ = node.children_.toMutableList()
-    config_ = node.config_
-    resolvedDimensions_ = node.resolvedDimensions_
-    for (c in children_) {
-      c.setOwner(this)
+    measure = node.measure
+    baseline = node.baseline
+    print = node.print
+    dirtied = node.dirtied
+    style = node.style
+    layout = node.layout
+    lineIndex = node.lineIndex
+    owner = node.owner
+    children = node.children.toMutableList()
+    config = node.config
+    resolvedDimensions = node.resolvedDimensions
+    for (c in children) {
+      c.owner = this
     }
   }
 
   constructor(node: YGNode, config: YGConfig) : this(node) {
-    config_ = config
+    this.config = config
     if (config.useWebDefaults) {
       useWebDefaults()
     }
   }
 
   constructor(config: YGConfig) {
-    config_ = config
+    this.config = config
     if (config.useWebDefaults) {
       useWebDefaults()
     }
   }
 
   fun getResolvedDimension(index: Int): YGValue {
-    return resolvedDimensions_[index]
+    return resolvedDimensions[index]
   }
 
   fun isDirty(): Boolean {
@@ -98,13 +98,13 @@ class YGNode {
       isDirty_,
       isDirty,
     )
-    if (isDirty && dirtied_ != null) {
-      dirtied_!!.invoke(this)
+    if (isDirty && dirtied != null) {
+      dirtied!!.invoke(this)
     }
   }
 
   fun hasBaselineFunc(): Boolean {
-    return baseline_.noContext != null
+    return baseline.noContext != null
   }
 
   fun setBaselineFunc(baseLineFunc: YGBaselineFunc?) {
@@ -113,7 +113,7 @@ class YGNode {
       baselineUsesContext_,
       false,
     )
-    baseline_.noContext = baseLineFunc
+    baseline.noContext = baseLineFunc
   }
 
   fun setBaselineFunc(baseLineFunc: BaselineWithContextFn?) {
@@ -122,7 +122,7 @@ class YGNode {
       baselineUsesContext_,
       true,
     )
-    baseline_.withContext = baseLineFunc
+    baseline.withContext = baseLineFunc
   }
 
   fun resetBaselineFunc() {
@@ -131,15 +131,15 @@ class YGNode {
       baselineUsesContext_,
       false,
     )
-    baseline_.noContext = null
+    baseline.noContext = null
   }
 
   fun setDirtiedFunc(dirtiedFunc: YGDirtiedFunc?) {
-    dirtied_ = dirtiedFunc
+    dirtied = dirtiedFunc
   }
 
   fun setPrintFunc(printFunc: YGPrintFunc?) {
-    print_.noContext = printFunc
+    print.noContext = printFunc
     app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
@@ -148,7 +148,7 @@ class YGNode {
   }
 
   fun setPrintFunc(printFunc: PrintWithContextFn?) {
-    print_.withContext = printFunc
+    print.withContext = printFunc
     app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
@@ -157,7 +157,7 @@ class YGNode {
   }
 
   fun resetPrintFunc() {
-    print_.noContext = null
+    print.noContext = null
     app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
@@ -208,11 +208,11 @@ class YGNode {
   }
 
   fun getChild(index: Int): YGNode {
-    return children_[index]
+    return children[index]
   }
 
   fun hasMeasureFunc(): Boolean {
-    return measure_.noContext != null
+    return measure.noContext != null
   }
 
   private fun useWebDefaults() {
@@ -221,30 +221,30 @@ class YGNode {
       useWebDefaults_,
       true,
     )
-    style_.flexDirectionBitfieldRef().setValue(YGFlexDirection.YGFlexDirectionRow)
-    style_.alignContentBitfieldRef().setValue(YGAlign.YGAlignStretch)
+    style.flexDirectionBitfieldRef().setValue(YGFlexDirection.YGFlexDirectionRow)
+    style.alignContentBitfieldRef().setValue(YGAlign.YGAlignStretch)
   }
 
   fun print(printContext: Any?) {
-    if (print_.noContext != null) {
+    if (print.noContext != null) {
       if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
           flags,
           printUsesContext_,
         )
       ) {
-        print_.withContext!!.invoke(this, printContext)
+        print.withContext!!.invoke(this, printContext)
       } else {
-        print_.noContext!!.invoke(this)
+        print.noContext!!.invoke(this)
       }
     }
   }
 
   fun getLeadingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
     val leadingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position, YGEdge.YGEdgeStart,
+      style.position, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.position,
+      style.position,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValue(leadingPosition, axisSize)
@@ -252,10 +252,10 @@ class YGNode {
 
   fun getTrailingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
     val trailingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position, YGEdge.YGEdgeEnd,
+      style.position, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.position,
+      style.position,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValue(trailingPosition, axisSize)
@@ -263,10 +263,10 @@ class YGNode {
 
   fun isLeadingPositionDefined(axis: YGFlexDirection): Boolean {
     val leadingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position, YGEdge.YGEdgeStart,
+      style.position, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofUndefined(),
     ) else computeEdgeValueForColumn(
-      style_.position,
+      style.position,
       Yoga.leading[axis.ordinal], CompactValue.ofUndefined(),
     )
     return !leadingPosition.isUndefined()
@@ -274,10 +274,10 @@ class YGNode {
 
   fun isTrailingPosDefined(axis: YGFlexDirection): Boolean {
     val trailingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position, YGEdge.YGEdgeEnd,
+      style.position, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofUndefined(),
     ) else computeEdgeValueForColumn(
-      style_.position,
+      style.position,
       Yoga.trailing[axis.ordinal], CompactValue.ofUndefined(),
     )
     return !trailingPosition.isUndefined()
@@ -285,10 +285,10 @@ class YGNode {
 
   fun getLeadingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val leadingMargin = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.margin, YGEdge.YGEdgeStart,
+      style.margin, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.margin,
+      style.margin,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValueMargin(leadingMargin, widthSize)
@@ -296,10 +296,10 @@ class YGNode {
 
   fun getTrailingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val trailingMargin = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.margin, YGEdge.YGEdgeEnd,
+      style.margin, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.margin,
+      style.margin,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValueMargin(trailingMargin, widthSize)
@@ -324,9 +324,9 @@ class YGNode {
         measureUsesContext_,
       )
     ) {
-      measure_.withContext!!.invoke(this, width, widthMode, height, heightMode, layoutContext)
+      measure.withContext!!.invoke(this, width, widthMode, height, heightMode, layoutContext)
     } else {
-      measure_.noContext!!.invoke(this, width, widthMode, height, heightMode)
+      measure.noContext!!.invoke(this, width, widthMode, height, heightMode)
     }
   }
 
@@ -336,9 +336,9 @@ class YGNode {
         baselineUsesContext_,
       )
     ) {
-      baseline_.withContext!!.invoke(this, width, height, layoutContext)
+      baseline.withContext!!.invoke(this, width, height, layoutContext)
     } else {
-      baseline_.noContext!!.invoke(this, width, height)
+      baseline.noContext!!.invoke(this, width, height)
     }
   }
 
@@ -347,12 +347,12 @@ class YGNode {
       setNodeType(YGNodeType.YGNodeTypeDefault)
     } else {
       Yoga.YGAssertWithNode(
-        this, children_.size == 0,
+        this, children.size == 0,
         "Cannot set measure function: Nodes with measure functions cannot have " + "children.",
       )
       setNodeType(YGNodeType.YGNodeTypeText)
     }
-    measure_ = measureFunc
+    measure = measureFunc
   }
 
   fun setMeasureFunc(measureFunc: YGMeasureFunc?) {
@@ -361,8 +361,8 @@ class YGNode {
       measureUsesContext_,
       false,
     )
-    measure_.noContext = measureFunc
-    setMeasureFunc(measure_)
+    measure.noContext = measureFunc
+    setMeasureFunc(measure)
   }
 
   fun setMeasureFunc(measureFunc: MeasureWithContextFn?) {
@@ -371,74 +371,74 @@ class YGNode {
       measureUsesContext_,
       true,
     )
-    measure_.withContext = measureFunc
-    setMeasureFunc(measure_)
+    measure.withContext = measureFunc
+    setMeasureFunc(measure)
   }
 
   fun replaceChild(child: YGNode, index: Int) {
-    children_[index] = child
+    children[index] = child
   }
 
   fun insertChild(child: YGNode, index: Int) {
-    children_.add(index, child)
+    children.add(index, child)
   }
 
   fun removeChild(child: YGNode): Boolean {
-    return children_.remove(child)
+    return children.remove(child)
   }
 
   fun removeChild(index: Int) {
-    children_.removeAt(index)
+    children.removeAt(index)
   }
 
   fun removeAllChildren() {
-    children_.clear()
+    children.clear()
   }
 
   fun setLayoutDirection(direction: YGDirection?) {
-    layout_!!.setDirection(direction!!)
+    layout!!.setDirection(direction!!)
   }
 
   fun setLayoutMargin(margin: Float, index: Int) {
-    layout_!!.margin[index] = margin
+    layout!!.margin[index] = margin
   }
 
   fun setLayoutBorder(border: Float, index: Int) {
-    layout_!!.border[index] = border
+    layout!!.border[index] = border
   }
 
   fun setLayoutPadding(padding: Float, index: Int) {
-    layout_!!.padding[index] = padding
+    layout!!.padding[index] = padding
   }
 
   fun setLayoutLastOwnerDirection(direction: YGDirection?) {
-    layout_!!.lastOwnerDirection = direction!!
+    layout!!.lastOwnerDirection = direction!!
   }
 
   fun setLayoutComputedFlexBasis(computedFlexBasis: YGFloatOptional?) {
-    if (layout_ != null) {
-      layout_!!.computedFlexBasis = computedFlexBasis!!
+    if (layout != null) {
+      layout!!.computedFlexBasis = computedFlexBasis!!
     }
   }
 
   fun setLayoutPosition(position: Float, index: Int) {
-    layout_!!.position[index] = position
+    layout!!.position[index] = position
   }
 
   fun setLayoutComputedFlexBasisGeneration(computedFlexBasisGeneration: Int) {
-    layout_!!.computedFlexBasisGeneration = computedFlexBasisGeneration
+    layout!!.computedFlexBasisGeneration = computedFlexBasisGeneration
   }
 
   fun setLayoutMeasuredDimension(measuredDimension: Float, index: Int) {
-    layout_!!.measuredDimensions[index] = measuredDimension
+    layout!!.measuredDimensions[index] = measuredDimension
   }
 
   fun setLayoutHadOverflow(hadOverflow: Boolean) {
-    layout_!!.setHadOverflow(hadOverflow)
+    layout!!.setHadOverflow(hadOverflow)
   }
 
   fun setLayoutDimension(dimension: Float, index: Int) {
-    layout_!!.dimensions[index] = dimension
+    layout!!.dimensions[index] = dimension
   }
 
   fun relativePosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
@@ -453,9 +453,9 @@ class YGNode {
   }
 
   fun setPosition(direction: YGDirection, mainSize: Float, crossSize: Float, ownerWidth: Float) {
-    val directionRespectingRoot = if (owner_ != null) direction else YGDirection.YGDirectionLTR
+    val directionRespectingRoot = if (owner != null) direction else YGDirection.YGDirectionLTR
     val mainAxis = Yoga.YGResolveFlexDirection(
-      style_.flexDirection(), directionRespectingRoot,
+      style.flexDirection(), directionRespectingRoot,
     )
     val crossAxis = Yoga.YGFlexDirectionCross(mainAxis, directionRespectingRoot)
     val relativePositionMain = relativePosition(mainAxis, mainSize)
@@ -491,31 +491,31 @@ class YGNode {
   }
 
   fun marginLeadingValue(axis: YGFlexDirection): YGValue {
-    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin
+    return if (Yoga.YGFlexDirectionIsRow(axis) && !style.margin
         .getCompactValue(YGEdge.YGEdgeStart).isUndefined()
     ) {
-      style_.margin[YGEdge.YGEdgeStart.ordinal]
+      style.margin[YGEdge.YGEdgeStart.ordinal]
     } else {
-      style_.margin[Yoga.leading[axis.ordinal].ordinal]
+      style.margin[Yoga.leading[axis.ordinal].ordinal]
     }
   }
 
   fun marginTrailingValue(axis: YGFlexDirection): YGValue {
-    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin
+    return if (Yoga.YGFlexDirectionIsRow(axis) && !style.margin
         .getCompactValue(YGEdge.YGEdgeEnd).isUndefined()
     ) {
-      style_.margin[YGEdge.YGEdgeEnd.ordinal]
+      style.margin[YGEdge.YGEdgeEnd.ordinal]
     } else {
-      style_.margin[Yoga.trailing[axis.ordinal].ordinal]
+      style.margin[Yoga.trailing[axis.ordinal].ordinal]
     }
   }
 
   fun resolveFlexBasisPtr(): YGValue {
-    val flexBasis = style_.flexBasis.convertToYgValue()
+    val flexBasis = style.flexBasis.convertToYgValue()
     if (flexBasis.unit != YGUnit.YGUnitAuto && flexBasis.unit != YGUnit.YGUnitUndefined) {
       return flexBasis
     }
-    return if (!style_.flex.isUndefined() && style_.flex.unwrap() > 0.0f) {
+    return if (!style.flex.isUndefined() && style.flex.unwrap() > 0.0f) {
       if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
           flags,
           useWebDefaults_,
@@ -527,7 +527,7 @@ class YGNode {
   }
 
   fun resolveDimension() {
-    val style = getStyle()
+    val style = style
     val dimensions = arrayOf(YGDimension.YGDimensionWidth, YGDimension.YGDimensionHeight)
     for (dim in dimensions) {
       if (!style.maxDimensions.getCompactValue(dim.ordinal).isUndefined() && Yoga.YGValueEqual(
@@ -535,27 +535,27 @@ class YGNode {
           style.minDimensions.getCompactValue(dim.ordinal),
         )
       ) {
-        resolvedDimensions_[dim.ordinal] = style.maxDimensions[dim.ordinal]
+        resolvedDimensions[dim.ordinal] = style.maxDimensions[dim.ordinal]
       } else {
-        resolvedDimensions_[dim.ordinal] = style.dimensions[dim.ordinal]
+        resolvedDimensions[dim.ordinal] = style.dimensions[dim.ordinal]
       }
     }
   }
 
   fun resolveDirection(ownerDirection: YGDirection): YGDirection {
-    return if (style_.direction() == YGDirection.YGDirectionInherit) {
+    return if (style.direction() == YGDirection.YGDirectionInherit) {
       if (ownerDirection.ordinal > YGDirection.YGDirectionInherit.ordinal) {
         ownerDirection
       } else {
         YGDirection.YGDirectionLTR
       }
     } else {
-      style_.direction()
+      style.direction()
     }
   }
 
   fun clearChildren() {
-    children_.clear()
+    children.clear()
   }
 
   fun cloneChildrenIfNeeded(cloneContext: Any?) {
@@ -570,11 +570,11 @@ class YGNode {
     cloneContext: Any?,
   ) {
     var i = 0
-    for (child in children_) {
+    for (child in children) {
       var c = child
-      if (child.getOwner() !== this) {
-        c = config_!!.cloneNode(child, this, i, cloneContext)
-        child.setOwner(this)
+      if (child.owner !== this) {
+        c = config!!.cloneNode(child, this, i, cloneContext)
+        child.owner = this
       }
       i += 1
       callback(c, cloneContext)
@@ -585,8 +585,8 @@ class YGNode {
     if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(flags, isDirty_)) {
       setDirty(true)
       setLayoutComputedFlexBasis(YGFloatOptional())
-      if (owner_ != null) {
-        owner_!!.markDirtyAndPropogate()
+      if (owner != null) {
+        owner!!.markDirtyAndPropogate()
       }
     }
   }
@@ -597,36 +597,36 @@ class YGNode {
       isDirty_,
       true,
     )
-    children_.forEach { obj: YGNode -> obj.markDirtyAndPropogateDownwards() }
+    children.forEach { obj: YGNode -> obj.markDirtyAndPropogateDownwards() }
   }
 
   fun resolveFlexGrow(): Float {
-    if (owner_ == null) {
+    if (owner == null) {
       return 0.0f
     }
-    if (!style_.flexGrow.isUndefined()) {
-      return style_.flexGrow.unwrap()
+    if (!style.flexGrow.isUndefined()) {
+      return style.flexGrow.unwrap()
     }
-    return if (!style_.flex.isUndefined() && style_.flex.unwrap() > 0.0f) {
-      style_.flex.unwrap()
+    return if (!style.flex.isUndefined() && style.flex.unwrap() > 0.0f) {
+      style.flex.unwrap()
     } else {
       Yoga.DefaultFlexGrow
     }
   }
 
   fun resolveFlexShrink(): Float {
-    if (owner_ == null) {
+    if (owner == null) {
       return 0.0f
     }
-    if (!style_.flexShrink.isUndefined()) {
-      return style_.flexShrink.unwrap()
+    if (!style.flexShrink.isUndefined()) {
+      return style.flexShrink.unwrap()
     }
     if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
         flags,
         useWebDefaults_,
-      ) && !style_.flex.isUndefined() && style_.flex.unwrap() < 0.0f
+      ) && !style.flex.isUndefined() && style.flex.unwrap() < 0.0f
     ) {
-      return -style_.flex.unwrap()
+      return -style.flex.unwrap()
     }
     return if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
         flags,
@@ -636,16 +636,16 @@ class YGNode {
   }
 
   fun isNodeFlexible(): Boolean {
-    return style_.positionType() != YGPositionType.YGPositionTypeAbsolute && (resolveFlexGrow() != 0f || resolveFlexShrink() != 0f)
+    return style.positionType() != YGPositionType.YGPositionTypeAbsolute && (resolveFlexGrow() != 0f || resolveFlexShrink() != 0f)
   }
 
   fun getLeadingBorder(axis: YGFlexDirection): Float {
     val leadingBorder = (if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.border,
+      style.border,
       YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.border,
+      style.border,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )).convertToYgValue()
     return maxOf(leadingBorder.value, 0.0f)
@@ -653,10 +653,10 @@ class YGNode {
 
   fun getTrailingBorder(axis: YGFlexDirection): Float {
     val trailingBorder = (if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.border, YGEdge.YGEdgeEnd,
+      style.border, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.border,
+      style.border,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )).convertToYgValue()
     return maxOf(trailingBorder.value, 0.0f)
@@ -664,10 +664,10 @@ class YGNode {
 
   fun getLeadingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val leadingPadding = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.padding, YGEdge.YGEdgeStart,
+      style.padding, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.padding,
+      style.padding,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGFloatOptionalMax(
@@ -681,10 +681,10 @@ class YGNode {
 
   fun getTrailingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val trailingPadding = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.padding, YGEdge.YGEdgeEnd,
+      style.padding, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.padding,
+      style.padding,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGFloatOptionalMax(
@@ -711,12 +711,12 @@ class YGNode {
   }
 
   fun didUseLegacyFlag(): Boolean {
-    var didUseLegacyFlag = layout_!!.didUseLegacyFlag()
+    var didUseLegacyFlag = layout!!.didUseLegacyFlag()
     if (didUseLegacyFlag) {
       return true
     }
-    for (child in children_) {
-      if (child.layout_!!.didUseLegacyFlag()) {
+    for (child in children) {
+      if (child.layout!!.didUseLegacyFlag()) {
         didUseLegacyFlag = true
         break
       }
@@ -725,29 +725,29 @@ class YGNode {
   }
 
   fun setLayoutDoesLegacyFlagAffectsLayout(doesLegacyFlagAffectsLayout: Boolean) {
-    layout_!!.setDoesLegacyStretchFlagAffectsLayout(doesLegacyFlagAffectsLayout)
+    layout!!.setDoesLegacyStretchFlagAffectsLayout(doesLegacyFlagAffectsLayout)
   }
 
   fun setLayoutDidUseLegacyFlag(didUseLegacyFlag: Boolean) {
-    layout_!!.setDidUseLegacyFlag(didUseLegacyFlag)
+    layout!!.setDidUseLegacyFlag(didUseLegacyFlag)
   }
 
   fun isLayoutTreeEqualToNode(node: YGNode): Boolean {
-    if (children_.size != node.children_.size) {
+    if (children.size != node.children.size) {
       return false
     }
-    if (layout_ !== node.layout_) {
+    if (layout !== node.layout) {
       return false
     }
-    if (children_.size == 0) {
+    if (children.size == 0) {
       return true
     }
     var isLayoutTreeEqual = true
     var i = 0
-    val children_size = children_.size
+    val children_size = children.size
     while (i < children_size) {
-      val child = children_[i]
-      val otherNodeChildren = node.children_[i]
+      val child = children[i]
+      val otherNodeChildren = node.children[i]
       isLayoutTreeEqual = child.isLayoutTreeEqualToNode(otherNodeChildren)
       if (!isLayoutTreeEqual) break
       i++
@@ -758,12 +758,12 @@ class YGNode {
   fun reset() {
     Yoga.YGAssertWithNode(
       this,
-      children_.size == 0,
+      children.size == 0,
       "Cannot reset a node which still has children attached",
     )
     Yoga.YGAssertWithNode(
       this,
-      owner_ == null,
+      owner == null,
       "Cannot reset a node still attached to a owner",
     )
     clearChildren()
@@ -772,122 +772,10 @@ class YGNode {
         flags,
         useWebDefaults_,
       )
-    config_ = YGConfig()
+    config = YGConfig()
     if (webDefaults) {
       useWebDefaults()
     }
-  }
-
-  fun getContext(): Any? {
-    return context_
-  }
-
-  fun setContext(context_: Any?) {
-    this.context_ = context_
-  }
-
-  fun getFlags(): Map<Any?, Any> {
-    return flags
-  }
-
-  fun setFlags(flags: MutableMap<Any?, Any>) {
-    this.flags = flags
-  }
-
-  fun getReserved(): Byte {
-    return reserved_
-  }
-
-  fun setReserved(reserved_: Byte) {
-    this.reserved_ = reserved_
-  }
-
-  fun getMeasure(): measure_Struct {
-    return measure_
-  }
-
-  fun setMeasure(measure_: measure_Struct) {
-    this.measure_ = measure_
-  }
-
-  fun getBaseline(): baseline_Struct {
-    return baseline_
-  }
-
-  fun setBaseline(baseline_: baseline_Struct) {
-    this.baseline_ = baseline_
-  }
-
-  fun getPrint(): print_Struct {
-    return print_
-  }
-
-  fun setPrint(print_: print_Struct) {
-    this.print_ = print_
-  }
-
-  fun getDirtied(): YGDirtiedFunc? {
-    return dirtied_
-  }
-
-  fun setDirtied(dirtied_: YGDirtiedFunc?) {
-    this.dirtied_ = dirtied_
-  }
-
-  fun getStyle(): YGStyle {
-    return style_
-  }
-
-  fun setStyle(style_: YGStyle) {
-    this.style_ = style_
-  }
-
-  fun getLayout(): YGLayout? {
-    return layout_
-  }
-
-  fun setLayout(layout_: YGLayout?) {
-    this.layout_ = layout_ ?: YGLayout()
-  }
-
-  fun getLineIndex(): Int {
-    return lineIndex_
-  }
-
-  fun setLineIndex(lineIndex_: Int) {
-    this.lineIndex_ = lineIndex_
-  }
-
-  fun getOwner(): YGNode? {
-    return owner_
-  }
-
-  fun setOwner(owner_: YGNode?) {
-    this.owner_ = owner_
-  }
-
-  fun getChildren(): MutableList<YGNode> {
-    return children_
-  }
-
-  fun setChildren(children_: MutableList<YGNode>) {
-    this.children_ = children_
-  }
-
-  fun getConfig(): YGConfig? {
-    return config_
-  }
-
-  fun setConfig(config_: YGConfig?) {
-    this.config_ = config_
-  }
-
-  fun getResolvedDimensions(): MutableList<YGValue> {
-    return resolvedDimensions_
-  }
-
-  fun setResolvedDimensions(resolvedDimensions_: MutableList<YGValue>) {
-    this.resolvedDimensions_ = resolvedDimensions_
   }
 
   class measure_Struct {

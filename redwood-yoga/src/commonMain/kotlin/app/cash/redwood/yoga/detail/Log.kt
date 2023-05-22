@@ -18,7 +18,7 @@ object Log {
     format: String,
     vararg args: Any?,
   ) {
-    GlobalMembers.vlog(node?.getConfig(), node, level, context, format, *args)
+    GlobalMembers.vlog(node?.config, node, level, context, format, *args)
   }
 
   fun log(

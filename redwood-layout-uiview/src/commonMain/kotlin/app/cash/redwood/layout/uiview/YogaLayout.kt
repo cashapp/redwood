@@ -75,7 +75,7 @@ internal class YogaLayout {
       node = rootNode,
       ownerWidth = size.width,
       ownerHeight = size.height,
-      ownerDirection = rootNode.getStyle().direction()
+      ownerDirection = rootNode.style.direction()
     )
     return Size(
       width = YGNodeLayoutGetWidth(rootNode).toDouble(),
@@ -113,7 +113,7 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
   // Nodes with children cannot have measure functions.
   yoga.rootNode.setMeasureFunc(null as YGMeasureFunc?)
 
-  val currentViews = yoga.rootNode.getChildren().mapNotNull { it.view }
+  val currentViews = yoga.rootNode.children.mapNotNull { it.view }
   val subviews = yoga.view.typedSubviews
   if (currentViews != subviews) {
     println("YGAttachNodesFromViewHierachy - ${subviews.size}")
@@ -179,7 +179,7 @@ private fun YGApplyLayoutToViewHierarchy(
   preserveOrigin: Boolean,
   isRootNode: Boolean = false,
 ) {
-  println("YGApplyLayoutToViewHierarchy ${node.getStyle().flexDirection()}")
+  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()}")
 
   val left = YGNodeLayoutGetLeft(node)
   val top = YGNodeLayoutGetTop(node)
@@ -191,7 +191,7 @@ private fun YGApplyLayoutToViewHierarchy(
   val height = YGNodeLayoutGetHeight(node).toDouble()
   if (!isRootNode) view.setFrame(CGRectMake(x, y, width, height))
 
-  for (childNode in node.getChildren()) {
+  for (childNode in node.children) {
     YGApplyLayoutToViewHierarchy(childNode, preserveOrigin = false)
   }
 }
@@ -207,4 +207,4 @@ private fun CValue<CGSize>.toSize() = useContents { Size(width, height) }
 private fun Size.toCGSize() = CGSizeMake(width, height)
 
 private val YGNode.view: UIView?
-  get() = (getMeasure().noContext as ViewMeasureFunction?)?.view
+  get() = (measure.noContext as ViewMeasureFunction?)?.view
