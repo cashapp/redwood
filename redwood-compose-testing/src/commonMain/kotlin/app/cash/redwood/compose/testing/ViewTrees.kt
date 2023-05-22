@@ -17,15 +17,22 @@ package app.cash.redwood.compose.testing
 
 import app.cash.redwood.protocol.ViewTree
 import app.cash.redwood.protocol.compose.ProtocolBridge
+import kotlinx.serialization.json.Json
 
-public fun List<WidgetValue>.toViewTree(factory: ProtocolBridge.Factory): ViewTree {
-  val bridge = factory.create()
+public fun List<WidgetValue>.toViewTree(
+  factory: ProtocolBridge.Factory,
+  json: Json = Json.Default,
+): ViewTree {
+  val bridge = factory.create(json)
   for ((index, child) in withIndex()) {
     bridge.root.insert(index, child.toWidget(bridge.provider))
   }
   return ViewTree(bridge.getChangesOrNull() ?: emptyList())
 }
 
-public fun WidgetValue.toViewTree(factory: ProtocolBridge.Factory): ViewTree {
-  return listOf(this).toViewTree(factory)
+public fun WidgetValue.toViewTree(
+  factory: ProtocolBridge.Factory,
+  json: Json = Json.Default,
+): ViewTree {
+  return listOf(this).toViewTree(factory, json)
 }
