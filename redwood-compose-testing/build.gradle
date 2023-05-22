@@ -29,6 +29,7 @@ kotlin {
         implementation projects.testSchema.compose
         implementation projects.testSchema.composeProtocol
         implementation projects.testSchema.testing
+        implementation projects.testSchema.widgetProtocol
       }
     }
   }
