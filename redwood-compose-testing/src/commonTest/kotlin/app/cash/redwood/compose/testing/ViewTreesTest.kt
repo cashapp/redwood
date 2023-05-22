@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
 import example.redwood.widget.ExampleSchemaTester
@@ -54,23 +55,25 @@ class ViewTreesTest {
       Create(Id(2), WidgetTag(1)),
       Create(Id(3), WidgetTag(3)),
       PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("One Fish")),
-      Add(Id(2), ChildrenTag(3), Id(3), 0),
+      Add(Id(2), ChildrenTag(1), Id(3), 0),
       Create(Id(4), WidgetTag(3)),
       PropertyChange(Id(4), PropertyTag(1), JsonPrimitive("Two Fish")),
-      Add(Id(2), ChildrenTag(3), Id(4), 1),
-      Add(Id(1), ChildrenTag(2), Id(2), 0),
+      Add(Id(2), ChildrenTag(1), Id(4), 1),
+      Add(Id(1), ChildrenTag(1), Id(2), 0),
       Create(Id(5), WidgetTag(1)),
       Create(Id(6), WidgetTag(3)),
       PropertyChange(Id(6), PropertyTag(1), JsonPrimitive("Red Fish")),
-      Add(Id(5), ChildrenTag(3), Id(6), 0),
+      Add(Id(5), ChildrenTag(1), Id(6), 0),
       Create(Id(7), WidgetTag(3)),
       PropertyChange(Id(7), PropertyTag(1), JsonPrimitive("Blue Fish")),
-      Add(Id(5), ChildrenTag(3), Id(7), 1),
-      Add(Id(1), ChildrenTag(2), Id(5), 1),
+      Add(Id(5), ChildrenTag(1), Id(7), 1),
+      Add(Id(1), ChildrenTag(1), Id(5), 1),
       Add(Id.Root, ChildrenTag.Root, Id(1), 0),
     )
 
-    assertThat(snapshot.viewTree.changes).isEqualTo(expected)
-    assertThat(snapshot.single().viewTree.changes).isEqualTo(expected)
+    assertThat(snapshot.toViewTree(ExampleSchemaProtocolBridge).changes)
+      .isEqualTo(expected)
+    assertThat(snapshot.single().toViewTree(ExampleSchemaProtocolBridge).changes)
+      .isEqualTo(expected)
   }
 }
