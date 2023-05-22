@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget

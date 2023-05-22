@@ -19,14 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import app.cash.redwood.compose.WidgetVersion
+import app.cash.redwood.ui.HostConfiguration
 
 /**
  * Provide the configuration of the host display.
  * This value will be bound automatically when Treehouse is used.
  * Custom values should only be provided into a composition for testing purposes!
  *
- * @see WidgetVersion
+ * @see HostConfiguration.Companion.current
  */
 public val LocalHostConfiguration: ProvidableCompositionLocal<HostConfiguration> =
   compositionLocalOf {

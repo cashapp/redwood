@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.ui
 
-import app.cash.redwood.ui.Margin
 import kotlinx.serialization.Serializable
 
 @Serializable

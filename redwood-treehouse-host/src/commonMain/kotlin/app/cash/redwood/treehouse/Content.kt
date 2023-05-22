@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.ui.HostConfiguration
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CancellationException
 

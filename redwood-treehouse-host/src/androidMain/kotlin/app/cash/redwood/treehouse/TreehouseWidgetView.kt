@@ -27,6 +27,7 @@ import androidx.core.graphics.Insets
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
