@@ -20,6 +20,7 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope

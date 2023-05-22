@@ -23,13 +23,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.CodeListener
-import app.cash.redwood.treehouse.HostConfiguration
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 

@@ -15,7 +15,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocolCompose
-        api projects.redwoodTreehouseConfiguration
         api libs.jetbrains.compose.runtime
       }
     }
