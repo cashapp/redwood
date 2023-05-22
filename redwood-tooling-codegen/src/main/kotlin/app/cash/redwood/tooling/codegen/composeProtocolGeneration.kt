@@ -400,15 +400,7 @@ internal fun generateProtocolWidget(
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
                     .addModifiers(OVERRIDE)
-                    .getter(
-                      FunSpec.getterBuilder()
-                        .addStatement(
-                          "return state.widgetChildren(id, %T(%L))",
-                          Protocol.ChildrenTag,
-                          trait.tag,
-                        )
-                        .build(),
-                    )
+                    .initializer("state.widgetChildren(id, %T(%L))", Protocol.ChildrenTag, trait.tag)
                     .build(),
                 )
               }
