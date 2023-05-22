@@ -32,7 +32,7 @@ class ImageBinding: Image {
         self.imageLoader = imageLoader
     }
 
-    var modifiers: Modifier = ExposedKt.modifier()
+    var modifier: Modifier = ExposedKt.modifier()
     var value: Any { root }
 
     func url(url: String) {

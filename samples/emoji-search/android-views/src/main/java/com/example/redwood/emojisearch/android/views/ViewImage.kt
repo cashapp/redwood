@@ -31,7 +31,7 @@ internal class ViewImage(
     value.layoutParams = ViewGroup.LayoutParams(size, size)
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun url(url: String) {
     value.load(url)

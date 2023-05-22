@@ -58,7 +58,7 @@ internal class UIViewFlexContainer(
 
   override val children = UIViewChildren(value)
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
@@ -164,7 +164,7 @@ internal class UIViewFlexContainer(
         container.items += newFlexItem(
           direction = direction,
           density = Density.Default,
-          modifiers = widget.modifiers,
+          modifier = widget.modifier,
           measurable = UIViewMeasurable(widget.value),
         )
       }

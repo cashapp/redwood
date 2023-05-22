@@ -25,7 +25,7 @@ import org.w3c.dom.HTMLSpanElement
 class HtmlText(
   override val value: HTMLSpanElement,
 ) : Text<HTMLElement> {
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.textContent = text
@@ -35,7 +35,7 @@ class HtmlText(
 class HtmlButton(
   override val value: HTMLButtonElement,
 ) : Button<HTMLElement> {
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.textContent = text

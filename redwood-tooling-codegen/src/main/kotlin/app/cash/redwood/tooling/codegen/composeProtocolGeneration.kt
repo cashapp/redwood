@@ -257,7 +257,7 @@ internal class ProtocolButton(
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
-  override var modifiers: Modifier
+  override var modifier: Modifier
     get() = throw AssertionError()
     set(value) {
       val json = buildJsonArray {
@@ -452,7 +452,7 @@ internal fun generateProtocolWidget(
           }
         }
         .addProperty(
-          PropertySpec.builder("modifiers", Redwood.Modifier, OVERRIDE)
+          PropertySpec.builder("modifier", Redwood.Modifier, OVERRIDE)
             .mutable()
             .getter(
               FunSpec.getterBuilder()
@@ -499,7 +499,7 @@ internal fun generateProtocolModifierSerializers(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec? {
-  val serializableModifiers = schema.modifiers.filter { it.properties.isNotEmpty() }
+  val serializableModifiers = schema.modifier.filter { it.properties.isNotEmpty() }
   if (serializableModifiers.isEmpty()) {
     return null
   }
@@ -714,15 +714,15 @@ internal fun generateComposeProtocolModifierSerialization(
         .returns(Protocol.ModifierElement)
         .beginControlFlow("return when (this)")
         .apply {
-          val modifiers = schemaSet.allModifiers()
-          if (modifiers.isEmpty()) {
+          val modifier = schemaSet.allModifiers()
+          if (modifier.isEmpty()) {
             addAnnotation(
               AnnotationSpec.builder(Suppress::class)
                 .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
                 .build(),
             )
           } else {
-            for ((localSchema, modifier) in modifiers) {
+            for ((localSchema, modifier) in modifier) {
               val modifierType = localSchema.modifierType(modifier)
               val surrogate = localSchema.modifierSerializer(modifier, schema)
               if (modifier.properties.isEmpty()) {

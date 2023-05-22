@@ -51,7 +51,7 @@ class ComposeProtocolGenerationTest {
     )
   }
 
-  @Test fun `dependency layout modifiers are included in serialization`() {
+  @Test fun `dependency layout modifier are included in serialization`() {
     val schemaSet = ProtocolSchemaSet.parse(ExampleSchema::class)
 
     val fileSpec = generateComposeProtocolModifierSerialization(schemaSet)

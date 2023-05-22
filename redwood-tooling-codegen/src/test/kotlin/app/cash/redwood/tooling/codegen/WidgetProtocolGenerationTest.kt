@@ -58,7 +58,7 @@ class WidgetProtocolGenerationTest {
       .containsMatch(Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE))
   }
 
-  @Test fun `dependency layout modifiers are included in serialization`() {
+  @Test fun `dependency layout modifier are included in serialization`() {
     val schema = ProtocolSchemaSet.parse(ExampleSchema::class)
 
     val fileSpec = generateWidgetProtocolModifierSerialization(schema)

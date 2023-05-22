@@ -28,7 +28,7 @@ class IosText : Text<UIView> {
     textAlignment = NSTextAlignmentCenter
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text

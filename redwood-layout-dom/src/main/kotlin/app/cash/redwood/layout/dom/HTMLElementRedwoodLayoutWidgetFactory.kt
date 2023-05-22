@@ -103,7 +103,7 @@ private class HTMLFlexContainer(
     value.style.alignItems = verticalAlignment.toCss()
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 }
 
 private class HTMLSpacer(
@@ -117,5 +117,5 @@ private class HTMLSpacer(
     value.style.height = height.toPxString()
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 }

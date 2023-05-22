@@ -251,7 +251,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val modifiers = mutableListOf<ParsedProtocolModifier>()
+  val modifier = mutableListOf<ParsedProtocolModifier>()
   for (memberType in schemaAnnotation.members) {
     val memberClass = firClassByName[memberType]
       ?: throw IllegalArgumentException("Unable to locate schema type $memberType")
@@ -266,7 +266,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, memberClass, widgetAnnotation)
     } else if (modifierAnnotation != null) {
-      modifiers += parseModifier(memberType, memberClass, modifierAnnotation)
+      modifier += parseModifier(memberType, memberClass, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -285,7 +285,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
-  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  val badModifiers = modifier.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
   if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -302,7 +302,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val modifierScopes = modifiers
+  val modifierScopes = modifier
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
@@ -345,7 +345,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
-    modifiers = modifiers,
+    modifier = modifier,
     taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema },
   )
 }

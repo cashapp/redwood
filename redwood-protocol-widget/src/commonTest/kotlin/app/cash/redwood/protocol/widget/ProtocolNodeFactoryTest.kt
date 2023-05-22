@@ -105,7 +105,7 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.modifiers).isEqualTo(Modifier.customType(10.seconds))
+      assertThat(recordingTextInput.modifier).isEqualTo(Modifier.customType(10.seconds))
     }
   }
 
@@ -139,7 +139,7 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.modifiers).isEqualTo(
+      assertThat(recordingTextInput.modifier).isEqualTo(
         Modifier.customTypeWithDefault(
           10.seconds,
           "sup",
@@ -210,7 +210,7 @@ class ProtocolNodeFactoryTest {
 
     // Ensure only the invalid Modifier was discarded and not all of them.
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.modifiers).isEqualTo(
+      assertThat(recordingTextInput.modifier).isEqualTo(
         Modifier.accessibilityDescription(
           "hi",
         ),
@@ -335,7 +335,7 @@ class ProtocolNodeFactoryTest {
 
   class RecordingTextInput : TextInput<Nothing> {
     override val value get() = TODO()
-    override var modifiers: Modifier = Modifier
+    override var modifier: Modifier = Modifier
 
     var text: String? = null
       private set

@@ -106,7 +106,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val modifiers = mutableListOf<ParsedProtocolModifier>()
+  val modifier = mutableListOf<ParsedProtocolModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
     val modifierAnnotation = memberType.findAnnotation<ModifierAnnotation>()
@@ -118,7 +118,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, widgetAnnotation)
     } else if (modifierAnnotation != null) {
-      modifiers += parseModifier(memberType, modifierAnnotation)
+      modifier += parseModifier(memberType, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -137,7 +137,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
-  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  val badModifiers = modifier.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
   if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -154,7 +154,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val modifierScopes = modifiers
+  val modifierScopes = modifier
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
@@ -210,7 +210,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
-    modifiers = modifiers,
+    modifier = modifier,
     taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(

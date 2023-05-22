@@ -56,7 +56,7 @@ internal class ViewFlexContainer(
 
   override val children = ViewGroupChildren(hostView)
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   private var scrollEnabled = false
 
@@ -168,7 +168,7 @@ internal class ViewFlexContainer(
         container.items += newFlexItem(
           direction = direction,
           density = density,
-          modifiers = widget.modifiers,
+          modifier = widget.modifier,
           measurable = ViewMeasurable(widget.value),
         )
       }

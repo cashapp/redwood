@@ -29,7 +29,7 @@ import com.example.redwood.emojisearch.widget.Image
 internal class ComposeUiImage : Image<@Composable () -> Unit> {
   private var url by mutableStateOf("")
 
-  override var modifiers: RedwoodModifier = RedwoodModifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
     AsyncImage(

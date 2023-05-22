@@ -65,7 +65,7 @@ class WidgetValueTest {
   }
 
   class SimpleWidgetValue(
-    override val modifiers: Modifier = Modifier,
+    override val modifier: Modifier = Modifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
   ) : WidgetValue {
     override fun addTo(parentId: Id, childrenTag: ChildrenTag, childrenIndex: Int, builder: ViewTree.Builder) {

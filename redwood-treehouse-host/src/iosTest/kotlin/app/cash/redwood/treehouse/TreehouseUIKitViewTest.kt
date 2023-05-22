@@ -135,7 +135,7 @@ class TreehouseUIKitViewTest {
 
   private fun viewWidget(view: UIView) = object : Widget<UIView> {
     override val value: UIView get() = view
-    override var modifiers: Modifier = Modifier
+    override var modifier: Modifier = Modifier
   }
 
   private val throwingWidgetSystem =

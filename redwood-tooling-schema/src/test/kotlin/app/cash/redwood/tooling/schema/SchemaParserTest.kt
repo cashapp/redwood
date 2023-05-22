@@ -615,7 +615,7 @@ class SchemaParserTest(
     assertThat(widget.traits[0].tag).isEqualTo(1)
     assertThat(widget.traits[1].tag).isEqualTo(1)
 
-    val modifier = schema.modifiers.single()
+    val modifier = schema.modifier.single()
     assertThat(modifier.tag).isEqualTo(1)
   }
 
@@ -638,7 +638,7 @@ class SchemaParserTest(
     val widgetChildren = widget.traits.first { it is ChildrenTrait }
     assertThat(widgetChildren.tag).isEqualTo(1)
 
-    val modifier = dependency.modifiers.single { it.type.names.last() == "Grow" }
+    val modifier = dependency.modifier.single { it.type.names.last() == "Grow" }
     assertThat(modifier.tag).isEqualTo(4_000_001)
   }
 
@@ -829,7 +829,7 @@ class SchemaParserTest(
     assumeTrue(parser != SchemaParser.Fir)
 
     val schema = parser.parse(SerializationSchema::class).schema
-    val modifier = schema.modifiers.single()
+    val modifier = schema.modifier.single()
 
     val yesProperty = modifier.properties.single { it.name == "yes" }
     assertThat(yesProperty.isSerializable).isTrue()
@@ -936,7 +936,7 @@ Property
     val widgetChildren = widget.traits.single { it is ChildrenTrait }
     assertThat(widgetChildren.documentation).isEqualTo("Children missing spaces documentation.")
 
-    val modifier = schema.modifiers.single()
+    val modifier = schema.modifier.single()
     assertThat(modifier.documentation).isEqualTo("Layout modifier multi-line documentation.")
 
     val modifierProperty = modifier.properties.single()

@@ -31,7 +31,7 @@ internal class ViewSpacer(
 
   override val value = Space(context)
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
     value.minimumWidth = with(density) { width.toPx() }.roundToInt()

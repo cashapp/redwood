@@ -62,7 +62,7 @@ public class ApiMerger {
       return RedwoodApi(
         version = 1U,
         widgets = mergeItems({ it.widgets }, { it.tag }, { it.merge() }),
-        modifiers = mergeItems({ it.modifiers }, { it.tag }, { it.merge() }),
+        modifier = mergeItems({ it.modifier }, { it.tag }, { it.merge() }),
       )
     }
 

@@ -24,7 +24,7 @@ import nl.adaptivity.xmlutil.serialization.XML
 internal data class RedwoodApi(
   val version: UInt,
   val widgets: List<RedwoodWidget> = emptyList(),
-  val modifiers: List<RedwoodModifier> = emptyList(),
+  val modifier: List<RedwoodModifier> = emptyList(),
 ) {
   fun serialize() = xml.encodeToString(serializer(), this)
 

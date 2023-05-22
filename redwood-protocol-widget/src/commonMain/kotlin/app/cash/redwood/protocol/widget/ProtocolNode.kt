@@ -34,7 +34,7 @@ public interface ProtocolNode<W : Any> {
 
   /**
    * Record that this node's [widget] has been inserted into [container].
-   * Updates to this node's layout modifiers will notify [container].
+   * Updates to this node's layout modifier will notify [container].
    * This function may only be invoked once on each instance.
    */
   public fun attachTo(container: Widget.Children<W>)

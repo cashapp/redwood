@@ -87,7 +87,7 @@ internal open class ViewLazyListImpl(
 
   internal val recyclerView: RecyclerView by lazy { recyclerViewFactory() }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
   private val adapter = LazyContentItemListAdapter()

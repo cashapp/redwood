@@ -54,7 +54,7 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
       setTextColor(Color.BLACK)
       this.text = text
     }
-    override var modifiers = modifier
+    override var modifier = modifier
   }
 
   override fun verifySnapshot(container: TestFlexContainer<View>) {

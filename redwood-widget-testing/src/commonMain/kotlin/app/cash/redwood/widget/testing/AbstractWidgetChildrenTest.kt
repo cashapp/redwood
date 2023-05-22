@@ -145,7 +145,7 @@ public abstract class AbstractWidgetChildrenTest<W : Any> {
       index = index,
       widget = object : Widget<W> {
         override val value: W = widget
-        override var modifiers: Modifier = Modifier
+        override var modifier: Modifier = Modifier
       },
     )
   }

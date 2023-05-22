@@ -31,7 +31,7 @@ internal class ComposeUiButton : Button<@Composable () -> Unit> {
   private var isEnabled by mutableStateOf(false)
   private var onClick by mutableStateOf({})
 
-  override var modifiers: RedwoodModifier = RedwoodModifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
     Button(

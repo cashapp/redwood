@@ -35,7 +35,7 @@ internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
     Spacer(Modifier.defaultMinSize(width.toDp(), height.toDp()))
   }
 
-  override var modifiers: RedwoodModifier = RedwoodModifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   override fun width(width: Dp) {
     this.width = width

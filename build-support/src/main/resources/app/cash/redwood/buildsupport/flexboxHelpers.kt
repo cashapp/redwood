@@ -75,29 +75,29 @@ internal fun Margin.toSpacing(density: Density) = with(density) {
 internal fun newFlexItem(
   direction: FlexDirection,
   density: Density,
-  modifiers: Modifier,
+  modifier: Modifier,
   measurable: Measurable,
 ): FlexItem {
   var flexGrow = DefaultFlexGrow
   var flexShrink = DefaultFlexShrink
   var spacing = Spacing.Zero
   var alignSelf = AlignSelf.Auto
-  modifiers.forEach { modifier ->
-    when (modifier) {
+  modifier.forEach { m ->
+    when (m) {
       is GrowModifier -> {
-        flexGrow = modifier.value
+        flexGrow = m.value
       }
       is ShrinkModifier -> {
-        flexShrink = modifier.value
+        flexShrink = m.value
       }
       is MarginModifier -> {
-        spacing = modifier.margin.toSpacing(density)
+        spacing = m.margin.toSpacing(density)
       }
       is HorizontalAlignmentModifier -> if (direction.isVertical) {
-        alignSelf = modifier.alignment.toAlignSelf()
+        alignSelf = m.alignment.toAlignSelf()
       }
       is VerticalAlignmentModifier -> if (direction.isHorizontal) {
-        alignSelf = modifier.alignment.toAlignSelf()
+        alignSelf = m.alignment.toAlignSelf()
       }
     }
   }

@@ -130,7 +130,7 @@ public class WidgetNode<W : Widget<V>, V : Any>(
 
   public companion object {
     public val SetModifiers: WidgetNode<*, *>.(Modifier) -> Unit = {
-      widget.modifiers = it
+      widget.modifier = it
       container?.onModifierUpdated()
     }
   }

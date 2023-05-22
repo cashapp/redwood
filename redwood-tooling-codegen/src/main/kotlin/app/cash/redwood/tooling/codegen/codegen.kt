@@ -41,7 +41,7 @@ public fun SchemaSet.generate(type: CodegenType, destination: Path) {
       }
     }
     Modifiers -> {
-      for (modifier in schema.modifiers) {
+      for (modifier in schema.modifier) {
         generateModifierInterface(schema, modifier).writeTo(destination)
       }
     }

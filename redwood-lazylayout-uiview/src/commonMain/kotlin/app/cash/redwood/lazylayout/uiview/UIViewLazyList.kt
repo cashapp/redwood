@@ -139,7 +139,7 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
     this.itemsAfter = itemsAfter
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override val value: UIView get() = tableView
 }

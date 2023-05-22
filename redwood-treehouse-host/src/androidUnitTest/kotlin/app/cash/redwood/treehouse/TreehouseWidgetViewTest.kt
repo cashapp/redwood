@@ -142,7 +142,7 @@ class TreehouseWidgetViewTest {
 
   private fun viewWidget(view: View) = object : Widget<View> {
     override val value: View get() = view
-    override var modifiers: Modifier = Modifier
+    override var modifier: Modifier = Modifier
   }
 
   private val throwingWidgetSystem =

@@ -35,7 +35,7 @@ internal class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var updating = false
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override val value = @Composable {
     // Preserve 'composition' and other state properties that we don't modify.

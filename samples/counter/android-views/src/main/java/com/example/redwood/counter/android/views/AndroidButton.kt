@@ -23,7 +23,7 @@ import com.example.redwood.counter.widget.Button
 internal class AndroidButton(
   override val value: WidgetButton,
 ) : Button<View> {
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text

@@ -48,7 +48,7 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
     height: Int,
     modifier: Modifier,
   ): Spacer<View> = ViewSpacer(paparazzi.context).apply {
-    modifiers = modifier
+    this.modifier = modifier
     width(width.dp)
     height(height.dp)
   }

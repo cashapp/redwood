@@ -30,7 +30,7 @@ open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing>
   override fun Text(): Text<Nothing> = TODO()
   override fun Button() = object : Button<Nothing> {
     override val value get() = TODO()
-    override var modifiers: Modifier
+    override var modifier: Modifier
       get() = TODO()
       set(_) { TODO() }
 

@@ -33,7 +33,7 @@ internal class UIViewSpacer : Spacer<UIView> {
 
   override val value: UIView get() = view
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
     this.width = with(Density.Default) { width.toPx() }

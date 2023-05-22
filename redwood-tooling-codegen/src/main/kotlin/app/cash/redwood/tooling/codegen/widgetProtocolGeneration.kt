@@ -173,7 +173,7 @@ internal class ProtocolButton<W : Any>(
   }
 
   public override fun updateModifiers() {
-    widget.modifiers = elements.toModifiers(json, mismatchHandler)
+    widget.modifier = elements.toModifiers(json, mismatchHandler)
     container?.onModifierUpdated()
   }
 
@@ -361,7 +361,7 @@ internal fun generateProtocolNode(
           FunSpec.builder("updateModifier")
             .addModifiers(OVERRIDE)
             .addParameter("elements", LIST.parameterizedBy(Protocol.ModifierElement))
-            .addStatement("widget.modifiers = elements.%M(json, mismatchHandler)", host.toModifier)
+            .addStatement("widget.modifier = elements.%M(json, mismatchHandler)", host.toModifier)
             .addStatement("container?.onModifierUpdated()")
             .build(),
         )
@@ -391,12 +391,12 @@ internal fun generateProtocolModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec? {
-  if (schema.modifiers.isEmpty()) {
+  if (schema.modifier.isEmpty()) {
     return null
   }
   return FileSpec.builder(schema.widgetPackage(host), "modifierImpls")
     .apply {
-      for (modifier in schema.modifiers) {
+      for (modifier in schema.modifier) {
         val typeName = ClassName(schema.widgetPackage(host), modifier.type.flatName + "Impl")
         val typeBuilder = if (modifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
@@ -470,8 +470,8 @@ private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec
     .returns(Redwood.Modifier)
     .beginControlFlow("val serializer = when (tag.value)")
     .apply {
-      val modifiers = schemaSet.allModifiers()
-      if (modifiers.isEmpty()) {
+      val modifier = schemaSet.allModifiers()
+      if (modifier.isEmpty()) {
         addAnnotation(
           AnnotationSpec.builder(Suppress::class)
             .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
@@ -479,7 +479,7 @@ private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec
         )
       } else {
         val host = schemaSet.schema
-        for ((localSchema, modifier) in modifiers) {
+        for ((localSchema, modifier) in modifier) {
           val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
           if (modifier.properties.isEmpty()) {
             addStatement("%L -> return %T", modifier.tag, typeName)

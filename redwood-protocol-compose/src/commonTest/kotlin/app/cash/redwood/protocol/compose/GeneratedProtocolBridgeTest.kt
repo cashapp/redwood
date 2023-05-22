@@ -68,7 +68,7 @@ class GeneratedProtocolBridgeTest {
     val bridge = ExampleSchemaProtocolBridge.create(json)
     val button = bridge.provider.ExampleSchema.Button()
 
-    button.modifiers = with(object : TestScope {}) {
+    button.modifier = with(object : TestScope {}) {
       Modifier.customType(10.seconds)
     }
 
@@ -98,7 +98,7 @@ class GeneratedProtocolBridgeTest {
     val bridge = ExampleSchemaProtocolBridge.create(json)
     val button = bridge.provider.ExampleSchema.Button()
 
-    button.modifiers = with(object : TestScope {}) {
+    button.modifier = with(object : TestScope {}) {
       Modifier.customTypeWithDefault(10.seconds, "sup")
     }
 

@@ -52,7 +52,7 @@ internal class ComposeUiLazyList :
   private var isRefreshing by mutableStateOf(false)
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
 
-  override var modifiers: RedwoodModifier = RedwoodModifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   override val items = ComposeWidgetChildren()
 

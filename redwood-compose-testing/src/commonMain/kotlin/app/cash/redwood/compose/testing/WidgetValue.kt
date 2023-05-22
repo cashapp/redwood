@@ -27,7 +27,7 @@ import app.cash.redwood.protocol.ViewTree
  * These lambda properties are **excluded** from [Any.equals], [Any.hashCode], and [Any.toString].
  */
 public interface WidgetValue {
-  public val modifiers: Modifier
+  public val modifier: Modifier
 
   /** Returns all of the direct children of this widget, grouped by slot. */
   public val childrenLists: List<List<WidgetValue>>

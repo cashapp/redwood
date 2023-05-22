@@ -57,7 +57,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
         modifier = Modifier.background(Color.Green),
       )
     }
-    override var modifiers = modifier
+    override var modifier = modifier
   }
 
   override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>) {

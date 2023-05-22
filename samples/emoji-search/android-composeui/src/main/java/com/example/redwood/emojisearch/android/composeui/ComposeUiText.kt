@@ -27,7 +27,7 @@ import com.example.redwood.emojisearch.widget.Text
 internal class ComposeUiText : Text<@Composable () -> Unit> {
   private var text by mutableStateOf("")
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override val value = @Composable {
     Text(

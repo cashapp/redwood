@@ -149,7 +149,7 @@ internal val Schema.modifierToProtocol: MemberName get() =
 
 internal fun ProtocolSchemaSet.allModifiers(): List<Pair<ProtocolSchema, ProtocolModifier>> {
   return all.flatMap { schema ->
-    schema.modifiers.map { schema to it }
+    schema.modifier.map { schema to it }
   }
 }
 

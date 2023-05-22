@@ -29,7 +29,7 @@ public interface Widget<W : Any> {
   /**
    * A collection of elements that change how a widget is laid out.
    */
-  public var modifiers: Modifier
+  public var modifier: Modifier
 
   /** Marker interface for types whose properties expose factories of [Widget]s. */
   @Suppress("unused") // This type parameter used to match against other types like Children.

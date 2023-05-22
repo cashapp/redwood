@@ -45,7 +45,7 @@ internal class ViewTextInput(
   }
 
   override val value get() = textInputLayout
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   init {
     textInputLayout.addView(textInputEditText)

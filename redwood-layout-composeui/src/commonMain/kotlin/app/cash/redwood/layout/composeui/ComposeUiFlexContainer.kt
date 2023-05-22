@@ -55,7 +55,7 @@ internal class ComposeUiFlexContainer(
 
   override val children = ComposeWidgetChildren()
 
-  override var modifiers: RedwoodModifier = RedwoodModifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   private var recomposeTick by mutableStateOf(0)
   private var overflow by mutableStateOf(Overflow.Clip)
@@ -64,7 +64,7 @@ internal class ComposeUiFlexContainer(
   private var density = Density(1.0)
   private var marginUpdated = false
 
-  var modifier: Modifier by mutableStateOf(Modifier)
+  private var composeUiModifier: Modifier by mutableStateOf(Modifier)
 
   override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
@@ -128,12 +128,12 @@ internal class ComposeUiFlexContainer(
       },
       modifier = if (overflow == Overflow.Scroll) {
         if (direction.isHorizontal) {
-          modifier.horizontalScroll(rememberScrollState())
+          composeUiModifier.horizontalScroll(rememberScrollState())
         } else {
-          modifier.verticalScroll(rememberScrollState())
+          composeUiModifier.verticalScroll(rememberScrollState())
         }
       } else {
-        modifier
+        composeUiModifier
       },
       measurePolicy = ::measure,
     )
@@ -171,7 +171,7 @@ internal class ComposeUiFlexContainer(
       container.items += newFlexItem(
         direction = direction,
         density = density,
-        modifiers = children.widgets[index].modifiers,
+        modifier = children.widgets[index].modifier,
         measurable = ComposeMeasurable(measurable),
       )
     }

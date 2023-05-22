@@ -82,13 +82,13 @@ private class HtmlTextInput(
     value.placeholder = hint
   }
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 }
 
 private class HtmlText(
   override val value: HTMLSpanElement,
 ) : Text<HTMLElement> {
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String) {
     value.textContent = text
@@ -98,7 +98,7 @@ private class HtmlText(
 private class HtmlImage(
   override val value: HTMLImageElement,
 ) : Image<HTMLElement> {
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun url(url: String) {
     value.src = url

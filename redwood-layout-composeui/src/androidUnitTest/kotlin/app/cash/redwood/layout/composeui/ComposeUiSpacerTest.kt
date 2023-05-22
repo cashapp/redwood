@@ -47,7 +47,7 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
     height: Int,
     modifier: Modifier,
   ): Spacer<@Composable () -> Unit> = ComposeUiSpacer().apply {
-    modifiers = modifier
+    this.modifier = modifier
     width(width.dp)
     height(height.dp)
   }

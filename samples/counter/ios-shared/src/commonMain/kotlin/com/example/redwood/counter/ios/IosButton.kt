@@ -28,7 +28,7 @@ import platform.objc.sel_registerName
 class IosButton : Button<UIView> {
   override val value = UIButton()
 
-  override var modifiers: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.setTitle(text, UIControlStateNormal)
