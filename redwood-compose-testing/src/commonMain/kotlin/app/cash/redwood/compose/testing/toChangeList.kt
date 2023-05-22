@@ -15,24 +15,32 @@
  */
 package app.cash.redwood.compose.testing
 
-import app.cash.redwood.protocol.ViewTree
+import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import kotlinx.serialization.json.Json
 
-public fun List<WidgetValue>.toViewTree(
+/**
+ * Encode this snapshot of widget values into a list of changes which can be serialized and
+ * later applied to the UI to recreate the structure and state.
+ */
+public fun List<WidgetValue>.toChangeList(
   factory: ProtocolBridge.Factory,
   json: Json = Json.Default,
-): ViewTree {
+): SnapshotChangeList {
   val bridge = factory.create(json)
   for ((index, child) in withIndex()) {
     bridge.root.insert(index, child.toWidget(bridge.provider))
   }
-  return ViewTree(bridge.getChangesOrNull() ?: emptyList())
+  return SnapshotChangeList(bridge.getChangesOrNull() ?: emptyList())
 }
 
-public fun WidgetValue.toViewTree(
+/**
+ * Encode this widget value snapshot into a list of changes which can be serialized and
+ * later applied to the UI to recreate the structure and state.
+ */
+public fun WidgetValue.toChangeList(
   factory: ProtocolBridge.Factory,
   json: Json = Json.Default,
-): ViewTree {
-  return listOf(this).toViewTree(factory, json)
+): SnapshotChangeList {
+  return listOf(this).toChangeList(factory, json)
 }

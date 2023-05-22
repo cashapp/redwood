@@ -95,9 +95,9 @@ class ViewTreesTest {
     )
 
     // Ensure the normal view tree APIs produce the expected list of changes.
-    assertThat(snapshot.toViewTree(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.toChangeList(ExampleSchemaProtocolBridge).changes)
       .isEqualTo(expected)
-    assertThat(snapshot.single().toViewTree(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.single().toChangeList(ExampleSchemaProtocolBridge).changes)
       .isEqualTo(expected)
 
     // Validate that the normal Compose protocol backend produces the same list of changes.

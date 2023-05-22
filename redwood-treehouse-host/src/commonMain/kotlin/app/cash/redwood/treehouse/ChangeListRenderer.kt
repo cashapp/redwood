@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.ViewTree
+import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolNode
@@ -24,12 +24,12 @@ import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.Json
 
 /**
- * Renders a ViewTree snapshot into a target view by creating all of the view tree's widgets and
- * assigning all of its properties.
+ * Renders a [SnapshotChangeList] into a target view by creating all of the widgets and
+ * assigning their properties.
  *
  * The rendered widgets are not interactive.
  */
-public class ViewTreeRenderer<W : Any>(
+public class ChangeListRenderer<W : Any>(
   private val json: Json,
 ) {
   private val refuseAllEvents = EventSink { event ->
@@ -39,7 +39,7 @@ public class ViewTreeRenderer<W : Any>(
   @Suppress("UNCHECKED_CAST")
   public fun render(
     view: TreehouseView,
-    viewTree: ViewTree,
+    changeList: SnapshotChangeList,
   ) {
     view.reset()
     val bridge = ProtocolBridge(
@@ -50,6 +50,6 @@ public class ViewTreeRenderer<W : Any>(
       ) as ProtocolNode.Factory<W>,
       eventSink = refuseAllEvents,
     )
-    bridge.sendChanges(viewTree.changes)
+    bridge.sendChanges(changeList.changes)
   }
 }
