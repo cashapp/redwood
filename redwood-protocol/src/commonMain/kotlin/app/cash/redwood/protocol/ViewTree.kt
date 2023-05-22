@@ -16,7 +16,6 @@
 package app.cash.redwood.protocol
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 /**
  * A snapshot of a view hierarchy, intended for use in tests, debugging, and development tools.
@@ -24,13 +23,4 @@ import kotlinx.serialization.json.Json
 @Serializable
 public class ViewTree(
   public val changes: List<Change>,
-) {
-  public class Builder {
-    public var nextId: Int = Id.Root.value
-    public val json: Json = Json
-
-    public val changes: MutableList<Change> = mutableListOf()
-
-    public fun build(): ViewTree = ViewTree(changes.toList())
-  }
-}
+)

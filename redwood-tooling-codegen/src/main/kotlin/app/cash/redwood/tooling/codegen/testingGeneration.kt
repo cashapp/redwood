@@ -15,11 +15,6 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
-import app.cash.redwood.tooling.codegen.Protocol.Id
-import app.cash.redwood.tooling.codegen.Protocol.ViewTreeBuilder
-import app.cash.redwood.tooling.schema.ProtocolWidget
-import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.SchemaSet
@@ -32,7 +27,6 @@ import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -304,7 +298,8 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   }
 
   // TODO: Add support Modifiers.
-  val addToBuilder = CodeBlock.builder()
+  val toWidgetChildrenBuilder = CodeBlock.builder()
+  val toWidgetPropertiesBuilder = CodeBlock.builder()
 
   for (trait in widget.traits) {
     val type: TypeName
@@ -315,16 +310,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
         addEqualsHashCodeToString(trait)
 
-        if (trait is ProtocolProperty) {
-          addToBuilder.addStatement(
-            "builder.changes += %T(widgetId, %T(%L), builder.json.%M(this.%N))",
-            Protocol.PropertyChange,
-            Protocol.PropertyTag,
-            trait.tag,
-            KotlinxSerialization.encodeToJsonElement,
-            trait.name,
-          )
-        }
+        toWidgetPropertiesBuilder.addStatement("instance.%1N(%1N)", trait.name)
       }
       is Children -> {
         type = Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
@@ -332,6 +318,10 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         addEqualsHashCodeToString(trait)
 
         childrenLists += CodeBlock.of("%N", trait.name)
+
+        toWidgetChildrenBuilder.beginControlFlow("for ((index, child) in %N.withIndex())", trait.name)
+          .addStatement("instance.%N.insert(index, child.toWidget(provider))", trait.name)
+          .endControlFlow()
       }
       is Event -> {
         type = trait.lambdaType
@@ -401,29 +391,19 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .build(),
         )
         .addFunction(
-          FunSpec.builder("addTo")
+          FunSpec.builder("toWidget")
             .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("parentId", Id)
-            .addParameter("childrenTag", ChildrenTag)
-            .addParameter("childrenIndex", INT)
-            .addParameter("builder", ViewTreeBuilder)
-            .addStatement("val widgetId = %T(builder.nextId++)", Id)
-            .addStatement("builder.changes += %T(widgetId, %T(%L))", Protocol.Create, Protocol.WidgetTag, (widget as ProtocolWidget).tag)
+            .addTypeVariable(typeVariableW)
+            .addParameter("provider", RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+            .returns(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
+            .addStatement("val factory = provider as %T", schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
+            .addStatement("val instance = factory.%L.%L()", schema.type.flatName, widget.type.flatName)
             .addStatement("")
-            .beginControlFlow("for (childrenList in childrenLists)")
-            .addStatement("val nextChildrenTag = childrenTag.value + 1")
-            .beginControlFlow("for ((index, child) in childrenList.withIndex())")
-            .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
-            .endControlFlow()
-            .endControlFlow()
+            .addCode(toWidgetChildrenBuilder.build())
             .addStatement("")
-            .addCode(addToBuilder.build())
-            .apply {
-              if (addToBuilder.isNotEmpty()) {
-                addStatement("")
-              }
-            }
-            .addStatement("builder.changes += %T(parentId, childrenTag, widgetId, childrenIndex)", Protocol.ChildrenChangeAdd)
+            .addCode(toWidgetPropertiesBuilder.build())
+            .addStatement("")
+            .addStatement("return instance")
             .build(),
         )
         .build(),
