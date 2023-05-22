@@ -72,11 +72,11 @@ gradlePlugin {
       description = "Redwood schema Compose protocol code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodComposeProtocolGeneratorPlugin"
     }
-    redwoodLayoutModifierGeneratorPlugin {
-      id = "app.cash.redwood.generator.layoutmodifiers"
+    redwoodModifierGeneratorPlugin {
+      id = "app.cash.redwood.generator.modifiers"
       displayName = "Redwood generator (layout modifiers)"
       description = "Redwood schema layout modifier code generation Gradle plugin"
-      implementationClass = "app.cash.redwood.gradle.RedwoodLayoutModifiersGeneratorPlugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodModifiersGeneratorPlugin"
     }
     redwoodTestingGenerator {
       id = "app.cash.redwood.generator.testing"

@@ -22,7 +22,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.widget.addTextChangedListener
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.emojisearch.widget.TextInput
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -45,7 +45,7 @@ internal class ViewTextInput(
   }
 
   override val value get() = textInputLayout
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   init {
     textInputLayout.addView(textInputEditText)

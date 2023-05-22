@@ -15,7 +15,7 @@
  */
 package com.example.redwood.counter.ios
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Button
 import kotlinx.cinterop.ObjCAction
 import platform.UIKit.UIButton
@@ -28,7 +28,7 @@ import platform.objc.sel_registerName
 class IosButton : Button<UIView> {
   override val value = UIButton()
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.setTitle(text, UIControlStateNormal)

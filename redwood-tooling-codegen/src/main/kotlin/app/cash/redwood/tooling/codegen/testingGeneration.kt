@@ -137,9 +137,9 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
 /*
 internal class MutableButton : Button<WidgetValue> {
   public override val value: WidgetValue
-    get() = ButtonValue(layoutModifiers, text, enabled!!, maxLength!!)
+    get() = ButtonValue(modifier, text, enabled!!, maxLength!!)
 
-  public override var layoutModifiers: LayoutModifier = LayoutModifier
+  public override var modifier: Modifier = Modifier
 
   private var text: String? = null
   private var enabled: Boolean? = null
@@ -168,7 +168,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .getter(
               FunSpec.getterBuilder()
                 .addCode("return %T(⇥\n", widgetValueType)
-                .addCode("layoutModifiers = layoutModifiers,\n")
+                .addCode("modifier = modifier,\n")
                 .apply {
                   for (trait in widget.traits) {
                     when (trait) {
@@ -195,10 +195,10 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
+          PropertySpec.builder("modifier", Redwood.Modifier)
             .addModifiers(PUBLIC, OVERRIDE)
             .mutable(true)
-            .initializer("%T", Redwood.LayoutModifier)
+            .initializer("%T", Redwood.Modifier)
             .build(),
         )
         .apply {
@@ -246,7 +246,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
 
 /*
 public class ButtonValue(
-  public override val layoutModifiers: LayoutModifier = LayoutModifier,
+  public override val modifier: Modifier = Modifier,
   public val text: String? = null,
   public val enabled: Boolean = false,
 ) : WidgetValue {
@@ -273,16 +273,16 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .addModifiers(PUBLIC)
     .addSuperinterface(RedwoodTesting.WidgetValue)
     .addProperty(
-      PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
+      PropertySpec.builder("modifier", Redwood.Modifier)
         .addModifiers(PUBLIC, OVERRIDE)
-        .initializer("layoutModifiers")
+        .initializer("modifier")
         .build(),
     )
 
   val constructorBuilder = FunSpec.constructorBuilder()
     .addParameter(
-      ParameterSpec.builder("layoutModifiers", Redwood.LayoutModifier)
-        .defaultValue("%T", Redwood.LayoutModifier)
+      ParameterSpec.builder("modifier", Redwood.Modifier)
+        .defaultValue("%T", Redwood.Modifier)
         .build(),
     )
 
@@ -291,12 +291,12 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
 
   val equalsBuilder = CodeBlock.builder()
     .add("return other is %T·&&⇥\n", widgetValueType)
-    .add("other.layoutModifiers == layoutModifiers", widgetValueType)
+    .add("other.modifier == modifier", widgetValueType)
   val hashCodeBuilder = CodeBlock.builder()
     .add("return %M(⇥\n", Stdlib.listOf)
-    .add("layoutModifiers,\n")
+    .add("modifier,\n")
   val toStringBuilder = StringBuilder()
-    .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
+    .append("${widgetValueType.simpleName}(modifier=${'$'}modifier")
   val addToBuilder = CodeBlock.builder()
 
   for (trait in widget.traits) {
@@ -326,7 +326,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
-    // TODO: Add support LayoutModifiers.
+    // TODO: Add support Modifiers.
 
     if (trait is ProtocolWidget.ProtocolProperty) {
       addToBuilder.addStatement(

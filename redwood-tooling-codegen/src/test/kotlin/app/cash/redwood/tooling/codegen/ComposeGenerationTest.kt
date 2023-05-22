@@ -116,7 +116,7 @@ class ComposeGenerationTest {
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
-      |  layoutModifier: LayoutModifier = LayoutModifier,
+      |  modifier: Modifier = Modifier,
       |  top: @Composable () -> Unit,
       |  bottom: @Composable () -> Unit,
       """.trimMargin(),

@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.compose.testing
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ViewTree
@@ -65,7 +65,7 @@ class WidgetValueTest {
   }
 
   class SimpleWidgetValue(
-    override val layoutModifiers: LayoutModifier = LayoutModifier,
+    override val modifier: Modifier = Modifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
   ) : WidgetValue {
     override fun addTo(parentId: Id, childrenTag: ChildrenTag, childrenIndex: Int, builder: ViewTree.Builder) {

@@ -104,10 +104,10 @@ class FixtureTest {
     )
   }
 
-  @Test fun protocolWithoutLayoutModifiers() {
-    // When no layout modifiers are present, the serialization codegen contains unused things.
+  @Test fun protocolWithoutModifiers() {
+    // When no layout modifier are present, the serialization codegen contains unused things.
     // Ensure that it does not produce warnings (which are set to error in this build).
-    val fixtureDir = File("src/test/fixture/protocol-no-layout-modifiers")
+    val fixtureDir = File("src/test/fixture/protocol-no-modifiers")
     fixtureGradleRunner(fixtureDir).build()
   }
 

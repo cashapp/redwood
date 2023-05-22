@@ -25,8 +25,8 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifierChange
-import app.cash.redwood.protocol.LayoutModifierElement
+import app.cash.redwood.protocol.ModifierChange
+import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
@@ -35,7 +35,7 @@ import kotlin.native.ObjCName
  * Bridges the serialized Redwood protocol back to widgets on the display side.
  *
  * This type will consume [Change]s and apply their [ChildrenChange] operations to the widget tree.
- * [PropertyChange]s and [LayoutModifierChange]s are forwarded to their respective widgets.
+ * [PropertyChange]s and [ModifierChange]s are forwarded to their respective widgets.
  * Events from widgets are forwarded to [eventSink].
  */
 @ObjCName("ProtocolBridge", exact = true)
@@ -78,9 +78,9 @@ public class ProtocolBridge<W : Any>(
             }
           }
         }
-        is LayoutModifierChange -> {
+        is ModifierChange -> {
           val node = node(id)
-          node.updateLayoutModifier(change.elements)
+          node.updateModifier(change.elements)
         }
         is PropertyChange -> {
           node(change.id).apply(change, eventSink)
@@ -97,7 +97,7 @@ public class ProtocolBridge<W : Any>(
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
 ) : ProtocolNode<W> {
-  override fun updateLayoutModifier(elements: List<LayoutModifierElement>) {
+  override fun updateModifier(elements: List<ModifierElement>) {
     throw AssertionError("unexpected: $elements")
   }
 

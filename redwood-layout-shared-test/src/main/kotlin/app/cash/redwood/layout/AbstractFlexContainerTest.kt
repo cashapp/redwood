@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
@@ -30,7 +30,7 @@ import org.junit.Test
 
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(text: String, layoutModifier: LayoutModifier = LayoutModifier): Widget<T>
+  abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>)
 
   @Test fun shortRow() {

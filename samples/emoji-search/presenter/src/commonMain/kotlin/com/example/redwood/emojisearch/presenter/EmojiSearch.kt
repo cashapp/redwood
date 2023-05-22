@@ -23,7 +23,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
@@ -58,7 +58,7 @@ interface ColumnProvider {
     items: List<T>,
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
-    layoutModifier: LayoutModifier,
+    modifier: Modifier,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -112,7 +112,7 @@ fun EmojiSearch(
       items = filteredEmojis,
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
-      layoutModifier = LayoutModifier.grow(1.0)
+      modifier = Modifier.grow(1.0)
     ) { image ->
       Row(
         width = Constraint.Fill,
@@ -120,7 +120,7 @@ fun EmojiSearch(
       ) {
         Image(
           url = image.url,
-          layoutModifier = LayoutModifier.margin(Margin(8.dp)),
+          modifier = Modifier.margin(Margin(8.dp)),
         )
         Text(text = image.label)
       }

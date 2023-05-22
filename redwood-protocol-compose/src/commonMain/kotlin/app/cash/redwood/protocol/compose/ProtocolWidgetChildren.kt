@@ -51,6 +51,6 @@ internal class ProtocolWidgetChildren(
     state.append(ChildrenChange.Move(id, tag, fromIndex, toIndex, count))
   }
 
-  override fun onLayoutModifierUpdated() {
+  override fun onModifierUpdated() {
   }
 }

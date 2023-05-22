@@ -22,7 +22,7 @@ import android.view.View
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
@@ -47,14 +47,14 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
 
   override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
 
-  override fun widget(text: String, layoutModifier: LayoutModifier) = object : Widget<View> {
+  override fun widget(text: String, modifier: Modifier) = object : Widget<View> {
     override val value = TextView(paparazzi.context).apply {
       background = ColorDrawable(Color.GREEN)
       textSize = 18f
       setTextColor(Color.BLACK)
       this.text = text
     }
-    override var layoutModifiers = layoutModifier
+    override var modifier = modifier
   }
 
   override fun verifySnapshot(container: TestFlexContainer<View>) {

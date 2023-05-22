@@ -27,7 +27,7 @@ import androidx.core.view.doOnDetach
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.MutableListChildren
@@ -61,7 +61,7 @@ internal class Items<VH : RecyclerView.ViewHolder>(
     adapter.notifyItemRangeRemoved(itemsBefore + index, count)
   }
 
-  override fun onLayoutModifierUpdated() {
+  override fun onModifierUpdated() {
   }
 }
 
@@ -87,7 +87,7 @@ internal open class ViewLazyListImpl(
 
   internal val recyclerView: RecyclerView by lazy { recyclerViewFactory() }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
   private val adapter = LazyContentItemListAdapter()
@@ -104,7 +104,7 @@ internal open class ViewLazyListImpl(
       setHasFixedSize(true)
       layoutManager = linearLayoutManager
 
-      // TODO: sizing should be controlled by LayoutModifiers
+      // TODO: sizing should be controlled by Modifiers
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
       addOnScrollListener(

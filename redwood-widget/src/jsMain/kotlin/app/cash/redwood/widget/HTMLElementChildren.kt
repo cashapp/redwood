@@ -61,7 +61,7 @@ public class HTMLElementChildren(
     }
   }
 
-  override fun onLayoutModifierUpdated() {
+  override fun onModifierUpdated() {
     // If this function is being invoked we are guaranteed to have at least one child.
 
     val element = parent.children[0] as HTMLElement

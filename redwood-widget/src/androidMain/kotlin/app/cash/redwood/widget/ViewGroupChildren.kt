@@ -52,7 +52,7 @@ public class ViewGroupChildren(
     parent.removeViews(index, count)
   }
 
-  override fun onLayoutModifierUpdated() {
+  override fun onModifierUpdated() {
     parent.requestLayout()
   }
 }

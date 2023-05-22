@@ -29,10 +29,10 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
   when (type) {
     Compose -> {
       generateProtocolBridge(this).writeTo(destination)
-      generateComposeProtocolLayoutModifierSerialization(this).writeTo(destination)
+      generateComposeProtocolModifierSerialization(this).writeTo(destination)
       for (dependency in all) {
         generateProtocolWidgetFactory(dependency, host = schema).writeTo(destination)
-        generateProtocolLayoutModifierSerializers(dependency, host = schema)?.writeTo(destination)
+        generateProtocolModifierSerializers(dependency, host = schema)?.writeTo(destination)
         for (widget in dependency.widgets) {
           generateProtocolWidget(dependency, widget, host = schema).writeTo(destination)
         }
@@ -40,9 +40,9 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
     }
     Widget -> {
       generateProtocolNodeFactory(this).writeTo(destination)
-      generateWidgetProtocolLayoutModifierSerialization(this).writeTo(destination)
+      generateWidgetProtocolModifierSerialization(this).writeTo(destination)
       for (dependency in all) {
-        generateProtocolLayoutModifierImpls(dependency, host = schema)?.writeTo(destination)
+        generateProtocolModifierImpls(dependency, host = schema)?.writeTo(destination)
         for (widget in dependency.widgets) {
           generateProtocolNode(dependency, widget, host = schema).writeTo(destination)
         }

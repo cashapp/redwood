@@ -13,7 +13,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.testSchema.widget
-        api projects.testSchema.layoutModifiers
+        api projects.testSchema.modifiers
       }
     }
   }

@@ -17,7 +17,7 @@
 
 package com.example.redwood.emojisearch.ios
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
@@ -50,7 +50,7 @@ fun exposedTypes(
 
 fun byteStringOf(data: NSData): ByteString = data.toByteString()
 
-fun layoutModifier(): LayoutModifier = LayoutModifier
+fun modifier(): Modifier = Modifier
 
 fun <A : AppService> bindWhenReady(
   content: Content,

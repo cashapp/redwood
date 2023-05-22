@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
@@ -33,7 +33,7 @@ internal class UIViewSpacer : Spacer<UIView> {
 
   override val value: UIView get() = view
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
     this.width = with(Density.Default) { width.toPx() }

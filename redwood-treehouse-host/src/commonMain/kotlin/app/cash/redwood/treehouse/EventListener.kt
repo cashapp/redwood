@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifierTag
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Call
@@ -122,11 +122,11 @@ public open class EventListener {
   }
 
   /**
-   * Invoked on a request to create an unknown layout modifier [tag].
+   * Invoked on a request to create an unknown modifier [tag].
    */
-  public open fun onUnknownLayoutModifier(
+  public open fun onUnknownModifier(
     app: TreehouseApp<*>,
-    tag: LayoutModifierTag,
+    tag: ModifierTag,
   ) {
   }
 

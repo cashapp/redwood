@@ -16,7 +16,7 @@
 package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.tooling.schema.Deprecation.Level
-import app.cash.redwood.tooling.schema.LayoutModifier.Property
+import app.cash.redwood.tooling.schema.Modifier.Property
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
@@ -46,7 +46,7 @@ internal data class ParsedProtocolSchema(
   override val documentation: String? = null,
   override val scopes: List<FqType> = emptyList(),
   override val widgets: List<ParsedProtocolWidget> = emptyList(),
-  override val layoutModifiers: List<ParsedProtocolLayoutModifier> = emptyList(),
+  override val modifier: List<ParsedProtocolModifier> = emptyList(),
   @SerialName("dependencies")
   override val taggedDependencies: Map<Int, FqType> = emptyMap(),
 ) : ProtocolSchema {
@@ -80,8 +80,8 @@ internal data class ParsedProtocolSchema(
         widgets = schema.widgets.map { widget ->
           widget.copy(tag = tagOffset + widget.tag)
         },
-        layoutModifiers = schema.layoutModifiers.map { layoutModifier ->
-          layoutModifier.copy(tag = tagOffset + layoutModifier.tag)
+        modifier = schema.modifier.map { modifier ->
+          modifier.copy(tag = tagOffset + modifier.tag)
         },
       )
     }
@@ -152,17 +152,17 @@ internal data class ParsedProtocolChildren(
 ) : ProtocolChildren
 
 @Serializable
-internal data class ParsedProtocolLayoutModifier(
+internal data class ParsedProtocolModifier(
   override val tag: Int,
   override val scopes: List<FqType>,
   override val type: FqType,
   override val deprecation: ParsedDeprecation? = null,
   override val documentation: String? = null,
-  override val properties: List<ParsedProtocolLayoutModifierProperty> = emptyList(),
-) : ProtocolLayoutModifier
+  override val properties: List<ParsedProtocolModifierProperty> = emptyList(),
+) : ProtocolModifier
 
 @Serializable
-internal data class ParsedProtocolLayoutModifierProperty(
+internal data class ParsedProtocolModifierProperty(
   override val name: String,
   override val type: FqType,
   override val isSerializable: Boolean,

@@ -16,8 +16,7 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.schema.LayoutModifier
-import app.cash.redwood.ui.Margin
+import app.cash.redwood.schema.Modifier
 
 /**
  * Configure how much of the remaining space in the layout should be assigned to this item.
@@ -26,7 +25,7 @@ import app.cash.redwood.ui.Margin
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow
  */
-@LayoutModifier(1, RowScope::class, ColumnScope::class)
+@Modifier(1, RowScope::class, ColumnScope::class)
 public data class Grow(
   val value: Double,
 )
@@ -38,7 +37,7 @@ public data class Grow(
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink
  */
-@LayoutModifier(2, RowScope::class, ColumnScope::class)
+@Modifier(2, RowScope::class, ColumnScope::class)
 public data class Shrink(
   val value: Double,
 )
@@ -46,15 +45,15 @@ public data class Shrink(
 /**
  * Add additional space around the item.
  */
-@LayoutModifier(3, RowScope::class, ColumnScope::class)
+@Modifier(3, RowScope::class, ColumnScope::class)
 public data class Margin(
-  val margin: Margin,
+  val margin: app.cash.redwood.ui.Margin,
 )
 
 /**
  * Set the alignment for an item along the horizontal axis.
  */
-@LayoutModifier(4, ColumnScope::class)
+@Modifier(4, ColumnScope::class)
 public data class HorizontalAlignment(
   val alignment: CrossAxisAlignment,
 )
@@ -62,7 +61,7 @@ public data class HorizontalAlignment(
 /**
  * Set the alignment for an item along the vertical axis.
  */
-@LayoutModifier(5, RowScope::class)
+@Modifier(5, RowScope::class)
 public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,
 )

@@ -34,9 +34,9 @@ internal object Protocol {
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
-  val LayoutModifierChange = ClassName("app.cash.redwood.protocol", "LayoutModifierChange")
-  val LayoutModifierElement = ClassName("app.cash.redwood.protocol", "LayoutModifierElement")
-  val LayoutModifierTag = ClassName("app.cash.redwood.protocol", "LayoutModifierTag")
+  val ModifierChange = ClassName("app.cash.redwood.protocol", "ModifierChange")
+  val ModifierElement = ClassName("app.cash.redwood.protocol", "ModifierElement")
+  val ModifierTag = ClassName("app.cash.redwood.protocol", "ModifierTag")
   val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
   val ViewTree = ClassName("app.cash.redwood.protocol", "ViewTree")
@@ -61,8 +61,8 @@ internal object WidgetProtocol {
 }
 
 internal object Redwood {
-  val LayoutModifier = ClassName("app.cash.redwood", "LayoutModifier")
-  val LayoutModifierElement = LayoutModifier.nestedClass("Element")
+  val Modifier = ClassName("app.cash.redwood", "Modifier")
+  val ModifierElement = Modifier.nestedClass("Element")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
   val OptInToRedwoodCodegenApi = AnnotationSpec.builder(Stdlib.OptIn)

@@ -33,7 +33,7 @@ public value class EventTag(public val value: Int)
 
 @JvmInline
 @Serializable
-public value class LayoutModifierTag(public val value: Int)
+public value class ModifierTag(public val value: Int)
 
 @JvmInline
 @Serializable

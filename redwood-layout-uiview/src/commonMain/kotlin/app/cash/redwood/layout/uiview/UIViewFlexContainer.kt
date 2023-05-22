@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
@@ -58,7 +58,7 @@ internal class UIViewFlexContainer(
 
   override val children = UIViewChildren(value)
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Constraint) {
     container.fillWidth = width == Constraint.Fill
@@ -164,7 +164,7 @@ internal class UIViewFlexContainer(
         container.items += newFlexItem(
           direction = direction,
           density = Density.Default,
-          layoutModifiers = widget.layoutModifiers,
+          modifier = widget.modifier,
           measurable = UIViewMeasurable(widget.value),
         )
       }

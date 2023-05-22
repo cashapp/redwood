@@ -28,7 +28,7 @@ import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifierChange
+import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
@@ -81,15 +81,15 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         Create(Id(1), WidgetTag(1) /* row */),
-        LayoutModifierChange(Id(1)),
+        ModifierChange(Id(1)),
         Create(Id(2), WidgetTag(3) /* text */),
-        LayoutModifierChange(Id(2)),
+        ModifierChange(Id(2)),
         PropertyChange(Id(2), PropertyTag(1) /* text */, JsonPrimitive("hey")),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
         Create(Id(3), WidgetTag(1) /* row */),
-        LayoutModifierChange(Id(3)),
+        ModifierChange(Id(3)),
         Create(Id(4), WidgetTag(3) /* text */),
-        LayoutModifierChange(Id(4)),
+        ModifierChange(Id(4)),
         PropertyChange(Id(4), PropertyTag(1) /* text */, JsonPrimitive("hello")),
         ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
@@ -118,7 +118,7 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         Create(Id(1), WidgetTag(4) /* button */),
-        LayoutModifierChange(Id(1)),
+        ModifierChange(Id(1)),
         PropertyChange(Id(1), PropertyTag(1) /* text */, JsonPrimitive("state: 0")),
         PropertyChange(Id(1), PropertyTag(2) /* onClick */, JsonPrimitive(true)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),

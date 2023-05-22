@@ -17,7 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.LayoutModifierElement
+import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
@@ -34,14 +34,14 @@ public interface ProtocolNode<W : Any> {
 
   /**
    * Record that this node's [widget] has been inserted into [container].
-   * Updates to this node's layout modifiers will notify [container].
+   * Updates to this node's layout modifier will notify [container].
    * This function may only be invoked once on each instance.
    */
   public fun attachTo(container: Widget.Children<W>)
 
   public fun apply(change: PropertyChange, eventSink: EventSink)
 
-  public fun updateLayoutModifier(elements: List<LayoutModifierElement>)
+  public fun updateModifier(elements: List<ModifierElement>)
 
   /**
    * Return one of this node's children groups by its [tag].
