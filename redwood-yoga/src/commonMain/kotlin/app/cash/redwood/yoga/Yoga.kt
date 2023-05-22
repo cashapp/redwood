@@ -1023,40 +1023,6 @@ object Yoga {
     }
   }
 
-  fun YGNodeSetChildrenInternal(owner: YGNode?, children: ArrayList<YGNode>) {
-    if (owner == null) {
-      return
-    }
-    if (children.size == 0) {
-      if (YGNodeGetChildCount(owner) > 0) {
-        for (child in owner.getChildren()) {
-          child.setLayout(null)
-          child.setOwner(null)
-        }
-        owner.getChildren().clear()
-        owner.markDirtyAndPropogate()
-      }
-    } else {
-      if (YGNodeGetChildCount(owner) > 0) {
-        for (oldChild in owner.getChildren()) {
-
-          //TODO: What is this??
-          //if (std::find (children.iterator(), children.end(), oldChild) ==children.end())
-          //{
-          //oldChild.setLayout(YGLayout());
-          oldChild.setLayout(null)
-          oldChild.setOwner(null)
-          //}
-        }
-      }
-      owner.setChildren(children)
-      for (child in children) {
-        child.setOwner(owner)
-      }
-      owner.markDirtyAndPropogate()
-    }
-  }
-
   fun <T : Enum<T>> updateStyle(
     node: YGNode,
     enumClazz: KClass<T>,
