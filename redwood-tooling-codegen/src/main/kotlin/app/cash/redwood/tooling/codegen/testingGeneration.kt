@@ -297,7 +297,6 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     toStringProperties += "${trait.name}=\$${trait.name}"
   }
 
-  // TODO: Add support Modifiers.
   val toWidgetChildrenBuilder = CodeBlock.builder()
   val toWidgetPropertiesBuilder = CodeBlock.builder()
 
@@ -401,6 +400,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addStatement("")
             .addCode(toWidgetChildrenBuilder.build())
             .addStatement("")
+            .addStatement("instance.modifier = modifier")
             .addCode(toWidgetPropertiesBuilder.build())
             .addStatement("")
             .addStatement("return instance")
