@@ -1,22 +1,13 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.generator.widget.protocol'
+apply plugin: 'app.cash.redwood.generator.modifiers'
 
 kotlin {
   KmpTargets.addAllTargets(project)
 
   // Ensure our codegen correctly works in explicit API mode.
   explicitApi()
-
-  sourceSets {
-    commonMain {
-      dependencies {
-        api projects.testSchema.widget
-        api projects.testSchema.layoutModifiers
-      }
-    }
-  }
 
   targets.all {
     compilations.all {

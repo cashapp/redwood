@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.widget.testing
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -145,7 +145,7 @@ public abstract class AbstractWidgetChildrenTest<W : Any> {
       index = index,
       widget = object : Widget<W> {
         override val value: W = widget
-        override var layoutModifiers: LayoutModifier = LayoutModifier
+        override var modifier: Modifier = Modifier
       },
     )
   }

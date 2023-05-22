@@ -15,10 +15,6 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
-import app.cash.redwood.tooling.codegen.Protocol.Id
-import app.cash.redwood.tooling.codegen.Protocol.ViewTreeBuilder
-import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.SchemaSet
@@ -31,7 +27,6 @@ import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
@@ -42,8 +37,10 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.joinToCode
 
 /*
 suspend fun <R> ExampleTester(
@@ -137,9 +134,9 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
 /*
 internal class MutableButton : Button<WidgetValue> {
   public override val value: WidgetValue
-    get() = ButtonValue(layoutModifiers, text, enabled!!, maxLength!!)
+    get() = ButtonValue(modifier, text, enabled!!, maxLength!!)
 
-  public override var layoutModifiers: LayoutModifier = LayoutModifier
+  public override var modifier: Modifier = Modifier
 
   private var text: String? = null
   private var enabled: Boolean? = null
@@ -168,7 +165,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .getter(
               FunSpec.getterBuilder()
                 .addCode("return %T(⇥\n", widgetValueType)
-                .addCode("layoutModifiers = layoutModifiers,\n")
+                .addCode("modifier = modifier,\n")
                 .apply {
                   for (trait in widget.traits) {
                     when (trait) {
@@ -195,10 +192,10 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
+          PropertySpec.builder("modifier", Redwood.Modifier)
             .addModifiers(PUBLIC, OVERRIDE)
             .mutable(true)
-            .initializer("%T", Redwood.LayoutModifier)
+            .initializer("%T", Redwood.Modifier)
             .build(),
         )
         .apply {
@@ -246,7 +243,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
 
 /*
 public class ButtonValue(
-  public override val layoutModifiers: LayoutModifier = LayoutModifier,
+  public override val modifier: Modifier = Modifier,
   public val text: String? = null,
   public val enabled: Boolean = false,
 ) : WidgetValue {
@@ -273,68 +270,64 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     .addModifiers(PUBLIC)
     .addSuperinterface(RedwoodTesting.WidgetValue)
     .addProperty(
-      PropertySpec.builder("layoutModifiers", Redwood.LayoutModifier)
+      PropertySpec.builder("modifier", Redwood.Modifier)
         .addModifiers(PUBLIC, OVERRIDE)
-        .initializer("layoutModifiers")
+        .initializer("modifier")
         .build(),
     )
 
   val constructorBuilder = FunSpec.constructorBuilder()
     .addParameter(
-      ParameterSpec.builder("layoutModifiers", Redwood.LayoutModifier)
-        .defaultValue("%T", Redwood.LayoutModifier)
+      ParameterSpec.builder("modifier", Redwood.Modifier)
+        .defaultValue("%T", Redwood.Modifier)
         .build(),
     )
 
-  val childrenListsBuilder = CodeBlock.builder()
-    .add("return %M(⇥\n", Stdlib.listOf)
+  val childrenLists = mutableListOf<CodeBlock>()
+  val equalsComparisons = mutableListOf(
+    CodeBlock.of("other is %T", widgetValueType),
+    CodeBlock.of("other.modifier == modifier"),
+  )
+  val hashCodeProperties = mutableListOf(CodeBlock.of("modifier"))
+  val toStringProperties = mutableListOf("modifier=\$modifier")
 
-  val equalsBuilder = CodeBlock.builder()
-    .add("return other is %T·&&⇥\n", widgetValueType)
-    .add("other.layoutModifiers == layoutModifiers", widgetValueType)
-  val hashCodeBuilder = CodeBlock.builder()
-    .add("return %M(⇥\n", Stdlib.listOf)
-    .add("layoutModifiers,\n")
-  val toStringBuilder = StringBuilder()
-    .append("${widgetValueType.simpleName}(layoutModifiers=${'$'}layoutModifiers")
-  val addToBuilder = CodeBlock.builder()
-    .addStatement("val widgetId = %T(builder.nextId++)", Protocol.Id)
-    .addStatement("val widgetTag = %T(%L)", Protocol.WidgetTag, (widget as ProtocolWidget).tag)
-    .addStatement(
-      """
-      |builder.changes += %T(
-      |  widgetId,
-      |  widgetTag,
-      |)
-      |
-      """.trimMargin(),
-      Protocol.Create,
-    )
-    .addStatement(
-      """
-      |builder.changes += %T(
-      |  parentId,
-      |  childrenTag,
-      |  widgetId,
-      |  childrenIndex,
-      |)
-      |
-      """.trimMargin(),
-      Protocol.ChildrenChangeAdd,
-    )
+  fun addEqualsHashCodeToString(trait: Widget.Trait) {
+    equalsComparisons += CodeBlock.of("other.%1N == %1N", trait.name)
+    hashCodeProperties += CodeBlock.of("%N", trait.name)
+    toStringProperties += "${trait.name}=\$${trait.name}"
+  }
+
+  val toWidgetChildrenBuilder = CodeBlock.builder()
+  val toWidgetPropertiesBuilder = CodeBlock.builder()
 
   for (trait in widget.traits) {
-    val type = when (trait) {
-      is Property -> trait.type.asTypeName()
-      is Event -> trait.lambdaType
-      is Children -> Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
-      else -> throw AssertionError()
-    }
+    val type: TypeName
+    val defaultExpression: CodeBlock?
+    when (trait) {
+      is Property -> {
+        type = trait.type.asTypeName()
+        defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
+        addEqualsHashCodeToString(trait)
 
-    val defaultExpression = when (trait) {
-      is Property -> trait.defaultExpression?.let { CodeBlock.of(it) }
-      is Event -> trait.defaultExpression?.let { CodeBlock.of(it) }
-      is Children -> CodeBlock.of("%M()", Stdlib.listOf)
+        toWidgetPropertiesBuilder.addStatement("instance.%1N(%1N)", trait.name)
+      }
+      is Children -> {
+        type = Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
+        defaultExpression = CodeBlock.of("%M()", Stdlib.listOf)
+        addEqualsHashCodeToString(trait)
+
+        childrenLists += CodeBlock.of("%N", trait.name)
+
+        toWidgetChildrenBuilder.beginControlFlow("for ((index, child) in %N.withIndex())", trait.name)
+          .addStatement("instance.%N.insert(index, child.toWidget(provider))", trait.name)
+          .endControlFlow()
+      }
+      is Event -> {
+        type = trait.lambdaType
+        defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
+        // Events are omitted from equals/hashCode/toString.
+      }
+
       else -> throw AssertionError()
     }
 
@@ -349,55 +342,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .initializer("%N", trait.name)
         .build(),
     )
-
-    // TODO: Add support LayoutModifiers.
-
-    if (trait is ProtocolWidget.ProtocolProperty) {
-      addToBuilder.addStatement(
-        "builder.changes += %T(widgetId, %T(%L), builder.json.%M(this.%N))",
-        Protocol.PropertyChange,
-        Protocol.PropertyTag,
-        trait.tag,
-        KotlinxSerialization.encodeToJsonElement,
-        trait.name,
-      )
-    }
-
-    when (trait) {
-      is Property, is Children -> {
-        if (trait is Children) {
-          childrenListsBuilder.add("%N,\n", trait.name)
-        }
-
-        equalsBuilder.add("·&&\n")
-        equalsBuilder.add("other.%N == %N", trait.name, trait.name)
-
-        hashCodeBuilder.add("%N,\n", trait.name)
-
-        toStringBuilder.append(", ${trait.name}=${'$'}${trait.name}")
-      }
-
-      is Event -> Unit // Events are omitted from equals/hashCode/toString.
-
-      else -> throw AssertionError()
-    }
   }
-
-  childrenListsBuilder.add("⇤)\n")
-
-  equalsBuilder.add("⇤\n")
-
-  hashCodeBuilder.add("⇤).hashCode()\n")
-
-  toStringBuilder.append(")")
-
-  addToBuilder
-    .beginControlFlow("for (childrenList in childrenLists)")
-    .addStatement("val nextChildrenTag = childrenTag.value + 1")
-    .beginControlFlow("for ((index, child) in childrenList.withIndex())")
-    .addStatement("child.addTo(widgetId, %T(nextChildrenTag), index, builder)", ChildrenTag)
-    .endControlFlow()
-    .endControlFlow()
 
   return FileSpec.builder(widgetValueType)
     .addType(
@@ -411,7 +356,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
-                .addCode(childrenListsBuilder.build())
+                .addStatement("return %M(%L)", Stdlib.listOf, childrenLists.joinToCode())
                 .build(),
             )
             .build(),
@@ -421,31 +366,44 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("other", ANY.copy(nullable = true))
             .returns(BOOLEAN)
-            .addCode(equalsBuilder.build())
+            .addStatement("return %L", equalsComparisons.joinToCode(" &&\n"))
             .build(),
         )
         .addFunction(
           FunSpec.builder("hashCode")
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(Int::class)
-            .addCode(hashCodeBuilder.build())
+            .addStatement("return %M(%L).hashCode()", Stdlib.listOf, hashCodeProperties.joinToCode())
             .build(),
         )
         .addFunction(
           FunSpec.builder("toString")
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(String::class)
-            .addCode("return %P", toStringBuilder.toString())
+            .addStatement(
+              "return %P",
+              toStringProperties.joinToString(
+                prefix = "${widgetValueType.simpleName}(",
+                postfix = ")",
+              ),
+            )
             .build(),
         )
         .addFunction(
-          FunSpec.builder("addTo")
+          FunSpec.builder("toWidget")
             .addModifiers(PUBLIC, OVERRIDE)
-            .addParameter("parentId", Id)
-            .addParameter("childrenTag", ChildrenTag)
-            .addParameter("childrenIndex", INT)
-            .addParameter("builder", ViewTreeBuilder)
-            .addCode(addToBuilder.build())
+            .addTypeVariable(typeVariableW)
+            .addParameter("provider", RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+            .returns(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
+            .addStatement("val factory = provider as %T", schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
+            .addStatement("val instance = factory.%L.%L()", schema.type.flatName, widget.type.flatName)
+            .addStatement("")
+            .addCode(toWidgetChildrenBuilder.build())
+            .addStatement("")
+            .addStatement("instance.modifier = modifier")
+            .addCode(toWidgetPropertiesBuilder.build())
+            .addStatement("")
+            .addStatement("return instance")
             .build(),
         )
         .build(),

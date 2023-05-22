@@ -62,7 +62,7 @@ public class ApiMerger {
       return RedwoodApi(
         version = 1U,
         widgets = mergeItems({ it.widgets }, { it.tag }, { it.merge() }),
-        layoutModifiers = mergeItems({ it.layoutModifiers }, { it.tag }, { it.merge() }),
+        modifier = mergeItems({ it.modifier }, { it.tag }, { it.merge() }),
       )
     }
 
@@ -81,16 +81,16 @@ public class ApiMerger {
       )
     }
 
-    private fun List<RedwoodLayoutModifier>.merge(): RedwoodLayoutModifier {
-      return RedwoodLayoutModifier(
+    private fun List<RedwoodModifier>.merge(): RedwoodModifier {
+      return RedwoodModifier(
         tag = first().tag,
         since = maxOf { it.since },
         properties = mergeItems({ it.properties }, { it.tag }, { it.merge() }),
       )
     }
 
-    private fun List<RedwoodLayoutModifierProperty>.merge(): RedwoodLayoutModifierProperty {
-      return RedwoodLayoutModifierProperty(
+    private fun List<RedwoodModifierProperty>.merge(): RedwoodModifierProperty {
+      return RedwoodModifierProperty(
         tag = first().tag,
         since = maxOf { it.since },
       )

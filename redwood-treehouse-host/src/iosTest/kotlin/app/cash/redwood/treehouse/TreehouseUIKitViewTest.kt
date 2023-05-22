@@ -15,10 +15,11 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
@@ -135,7 +136,7 @@ class TreehouseUIKitViewTest {
 
   private fun viewWidget(view: UIView) = object : Widget<UIView> {
     override val value: UIView get() = view
-    override var layoutModifiers: LayoutModifier = LayoutModifier
+    override var modifier: Modifier = Modifier
   }
 
   private val throwingWidgetSystem =

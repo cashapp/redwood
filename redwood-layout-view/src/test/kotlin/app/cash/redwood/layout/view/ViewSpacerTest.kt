@@ -22,7 +22,7 @@ import android.widget.LinearLayout.VERTICAL
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractSpacerTest
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.dp
@@ -46,9 +46,9 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
   override fun widget(
     width: Int,
     height: Int,
-    layoutModifier: LayoutModifier,
+    modifier: Modifier,
   ): Spacer<View> = ViewSpacer(paparazzi.context).apply {
-    layoutModifiers = layoutModifier
+    this.modifier = modifier
     width(width.dp)
     height(height.dp)
   }

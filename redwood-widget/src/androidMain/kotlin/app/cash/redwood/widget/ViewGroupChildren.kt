@@ -53,7 +53,7 @@ public class ViewGroupChildren(
     parent.removeViews(index, count)
   }
 
-  override fun onLayoutModifierUpdated() {
+  override fun onModifierUpdated() {
 //    val widget = _widgets[index]
 //    widget.value.invalidate()
 //    widget.value.requestLayout()

@@ -19,6 +19,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.ui.HostConfiguration
 import kotlinx.coroutines.flow.StateFlow
 
 // Inline at callsite once https://github.com/Kotlin/kotlinx.serialization/issues/1454 is fixed.

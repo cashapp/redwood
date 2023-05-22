@@ -15,14 +15,14 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifierElement
-import app.cash.redwood.protocol.LayoutModifierTag
+import app.cash.redwood.protocol.ModifierElement
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
@@ -75,7 +75,7 @@ class ProtocolNodeFactoryTest {
     assertThat(handler.events.single()).isEqualTo("Unknown widget 345432")
   }
 
-  @Test fun layoutModifierUsesSerializerModule() {
+  @Test fun modifierUsesSerializerModule() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
@@ -93,10 +93,10 @@ class ProtocolNodeFactoryTest {
     )
     val textInput = factory.create(WidgetTag(5))!!
 
-    textInput.updateLayoutModifier(
+    textInput.updateModifier(
       listOf(
-        LayoutModifierElement(
-          tag = LayoutModifierTag(3),
+        ModifierElement(
+          tag = ModifierTag(3),
           value = buildJsonObject {
             put("customType", JsonPrimitive("PT10S"))
           },
@@ -105,11 +105,11 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.layoutModifiers).isEqualTo(LayoutModifier.customType(10.seconds))
+      assertThat(recordingTextInput.modifier).isEqualTo(Modifier.customType(10.seconds))
     }
   }
 
-  @Test fun layoutModifierDeserializationHonorsDefaultExpressions() {
+  @Test fun modifierDeserializationHonorsDefaultExpressions() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
@@ -127,10 +127,10 @@ class ProtocolNodeFactoryTest {
     )
     val textInput = factory.create(WidgetTag(5))!!
 
-    textInput.updateLayoutModifier(
+    textInput.updateModifier(
       listOf(
-        LayoutModifierElement(
-          tag = LayoutModifierTag(5),
+        ModifierElement(
+          tag = ModifierTag(5),
           value = buildJsonObject {
             put("customType", JsonPrimitive("PT10S"))
           },
@@ -139,8 +139,8 @@ class ProtocolNodeFactoryTest {
     )
 
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.layoutModifiers).isEqualTo(
-        LayoutModifier.customTypeWithDefault(
+      assertThat(recordingTextInput.modifier).isEqualTo(
+        Modifier.customTypeWithDefault(
           10.seconds,
           "sup",
         ),
@@ -148,7 +148,7 @@ class ProtocolNodeFactoryTest {
     }
   }
 
-  @Test fun unknownLayoutModifierThrowsDefault() {
+  @Test fun unknownModifierThrowsDefault() {
     val factory = ExampleSchemaProtocolNodeFactory(
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
@@ -158,10 +158,10 @@ class ProtocolNodeFactoryTest {
     val button = factory.create(WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
-      button.updateLayoutModifier(
+      button.updateModifier(
         listOf(
-          LayoutModifierElement(
-            tag = LayoutModifierTag(345432),
+          ModifierElement(
+            tag = ModifierTag(345432),
             value = JsonObject(mapOf()),
           ),
         ),
@@ -170,7 +170,7 @@ class ProtocolNodeFactoryTest {
     assertThat(t).hasMessage("Unknown layout modifier tag 345432")
   }
 
-  @Test fun unknownLayoutModifierCallsHandler() {
+  @Test fun unknownModifierCallsHandler() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
@@ -190,17 +190,17 @@ class ProtocolNodeFactoryTest {
     )
 
     val textInput = factory.create(WidgetTag(5))!!
-    textInput.updateLayoutModifier(
+    textInput.updateModifier(
       listOf(
-        LayoutModifierElement(
-          tag = LayoutModifierTag(345432),
+        ModifierElement(
+          tag = ModifierTag(345432),
           value = buildJsonArray {
             add(JsonPrimitive(345432))
             add(JsonObject(mapOf()))
           },
         ),
-        LayoutModifierElement(
-          tag = LayoutModifierTag(2),
+        ModifierElement(
+          tag = ModifierTag(2),
           value = buildJsonObject { put("value", JsonPrimitive("hi")) },
         ),
       ),
@@ -208,10 +208,10 @@ class ProtocolNodeFactoryTest {
 
     assertThat(handler.events.single()).isEqualTo("Unknown layout modifier 345432")
 
-    // Ensure only the invalid LayoutModifier was discarded and not all of them.
+    // Ensure only the invalid Modifier was discarded and not all of them.
     with(object : TestScope {}) {
-      assertThat(recordingTextInput.layoutModifiers).isEqualTo(
-        LayoutModifier.accessibilityDescription(
+      assertThat(recordingTextInput.modifier).isEqualTo(
+        Modifier.accessibilityDescription(
           "hi",
         ),
       )
@@ -335,7 +335,7 @@ class ProtocolNodeFactoryTest {
 
   class RecordingTextInput : TextInput<Nothing> {
     override val value get() = TODO()
-    override var layoutModifiers: LayoutModifier = LayoutModifier
+    override var modifier: Modifier = Modifier
 
     var text: String? = null
       private set

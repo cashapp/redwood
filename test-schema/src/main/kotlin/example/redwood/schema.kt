@@ -18,7 +18,7 @@ package example.redwood
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
-import app.cash.redwood.schema.LayoutModifier
+import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
@@ -85,30 +85,30 @@ public object TestScope
 
 public object SecondaryTestScope
 
-@LayoutModifier(1, RowScope::class)
+@Modifier(1, RowScope::class)
 public data class RowVerticalAlignment(
   /** -1 for top, 0 for middle, 1 for bottom. */
   val direction: Int,
 )
 
-@LayoutModifier(2, TestScope::class)
+@Modifier(2, TestScope::class)
 public data class AccessibilityDescription(
   val value: String,
 )
 
-@LayoutModifier(3, TestScope::class)
+@Modifier(3, TestScope::class)
 public data class CustomType(
   val customType: Duration,
 )
 
-@LayoutModifier(4, TestScope::class)
+@Modifier(4, TestScope::class)
 public object CustomTypeStateless
 
-@LayoutModifier(5, TestScope::class)
+@Modifier(5, TestScope::class)
 public data class CustomTypeWithDefault(
   val customType: Duration,
   @Default("\"sup\"") val string: String,
 )
 
-@LayoutModifier(6, TestScope::class, SecondaryTestScope::class)
+@Modifier(6, TestScope::class, SecondaryTestScope::class)
 public object CustomTypeWithMultipleScopes

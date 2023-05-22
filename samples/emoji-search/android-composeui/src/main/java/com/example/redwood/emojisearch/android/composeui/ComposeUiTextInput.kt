@@ -24,7 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.emojisearch.widget.TextInput
 import example.values.TextFieldState
 import kotlin.coroutines.EmptyCoroutineContext
@@ -35,7 +35,7 @@ internal class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var updating = false
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override val value = @Composable {
     // Preserve 'composition' and other state properties that we don't modify.

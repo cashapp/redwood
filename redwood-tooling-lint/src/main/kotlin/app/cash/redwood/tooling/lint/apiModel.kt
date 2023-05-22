@@ -24,7 +24,7 @@ import nl.adaptivity.xmlutil.serialization.XML
 internal data class RedwoodApi(
   val version: UInt,
   val widgets: List<RedwoodWidget> = emptyList(),
-  val layoutModifiers: List<RedwoodLayoutModifier> = emptyList(),
+  val modifier: List<RedwoodModifier> = emptyList(),
 ) {
   fun serialize() = xml.encodeToString(serializer(), this)
 
@@ -69,10 +69,10 @@ internal data class RedwoodWidgetTrait(
 
 @Serializable
 @SerialName("layout-modifier")
-internal data class RedwoodLayoutModifier(
+internal data class RedwoodModifier(
   val tag: Int,
   val since: UInt,
-  val properties: List<RedwoodLayoutModifierProperty> = emptyList(),
+  val properties: List<RedwoodModifierProperty> = emptyList(),
 ) {
   init {
     val badProperties = properties.filter { it.since < since }
@@ -91,7 +91,7 @@ internal data class RedwoodLayoutModifier(
 
 @Serializable
 @SerialName("property")
-internal data class RedwoodLayoutModifierProperty(
+internal data class RedwoodModifierProperty(
   val tag: Int,
   val since: UInt,
 )

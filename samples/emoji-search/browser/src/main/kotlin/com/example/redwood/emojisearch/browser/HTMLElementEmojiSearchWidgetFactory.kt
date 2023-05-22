@@ -15,7 +15,7 @@
  */
 package com.example.redwood.emojisearch.browser
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
@@ -82,13 +82,13 @@ private class HtmlTextInput(
     value.placeholder = hint
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 }
 
 private class HtmlText(
   override val value: HTMLSpanElement,
 ) : Text<HTMLElement> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String) {
     value.textContent = text
@@ -98,7 +98,7 @@ private class HtmlText(
 private class HtmlImage(
   override val value: HTMLImageElement,
 ) : Image<HTMLElement> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun url(url: String) {
     value.src = url

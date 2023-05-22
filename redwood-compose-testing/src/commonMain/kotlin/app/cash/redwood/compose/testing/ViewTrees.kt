@@ -15,21 +15,24 @@
  */
 package app.cash.redwood.compose.testing
 
-import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ViewTree
+import app.cash.redwood.protocol.compose.ProtocolBridge
+import kotlinx.serialization.json.Json
 
-public val List<WidgetValue>.viewTree: ViewTree
-  get() {
-    val builder = ViewTree.Builder()
-    val root = builder.nextId++
-
-    for ((index, widget) in this.withIndex()) {
-      widget.addTo(Id(root), ChildrenTag.Root, index, builder)
-    }
-
-    return builder.build()
+public fun List<WidgetValue>.toViewTree(
+  factory: ProtocolBridge.Factory,
+  json: Json = Json.Default,
+): ViewTree {
+  val bridge = factory.create(json)
+  for ((index, child) in withIndex()) {
+    bridge.root.insert(index, child.toWidget(bridge.provider))
   }
+  return ViewTree(bridge.getChangesOrNull() ?: emptyList())
+}
 
-public val WidgetValue.viewTree: ViewTree
-  get() = listOf(this).viewTree
+public fun WidgetValue.toViewTree(
+  factory: ProtocolBridge.Factory,
+  json: Json = Json.Default,
+): ViewTree {
+  return listOf(this).toViewTree(factory, json)
+}

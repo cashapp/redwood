@@ -21,7 +21,7 @@ import kotlin.annotation.AnnotationTarget.PROPERTY
 import kotlin.reflect.KClass
 
 /**
- * Annotates an otherwise unused type with a set of [Widget]-annotated or [LayoutModifier]-annotated
+ * Annotates an otherwise unused type with a set of [Widget]-annotated or [Modifier]-annotated
  * classes which are all part of this schema.
  *
  * ```
@@ -35,7 +35,7 @@ import kotlin.reflect.KClass
  * ```
  *
  * @see Widget
- * @see LayoutModifier
+ * @see Modifier
  */
 @Retention(RUNTIME)
 @Target(CLASS)
@@ -131,11 +131,11 @@ public annotation class Default(val expression: String)
 
 /**
  * Annotates a data class which represents a layout modifier for a [Widget]. Each layout modifier
- * in a [Schema] must have a unique [tag] among all [LayoutModifier] annotations in the [Schema].
- * Additionally, each layout modifier must be associated with at least one scope.
+ * in a [Schema] must have a unique [tag] among all [Modifier] annotations in the [Schema].
+ * Additionally, each layout modifier can be associated with one or more scopes.
  *
  * ```
- * @LayoutModifier(1, RowScope::class)
+ * @Modifier(1, RowScope::class)
  * data class RowAlignment(
  *   val value: VerticalAlignment,
  * )
@@ -143,7 +143,7 @@ public annotation class Default(val expression: String)
  */
 @Retention(RUNTIME)
 @Target(CLASS)
-public annotation class LayoutModifier(
+public annotation class Modifier(
   val tag: Int,
   vararg val scopes: KClass<*>,
 )

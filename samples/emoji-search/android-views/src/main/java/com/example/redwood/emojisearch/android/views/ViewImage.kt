@@ -19,7 +19,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import coil.load
 import com.example.redwood.emojisearch.widget.Image
 
@@ -31,7 +31,7 @@ internal class ViewImage(
     value.layoutParams = ViewGroup.LayoutParams(size, size)
   }
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun url(url: String) {
     value.load(url)

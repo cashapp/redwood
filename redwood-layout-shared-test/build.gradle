@@ -4,7 +4,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 dependencies {
   api projects.redwoodFlexbox
   api projects.redwoodLayoutApi
-  api projects.redwoodLayoutLayoutmodifiers
+  api projects.redwoodLayoutModifiers
   api projects.redwoodRuntime
   api projects.redwoodWidget
   api libs.junit

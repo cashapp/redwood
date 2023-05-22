@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow

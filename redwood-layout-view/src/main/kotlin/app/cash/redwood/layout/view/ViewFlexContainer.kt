@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
@@ -102,7 +102,7 @@ internal class ViewFlexContainer(
     }
   )
 
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   private var width = Constraint.Wrap
   private var height = Constraint.Wrap

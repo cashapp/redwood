@@ -37,7 +37,7 @@ spotless {
   kotlin {
     targetExclude(
       // Apache 2-licensed files from AOSP.
-      "src/commonMain/kotlin/app/cash/redwood/LayoutModifier.kt",
+      "src/commonMain/kotlin/app/cash/redwood/Modifier.kt",
     )
   }
 }

@@ -17,13 +17,13 @@ package com.example.redwood.counter.android.views
 
 import android.view.View
 import android.widget.TextView
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Text
 
 internal class AndroidText(
   override val value: TextView,
 ) : Text<View> {
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text

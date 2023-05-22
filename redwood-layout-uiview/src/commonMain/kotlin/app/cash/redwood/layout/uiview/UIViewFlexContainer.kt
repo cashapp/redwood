@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
@@ -43,7 +43,7 @@ internal class UIViewFlexContainer(
     backgroundColor = UIColor.redColor
   }
   override val children = UIViewChildren(value)
-  override var layoutModifiers: LayoutModifier = LayoutModifier
+  override var modifier: Modifier = Modifier
 
   init {
     Yoga.YGNodeStyleSetFlexDirection(yogaLayout.rootNode, direction.toYoga())

@@ -18,8 +18,7 @@ kotlin {
       dependencies {
         api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
-        api projects.redwoodCompose
-        api projects.redwoodRuntime
+        api projects.redwoodProtocolCompose
       }
     }
     commonTest {
@@ -28,6 +27,7 @@ kotlin {
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
         implementation projects.testSchema.compose
+        implementation projects.testSchema.composeProtocol
         implementation projects.testSchema.testing
       }
     }

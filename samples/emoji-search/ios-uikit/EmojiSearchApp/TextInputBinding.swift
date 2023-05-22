@@ -42,6 +42,6 @@ class TextInputBinding: TextInput {
         }), for: .editingChanged)
     }
 
-    var layoutModifiers: LayoutModifier = ExposedKt.layoutModifier()
+    var modifier: Modifier = ExposedKt.modifier()
     var value: Any { root }
 }

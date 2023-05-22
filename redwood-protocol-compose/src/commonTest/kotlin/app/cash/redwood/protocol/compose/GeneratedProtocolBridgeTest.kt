@@ -15,14 +15,14 @@
  */
 package app.cash.redwood.protocol.compose
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.LayoutModifierChange
-import app.cash.redwood.protocol.LayoutModifierElement
-import app.cash.redwood.protocol.LayoutModifierTag
+import app.cash.redwood.protocol.ModifierChange
+import app.cash.redwood.protocol.ModifierElement
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
@@ -59,7 +59,7 @@ class GeneratedProtocolBridgeTest {
     assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
   }
 
-  @Test fun layoutModifierUsesSerializersModule() {
+  @Test fun modifierUsesSerializersModule() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
@@ -68,17 +68,17 @@ class GeneratedProtocolBridgeTest {
     val bridge = ExampleSchemaProtocolBridge.create(json)
     val button = bridge.provider.ExampleSchema.Button()
 
-    button.layoutModifiers = with(object : TestScope {}) {
-      LayoutModifier.customType(10.seconds)
+    button.modifier = with(object : TestScope {}) {
+      Modifier.customType(10.seconds)
     }
 
     val expected = listOf(
       Create(Id(1), WidgetTag(4)),
-      LayoutModifierChange(
+      ModifierChange(
         Id(1),
         listOf(
-          LayoutModifierElement(
-            LayoutModifierTag(3),
+          ModifierElement(
+            ModifierTag(3),
             buildJsonObject {
               put("customType", JsonPrimitive("PT10S"))
             },
@@ -89,7 +89,7 @@ class GeneratedProtocolBridgeTest {
     assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
   }
 
-  @Test fun layoutModifierDefaultValueNotSerialized() {
+  @Test fun modifierDefaultValueNotSerialized() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
@@ -98,17 +98,17 @@ class GeneratedProtocolBridgeTest {
     val bridge = ExampleSchemaProtocolBridge.create(json)
     val button = bridge.provider.ExampleSchema.Button()
 
-    button.layoutModifiers = with(object : TestScope {}) {
-      LayoutModifier.customTypeWithDefault(10.seconds, "sup")
+    button.modifier = with(object : TestScope {}) {
+      Modifier.customTypeWithDefault(10.seconds, "sup")
     }
 
     val expected = listOf(
       Create(Id(1), WidgetTag(4)),
-      LayoutModifierChange(
+      ModifierChange(
         Id(1),
         listOf(
-          LayoutModifierElement(
-            LayoutModifierTag(5),
+          ModifierElement(
+            ModifierTag(5),
             buildJsonObject {
               put("customType", JsonPrimitive("PT10S"))
             },

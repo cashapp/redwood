@@ -16,7 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.LayoutModifierTag
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 
@@ -27,7 +27,7 @@ class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
     events += "Unknown widget ${tag.value}"
   }
 
-  override fun onUnknownLayoutModifier(tag: LayoutModifierTag) {
+  override fun onUnknownModifier(tag: ModifierTag) {
     events += "Unknown layout modifier ${tag.value}"
   }
 

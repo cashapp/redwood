@@ -15,10 +15,8 @@
  */
 package app.cash.redwood.compose.testing
 
-import app.cash.redwood.LayoutModifier
-import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.ViewTree
+import app.cash.redwood.Modifier
+import app.cash.redwood.widget.Widget
 
 /**
  * A widget that's implemented as a value class, appropriate for use in tests.
@@ -27,18 +25,13 @@ import app.cash.redwood.protocol.ViewTree
  * These lambda properties are **excluded** from [Any.equals], [Any.hashCode], and [Any.toString].
  */
 public interface WidgetValue {
-  public val layoutModifiers: LayoutModifier
+  public val modifier: Modifier
 
   /** Returns all of the direct children of this widget, grouped by slot. */
   public val childrenLists: List<List<WidgetValue>>
     get() = listOf()
 
-  public fun addTo(
-    parentId: Id,
-    childrenTag: ChildrenTag,
-    childrenIndex: Int,
-    builder: ViewTree.Builder,
-  )
+  public fun <W : Any> toWidget(provider: Widget.Provider<W>): Widget<W>
 }
 
 /**

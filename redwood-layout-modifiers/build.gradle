@@ -1,7 +1,7 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.redwood.generator.modifiers'
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
@@ -14,9 +14,13 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodRuntime
-        api libs.kotlinx.serialization.core
+        api projects.redwoodLayoutApi
       }
     }
   }
+}
+
+redwoodSchema {
+  source = projects.redwoodLayoutSchema
+  type = 'app.cash.redwood.layout.RedwoodLayout'
 }

@@ -58,26 +58,26 @@ class ProtocolTest {
       ChildrenChange.Add(Id(1), ChildrenTag(2), Id(3), 4),
       ChildrenChange.Move(Id(1), ChildrenTag(2), 3, 4, 5),
       ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7), Id(8))),
-      LayoutModifierChange(
+      ModifierChange(
         Id(1),
         listOf(
-          LayoutModifierElement(
-            LayoutModifierTag(1),
+          ModifierElement(
+            ModifierTag(1),
             buildJsonObject { },
           ),
-          LayoutModifierElement(
-            LayoutModifierTag(2),
+          ModifierElement(
+            ModifierTag(2),
             JsonPrimitive(3),
           ),
-          LayoutModifierElement(
-            LayoutModifierTag(3),
+          ModifierElement(
+            ModifierTag(3),
             buildJsonArray { },
           ),
-          LayoutModifierElement(
-            LayoutModifierTag(4),
+          ModifierElement(
+            ModifierTag(4),
           ),
-          LayoutModifierElement(
-            LayoutModifierTag(5),
+          ModifierElement(
+            ModifierTag(5),
             JsonNull,
           ),
         ),
@@ -105,31 +105,31 @@ class ProtocolTest {
     assertThat(t).hasMessage("Count 4 != Removed ID list size 3")
   }
 
-  @Test fun layoutModifierElementSerialization() {
+  @Test fun modifierElementSerialization() {
     assertJsonRoundtrip(
-      LayoutModifierElement.serializer(),
-      LayoutModifierElement(
-        LayoutModifierTag(1),
+      ModifierElement.serializer(),
+      ModifierElement(
+        ModifierTag(1),
       ),
       "[1]",
     )
     assertJsonRoundtrip(
-      LayoutModifierElement.serializer(),
-      LayoutModifierElement(LayoutModifierTag(1), buildJsonObject { }),
+      ModifierElement.serializer(),
+      ModifierElement(ModifierTag(1), buildJsonObject { }),
       "[1,{}]",
     )
   }
 
-  @Test fun layoutModifierElementSerializationErrors() {
+  @Test fun modifierElementSerializationErrors() {
     val zero = assertFailsWith<IllegalStateException> {
-      format.decodeFromString(LayoutModifierElement.serializer(), "[]")
+      format.decodeFromString(ModifierElement.serializer(), "[]")
     }
-    assertThat(zero).hasMessage("LayoutModifierElement array may only have 1 or 2 values. Found: 0")
+    assertThat(zero).hasMessage("ModifierElement array may only have 1 or 2 values. Found: 0")
 
     val three = assertFailsWith<IllegalStateException> {
-      format.decodeFromString(LayoutModifierElement.serializer(), "[1,{},2]")
+      format.decodeFromString(ModifierElement.serializer(), "[1,{},2]")
     }
-    assertThat(three).hasMessage("LayoutModifierElement array may only have 1 or 2 values. Found: 3")
+    assertThat(three).hasMessage("ModifierElement array may only have 1 or 2 values. Found: 3")
   }
 
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {

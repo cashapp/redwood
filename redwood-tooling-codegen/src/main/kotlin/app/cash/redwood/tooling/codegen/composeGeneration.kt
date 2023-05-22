@@ -16,7 +16,7 @@
 package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.FqType
-import app.cash.redwood.tooling.schema.LayoutModifier
+import app.cash.redwood.tooling.schema.Modifier
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
@@ -44,13 +44,13 @@ import com.squareup.kotlinpoet.joinToCode
 fun Row(
   margin: Margin = Margin.Zero,
   overflow: Overflow = Overflow.Clip,
-  layoutModifier: LayoutModifier = LayoutModifier,
+  modifier: Modifier = Modifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
   RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
     factory = { it.RedwoodLayout.Row() },
     update = {
-      set(layoutModifier, WidgetNode.SetLayoutModifiers)
+      set(modifier, WidgetNode.SetModifiers)
       set(margin) { widget.margin(it) }
       set(overflow) { widget.overflow(it) }
     },
@@ -85,14 +85,14 @@ internal fun generateComposable(
 
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.
-          val layoutModifierIndex = widget.traits.indexOfLast { it !is Children } + 1
+          val modifierIndex = widget.traits.indexOfLast { it !is Children } + 1
 
           var index = 0
           while (true) {
-            if (index == layoutModifierIndex) {
+            if (index == modifierIndex) {
               addParameter(
-                ParameterSpec.builder("layoutModifier", Redwood.LayoutModifier)
-                  .defaultValue("%T", Redwood.LayoutModifier)
+                ParameterSpec.builder("modifier", Redwood.Modifier)
+                  .defaultValue("%T", Redwood.Modifier)
                   .build(),
               )
             }
@@ -140,7 +140,7 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(layoutModifier, %T.SetLayoutModifiers)\n", RedwoodCompose.WidgetNode)
+            .add("set(modifier, %T.SetModifiers)\n", RedwoodCompose.WidgetNode)
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
@@ -200,7 +200,7 @@ internal fun generateComposable(
 /*
 interface RowScope {
   @Stable
-  fun LayoutModifier.something(...): LayoutModifier {
+  fun Modifier.something(...): Modifier {
     return then(SomethingImpl(...))
   }
 }
@@ -215,12 +215,12 @@ internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(Redwood.LayoutScopeMarker)
 
-      for (layoutModifier in schema.layoutModifiers) {
-        if (scope !in layoutModifier.scopes) {
+      for (modifier in schema.modifier) {
+        if (scope !in modifier.scopes) {
           continue
         }
 
-        scopeBuilder.addFunction(generateLayoutModifierFunction(schema, layoutModifier))
+        scopeBuilder.addFunction(generateModifierFunction(schema, modifier))
       }
 
       addType(scopeBuilder.build())
@@ -241,34 +241,34 @@ internal class SomethingImpl(...): Something {
   public override fun toString(): String = ...
 }
 */
-internal fun generateLayoutModifierImpls(schema: Schema): FileSpec? {
-  if (schema.layoutModifiers.isEmpty()) return null
+internal fun generateModifierImpls(schema: Schema): FileSpec? {
+  if (schema.modifier.isEmpty()) return null
 
-  return FileSpec.builder(schema.composePackage(), "layoutModifiers")
+  return FileSpec.builder(schema.composePackage(), "modifier")
     .apply {
-      for (layoutModifier in schema.layoutModifiers) {
-        addType(generateLayoutModifierImpl(schema, layoutModifier))
+      for (modifier in schema.modifier) {
+        addType(generateModifierImpl(schema, modifier))
       }
     }
     .build()
 }
 
-private fun generateLayoutModifierFunction(
+private fun generateModifierFunction(
   schema: Schema,
-  layoutModifier: LayoutModifier,
+  modifier: Modifier,
 ): FunSpec {
-  val simpleName = layoutModifier.type.flatName
+  val simpleName = modifier.type.flatName
   return FunSpec.builder(simpleName.replaceFirstChar(Char::lowercaseChar))
     .addAnnotation(ComposeRuntime.Stable)
-    .receiver(Redwood.LayoutModifier)
-    .returns(Redwood.LayoutModifier)
+    .receiver(Redwood.Modifier)
+    .returns(Redwood.Modifier)
     .apply {
-      layoutModifier.documentation?.let { documentation ->
+      modifier.documentation?.let { documentation ->
         addKdoc(documentation)
       }
 
       val arguments = mutableListOf<CodeBlock>()
-      for (property in layoutModifier.properties) {
+      for (property in modifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
 
         addParameter(
@@ -283,7 +283,7 @@ private fun generateLayoutModifierFunction(
         )
       }
 
-      val typeName = schema.layoutModifierImpl(layoutModifier)
+      val typeName = schema.modifierImpl(modifier)
       if (arguments.isEmpty()) {
         addStatement("return then(%T)", typeName)
       } else {
@@ -293,18 +293,18 @@ private fun generateLayoutModifierFunction(
     .build()
 }
 
-private fun generateLayoutModifierImpl(
+private fun generateModifierImpl(
   schema: Schema,
-  layoutModifier: LayoutModifier,
+  modifier: Modifier,
 ): TypeSpec {
-  val typeName = schema.layoutModifierImpl(layoutModifier)
-  val typeBuilder = if (layoutModifier.properties.isEmpty()) {
+  val typeName = schema.modifierImpl(modifier)
+  val typeBuilder = if (modifier.properties.isEmpty()) {
     TypeSpec.objectBuilder(typeName)
   } else {
     TypeSpec.classBuilder(typeName)
       .apply {
         val primaryConstructor = FunSpec.constructorBuilder()
-        for (property in layoutModifier.properties) {
+        for (property in modifier.properties) {
           val propertyType = property.type.asTypeName()
           primaryConstructor.addParameter(property.name, propertyType)
           addProperty(
@@ -320,9 +320,9 @@ private fun generateLayoutModifierImpl(
 
   return typeBuilder
     .addModifiers(INTERNAL)
-    .addSuperinterface(schema.layoutModifierType(layoutModifier))
-    .addFunction(layoutModifierEquals(schema, layoutModifier))
-    .addFunction(layoutModifierHashCode(layoutModifier))
-    .addFunction(layoutModifierToString(layoutModifier))
+    .addSuperinterface(schema.modifierType(modifier))
+    .addFunction(modifierEquals(schema, modifier))
+    .addFunction(modifierHashCode(modifier))
+    .addFunction(modifierToString(modifier))
     .build()
 }

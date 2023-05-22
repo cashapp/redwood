@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout
 
-import app.cash.redwood.LayoutModifier
+import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
 import org.junit.Test
 
@@ -24,7 +24,7 @@ abstract class AbstractSpacerTest<T : Any> {
   abstract fun widget(
     width: Int = 0,
     height: Int = 0,
-    layoutModifier: LayoutModifier = LayoutModifier,
+    modifier: Modifier = Modifier,
   ): Widget<T>
 
   abstract fun wrap(widget: Widget<T>, horizontal: Boolean): T
