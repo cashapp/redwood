@@ -19,6 +19,7 @@ import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
 import app.cash.redwood.tooling.codegen.Protocol.Id
 import app.cash.redwood.tooling.codegen.Protocol.ViewTreeBuilder
 import app.cash.redwood.tooling.schema.ProtocolWidget
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.SchemaSet
@@ -42,8 +43,10 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.joinToCode
 
 /*
 suspend fun <R> ExampleTester(
@@ -286,31 +289,56 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
 
-  val childrenListsBuilder = CodeBlock.builder()
-    .add("return %M(⇥\n", Stdlib.listOf)
+  val childrenLists = mutableListOf<CodeBlock>()
+  val equalsComparisons = mutableListOf(
+    CodeBlock.of("other is %T", widgetValueType),
+    CodeBlock.of("other.modifier == modifier"),
+  )
+  val hashCodeProperties = mutableListOf(CodeBlock.of("modifier"))
+  val toStringProperties = mutableListOf("modifier=\$modifier")
 
-  val equalsBuilder = CodeBlock.builder()
-    .add("return other is %T·&&⇥\n", widgetValueType)
-    .add("other.modifier == modifier", widgetValueType)
-  val hashCodeBuilder = CodeBlock.builder()
-    .add("return %M(⇥\n", Stdlib.listOf)
-    .add("modifier,\n")
-  val toStringBuilder = StringBuilder()
-    .append("${widgetValueType.simpleName}(modifier=${'$'}modifier")
+  fun addEqualsHashCodeToString(trait: Widget.Trait) {
+    equalsComparisons += CodeBlock.of("other.%1N == %1N", trait.name)
+    hashCodeProperties += CodeBlock.of("%N", trait.name)
+    toStringProperties += "${trait.name}=\$${trait.name}"
+  }
+
+  // TODO: Add support Modifiers.
   val addToBuilder = CodeBlock.builder()
 
   for (trait in widget.traits) {
-    val type = when (trait) {
-      is Property -> trait.type.asTypeName()
-      is Event -> trait.lambdaType
-      is Children -> Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
-      else -> throw AssertionError()
-    }
+    val type: TypeName
+    val defaultExpression: CodeBlock?
+    when (trait) {
+      is Property -> {
+        type = trait.type.asTypeName()
+        defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
+        addEqualsHashCodeToString(trait)
 
-    val defaultExpression = when (trait) {
-      is Property -> trait.defaultExpression?.let { CodeBlock.of(it) }
-      is Event -> trait.defaultExpression?.let { CodeBlock.of(it) }
-      is Children -> CodeBlock.of("%M()", Stdlib.listOf)
+        if (trait is ProtocolProperty) {
+          addToBuilder.addStatement(
+            "builder.changes += %T(widgetId, %T(%L), builder.json.%M(this.%N))",
+            Protocol.PropertyChange,
+            Protocol.PropertyTag,
+            trait.tag,
+            KotlinxSerialization.encodeToJsonElement,
+            trait.name,
+          )
+        }
+      }
+      is Children -> {
+        type = Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
+        defaultExpression = CodeBlock.of("%M()", Stdlib.listOf)
+        addEqualsHashCodeToString(trait)
+
+        childrenLists += CodeBlock.of("%N", trait.name)
+      }
+      is Event -> {
+        type = trait.lambdaType
+        defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
+        // Events are omitted from equals/hashCode/toString.
+      }
+
       else -> throw AssertionError()
     }
 
@@ -325,47 +353,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .initializer("%N", trait.name)
         .build(),
     )
-
-    // TODO: Add support Modifiers.
-
-    if (trait is ProtocolWidget.ProtocolProperty) {
-      addToBuilder.addStatement(
-        "builder.changes += %T(widgetId, %T(%L), builder.json.%M(this.%N))",
-        Protocol.PropertyChange,
-        Protocol.PropertyTag,
-        trait.tag,
-        KotlinxSerialization.encodeToJsonElement,
-        trait.name,
-      )
-    }
-
-    when (trait) {
-      is Property, is Children -> {
-        if (trait is Children) {
-          childrenListsBuilder.add("%N,\n", trait.name)
-        }
-
-        equalsBuilder.add("·&&\n")
-        equalsBuilder.add("other.%N == %N", trait.name, trait.name)
-
-        hashCodeBuilder.add("%N,\n", trait.name)
-
-        toStringBuilder.append(", ${trait.name}=${'$'}${trait.name}")
-      }
-
-      is Event -> Unit // Events are omitted from equals/hashCode/toString.
-
-      else -> throw AssertionError()
-    }
   }
-
-  childrenListsBuilder.add("⇤)\n")
-
-  equalsBuilder.add("⇤\n")
-
-  hashCodeBuilder.add("⇤).hashCode()\n")
-
-  toStringBuilder.append(")")
 
   return FileSpec.builder(widgetValueType)
     .addType(
@@ -379,7 +367,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
-                .addCode(childrenListsBuilder.build())
+                .addStatement("return %M(%L)", Stdlib.listOf, childrenLists.joinToCode())
                 .build(),
             )
             .build(),
@@ -389,21 +377,27 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addModifiers(PUBLIC, OVERRIDE)
             .addParameter("other", ANY.copy(nullable = true))
             .returns(BOOLEAN)
-            .addCode(equalsBuilder.build())
+            .addStatement("return %L", equalsComparisons.joinToCode(" &&\n"))
             .build(),
         )
         .addFunction(
           FunSpec.builder("hashCode")
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(Int::class)
-            .addCode(hashCodeBuilder.build())
+            .addStatement("return %M(%L).hashCode()", Stdlib.listOf, hashCodeProperties.joinToCode())
             .build(),
         )
         .addFunction(
           FunSpec.builder("toString")
             .addModifiers(PUBLIC, OVERRIDE)
             .returns(String::class)
-            .addCode("return %P", toStringBuilder.toString())
+            .addStatement(
+              "return %P",
+              toStringProperties.joinToString(
+                prefix = "${widgetValueType.simpleName}(",
+                postfix = ")",
+              ),
+            )
             .build(),
         )
         .addFunction(
