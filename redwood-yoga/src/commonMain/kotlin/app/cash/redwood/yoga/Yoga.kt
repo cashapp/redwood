@@ -616,9 +616,9 @@ object Yoga {
       node,
       flex,
       { ygStyle: YGStyle, value: Float ->
-        value != ygStyle.flex().unwrap()
+        value != ygStyle.flex.unwrap()
       },
-    ) { ygStyle: YGStyle, value: Float -> ygStyle.setFlex(YGFloatOptional(value)) }
+    ) { ygStyle: YGStyle, value: Float -> ygStyle.flex = YGFloatOptional(value) }
   }
 
   fun YGNodeStyleSetFlexGrow(
@@ -629,9 +629,9 @@ object Yoga {
       node,
       flexGrow,
       { ygStyle: YGStyle, value: Float ->
-        value != ygStyle.flexGrow().unwrap()
+        value != ygStyle.flexGrow.unwrap()
       },
-    ) { ygStyle: YGStyle, value: Float -> ygStyle.setFlexGrow(YGFloatOptional(value)) }
+    ) { ygStyle: YGStyle, value: Float -> ygStyle.flexGrow = YGFloatOptional(value) }
   }
 
   fun YGNodeStyleSetFlexShrink(
@@ -642,9 +642,9 @@ object Yoga {
       node,
       flexShrink,
       { ygStyle: YGStyle, value: Float ->
-        value != ygStyle.flexShrink().unwrap()
+        value != ygStyle.flexShrink.unwrap()
       },
-    ) { ygStyle: YGStyle, value: Float -> ygStyle.setFlexShrink(YGFloatOptional(value)) }
+    ) { ygStyle: YGStyle, value: Float -> ygStyle.flexShrink = YGFloatOptional(value) }
   }
 
   fun YGNodeStyleSetFlexBasis(
@@ -656,10 +656,10 @@ object Yoga {
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          ygStyle.flexBasis(), value,
+          ygStyle.flexBasis, value,
         )
       },
-    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.setFlexBasis(value) }
+    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.flexBasis = value }
   }
 
   fun YGNodeStyleSetFlexBasisPercent(
@@ -672,10 +672,10 @@ object Yoga {
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          ygStyle.flexBasis(), value,
+          ygStyle.flexBasis, value,
         )
       },
-    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.setFlexBasis(value) }
+    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.flexBasis = value }
   }
 
   fun YGNodeStyleSetFlexBasisAuto(node: YGNode) {
@@ -684,10 +684,10 @@ object Yoga {
       node, value,
       { ygStyle: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          ygStyle.flexBasis(), value,
+          ygStyle.flexBasis, value,
         )
       },
-    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.setFlexBasis(value) }
+    ) { ygStyle: YGStyle, _: CompactValue? -> ygStyle.flexBasis = value }
   }
 
   fun YGNodeStyleSetPosition(
@@ -700,7 +700,7 @@ object Yoga {
       edge,
       points,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.position() }
+    ) { obj: YGStyle -> obj.position }
   }
 
   fun YGNodeStyleSetPositionPercent(
@@ -713,14 +713,14 @@ object Yoga {
       edge,
       percent,
       YGUnit.YGUnitPercent,
-    ) { obj: YGStyle -> obj.position() }
+    ) { obj: YGStyle -> obj.position }
   }
 
   fun YGNodeStyleGetPosition(
     node: YGNode,
     edge: YGEdge,
   ): YGValue {
-    return node.getStyle().position()[edge.ordinal]
+    return node.getStyle().position[edge.ordinal]
   }
 
   fun YGNodeStyleSetMargin(
@@ -733,7 +733,7 @@ object Yoga {
       edge,
       points,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.margin() }
+    ) { obj: YGStyle -> obj.margin }
   }
 
   private fun <T : Enum<T>> updateStyleIndexed(
@@ -756,8 +756,7 @@ object Yoga {
       node, value,
       { _: YGStyle, value: CompactValue ->
         !CompactValue.equalsTo(
-          values.invoke(node.getStyle()).getCompactValue(edge!!.ordinal),
-          value,
+          values.invoke(node.getStyle()).getCompactValue(edge!!.ordinal), value,
         )
       },
     ) { _: YGStyle, _: CompactValue? ->
@@ -775,7 +774,7 @@ object Yoga {
       edge,
       points,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.padding() }
+    ) { obj: YGStyle -> obj.padding }
   }
 
   fun YGNodeStyleSetBorder(
@@ -788,7 +787,7 @@ object Yoga {
       edge,
       border,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.border() }
+    ) { obj: YGStyle -> obj.border }
   }
 
   fun YGNodeStyleSetWidth(
@@ -800,7 +799,7 @@ object Yoga {
       YGDimension.YGDimensionWidth,
       points,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.dimensions() }
+    ) { obj: YGStyle -> obj.dimensions }
   }
 
   fun YGNodeStyleSetHeight(
@@ -812,7 +811,7 @@ object Yoga {
       YGDimension.YGDimensionHeight,
       points,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.dimensions() }
+    ) { obj: YGStyle -> obj.dimensions }
   }
 
   fun YGNodeStyleSetMinWidth(
@@ -824,7 +823,7 @@ object Yoga {
       YGDimension.YGDimensionWidth,
       minWidth,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.minDimensions() }
+    ) { obj: YGStyle -> obj.minDimensions }
   }
 
   fun YGNodeStyleSetMinHeight(
@@ -836,7 +835,7 @@ object Yoga {
       YGDimension.YGDimensionHeight,
       minHeight,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.minDimensions() }
+    ) { obj: YGStyle -> obj.minDimensions }
   }
 
   fun YGNodeStyleSetMaxWidth(
@@ -848,7 +847,7 @@ object Yoga {
       YGDimension.YGDimensionWidth,
       maxWidth,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.maxDimensions() }
+    ) { obj: YGStyle -> obj.maxDimensions }
   }
 
   fun YGNodeStyleSetMaxHeight(
@@ -860,7 +859,7 @@ object Yoga {
       YGDimension.YGDimensionHeight,
       maxHeight,
       YGUnit.YGUnitPoint,
-    ) { obj: YGStyle -> obj.maxDimensions() }
+    ) { obj: YGStyle -> obj.maxDimensions }
   }
 
   fun YGNodeLayoutGetLeft(node: YGNode): Float {
@@ -1424,20 +1423,20 @@ object Yoga {
     var max = YGFloatOptional()
     if (YGFlexDirectionIsColumn(axis)) {
       min = YGResolveValue(
-        node.getStyle().minDimensions()[YGDimension.YGDimensionHeight.ordinal],
+        node.getStyle().minDimensions[YGDimension.YGDimensionHeight.ordinal],
         axisSize,
       )
       max = YGResolveValue(
-        node.getStyle().maxDimensions()[YGDimension.YGDimensionHeight.ordinal],
+        node.getStyle().maxDimensions[YGDimension.YGDimensionHeight.ordinal],
         axisSize,
       )
     } else if (YGFlexDirectionIsRow(axis)) {
       min = YGResolveValue(
-        node.getStyle().minDimensions()[YGDimension.YGDimensionWidth.ordinal],
+        node.getStyle().minDimensions[YGDimension.YGDimensionWidth.ordinal],
         axisSize,
       )
       max = YGResolveValue(
-        node.getStyle().maxDimensions()[YGDimension.YGDimensionWidth.ordinal],
+        node.getStyle().maxDimensions[YGDimension.YGDimensionWidth.ordinal],
         axisSize,
       )
     }
@@ -1494,7 +1493,7 @@ object Yoga {
   ) {
     val maxSize = plus(
       YGResolveValue(
-        node.getStyle().maxDimensions().getCompactValue(dim[axis.ordinal].ordinal),
+        node.getStyle().maxDimensions.getCompactValue(dim[axis.ordinal].ordinal),
         ownerAxisSize,
       ),
       node.getMarginForAxis(axis, ownerWidth),
@@ -1637,15 +1636,15 @@ object Yoga {
         }
       }
       val childStyle = child.getStyle()
-      if (!childStyle.aspectRatio().isUndefined()) {
+      if (!childStyle.aspectRatio.isUndefined()) {
         if (!isMainAxisRow && childWidthMeasureMode == YGMeasureMode.YGMeasureModeExactly) {
           childHeight =
-            marginColumn + (childWidth - marginRow) / childStyle.aspectRatio()
+            marginColumn + (childWidth - marginRow) / childStyle.aspectRatio
               .unwrap()
           childHeightMeasureMode = YGMeasureMode.YGMeasureModeExactly
         } else if (isMainAxisRow && childHeightMeasureMode == YGMeasureMode.YGMeasureModeExactly) {
           childWidth =
-            marginRow + (childHeight - marginColumn) * childStyle.aspectRatio()
+            marginRow + (childHeight - marginColumn) * childStyle.aspectRatio
               .unwrap()
           childWidthMeasureMode = YGMeasureMode.YGMeasureModeExactly
         }
@@ -1659,8 +1658,8 @@ object Yoga {
       if (!isMainAxisRow && !isRowStyleDimDefined && hasExactWidth && childWidthStretch) {
         childWidth = width
         childWidthMeasureMode = YGMeasureMode.YGMeasureModeExactly
-        if (!childStyle.aspectRatio().isUndefined()) {
-          childHeight = (childWidth - marginRow) / childStyle.aspectRatio().unwrap()
+        if (!childStyle.aspectRatio.isUndefined()) {
+          childHeight = (childWidth - marginRow) / childStyle.aspectRatio.unwrap()
           childHeightMeasureMode = YGMeasureMode.YGMeasureModeExactly
         }
       }
@@ -1672,8 +1671,8 @@ object Yoga {
       if (isMainAxisRow && !isColumnStyleDimDefined && hasExactHeight && childHeightStretch) {
         childHeight = height
         childHeightMeasureMode = YGMeasureMode.YGMeasureModeExactly
-        if (!childStyle.aspectRatio().isUndefined()) {
-          childWidth = (childHeight - marginColumn) * childStyle.aspectRatio().unwrap()
+        if (!childStyle.aspectRatio.isUndefined()) {
+          childWidth = (childHeight - marginColumn) * childStyle.aspectRatio.unwrap()
           childWidthMeasureMode = YGMeasureMode.YGMeasureModeExactly
         }
       }
@@ -1809,14 +1808,14 @@ object Yoga {
     }
     val childStyle = child.getStyle()
     if (isUndefined(childWidth) xor isUndefined(childHeight)) {
-      if (!childStyle.aspectRatio().isUndefined()) {
+      if (!childStyle.aspectRatio.isUndefined()) {
         if (isUndefined(childWidth)) {
           childWidth =
-            marginRow + (childHeight - marginColumn) * childStyle.aspectRatio()
+            marginRow + (childHeight - marginColumn) * childStyle.aspectRatio
               .unwrap()
         } else if (isUndefined(childHeight)) {
           childHeight =
-            marginColumn + (childWidth - marginRow) / childStyle.aspectRatio()
+            marginColumn + (childWidth - marginRow) / childStyle.aspectRatio
               .unwrap()
         }
       }
@@ -2127,12 +2126,12 @@ object Yoga {
     var availableInnerDim = availableDim - paddingAndBorder
     if (!isUndefined(availableInnerDim)) {
       val minDimensionOptional = YGResolveValue(
-        node.getStyle().minDimensions()[dimension.ordinal], ownerDim,
+        node.getStyle().minDimensions[dimension.ordinal], ownerDim,
       )
       val minInnerDim =
         if (minDimensionOptional.isUndefined()) 0.0f else minDimensionOptional.unwrap() - paddingAndBorder
       val maxDimensionOptional = YGResolveValue(
-        node.getStyle().maxDimensions()[dimension.ordinal], ownerDim,
+        node.getStyle().maxDimensions[dimension.ordinal], ownerDim,
       )
       val maxInnerDim =
         if (maxDimensionOptional.isUndefined()) Float.MAX_VALUE else maxDimensionOptional.unwrap() - paddingAndBorder
@@ -2339,10 +2338,10 @@ object Yoga {
       var childCrossMeasureMode: YGMeasureMode
       val childMainMeasureMode = YGMeasureMode.YGMeasureModeExactly
       val childStyle = currentRelativeChild.getStyle()
-      if (!childStyle.aspectRatio().isUndefined()) {
+      if (!childStyle.aspectRatio.isUndefined()) {
         childCrossSize.argValue =
-          if (isMainAxisRow) (childMainSize.argValue - marginMain) / childStyle.aspectRatio()
-            .unwrap() else (childMainSize.argValue - marginMain) * childStyle.aspectRatio()
+          if (isMainAxisRow) (childMainSize.argValue - marginMain) / childStyle.aspectRatio
+            .unwrap() else (childMainSize.argValue - marginMain) * childStyle.aspectRatio
             .unwrap()
         childCrossMeasureMode = YGMeasureMode.YGMeasureModeExactly
         childCrossSize.argValue += marginCross
@@ -2561,14 +2560,14 @@ object Yoga {
     val trailingPaddingAndBorderMain =
       node.getTrailingPaddingAndBorder(mainAxis, ownerWidth).unwrap()
     if (measureModeMainDim == YGMeasureMode.YGMeasureModeAtMost && collectedFlexItemsValues.remainingFreeSpace > 0f) {
-      if (!style.minDimensions().getCompactValue(dim[mainAxis.ordinal].ordinal)
+      if (!style.minDimensions.getCompactValue(dim[mainAxis.ordinal].ordinal)
           .isUndefined() && !YGResolveValue(
-          style.minDimensions().getCompactValue(dim[mainAxis.ordinal].ordinal),
+          style.minDimensions.getCompactValue(dim[mainAxis.ordinal].ordinal),
           mainAxisownerSize,
         ).isUndefined()
       ) {
         val minAvailableMainDim = YGResolveValue(
-          style.minDimensions().getCompactValue(dim[mainAxis.ordinal].ordinal),
+          style.minDimensions.getCompactValue(dim[mainAxis.ordinal].ordinal),
           mainAxisownerSize,
         ).unwrap() - leadingPaddingAndBorderMain - trailingPaddingAndBorderMain
         val occupiedSpaceByChildNodes =
@@ -3010,8 +3009,8 @@ object Yoga {
       // If we don't measure with exact main dimension we want to ensure we don't
       // violate min and max
       if (measureModeMainDim != YGMeasureMode.YGMeasureModeExactly) {
-        val minDimensions = node.getStyle().minDimensions()
-        val maxDimensions = node.getStyle().maxDimensions()
+        val minDimensions = node.getStyle().minDimensions
+        val maxDimensions = node.getStyle().maxDimensions
         val minInnerWidth = YGResolveValue(
           minDimensions[YGDimension.YGDimensionWidth.ordinal],
           ownerWidth,
@@ -3190,10 +3189,10 @@ object Yoga {
                   RefObject(child.getLayout()!!.measuredDimensions[dim[mainAxis.ordinal].ordinal])
                 val childStyle = child.getStyle()
                 val childCrossSize = RefObject(
-                  if (!childStyle.aspectRatio().isUndefined()) {
+                  if (!childStyle.aspectRatio.isUndefined()) {
                     child.getMarginForAxis(crossAxis, availableInnerWidth)
-                      .unwrap() + (if (isMainAxisRow) childMainSize.argValue / childStyle.aspectRatio()
-                      .unwrap() else childMainSize.argValue * childStyle.aspectRatio()
+                      .unwrap() + (if (isMainAxisRow) childMainSize.argValue / childStyle.aspectRatio
+                      .unwrap() else childMainSize.argValue * childStyle.aspectRatio
                       .unwrap())
                   } else {
                     collectedFlexItemsValues.crossDim
@@ -3765,7 +3764,7 @@ object Yoga {
     node.resolveDimension()
     val width: Float
     val widthMeasureMode: YGMeasureMode
-    val maxDimensions = node.getStyle().maxDimensions()
+    val maxDimensions = node.getStyle().maxDimensions
     if (YGNodeIsStyleDimDefined(node, YGFlexDirection.YGFlexDirectionRow, ownerWidth)) {
       width = YGResolveValue(
         node.getResolvedDimension(dim[YGFlexDirection.YGFlexDirectionRow.ordinal].ordinal),

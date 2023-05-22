@@ -241,10 +241,10 @@ class YGNode {
 
   fun getLeadingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
     val leadingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position(), YGEdge.YGEdgeStart,
+      style_.position, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.position(),
+      style_.position,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValue(leadingPosition, axisSize)
@@ -252,10 +252,10 @@ class YGNode {
 
   fun getTrailingPosition(axis: YGFlexDirection, axisSize: Float): YGFloatOptional {
     val trailingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position(), YGEdge.YGEdgeEnd,
+      style_.position, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.position(),
+      style_.position,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValue(trailingPosition, axisSize)
@@ -263,10 +263,10 @@ class YGNode {
 
   fun isLeadingPositionDefined(axis: YGFlexDirection): Boolean {
     val leadingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position(), YGEdge.YGEdgeStart,
+      style_.position, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofUndefined(),
     ) else computeEdgeValueForColumn(
-      style_.position(),
+      style_.position,
       Yoga.leading[axis.ordinal], CompactValue.ofUndefined(),
     )
     return !leadingPosition.isUndefined()
@@ -274,10 +274,10 @@ class YGNode {
 
   fun isTrailingPosDefined(axis: YGFlexDirection): Boolean {
     val trailingPosition = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.position(), YGEdge.YGEdgeEnd,
+      style_.position, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofUndefined(),
     ) else computeEdgeValueForColumn(
-      style_.position(),
+      style_.position,
       Yoga.trailing[axis.ordinal], CompactValue.ofUndefined(),
     )
     return !trailingPosition.isUndefined()
@@ -285,10 +285,10 @@ class YGNode {
 
   fun getLeadingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val leadingMargin = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.margin(), YGEdge.YGEdgeStart,
+      style_.margin, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.margin(),
+      style_.margin,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValueMargin(leadingMargin, widthSize)
@@ -296,10 +296,10 @@ class YGNode {
 
   fun getTrailingMargin(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val trailingMargin = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.margin(), YGEdge.YGEdgeEnd,
+      style_.margin, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.margin(),
+      style_.margin,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGResolveValueMargin(trailingMargin, widthSize)
@@ -491,31 +491,31 @@ class YGNode {
   }
 
   fun marginLeadingValue(axis: YGFlexDirection): YGValue {
-    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin()
+    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin
         .getCompactValue(YGEdge.YGEdgeStart).isUndefined()
     ) {
-      style_.margin()[YGEdge.YGEdgeStart.ordinal]
+      style_.margin[YGEdge.YGEdgeStart.ordinal]
     } else {
-      style_.margin()[Yoga.leading[axis.ordinal].ordinal]
+      style_.margin[Yoga.leading[axis.ordinal].ordinal]
     }
   }
 
   fun marginTrailingValue(axis: YGFlexDirection): YGValue {
-    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin()
+    return if (Yoga.YGFlexDirectionIsRow(axis) && !style_.margin
         .getCompactValue(YGEdge.YGEdgeEnd).isUndefined()
     ) {
-      style_.margin()[YGEdge.YGEdgeEnd.ordinal]
+      style_.margin[YGEdge.YGEdgeEnd.ordinal]
     } else {
-      style_.margin()[Yoga.trailing[axis.ordinal].ordinal]
+      style_.margin[Yoga.trailing[axis.ordinal].ordinal]
     }
   }
 
   fun resolveFlexBasisPtr(): YGValue {
-    val flexBasis = style_.flexBasis().convertToYgValue()
+    val flexBasis = style_.flexBasis.convertToYgValue()
     if (flexBasis.unit != YGUnit.YGUnitAuto && flexBasis.unit != YGUnit.YGUnitUndefined) {
       return flexBasis
     }
-    return if (!style_.flex().isUndefined() && style_.flex().unwrap() > 0.0f) {
+    return if (!style_.flex.isUndefined() && style_.flex.unwrap() > 0.0f) {
       if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
           flags,
           useWebDefaults_,
@@ -530,14 +530,14 @@ class YGNode {
     val style = getStyle()
     val dimensions = arrayOf(YGDimension.YGDimensionWidth, YGDimension.YGDimensionHeight)
     for (dim in dimensions) {
-      if (!style.maxDimensions().getCompactValue(dim.ordinal).isUndefined() && Yoga.YGValueEqual(
-          style.maxDimensions().getCompactValue(dim.ordinal),
-          style.minDimensions().getCompactValue(dim.ordinal),
+      if (!style.maxDimensions.getCompactValue(dim.ordinal).isUndefined() && Yoga.YGValueEqual(
+          style.maxDimensions.getCompactValue(dim.ordinal),
+          style.minDimensions.getCompactValue(dim.ordinal),
         )
       ) {
-        resolvedDimensions_[dim.ordinal] = style.maxDimensions()[dim.ordinal]
+        resolvedDimensions_[dim.ordinal] = style.maxDimensions[dim.ordinal]
       } else {
-        resolvedDimensions_[dim.ordinal] = style.dimensions()[dim.ordinal]
+        resolvedDimensions_[dim.ordinal] = style.dimensions[dim.ordinal]
       }
     }
   }
@@ -604,11 +604,11 @@ class YGNode {
     if (owner_ == null) {
       return 0.0f
     }
-    if (!style_.flexGrow().isUndefined()) {
-      return style_.flexGrow().unwrap()
+    if (!style_.flexGrow.isUndefined()) {
+      return style_.flexGrow.unwrap()
     }
-    return if (!style_.flex().isUndefined() && style_.flex().unwrap() > 0.0f) {
-      style_.flex().unwrap()
+    return if (!style_.flex.isUndefined() && style_.flex.unwrap() > 0.0f) {
+      style_.flex.unwrap()
     } else {
       Yoga.DefaultFlexGrow
     }
@@ -618,15 +618,15 @@ class YGNode {
     if (owner_ == null) {
       return 0.0f
     }
-    if (!style_.flexShrink().isUndefined()) {
-      return style_.flexShrink().unwrap()
+    if (!style_.flexShrink.isUndefined()) {
+      return style_.flexShrink.unwrap()
     }
     if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
         flags,
         useWebDefaults_,
-      ) && !style_.flex().isUndefined() && style_.flex().unwrap() < 0.0f
+      ) && !style_.flex.isUndefined() && style_.flex.unwrap() < 0.0f
     ) {
-      return -style_.flex().unwrap()
+      return -style_.flex.unwrap()
     }
     return if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
         flags,
@@ -641,11 +641,11 @@ class YGNode {
 
   fun getLeadingBorder(axis: YGFlexDirection): Float {
     val leadingBorder = (if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.border(),
+      style_.border,
       YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.border(),
+      style_.border,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )).convertToYgValue()
     return maxOf(leadingBorder.value, 0.0f)
@@ -653,10 +653,10 @@ class YGNode {
 
   fun getTrailingBorder(axis: YGFlexDirection): Float {
     val trailingBorder = (if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.border(), YGEdge.YGEdgeEnd,
+      style_.border, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.border(),
+      style_.border,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )).convertToYgValue()
     return maxOf(trailingBorder.value, 0.0f)
@@ -664,10 +664,10 @@ class YGNode {
 
   fun getLeadingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val leadingPadding = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.padding(), YGEdge.YGEdgeStart,
+      style_.padding, YGEdge.YGEdgeStart,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.padding(),
+      style_.padding,
       Yoga.leading[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGFloatOptionalMax(
@@ -681,10 +681,10 @@ class YGNode {
 
   fun getTrailingPadding(axis: YGFlexDirection, widthSize: Float): YGFloatOptional {
     val trailingPadding = if (Yoga.YGFlexDirectionIsRow(axis)) computeEdgeValueForRow(
-      style_.padding(), YGEdge.YGEdgeEnd,
+      style_.padding, YGEdge.YGEdgeEnd,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     ) else computeEdgeValueForColumn(
-      style_.padding(),
+      style_.padding,
       Yoga.trailing[axis.ordinal], CompactValue.ofZero(),
     )
     return Yoga.YGFloatOptionalMax(

@@ -22,19 +22,19 @@ import app.cash.redwood.yoga.enums.YGWrap
 import kotlin.reflect.KClass
 
 class YGStyle {
-  private val margin_ = Values<YGEdge>()
-  private val position_ = Values<YGEdge>()
-  private val padding_ = Values<YGEdge>()
-  private val border_ = Values<YGEdge>()
-  private val dimensions_ = Values<YGDimension>(CompactValue.ofAuto().convertToYgValue())
-  private val minDimensions_ = Values<YGDimension>()
-  private val maxDimensions_ = Values<YGDimension>()
+  val margin = Values<YGEdge>()
+  val position = Values<YGEdge>()
+  val padding = Values<YGEdge>()
+  val border = Values<YGEdge>()
+  val dimensions = Values<YGDimension>(CompactValue.ofAuto().convertToYgValue())
+  val minDimensions = Values<YGDimension>()
+  val maxDimensions = Values<YGDimension>()
+  var aspectRatio = YGFloatOptional()
+  var flex = YGFloatOptional()
+  var flexGrow = YGFloatOptional()
+  var flexShrink = YGFloatOptional()
+  var flexBasis = CompactValue.ofAuto()
   private val flags = mutableMapOf<Any?, Any>()
-  private var aspectRatio_ = YGFloatOptional()
-  private var flex_ = YGFloatOptional()
-  private var flexGrow_ = YGFloatOptional()
-  private var flexShrink_ = YGFloatOptional()
-  private var flexBasis_ = CompactValue.ofAuto()
 
   init {
     GlobalMembers.setEnumData(
@@ -43,26 +43,6 @@ class YGStyle {
     GlobalMembers.setEnumData(
       YGAlign::class, flags, alignItemsOffset, YGAlign.YGAlignStretch,
     )
-  }
-
-  fun setAspectRatio(aspectRatio_: YGFloatOptional) {
-    this.aspectRatio_ = aspectRatio_
-  }
-
-  fun setFlex(flex_: YGFloatOptional) {
-    this.flex_ = flex_
-  }
-
-  fun setFlexGrow(flexGrow_: YGFloatOptional) {
-    this.flexGrow_ = flexGrow_
-  }
-
-  fun setFlexShrink(flexShrink_: YGFloatOptional) {
-    this.flexShrink_ = flexShrink_
-  }
-
-  fun setFlexBasis(flexBasis_: CompactValue) {
-    this.flexBasis_ = flexBasis_
   }
 
   fun direction(): YGDirection {
@@ -163,54 +143,6 @@ class YGStyle {
 
   fun displayBitfieldRef(): BitfieldRef<YGDisplay> {
     return BitfieldRef(this, displayOffset)
-  }
-
-  fun flex(): YGFloatOptional {
-    return flex_
-  }
-
-  fun flexGrow(): YGFloatOptional {
-    return flexGrow_
-  }
-
-  fun flexShrink(): YGFloatOptional {
-    return flexShrink_
-  }
-
-  fun flexBasis(): CompactValue {
-    return flexBasis_
-  }
-
-  fun margin(): Values<YGEdge> {
-    return margin_
-  }
-
-  fun position(): Values<YGEdge> {
-    return position_
-  }
-
-  fun padding(): Values<YGEdge> {
-    return padding_
-  }
-
-  fun border(): Values<YGEdge> {
-    return border_
-  }
-
-  fun dimensions(): Values<YGDimension> {
-    return dimensions_
-  }
-
-  fun minDimensions(): Values<YGDimension> {
-    return minDimensions_
-  }
-
-  fun maxDimensions(): Values<YGDimension> {
-    return maxDimensions_
-  }
-
-  fun aspectRatio(): YGFloatOptional {
-    return aspectRatio_
   }
 
   class BitfieldRef<T : Enum<T>>(
