@@ -398,10 +398,10 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             .addStatement("val factory = provider as %T", schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
             .addStatement("val instance = factory.%L.%L()", schema.type.flatName, widget.type.flatName)
             .addStatement("")
-            .addCode(toWidgetChildrenBuilder.build())
-            .addStatement("")
             .addStatement("instance.modifier = modifier")
             .addCode(toWidgetPropertiesBuilder.build())
+            .addStatement("")
+            .addCode(toWidgetChildrenBuilder.build())
             .addStatement("")
             .addStatement("return instance")
             .build(),
