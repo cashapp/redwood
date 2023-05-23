@@ -18,53 +18,15 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadParamsAppend
-import app.cash.paging.PagingSourceLoadParamsPrepend
-import app.cash.paging.PagingSourceLoadParamsRefresh
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingSourceLoadResultInvalid
-import app.cash.paging.PagingSourceLoadResultPage
-import app.cash.paging.PagingState
-import app.cash.paging.compose.LazyPagingItems
-import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.Modifier
 import kotlin.jvm.JvmName
 
-@Composable
-private fun lazyPagingItems(
-  pagingConfig: PagingConfig,
-  content: LazyListScope.() -> Unit,
-): LazyPagingItems<@Composable () -> Unit> {
-  var itemPagingSource: ItemPagingSource? by remember { mutableStateOf(null) }
-  val scope = LazyListIntervalContent(content)
-  val pagerFlow = remember {
-    // TODO Don't hardcode pageSizes
-    // TODO Enable placeholder support
-    // TODO Set a maxSize so we don't keep _too_ many views in memory
-    val pager = Pager(pagingConfig) {
-      itemPagingSource!!
-    }
-    pager.flow
-  }
-  val lazyPagingItems = pagerFlow.collectAsLazyPagingItems()
-  DisposableEffect(scope) {
-    itemPagingSource = ItemPagingSource(scope)
-    onDispose {
-      itemPagingSource?.invalidate()
-    }
-  }
-  return lazyPagingItems
-}
+private const val OffscreenItemsBufferCount = 30
 
 @Composable
 internal fun LazyList(
@@ -72,27 +34,24 @@ internal fun LazyList(
   modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
-  val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
-  val lazyPagingItems = lazyPagingItems(pagingConfig, content)
-  var window by remember { mutableStateOf(0 until pagingConfig.initialLoadSize) }
+  val itemProvider = rememberLazyListItemProvider(content)
+  var firstVisibleItemIndex by remember { mutableStateOf(0) }
+  var lastVisibleItemIndex by remember { mutableStateOf(0) }
+  val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
   LazyList(
     isVertical,
-    itemsBefore = window.first,
-    itemsAfter = (lazyPagingItems.itemCount - (window.last + 1)).coerceAtLeast(0),
-    onViewportChanged = { firstVisibleItemIndex, lastVisibleItemIndex ->
-      val newWindow = (firstVisibleItemIndex - pagingConfig.prefetchDistance).coerceAtLeast(0) until (lastVisibleItemIndex + 1 + pagingConfig.prefetchDistance)
-      window = newWindow
-
-      // Trigger load of everything in the range.
-      if (lazyPagingItems.itemCount > 0) lazyPagingItems[firstVisibleItemIndex]
-      if (lazyPagingItems.itemCount >= (lastVisibleItemIndex + 1)) lazyPagingItems[lastVisibleItemIndex]
+    itemsBefore = itemsBefore,
+    itemsAfter = itemsAfter,
+    onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      firstVisibleItemIndex = localFirstVisibleItemIndex
+      lastVisibleItemIndex = localLastVisibleItemIndex
     },
     modifier = modifier,
     items = {
-      for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
-        // Only invokes Composable lambdas that are loaded.
+      for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
-          lazyPagingItems.peek(index)?.invoke()
+          itemProvider.Item(index)
         }
       }
     },
@@ -107,69 +66,28 @@ internal fun RefreshableLazyList(
   modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
-  val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20, enablePlaceholders = false)
-  val lazyPagingItems = lazyPagingItems(pagingConfig, content)
-  var window by remember { mutableStateOf(0 until pagingConfig.initialLoadSize) }
+  val itemProvider = rememberLazyListItemProvider(content)
+  var firstVisibleItemIndex by remember { mutableStateOf(0) }
+  var lastVisibleItemIndex by remember { mutableStateOf(0) }
+  val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
   RefreshableLazyList(
     isVertical,
-    itemsBefore = window.first,
-    itemsAfter = (lazyPagingItems.itemCount - (window.last + 1)).coerceAtLeast(0),
-    onViewportChanged = { firstVisibleItemIndex, lastVisibleItemIndex ->
-      val newWindow = (firstVisibleItemIndex - pagingConfig.prefetchDistance).coerceAtLeast(0) until (lastVisibleItemIndex + 1 + pagingConfig.prefetchDistance)
-      window = newWindow
-
-      // Trigger load of everything in the range.
-      if (lazyPagingItems.itemCount > 0) lazyPagingItems[firstVisibleItemIndex]
-      if (lazyPagingItems.itemCount >= lastVisibleItemIndex) lazyPagingItems[lastVisibleItemIndex - 1]
+    itemsBefore = itemsBefore,
+    itemsAfter = itemsAfter,
+    onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      firstVisibleItemIndex = localFirstVisibleItemIndex
+      lastVisibleItemIndex = localLastVisibleItemIndex
     },
     refreshing = refreshing,
     onRefresh = onRefresh,
     modifier = modifier,
     items = {
-      for (index in window.first..(window.last).coerceAtMost(lazyPagingItems.itemCount - 1)) {
-        // Only invokes Composable lambdas that are loaded.
+      for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
-          lazyPagingItems.peek(index)?.invoke()
+          itemProvider.Item(index)
         }
       }
     },
   )
-}
-
-private class ItemPagingSource(
-  private val scope: LazyListIntervalContent,
-) : PagingSource<Int, @Composable () -> Unit>() {
-
-  override suspend fun load(
-    params: PagingSourceLoadParams<Int>,
-  ): PagingSourceLoadResult<Int, @Composable () -> Unit> {
-    val key = params.key ?: 0
-    val limit = when (params) {
-      is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
-      is PagingSourceLoadParamsRefresh<*> -> key + params.loadSize
-      else -> params.loadSize
-    }.coerceAtMost(scope.itemCount)
-    val offset = when (params) {
-      is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
-      is PagingSourceLoadParamsAppend<*> -> key
-      is PagingSourceLoadParamsRefresh<*> -> 0
-      else -> error("Shouldn't happen")
-    }
-    val nextPosToLoad = offset + limit
-    val loadResult: PagingSourceLoadResultPage<Int, @Composable () -> Unit> = PagingSourceLoadResultPage(
-      data = List(if (nextPosToLoad <= scope.itemCount) limit else scope.itemCount - offset) { index ->
-        scope.withInterval(index + offset) { localIntervalIndex, content ->
-          { content.item.invoke(localIntervalIndex) }
-        }
-      },
-      prevKey = offset.takeIf { it > 0 && limit > 0 },
-      nextKey = nextPosToLoad.takeIf { limit > 0 && it < scope.itemCount },
-      itemsBefore = offset,
-      itemsAfter = maxOf(0, scope.itemCount - nextPosToLoad),
-    )
-
-    return (if (invalid) PagingSourceLoadResultInvalid<Int, @Composable () -> Unit>() else loadResult) as PagingSourceLoadResult<Int, @Composable () -> Unit>
-  }
-
-  override fun getRefreshKey(state: PagingState<Int, @Composable () -> Unit>): Int = state.pages.sumOf { it.data.size }
 }
