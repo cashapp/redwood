@@ -61,7 +61,7 @@ internal class ViewFlexContainer(
     onLayoutModifierUpdated = { widget ->
       val childNode = yogaLayout.viewToNode(widget.value) ?: return@ViewGroupChildren
 
-      widget.layoutModifiers.forEach { modifier ->
+      widget.modifier.forEach { modifier ->
         when (modifier) {
           is Grow -> {
             Yoga.YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
