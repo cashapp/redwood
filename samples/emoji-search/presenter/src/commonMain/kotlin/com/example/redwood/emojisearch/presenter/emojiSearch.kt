@@ -111,7 +111,9 @@ fun EmojiSearch(
         .horizontalAlignment(CrossAxisAlignment.Stretch),
     )
     filteredEmojis.take(10).forEach { image ->
-      Image(image.url)
+      Row {
+        Image(image.url)
+      }
     }
   }
 }

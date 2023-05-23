@@ -17,8 +17,6 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.Size
-import app.cash.redwood.flexbox.isHorizontal
-import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.HorizontalAlignment
