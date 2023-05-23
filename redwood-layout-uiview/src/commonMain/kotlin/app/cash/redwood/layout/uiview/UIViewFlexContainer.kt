@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -31,16 +32,17 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.enums.YGEdge
+import app.cash.redwood.yoga.enums.YGWrap
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 internal class UIViewFlexContainer(
-  direction: FlexDirection,
+  private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaLayout = YogaLayout()
 
   override val value get() = yogaLayout.view.apply {
-    backgroundColor = UIColor.redColor
+    backgroundColor = if (direction.isHorizontal) UIColor.blueColor else UIColor.redColor
   }
   override val children = UIViewChildren(value)
   override var modifier: Modifier = Modifier

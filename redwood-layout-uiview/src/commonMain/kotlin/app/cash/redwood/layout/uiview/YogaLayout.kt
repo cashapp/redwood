@@ -33,7 +33,6 @@ import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGPointZero
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -64,7 +63,9 @@ internal class YogaLayout {
     }
     calculateLayoutWithSize(size)
 
-    YGApplyLayoutToViewHierarchy(rootNode, view)
+    for (childNode in rootNode.children) {
+      YGApplyLayoutToViewHierarchy(childNode)
+    }
   }
 
   private fun calculateLayoutWithSize(size: YGSize): Size {
@@ -173,10 +174,7 @@ private fun YGSanitizeMeasurement(
   YGMeasureModeUndefined -> measuredSize
 }
 
-private fun YGApplyLayoutToViewHierarchy(
-  node: YGNode,
-  view: UIView = node.view!!,
-) {
+private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
   val left = YGNodeLayoutGetLeft(node)
   val top = YGNodeLayoutGetTop(node)
 
@@ -184,7 +182,7 @@ private fun YGApplyLayoutToViewHierarchy(
   val y = top.toDouble()
   val width = YGNodeLayoutGetWidth(node).toDouble()
   val height = YGNodeLayoutGetHeight(node).toDouble()
-  view.setFrame(CGRectMake(x, y, width, height))
+  node.view!!.setFrame(CGRectMake(x, y, width, height))
   println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
 
   for (childNode in node.children) {
