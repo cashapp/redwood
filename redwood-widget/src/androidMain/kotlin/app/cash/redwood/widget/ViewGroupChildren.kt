@@ -20,7 +20,7 @@ import android.view.ViewGroup
 
 public class ViewGroupChildren(
   private val parent: ViewGroup,
-  private val onLayoutModifierUpdated: (Widget<View>) -> Unit = {},
+  private val onModifierUpdated: () -> Unit = {},
 ) : Widget.Children<View> {
   private val _widgets = ArrayList<Widget<View>>()
   public val widgets: List<Widget<View>> get() = _widgets
@@ -54,9 +54,6 @@ public class ViewGroupChildren(
   }
 
   override fun onModifierUpdated() {
-//    val widget = _widgets[index]
-//    widget.value.invalidate()
-//    widget.value.requestLayout()
-//    onLayoutModifierUpdated(widget)
+    onModifierUpdated.invoke()
   }
 }

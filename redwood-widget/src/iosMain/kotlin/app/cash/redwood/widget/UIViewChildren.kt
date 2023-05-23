@@ -25,6 +25,7 @@ public class UIViewChildren(
   private val insert: (UIView, Int) -> Unit = { view, index ->
     parent.insertSubview(view, index.convert<NSInteger>())
   },
+  private val onModifierUpdated: () -> Unit = {},
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
   public val widgets: List<Widget<UIView>> get() = _widgets
@@ -64,6 +65,7 @@ public class UIViewChildren(
 
   override fun onModifierUpdated() {
     invalidate()
+    onModifierUpdated.invoke()
   }
 
   private fun invalidate() {

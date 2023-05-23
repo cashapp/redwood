@@ -20,10 +20,15 @@ import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Default
@@ -32,7 +37,6 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGWrap
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -40,11 +44,15 @@ internal class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaLayout = YogaLayout()
+  private val density = Density.Default
 
   override val value get() = yogaLayout.view.apply {
     backgroundColor = if (direction.isHorizontal) UIColor.blueColor else UIColor.redColor
   }
-  override val children = UIViewChildren(value)
+  override val children = UIViewChildren(
+    parent = value,
+    onModifierUpdated = ::onModifierUpdated,
+  )
   override var modifier: Modifier = Modifier
 
   init {
@@ -113,6 +121,50 @@ internal class UIViewFlexContainer(
   private fun justifyContent(justifyContent: JustifyContent) {
     Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
     invalidate()
+  }
+
+  private fun onModifierUpdated() {
+    for ((index, widget) in children.widgets.withIndex()) {
+      val childNode = yogaLayout.rootNode.children[index]
+      widget.modifier.forEach { modifier ->
+        when (modifier) {
+          is Grow -> {
+            Yoga.YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
+          }
+          is Shrink -> {
+            Yoga.YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
+          }
+          is app.cash.redwood.layout.modifier.Margin -> {
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeLeft,
+              points = with(density) { modifier.margin.start.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeRight,
+              points = with(density) { modifier.margin.end.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeTop,
+              points = with(density) { modifier.margin.top.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeBottom,
+              points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
+            )
+          }
+          is HorizontalAlignment -> if (direction.isVertical) {
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+          is VerticalAlignment -> if (direction.isHorizontal) {
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+        }
+      }
+    }
   }
 
   private fun invalidate() {

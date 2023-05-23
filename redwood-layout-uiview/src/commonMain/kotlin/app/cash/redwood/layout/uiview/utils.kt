@@ -18,6 +18,7 @@ package app.cash.redwood.layout.uiview
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.yoga.enums.YGAlign
 import app.cash.redwood.yoga.enums.YGFlexDirection
 import app.cash.redwood.yoga.enums.YGJustify
@@ -47,6 +48,14 @@ internal fun JustifyContent.toYoga() = when (this) {
   JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
   JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
   JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toYoga() = when (this) {
+  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
+  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
+  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
+  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
   else -> throw AssertionError()
 }
 

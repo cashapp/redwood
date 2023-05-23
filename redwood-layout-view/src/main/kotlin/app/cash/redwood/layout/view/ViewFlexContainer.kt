@@ -58,48 +58,7 @@ internal class ViewFlexContainer(
 
   override val children = ViewGroupChildren(
     parent = yogaLayout,
-    onLayoutModifierUpdated = { widget ->
-      val childNode = yogaLayout.viewToNode(widget.value) ?: return@ViewGroupChildren
-
-      widget.modifier.forEach { modifier ->
-        when (modifier) {
-          is Grow -> {
-            Yoga.YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
-          }
-          is Shrink -> {
-            Yoga.YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
-          }
-          is app.cash.redwood.layout.modifier.Margin -> {
-            Yoga.YGNodeStyleSetMargin(
-              node = childNode,
-              edge = YGEdge.YGEdgeLeft,
-              points = with(density) { modifier.margin.start.toPx() }.toFloat(),
-            )
-            Yoga.YGNodeStyleSetMargin(
-              node = childNode,
-              edge = YGEdge.YGEdgeRight,
-              points = with(density) { modifier.margin.end.toPx() }.toFloat(),
-            )
-            Yoga.YGNodeStyleSetMargin(
-              node = childNode,
-              edge = YGEdge.YGEdgeTop,
-              points = with(density) { modifier.margin.top.toPx() }.toFloat(),
-            )
-            Yoga.YGNodeStyleSetMargin(
-              node = childNode,
-              edge = YGEdge.YGEdgeBottom,
-              points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
-            )
-          }
-          is HorizontalAlignment -> if (direction.isVertical) {
-            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
-          }
-          is VerticalAlignment -> if (direction.isHorizontal) {
-            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
-          }
-        }
-      }
-    }
+    onModifierUpdated = ::onModifierUpdated,
   )
 
   override var modifier: Modifier = Modifier
@@ -174,6 +133,50 @@ internal class ViewFlexContainer(
   fun justifyContent(justifyContent: JustifyContent) {
     Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
     invalidate()
+  }
+
+  private fun onModifierUpdated() {
+    for ((index, widget) in children.widgets.withIndex()) {
+      val childNode = yogaLayout.rootNode.children[index]
+      widget.modifier.forEach { modifier ->
+        when (modifier) {
+          is Grow -> {
+            Yoga.YGNodeStyleSetFlexGrow(childNode, modifier.value.toFloat())
+          }
+          is Shrink -> {
+            Yoga.YGNodeStyleSetFlexShrink(childNode, modifier.value.toFloat())
+          }
+          is app.cash.redwood.layout.modifier.Margin -> {
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeLeft,
+              points = with(density) { modifier.margin.start.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeRight,
+              points = with(density) { modifier.margin.end.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeTop,
+              points = with(density) { modifier.margin.top.toPx() }.toFloat(),
+            )
+            Yoga.YGNodeStyleSetMargin(
+              node = childNode,
+              edge = YGEdge.YGEdgeBottom,
+              points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
+            )
+          }
+          is HorizontalAlignment -> if (direction.isVertical) {
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+          is VerticalAlignment -> if (direction.isHorizontal) {
+            Yoga.YGNodeStyleSetAlignSelf(childNode, modifier.alignment.toYoga())
+          }
+        }
+      }
+    }
   }
 
   private fun invalidate() {
