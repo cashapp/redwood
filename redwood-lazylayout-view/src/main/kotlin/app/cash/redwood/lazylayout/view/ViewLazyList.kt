@@ -17,6 +17,7 @@
 
 package app.cash.redwood.lazylayout.view
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -138,15 +139,16 @@ internal open class ViewLazyListImpl(
     }
   }
 
+  @SuppressLint("NotifyDataSetChanged")
   override fun itemsBefore(itemsBefore: Int) {
-    val delta = itemsBefore - items.itemsBefore
     items.itemsBefore = itemsBefore
 
-    if (delta > 0) {
-      adapter.notifyItemRangeInserted(itemsBefore - delta, delta)
-    } else {
-      adapter.notifyItemRangeRemoved(itemsBefore, -delta)
-    }
+    // TODO Replace notifyDataSetChanged with atomic change events
+    //  notifyItemRangeInserted causes an onScrolled event to be emitted.
+    //  This incorrectly updates the viewport, which then shifts the loaded items window.
+    //  This then increases the value of itemsBefore,
+    //  and the cycle continues until the backing dataset is exhausted.
+    adapter.notifyDataSetChanged()
   }
 
   override fun itemsAfter(itemsAfter: Int) {
