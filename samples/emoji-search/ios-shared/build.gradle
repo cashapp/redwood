@@ -1,5 +1,6 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.native.cocoapods'
+apply plugin: 'app.cash.redwood'
 
 kotlin {
   iosArm64()
@@ -16,11 +17,9 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.emojiSearch.launcher
-        implementation projects.samples.emojiSearch.presenterTreehouse
-        implementation projects.samples.emojiSearch.schema.widget.protocol
+        implementation projects.samples.emojiSearch.schema.widget
+        implementation projects.samples.emojiSearch.presenter
         implementation projects.redwoodLayoutUiview
-        implementation projects.redwoodLazylayoutUiview
       }
     }
   }

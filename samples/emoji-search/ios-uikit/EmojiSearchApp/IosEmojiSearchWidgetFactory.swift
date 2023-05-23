@@ -19,15 +19,8 @@ import Foundation
 import UIKit
 import EmojiSearchKt
 
-class IosEmojiSearchWidgetFactory<A : AnyObject>: EmojiSearchWidgetFactory {
-    let treehouseApp: TreehouseApp<A>
-    let widgetSystem: TreehouseViewWidgetSystem
+class IosEmojiSearchWidgetFactory: EmojiSearchWidgetFactory {
     let imageLoader = RemoteImageLoader()
-
-    init(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseViewWidgetSystem) {
-        self.treehouseApp = treehouseApp
-        self.widgetSystem = widgetSystem
-    }
 
     func TextInput() -> TextInput {
         return TextInputBinding()

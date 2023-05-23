@@ -32,7 +32,6 @@ import example.values.TextFieldState
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
-    Dependency(2, RedwoodLazyLayout::class),
   ],
 )
 interface EmojiSearch

@@ -19,8 +19,8 @@ kotlin {
       dependencies {
         api projects.redwoodLayoutWidget
         api projects.redwoodLayoutTesting
-        api projects.redwoodLazylayoutWidget
-        api projects.redwoodLazylayoutTesting
+//        api projects.redwoodLazylayoutWidget
+//        api projects.redwoodLazylayoutTesting
         api projects.samples.emojiSearch.values
         api projects.samples.emojiSearch.schema.widget
       }

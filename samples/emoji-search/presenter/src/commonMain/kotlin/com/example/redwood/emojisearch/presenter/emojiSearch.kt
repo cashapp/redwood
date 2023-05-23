@@ -26,15 +26,10 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
-import app.cash.redwood.layout.compose.Column
-import app.cash.redwood.layout.compose.Row
-import app.cash.redwood.layout.compose.Spacer
-import app.cash.redwood.treehouse.LocalHostConfiguration
 import com.example.redwood.emojisearch.compose.Image
-import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
 import kotlinx.serialization.json.Json
@@ -70,7 +65,6 @@ interface ColumnProvider {
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
-  columnProvider: ColumnProvider,
 ) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
@@ -106,7 +100,7 @@ fun EmojiSearch(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = LocalHostConfiguration.current.safeAreaInsets,
+    margin = Margin(top = 60.dp)
   ) {
     TextInput(
       state = searchTerm,
@@ -114,20 +108,7 @@ fun EmojiSearch(
       onChange = { searchTerm = it },
     )
     filteredEmojis.take(10).forEach { image ->
-      Row(
-        margin = Margin(top = 20.dp),
-        width = Constraint.Fill,
-        horizontalAlignment = MainAxisAlignment.Center,
-        verticalAlignment = CrossAxisAlignment.Center,
-      ) {
-        Image(
-          image.url,
-          modifier = Modifier
-            .margin(Margin(4.dp))
-        )
-        Spacer(width = 4.dp)
-        Text(image.label)
-      }
+      Image(image.url)
     }
   }
 }
