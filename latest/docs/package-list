@@ -3,8 +3,6 @@ $dokka.linkExtension:html
 
 module:redwood-compose
 app.cash.redwood.compose
-module:redwood-compose-testing
-app.cash.redwood.compose.testing
 module:redwood-flexbox
 app.cash.redwood.flexbox
 module:redwood-gradle-plugin
@@ -54,6 +52,8 @@ app.cash.redwood
 app.cash.redwood.ui
 module:redwood-schema
 app.cash.redwood.schema
+module:redwood-testing
+app.cash.redwood.testing
 module:redwood-tooling-codegen
 app.cash.redwood.tooling.codegen
 module:redwood-tooling-lint
