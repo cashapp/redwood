@@ -71,8 +71,8 @@ internal object Redwood {
 }
 
 internal object RedwoodTesting {
-  val TestRedwoodComposition = ClassName("app.cash.redwood.compose.testing", "TestRedwoodComposition")
-  val WidgetValue = ClassName("app.cash.redwood.compose.testing", "WidgetValue")
+  val TestRedwoodComposition = ClassName("app.cash.redwood.testing", "TestRedwoodComposition")
+  val WidgetValue = ClassName("app.cash.redwood.testing", "WidgetValue")
 }
 
 internal object RedwoodWidget {
