@@ -48,9 +48,7 @@ internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : Row<View>, Column<View> {
-  private val yogaLayout = YogaLayout(context).apply {
-    Yoga.YGNodeStyleSetFlexDirection(rootNode, direction.toYoga())
-  }
+  private val yogaLayout = YogaLayout(context)
   private val density = Density(context.resources)
 
   private val hostView = HostView()
@@ -65,6 +63,12 @@ internal class ViewFlexContainer(
 
   private var width = Constraint.Wrap
   private var height = Constraint.Wrap
+
+  init {
+    Yoga.YGNodeStyleSetFlexDirection(yogaLayout.rootNode, direction.toYoga())
+    yogaLayout.density = density
+    yogaLayout.getModifier = { children.widgets[it].modifier }
+  }
 
   override fun width(width: Constraint) {
     this.width = width

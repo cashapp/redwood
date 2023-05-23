@@ -10,11 +10,18 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
+import app.cash.redwood.Modifier
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.VerticalAlignment
+import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.Yoga.YGUndefined
 import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
 import app.cash.redwood.yoga.enums.YGDirection
+import app.cash.redwood.yoga.enums.YGEdge
 import app.cash.redwood.yoga.enums.YGMeasureMode
 import app.cash.redwood.yoga.interfaces.YGMeasureFunc
 import kotlin.math.roundToInt
@@ -28,6 +35,9 @@ import kotlin.math.roundToInt
 internal class YogaLayout(context: Context) : ViewGroup(context) {
   private val nodes = mutableMapOf<View, YGNode>()
   val rootNode = Yoga.YGNodeNew()
+
+  var density: Density = Density(1.0)
+  var getModifier: (Int) -> Modifier = { Modifier }
 
   init {
     rootNode.setMeasureFunc(ViewMeasureFunction(this))
@@ -98,6 +108,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     nodes -= view
 
     if (inLayout) {
+      for ((index, node) in rootNode.children.withIndex()) {
+        syncModifier(node, getModifier(index), density)
+      }
+
       Yoga.YGNodeCalculateLayout(
         node = rootNode,
         ownerWidth = YGUndefined,
@@ -214,5 +228,46 @@ private class ViewMeasureFunction(val view: View) : YGMeasureFunc {
     val heightSpec = MeasureSpec.makeMeasureSpec(height.roundToInt(), heightMode.toAndroid())
     view.measure(widthSpec, heightSpec)
     return YGSize(view.measuredWidth, view.measuredHeight)
+  }
+}
+
+private fun syncModifier(node: YGNode, combinedModifier: Modifier, density: Density) {
+  combinedModifier.forEach { modifier ->
+    when (modifier) {
+      is Grow -> {
+        Yoga.YGNodeStyleSetFlexGrow(node, modifier.value.toFloat())
+      }
+      is Shrink -> {
+        Yoga.YGNodeStyleSetFlexShrink(node, modifier.value.toFloat())
+      }
+      is app.cash.redwood.layout.modifier.Margin -> {
+        Yoga.YGNodeStyleSetMargin(
+          node = node,
+          edge = YGEdge.YGEdgeLeft,
+          points = with(density) { modifier.margin.start.toPx() }.toFloat(),
+        )
+        Yoga.YGNodeStyleSetMargin(
+          node = node,
+          edge = YGEdge.YGEdgeRight,
+          points = with(density) { modifier.margin.end.toPx() }.toFloat(),
+        )
+        Yoga.YGNodeStyleSetMargin(
+          node = node,
+          edge = YGEdge.YGEdgeTop,
+          points = with(density) { modifier.margin.top.toPx() }.toFloat(),
+        )
+        Yoga.YGNodeStyleSetMargin(
+          node = node,
+          edge = YGEdge.YGEdgeBottom,
+          points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
+        )
+      }
+      is HorizontalAlignment -> {
+        Yoga.YGNodeStyleSetAlignSelf(node, modifier.alignment.toYoga())
+      }
+      is VerticalAlignment -> {
+        Yoga.YGNodeStyleSetAlignSelf(node, modifier.alignment.toYoga())
+      }
+    }
   }
 }
