@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -23,7 +23,7 @@ import app.cash.redwood.ui.HostConfiguration
 
 /**
  * Provide the configuration of the host display.
- * This value will be bound automatically when Treehouse is used.
+ * This value will be bound automatically.
  * Custom values should only be provided into a composition for testing purposes!
  *
  * @see HostConfiguration.Companion.current
