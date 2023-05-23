@@ -48,7 +48,7 @@ internal class YogaLayout {
   var width = Constraint.Wrap
   var height = Constraint.Wrap
 
-  fun applyLayout(preserveOrigin: Boolean) {
+  fun applyLayout() {
     YGAttachNodesFromViewHierachy(this)
 
     val size = view.bounds.useContents {
@@ -64,7 +64,7 @@ internal class YogaLayout {
     }
     calculateLayoutWithSize(size)
 
-    YGApplyLayoutToViewHierarchy(rootNode, view, preserveOrigin, isRootNode = true)
+    YGApplyLayoutToViewHierarchy(rootNode, view)
   }
 
   private fun calculateLayoutWithSize(size: YGSize): Size {
@@ -98,7 +98,7 @@ internal class YogaLayout {
 
     override fun layoutSubviews() {
       super.layoutSubviews()
-      applyLayout(preserveOrigin = true)
+      applyLayout()
     }
   }
 }
@@ -176,23 +176,19 @@ private fun YGSanitizeMeasurement(
 private fun YGApplyLayoutToViewHierarchy(
   node: YGNode,
   view: UIView = node.view!!,
-  preserveOrigin: Boolean,
-  isRootNode: Boolean = false,
 ) {
-  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()}")
-
   val left = YGNodeLayoutGetLeft(node)
   val top = YGNodeLayoutGetTop(node)
 
-  val origin = if (preserveOrigin) view.frame.useContents { origin } else CGPointZero
-  val x = left + origin.x
-  val y = top + origin.y
+  val x = left.toDouble()
+  val y = top.toDouble()
   val width = YGNodeLayoutGetWidth(node).toDouble()
   val height = YGNodeLayoutGetHeight(node).toDouble()
-  if (!isRootNode) view.setFrame(CGRectMake(x, y, width, height))
+  view.setFrame(CGRectMake(x, y, width, height))
+  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
 
   for (childNode in node.children) {
-    YGApplyLayoutToViewHierarchy(childNode, preserveOrigin = false)
+    YGApplyLayoutToViewHierarchy(childNode)
   }
 }
 
