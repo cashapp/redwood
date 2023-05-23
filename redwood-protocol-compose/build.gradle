@@ -26,7 +26,7 @@ kotlin {
         implementation libs.kotlin.test
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
-        implementation projects.redwoodComposeTesting
+        implementation projects.redwoodTesting
         implementation projects.testSchema.compose
         implementation projects.testSchema.composeProtocol
       }

@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
-import app.cash.redwood.compose.testing.TestRedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
@@ -32,6 +31,7 @@ import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.testing.TestRedwoodComposition
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import example.redwood.compose.Button
