@@ -15,12 +15,27 @@
  */
 package app.cash.redwood.protocol
 
+import app.cash.redwood.protocol.ChildrenChange.Move
+import app.cash.redwood.protocol.ChildrenChange.Remove
+import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 
 /**
- * A snapshot of a view hierarchy, intended for use in tests, debugging, and development tools.
+ * A set of [Change]s for creating a view hierarchy from scratch.
+ * Intended for use in tests, debugging, and development tools.
  */
+@JvmInline
 @Serializable
-public class ViewTree(
+public value class SnapshotChangeList(
   public val changes: List<Change>,
-)
+) {
+  init {
+    val badChanges = changes.filter { it is Move || it is Remove }
+    require(badChanges.isEmpty()) {
+      buildString {
+        append("Snapshot change list cannot contain move or remove operations\n\nFound:\n")
+        badChanges.joinTo(this, separator = "\n") { " - $it" }
+      }
+    }
+  }
+}
