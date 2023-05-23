@@ -15,7 +15,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
-        implementation libs.paging.compose.common
       }
     }
   }
@@ -31,8 +30,10 @@ spotless {
     targetExclude(
       // Apache 2-licensed files from AOSP.
       "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/LazyListIntervalContent.kt",
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/LazyListItemProvider.kt",
       "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/IntervalList.kt",
       "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/LazyLayoutIntervalContent.kt",
+      "src/commonMain/kotlin/app/cash/redwood/lazylayout/compose/layout/LazyLayoutItemProvider.kt",
     )
   }
 }
