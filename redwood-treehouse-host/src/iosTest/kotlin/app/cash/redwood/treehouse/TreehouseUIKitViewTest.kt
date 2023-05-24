@@ -30,7 +30,6 @@ import assertk.assertions.isEqualTo
 import kotlin.test.Test
 import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.useContents
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import platform.Foundation.NSDate
 import platform.Foundation.NSRunLoop
@@ -39,7 +38,6 @@ import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
 import platform.UIKit.UIWindow
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseUIKitViewTest {
   @Test fun widgetsAddChildViews() {
     val layout = TreehouseUIKitView(throwingWidgetSystem)

@@ -16,11 +16,9 @@
 package app.cash.redwood.compose
 
 import kotlin.test.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WindowAnimationFrameClockTest {
   @Test fun ticks() = runTest {
     val job = Job()
