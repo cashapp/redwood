@@ -15,7 +15,7 @@
  */
 package com.example.redwood.counter.ios
 
-import androidx.compose.runtime.BroadcastFrameClock
+import app.cash.redwood.compose.DisplayLinkClock
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.widget.UIViewChildren
@@ -31,8 +31,7 @@ import platform.UIKit.UIStackView
 class CounterViewControllerDelegate(
   root: UIStackView,
 ) {
-  private val clock = BroadcastFrameClock()
-  private val scope = MainScope() + clock
+  private val scope = MainScope() + DisplayLinkClock
 
   init {
     val children = UIViewChildren(
@@ -50,10 +49,6 @@ class CounterViewControllerDelegate(
     composition.setContent {
       Counter()
     }
-  }
-
-  fun tickClock() {
-    clock.sendFrame(0L) // Compose does not use frame time.
   }
 
   fun dispose() {
