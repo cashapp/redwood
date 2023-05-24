@@ -3,7 +3,6 @@ import UIKit
 import CounterKt
 
 class CounterViewController : UIViewController {
-    private var displayLink: CADisplayLink!
     private var delegate: CounterViewControllerDelegate!
 
     override func viewDidLoad() {
@@ -19,22 +18,7 @@ class CounterViewController : UIViewController {
         container.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         container.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
 
-        let delegate = CounterViewControllerDelegate(root: container)
-        self.delegate = delegate
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        let displayLink = CADisplayLink.init(target: self, selector: #selector(tickClock))
-        displayLink.add(to: .current, forMode: .default)
-        self.displayLink = displayLink
-    }
-
-    @objc func tickClock() {
-        delegate.tickClock()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        displayLink.invalidate()
+        self.delegate = CounterViewControllerDelegate(root: container)
     }
 
     deinit {
