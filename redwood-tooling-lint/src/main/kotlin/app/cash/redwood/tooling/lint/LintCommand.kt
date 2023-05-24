@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 @file:JvmName("Main")
-@file:Suppress("UnstableApiUsage" /* Lint 🙄 */)
+@file:Suppress("UnstableApiUsage") // Lint 🙄
 
 package app.cash.redwood.tooling.lint
 

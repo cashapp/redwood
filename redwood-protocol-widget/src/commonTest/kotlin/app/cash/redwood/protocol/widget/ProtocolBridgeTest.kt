@@ -46,7 +46,7 @@ class ProtocolBridgeTest {
     val changes = listOf(
       Create(
         id = Id.Root,
-        tag = WidgetTag(4), /* button */
+        tag = WidgetTag(4), // Button
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
@@ -69,7 +69,7 @@ class ProtocolBridgeTest {
     val changes = listOf(
       Create(
         id = Id(1),
-        tag = WidgetTag(4), /* button */
+        tag = WidgetTag(4), // Button
       ),
     )
     bridge.sendChanges(changes)
@@ -96,7 +96,7 @@ class ProtocolBridgeTest {
       listOf(
         Create(
           id = Id(1),
-          tag = WidgetTag(4), /* button */
+          tag = WidgetTag(4), // Button
         ),
         ChildrenChange.Add(
           id = Id.Root,
@@ -124,7 +124,7 @@ class ProtocolBridgeTest {
     val updateButtonText = listOf(
       PropertyChange(
         id = Id(1),
-        tag = PropertyTag(1), /* text */
+        tag = PropertyTag(1), // text
         value = JsonPrimitive("hello"),
       ),
     )
