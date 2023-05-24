@@ -29,6 +29,9 @@ dependencies {
   implementation libs.gradleMavenPublishPlugin
   implementation libs.dokkaPlugin
   implementation libs.spotlessPlugin
+
+  // Expose the generated version catalog API to the plugin.
+  implementation(files(libs.class.superclass.protectionDomain.codeSource.location))
 }
 
 gradlePlugin {
