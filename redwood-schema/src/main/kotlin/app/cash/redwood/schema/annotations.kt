@@ -44,7 +44,7 @@ public annotation class Schema(
   val dependencies: Array<Dependency> = [],
 ) {
   @Retention(RUNTIME)
-  @Target(/* None, use only within @Schema. */)
+  @Target // None, use only within @Schema.
   public annotation class Dependency(
     val tag: Int,
     val schema: KClass<*>,

@@ -916,7 +916,9 @@ Property
    */
   @Modifier(1, TestScope::class)
   data class CommentsModifier(
-    /** Property same line documentation. */ val id: Int,
+    // TODO Disable ktlint formatting so the following two lines stay together on one.
+    /** Property same line documentation. */
+    val id: Int,
   )
 
   @Ignore("Missing handling of '/** */' noise")
