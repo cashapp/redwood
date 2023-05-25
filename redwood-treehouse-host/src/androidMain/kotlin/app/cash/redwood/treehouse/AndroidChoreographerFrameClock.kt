@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * A [FrameClock] that suspends with a fixed delay. This does not match the host app's frame pulse.
+ * A [FrameClock] that sends frames using [Choreographer].
  */
 internal class AndroidChoreographerFrameClock : FrameClock {
   private val choreographer = Choreographer.getInstance()

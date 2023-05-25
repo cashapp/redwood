@@ -15,15 +15,18 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlinx.cinterop.convert
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import platform.posix.CLOCK_MONOTONIC_RAW
+import platform.posix.clock_gettime_nsec_np
 
 internal class IosDisplayLinkClock : FrameClock {
   private lateinit var scope: CoroutineScope
   private lateinit var dispatchers: TreehouseDispatchers
   private lateinit var displayLinkTarget: DisplayLinkTarget
 
-  /** Non-null if we're expecting a call to [tickClock]. */
+  /** Non-null if we're expecting a call to [AppLifecycle.sendFrame]. */
   private var appLifecycle: AppLifecycle? = null
 
   override fun start(scope: CoroutineScope, dispatchers: TreehouseDispatchers) {
@@ -32,7 +35,8 @@ internal class IosDisplayLinkClock : FrameClock {
     this.displayLinkTarget = DisplayLinkTarget {
       unsubscribe()
       scope.launch(dispatchers.zipline) {
-        appLifecycle?.sendFrame(0L)
+        val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+        appLifecycle?.sendFrame(nanos)
         appLifecycle = null
       }
     }
