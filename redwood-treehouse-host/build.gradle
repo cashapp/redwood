@@ -51,6 +51,33 @@ kotlin {
   }
 }
 
+dependencies {
+  androidTestImplementation libs.junit
+  androidTestImplementation libs.turbine
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation libs.kotlinx.coroutines.test
+  androidTestImplementation libs.assertk
+
+  // The kotlin.test library provides JVM variants for multiple testing frameworks. The Kotlin
+  // plugin does not apply the capability to configurations created by the Android plugin.
+  androidTestImplementation(libs.kotlin.test) {
+    capabilities {
+      requireCapability(
+        "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
+    }
+  }
+}
+
 android {
   namespace 'app.cash.treehouse.host'
+
+  sourceSets {
+    androidTest {
+      java.srcDir('src/commonTest/kotlin')
+    }
+  }
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
 }
