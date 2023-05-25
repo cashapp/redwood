@@ -15,17 +15,19 @@
  */
 package app.cash.redwood.compose
 
+import androidx.compose.runtime.MonotonicFrameClock
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isLessThan
 import assertk.assertions.isPositive
-import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
-class DisplayLinkClockTest {
+class AndroidUiFrameClockTest {
   @Test fun ticksWithTime() = runTest {
-    val frameTimeA = DisplayLinkClock.withFrameNanos { it }
-    val frameTimeB = DisplayLinkClock.withFrameNanos { it }
+    val frameClock = AndroidUiDispatcher.Main[MonotonicFrameClock]!!
+    val frameTimeA = frameClock.withFrameNanos { it }
+    val frameTimeB = frameClock.withFrameNanos { it }
     assertThat(frameTimeA).all {
       isPositive()
       isLessThan(frameTimeB)

@@ -19,10 +19,12 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.isLessThan
 import assertk.assertions.isPositive
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 class DisplayLinkClockTest {
+  @Ignore // TODO Does not work without linking XCTest and showing a XCUIApplication.
   @Test fun ticksWithTime() = runTest {
     val frameTimeA = DisplayLinkClock.withFrameNanos { it }
     val frameTimeB = DisplayLinkClock.withFrameNanos { it }
