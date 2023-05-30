@@ -27,6 +27,10 @@ kotlin {
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation libs.assertk
+        implementation projects.testSchema.testing
+        implementation projects.testSchema.compose
+        implementation projects.testSchema.composeProtocol
+        implementation projects.testSchema.widgetProtocol
       }
     }
     androidMain {
@@ -49,6 +53,10 @@ android {
 
   defaultConfig {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  testOptions {
+    unitTests.returnDefaultValues = true
   }
 }
 

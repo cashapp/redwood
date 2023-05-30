@@ -19,6 +19,7 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Applier
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 
 /**
@@ -57,9 +58,21 @@ internal class NodeApplier<W : Any>(
   private val onEndChanges: () -> Unit,
 ) : AbstractApplier<Node<W>>(ChildrenNode(root)), RedwoodApplier<W> {
   private var closed = false
+  private val changedWidgets = LinkedHashSet<ChangeListener>()
+
+  override fun recordChanged(widget: Widget<W>) {
+    if (widget is ChangeListener) {
+      changedWidgets += widget
+    }
+  }
 
   override fun onEndChanges() {
     check(!closed)
+
+    for (changedWidget in changedWidgets) {
+      changedWidget.onEndChanges()
+    }
+    changedWidgets.clear()
 
     onEndChanges.invoke()
   }
@@ -85,10 +98,13 @@ internal class NodeApplier<W : Any>(
     if (instance is WidgetNode<*, *>) {
       @Suppress("UNCHECKED_CAST") // Guaranteed by generated code.
       val widgetNode = instance as WidgetNode<Widget<W>, W>
-      val children = (current as ChildrenNode<W>).children
+      val current = current as ChildrenNode<W>
+      val children = current.children
 
       widgetNode.container = children
       children.insert(index, widgetNode.widget)
+
+      current.parent?.let(::recordChanged)
     }
   }
 
@@ -97,6 +113,7 @@ internal class NodeApplier<W : Any>(
 
     val current = current as ChildrenNode
     current.children.remove(index, count)
+    current.parent?.let(::recordChanged)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
@@ -104,6 +121,7 @@ internal class NodeApplier<W : Any>(
 
     val current = current as ChildrenNode
     current.children.move(from, to, count)
+    current.parent?.let(::recordChanged)
   }
 
   override fun onClear() {
@@ -124,12 +142,18 @@ public sealed interface Node<W : Any>
  */
 @RedwoodCodegenApi
 public class WidgetNode<W : Widget<V>, V : Any>(
+  private val applier: RedwoodApplier<V>,
   public val widget: W,
 ) : Node<W> {
+  public fun recordChanged() {
+    applier.recordChanged(widget)
+  }
+
   public var container: Widget.Children<V>? = null
 
   public companion object {
     public val SetModifiers: WidgetNode<*, *>.(Modifier) -> Unit = {
+      recordChanged()
       widget.modifier = it
       container?.onModifierUpdated()
     }
@@ -158,15 +182,25 @@ public class WidgetNode<W : Widget<V>, V : Any>(
 @RedwoodCodegenApi
 internal class ChildrenNode<W : Any> private constructor(
   private var accessor: ((Widget<W>) -> Widget.Children<W>)?,
+  parent: Widget<W>?,
   private var _children: Widget.Children<W>?,
 ) : Node<W> {
-  constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null)
-  constructor(children: Widget.Children<W>) : this(null, children)
+  constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null, null)
+  constructor(children: Widget.Children<W>) : this(null, null, children)
 
-  val children: Widget.Children<W> get() = _children!!
+  /** The parent of this children group. Null when the root children instance. */
+  var parent: Widget<W>? = parent
+    get() {
+      checkNotNull(_children) { "Not attached" }
+      return field
+    }
+    private set
+
+  val children: Widget.Children<W> get() = checkNotNull(_children) { "Not attached" }
 
   fun attachTo(parent: Widget<W>) {
     _children = checkNotNull(accessor).invoke(parent)
+    this.parent = parent
     accessor = null
   }
 }

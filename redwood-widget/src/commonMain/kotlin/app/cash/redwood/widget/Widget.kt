@@ -18,6 +18,13 @@ package app.cash.redwood.widget
 import app.cash.redwood.Modifier
 import kotlin.native.ObjCName
 
+/**
+ * The target of a composable function's values. Usually binds to an associated native UI toolkit
+ * element, but could also forward changes through a serialized protocol or record the latest
+ * values for testing.
+ *
+ * @see ChangeListener
+ */
 @ObjCName("Widget", exact = true)
 public interface Widget<W : Any> {
   /**
