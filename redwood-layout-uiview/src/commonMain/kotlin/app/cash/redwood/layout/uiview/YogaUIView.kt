@@ -57,7 +57,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   var getModifier: (Int) -> Modifier = { Modifier }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(YGSize(YGUndefined, YGUndefined)).toCGSize()
+    return calculateLayoutWithSize(YGUnidentifiedSize).toCGSize()
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
@@ -160,7 +160,7 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
     // for more information.
     val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
-      YGSize(0f, 0f)
+      YGZeroSize
     } else {
       view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toYGSize()
     }
@@ -251,3 +251,7 @@ private fun YGSize.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
 private val YGNode.view: UIView?
   get() = (measure.noContext as ViewMeasureFunction?)?.view
+
+private val YGUnidentifiedSize = YGSize(YGUndefined, YGUndefined)
+
+private val YGZeroSize = YGSize(0f, 0f)
