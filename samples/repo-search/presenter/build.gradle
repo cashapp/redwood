@@ -12,16 +12,12 @@ kotlin {
     commonMain {
       dependencies {
         implementation projects.samples.repoSearch.schema.compose
+        implementation projects.redwoodLazylayoutCompose
         implementation projects.redwoodProtocolCompose
         implementation projects.redwoodTreehouse
+        implementation projects.redwoodTreehouseGuest
         implementation libs.paging.compose.common
         implementation libs.kotlinx.coroutines.core
-      }
-    }
-    jsMain {
-      dependencies {
-        implementation projects.redwoodTreehouseGuest
-        implementation projects.redwoodLazylayoutCompose
       }
     }
   }
