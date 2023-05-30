@@ -61,34 +61,15 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return size.useContents {
-      val width = if (width == UIViewNoIntrinsicMetric) YGUndefined else width.toFloat()
-      val height = if (height == UIViewNoIntrinsicMetric) YGUndefined else height.toFloat()
-      val output = calculateLayoutWithSize(YGSize(width, height))
-      println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}]")
-      output.toCGSize()
-    }
+    val bounds = size.useContents { sizeToBounds(this) }
+    val output = calculateLayoutWithSize(bounds)
+//    println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}] ${rootNode.children.size} ${subviews.size}")
+    return output.toCGSize()
   }
 
   override fun layoutSubviews() {
-    YGAttachNodesFromViewHierachy(this)
-
-    for ((index, node) in rootNode.children.withIndex()) {
-      syncModifier(node, getModifier(index), density)
-    }
-
-    val size = bounds.useContents {
-      val widthBounds = when (width) {
-          Constraint.Wrap -> YGUndefined
-          else -> size.width.toFloat()
-      }
-      val heightBounds = when (height) {
-          Constraint.Wrap -> YGUndefined
-          else -> size.height.toFloat()
-      }
-      YGSize(widthBounds, heightBounds)
-    }
-    calculateLayoutWithSize(size)
+    val bounds = bounds.useContents { sizeToBounds(size) }
+    calculateLayoutWithSize(bounds)
 
     for (childNode in rootNode.children) {
       YGApplyLayoutToViewHierarchy(childNode)
@@ -98,6 +79,12 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   private fun calculateLayoutWithSize(size: YGSize): YGSize {
     // TODO: Figure out how to measure incrementally safely.
     rootNode.markDirtyAndPropogateDownwards()
+
+    YGAttachNodesFromViewHierachy(this)
+
+    for ((index, node) in rootNode.children.withIndex()) {
+      syncModifier(node, getModifier(index), density)
+    }
 
     Yoga.YGNodeCalculateLayout(
       node = rootNode,
@@ -109,6 +96,21 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
       width = YGNodeLayoutGetWidth(rootNode),
       height = YGNodeLayoutGetHeight(rootNode),
     )
+  }
+
+  private fun sizeToBounds(size: CGSize): YGSize {
+    return YGSize(
+      width = sizeToBoundsDimension(width, size.width),
+      height = sizeToBoundsDimension(height, size.height),
+    )
+  }
+
+  private fun sizeToBoundsDimension(constraint: Constraint, dimension: Double): Float {
+    if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
+      return YGUndefined
+    } else {
+      return dimension.toFloat()
+    }
   }
 }
 
@@ -143,7 +145,12 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     height: Float,
     heightMode: YGMeasureMode,
   ): YGSize {
-//    println("ViewMeasureFunction ${node.view} $width $widthMode $height $heightMode")
+    val view = node.view!!
+//    if (view is YogaUIView) {
+//      println("ViewMeasureFunction ${view.flexDirection} $width $widthMode $height $heightMode")
+//    } else {
+//      println("ViewMeasureFunction CHILD $width $widthMode $height $heightMode")
+//    }
 
     val constrainedWidth = when (widthMode) {
         YGMeasureModeUndefined -> UIViewNoIntrinsicMetric

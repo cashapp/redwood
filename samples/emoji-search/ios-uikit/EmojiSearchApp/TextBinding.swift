@@ -29,7 +29,5 @@ class TextBinding: Text {
 
     func text(text: String) {
         root.text = text
-        root.invalidateIntrinsicContentSize()
-        root.setNeedsLayout()
     }
 }
