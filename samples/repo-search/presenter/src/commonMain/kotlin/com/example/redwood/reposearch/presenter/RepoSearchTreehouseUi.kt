@@ -16,14 +16,16 @@
 package com.example.redwood.reposearch.presenter
 
 import androidx.compose.runtime.Composable
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingSourceLoadParams
+import app.cash.paging.PagingSourceLoadResult
+import app.cash.paging.PagingSourceLoadResultPage
+import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
-import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.lazylayout.compose.LazyColumn
-import kotlinx.serialization.decodeFromString
+import app.cash.redwood.treehouse.TreehouseUi
 import kotlinx.serialization.json.Json
 
 class RepoSearchTreehouseUi(
@@ -65,18 +67,18 @@ private class RepositoryPagingSource(
     require(searchTerm.isNotEmpty())
   }
 
-  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
+  override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Repository> {
     val page = params.key ?: FIRST_PAGE_INDEX
     val repositoriesJson = httpClient.call(
       "https://api.github.com/search/repositories?page=$page&per_page=${params.loadSize}&sort=stars&q=$searchTerm",
       mapOf("Accept" to "application/vnd.github.v3+json"),
     )
     val repositories = json.decodeFromString<Repositories>(repositoriesJson)
-    return LoadResult.Page(
+    return PagingSourceLoadResultPage(
       data = repositories.items,
       prevKey = (page - 1).takeIf { it >= FIRST_PAGE_INDEX },
       nextKey = if (repositories.items.isNotEmpty()) page + 1 else null,
-    )
+    ) as PagingSourceLoadResult<Int, Repository>
   }
 
   override fun getRefreshKey(state: PagingState<Int, Repository>): Int = TODO()
