@@ -31,9 +31,9 @@ internal class DisplayLinkTarget(
     selector = NSSelectorFromString(this::onFrame.name),
   )
 
-  /** This function must be public to be a valid candidate for [NSSelectorString]. */
+  /** This function must be public to be a valid candidate for [NSSelectorFromString]. */
   @ObjCAction
-  public fun onFrame() {
+  fun onFrame() {
     callback(this)
   }
 

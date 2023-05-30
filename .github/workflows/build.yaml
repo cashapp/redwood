@@ -24,16 +24,11 @@ jobs:
           java-version: 20
 
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
-      - run: ./gradlew kotlinUpgradeYarnLock build dokkaHtmlMultiModule -PredwoodNoSamples
-
-      # If we're on the integration branch, save the site to deploy from the publish job.
-      - uses: actions/upload-artifact@v3
-        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
-        with:
-          name: site
-          path: build/dokka/htmlMultiModule/
-          if-no-files-found: error
+      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoSamples
 
   connected:
     runs-on: macos-latest
@@ -45,12 +40,39 @@ jobs:
           java-version: 20
 
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           emulator-boot-timeout: 20000
           script: ./gradlew connectedCheck -PredwoodNoSamples
+
+  dokka:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3.11.0
+        with:
+          distribution: 'zulu'
+          java-version: 20
+
+      - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
+
+      - run: ./gradlew dokkaHtmlMultiModule
+
+      # If we're on the integration branch, save the site to deploy from the publish job.
+      - uses: actions/upload-artifact@v3
+        if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
+        with:
+          name: site
+          path: build/dokka/htmlMultiModule/
+          if-no-files-found: error
 
   paparazzi:
     runs-on: ubuntu-latest
@@ -63,6 +85,9 @@ jobs:
           distribution: 'zulu'
           java-version: 20
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
       - run: ./gradlew verifyPaparazziDebug
 
@@ -76,6 +101,9 @@ jobs:
           java-version: 20
 
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
       - run: ./gradlew -p samples/counter build
 
@@ -101,6 +129,9 @@ jobs:
           java-version: 20
 
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
       - run: ./gradlew -p samples/emoji-search build
 
@@ -120,6 +151,9 @@ jobs:
           java-version: 20
 
       - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
 
       - run: ./gradlew -p samples/repo-search build
 
@@ -129,6 +163,7 @@ jobs:
     needs:
       - build
       - connected
+      - dokka
       - paparazzi
       - sample-counter
       - sample-emoji

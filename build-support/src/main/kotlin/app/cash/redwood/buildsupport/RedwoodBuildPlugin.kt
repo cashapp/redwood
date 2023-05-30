@@ -18,6 +18,7 @@ package app.cash.redwood.buildsupport
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
@@ -26,6 +27,8 @@ import org.gradle.api.publish.PublishingExtension
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
   override fun apply(target: Project) {
+    val libs = target.extensions.getByName("libs") as LibrariesForLibs
+
     target.extensions.add(
       RedwoodBuildExtension::class.java,
       "redwoodBuild",
@@ -37,7 +40,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     spotless.apply {
       kotlin {
         it.target("src/*/kotlin/**/*.kt")
-        it.ktlint().editorConfigOverride(
+        it.ktlint(libs.ktlint.get().version).editorConfigOverride(
           mapOf("ktlint_standard_filename" to "disabled"),
         )
         it.licenseHeaderFile(target.rootProject.file("gradle/license-header.txt"))

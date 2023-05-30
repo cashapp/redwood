@@ -26,6 +26,7 @@ kotlin {
       dependencies {
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
+        implementation libs.assertk
       }
     }
     androidMain {
@@ -36,8 +37,19 @@ kotlin {
   }
 }
 
+dependencies {
+  androidTestImplementation libs.junit
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation libs.kotlinx.coroutines.test
+  androidTestImplementation libs.assertk
+}
+
 android {
   namespace 'app.cash.redwood.compose'
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
 }
 
 spotless {

@@ -55,7 +55,7 @@ public abstract class RedwoodGeneratorPlugin(
     Compose("--compose", "redwood-compose"),
     ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
     Modifiers("--modifier", "redwood-runtime"),
-    Testing("--testing", "redwood-compose-testing"),
+    Testing("--testing", "redwood-testing"),
     Widget("--widget", "redwood-widget"),
     WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),
   }
