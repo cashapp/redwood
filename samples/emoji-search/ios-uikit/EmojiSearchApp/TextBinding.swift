@@ -29,5 +29,8 @@ class TextBinding: Text {
 
     func text(text: String) {
         root.text = text
+
+        // TODO: Remove once child property changes are propogated up the view tree.
+        root.superview?.setNeedsLayout()
     }
 }
