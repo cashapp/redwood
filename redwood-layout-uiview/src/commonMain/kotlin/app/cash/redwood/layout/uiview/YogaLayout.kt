@@ -16,7 +16,6 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.HorizontalAlignment
@@ -83,7 +82,7 @@ internal class YogaLayout {
     }
   }
 
-  private fun calculateLayoutWithSize(size: YGSize): Size {
+  private fun calculateLayoutWithSize(size: YGSize): YGSize {
     // TODO: Figure out how to measure incrementally safely.
     rootNode.markDirtyAndPropogateDownwards()
 
@@ -93,9 +92,9 @@ internal class YogaLayout {
       ownerHeight = size.height,
       ownerDirection = rootNode.style.direction()
     )
-    return Size(
-      width = YGNodeLayoutGetWidth(rootNode).toDouble(),
-      height = YGNodeLayoutGetHeight(rootNode).toDouble(),
+    return YGSize(
+      width = YGNodeLayoutGetWidth(rootNode),
+      height = YGNodeLayoutGetHeight(rootNode),
     )
   }
 
@@ -108,6 +107,9 @@ internal class YogaLayout {
       return size.useContents {
         val width = if (width == UIViewNoIntrinsicMetric) YGUndefined else width.toFloat()
         val height = if (height == UIViewNoIntrinsicMetric) YGUndefined else height.toFloat()
+//        val output = calculateLayoutWithSize(YGSize(width, height))
+//        println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}]")
+//        output.toCGSize()
         calculateLayoutWithSize(YGSize(width, height)).toCGSize()
       }
     }
@@ -132,13 +134,13 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
   val currentViews = yoga.rootNode.children.mapNotNull { it.view }
   val subviews = yoga.view.typedSubviews
   if (currentViews != subviews) {
-    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
+//    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
     yoga.rootNode.removeAllChildren()
     for (view in subviews) {
       Yoga.YGNodeAddChild(yoga.rootNode, view.asNode())
     }
   } else {
-    println("YGAttachNodesFromViewHierachy - currentViews == subviews")
+//    println("YGAttachNodesFromViewHierachy - currentViews == subviews")
   }
 }
 
@@ -150,14 +152,14 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     height: Float,
     heightMode: YGMeasureMode,
   ): YGSize {
-    println("ViewMeasureFunction ${node.view} $width $widthMode $height $heightMode")
+//    println("ViewMeasureFunction ${node.view} $width $widthMode $height $heightMode")
 
     val constrainedWidth = when (widthMode) {
-        YGMeasureModeUndefined -> Double.MAX_VALUE
+        YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
         else -> width.toDouble()
     }
     val constrainedHeight = when (heightMode) {
-        YGMeasureModeUndefined -> Double.MAX_VALUE
+        YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
         else -> height.toDouble()
     }
 
@@ -167,9 +169,9 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
     // for more information.
     val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
-      Size.Zero
+      YGSize(0f, 0f)
     } else {
-      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toSize()
+      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toYGSize()
     }
 
     return YGSize(
@@ -181,12 +183,12 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
 
 private fun YGSanitizeMeasurement(
   constrainedSize: Double,
-  measuredSize: Double,
+  measuredSize: Float,
   measureMode: YGMeasureMode,
 ): Double = when (measureMode) {
   YGMeasureModeExactly -> constrainedSize
-  YGMeasureModeAtMost -> measuredSize
-  YGMeasureModeUndefined -> measuredSize
+  YGMeasureModeAtMost -> measuredSize.toDouble()
+  YGMeasureModeUndefined -> measuredSize.toDouble()
 }
 
 private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
@@ -198,7 +200,7 @@ private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
   val width = YGNodeLayoutGetWidth(node).toDouble()
   val height = YGNodeLayoutGetHeight(node).toDouble()
   node.view!!.setFrame(CGRectMake(x, y, width, height))
-  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
+//  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
 
   for (childNode in node.children) {
     YGApplyLayoutToViewHierarchy(childNode)
@@ -252,9 +254,9 @@ private fun syncModifier(node: YGNode, combinedModifier: Modifier, density: Dens
   }
 }
 
-private fun CValue<CGSize>.toSize() = useContents { Size(width, height) }
+private fun CValue<CGSize>.toYGSize() = useContents { YGSize(width.toFloat(), height.toFloat()) }
 
-private fun Size.toCGSize() = CGSizeMake(width, height)
+private fun YGSize.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
 private val YGNode.view: UIView?
   get() = (measure.noContext as ViewMeasureFunction?)?.view
