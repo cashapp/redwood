@@ -38,49 +38,49 @@ import platform.UIKit.UIView
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
-  private val yogaLayout = YogaLayout()
+  private val yogaView = YogaUIView()
   private val density = Density.Default
 
-  override val value get() = yogaLayout.view.apply {
+  override val value get() = yogaView.apply {
     backgroundColor = if (direction.isHorizontal) UIColor.blueColor else UIColor.redColor
   }
   override val children = UIViewChildren(value)
   override var modifier: Modifier = Modifier
 
   init {
-    Yoga.YGNodeStyleSetFlexDirection(yogaLayout.rootNode, direction.toYoga())
-    yogaLayout.density = density
-    yogaLayout.getModifier = { children.widgets[it].modifier }
+    Yoga.YGNodeStyleSetFlexDirection(yogaView.rootNode, direction.toYoga())
+    yogaView.density = density
+    yogaView.getModifier = { children.widgets[it].modifier }
   }
 
   override fun width(width: Constraint) {
-    yogaLayout.width = width
+    yogaView.width = width
     invalidate()
   }
 
   override fun height(height: Constraint) {
-    yogaLayout.height = height
+    yogaView.height = height
     invalidate()
   }
 
   override fun margin(margin: Margin) {
     Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
+      node = yogaView.rootNode,
       edge = YGEdge.YGEdgeLeft,
       points = with(Density.Default) { margin.start.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
+      node = yogaView.rootNode,
       edge = YGEdge.YGEdgeRight,
       points = with(Density.Default) { margin.end.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
+      node = yogaView.rootNode,
       edge = YGEdge.YGEdgeTop,
       points = with(Density.Default) { margin.top.toPx() }.toFloat(),
     )
     Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
+      node = yogaView.rootNode,
       edge = YGEdge.YGEdgeBottom,
       points = with(Density.Default) { margin.bottom.toPx() }.toFloat(),
     )
@@ -108,12 +108,12 @@ internal class UIViewFlexContainer(
   }
 
   private fun alignItems(alignItems: AlignItems) {
-    Yoga.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
+    Yoga.YGNodeStyleSetAlignItems(yogaView.rootNode, alignItems.toYoga())
     invalidate()
   }
 
   private fun justifyContent(justifyContent: JustifyContent) {
-    Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
+    Yoga.YGNodeStyleSetJustifyContent(yogaView.rootNode, justifyContent.toYoga())
     invalidate()
   }
 

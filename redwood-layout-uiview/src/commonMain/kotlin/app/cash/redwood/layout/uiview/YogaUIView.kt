@@ -47,9 +47,8 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class YogaLayout {
+internal class YogaUIView : UIView(cValue { CGRectZero }) {
   val rootNode = Yoga.YGNodeNew()
-  val view: UIView = View()
 
   var width = Constraint.Wrap
   var height = Constraint.Wrap
@@ -57,14 +56,28 @@ internal class YogaLayout {
   var density: Density = Density.Default
   var getModifier: (Int) -> Modifier = { Modifier }
 
-  fun applyLayout() {
+  override fun intrinsicContentSize(): CValue<CGSize> {
+    return calculateLayoutWithSize(YGSize(YGUndefined, YGUndefined)).toCGSize()
+  }
+
+  override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    return size.useContents {
+      val width = if (width == UIViewNoIntrinsicMetric) YGUndefined else width.toFloat()
+      val height = if (height == UIViewNoIntrinsicMetric) YGUndefined else height.toFloat()
+      val output = calculateLayoutWithSize(YGSize(width, height))
+      println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}]")
+      output.toCGSize()
+    }
+  }
+
+  override fun layoutSubviews() {
     YGAttachNodesFromViewHierachy(this)
 
     for ((index, node) in rootNode.children.withIndex()) {
       syncModifier(node, getModifier(index), density)
     }
 
-    val size = view.bounds.useContents {
+    val size = bounds.useContents {
       val widthBounds = when (width) {
           Constraint.Wrap -> YGUndefined
           else -> size.width.toFloat()
@@ -97,34 +110,12 @@ internal class YogaLayout {
       height = YGNodeLayoutGetHeight(rootNode),
     )
   }
-
-  private inner class View : UIView(cValue { CGRectZero }) {
-    override fun intrinsicContentSize(): CValue<CGSize> {
-      return calculateLayoutWithSize(YGSize(YGUndefined, YGUndefined)).toCGSize()
-    }
-
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      return size.useContents {
-        val width = if (width == UIViewNoIntrinsicMetric) YGUndefined else width.toFloat()
-        val height = if (height == UIViewNoIntrinsicMetric) YGUndefined else height.toFloat()
-//        val output = calculateLayoutWithSize(YGSize(width, height))
-//        println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}]")
-//        output.toCGSize()
-        calculateLayoutWithSize(YGSize(width, height)).toCGSize()
-      }
-    }
-
-    override fun layoutSubviews() {
-      super.layoutSubviews()
-      applyLayout()
-    }
-  }
 }
 
-private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
-  if (yoga.view.typedSubviews.isEmpty()) {
+private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
+  if (yoga.typedSubviews.isEmpty()) {
     yoga.rootNode.removeAllChildren()
-    yoga.rootNode.setMeasureFunc(ViewMeasureFunction(yoga.view))
+    yoga.rootNode.setMeasureFunc(ViewMeasureFunction(yoga))
     return
   }
 
@@ -132,7 +123,7 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaLayout) {
   yoga.rootNode.setMeasureFunc(null as YGMeasureFunc?)
 
   val currentViews = yoga.rootNode.children.mapNotNull { it.view }
-  val subviews = yoga.view.typedSubviews
+  val subviews = yoga.typedSubviews
   if (currentViews != subviews) {
 //    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
     yoga.rootNode.removeAllChildren()
@@ -175,8 +166,8 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     }
 
     return YGSize(
-      width = YGSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode).toFloat(),
-      height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode).toFloat()
+      width = YGSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
+      height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode)
     )
   }
 }
@@ -185,10 +176,10 @@ private fun YGSanitizeMeasurement(
   constrainedSize: Double,
   measuredSize: Float,
   measureMode: YGMeasureMode,
-): Double = when (measureMode) {
-  YGMeasureModeExactly -> constrainedSize
-  YGMeasureModeAtMost -> measuredSize.toDouble()
-  YGMeasureModeUndefined -> measuredSize.toDouble()
+): Float = when (measureMode) {
+  YGMeasureModeExactly -> constrainedSize.toFloat()
+  YGMeasureModeAtMost -> measuredSize
+  YGMeasureModeUndefined -> measuredSize
 }
 
 private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
