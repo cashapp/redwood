@@ -45,7 +45,7 @@ class ComposeProtocolGenerationTest {
     val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
-      |  public override fun id(id: String): Unit {
+      |  override fun id(id: String) {
       |    this.state.append(PropertyChange(this.id,
       """.trimMargin(),
     )
