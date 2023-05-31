@@ -71,11 +71,13 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
 @Composable
 public fun LazyRow(
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = false,
     modifier = modifier,
+    placeholder = placeholder,
     content = content,
   )
 }
@@ -86,6 +88,7 @@ public fun LazyRow(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(
@@ -93,6 +96,7 @@ public fun LazyRow(
     refreshing = refreshing,
     onRefresh = onRefresh,
     modifier = modifier,
+    placeholder = placeholder,
     content = content,
   )
 }
@@ -100,11 +104,13 @@ public fun LazyRow(
 @Composable
 public fun LazyColumn(
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = true,
     modifier = modifier,
+    placeholder = placeholder,
     content = content,
   )
 }
@@ -115,6 +121,7 @@ public fun LazyColumn(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(
@@ -122,6 +129,7 @@ public fun LazyColumn(
     refreshing = refreshing,
     onRefresh = onRefresh,
     modifier = modifier,
+    placeholder = placeholder,
     content = content,
   )
 }

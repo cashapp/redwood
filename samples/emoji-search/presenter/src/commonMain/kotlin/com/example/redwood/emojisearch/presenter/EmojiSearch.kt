@@ -59,6 +59,7 @@ interface ColumnProvider {
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -112,18 +113,31 @@ fun EmojiSearch(
       items = filteredEmojis,
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
-      modifier = Modifier.grow(1.0)
-    ) { image ->
-      Row(
-        width = Constraint.Fill,
-        verticalAlignment = CrossAxisAlignment.Center,
-      ) {
-        Image(
-          url = image.url,
-          modifier = Modifier.margin(Margin(8.dp)),
+      modifier = Modifier.grow(1.0),
+      placeholder = {
+        Item(
+          EmojiImage(
+            label = "loading…",
+            url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+          )
         )
-        Text(text = image.label)
-      }
+      },
+    ) { image ->
+      Item(image)
     }
+  }
+}
+
+@Composable
+private fun Item(emojiImage: EmojiImage) {
+  Row(
+    width = Constraint.Fill,
+    verticalAlignment = CrossAxisAlignment.Center,
+  ) {
+    Image(
+      url = emojiImage.url,
+      modifier = Modifier.margin(Margin(8.dp)),
+    )
+    Text(text = emojiImage.label)
   }
 }

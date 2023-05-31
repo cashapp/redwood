@@ -41,12 +41,14 @@ private class LazyColumnProvider : ColumnProvider {
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
     LazyColumn(
       refreshing = refreshing,
       onRefresh = onRefresh,
       modifier = modifier,
+      placeholder = placeholder,
     ) {
       items(items, itemContent)
     }

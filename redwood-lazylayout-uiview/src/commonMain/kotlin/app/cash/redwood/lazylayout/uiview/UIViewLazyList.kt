@@ -23,6 +23,7 @@ package app.cash.redwood.lazylayout.uiview
 import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCClass
 import platform.Foundation.NSIndexPath
@@ -54,6 +55,8 @@ public fun UIViewRefreshableLazyList(
 internal open class UIViewLazyListImpl() : LazyList<UIView> {
 
   private val itemsList = mutableListOf<Widget<UIView>>()
+
+  override val placeholder: Widget.Children<UIView> = MutableListChildren()
 
   override val items: Widget.Children<UIView> = object : Widget.Children<UIView> {
     override fun insert(index: Int, widget: Widget<UIView>) {

@@ -83,6 +83,7 @@ private object TruncatingColumnProvider : ColumnProvider {
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
     Column(modifier = modifier) {

@@ -32,6 +32,7 @@ private const val OffscreenItemsBufferCount = 30
 internal fun LazyList(
   isVertical: Boolean,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
@@ -48,6 +49,7 @@ internal fun LazyList(
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     modifier = modifier,
+    placeholder = { repeat(75) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
@@ -64,6 +66,7 @@ internal fun RefreshableLazyList(
   refreshing: Boolean = false,
   onRefresh: (() -> Unit)? = null,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
@@ -82,6 +85,7 @@ internal fun RefreshableLazyList(
     refreshing = refreshing,
     onRefresh = onRefresh,
     modifier = modifier,
+    placeholder = { repeat(75) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {

@@ -54,6 +54,8 @@ internal class ComposeUiLazyList :
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
+  override val placeholder = ComposeWidgetChildren()
+
   override val items = ComposeWidgetChildren()
 
   override fun isVertical(isVertical: Boolean) {
