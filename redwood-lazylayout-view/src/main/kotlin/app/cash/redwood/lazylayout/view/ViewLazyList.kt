@@ -24,10 +24,12 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.doOnDetach
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.MutableListChildren
@@ -123,11 +125,8 @@ internal open class ViewLazyListImpl(
   init {
     adapter.items = items
     recyclerView.apply {
-      setHasFixedSize(true)
       layoutManager = linearLayoutManager
-
-      // TODO: sizing should be controlled by Modifiers
-      layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+      layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
 
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
@@ -142,6 +141,18 @@ internal open class ViewLazyListImpl(
       }
     }
     recyclerView.adapter = adapter
+  }
+
+  override fun width(width: Constraint) {
+    recyclerView.updateLayoutParams {
+      this.width = if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
+  }
+
+  override fun height(height: Constraint) {
+    recyclerView.updateLayoutParams {
+      this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -241,6 +252,7 @@ internal class RefreshableViewLazyListImpl(
   init {
     swipeRefreshLayout.apply {
       addView(recyclerView)
+      // TODO Dynamically update width and height of RefreshableViewLazyList when set
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
   }

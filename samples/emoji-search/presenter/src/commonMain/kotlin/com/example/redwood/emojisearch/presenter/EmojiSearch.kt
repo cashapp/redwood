@@ -58,6 +58,8 @@ interface ColumnProvider {
     items: List<T>,
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
+    width: Constraint,
+    height: Constraint,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
@@ -113,6 +115,8 @@ fun EmojiSearch(
       items = filteredEmojis,
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
+      width = Constraint.Fill,
+      height = Constraint.Wrap,
       modifier = Modifier.grow(1.0),
       placeholder = {
         Item(

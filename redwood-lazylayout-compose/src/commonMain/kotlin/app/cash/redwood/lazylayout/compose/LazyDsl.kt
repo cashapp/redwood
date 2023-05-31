@@ -18,6 +18,7 @@ package app.cash.redwood.lazylayout.compose
 import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 
 @LayoutScopeMarker
 public interface LazyListScope {
@@ -70,12 +71,16 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
 
 @Composable
 public fun LazyRow(
+  width: Constraint = Constraint.Wrap,
+  height: Constraint = Constraint.Wrap,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = false,
+    width = width,
+    height = height,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -87,6 +92,8 @@ public fun LazyRow(
 public fun LazyRow(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  width: Constraint = Constraint.Wrap,
+  height: Constraint = Constraint.Wrap,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -95,6 +102,8 @@ public fun LazyRow(
     isVertical = false,
     refreshing = refreshing,
     onRefresh = onRefresh,
+    width = width,
+    height = height,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -103,12 +112,16 @@ public fun LazyRow(
 
 @Composable
 public fun LazyColumn(
+  width: Constraint = Constraint.Wrap,
+  height: Constraint = Constraint.Wrap,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
     isVertical = true,
+    width = width,
+    height = height,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -120,6 +133,8 @@ public fun LazyColumn(
 public fun LazyColumn(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  width: Constraint = Constraint.Wrap,
+  height: Constraint = Constraint.Wrap,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -128,6 +143,8 @@ public fun LazyColumn(
     isVertical = true,
     refreshing = refreshing,
     onRefresh = onRefresh,
+    width = width,
+    height = height,
     modifier = modifier,
     placeholder = placeholder,
     content = content,

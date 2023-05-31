@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -51,6 +52,8 @@ internal class ComposeUiLazyList :
   private var itemsAfter by mutableStateOf(0)
   private var isRefreshing by mutableStateOf(false)
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
+  private var width by mutableStateOf(Constraint.Wrap)
+  private var height by mutableStateOf(Constraint.Wrap)
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
@@ -80,6 +83,14 @@ internal class ComposeUiLazyList :
 
   override fun onRefresh(onRefresh: (() -> Unit)?) {
     this.onRefresh = onRefresh
+  }
+
+  override fun width(width: Constraint) {
+    this.width = width
+  }
+
+  override fun height(height: Constraint) {
+    this.height = height
   }
 
   override val value = @Composable {
@@ -117,20 +128,20 @@ internal class ComposeUiLazyList :
         }
       }
 
+      val modifier = Modifier
+        .run { if (width == Constraint.Fill) fillMaxWidth() else this }
+        .run { if (height == Constraint.Fill) fillMaxHeight() else this }
+        .pullRefresh(state = refreshState, enabled = onRefresh != null)
       if (isVertical) {
         LazyColumn(
-          modifier = Modifier
-            .fillMaxWidth()
-            .pullRefresh(state = refreshState, enabled = onRefresh != null),
+          modifier = modifier,
           state = state,
           horizontalAlignment = Alignment.CenterHorizontally,
           content = content,
         )
       } else {
         LazyRow(
-          modifier = Modifier
-            .fillMaxHeight()
-            .pullRefresh(state = refreshState, enabled = onRefresh != null),
+          modifier = modifier,
           state = state,
           verticalAlignment = Alignment.CenterVertically,
           content = content,
