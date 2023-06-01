@@ -34,7 +34,6 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.NOTHING
@@ -322,12 +321,12 @@ internal fun generateProtocolWidget(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("id", Protocol.Id, PUBLIC, OVERRIDE)
+          PropertySpec.builder("id", Protocol.Id, OVERRIDE)
             .initializer("state.nextId()")
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("tag", Protocol.WidgetTag, PUBLIC, OVERRIDE)
+          PropertySpec.builder("tag", Protocol.WidgetTag, OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return %T(%L)", Protocol.WidgetTag, widget.tag)
@@ -707,7 +706,7 @@ internal fun generateComposeProtocolModifierSerialization(
         .build(),
     )
     .addFunction(
-      FunSpec.builder(schema.modifierToProtocol.simpleName)
+      FunSpec.builder(schema.modifierToProtocol)
         .addModifiers(PRIVATE)
         .receiver(Redwood.ModifierElement)
         .addParameter("json", KotlinxSerialization.Json)
