@@ -24,6 +24,7 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.treehouse.TreehouseUi
 import kotlinx.serialization.json.Json
@@ -46,7 +47,10 @@ class RepoSearchTreehouseUi(
   @Composable
   override fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-    LazyColumn(placeholder = { RepoSearch(Repository(fullName = "Placeholder…", 0)) }) {
+    LazyColumn(
+      width = Constraint.Fill,
+      placeholder = { RepoSearch(Repository(fullName = "Placeholder…", 0)) },
+    ) {
       items(lazyPagingItems.itemCount) { index ->
         RepoSearch(lazyPagingItems[index]!!)
       }

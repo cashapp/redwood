@@ -10,6 +10,14 @@ redwoodBuild {
 
 kotlin {
   KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutModifiers
+      }
+    }
+  }
 }
 
 redwoodSchema {

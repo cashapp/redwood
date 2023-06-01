@@ -21,6 +21,7 @@
 package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.MutableListChildren
@@ -140,6 +141,13 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
 
   override fun itemsAfter(itemsAfter: Int) {
     this.itemsAfter = itemsAfter
+  }
+
+  // TODO Dynamically update width and height of UIViewLazyList when set
+  override fun width(width: Constraint) {
+  }
+
+  override fun height(height: Constraint) {
   }
 
   override var modifier: Modifier = Modifier
