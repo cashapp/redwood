@@ -28,7 +28,6 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
-import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -129,7 +128,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
-                .addModifiers(PUBLIC, ABSTRACT)
+                .addModifiers(ABSTRACT)
                 .returns(schema.widgetType(widget).parameterizedBy(typeVariableW))
                 .apply {
                   widget.deprecation?.let { deprecation ->
@@ -168,7 +167,6 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   return FileSpec.builder(schema.widgetPackage(), flatName)
     .addType(
       TypeSpec.interfaceBuilder(flatName)
-        .addModifiers(PUBLIC)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
         .addAnnotation(
@@ -199,7 +197,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               is Property -> {
                 addFunction(
                   FunSpec.builder(trait.name)
-                    .addModifiers(PUBLIC, ABSTRACT)
+                    .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
                     .apply {
                       trait.deprecation?.let { deprecation ->
@@ -218,7 +216,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               is Event -> {
                 addFunction(
                   FunSpec.builder(trait.name)
-                    .addModifiers(PUBLIC, ABSTRACT)
+                    .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
                     .apply {
                       trait.deprecation?.let { deprecation ->
@@ -237,7 +235,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
               is Children -> {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
-                    .addModifiers(PUBLIC, ABSTRACT)
+                    .addModifiers(ABSTRACT)
                     .apply {
                       trait.deprecation?.let { deprecation ->
                         addAnnotation(deprecation.toAnnotationSpec())
