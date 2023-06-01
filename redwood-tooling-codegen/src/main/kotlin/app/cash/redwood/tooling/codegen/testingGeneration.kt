@@ -47,8 +47,8 @@ suspend fun <R> ExampleTester(
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
   val factories = ExampleWidgetFactories(
-    Sunspot = MutableExampleWidgetFactory(),
-    RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
+    ExampleSchema = ExampleSchemaTestingWidgetFactory(),
+    RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
   val tester = TestRedwoodComposition(this, factories, container) {
@@ -82,7 +82,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schemaSet.all) {
-            addCode("%N = %T(),\n", dependency.type.flatName, dependency.getMutableWidgetFactoryType())
+            addCode("%N = %T(),\n", dependency.type.flatName, dependency.getTestingWidgetFactoryType())
           }
         }
         .addCode("⇤)\n")
@@ -103,13 +103,13 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
 
 /*
 @RedwoodCodegenApi
-public class EmojiSearchMutableWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
+public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
   public override fun Text(): Text<WidgetValue> = MutableText()
   public override fun Button(): Button<WidgetValue> = MutableButton()
 }
 */
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
-  val mutableWidgetFactoryType = schema.getMutableWidgetFactoryType()
+  val mutableWidgetFactoryType = schema.getTestingWidgetFactoryType()
   return FileSpec.builder(mutableWidgetFactoryType)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
