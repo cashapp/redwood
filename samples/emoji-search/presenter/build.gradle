@@ -2,10 +2,6 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood'
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
   js {
     browser()
   }
@@ -15,6 +11,8 @@ kotlin {
     commonMain {
       dependencies {
         api projects.samples.emojiSearch.schema.compose
+        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseGuestCompose
       }
     }
     commonTest {

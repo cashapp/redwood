@@ -22,8 +22,6 @@ class EmojiSearchViewController : UIViewController {
 
     // MARK: - Private Properties
 
-    private var displayLink: CADisplayLink!
-    private var delegate: EmojiSearchViewControllerDelegate!
     private let urlSession: URLSession = .init(configuration: .default)
 
     // MARK: - UIViewController
@@ -32,41 +30,48 @@ class EmojiSearchViewController : UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
+    }
 
-        let container = UIStackView()
-        container.axis = .horizontal
-        container.alignment = .fill
-        container.distribution = .fillEqually
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(container)
-        container.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        container.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        container.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        container.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-
-        self.delegate = EmojiSearchViewControllerDelegate(
-            root: container,
-            widgetFactory: IosEmojiSearchWidgetFactory(),
-            hostApi: IosHostApi()
+    override func loadView() {
+        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
+        let treehouseApp = emojiSearchLauncher.createTreehouseApp()
+        let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
+        let treehouseView = TreehouseUIKitView(widgetSystem: widgetSystem)
+        let content = treehouseApp.createContent(
+            source: EmojiSearchContent(),
+            codeListener: CodeListener()
         )
+        ExposedKt.bindWhenReady(content: content, view: treehouseView)
+        view = treehouseView.view
+    }
+}
+
+class EmojiSearchContent : TreehouseContentSource {
+    func get(app: AppService) -> ZiplineTreehouseUi {
+        let treehouesUi = (app as! EmojiSearchPresenter)
+        return treehouesUi.launch()
+    }
+}
+
+class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
+    let treehouseApp: TreehouseApp<EmojiSearchPresenter>
+
+    init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {
+        self.treehouseApp = treehouseApp
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        let displayLink = CADisplayLink.init(target: self, selector: #selector(tickClock))
-        displayLink.add(to: .current, forMode: .default)
-        self.displayLink = displayLink
-    }
-
-    @objc func tickClock() {
-        delegate.tickClock()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        displayLink.invalidate()
-    }
-
-    deinit {
-        delegate.dispose()
+    func widgetFactory(
+        json: Kotlinx_serialization_jsonJson,
+        protocolMismatchHandler: ProtocolMismatchHandler
+    ) -> ProtocolNodeFactory {
+        return EmojiSearchProtocolNodeFactory<UIView>(
+            provider: EmojiSearchWidgetFactories<UIView>(
+                EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
+                RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
+                RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
+            ),
+            json: json,
+            mismatchHandler: protocolMismatchHandler
+        );
     }
 }

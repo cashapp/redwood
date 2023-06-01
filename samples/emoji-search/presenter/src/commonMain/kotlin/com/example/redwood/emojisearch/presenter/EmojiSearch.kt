@@ -24,13 +24,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.compose.LocalHostConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.compose.Column
-import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
+import app.cash.redwood.layout.compose.Column
+import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.layout.compose.Spacer
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
@@ -68,6 +70,7 @@ interface ColumnProvider {
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
+  columnProvider: ColumnProvider,
 ) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
@@ -102,8 +105,8 @@ fun EmojiSearch(
   Column(
     width = Constraint.Fill,
     height = Constraint.Fill,
-    horizontalAlignment = CrossAxisAlignment.Center,
-    margin = Margin(top = 60.dp),
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    margin = LocalHostConfiguration.current.safeAreaInsets,
   ) {
     TextInput(
       state = searchTerm,
@@ -114,15 +117,17 @@ fun EmojiSearch(
     )
     filteredEmojis.take(10).forEach { image ->
       Row(
+        margin = Margin(top = 20.dp),
         width = Constraint.Fill,
-        horizontalAlignment = MainAxisAlignment.SpaceBetween,
+        horizontalAlignment = MainAxisAlignment.Center,
         verticalAlignment = CrossAxisAlignment.Center,
       ) {
         Image(
-          url = image.url,
+          image.url,
           modifier = Modifier
-            .margin(Margin(start = 4.dp))
+            .margin(Margin(4.dp))
         )
+        Spacer(width = 4.dp)
         Text(image.label)
       }
     }

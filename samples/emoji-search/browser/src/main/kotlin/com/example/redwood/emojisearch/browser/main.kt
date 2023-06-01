@@ -57,7 +57,7 @@ fun main() {
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {
-    EmojiSearch(httpClient)
+    EmojiSearch(httpClient, TruncatingColumnProvider)
   }
 }
 

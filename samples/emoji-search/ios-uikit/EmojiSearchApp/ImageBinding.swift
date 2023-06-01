@@ -43,12 +43,12 @@ class ImageBinding: Image {
         }
 
         lastURL = url
-        imageLoader.loadImage(url: url) { [weak self] url, image in
-            guard self?.lastURL == url else {
+        imageLoader.loadImage(url: url) { [unowned self] url, image in
+            guard self.lastURL == url else {
                 return
             }
 
-            self?.root.image = image
+            self.root.image = image
         }
     }
 }

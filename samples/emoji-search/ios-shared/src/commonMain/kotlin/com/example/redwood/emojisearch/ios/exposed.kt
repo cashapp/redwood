@@ -19,17 +19,40 @@ package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.treehouse.AppService
+import app.cash.redwood.treehouse.Content
+import app.cash.redwood.treehouse.TreehouseUIKitView
+import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
+import okio.ByteString
+import okio.ByteString.Companion.toByteString
+import okio.Closeable
+import platform.Foundation.NSData
 
 // Used to export types to Objective-C / Swift.
 fun exposedTypes(
+  emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
+  protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
+  treehouseUIKitView: TreehouseUIKitView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
+  uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
+  widgetSystem: WidgetSystem,
   widgetFactories: EmojiSearchWidgetFactories<*>,
-  viewControllerDelegate: EmojiSearchViewControllerDelegate,
 ) {
   throw AssertionError()
 }
 
+fun byteStringOf(data: NSData): ByteString = data.toByteString()
+
 fun modifier(): Modifier = Modifier
+
+fun <A : AppService> bindWhenReady(
+  content: Content,
+  view: TreehouseView,
+): Closeable = content.bindWhenReady(view)
