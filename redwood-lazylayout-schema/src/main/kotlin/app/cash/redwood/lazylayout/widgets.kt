@@ -25,7 +25,8 @@ public data class LazyList(
   @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
   @Property(3) val itemsBefore: Int,
   @Property(4) val itemsAfter: Int,
-  @Children(1) val items: () -> Unit,
+  @Children(1) val placeholder: () -> Unit,
+  @Children(2) val items: () -> Unit,
 )
 
 @Widget(2)
@@ -36,5 +37,6 @@ public data class RefreshableLazyList(
   @Property(4) val itemsAfter: Int,
   @Property(5) val refreshing: Boolean,
   @Property(6) val onRefresh: (() -> Unit)?,
-  @Children(1) val items: () -> Unit,
+  @Children(1) val placeholder: () -> Unit,
+  @Children(2) val items: () -> Unit,
 )
