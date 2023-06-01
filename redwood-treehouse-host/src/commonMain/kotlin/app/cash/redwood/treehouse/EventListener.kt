@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
@@ -70,6 +71,7 @@ public open class EventListener {
   public open fun codeLoadSuccess(
     app: TreehouseApp<*>,
     manifestUrl: String?,
+    manifest: ZiplineManifest,
     zipline: Zipline,
     startValue: Any?,
   ) {
@@ -202,6 +204,18 @@ public open class EventListener {
     url: String,
     exception: Exception,
     startValue: Any?,
+  ) {
+  }
+
+  /**
+   * Invoked when a the manifest verifier successfully verifies a key. Manifest verification
+   * failures are signaled with [codeLoadFailed].
+   */
+  public open fun manifestVerified(
+    app: TreehouseApp<*>,
+    manifestUrl: String?,
+    manifest: ZiplineManifest,
+    verifiedKey: String,
   ) {
   }
 

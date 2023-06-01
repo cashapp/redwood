@@ -26,6 +26,7 @@ import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.ZiplineService
 
 internal class EventPublisher(
@@ -55,10 +56,11 @@ internal class EventPublisher(
       override fun applicationLoadSuccess(
         applicationName: String,
         manifestUrl: String?,
+        manifest: ZiplineManifest,
         zipline: Zipline,
         startValue: Any?,
       ) {
-        listener.codeLoadSuccess(app, manifestUrl, zipline, startValue)
+        listener.codeLoadSuccess(app, manifestUrl, manifest, zipline, startValue)
       }
 
       override fun applicationLoadSkipped(
@@ -112,6 +114,15 @@ internal class EventPublisher(
         startValue: Any?,
       ) {
         listener.downloadFailed(app, url, exception, startValue)
+      }
+
+      override fun manifestVerified(
+        applicationName: String,
+        manifestUrl: String?,
+        manifest: ZiplineManifest,
+        verifiedKey: String,
+      ) {
+        listener.manifestVerified(app, manifestUrl, manifest, verifiedKey)
       }
 
       override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
