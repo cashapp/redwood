@@ -1,4 +1,5 @@
 import app.cash.redwood.buildsupport.FlexboxHelpers
+import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
@@ -12,18 +13,7 @@ redwoodBuild {
 }
 
 kotlin {
-  android {
-    publishLibraryVariants('release')
-  }
-
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
-  jvm()
-
-  macosArm64()
-  macosX64()
+  KmpTargets.addAllTargets(project, true /* skipJs */)
 
   sourceSets {
     commonMain {
