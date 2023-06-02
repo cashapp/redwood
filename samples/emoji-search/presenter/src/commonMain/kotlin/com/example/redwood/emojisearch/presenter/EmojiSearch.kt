@@ -27,12 +27,10 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalHostConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.dp
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
-import app.cash.redwood.layout.compose.Spacer
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
@@ -62,7 +60,10 @@ interface ColumnProvider {
     items: List<T>,
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
+    width: Constraint,
+    height: Constraint,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   )
 }
@@ -112,24 +113,38 @@ fun EmojiSearch(
       state = searchTerm,
       hint = "Search",
       onChange = { searchTerm = it },
-      modifier = Modifier
-        .horizontalAlignment(CrossAxisAlignment.Stretch),
     )
-    filteredEmojis.take(10).forEach { image ->
-      Row(
-        margin = Margin(top = 20.dp),
-        width = Constraint.Fill,
-        horizontalAlignment = MainAxisAlignment.Center,
-        verticalAlignment = CrossAxisAlignment.Center,
-      ) {
-        Image(
-          image.url,
-          modifier = Modifier
-            .margin(Margin(4.dp))
-        )
-        Spacer(width = 4.dp)
-        Text(image.label)
-      }
+    columnProvider.create(
+      items = filteredEmojis,
+      refreshing = refreshing,
+      onRefresh = { refreshSignal++ },
+      width = Constraint.Fill,
+      height = Constraint.Wrap,
+      modifier = Modifier.grow(1.0),
+      placeholder = {
+        Item(loadingEmojiImage)
+      },
+    ) { image ->
+      Item(image)
     }
   }
 }
+
+@Composable
+private fun Item(emojiImage: EmojiImage) {
+  Row(
+    width = Constraint.Fill,
+    verticalAlignment = CrossAxisAlignment.Center,
+  ) {
+    Image(
+      url = emojiImage.url,
+      modifier = Modifier.margin(Margin(8.dp)),
+    )
+    Text(text = emojiImage.label)
+  }
+}
+
+private val loadingEmojiImage = EmojiImage(
+  label = "loading…",
+  url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+)

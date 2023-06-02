@@ -30,7 +30,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.KModifier.SUSPEND
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -47,8 +46,8 @@ suspend fun <R> ExampleTester(
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
   val factories = ExampleWidgetFactories(
-    Sunspot = MutableExampleWidgetFactory(),
-    RedwoodLayout = MutableRedwoodLayoutWidgetFactory(),
+    ExampleSchema = ExampleSchemaTestingWidgetFactory(),
+    RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
   val tester = TestRedwoodComposition(this, factories, container) {
@@ -72,7 +71,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   ).copy(suspending = true)
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
     .addFunction(
-      FunSpec.builder(testerFunction.simpleName)
+      FunSpec.builder(testerFunction)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .addModifiers(SUSPEND)
         .addParameter("body", bodyType)
@@ -82,7 +81,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
         .apply {
           for (dependency in schemaSet.all) {
-            addCode("%N = %T(),\n", dependency.type.flatName, dependency.getMutableWidgetFactoryType())
+            addCode("%N = %T(),\n", dependency.type.flatName, dependency.getTestingWidgetFactoryType())
           }
         }
         .addCode("⇤)\n")
@@ -103,13 +102,13 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
 
 /*
 @RedwoodCodegenApi
-public class EmojiSearchMutableWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
+public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
   public override fun Text(): Text<WidgetValue> = MutableText()
   public override fun Button(): Button<WidgetValue> = MutableButton()
 }
 */
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
-  val mutableWidgetFactoryType = schema.getMutableWidgetFactoryType()
+  val mutableWidgetFactoryType = schema.getTestingWidgetFactoryType()
   return FileSpec.builder(mutableWidgetFactoryType)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
@@ -193,7 +192,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
         )
         .addProperty(
           PropertySpec.builder("modifier", Redwood.Modifier)
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .mutable(true)
             .initializer("%T", Redwood.Modifier)
             .build(),
@@ -216,7 +215,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                 )
                 addFunction(
                   FunSpec.builder(trait.name)
-                    .addModifiers(PUBLIC, OVERRIDE)
+                    .addModifiers(OVERRIDE)
                     .addParameter(trait.name, type)
                     .addCode("this.%N = %N", trait.name, trait.name)
                     .build(),
@@ -227,7 +226,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                   .parameterizedBy(RedwoodTesting.WidgetValue)
                 addProperty(
                   PropertySpec.builder(trait.name, mutableChildrenOfMutableWidget)
-                    .addModifiers(PUBLIC, OVERRIDE)
+                    .addModifiers(OVERRIDE)
                     .initializer("%T()", RedwoodWidget.MutableListChildren)
                     .build(),
                 )
@@ -267,11 +266,10 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   val widgetValueType = schema.widgetValueType(widget)
 
   val classBuilder = TypeSpec.classBuilder(widgetValueType)
-    .addModifiers(PUBLIC)
     .addSuperinterface(RedwoodTesting.WidgetValue)
     .addProperty(
       PropertySpec.builder("modifier", Redwood.Modifier)
-        .addModifiers(PUBLIC, OVERRIDE)
+        .addModifiers(OVERRIDE)
         .initializer("modifier")
         .build(),
     )
@@ -353,7 +351,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
             "childrenLists",
             LIST.parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
           )
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return %M(%L)", Stdlib.listOf, childrenLists.joinToCode())
@@ -363,7 +361,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         )
         .addFunction(
           FunSpec.builder("equals")
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .addParameter("other", ANY.copy(nullable = true))
             .returns(BOOLEAN)
             .addStatement("return %L", equalsComparisons.joinToCode(" &&\n"))
@@ -371,14 +369,14 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         )
         .addFunction(
           FunSpec.builder("hashCode")
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .returns(Int::class)
             .addStatement("return %M(%L).hashCode()", Stdlib.listOf, hashCodeProperties.joinToCode())
             .build(),
         )
         .addFunction(
           FunSpec.builder("toString")
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .returns(String::class)
             .addStatement(
               "return %P",
@@ -391,7 +389,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         )
         .addFunction(
           FunSpec.builder("toWidget")
-            .addModifiers(PUBLIC, OVERRIDE)
+            .addModifiers(OVERRIDE)
             .addTypeVariable(typeVariableW)
             .addParameter("provider", RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
             .returns(RedwoodWidget.Widget.parameterizedBy(typeVariableW))

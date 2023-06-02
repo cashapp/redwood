@@ -6,6 +6,10 @@ redwoodBuild {
   publishing()
 }
 
+dependencies {
+  api projects.redwoodLayoutApi
+}
+
 redwoodSchema {
   type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }

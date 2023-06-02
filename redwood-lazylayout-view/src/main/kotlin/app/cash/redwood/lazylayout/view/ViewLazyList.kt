@@ -23,18 +23,39 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.core.view.doOnDetach
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+
+private const val VIEW_TYPE_PLACEHOLDER = 1
+private const val VIEW_TYPE_ITEM = 2
+
+internal class Placeholders(
+  private val recycledViewPool: RecyclerView.RecycledViewPool,
+) : Widget.Children<View> {
+  private val pool = mutableListOf<Widget<View>>()
+
+  fun take(): Widget<View> = pool.removeFirst()
+
+  override fun insert(index: Int, widget: Widget<View>) {
+    pool += widget
+    recycledViewPool.setMaxRecycledViews(VIEW_TYPE_PLACEHOLDER, pool.size)
+  }
+
+  override fun move(fromIndex: Int, toIndex: Int, count: Int) {}
+  override fun remove(index: Int, count: Int) {}
+  override fun onModifierUpdated() {}
+}
 
 internal class Items<VH : RecyclerView.ViewHolder>(
   private val adapter: RecyclerView.Adapter<VH>,
@@ -90,8 +111,10 @@ internal open class ViewLazyListImpl(
 
   override var modifier: Modifier = Modifier
 
+  final override val placeholder = Placeholders(recyclerView.recycledViewPool)
+
   private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
-  private val adapter = LazyContentItemListAdapter()
+  private val adapter = LazyContentItemListAdapter(placeholder)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
   private var viewport = IntRange.EMPTY
 
@@ -102,11 +125,8 @@ internal open class ViewLazyListImpl(
   init {
     adapter.items = items
     recyclerView.apply {
-      setHasFixedSize(true)
       layoutManager = linearLayoutManager
-
-      // TODO: sizing should be controlled by Modifiers
-      layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+      layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
 
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
@@ -121,6 +141,18 @@ internal open class ViewLazyListImpl(
       }
     }
     recyclerView.adapter = adapter
+  }
+
+  override fun width(width: Constraint) {
+    recyclerView.updateLayoutParams {
+      this.width = if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
+  }
+
+  override fun height(height: Constraint) {
+    recyclerView.updateLayoutParams {
+      this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -163,33 +195,49 @@ internal open class ViewLazyListImpl(
     }
   }
 
-  private class LazyContentItemListAdapter : RecyclerView.Adapter<ViewHolder>() {
+  private class LazyContentItemListAdapter(
+    val placeholders: Placeholders,
+  ) : RecyclerView.Adapter<ViewHolder>() {
     lateinit var items: Items<ViewHolder>
 
     override fun getItemCount(): Int = items.itemsBefore + items.widgets.size + items.itemsAfter
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-      FrameLayout(parent.context).apply {
-        layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-      },
-    )
+    override fun getItemViewType(position: Int): Int {
+      val index = position - items.itemsBefore
+      return if (index in items.widgets.indices) VIEW_TYPE_ITEM else VIEW_TYPE_PLACEHOLDER
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+      return when (viewType) {
+        VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(placeholders.take().value)
+        VIEW_TYPE_ITEM -> ViewHolder.Item(
+          FrameLayout(parent.context).apply {
+            layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+          },
+        )
+        else -> error("Unrecognized viewType: $viewType")
+      }
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      val index = position - items.itemsBefore
-      val view = if (index !in items.widgets.indices) {
-        TextView(holder.itemView.context).apply {
-          text = "Placeholder"
+      when (holder) {
+        is ViewHolder.Placeholder -> {
         }
-      } else {
-        items.widgets[index].value
+        is ViewHolder.Item -> {
+          val index = position - items.itemsBefore
+          val view = items.widgets[index].value
+          holder.container.removeAllViews()
+          (view.parent as? FrameLayout)?.removeAllViews()
+          holder.container.addView(view)
+        }
       }
-      holder.container.removeAllViews()
-      (view.parent as? FrameLayout)?.removeAllViews()
-      holder.container.addView(view)
     }
   }
 
-  class ViewHolder(val container: FrameLayout) : RecyclerView.ViewHolder(container)
+  sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class Placeholder(itemView: View) : ViewHolder(itemView)
+    class Item(val container: FrameLayout) : ViewHolder(container)
+  }
 }
 
 internal class RefreshableViewLazyListImpl(
@@ -204,6 +252,7 @@ internal class RefreshableViewLazyListImpl(
   init {
     swipeRefreshLayout.apply {
       addView(recyclerView)
+      // TODO Dynamically update width and height of RefreshableViewLazyList when set
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
   }

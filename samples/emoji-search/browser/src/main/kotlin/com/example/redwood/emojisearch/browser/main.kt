@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.Modifier
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
@@ -82,10 +83,17 @@ private object TruncatingColumnProvider : ColumnProvider {
     items: List<T>,
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
+    width: Constraint,
+    height: Constraint,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
-    Column(modifier = modifier) {
+    Column(
+      width = width,
+      height = height,
+      modifier = modifier,
+    ) {
       for (item in items.take(25)) {
         itemContent(item)
       }

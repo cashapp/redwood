@@ -17,6 +17,7 @@ package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.treehouse.TreehouseUi
 import app.cash.redwood.lazylayout.compose.LazyColumn
@@ -40,13 +41,19 @@ private class LazyColumnProvider : ColumnProvider {
     items: List<T>,
     refreshing: Boolean,
     onRefresh: (() -> Unit)?,
+    width: Constraint,
+    height: Constraint,
     modifier: Modifier,
+    placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
   ) {
     LazyColumn(
       refreshing = refreshing,
       onRefresh = onRefresh,
+      width = width,
+      height = height,
       modifier = modifier,
+      placeholder = placeholder,
     ) {
       items(items, itemContent)
     }

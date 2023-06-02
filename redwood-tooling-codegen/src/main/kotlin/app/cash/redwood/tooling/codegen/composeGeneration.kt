@@ -29,7 +29,6 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
-import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -71,7 +70,6 @@ internal fun generateComposable(
   return FileSpec.builder(schema.composePackage(), flatName)
     .addFunction(
       FunSpec.builder(flatName)
-        .addModifiers(PUBLIC)
         .addAnnotation(ComposeRuntime.Composable)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .apply {

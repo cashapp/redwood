@@ -95,8 +95,8 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}WidgetFactory")
 }
 
-internal fun Schema.getMutableWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}MutableWidgetFactory")
+internal fun Schema.getTestingWidgetFactoryType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}TestingWidgetFactory")
 }
 
 internal fun Schema.mutableWidgetType(widget: Widget): ClassName {

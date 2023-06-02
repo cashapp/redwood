@@ -18,7 +18,7 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.layout.widget.RedwoodLayoutMutableWidgetFactory
+import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenTag
@@ -36,9 +36,9 @@ import assertk.assertions.isEqualTo
 import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
-import example.redwood.widget.ExampleSchemaMutableWidgetFactory
 import example.redwood.widget.ExampleSchemaProtocolNodeFactory
 import example.redwood.widget.ExampleSchemaTester
+import example.redwood.widget.ExampleSchemaTestingWidgetFactory
 import example.redwood.widget.ExampleSchemaWidgetFactories
 import kotlin.test.Test
 import kotlinx.coroutines.plus
@@ -115,8 +115,8 @@ class ViewTreesTest {
 
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
     val mutableFactories = ExampleSchemaWidgetFactories(
-      ExampleSchema = ExampleSchemaMutableWidgetFactory(),
-      RedwoodLayout = RedwoodLayoutMutableWidgetFactory(),
+      ExampleSchema = ExampleSchemaTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
     )
     val protocolNodes = ExampleSchemaProtocolNodeFactory(mutableFactories)
     val widgetContainer = MutableListChildren<WidgetValue>()

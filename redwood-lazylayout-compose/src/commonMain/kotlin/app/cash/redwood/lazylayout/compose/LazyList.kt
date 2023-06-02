@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
 import kotlin.jvm.JvmName
 
 private const val OffscreenItemsBufferCount = 30
@@ -31,7 +32,10 @@ private const val OffscreenItemsBufferCount = 30
 @Composable
 internal fun LazyList(
   isVertical: Boolean,
+  width: Constraint,
+  height: Constraint,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
@@ -47,7 +51,10 @@ internal fun LazyList(
       firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
+    width = width,
+    height = height,
     modifier = modifier,
+    placeholder = { repeat(75) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
@@ -63,7 +70,10 @@ internal fun RefreshableLazyList(
   isVertical: Boolean,
   refreshing: Boolean = false,
   onRefresh: (() -> Unit)? = null,
+  width: Constraint,
+  height: Constraint,
   modifier: Modifier = Modifier,
+  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
@@ -81,7 +91,10 @@ internal fun RefreshableLazyList(
     },
     refreshing = refreshing,
     onRefresh = onRefresh,
+    width = width,
+    height = height,
     modifier = modifier,
+    placeholder = { repeat(75) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
