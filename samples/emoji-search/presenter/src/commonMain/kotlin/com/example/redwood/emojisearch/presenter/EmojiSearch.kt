@@ -26,14 +26,15 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.dp
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(
