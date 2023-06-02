@@ -28,7 +28,6 @@ import com.squareup.kotlinpoet.UNIT
 internal object Protocol {
   val Create = ClassName("app.cash.redwood.protocol", "Create")
   val Change = ClassName("app.cash.redwood.protocol", "Change")
-  val ChildrenChangeAdd = ClassName("app.cash.redwood.protocol", "ChildrenChange", "Add")
   val ChildrenTag = ClassName("app.cash.redwood.protocol", "ChildrenTag")
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
@@ -39,8 +38,6 @@ internal object Protocol {
   val ModifierTag = ClassName("app.cash.redwood.protocol", "ModifierTag")
   val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
-  val ViewTree = ClassName("app.cash.redwood.protocol", "ViewTree")
-  val ViewTreeBuilder = ViewTree.nestedClass("Builder")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
@@ -129,7 +126,6 @@ internal object KotlinxSerialization {
   val SerialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")
   val buildClassSerialDescriptor = MemberName("kotlinx.serialization.descriptors", "buildClassSerialDescriptor")
   val element = MemberName("kotlinx.serialization.descriptors", "element")
-  val encodeToJsonElement = MemberName("kotlinx.serialization.json", "encodeToJsonElement")
 
   val Decoder = ClassName("kotlinx.serialization.encoding", "Decoder")
   val Encoder = ClassName("kotlinx.serialization.encoding", "Encoder")
