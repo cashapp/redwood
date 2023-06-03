@@ -35,6 +35,7 @@ import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(

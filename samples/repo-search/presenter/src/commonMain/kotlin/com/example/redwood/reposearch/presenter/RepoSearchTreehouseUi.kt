@@ -27,6 +27,7 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.treehouse.TreehouseUi
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class RepoSearchTreehouseUi(
