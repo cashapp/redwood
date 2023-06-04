@@ -35,6 +35,7 @@ import app.cash.redwood.testing.TestRedwoodComposition
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import example.redwood.compose.Button
+import example.redwood.compose.Button2
 import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.Text
@@ -98,7 +99,36 @@ class ProtocolTest {
     )
   }
 
-  @Test fun protocolSkipsLambdaChangeOfSamePresence() = runTest {
+  @Test fun protocolAlwaysSendsInitialLambdaPresence() = runTest {
+    val composition = testProtocolComposition()
+    composition.setContent {
+      Button("hi", onClick = null)
+      Button("hi", onClick = {})
+      Button2("hi", onClick = {})
+    }
+
+    assertThat(composition.awaitSnapshot()).isEqualTo(
+      listOf(
+        Create(Id(1), WidgetTag(4)), // Button
+        ModifierChange(Id(1)),
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")), // text
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)), // onClick
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+        Create(Id(2), WidgetTag(4)), // Button
+        ModifierChange(Id(2)),
+        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")), // text
+        PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)), // onClick
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
+        Create(Id(3), WidgetTag(7)), // Button2
+        ModifierChange(Id(3)),
+        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hi")), // text
+        PropertyChange(Id(3), PropertyTag(2), JsonPrimitive(true)), // onClick
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
+      ),
+    )
+  }
+
+  @Test fun protocolSkipsNullableLambdaChangeOfSamePresence() = runTest {
     val composition = testProtocolComposition()
 
     var state by mutableStateOf(0)
@@ -150,6 +180,41 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 3")), // text
+      ),
+    )
+  }
+
+  @Test fun protocolSkipsNonNullLambdaChange() = runTest {
+    val composition = testProtocolComposition()
+
+    var state by mutableStateOf(0)
+    composition.setContent {
+      Button2(
+        "state: $state",
+        onClick = when (state) {
+          0 -> { { state = 1 } }
+          1 -> { { state = 2 } }
+          else -> fail()
+        },
+      )
+    }
+
+    assertThat(composition.awaitSnapshot()).isEqualTo(
+      listOf(
+        Create(Id(1), WidgetTag(7)), // Button2
+        ModifierChange(Id(1)),
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")), // text
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)), // onClick
+        ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      ),
+    )
+
+    // Invoke the onClick lambda to move the state from 0 to 1.
+    bridge.sendEvent(Event(Id(1), EventTag(2)))
+
+    assertThat(composition.awaitSnapshot()).isEqualTo(
+      listOf(
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")), // text
       ),
     )
   }

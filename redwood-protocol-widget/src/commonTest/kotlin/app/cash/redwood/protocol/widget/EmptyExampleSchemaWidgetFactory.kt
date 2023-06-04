@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
 import example.redwood.widget.Button
+import example.redwood.widget.Button2
 import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
 import example.redwood.widget.ScopedRow
@@ -37,6 +38,7 @@ open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing>
     override fun text(text: String?) = TODO()
     override fun onClick(onClick: (() -> Unit)?) = TODO()
   }
+  override fun Button2(): Button2<Nothing> = TODO()
   override fun TextInput(): TextInput<Nothing> = TODO()
   override fun Space(): Space<Nothing> = TODO()
 }
