@@ -15,49 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.yoga.enums.YGAlign
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.enums.YGJustify
 import platform.UIKit.UIView
-
-internal fun FlexDirection.toYoga() = when (this) {
-  FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
-  FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
-  FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
-  FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
-  else -> throw AssertionError()
-}
-
-internal fun AlignItems.toYoga() = when (this) {
-  AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
-  AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
-  AlignItems.Center -> YGAlign.YGAlignCenter
-  AlignItems.Baseline -> YGAlign.YGAlignBaseline
-  AlignItems.Stretch -> YGAlign.YGAlignStretch
-  else -> throw AssertionError()
-}
-
-internal fun JustifyContent.toYoga() = when (this) {
-  JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
-  JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
-  JustifyContent.Center -> YGJustify.YGJustifyCenter
-  JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
-  JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
-  JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
-  else -> throw AssertionError()
-}
-
-internal fun CrossAxisAlignment.toYoga() = when (this) {
-  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
-  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
-  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
-  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
-  else -> throw AssertionError()
-}
 
 @Suppress("UNCHECKED_CAST")
 internal val UIView.typedSubviews: List<UIView>

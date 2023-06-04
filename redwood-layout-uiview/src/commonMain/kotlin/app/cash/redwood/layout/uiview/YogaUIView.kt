@@ -17,10 +17,6 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.modifier.Grow
-import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Shrink
-import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.YGNode
@@ -31,7 +27,6 @@ import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetLeft
 import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetTop
 import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetWidth
 import app.cash.redwood.yoga.Yoga.YGUndefined
-import app.cash.redwood.yoga.enums.YGEdge
 import app.cash.redwood.yoga.enums.YGMeasureMode
 import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeAtMost
 import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeExactly
@@ -83,7 +78,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     YGAttachNodesFromViewHierachy(this)
 
     for ((index, node) in rootNode.children.withIndex()) {
-      syncModifier(node, getModifier(index), density)
+      node.applyModifier(getModifier(index), density)
     }
 
     Yoga.YGNodeCalculateLayout(
@@ -209,47 +204,6 @@ private fun UIView.asNode(): YGNode {
   val childNode = Yoga.YGNodeNew()
   childNode.setMeasureFunc(ViewMeasureFunction(this))
   return childNode
-}
-
-private fun syncModifier(node: YGNode, combinedModifier: Modifier, density: Density) {
-  combinedModifier.forEach { modifier ->
-    when (modifier) {
-      is Grow -> {
-        Yoga.YGNodeStyleSetFlexGrow(node, modifier.value.toFloat())
-      }
-      is Shrink -> {
-        Yoga.YGNodeStyleSetFlexShrink(node, modifier.value.toFloat())
-      }
-      is app.cash.redwood.layout.modifier.Margin -> {
-        Yoga.YGNodeStyleSetMargin(
-          node = node,
-          edge = YGEdge.YGEdgeLeft,
-          points = with(density) { modifier.margin.start.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = node,
-          edge = YGEdge.YGEdgeRight,
-          points = with(density) { modifier.margin.end.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = node,
-          edge = YGEdge.YGEdgeTop,
-          points = with(density) { modifier.margin.top.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = node,
-          edge = YGEdge.YGEdgeBottom,
-          points = with(density) { modifier.margin.bottom.toPx() }.toFloat(),
-        )
-      }
-      is HorizontalAlignment -> {
-        Yoga.YGNodeStyleSetAlignSelf(node, modifier.alignment.toYoga())
-      }
-      is VerticalAlignment -> {
-        Yoga.YGNodeStyleSetAlignSelf(node, modifier.alignment.toYoga())
-      }
-    }
-  }
 }
 
 private fun CValue<CGSize>.toYGSize() = useContents { YGSize(width.toFloat(), height.toFloat()) }
