@@ -21,6 +21,7 @@ kotlin {
       dependencies {
         api projects.redwoodLayoutWidget
         implementation projects.redwoodFlexbox
+        implementation projects.redwoodYoga
         implementation projects.redwoodWidgetCompose
         implementation libs.jetbrains.compose.foundation
       }

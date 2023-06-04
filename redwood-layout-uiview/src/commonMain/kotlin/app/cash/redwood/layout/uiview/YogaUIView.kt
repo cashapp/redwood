@@ -85,7 +85,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
       node = rootNode,
       ownerWidth = size.width,
       ownerHeight = size.height,
-      ownerDirection = rootNode.style.direction()
+      ownerDirection = rootNode.style.direction(),
     )
     return YGSize(
       width = YGNodeLayoutGetWidth(rootNode),
@@ -148,12 +148,12 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
 //    }
 
     val constrainedWidth = when (widthMode) {
-        YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
-        else -> width.toDouble()
+      YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
+      else -> width.toDouble()
     }
     val constrainedHeight = when (heightMode) {
-        YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
-        else -> height.toDouble()
+      YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
+      else -> height.toDouble()
     }
 
     // The default implementation of sizeThatFits: returns the existing size of
@@ -169,7 +169,7 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
 
     return YGSize(
       width = YGSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
-      height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode)
+      height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
     )
   }
 }
