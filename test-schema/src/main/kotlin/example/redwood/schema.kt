@@ -37,6 +37,7 @@ import kotlin.time.Duration
     CustomTypeWithMultipleScopes::class,
     Text::class,
     Button::class,
+    Button2::class,
     TextInput::class,
     Space::class,
   ],
@@ -67,6 +68,13 @@ public data class Text(
 public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: (() -> Unit)?,
+)
+
+/** Like [Button] but with a required lambda. */
+@Widget(7)
+public data class Button2(
+  @Property(1) val text: String?,
+  @Property(2) val onClick: () -> Unit,
 )
 
 @Widget(5)

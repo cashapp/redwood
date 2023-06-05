@@ -368,6 +368,14 @@ internal fun generateProtocolWidget(
                     .initializer("null")
                     .build(),
                 )
+                if (trait.isNullable) {
+                  addProperty(
+                    PropertySpec.builder(trait.name + "_firstSet", BOOLEAN, PRIVATE)
+                      .mutable()
+                      .initializer("true")
+                      .build(),
+                  )
+                }
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
@@ -375,7 +383,8 @@ internal fun generateProtocolWidget(
                     .apply {
                       val newValue = if (trait.isNullable) {
                         addStatement("val %1NSet = %1N != null", trait.name)
-                        beginControlFlow("if (%1NSet != (this.%1N != null))", trait.name)
+                        beginControlFlow("if (%1NSet != (this.%1N != null) || %1N_firstSet)", trait.name)
+                        addStatement("%N_firstSet = false", trait.name)
                         trait.name + "Set"
                       } else {
                         beginControlFlow("if (this.%1N == null)", trait.name)
