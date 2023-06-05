@@ -4,6 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+@file:Suppress("unused")
+
 package app.cash.redwood.yoga.detail
 
 import app.cash.redwood.yoga.YGConfig
@@ -48,6 +50,7 @@ object GlobalMembers {
     return getEnumData(e, enumValues(), flags, index)
   }
 
+  @Suppress("UNCHECKED_CAST")
   fun <E : Enum<E>> getEnumData(
     e: KClass<E>,
     values: Array<E>,

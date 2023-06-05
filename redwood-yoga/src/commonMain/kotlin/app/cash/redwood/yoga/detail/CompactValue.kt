@@ -4,6 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+@file:Suppress("NAME_SHADOWING", "unused")
+
 package app.cash.redwood.yoga.detail
 
 import app.cash.redwood.yoga.YGValue
@@ -50,6 +52,7 @@ class CompactValue {
 
   internal class Payload(val value: Float, val unit: YGUnit)
 
+  @Suppress("FloatingPointLiteralPrecision")
   companion object {
     private const val LOWER_BOUND = 1.08420217e-19f
     private const val UPPER_BOUND_POINT = 36893485948395847680.0f
