@@ -1,2 +1,0 @@
-package = app.cash.redwood.layout.yoga
-headers = BitUtils.h CompactValue.h event.h log.h Utils.h YGConfig.h YGEnums.h YGFloatOptional.h YGLayout.h YGMacros.h YGNode.h YGNodePrint.h YGStyle.h YGValue.h Yoga.h

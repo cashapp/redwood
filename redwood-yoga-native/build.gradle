@@ -10,13 +10,13 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 kotlin {
   KmpTargets.yogaTargets(project)
 
-  targets.all { target ->
-    if (target.platformType.name == "native") {
-      target.compilations.main.cinterops.create("yoga") {
-        includeDirs("native/yoga")
-      }
-    }
-  }
+//  targets.all { target ->
+//    if (target.platformType.name == "native") {
+//      target.compilations.main.cinterops.create("yoga") {
+//        includeDirs("native/yoga")
+//      }
+//    }
+//  }
 }
 
 cklib {

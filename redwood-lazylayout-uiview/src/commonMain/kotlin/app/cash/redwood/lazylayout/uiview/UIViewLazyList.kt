@@ -199,6 +199,11 @@ private class Cell(
   private var view: UIView? = null
 
   /** Factory function for a new cell. */
+  @Deprecated(
+    message = "Use constructor instead",
+    replaceWith = ReplaceWith("UITableViewCell(style, reuseIdentifier)"),
+    level = DeprecationLevel.ERROR,
+  )
   override fun initWithStyle(
     style: UITableViewCellStyle,
     reuseIdentifier: String?,
