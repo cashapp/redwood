@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.serialization.json.Json
 
@@ -33,6 +34,7 @@ public class StandardAppLifecycle(
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
   private lateinit var host: Host
+  @OptIn(DelicateCoroutinesApi::class)
   internal val coroutineScope: CoroutineScope = GlobalScope
 
   private lateinit var broadcastFrameClock: BroadcastFrameClock

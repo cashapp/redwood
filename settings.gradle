@@ -79,6 +79,7 @@ include ':redwood-widget'
 include ':redwood-widget-compose'
 include ':redwood-widget-testing'
 include ':redwood-yoga'
+include ':redwood-yoga-native'
 
 include ':test-schema'
 include ':test-schema:compose'

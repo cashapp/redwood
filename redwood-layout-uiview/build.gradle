@@ -20,6 +20,7 @@ kotlin {
         implementation projects.redwoodFlexbox
         implementation projects.redwoodWidgetCompose
         implementation projects.redwoodYoga
+        implementation projects.redwoodYogaNative
       }
     }
 
