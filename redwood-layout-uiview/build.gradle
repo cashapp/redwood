@@ -1,6 +1,8 @@
 import app.cash.redwood.buildsupport.FlexboxHelpers
+import co.touchlab.cklib.gradle.CompileToBitcode
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'co.touchlab.cklib'
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
@@ -8,9 +10,15 @@ redwoodBuild {
 }
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
+  [
+    iosArm64(),
+    iosX64(),
+    iosSimulatorArm64(),
+  ].forEach { target ->
+    target.compilations.main.cinterops.create("yoga") {
+      includeDirs("$rootDir/redwood-yoga-native/native/yoga")
+    }
+  }
 
   sourceSets {
     commonMain {
@@ -19,8 +27,6 @@ kotlin {
         api projects.redwoodLayoutWidget
         implementation projects.redwoodFlexbox
         implementation projects.redwoodWidgetCompose
-        implementation projects.redwoodYoga
-        implementation projects.redwoodYogaNative
       }
     }
 
@@ -35,5 +41,23 @@ kotlin {
     iosSimulatorArm64Main {
       dependsOn commonMain
     }
+  }
+}
+
+cklib {
+  config.kotlinVersion = libs.versions.kotlin.get()
+  config.llvmHome = "${System.getProperty("user.home")}/.konan/dependencies/apple-llvm-20200714-macos-aarch64-1"
+  create("yoga", file("src/yoga"), ["main"]) { ctb ->
+    ctb.language = CompileToBitcode.Language.CPP
+    ctb.srcDirs = project.files(file("$rootDir/redwood-yoga-native/native/yoga"))
+    ctb.compilerArgs.addAll(
+      '-DKONAN_MI_MALLOC=1',
+      '-fno-omit-frame-pointer',
+      '-fexceptions',
+      '-Wall',
+      '-Werror',
+      '-Wextra',
+      '-fPIC',
+    )
   }
 }
