@@ -22,10 +22,10 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -35,9 +35,6 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.yoga.Yoga
-import app.cash.redwood.yoga.internal.enums.YGEdge
-import app.cash.redwood.yoga.internal.enums.YGOverflow
 
 internal class ViewFlexContainer(
   private val context: Context,
@@ -57,7 +54,7 @@ internal class ViewFlexContainer(
   private var height = Constraint.Wrap
 
   init {
-    Yoga.YGNodeStyleSetFlexDirection(yogaLayout.rootNode, direction.toYoga())
+    yogaLayout.rootNode.flexDirection = direction
     yogaLayout.density = density
     yogaLayout.getModifier = { children.widgets[it].modifier }
   }
@@ -73,26 +70,12 @@ internal class ViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
-      edge = YGEdge.YGEdgeLeft,
-      points = with(density) { margin.start.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
-      edge = YGEdge.YGEdgeRight,
-      points = with(density) { margin.end.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
-      edge = YGEdge.YGEdgeTop,
-      points = with(density) { margin.top.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaLayout.rootNode,
-      edge = YGEdge.YGEdgeBottom,
-      points = with(density) { margin.bottom.toPx() }.toFloat(),
-    )
+    yogaLayout.rootNode.apply {
+      marginStart = with(density) { margin.start.toPx() }.toFloat()
+      marginEnd = with(density) { margin.end.toPx() }.toFloat()
+      marginTop = with(density) { margin.top.toPx() }.toFloat()
+      marginBottom = with(density) { margin.bottom.toPx() }.toFloat()
+    }
     invalidate()
   }
 
@@ -122,12 +105,12 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    Yoga.YGNodeStyleSetAlignItems(yogaLayout.rootNode, alignItems.toYoga())
+    yogaLayout.rootNode.alignItems = alignItems
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    Yoga.YGNodeStyleSetJustifyContent(yogaLayout.rootNode, justifyContent.toYoga())
+    yogaLayout.rootNode.justifyContent = justifyContent
     invalidate()
   }
 
@@ -155,16 +138,8 @@ internal class ViewFlexContainer(
       (yogaLayout.parent as ViewGroup?)?.removeView(yogaLayout)
 
       if (scrollEnabled) {
-        Yoga.YGNodeStyleSetOverflow(
-          yogaLayout.rootNode,
-          YGOverflow.YGOverflowScroll,
-        )
         addView(newScrollView().apply { addView(yogaLayout) })
       } else {
-        Yoga.YGNodeStyleSetOverflow(
-          yogaLayout.rootNode,
-          YGOverflow.YGOverflowVisible,
-        )
         addView(yogaLayout)
       }
     }

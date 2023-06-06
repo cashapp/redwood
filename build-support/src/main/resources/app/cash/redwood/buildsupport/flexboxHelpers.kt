@@ -16,17 +16,9 @@
 package com.example
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexItem
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.Spacing
-import app.cash.redwood.flexbox.isHorizontal
-import app.cash.redwood.flexbox.isVertical
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.AlignSelf
+import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
@@ -35,13 +27,7 @@ import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.Margin
-import app.cash.redwood.yoga.enums.YGAlign
-import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.enums.YGJustify
-import app.cash.redwood.yoga.YGNode
-import app.cash.redwood.yoga.Yoga
+import app.cash.redwood.yoga.Node
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -69,124 +55,26 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Margin.toSpacing(density: Density) = with(density) {
-  Spacing(
-    left = start.toPx(),
-    right = end.toPx(),
-    top = top.toPx(),
-    bottom = bottom.toPx(),
-  )
-}
-
-internal fun newFlexItem(
-  direction: FlexDirection,
-  density: Density,
-  modifier: Modifier,
-  measurable: Measurable,
-): FlexItem {
-  var flexGrow = DefaultFlexGrow
-  var flexShrink = DefaultFlexShrink
-  var spacing = Spacing.Zero
-  var alignSelf = AlignSelf.Auto
-  modifier.forEach { m ->
-    when (m) {
-      is GrowModifier -> {
-        flexGrow = m.value
-      }
-      is ShrinkModifier -> {
-        flexShrink = m.value
-      }
-      is MarginModifier -> {
-        spacing = m.margin.toSpacing(density)
-      }
-      is HorizontalAlignmentModifier -> if (direction.isVertical) {
-        alignSelf = m.alignment.toAlignSelf()
-      }
-      is VerticalAlignmentModifier -> if (direction.isHorizontal) {
-        alignSelf = m.alignment.toAlignSelf()
-      }
-    }
-  }
-  return FlexItem(
-    flexGrow = flexGrow,
-    flexShrink = flexShrink,
-    margin = spacing,
-    alignSelf = alignSelf,
-    measurable = measurable,
-  )
-}
-
-internal fun FlexDirection.toYoga() = when (this) {
-  FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
-  FlexDirection.RowReverse -> YGFlexDirection.YGFlexDirectionRowReverse
-  FlexDirection.Column -> YGFlexDirection.YGFlexDirectionColumn
-  FlexDirection.ColumnReverse -> YGFlexDirection.YGFlexDirectionColumnReverse
-  else -> throw AssertionError()
-}
-
-internal fun AlignItems.toYoga() = when (this) {
-  AlignItems.FlexStart -> YGAlign.YGAlignFlexStart
-  AlignItems.FlexEnd -> YGAlign.YGAlignFlexEnd
-  AlignItems.Center -> YGAlign.YGAlignCenter
-  AlignItems.Baseline -> YGAlign.YGAlignBaseline
-  AlignItems.Stretch -> YGAlign.YGAlignStretch
-  else -> throw AssertionError()
-}
-
-internal fun JustifyContent.toYoga() = when (this) {
-  JustifyContent.FlexStart -> YGJustify.YGJustifyFlexStart
-  JustifyContent.FlexEnd -> YGJustify.YGJustifyFlexEnd
-  JustifyContent.Center -> YGJustify.YGJustifyCenter
-  JustifyContent.SpaceBetween -> YGJustify.YGJustifySpaceBetween
-  JustifyContent.SpaceAround -> YGJustify.YGJustifySpaceAround
-  JustifyContent.SpaceEvenly -> YGJustify.YGJustifySpaceEvenly
-  else -> throw AssertionError()
-}
-
-internal fun CrossAxisAlignment.toYoga() = when (this) {
-  CrossAxisAlignment.Start -> YGAlign.YGAlignFlexStart
-  CrossAxisAlignment.Center -> YGAlign.YGAlignCenter
-  CrossAxisAlignment.End -> YGAlign.YGAlignFlexEnd
-  CrossAxisAlignment.Stretch -> YGAlign.YGAlignStretch
-  else -> throw AssertionError()
-}
-
-internal fun YGNode.applyModifier(parentModifier: Modifier, density: Density) {
+internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
   parentModifier.forEach { childModifier ->
     when (childModifier) {
       is GrowModifier -> {
-        Yoga.YGNodeStyleSetFlexGrow(this, childModifier.value.toFloat())
+        flexGrow = childModifier.value.toFloat()
       }
       is ShrinkModifier -> {
-        Yoga.YGNodeStyleSetFlexShrink(this, childModifier.value.toFloat())
+        flexShrink = childModifier.value.toFloat()
       }
       is MarginModifier -> {
-        Yoga.YGNodeStyleSetMargin(
-          node = this,
-          edge = YGEdge.YGEdgeLeft,
-          points = with(density) { childModifier.margin.start.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = this,
-          edge = YGEdge.YGEdgeRight,
-          points = with(density) { childModifier.margin.end.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = this,
-          edge = YGEdge.YGEdgeTop,
-          points = with(density) { childModifier.margin.top.toPx() }.toFloat(),
-        )
-        Yoga.YGNodeStyleSetMargin(
-          node = this,
-          edge = YGEdge.YGEdgeBottom,
-          points = with(density) { childModifier.margin.bottom.toPx() }.toFloat(),
-        )
+        marginStart = with(density) { childModifier.margin.start.toPx() }.toFloat()
+        marginEnd = with(density) { childModifier.margin.end.toPx() }.toFloat()
+        marginTop = with(density) { childModifier.margin.top.toPx() }.toFloat()
+        marginBottom = with(density) { childModifier.margin.bottom.toPx() }.toFloat()
       }
       is HorizontalAlignmentModifier -> {
-        Yoga.YGNodeStyleSetAlignSelf(this, childModifier.alignment.toYoga())
+        alignSelf = childModifier.alignment.toAlignSelf()
       }
       is VerticalAlignmentModifier -> {
-        Yoga.YGNodeStyleSetAlignSelf(this, childModifier.alignment.toYoga())
+        alignSelf = childModifier.alignment.toAlignSelf()
       }
     }
   }

@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.yoga
 
+import app.cash.redwood.yoga.internal.Yoga
 import kotlin.jvm.JvmInline
 
 public fun interface MeasureCallback {
@@ -30,7 +31,11 @@ public fun interface MeasureCallback {
 public data class Size(
   val width: Float,
   val height: Float,
-)
+) {
+  public companion object {
+    public const val Undefined: Float = Yoga.YGUndefined
+  }
+}
 
 @JvmInline
 public value class MeasureMode private constructor(private val ordinal: Int) {

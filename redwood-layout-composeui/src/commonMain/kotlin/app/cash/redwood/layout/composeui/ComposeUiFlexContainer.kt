@@ -22,23 +22,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Measurable
 import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.AlignSelf
 import app.cash.redwood.flexbox.FlexContainer
 import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.FlexItem
 import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
@@ -86,19 +95,19 @@ internal class ComposeUiFlexContainer(
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContent())
+    justifyContent(horizontalAlignment.toJustifyContentOld())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItems())
+    alignItems(horizontalAlignment.toAlignItemsOld())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContent())
+    justifyContent(verticalAlignment.toJustifyContentOld())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItems())
+    alignItems(verticalAlignment.toAlignItemsOld())
   }
 
   fun alignItems(alignItems: AlignItems) {
@@ -176,4 +185,77 @@ internal class ComposeUiFlexContainer(
       )
     }
   }
+}
+
+internal fun newFlexItem(
+  direction: FlexDirection,
+  density: Density,
+  modifier: RedwoodModifier,
+  measurable: RedwoodMeasurable,
+): FlexItem {
+  var flexGrow = FlexItem.DefaultFlexGrow
+  var flexShrink = FlexItem.DefaultFlexShrink
+  var spacing = Spacing.Zero
+  var alignSelf = AlignSelf.Auto
+  modifier.forEach { m ->
+    when (m) {
+      is Grow -> {
+        flexGrow = m.value
+      }
+      is Shrink -> {
+        flexShrink = m.value
+      }
+      is app.cash.redwood.layout.modifier.Margin -> {
+        spacing = m.margin.toSpacing(density)
+      }
+      is HorizontalAlignment -> if (direction.isVertical) {
+        alignSelf = m.alignment.toAlignSelfOld()
+      }
+      is VerticalAlignment -> if (direction.isHorizontal) {
+        alignSelf = m.alignment.toAlignSelfOld()
+      }
+    }
+  }
+  return FlexItem(
+    flexGrow = flexGrow,
+    flexShrink = flexShrink,
+    margin = spacing,
+    alignSelf = alignSelf,
+    measurable = measurable,
+  )
+}
+
+internal fun Margin.toSpacing(density: Density) = with(density) {
+  Spacing(
+    left = start.toPx(),
+    right = end.toPx(),
+    top = top.toPx(),
+    bottom = bottom.toPx(),
+  )
+}
+
+internal fun MainAxisAlignment.toJustifyContentOld() = when (this) {
+  MainAxisAlignment.Start -> JustifyContent.FlexStart
+  MainAxisAlignment.Center -> JustifyContent.Center
+  MainAxisAlignment.End -> JustifyContent.FlexEnd
+  MainAxisAlignment.SpaceBetween -> JustifyContent.SpaceBetween
+  MainAxisAlignment.SpaceAround -> JustifyContent.SpaceAround
+  MainAxisAlignment.SpaceEvenly -> JustifyContent.SpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignItemsOld() = when (this) {
+  CrossAxisAlignment.Start -> AlignItems.FlexStart
+  CrossAxisAlignment.Center -> AlignItems.Center
+  CrossAxisAlignment.End -> AlignItems.FlexEnd
+  CrossAxisAlignment.Stretch -> AlignItems.Stretch
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignSelfOld() = when (this) {
+  CrossAxisAlignment.Start -> AlignSelf.FlexStart
+  CrossAxisAlignment.Center -> AlignSelf.Center
+  CrossAxisAlignment.End -> AlignSelf.FlexEnd
+  CrossAxisAlignment.Stretch -> AlignSelf.Stretch
+  else -> throw AssertionError()
 }

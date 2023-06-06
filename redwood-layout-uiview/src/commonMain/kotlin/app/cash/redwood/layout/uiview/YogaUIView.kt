@@ -19,19 +19,11 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
-import app.cash.redwood.yoga.YGNode
-import app.cash.redwood.yoga.YGSize
-import app.cash.redwood.yoga.Yoga
-import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetHeight
-import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetLeft
-import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetTop
-import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetWidth
-import app.cash.redwood.yoga.Yoga.YGUndefined
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeAtMost
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeExactly
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeUndefined
-import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.MeasureCallback
+import app.cash.redwood.yoga.MeasureMode
+import app.cash.redwood.yoga.Node
+import app.cash.redwood.yoga.Size
+import app.cash.redwood.yoga.measure
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
@@ -43,7 +35,7 @@ import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaUIView : UIView(cValue { CGRectZero }) {
-  val rootNode = Yoga.YGNodeNew()
+  val rootNode = Node()
 
   var width = Constraint.Wrap
   var height = Constraint.Wrap
@@ -52,7 +44,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   var getModifier: (Int) -> Modifier = { Modifier }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(YGUnidentifiedSize).toCGSize()
+    return calculateLayoutWithSize(Size(Size.Undefined, Size.Undefined)).toCGSize()
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
@@ -71,30 +63,20 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     }
   }
 
-  private fun calculateLayoutWithSize(size: YGSize): YGSize {
-    // TODO: Figure out how to measure incrementally safely.
-    rootNode.markDirtyAndPropogateDownwards()
-
+  private fun calculateLayoutWithSize(size: Size): Size {
     YGAttachNodesFromViewHierachy(this)
 
     for ((index, node) in rootNode.children.withIndex()) {
       node.applyModifier(getModifier(index), density)
     }
 
-    Yoga.YGNodeCalculateLayout(
-      node = rootNode,
-      ownerWidth = size.width,
-      ownerHeight = size.height,
-      ownerDirection = rootNode.style.direction(),
-    )
-    return YGSize(
-      width = YGNodeLayoutGetWidth(rootNode),
-      height = YGNodeLayoutGetHeight(rootNode),
-    )
+    rootNode.measure(size.width, size.height)
+
+    return Size(rootNode.width, rootNode.height)
   }
 
-  private fun sizeToBounds(size: CGSize): YGSize {
-    return YGSize(
+  private fun sizeToBounds(size: CGSize): Size {
+    return Size(
       width = sizeToBoundsDimension(width, size.width),
       height = sizeToBoundsDimension(height, size.height),
     )
@@ -102,7 +84,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
 
   private fun sizeToBoundsDimension(constraint: Constraint, dimension: Double): Float {
     if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
-      return YGUndefined
+      return Size.Undefined
     } else {
       return dimension.toFloat()
     }
@@ -111,35 +93,35 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
 
 private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
   if (yoga.typedSubviews.isEmpty()) {
-    yoga.rootNode.removeAllChildren()
-    yoga.rootNode.setMeasureFunc(ViewMeasureFunction(yoga))
+    yoga.rootNode.children.clear()
+    yoga.rootNode.measureCallback = ViewMeasureFunction(yoga)
     return
   }
 
   // Nodes with children cannot have measure functions.
-  yoga.rootNode.setMeasureFunc(null as YGMeasureFunc?)
+  yoga.rootNode.measureCallback = null
 
   val currentViews = yoga.rootNode.children.mapNotNull { it.view }
   val subviews = yoga.typedSubviews
   if (currentViews != subviews) {
 //    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
-    yoga.rootNode.removeAllChildren()
+    yoga.rootNode.children.clear()
     for (view in subviews) {
-      Yoga.YGNodeAddChild(yoga.rootNode, view.asNode())
+      yoga.rootNode.children += view.asNode()
     }
   } else {
 //    println("YGAttachNodesFromViewHierachy - currentViews == subviews")
   }
 }
 
-private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
-  override fun invoke(
-    node: YGNode,
+private class ViewMeasureFunction(val view: UIView) : MeasureCallback {
+  override fun measure(
+    node: Node,
     width: Float,
-    widthMode: YGMeasureMode,
+    widthMode: MeasureMode,
     height: Float,
-    heightMode: YGMeasureMode,
-  ): YGSize {
+    heightMode: MeasureMode,
+  ): Size {
     val view = node.view!!
 //    if (view is YogaUIView) {
 //      println("ViewMeasureFunction ${view.flexDirection} $width $widthMode $height $heightMode")
@@ -148,11 +130,11 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
 //    }
 
     val constrainedWidth = when (widthMode) {
-      YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
+      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> width.toDouble()
     }
     val constrainedHeight = when (heightMode) {
-      YGMeasureModeUndefined -> UIViewNoIntrinsicMetric
+      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> height.toDouble()
     }
 
@@ -162,12 +144,12 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
     // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
     // for more information.
     val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
-      YGZeroSize
+      Size(0f, 0f)
     } else {
-      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toYGSize()
+      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toSize()
     }
 
-    return YGSize(
+    return Size(
       width = YGSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
       height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
     )
@@ -177,21 +159,19 @@ private class ViewMeasureFunction(val view: UIView) : YGMeasureFunc {
 private fun YGSanitizeMeasurement(
   constrainedSize: Double,
   measuredSize: Float,
-  measureMode: YGMeasureMode,
+  measureMode: MeasureMode,
 ): Float = when (measureMode) {
-  YGMeasureModeExactly -> constrainedSize.toFloat()
-  YGMeasureModeAtMost -> measuredSize
-  YGMeasureModeUndefined -> measuredSize
+  MeasureMode.Exactly -> constrainedSize.toFloat()
+  MeasureMode.AtMost -> measuredSize
+  MeasureMode.Undefined -> measuredSize
+  else -> throw AssertionError()
 }
 
-private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
-  val left = YGNodeLayoutGetLeft(node)
-  val top = YGNodeLayoutGetTop(node)
-
-  val x = left.toDouble()
-  val y = top.toDouble()
-  val width = YGNodeLayoutGetWidth(node).toDouble()
-  val height = YGNodeLayoutGetHeight(node).toDouble()
+private fun YGApplyLayoutToViewHierarchy(node: Node) {
+  val x = node.left.toDouble()
+  val y = node.top.toDouble()
+  val width = node.width.toDouble()
+  val height = node.height.toDouble()
   node.view!!.setFrame(CGRectMake(x, y, width, height))
 //  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
 
@@ -200,19 +180,15 @@ private fun YGApplyLayoutToViewHierarchy(node: YGNode) {
   }
 }
 
-private fun UIView.asNode(): YGNode {
-  val childNode = Yoga.YGNodeNew()
-  childNode.setMeasureFunc(ViewMeasureFunction(this))
+private fun UIView.asNode(): Node {
+  val childNode = Node()
+  childNode.measureCallback = ViewMeasureFunction(this)
   return childNode
 }
 
-private fun CValue<CGSize>.toYGSize() = useContents { YGSize(width.toFloat(), height.toFloat()) }
+private fun CValue<CGSize>.toSize() = useContents { Size(width.toFloat(), height.toFloat()) }
 
-private fun YGSize.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
+private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
-private val YGNode.view: UIView?
-  get() = (measure.noContext as ViewMeasureFunction?)?.view
-
-private val YGUnidentifiedSize = YGSize(YGUndefined, YGUndefined)
-
-private val YGZeroSize = YGSize(0f, 0f)
+private val Node.view: UIView?
+  get() = (measureCallback as ViewMeasureFunction?)?.view

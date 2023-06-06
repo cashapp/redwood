@@ -16,10 +16,11 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
-import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.MeasureMode
 
-internal fun YGMeasureMode.toAndroid() = when (this) {
-  YGMeasureMode.YGMeasureModeAtMost -> View.MeasureSpec.AT_MOST
-  YGMeasureMode.YGMeasureModeExactly -> View.MeasureSpec.EXACTLY
-  YGMeasureMode.YGMeasureModeUndefined -> View.MeasureSpec.UNSPECIFIED
+internal fun MeasureMode.toAndroid() = when (this) {
+  MeasureMode.AtMost -> View.MeasureSpec.AT_MOST
+  MeasureMode.Exactly -> View.MeasureSpec.EXACTLY
+  MeasureMode.Undefined -> View.MeasureSpec.UNSPECIFIED
+  else -> throw AssertionError()
 }

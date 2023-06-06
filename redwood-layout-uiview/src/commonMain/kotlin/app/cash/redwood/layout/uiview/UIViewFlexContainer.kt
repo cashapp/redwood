@@ -16,10 +16,10 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.isHorizontal
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -30,8 +30,6 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.yoga.Yoga
-import app.cash.redwood.yoga.internal.enums.YGEdge
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -48,7 +46,7 @@ internal class UIViewFlexContainer(
   override var modifier: Modifier = Modifier
 
   init {
-    Yoga.YGNodeStyleSetFlexDirection(yogaView.rootNode, direction.toYoga())
+    yogaView.rootNode.flexDirection = direction
     yogaView.density = density
     yogaView.getModifier = { children.widgets[it].modifier }
   }
@@ -64,26 +62,12 @@ internal class UIViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaView.rootNode,
-      edge = YGEdge.YGEdgeLeft,
-      points = with(Density.Default) { margin.start.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaView.rootNode,
-      edge = YGEdge.YGEdgeRight,
-      points = with(Density.Default) { margin.end.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaView.rootNode,
-      edge = YGEdge.YGEdgeTop,
-      points = with(Density.Default) { margin.top.toPx() }.toFloat(),
-    )
-    Yoga.YGNodeStyleSetPadding(
-      node = yogaView.rootNode,
-      edge = YGEdge.YGEdgeBottom,
-      points = with(Density.Default) { margin.bottom.toPx() }.toFloat(),
-    )
+    yogaView.rootNode.apply {
+      marginStart = with(density) { margin.start.toPx() }.toFloat()
+      marginEnd = with(density) { margin.end.toPx() }.toFloat()
+      marginTop = with(density) { margin.top.toPx() }.toFloat()
+      marginBottom = with(density) { margin.bottom.toPx() }.toFloat()
+    }
     invalidate()
   }
 
@@ -108,12 +92,12 @@ internal class UIViewFlexContainer(
   }
 
   private fun alignItems(alignItems: AlignItems) {
-    Yoga.YGNodeStyleSetAlignItems(yogaView.rootNode, alignItems.toYoga())
+    yogaView.rootNode.alignItems = alignItems
     invalidate()
   }
 
   private fun justifyContent(justifyContent: JustifyContent) {
-    Yoga.YGNodeStyleSetJustifyContent(yogaView.rootNode, justifyContent.toYoga())
+    yogaView.rootNode.justifyContent = justifyContent
     invalidate()
   }
 

@@ -26,6 +26,8 @@ public class Node internal constructor(
 
   // Inputs
   public val children: MutableList<Node> = Children()
+  public val owner: Node?
+    get() = native.owner?.let(::Node)
   public var flexDirection: FlexDirection
     get() = TODO()
     set(value) = Yoga.YGNodeStyleSetFlexDirection(native, value.toYoga())
@@ -56,8 +58,20 @@ public class Node internal constructor(
   public var marginBottom: Float
     get() = TODO()
     set(value) = Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeBottom, value)
-  public var measureCallback: MeasureCallback?
+  public var requestedWidth: Float
     get() = TODO()
+    set(value) = Yoga.YGNodeStyleSetWidth(native, value)
+  public var requestedHeight: Float
+    get() = TODO()
+    set(value) = Yoga.YGNodeStyleSetHeight(native, value)
+  public var requestedMaxWidth: Float
+    get() = TODO()
+    set(value) = Yoga.YGNodeStyleSetMaxWidth(native, value)
+  public var requestedMaxHeight: Float
+    get() = TODO()
+    set(value) = Yoga.YGNodeStyleSetMaxHeight(native, value)
+  public var measureCallback: MeasureCallback?
+    get() = (native.measure.noContext as MeasureCallbackCompat?)?.callback
     set(value) = Yoga.YGNodeSetMeasureFunc(native, value?.let(::MeasureCallbackCompat))
 
   // Outputs

@@ -17,7 +17,7 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
-import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
