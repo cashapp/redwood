@@ -115,6 +115,7 @@ private class WidgetRedwoodComposition(
 @RedwoodCodegenApi
 public interface RedwoodApplier<W : Any> {
   public val provider: Widget.Provider<W>
+  public fun recordChanged(widget: Widget<W>)
 }
 
 /**
@@ -141,11 +142,11 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
       "UNCHECKED_CAST", // Safe so long as you use generated composition function.
       "UNNECESSARY_NOT_NULL_ASSERTION",
     )
-    val applier = currentComposer.applier!! as RedwoodApplier<P>
+    val applier = currentComposer.applier!! as RedwoodApplier<Any>
 
     currentComposer.createNode {
       @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-      WidgetNode(factory(applier.provider as P) as Widget<Any>)
+      WidgetNode(applier, factory(applier.provider as P) as Widget<Any>)
     }
   } else {
     currentComposer.useNode()

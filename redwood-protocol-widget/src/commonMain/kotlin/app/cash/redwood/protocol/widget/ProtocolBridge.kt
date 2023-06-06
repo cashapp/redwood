@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenChange
@@ -28,6 +29,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 
@@ -47,6 +49,7 @@ public class ProtocolBridge<W : Any>(
   private val nodes = mutableMapOf<Id, ProtocolNode<W>>(
     Id.Root to RootProtocolNode(container),
   )
+  private val changedWidgets = mutableSetOf<ChangeListener>()
 
   override fun sendChanges(changes: List<Change>) {
     for (i in changes.indices) {
@@ -77,15 +80,38 @@ public class ProtocolBridge<W : Any>(
               nodes.keys.removeAll(change.removedIds)
             }
           }
+
+          val widget = node.widget
+          if (widget is ChangeListener) {
+            changedWidgets += widget
+          }
         }
         is ModifierChange -> {
           val node = node(id)
           node.updateModifier(change.elements)
+
+          val widget = node.widget
+          if (widget is ChangeListener) {
+            changedWidgets += widget
+          }
         }
         is PropertyChange -> {
-          node(change.id).apply(change, eventSink)
+          val node = node(change.id)
+          node.apply(change, eventSink)
+
+          val widget = node.widget
+          if (widget is ChangeListener) {
+            changedWidgets += widget
+          }
         }
       }
+    }
+
+    if (changedWidgets.isNotEmpty()) {
+      for (widget in changedWidgets) {
+        widget.onEndChanges()
+      }
+      changedWidgets.clear()
     }
   }
 
@@ -96,7 +122,7 @@ public class ProtocolBridge<W : Any>(
 
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
-) : ProtocolNode<W> {
+) : ProtocolNode<W>, Widget<W> {
   override fun updateModifier(elements: List<ModifierElement>) {
     throw AssertionError("unexpected: $elements")
   }
@@ -109,9 +135,18 @@ private class RootProtocolNode<W : Any>(
     ChildrenTag.Root -> children
     else -> throw AssertionError("unexpected: $tag")
   }
-  override val widget: Widget<W> get() = throw AssertionError()
+
+  override val widget: Widget<W> get() = this
 
   override fun attachTo(container: Widget.Children<W>) {
     throw AssertionError()
   }
+
+  override val value: W get() = throw AssertionError()
+
+  override var modifier: Modifier
+    get() = throw AssertionError()
+    set(_) {
+      throw AssertionError()
+    }
 }
