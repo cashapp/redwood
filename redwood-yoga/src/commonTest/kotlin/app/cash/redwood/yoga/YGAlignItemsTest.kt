@@ -6,12 +6,12 @@
  */
 package app.cash.redwood.yoga
 
-import app.cash.redwood.yoga.enums.YGAlign
-import app.cash.redwood.yoga.enums.YGDirection
-import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.enums.YGJustify
-import app.cash.redwood.yoga.enums.YGWrap
+import app.cash.redwood.yoga.internal.enums.YGAlign
+import app.cash.redwood.yoga.internal.enums.YGDirection
+import app.cash.redwood.yoga.internal.enums.YGEdge
+import app.cash.redwood.yoga.internal.enums.YGFlexDirection
+import app.cash.redwood.yoga.internal.enums.YGJustify
+import app.cash.redwood.yoga.internal.enums.YGWrap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

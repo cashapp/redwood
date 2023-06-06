@@ -6,14 +6,14 @@
  */
 @file:Suppress("unused")
 
-package app.cash.redwood.yoga.event
+package app.cash.redwood.yoga.internal.event
 
-import app.cash.redwood.yoga.YGConfig
-import app.cash.redwood.yoga.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.YGConfig
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 
-sealed interface CallableEvent
+internal sealed interface CallableEvent
 
-class LayoutData : CallableEvent {
+internal class LayoutData : CallableEvent {
   var layouts = 0
   var measures = 0
   var maxMeasureCache = 0
@@ -23,16 +23,16 @@ class LayoutData : CallableEvent {
   val measureCallbackReasonsCount = MutableList(LayoutPassReason.COUNT) { 0 }
 }
 
-class LayoutPassStartEventData(
+internal class LayoutPassStartEventData(
   val layoutContext: Any?,
 ) : CallableEvent
 
-class LayoutPassEndEventData(
+internal class LayoutPassEndEventData(
   val layoutContext: Any?,
   val layoutData: LayoutData,
 ) : CallableEvent
 
-class MeasureCallbackEndEventData(
+internal class MeasureCallbackEndEventData(
   val layoutContext: Any?,
   val width: Float,
   val widthMeasureMode: YGMeasureMode,
@@ -43,17 +43,17 @@ class MeasureCallbackEndEventData(
   val reason: LayoutPassReason,
 ) : CallableEvent
 
-class NodeAllocationEventData(
+internal class NodeAllocationEventData(
   val config: YGConfig?,
 ) : CallableEvent
 
-class NodeDeallocationEventData(
+internal class NodeDeallocationEventData(
   val config: YGConfig?,
 ) : CallableEvent
 
-class NodeLayoutEventData(
+internal class NodeLayoutEventData(
   val layoutType: LayoutType,
   val layoutContext: Any?,
 ) : CallableEvent
 
-object EmptyEventData : CallableEvent
+internal object EmptyEventData : CallableEvent

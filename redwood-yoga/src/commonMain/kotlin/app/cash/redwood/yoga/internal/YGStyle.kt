@@ -1,29 +1,38 @@
 /*
- * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * Copyright (C) 2023 Square, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 @file:Suppress("unused")
 
 package app.cash.redwood.yoga.internal
 
-import app.cash.redwood.yoga.detail.CompactValue
-import app.cash.redwood.yoga.detail.GlobalMembers
-import app.cash.redwood.yoga.detail.Values
-import app.cash.redwood.yoga.enums.YGAlign
-import app.cash.redwood.yoga.enums.YGDimension
-import app.cash.redwood.yoga.enums.YGDirection
-import app.cash.redwood.yoga.enums.YGDisplay
-import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.enums.YGJustify
-import app.cash.redwood.yoga.enums.YGOverflow
-import app.cash.redwood.yoga.enums.YGPositionType
-import app.cash.redwood.yoga.enums.YGWrap
+import app.cash.redwood.yoga.internal.detail.CompactValue
+import app.cash.redwood.yoga.internal.detail.GlobalMembers
+import app.cash.redwood.yoga.internal.detail.Values
+import app.cash.redwood.yoga.internal.enums.YGAlign
+import app.cash.redwood.yoga.internal.enums.YGDimension
+import app.cash.redwood.yoga.internal.enums.YGDirection
+import app.cash.redwood.yoga.internal.enums.YGDisplay
+import app.cash.redwood.yoga.internal.enums.YGEdge
+import app.cash.redwood.yoga.internal.enums.YGFlexDirection
+import app.cash.redwood.yoga.internal.enums.YGJustify
+import app.cash.redwood.yoga.internal.enums.YGOverflow
+import app.cash.redwood.yoga.internal.enums.YGPositionType
+import app.cash.redwood.yoga.internal.enums.YGWrap
 import kotlin.reflect.KClass
 
-class YGStyle {
+internal class YGStyle {
   val margin = Values<YGEdge>()
   val position = Values<YGEdge>()
   val padding = Values<YGEdge>()

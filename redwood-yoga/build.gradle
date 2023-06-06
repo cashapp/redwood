@@ -1,5 +1,4 @@
 import app.cash.redwood.buildsupport.KmpTargets
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'kotlinx-atomicfu'
@@ -8,9 +7,6 @@ apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
 
 kotlin {
   KmpTargets.addAllTargets(project)
-
-  // TODO: Re-enable explicit API mode.
-  explicitApi(ExplicitApiMode.Disabled)
 
   sourceSets {
     commonTest {

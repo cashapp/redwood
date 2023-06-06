@@ -27,11 +27,11 @@ import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetLeft
 import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetTop
 import app.cash.redwood.yoga.Yoga.YGNodeLayoutGetWidth
 import app.cash.redwood.yoga.Yoga.YGUndefined
-import app.cash.redwood.yoga.enums.YGMeasureMode
-import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeAtMost
-import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeExactly
-import app.cash.redwood.yoga.enums.YGMeasureMode.YGMeasureModeUndefined
-import app.cash.redwood.yoga.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeAtMost
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeExactly
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode.YGMeasureModeUndefined
+import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents

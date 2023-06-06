@@ -6,14 +6,14 @@
  */
 @file:Suppress("NAME_SHADOWING", "unused")
 
-package app.cash.redwood.yoga.detail
+package app.cash.redwood.yoga.internal.detail
 
-import app.cash.redwood.yoga.YGValue
-import app.cash.redwood.yoga.enums.YGUnit
+import app.cash.redwood.yoga.internal.YGValue
+import app.cash.redwood.yoga.internal.enums.YGUnit
 import kotlin.math.abs
 
 //static_assert(std::numeric_limits<float>::is_iec559, "facebook::yoga::detail::CompactValue only works with IEEE754 floats");
-class CompactValue {
+internal class CompactValue {
   private val payload_: Payload
   private var undefined = false
 

@@ -1,33 +1,43 @@
 /*
- * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * Copyright (C) 2023 Square, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 @file:Suppress("unused")
 
 package app.cash.redwood.yoga.internal
 
-import app.cash.redwood.yoga.enums.YGEdge
-import app.cash.redwood.yoga.enums.YGUnit
-import app.cash.redwood.yoga.enums.YGAlign
-import app.cash.redwood.yoga.enums.YGNodeType
-import app.cash.redwood.yoga.enums.YGDimension
-import app.cash.redwood.yoga.enums.YGDirection
-import app.cash.redwood.yoga.enums.YGMeasureMode
-import app.cash.redwood.yoga.enums.YGPositionType
-import app.cash.redwood.yoga.enums.YGFlexDirection
-import app.cash.redwood.yoga.detail.CompactValue
-import app.cash.redwood.yoga.interfaces.YGDirtiedFunc
-import app.cash.redwood.yoga.interfaces.YGBaselineFunc
-import app.cash.redwood.yoga.interfaces.BaselineWithContextFn
-import app.cash.redwood.yoga.interfaces.YGPrintFunc
-import app.cash.redwood.yoga.interfaces.PrintWithContextFn
-import app.cash.redwood.yoga.interfaces.YGMeasureFunc
-import app.cash.redwood.yoga.interfaces.MeasureWithContextFn
-import app.cash.redwood.yoga.detail.Values
+import app.cash.redwood.yoga.internal.enums.YGEdge
+import app.cash.redwood.yoga.internal.enums.YGUnit
+import app.cash.redwood.yoga.internal.enums.YGAlign
+import app.cash.redwood.yoga.internal.enums.YGNodeType
+import app.cash.redwood.yoga.internal.enums.YGDimension
+import app.cash.redwood.yoga.internal.enums.YGDirection
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.enums.YGPositionType
+import app.cash.redwood.yoga.internal.enums.YGFlexDirection
+import app.cash.redwood.yoga.internal.detail.CompactValue
+import app.cash.redwood.yoga.internal.interfaces.YGDirtiedFunc
+import app.cash.redwood.yoga.internal.interfaces.YGBaselineFunc
+import app.cash.redwood.yoga.internal.interfaces.BaselineWithContextFn
+import app.cash.redwood.yoga.internal.interfaces.YGPrintFunc
+import app.cash.redwood.yoga.internal.interfaces.PrintWithContextFn
+import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.internal.interfaces.MeasureWithContextFn
+import app.cash.redwood.yoga.internal.detail.Values
+import app.cash.redwood.yoga.internal.detail.GlobalMembers
 
-class YGNode {
+internal class YGNode {
   var context: Any? = null
   var reserved: Byte = 0
   var measure = measure_Struct()
@@ -81,21 +91,21 @@ class YGNode {
   }
 
   fun isDirty(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       isDirty_,
     )
   }
 
   fun setDirty(isDirty: Boolean) {
-    if (isDirty == app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    if (isDirty == GlobalMembers.getBooleanData(
         flags,
         isDirty_,
       )
     ) {
       return
     }
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       isDirty_,
       isDirty,
@@ -110,7 +120,7 @@ class YGNode {
   }
 
   fun setBaselineFunc(baseLineFunc: YGBaselineFunc?) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       baselineUsesContext_,
       false,
@@ -119,7 +129,7 @@ class YGNode {
   }
 
   fun setBaselineFunc(baseLineFunc: BaselineWithContextFn?) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       baselineUsesContext_,
       true,
@@ -128,7 +138,7 @@ class YGNode {
   }
 
   fun resetBaselineFunc() {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       baselineUsesContext_,
       false,
@@ -142,7 +152,7 @@ class YGNode {
 
   fun setPrintFunc(printFunc: YGPrintFunc?) {
     print.noContext = printFunc
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
       false,
@@ -151,7 +161,7 @@ class YGNode {
 
   fun setPrintFunc(printFunc: PrintWithContextFn?) {
     print.withContext = printFunc
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
       true,
@@ -160,7 +170,7 @@ class YGNode {
 
   fun resetPrintFunc() {
     print.noContext = null
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       printUsesContext_,
       false,
@@ -168,14 +178,14 @@ class YGNode {
   }
 
   fun getHasNewLayout(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       hasNewLayout_,
     )
   }
 
   fun setHasNewLayout(hasNewLayout: Boolean) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       hasNewLayout_,
       hasNewLayout,
@@ -183,19 +193,19 @@ class YGNode {
   }
 
   fun getNodeType(): YGNodeType {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getEnumData(
+    return GlobalMembers.getEnumData(
       YGNodeType::class, flags, nodeType_,
     )
   }
 
   fun setNodeType(nodeType: YGNodeType) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setEnumData(
+    GlobalMembers.setEnumData(
       YGNodeType::class, flags, nodeType_, nodeType,
     )
   }
 
   fun setIsReferenceBaseline(isReferenceBaseline: Boolean) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       isReferenceBaseline_,
       isReferenceBaseline,
@@ -203,7 +213,7 @@ class YGNode {
   }
 
   fun isReferenceBaseline(): Boolean {
-    return app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return GlobalMembers.getBooleanData(
       flags,
       isReferenceBaseline_,
     )
@@ -218,7 +228,7 @@ class YGNode {
   }
 
   private fun useWebDefaults() {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       useWebDefaults_,
       true,
@@ -229,7 +239,7 @@ class YGNode {
 
   fun print(printContext: Any?) {
     if (print.noContext != null) {
-      if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+      if (GlobalMembers.getBooleanData(
           flags,
           printUsesContext_,
         )
@@ -321,7 +331,7 @@ class YGNode {
     heightMode: YGMeasureMode,
     layoutContext: Any?,
   ): YGSize {
-    return if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return if (GlobalMembers.getBooleanData(
         flags,
         measureUsesContext_,
       )
@@ -333,7 +343,7 @@ class YGNode {
   }
 
   fun baseline(width: Float, height: Float, layoutContext: Any?): Float {
-    return if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return if (GlobalMembers.getBooleanData(
         flags,
         baselineUsesContext_,
       )
@@ -358,7 +368,7 @@ class YGNode {
   }
 
   fun setMeasureFunc(measureFunc: YGMeasureFunc?) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       measureUsesContext_,
       false,
@@ -368,7 +378,7 @@ class YGNode {
   }
 
   fun setMeasureFunc(measureFunc: MeasureWithContextFn?) {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       measureUsesContext_,
       true,
@@ -518,7 +528,7 @@ class YGNode {
       return flexBasis
     }
     return if (!style.flex.isUndefined() && style.flex.unwrap() > 0.0f) {
-      if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+      if (GlobalMembers.getBooleanData(
           flags,
           useWebDefaults_,
         )
@@ -584,7 +594,7 @@ class YGNode {
   }
 
   fun markDirtyAndPropogate() {
-    if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(flags, isDirty_)) {
+    if (!GlobalMembers.getBooleanData(flags, isDirty_)) {
       setDirty(true)
       setLayoutComputedFlexBasis(YGFloatOptional())
       if (owner != null) {
@@ -594,7 +604,7 @@ class YGNode {
   }
 
   fun markDirtyAndPropogateDownwards() {
-    app.cash.redwood.yoga.detail.GlobalMembers.setBooleanData(
+    GlobalMembers.setBooleanData(
       flags,
       isDirty_,
       true,
@@ -623,14 +633,14 @@ class YGNode {
     if (!style.flexShrink.isUndefined()) {
       return style.flexShrink.unwrap()
     }
-    if (!app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    if (!GlobalMembers.getBooleanData(
         flags,
         useWebDefaults_,
       ) && !style.flex.isUndefined() && style.flex.unwrap() < 0.0f
     ) {
       return -style.flex.unwrap()
     }
-    return if (app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+    return if (GlobalMembers.getBooleanData(
         flags,
         useWebDefaults_,
       )
@@ -770,7 +780,7 @@ class YGNode {
     )
     clearChildren()
     val webDefaults: Boolean =
-      app.cash.redwood.yoga.detail.GlobalMembers.getBooleanData(
+      GlobalMembers.getBooleanData(
         flags,
         useWebDefaults_,
       )

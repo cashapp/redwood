@@ -1,4 +1,4 @@
-package app.cash.redwood.yoga.detail
+package app.cash.redwood.yoga.internal.detail
 
 //----------------------------------------------------------------------------------------
 //	Copyright © 2006 - 2021 Tangible Software Solutions, Inc.
@@ -6,4 +6,4 @@ package app.cash.redwood.yoga.detail
 //
 //	This class is used to replicate the ability to pass arguments by reference in Java.
 //----------------------------------------------------------------------------------------
-class RefObject<T>(var argValue: T)
+internal class RefObject<T>(var argValue: T)

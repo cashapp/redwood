@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package app.cash.redwood.yoga.detail
+package app.cash.redwood.yoga.internal.detail
 
-import app.cash.redwood.yoga.YGValue
-import app.cash.redwood.yoga.enums.YGEdge
+import app.cash.redwood.yoga.internal.YGValue
+import app.cash.redwood.yoga.internal.enums.YGEdge
 
-class Values<T> {
+internal class Values<T> {
   private val values_: MutableList<CompactValue>
 
   constructor() {

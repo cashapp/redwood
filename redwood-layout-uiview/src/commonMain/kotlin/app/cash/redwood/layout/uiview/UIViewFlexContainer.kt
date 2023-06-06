@@ -31,7 +31,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.Yoga
-import app.cash.redwood.yoga.enums.YGEdge
+import app.cash.redwood.yoga.internal.enums.YGEdge
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 

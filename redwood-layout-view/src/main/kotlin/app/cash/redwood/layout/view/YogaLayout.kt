@@ -16,9 +16,9 @@ import app.cash.redwood.yoga.YGNode
 import app.cash.redwood.yoga.YGSize
 import app.cash.redwood.yoga.Yoga
 import app.cash.redwood.yoga.Yoga.YGUndefined
-import app.cash.redwood.yoga.enums.YGDirection
-import app.cash.redwood.yoga.enums.YGMeasureMode
-import app.cash.redwood.yoga.interfaces.YGMeasureFunc
+import app.cash.redwood.yoga.internal.enums.YGDirection
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 import kotlin.math.roundToInt
 
 /**

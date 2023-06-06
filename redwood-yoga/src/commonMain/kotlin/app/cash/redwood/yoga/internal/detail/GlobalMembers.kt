@@ -6,14 +6,14 @@
  */
 @file:Suppress("unused")
 
-package app.cash.redwood.yoga.detail
+package app.cash.redwood.yoga.internal.detail
 
-import app.cash.redwood.yoga.YGConfig
-import app.cash.redwood.yoga.YGNode
-import app.cash.redwood.yoga.enums.YGLogLevel
+import app.cash.redwood.yoga.internal.YGConfig
+import app.cash.redwood.yoga.internal.YGNode
+import app.cash.redwood.yoga.internal.enums.YGLogLevel
 import kotlin.reflect.KClass
 
-object GlobalMembers {
+internal object GlobalMembers {
   fun vlog(
     config: YGConfig?,
     node: YGNode?,

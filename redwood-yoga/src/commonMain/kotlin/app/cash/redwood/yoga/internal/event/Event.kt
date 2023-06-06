@@ -6,12 +6,12 @@
  */
 @file:Suppress("unused", "UNUSED_PARAMETER")
 
-package app.cash.redwood.yoga.event
+package app.cash.redwood.yoga.internal.event
 
-import app.cash.redwood.yoga.YGNode
+import app.cash.redwood.yoga.internal.YGNode
 import kotlin.reflect.KClass
 
-object Event {
+internal object Event {
   private val listeners = mutableMapOf<KClass<*>, MutableList<(CallableEvent) -> Unit>>()
 
   @Suppress("UNCHECKED_CAST")

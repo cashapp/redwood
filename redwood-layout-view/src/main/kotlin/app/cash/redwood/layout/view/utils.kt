@@ -16,7 +16,7 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
-import app.cash.redwood.yoga.enums.YGMeasureMode
+import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 
 internal fun YGMeasureMode.toAndroid() = when (this) {
   YGMeasureMode.YGMeasureModeAtMost -> View.MeasureSpec.AT_MOST
