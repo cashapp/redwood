@@ -10,7 +10,3 @@ internal class YGSize(
   val width: Float,
   val height: Float,
 )
-
-internal fun YGSize(width: Int, height: Int): YGSize {
-  return YGSize(width.toFloat(), height.toFloat())
-}
