@@ -44,6 +44,8 @@ internal class IosDisplayLinkClock : FrameClock {
 
   override fun requestFrame(appLifecycle: AppLifecycle) {
     this.appLifecycle = appLifecycle
-    this.displayLinkTarget.subscribe()
+    scope.launch(dispatchers.ui) {
+      displayLinkTarget.subscribe()
+    }
   }
 }
