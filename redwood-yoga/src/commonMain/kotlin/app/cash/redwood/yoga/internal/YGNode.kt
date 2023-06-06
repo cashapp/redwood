@@ -6,7 +6,7 @@
  */
 @file:Suppress("unused")
 
-package app.cash.redwood.yoga
+package app.cash.redwood.yoga.internal
 
 import app.cash.redwood.yoga.enums.YGEdge
 import app.cash.redwood.yoga.enums.YGUnit

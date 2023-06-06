@@ -6,7 +6,7 @@
  */
 @file:Suppress("NAME_SHADOWING", "unused", "UNUSED_PARAMETER")
 
-package app.cash.redwood.yoga
+package app.cash.redwood.yoga.internal
 
 import app.cash.redwood.yoga.YGStyle.BitfieldRef
 import app.cash.redwood.yoga.detail.CompactValue

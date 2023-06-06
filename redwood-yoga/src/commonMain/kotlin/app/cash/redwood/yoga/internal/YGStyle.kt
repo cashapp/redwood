@@ -6,7 +6,7 @@
  */
 @file:Suppress("unused")
 
-package app.cash.redwood.yoga
+package app.cash.redwood.yoga.internal
 
 import app.cash.redwood.yoga.detail.CompactValue
 import app.cash.redwood.yoga.detail.GlobalMembers
