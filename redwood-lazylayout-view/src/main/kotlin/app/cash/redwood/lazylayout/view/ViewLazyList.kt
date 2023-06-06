@@ -128,6 +128,8 @@ internal open class ViewLazyListImpl(
       layoutManager = linearLayoutManager
       layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
 
+      // TODO Dynamically set the max recycled views for VIEW_TYPE_ITEM
+      recycledViewPool.setMaxRecycledViews(VIEW_TYPE_ITEM, 30)
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
