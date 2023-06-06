@@ -135,8 +135,14 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
   currentComposer.startNode()
 
   if (currentComposer.inserting) {
-    @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
-    val applier = currentComposer.applier as RedwoodApplier<P>
+    // Perform an explicit !! on the return value to avoid the Kotlin compiler inserting a huge
+    // string into the output as an error message for an otherwise implicit null check.
+    @Suppress(
+      "UNCHECKED_CAST", // Safe so long as you use generated composition function.
+      "UNNECESSARY_NOT_NULL_ASSERTION",
+    )
+    val applier = currentComposer.applier!! as RedwoodApplier<P>
+
     currentComposer.createNode {
       @Suppress("UNCHECKED_CAST") // Safe so long as you use generated composition function.
       WidgetNode(factory(applier.provider as P) as Widget<Any>)
