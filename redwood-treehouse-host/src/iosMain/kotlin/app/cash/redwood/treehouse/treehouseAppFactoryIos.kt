@@ -105,7 +105,7 @@ private class SingleThreadCoroutineDispatcher : CloseableCoroutineDispatcher() {
    * On Apple platforms we need to explicitly set the stack size for background threads; otherwise we
    * get the default of 512 KiB which isn't sufficient for our QuickJS programs.
    *
-   * 8 MiB is sufficient.
+   * 8 MiB is more than sufficient.
    */
   private val stackSize = 8 * 1024 * 1024
   private val channel = Channel<Runnable>(capacity = Channel.UNLIMITED)
