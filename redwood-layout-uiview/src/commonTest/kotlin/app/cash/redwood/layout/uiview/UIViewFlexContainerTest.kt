@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.flexbox.FlexDirection.Companion.Row
+import app.cash.redwood.yoga.FlexDirection.Companion.Row
 import app.cash.redwood.ui.dp
 import assertk.Assert
 import assertk.all
