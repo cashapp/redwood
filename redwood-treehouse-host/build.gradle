@@ -7,6 +7,7 @@ apply plugin: 'app.cash.zipline'
 apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
+  composeCompiler()
   publishing()
 }
 
@@ -40,6 +41,13 @@ kotlin {
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
         implementation libs.turbine
+        implementation projects.redwoodCompose
+        implementation projects.redwoodLayoutUiview
+        implementation projects.redwoodTesting
+        implementation projects.testSchema.compose
+        implementation projects.testSchema.composeProtocol
+        implementation projects.testSchema.testing
+        implementation projects.testSchema.widgetProtocol
       }
     }
     androidUnitTest {
