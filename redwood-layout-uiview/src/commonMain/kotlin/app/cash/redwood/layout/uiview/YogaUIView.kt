@@ -46,7 +46,6 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
     val bounds = size.useContents { sizeToBounds(this) }
     val output = calculateLayoutWithSize(bounds)
-//    println("sizeThatFits INPUT: [$width $height] OUTPUT: [${output.width} ${output.height}] ${rootNode.children.size} ${subviews.size}")
     return output.toCGSize()
   }
 
@@ -100,13 +99,10 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
   val currentViews = yoga.rootNode.children.mapNotNull { it.view }
   val subviews = yoga.typedSubviews
   if (currentViews != subviews) {
-//    println("YGAttachNodesFromViewHierachy - ${subviews.size}")
     yoga.rootNode.children.clear()
     for (view in subviews) {
       yoga.rootNode.children += view.asNode()
     }
-  } else {
-//    println("YGAttachNodesFromViewHierachy - currentViews == subviews")
   }
 }
 
@@ -119,12 +115,6 @@ private class ViewMeasureFunction(val view: UIView) : MeasureCallback {
     heightMode: MeasureMode,
   ): Size {
     val view = node.view!!
-//    if (view is YogaUIView) {
-//      println("ViewMeasureFunction ${view.flexDirection} $width $widthMode $height $heightMode")
-//    } else {
-//      println("ViewMeasureFunction CHILD $width $widthMode $height $heightMode")
-//    }
-
     val constrainedWidth = when (widthMode) {
       MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> width.toDouble()
@@ -169,7 +159,6 @@ private fun YGApplyLayoutToViewHierarchy(node: Node) {
   val width = node.width.toDouble()
   val height = node.height.toDouble()
   node.view!!.setFrame(CGRectMake(x, y, width, height))
-//  println("YGApplyLayoutToViewHierarchy ${node.style.flexDirection()} $x $y $width $height")
 
   for (childNode in node.children) {
     YGApplyLayoutToViewHierarchy(childNode)
@@ -182,7 +171,9 @@ private fun UIView.asNode(): Node {
   return childNode
 }
 
-private fun CValue<CGSize>.toSize() = useContents { Size(width.toFloat(), height.toFloat()) }
+private fun CValue<CGSize>.toSize() = useContents {
+  Size(width.toFloat(), height.toFloat())
+}
 
 private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
