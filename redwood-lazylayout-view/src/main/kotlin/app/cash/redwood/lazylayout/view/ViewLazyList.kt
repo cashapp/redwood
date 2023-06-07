@@ -46,7 +46,7 @@ internal class Placeholders(
   private var poolSize = 0
   private val pool = ArrayDeque<Widget<View>>()
 
-  fun take(): Widget<View> = pool.removeFirst()
+  fun takeOrNull(): Widget<View>? = pool.removeLastOrNull()
 
   override fun insert(index: Int, widget: Widget<View>) {
     poolSize++
@@ -204,6 +204,21 @@ internal open class ViewLazyListImpl(
   ) : RecyclerView.Adapter<ViewHolder>() {
     lateinit var items: Items<ViewHolder>
 
+    /**
+     * When we haven't loaded enough placeholders for the viewport height, we set a blank view while
+     * we load request more placeholders. This "meta" placeholder needs a non-zero height, so we
+     * don't load an infinite number of zero height meta placeholders.
+     *
+     * We set this height to the last available item height, or a hardcoded value in the case when
+     * no views have been laid out, but a meta placeholder has been requested.
+     */
+    private var lastItemHeight = 100
+      set(value) {
+        if (value > 0) {
+          field = value
+        }
+      }
+
     override fun getItemCount(): Int = items.itemsBefore + items.widgets.size + items.itemsAfter
 
     override fun getItemViewType(position: Int): Int {
@@ -213,7 +228,11 @@ internal open class ViewLazyListImpl(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       return when (viewType) {
-        VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(placeholders.take().value)
+        VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(
+          FrameLayout(parent.context).apply {
+            layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+          },
+        )
         VIEW_TYPE_ITEM -> ViewHolder.Item(
           FrameLayout(parent.context).apply {
             layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -224,8 +243,20 @@ internal open class ViewLazyListImpl(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+      lastItemHeight = holder.itemView.height
       when (holder) {
         is ViewHolder.Placeholder -> {
+          if (holder.container.childCount == 0) {
+            val placeholder = placeholders.takeOrNull()
+            if (placeholder != null) {
+              holder.container.addView(placeholder.value)
+              holder.itemView.updateLayoutParams { height = WRAP_CONTENT }
+            } else if (holder.container.height == 0) {
+              // This occurs when the ViewHolder has been freshly created, so we set the container
+              // to a non-zero height so that it's visible.
+              holder.itemView.updateLayoutParams { height = lastItemHeight }
+            }
+          }
         }
         is ViewHolder.Item -> {
           val index = position - items.itemsBefore
@@ -239,7 +270,7 @@ internal open class ViewLazyListImpl(
   }
 
   sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    class Placeholder(itemView: View) : ViewHolder(itemView)
+    class Placeholder(val container: FrameLayout) : ViewHolder(container)
     class Item(val container: FrameLayout) : ViewHolder(container)
   }
 }
