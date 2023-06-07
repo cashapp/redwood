@@ -43,7 +43,7 @@ private const val VIEW_TYPE_ITEM = 2
 internal class Placeholders(
   private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : Widget.Children<View> {
-  private val pool = mutableListOf<Widget<View>>()
+  private val pool = ArrayDeque<Widget<View>>()
 
   fun take(): Widget<View> = pool.removeFirst()
 
