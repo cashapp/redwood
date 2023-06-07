@@ -19,7 +19,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.ProtocolBridge
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +53,7 @@ private class RedwoodZiplineTreehouseUi(
 
   override fun start(
     changesSink: ChangesSinkService,
-    hostConfigurations: StateFlow<HostConfiguration>,
+    uiConfigurations: StateFlow<UiConfiguration>,
   ) {
     val composition = ProtocolRedwoodComposition(
       scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
@@ -63,7 +63,7 @@ private class RedwoodZiplineTreehouseUi(
     )
     this.composition = composition
 
-    composition.bind(treehouseUi, hostConfigurations)
+    composition.bind(treehouseUi, uiConfigurations)
   }
 
   override fun close() {

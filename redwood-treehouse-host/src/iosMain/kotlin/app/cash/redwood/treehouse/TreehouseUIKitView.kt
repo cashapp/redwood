@@ -19,8 +19,8 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.cValue
@@ -51,11 +51,11 @@ public class TreehouseUIKitView(
   private val _children = UIViewChildren(view)
   override val children: Widget.Children<UIView> get() = _children
 
-  private val mutableHostConfiguration =
-    MutableStateFlow(computeHostConfiguration(view.traitCollection))
+  private val mutableUiConfiguration =
+    MutableStateFlow(computeUiConfiguration(view.traitCollection))
 
-  override val hostConfiguration: StateFlow<HostConfiguration>
-    get() = mutableHostConfiguration
+  override val uiConfiguration: StateFlow<UiConfiguration>
+    get() = mutableUiConfiguration
 
   override fun reset() {
     _children.remove(0, _children.widgets.size)
@@ -69,15 +69,15 @@ public class TreehouseUIKitView(
     readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
-  internal fun updateHostConfiguration() {
-    mutableHostConfiguration.value = computeHostConfiguration(view.traitCollection)
+  internal fun updateUiConfiguration() {
+    mutableUiConfiguration.value = computeUiConfiguration(view.traitCollection)
   }
 }
 
-private fun computeHostConfiguration(
+private fun computeUiConfiguration(
   traitCollection: UITraitCollection,
-): HostConfiguration {
-  return HostConfiguration(
+): UiConfiguration {
+  return UiConfiguration(
     darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark,
     safeAreaInsets = computeSafeAreaInsets(),
   )
@@ -107,6 +107,6 @@ private class RootUiView(
 
   override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
-    treehouseView.updateHostConfiguration()
+    treehouseView.updateUiConfiguration()
   }
 }

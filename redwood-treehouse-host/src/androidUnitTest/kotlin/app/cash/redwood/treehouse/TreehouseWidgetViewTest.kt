@@ -27,8 +27,8 @@ import androidx.core.view.WindowInsetsCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
@@ -97,31 +97,31 @@ class TreehouseWidgetViewTest {
     assertThat(children.widgets).hasSize(0)
   }
 
-  @Test fun hostConfigurationReflectsInitialUiMode() {
+  @Test fun uiConfigurationReflectsInitialUiMode() {
     val newConfig = Configuration(context.resources.configuration)
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = context.createConfigurationContext(newConfig) // Needs API 26.
     val layout = TreehouseWidgetView(newContext, throwingWidgetSystem)
-    assertThat(layout.hostConfiguration.value).isEqualTo(HostConfiguration(darkMode = true))
+    assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
   }
 
-  @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
+  @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
-    layout.hostConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = false))
+    layout.uiConfiguration.test {
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = false))
 
       val newConfig = Configuration(context.resources.configuration)
       newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
 
       layout.dispatchConfigurationChanged(newConfig)
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = true))
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = true))
     }
   }
 
-  @Test fun hostConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
+  @Test fun uiConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
     val layout = TreehouseWidgetView(context, throwingWidgetSystem)
-    layout.hostConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(safeAreaInsets = Margin.Zero))
+    layout.uiConfiguration.test {
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = Margin.Zero))
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
@@ -135,7 +135,7 @@ class TreehouseWidgetViewTest {
           bottom = insets.bottom.toDp(),
         )
       }
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(safeAreaInsets = expectedInsets))
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
     }
   }
 
