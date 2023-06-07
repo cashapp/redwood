@@ -60,6 +60,43 @@ internal fun AlignSelf.toYoga() = when (this) {
   else -> throw AssertionError()
 }
 
+internal fun YGFlexDirection.toFlexDirection() = when (this) {
+  YGFlexDirection.YGFlexDirectionRow -> FlexDirection.Row
+  YGFlexDirection.YGFlexDirectionRowReverse -> FlexDirection.RowReverse
+  YGFlexDirection.YGFlexDirectionColumn -> FlexDirection.Column
+  YGFlexDirection.YGFlexDirectionColumnReverse -> FlexDirection.ColumnReverse
+  else -> throw AssertionError()
+}
+
+internal fun YGJustify.toJustifyContent() = when (this) {
+  YGJustify.YGJustifyFlexStart -> JustifyContent.FlexStart
+  YGJustify.YGJustifyFlexEnd -> JustifyContent.FlexEnd
+  YGJustify.YGJustifyCenter -> JustifyContent.Center
+  YGJustify.YGJustifySpaceBetween -> JustifyContent.SpaceBetween
+  YGJustify.YGJustifySpaceAround -> JustifyContent.SpaceAround
+  YGJustify.YGJustifySpaceEvenly -> JustifyContent.SpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun YGAlign.toAlignItems() = when (this) {
+  YGAlign.YGAlignFlexStart -> AlignItems.FlexStart
+  YGAlign.YGAlignFlexEnd -> AlignItems.FlexEnd
+  YGAlign.YGAlignCenter -> AlignItems.Center
+  YGAlign.YGAlignBaseline -> AlignItems.Baseline
+  YGAlign.YGAlignStretch -> AlignItems.Stretch
+  else -> throw AssertionError()
+}
+
+internal fun YGAlign.toAlignSelf() = when (this) {
+  YGAlign.YGAlignFlexStart -> AlignSelf.FlexStart
+  YGAlign.YGAlignFlexEnd -> AlignSelf.FlexEnd
+  YGAlign.YGAlignCenter -> AlignSelf.Center
+  YGAlign.YGAlignBaseline -> AlignSelf.Baseline
+  YGAlign.YGAlignStretch -> AlignSelf.Stretch
+  YGAlign.YGAlignAuto -> AlignSelf.Auto
+  else -> throw AssertionError()
+}
+
 internal class MeasureCallbackCompat(val callback: MeasureCallback) : YGMeasureFunc {
   override fun invoke(
     node: YGNode,

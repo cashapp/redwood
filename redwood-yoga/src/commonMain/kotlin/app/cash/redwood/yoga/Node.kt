@@ -29,22 +29,22 @@ public class Node internal constructor(
   public val owner: Node?
     get() = native.owner?.let(::Node)
   public var flexDirection: FlexDirection
-    get() = TODO()
+    get() = native.style.flexDirection().toFlexDirection()
     set(value) = Yoga.YGNodeStyleSetFlexDirection(native, value.toYoga())
   public var justifyContent: JustifyContent
-    get() = TODO()
+    get() = native.style.justifyContent().toJustifyContent()
     set(value) = Yoga.YGNodeStyleSetJustifyContent(native, value.toYoga())
   public var alignItems: AlignItems
-    get() = TODO()
+    get() = native.style.alignItems().toAlignItems()
     set(value) = Yoga.YGNodeStyleSetAlignItems(native, value.toYoga())
   public var alignSelf: AlignSelf
-    get() = TODO()
+    get() = native.style.alignSelf().toAlignSelf()
     set(value) = Yoga.YGNodeStyleSetAlignSelf(native, value.toYoga())
   public var flexGrow: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetFlexGrow(native)
     set(value) = Yoga.YGNodeStyleSetFlexGrow(native, value)
   public var flexShrink: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetFlexShrink(native)
     set(value) = Yoga.YGNodeStyleSetFlexShrink(native, value)
   public var marginStart: Float
     get() = getMargin(YGEdge.YGEdgeLeft)

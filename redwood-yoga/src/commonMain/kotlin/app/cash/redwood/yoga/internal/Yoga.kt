@@ -760,6 +760,22 @@ internal object Yoga {
     return node.style.padding[edge.ordinal]
   }
 
+  fun YGNodeStyleGetFlexGrow(node: YGNode): Float {
+    return if (node.style.flexGrow.isUndefined()) {
+      DefaultFlexGrow
+    } else {
+      node.style.flexGrow.unwrap()
+    }
+  }
+
+  fun YGNodeStyleGetFlexShrink(node: YGNode): Float {
+    return if (node.style.flexShrink.isUndefined()) {
+      DefaultFlexShrink
+    } else {
+      node.style.flexShrink.unwrap()
+    }
+  }
+
   private fun <T : Enum<T>> updateStyleIndexed(
     node: YGNode,
     edge: T,
