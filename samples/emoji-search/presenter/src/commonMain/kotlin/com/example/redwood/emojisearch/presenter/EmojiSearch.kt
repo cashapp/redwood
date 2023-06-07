@@ -136,10 +136,12 @@ private fun Item(emojiImage: EmojiImage) {
   Row(
     width = Constraint.Fill,
     verticalAlignment = CrossAxisAlignment.Center,
+    margin = Margin(horizontal = 8.dp)
   ) {
     Image(
       url = emojiImage.url,
-      modifier = Modifier.margin(Margin(8.dp)),
+      modifier = Modifier
+        .margin(Margin(40.dp)),
     )
     Text(text = emojiImage.label)
   }
