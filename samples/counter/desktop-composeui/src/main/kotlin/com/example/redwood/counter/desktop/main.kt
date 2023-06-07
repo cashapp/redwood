@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import app.cash.redwood.compose.RedwoodContent
+import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
 import com.example.redwood.counter.composeui.CounterTheme

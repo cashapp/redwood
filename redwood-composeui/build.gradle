@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
+
+kotlin {
+  android {
+    publishLibraryVariants('release')
+  }
+
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  jvm()
+
+  macosArm64()
+  macosX64()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodCompose
+        implementation projects.redwoodWidgetCompose
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.composeui'
+}
