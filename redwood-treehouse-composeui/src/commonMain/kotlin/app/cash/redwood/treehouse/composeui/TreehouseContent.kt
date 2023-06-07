@@ -29,7 +29,7 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -40,7 +40,7 @@ public fun <A : AppService> TreehouseContent(
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
 ) {
-  val hostConfiguration = HostConfiguration(
+  val uiConfiguration = UiConfiguration(
     darkMode = isSystemInDarkTheme(),
     safeAreaInsets = safeAreaInsets(),
   )
@@ -48,15 +48,15 @@ public fun <A : AppService> TreehouseContent(
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView {
       override val children = ComposeWidgetChildren()
-      override val hostConfiguration = MutableStateFlow(hostConfiguration)
+      override val uiConfiguration = MutableStateFlow(uiConfiguration)
       override val widgetSystem = widgetSystem
       override val readyForContent = true
       override var readyForContentChangeListener: ReadyForContentChangeListener? = null
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }
-  LaunchedEffect(treehouseView, hostConfiguration) {
-    treehouseView.hostConfiguration.value = hostConfiguration
+  LaunchedEffect(treehouseView, uiConfiguration) {
+    treehouseView.uiConfiguration.value = uiConfiguration
   }
   DisposableEffect(treehouseView, contentSource, codeListener) {
     val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp, codeListener)
