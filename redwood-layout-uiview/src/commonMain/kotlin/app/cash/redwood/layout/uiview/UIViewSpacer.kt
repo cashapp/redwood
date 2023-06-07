@@ -46,8 +46,8 @@ internal class UIViewSpacer : Spacer<UIView> {
   }
 
   private fun invalidate() {
-    value.invalidateIntrinsicContentSize()
-    value.setNeedsLayout()
+    view.invalidateIntrinsicContentSize()
+    view.superview?.setNeedsLayout()
   }
 
   private inner class SpacerHostView : UIView(cValue { CGRectZero }) {
