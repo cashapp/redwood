@@ -43,13 +43,15 @@ private const val VIEW_TYPE_ITEM = 2
 internal class Placeholders(
   private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : Widget.Children<View> {
+  private var poolSize = 0
   private val pool = mutableListOf<Widget<View>>()
 
   fun take(): Widget<View> = pool.removeFirst()
 
   override fun insert(index: Int, widget: Widget<View>) {
+    poolSize++
     pool += widget
-    recycledViewPool.setMaxRecycledViews(VIEW_TYPE_PLACEHOLDER, pool.size)
+    recycledViewPool.setMaxRecycledViews(VIEW_TYPE_PLACEHOLDER, poolSize)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {}
