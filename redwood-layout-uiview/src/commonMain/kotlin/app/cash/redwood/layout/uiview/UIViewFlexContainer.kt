@@ -59,11 +59,13 @@ internal class UIViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    yogaView.rootNode.apply {
-      marginStart = with(density) { margin.start.toPx() }.toFloat()
-      marginEnd = with(density) { margin.end.toPx() }.toFloat()
-      marginTop = with(density) { margin.top.toPx() }.toFloat()
-      marginBottom = with(density) { margin.bottom.toPx() }.toFloat()
+    with(yogaView.rootNode) {
+      with(density) {
+        marginStart = margin.start.toPx().toFloat()
+        marginEnd = margin.end.toPx().toFloat()
+        marginTop = margin.top.toPx().toFloat()
+        marginBottom = margin.bottom.toPx().toFloat()
+      }
     }
     invalidate()
   }

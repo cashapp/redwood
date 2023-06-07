@@ -34,6 +34,7 @@ public class StandardAppLifecycle(
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
   private lateinit var host: Host
+
   @OptIn(DelicateCoroutinesApi::class)
   internal val coroutineScope: CoroutineScope = GlobalScope
 

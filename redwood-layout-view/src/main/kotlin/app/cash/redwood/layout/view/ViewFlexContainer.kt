@@ -22,10 +22,6 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.Modifier
-import app.cash.redwood.yoga.AlignItems
-import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
-import app.cash.redwood.yoga.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -35,6 +31,10 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.isHorizontal
 
 internal class ViewFlexContainer(
   private val context: Context,
@@ -71,11 +71,13 @@ internal class ViewFlexContainer(
   }
 
   override fun margin(margin: Margin) {
-    yogaLayout.rootNode.apply {
-      marginStart = with(density) { margin.start.toPx() }.toFloat()
-      marginEnd = with(density) { margin.end.toPx() }.toFloat()
-      marginTop = with(density) { margin.top.toPx() }.toFloat()
-      marginBottom = with(density) { margin.bottom.toPx() }.toFloat()
+    with(yogaLayout.rootNode) {
+      with(density) {
+        marginStart = margin.start.toPx().toFloat()
+        marginEnd = margin.end.toPx().toFloat()
+        marginTop = margin.top.toPx().toFloat()
+        marginBottom = margin.bottom.toPx().toFloat()
+      }
     }
     invalidate()
   }

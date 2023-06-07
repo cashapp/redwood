@@ -65,7 +65,6 @@ internal fun YGFlexDirection.toFlexDirection() = when (this) {
   YGFlexDirection.YGFlexDirectionRowReverse -> FlexDirection.RowReverse
   YGFlexDirection.YGFlexDirectionColumn -> FlexDirection.Column
   YGFlexDirection.YGFlexDirectionColumnReverse -> FlexDirection.ColumnReverse
-  else -> throw AssertionError()
 }
 
 internal fun YGJustify.toJustifyContent() = when (this) {
@@ -75,7 +74,6 @@ internal fun YGJustify.toJustifyContent() = when (this) {
   YGJustify.YGJustifySpaceBetween -> JustifyContent.SpaceBetween
   YGJustify.YGJustifySpaceAround -> JustifyContent.SpaceAround
   YGJustify.YGJustifySpaceEvenly -> JustifyContent.SpaceEvenly
-  else -> throw AssertionError()
 }
 
 internal fun YGAlign.toAlignItems() = when (this) {

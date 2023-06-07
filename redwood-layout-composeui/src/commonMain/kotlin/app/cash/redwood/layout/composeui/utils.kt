@@ -19,44 +19,79 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
-import app.cash.redwood.flexbox.Measurable as RedwoodMeasurable
-import app.cash.redwood.flexbox.MeasureSpec
-import app.cash.redwood.flexbox.MeasureSpecMode
-import app.cash.redwood.flexbox.Size
 import app.cash.redwood.ui.Dp as RedwoodDp
 import app.cash.redwood.ui.toPlatformDp
+import app.cash.redwood.yoga.MeasureCallback
+import app.cash.redwood.yoga.MeasureMode
+import app.cash.redwood.yoga.Node
+import app.cash.redwood.yoga.Size
 
 internal fun RedwoodDp.toDp(): Dp {
   return Dp(toPlatformDp().toFloat())
 }
 
-internal fun Constraints.toMeasureSpecs(): Pair<MeasureSpec, MeasureSpec> {
-  val widthSpec = when {
-    hasFixedWidth -> MeasureSpec.from(maxWidth.toDouble(), MeasureSpecMode.Exactly)
-    hasBoundedWidth -> MeasureSpec.from(maxWidth.toDouble(), MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minWidth.toDouble(), MeasureSpecMode.Unspecified)
+internal data class MeasureSpecs(
+  val width: Float,
+  val widthMode: MeasureMode,
+  val height: Float,
+  val heightMode: MeasureMode,
+)
+
+internal fun Constraints.toMeasureSpecs(): MeasureSpecs {
+  val width: Float
+  val widthMode: MeasureMode
+  val height: Float
+  val heightMode: MeasureMode
+
+  when {
+    hasFixedWidth -> {
+      width = maxWidth.toFloat()
+      widthMode = MeasureMode.Exactly
+    }
+    hasBoundedWidth -> {
+      width = maxWidth.toFloat()
+      widthMode = MeasureMode.AtMost
+    }
+    else -> {
+      width = minWidth.toFloat()
+      widthMode = MeasureMode.Undefined
+    }
   }
-  val heightSpec = when {
-    hasFixedHeight -> MeasureSpec.from(maxHeight.toDouble(), MeasureSpecMode.Exactly)
-    hasBoundedHeight -> MeasureSpec.from(maxHeight.toDouble(), MeasureSpecMode.AtMost)
-    else -> MeasureSpec.from(minHeight.toDouble(), MeasureSpecMode.Unspecified)
+  when {
+    hasFixedHeight -> {
+      height = maxHeight.toFloat()
+      heightMode = MeasureMode.Exactly
+    }
+    hasBoundedHeight -> {
+      height = maxHeight.toFloat()
+      heightMode = MeasureMode.AtMost
+    }
+    else -> {
+      height = minHeight.toFloat()
+      heightMode = MeasureMode.Undefined
+    }
   }
-  return widthSpec to heightSpec
+  return MeasureSpecs(width, widthMode, height, heightMode)
 }
 
-internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Constraints {
+private fun measureSpecsToConstraints(
+  width: Float,
+  widthMode: MeasureMode,
+  height: Float,
+  heightMode: MeasureMode,
+): Constraints {
   val minWidth: Int
   val maxWidth: Int
-  when (widthSpec.mode) {
-    MeasureSpecMode.Exactly -> {
-      minWidth = widthSpec.size.toInt()
-      maxWidth = widthSpec.size.toInt()
+  when (widthMode) {
+    MeasureMode.Exactly -> {
+      minWidth = width.toInt()
+      maxWidth = width.toInt()
     }
-    MeasureSpecMode.AtMost -> {
+    MeasureMode.AtMost -> {
       minWidth = 0
-      maxWidth = widthSpec.size.toInt()
+      maxWidth = width.toInt()
     }
-    MeasureSpecMode.Unspecified -> {
+    MeasureMode.Undefined -> {
       minWidth = 0
       maxWidth = Constraints.Infinity
     }
@@ -64,16 +99,16 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
   }
   val minHeight: Int
   val maxHeight: Int
-  when (heightSpec.mode) {
-    MeasureSpecMode.Exactly -> {
-      minHeight = heightSpec.size.toInt()
-      maxHeight = heightSpec.size.toInt()
+  when (heightMode) {
+    MeasureMode.Exactly -> {
+      minHeight = height.toInt()
+      maxHeight = height.toInt()
     }
-    MeasureSpecMode.AtMost -> {
+    MeasureMode.AtMost -> {
       minHeight = 0
-      maxHeight = heightSpec.size.toInt()
+      maxHeight = height.toInt()
     }
-    MeasureSpecMode.Unspecified -> {
+    MeasureMode.Undefined -> {
       minHeight = 0
       maxHeight = Constraints.Infinity
     }
@@ -82,21 +117,20 @@ internal fun measureSpecsToConstraints(widthSpec: MeasureSpec, heightSpec: Measu
   return Constraints(minWidth, maxWidth, minHeight, maxHeight)
 }
 
-internal class ComposeMeasurable(private val measurable: Measurable) : RedwoodMeasurable() {
+internal class ComposeMeasureCallback(private val measurable: Measurable) : MeasureCallback {
 
   lateinit var placeable: Placeable
     private set
 
-  override fun width(height: Double): Double {
-    return measurable.minIntrinsicWidth(height.toInt()).toDouble()
-  }
-
-  override fun height(width: Double): Double {
-    return measurable.minIntrinsicHeight(width.toInt()).toDouble()
-  }
-
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    this.placeable = measurable.measure(measureSpecsToConstraints(widthSpec, heightSpec))
-    return Size(placeable.width.toDouble(), placeable.height.toDouble())
+  override fun measure(
+    node: Node,
+    width: Float,
+    widthMode: MeasureMode,
+    height: Float,
+    heightMode: MeasureMode,
+  ): Size {
+    val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
+    this.placeable = measurable.measure(constraints)
+    return Size(placeable.width.toFloat(), placeable.height.toFloat())
   }
 }

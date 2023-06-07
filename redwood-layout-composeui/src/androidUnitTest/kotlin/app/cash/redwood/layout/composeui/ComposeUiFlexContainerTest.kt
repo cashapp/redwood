@@ -25,14 +25,15 @@ import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.yoga.AlignItems
-import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import com.android.ide.common.rendering.api.SessionParams
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -44,6 +45,7 @@ class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> U
   val paparazzi = Paparazzi(
     deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
+    renderingMode = SessionParams.RenderingMode.SHRINK,
     showSystemUi = false,
   )
 

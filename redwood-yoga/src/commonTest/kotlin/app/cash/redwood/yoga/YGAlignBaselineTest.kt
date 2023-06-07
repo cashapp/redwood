@@ -6,6 +6,10 @@
  */
 package app.cash.redwood.yoga
 
+import app.cash.redwood.yoga.internal.YGConfig
+import app.cash.redwood.yoga.internal.YGNode
+import app.cash.redwood.yoga.internal.YGSize
+import app.cash.redwood.yoga.internal.Yoga
 import app.cash.redwood.yoga.internal.enums.YGAlign
 import app.cash.redwood.yoga.internal.enums.YGDirection
 import app.cash.redwood.yoga.internal.enums.YGEdge

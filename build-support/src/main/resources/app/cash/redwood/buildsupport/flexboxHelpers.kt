@@ -64,11 +64,11 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
       is ShrinkModifier -> {
         flexShrink = childModifier.value.toFloat()
       }
-      is MarginModifier -> {
-        marginStart = with(density) { childModifier.margin.start.toPx() }.toFloat()
-        marginEnd = with(density) { childModifier.margin.end.toPx() }.toFloat()
-        marginTop = with(density) { childModifier.margin.top.toPx() }.toFloat()
-        marginBottom = with(density) { childModifier.margin.bottom.toPx() }.toFloat()
+      is MarginModifier -> with(density) {
+        marginStart = childModifier.margin.start.toPx().toFloat()
+        marginEnd = childModifier.margin.end.toPx().toFloat()
+        marginTop = childModifier.margin.top.toPx().toFloat()
+        marginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
       is HorizontalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()

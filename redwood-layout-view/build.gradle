@@ -28,3 +28,12 @@ android {
     variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
   }
 }
+
+spotless {
+  kotlin {
+    targetExclude(
+      // MIT-licensed files from Meta.
+      "src/main/kotlin/app/cash/redwood/layout/view/YogaLayout.kt",
+    )
+  }
+}
