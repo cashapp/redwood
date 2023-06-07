@@ -194,8 +194,10 @@ private class ViewMeasureFunction(val view: View) : MeasureCallback {
     height: Float,
     heightMode: MeasureMode,
   ): Size {
-    val widthSpec = MeasureSpec.makeMeasureSpec(width.roundToInt(), widthMode.toAndroid())
-    val heightSpec = MeasureSpec.makeMeasureSpec(height.roundToInt(), heightMode.toAndroid())
+    val safeWidth = if (width.isFinite()) width.roundToInt() else 0
+    val safeHeight = if (height.isFinite()) height.roundToInt() else 0
+    val widthSpec = MeasureSpec.makeMeasureSpec(safeWidth, widthMode.toAndroid())
+    val heightSpec = MeasureSpec.makeMeasureSpec(safeHeight, heightMode.toAndroid())
     view.measure(widthSpec, heightSpec)
     return Size(view.measuredWidth.toFloat(), view.measuredHeight.toFloat())
   }
