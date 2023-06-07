@@ -16,9 +16,9 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin

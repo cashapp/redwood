@@ -40,8 +40,6 @@ import app.cash.redwood.yoga.internal.event.NodeLayoutEventData
 import app.cash.redwood.yoga.internal.interfaces.YGBaselineFunc
 import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 import app.cash.redwood.yoga.internal.interfaces.YGNodeCleanupFunc
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import kotlinx.atomicfu.atomic
@@ -888,30 +886,22 @@ internal object Yoga {
     return node.layout!!.dimensions[YGDimension.YGDimensionHeight.ordinal]
   }
 
-  @OptIn(ExperimentalContracts::class)
   fun YGAssertWithNode(
     node: YGNode?,
     condition: Boolean,
     message: String?,
   ) {
-    contract {
-      returns() implies condition
-    }
     if (!condition) {
       Log.log(node, YGLogLevel.YGLogLevelFatal, null, "%s\n", message)
       throw RuntimeException(message)
     }
   }
 
-  @OptIn(ExperimentalContracts::class)
   fun YGAssertWithConfig(
     config: YGConfig?,
     condition: Boolean,
     message: String?,
   ) {
-    contract {
-      returns() implies condition
-    }
     if (!condition) {
       Log.log(config, YGLogLevel.YGLogLevelFatal, null, "%s\n", message)
       throw RuntimeException(message)
