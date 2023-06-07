@@ -48,16 +48,40 @@ public class Node internal constructor(
     set(value) = Yoga.YGNodeStyleSetFlexShrink(native, value)
   public var marginStart: Float
     get() = TODO()
-    set(value) = Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeLeft, value)
+    set(value) {
+      if (owner != null) {
+        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeLeft, value)
+      } else {
+        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeLeft, value)
+      }
+    }
   public var marginEnd: Float
     get() = TODO()
-    set(value) = Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeRight, value)
+    set(value) {
+      if (owner != null) {
+        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeRight, value)
+      } else {
+        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeRight, value)
+      }
+    }
   public var marginTop: Float
     get() = TODO()
-    set(value) = Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeTop, value)
+    set(value) {
+      if (owner != null) {
+        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeTop, value)
+      } else {
+        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeTop, value)
+      }
+    }
   public var marginBottom: Float
     get() = TODO()
-    set(value) = Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeBottom, value)
+    set(value) {
+      if (owner != null) {
+        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeBottom, value)
+      } else {
+        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeBottom, value)
+      }
+    }
   public var requestedWidth: Float
     get() = TODO()
     set(value) = Yoga.YGNodeStyleSetWidth(native, value)

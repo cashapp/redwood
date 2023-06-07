@@ -43,30 +43,30 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   override fun removeView(view: View) {
-    removeViewFromYogaTree(view, false)
+    removeViewFromYogaTree(view)
     super.removeView(view)
   }
 
   override fun removeViewAt(index: Int) {
-    removeViewFromYogaTree(getChildAt(index), false)
+    removeViewFromYogaTree(getChildAt(index))
     super.removeViewAt(index)
   }
 
   override fun removeViewInLayout(view: View) {
-    removeViewFromYogaTree(view, true)
+    removeViewFromYogaTree(view)
     super.removeViewInLayout(view)
   }
 
   override fun removeViews(start: Int, count: Int) {
     for (i in start until start + count) {
-      removeViewFromYogaTree(getChildAt(i), false)
+      removeViewFromYogaTree(getChildAt(i))
     }
     super.removeViews(start, count)
   }
 
   override fun removeViewsInLayout(start: Int, count: Int) {
     for (i in start until start + count) {
-      removeViewFromYogaTree(getChildAt(i), true)
+      removeViewFromYogaTree(getChildAt(i))
     }
     super.removeViewsInLayout(start, count)
   }
@@ -74,7 +74,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   override fun removeAllViews() {
     val childCount = childCount
     for (i in 0 until childCount) {
-      removeViewFromYogaTree(getChildAt(i), false)
+      removeViewFromYogaTree(getChildAt(i))
     }
     super.removeAllViews()
   }
@@ -82,25 +82,17 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   override fun removeAllViewsInLayout() {
     val childCount = childCount
     for (i in 0 until childCount) {
-      removeViewFromYogaTree(getChildAt(i), true)
+      removeViewFromYogaTree(getChildAt(i))
     }
     super.removeAllViewsInLayout()
   }
 
-  private fun removeViewFromYogaTree(view: View, inLayout: Boolean) {
+  private fun removeViewFromYogaTree(view: View) {
     val childNode = nodes[view] ?: return
     val owner = childNode.owner ?: return
 
     owner.children -= childNode
     nodes -= view
-
-    if (inLayout) {
-      for ((index, node) in rootNode.children.withIndex()) {
-        node.applyModifier(getModifier(index), density)
-      }
-
-      rootNode.measure(Size.Undefined, Size.Undefined)
-    }
   }
 
   private fun applyLayoutRecursive(node: Node, xOffset: Float, yOffset: Float) {
@@ -163,6 +155,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
+    for ((index, node) in rootNode.children.withIndex()) {
+      node.applyModifier(getModifier(index), density)
+    }
+
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> rootNode.requestedWidth = widthSize
