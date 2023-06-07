@@ -20,7 +20,6 @@ import app.cash.redwood.yoga.MeasureCallback
 import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
-import app.cash.redwood.yoga.measure
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents

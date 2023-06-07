@@ -736,6 +736,30 @@ internal object Yoga {
     ) { obj: YGStyle -> obj.margin }
   }
 
+  fun YGNodeStyleGetWidth(node: YGNode): YGValue {
+    return node.style.dimensions[YGDimension.YGDimensionWidth.ordinal]
+  }
+
+  fun YGNodeStyleGetHeight(node: YGNode): YGValue {
+    return node.style.dimensions[YGDimension.YGDimensionHeight.ordinal]
+  }
+
+  fun YGNodeStyleGetMaxWidth(node: YGNode): YGValue {
+    return node.style.maxDimensions[YGDimension.YGDimensionWidth.ordinal]
+  }
+
+  fun YGNodeStyleGetMaxHeight(node: YGNode): YGValue {
+    return node.style.maxDimensions[YGDimension.YGDimensionHeight.ordinal]
+  }
+
+  fun YGNodeStyleGetMargin(node: YGNode, edge: YGEdge): YGValue {
+    return node.style.margin[edge.ordinal]
+  }
+
+  fun YGNodeStyleGetPadding(node: YGNode, edge: YGEdge): YGValue {
+    return node.style.padding[edge.ordinal]
+  }
+
   private fun <T : Enum<T>> updateStyleIndexed(
     node: YGNode,
     edge: T,

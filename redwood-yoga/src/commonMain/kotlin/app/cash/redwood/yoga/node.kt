@@ -47,52 +47,28 @@ public class Node internal constructor(
     get() = TODO()
     set(value) = Yoga.YGNodeStyleSetFlexShrink(native, value)
   public var marginStart: Float
-    get() = TODO()
-    set(value) {
-      if (owner != null) {
-        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeLeft, value)
-      } else {
-        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeLeft, value)
-      }
-    }
+    get() = getMargin(YGEdge.YGEdgeLeft)
+    set(value) = setMargin(YGEdge.YGEdgeLeft, value)
   public var marginEnd: Float
-    get() = TODO()
-    set(value) {
-      if (owner != null) {
-        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeRight, value)
-      } else {
-        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeRight, value)
-      }
-    }
+    get() = getMargin(YGEdge.YGEdgeRight)
+    set(value) = setMargin(YGEdge.YGEdgeRight, value)
   public var marginTop: Float
-    get() = TODO()
-    set(value) {
-      if (owner != null) {
-        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeTop, value)
-      } else {
-        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeTop, value)
-      }
-    }
+    get() = getMargin(YGEdge.YGEdgeTop)
+    set(value) = setMargin(YGEdge.YGEdgeTop, value)
   public var marginBottom: Float
-    get() = TODO()
-    set(value) {
-      if (owner != null) {
-        Yoga.YGNodeStyleSetMargin(native, YGEdge.YGEdgeBottom, value)
-      } else {
-        Yoga.YGNodeStyleSetPadding(native, YGEdge.YGEdgeBottom, value)
-      }
-    }
+    get() = getMargin(YGEdge.YGEdgeBottom)
+    set(value) = setMargin(YGEdge.YGEdgeBottom, value)
   public var requestedWidth: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetWidth(native).value
     set(value) = Yoga.YGNodeStyleSetWidth(native, value)
   public var requestedHeight: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetHeight(native).value
     set(value) = Yoga.YGNodeStyleSetHeight(native, value)
   public var requestedMaxWidth: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetMaxWidth(native).value
     set(value) = Yoga.YGNodeStyleSetMaxWidth(native, value)
   public var requestedMaxHeight: Float
-    get() = TODO()
+    get() = Yoga.YGNodeStyleGetMaxHeight(native).value
     set(value) = Yoga.YGNodeStyleSetMaxHeight(native, value)
   public var measureCallback: MeasureCallback?
     get() = (native.measure.noContext as MeasureCallbackCompat?)?.callback
@@ -107,6 +83,34 @@ public class Node internal constructor(
     get() = Yoga.YGNodeLayoutGetWidth(native)
   public val height: Float
     get() = Yoga.YGNodeLayoutGetHeight(native)
+
+  public fun measure(parentWidth: Float, parentHeight: Float) {
+    // TODO: Figure out how to measure incrementally safely.
+    native.markDirtyAndPropogateDownwards()
+
+    Yoga.YGNodeCalculateLayout(
+      node = native,
+      ownerWidth = parentWidth,
+      ownerHeight = parentHeight,
+      ownerDirection = native.style.direction(),
+    )
+  }
+
+  private fun getMargin(edge: YGEdge): Float {
+    if (owner != null) {
+      return Yoga.YGNodeStyleGetMargin(native, edge).value
+    } else {
+      return Yoga.YGNodeStyleGetPadding(native, edge).value
+    }
+  }
+
+  private fun setMargin(edge: YGEdge, value: Float) {
+    if (owner != null) {
+      Yoga.YGNodeStyleSetMargin(native, edge, value)
+    } else {
+      Yoga.YGNodeStyleSetPadding(native, edge, value)
+    }
+  }
 
   private inner class Children : AbstractMutableList<Node>() {
     override val size: Int
@@ -132,19 +136,4 @@ public class Node internal constructor(
       return Node(replaced)
     }
   }
-}
-
-public fun Node.measure(
-  parentWidth: Float,
-  parentHeight: Float,
-) {
-  // TODO: Figure out how to measure incrementally safely.
-  native.markDirtyAndPropogateDownwards()
-
-  Yoga.YGNodeCalculateLayout(
-    node = native,
-    ownerWidth = parentWidth,
-    ownerHeight = parentHeight,
-    ownerDirection = native.style.direction(),
-  )
 }
