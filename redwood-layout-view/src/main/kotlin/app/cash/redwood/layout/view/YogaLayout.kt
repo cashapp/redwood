@@ -23,7 +23,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
-    rootNode.measureCallback = ViewMeasureFunction(this)
+    rootNode.measureCallback = ViewMeasureCallback(this)
     applyLayoutParams(rootNode, layoutParams)
   }
 
@@ -92,7 +92,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   private fun applyLayoutRecursive(node: Node, xOffset: Float, yOffset: Float) {
-    val view = (node.measureCallback as ViewMeasureFunction?)?.view
+    val view = (node.measureCallback as ViewMeasureCallback?)?.view
     if (view != null && view !== this) {
       if (view.visibility == GONE) return
 
@@ -172,13 +172,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
   private fun View.asNode(): Node {
     val childNode = Node()
-    childNode.measureCallback = ViewMeasureFunction(this)
+    childNode.measureCallback = ViewMeasureCallback(this)
     applyLayoutParams(childNode, layoutParams)
     return childNode
   }
 }
 
-private class ViewMeasureFunction(val view: View) : MeasureCallback {
+private class ViewMeasureCallback(val view: View) : MeasureCallback {
   override fun measure(
     node: Node,
     width: Float,

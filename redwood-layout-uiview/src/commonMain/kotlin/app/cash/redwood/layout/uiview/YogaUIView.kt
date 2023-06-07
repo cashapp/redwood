@@ -88,7 +88,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
 private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
   if (yoga.typedSubviews.isEmpty()) {
     yoga.rootNode.children.clear()
-    yoga.rootNode.measureCallback = ViewMeasureFunction(yoga)
+    yoga.rootNode.measureCallback = ViewMeasureCallback(yoga)
     return
   }
 
@@ -105,7 +105,7 @@ private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
   }
 }
 
-private class ViewMeasureFunction(val view: UIView) : MeasureCallback {
+private class ViewMeasureCallback(val view: UIView) : MeasureCallback {
   override fun measure(
     node: Node,
     width: Float,
@@ -166,7 +166,7 @@ private fun YGApplyLayoutToViewHierarchy(node: Node) {
 
 private fun UIView.asNode(): Node {
   val childNode = Node()
-  childNode.measureCallback = ViewMeasureFunction(this)
+  childNode.measureCallback = ViewMeasureCallback(this)
   return childNode
 }
 
@@ -177,4 +177,4 @@ private fun CValue<CGSize>.toSize() = useContents {
 private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
 private val Node.view: UIView?
-  get() = (measureCallback as ViewMeasureFunction?)?.view
+  get() = (measureCallback as ViewMeasureCallback?)?.view
