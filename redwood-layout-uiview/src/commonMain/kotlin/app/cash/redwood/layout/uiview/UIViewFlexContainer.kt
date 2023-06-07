@@ -43,8 +43,9 @@ internal class UIViewFlexContainer(
 
   init {
     yogaView.rootNode.flexDirection = direction
-    yogaView.density = density
-    yogaView.getModifier = { children.widgets[it].modifier }
+    yogaView.applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, density)
+    }
   }
 
   override fun width(width: Constraint) {

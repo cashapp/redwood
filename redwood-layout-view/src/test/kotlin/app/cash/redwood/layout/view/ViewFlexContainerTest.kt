@@ -45,7 +45,9 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
     showSystemUi = false,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
+  override fun flexContainer(direction: FlexDirection): TestFlexContainer<View> {
+    return ViewTestFlexContainer(paparazzi.context, direction)
+  }
 
   override fun widget(text: String, modifier: Modifier) = object : Widget<View> {
     override val value = TextView(paparazzi.context).apply {

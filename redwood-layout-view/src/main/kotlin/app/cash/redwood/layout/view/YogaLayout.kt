@@ -10,8 +10,6 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import app.cash.redwood.Modifier
-import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.MeasureCallback
 import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
@@ -23,8 +21,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   private val nodes = mutableMapOf<View, Node>()
   val rootNode = Node()
 
-  var density: Density = Density(1.0)
-  var getModifier: (Int) -> Modifier = { Modifier }
+  var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
     rootNode.measureCallback = ViewMeasureFunction(this)
@@ -156,7 +153,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
     for ((index, node) in rootNode.children.withIndex()) {
-      node.applyModifier(getModifier(index), density)
+      applyModifier(node, index)
     }
 
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()

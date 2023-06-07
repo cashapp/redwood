@@ -55,8 +55,9 @@ internal class ViewFlexContainer(
 
   init {
     yogaLayout.rootNode.flexDirection = direction
-    yogaLayout.density = density
-    yogaLayout.getModifier = { children.widgets[it].modifier }
+    yogaLayout.applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, density)
+    }
   }
 
   override fun width(width: Constraint) {

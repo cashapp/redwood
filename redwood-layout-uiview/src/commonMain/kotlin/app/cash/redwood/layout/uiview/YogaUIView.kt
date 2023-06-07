@@ -15,10 +15,7 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.ui.Default
-import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.MeasureCallback
 import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
@@ -40,8 +37,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   var width = Constraint.Wrap
   var height = Constraint.Wrap
 
-  var density: Density = Density.Default
-  var getModifier: (Int) -> Modifier = { Modifier }
+  var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
     return calculateLayoutWithSize(Size(Size.Undefined, Size.Undefined)).toCGSize()
@@ -67,7 +63,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     YGAttachNodesFromViewHierachy(this)
 
     for ((index, node) in rootNode.children.withIndex()) {
-      node.applyModifier(getModifier(index), density)
+      applyModifier(node, index)
     }
 
     rootNode.measure(size.width, size.height)
