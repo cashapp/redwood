@@ -50,8 +50,8 @@ fun Row(
     factory = { it.RedwoodLayout.Row() },
     update = {
       set(modifier, WidgetNode.SetModifiers)
-      set(margin) { widget.margin(it) }
-      set(overflow) { widget.overflow(it) }
+      set(margin) { recordChanged(); widget.margin(it) }
+      set(overflow) { recordChanged(); widget.overflow(it) }
     },
     content = {
       into(Row<*>::children) {
@@ -146,7 +146,7 @@ internal fun generateComposable(
               is Property,
               is Event,
               -> {
-                updateLambda.add("set(%1N) { widget.%1N(it) }\n", trait.name)
+                updateLambda.add("set(%1N) { recordChanged(); widget.%1N(it) }\n", trait.name)
               }
               is Children -> {
                 childrenLambda.apply {

@@ -17,7 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolNode
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
 @ObjCName("TreehouseView", exact = true)
 public interface TreehouseView {
   public val children: Widget.Children<*>
-  public val hostConfiguration: StateFlow<HostConfiguration>
+  public val uiConfiguration: StateFlow<UiConfiguration>
   public val widgetSystem: WidgetSystem
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener?

@@ -43,18 +43,25 @@ internal fun LazyList(
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
   val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  var placeholderPoolSize by remember { mutableStateOf(20) }
   LazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
+      val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
+      // We only ever want to increase the pool size.
+      if (placeholderPoolSize < proposedPlaceholderPoolSize) {
+        placeholderPoolSize = proposedPlaceholderPoolSize
+      }
       firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     width = width,
     height = height,
     modifier = modifier,
-    placeholder = { repeat(75) { placeholder() } },
+    placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {
@@ -81,11 +88,18 @@ internal fun RefreshableLazyList(
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
   val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
+      val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
+      // We only ever want to increase the pool size.
+      if (placeholderPoolSize < proposedPlaceholderPoolSize) {
+        placeholderPoolSize = proposedPlaceholderPoolSize
+      }
       firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
@@ -94,7 +108,7 @@ internal fun RefreshableLazyList(
     width = width,
     height = height,
     modifier = modifier,
-    placeholder = { repeat(75) { placeholder() } },
+    placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {

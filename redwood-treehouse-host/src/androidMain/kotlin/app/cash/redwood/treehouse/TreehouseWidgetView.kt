@@ -27,7 +27,7 @@ import androidx.core.graphics.Insets
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,14 +54,14 @@ public class TreehouseWidgetView(
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 
-  private val mutableHostConfiguration = MutableStateFlow(computeHostConfiguration())
+  private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
 
-  override val hostConfiguration: StateFlow<HostConfiguration>
-    get() = mutableHostConfiguration
+  override val uiConfiguration: StateFlow<UiConfiguration>
+    get() = mutableUiConfiguration
 
   init {
     setOnWindowInsetsChangeListener { insets ->
-      mutableHostConfiguration.value = computeHostConfiguration(insets = insets.safeDrawing)
+      mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)
     }
   }
 
@@ -86,17 +86,17 @@ public class TreehouseWidgetView(
 
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
-    mutableHostConfiguration.value = computeHostConfiguration(config = newConfig)
+    mutableUiConfiguration.value = computeUiConfiguration(config = newConfig)
   }
 
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-  private fun computeHostConfiguration(
+  private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
-  ): HostConfiguration {
-    return HostConfiguration(
+  ): UiConfiguration {
+    return UiConfiguration(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
       safeAreaInsets = insets.toMargin(Density(resources)),
     )

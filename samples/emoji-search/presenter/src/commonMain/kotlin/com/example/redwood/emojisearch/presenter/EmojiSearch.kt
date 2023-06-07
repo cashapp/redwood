@@ -24,7 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
-import app.cash.redwood.compose.LocalHostConfiguration
+import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.compose.Column
@@ -108,7 +108,7 @@ fun EmojiSearch(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = LocalHostConfiguration.current.safeAreaInsets,
+    margin = LocalUiConfiguration.current.safeAreaInsets,
   ) {
     TextInput(
       state = searchTerm,

@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +30,6 @@ import kotlinx.coroutines.flow.StateFlow
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     changesSink: ChangesSinkService,
-    hostConfigurations: StateFlow<HostConfiguration>,
+    uiConfigurations: StateFlow<UiConfiguration>,
   )
 }

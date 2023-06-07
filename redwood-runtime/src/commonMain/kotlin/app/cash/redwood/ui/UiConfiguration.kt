@@ -18,7 +18,7 @@ package app.cash.redwood.ui
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class HostConfiguration(
+public data class UiConfiguration(
   val darkMode: Boolean = false,
   val safeAreaInsets: Margin = Margin.Zero,
 ) {

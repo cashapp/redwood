@@ -20,7 +20,7 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolNode
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
@@ -47,7 +47,7 @@ private sealed interface ViewState {
   object None : ViewState
 
   class Preloading(
-    val hostConfiguration: HostConfiguration,
+    val uiConfiguration: UiConfiguration,
   ) : ViewState
 
   class Bound(
@@ -73,13 +73,13 @@ internal class TreehouseAppContent<A : AppService>(
 
   private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
 
-  override fun preload(hostConfiguration: HostConfiguration) {
+  override fun preload(uiConfiguration: UiConfiguration) {
     treehouseApp.dispatchers.checkUi()
     val previousState = stateFlow.value
 
     check(previousState.viewState is ViewState.None)
 
-    val nextViewState = ViewState.Preloading(hostConfiguration)
+    val nextViewState = ViewState.Preloading(uiConfiguration)
 
     // Start the code if necessary.
     val ziplineSession = treehouseApp.ziplineSession
@@ -89,7 +89,7 @@ internal class TreehouseAppContent<A : AppService>(
           startViewCodeContentBinding(
             ziplineSession = ziplineSession,
             isInitialLaunch = true,
-            firstHostConfiguration = MutableStateFlow(nextViewState.hostConfiguration),
+            firstUiConfiguration = MutableStateFlow(nextViewState.uiConfiguration),
           ),
         )
       }
@@ -120,7 +120,7 @@ internal class TreehouseAppContent<A : AppService>(
           startViewCodeContentBinding(
             ziplineSession = ziplineSession,
             isInitialLaunch = true,
-            firstHostConfiguration = nextViewState.view.hostConfiguration,
+            firstUiConfiguration = nextViewState.view.uiConfiguration,
           ),
         )
       }
@@ -179,9 +179,9 @@ internal class TreehouseAppContent<A : AppService>(
     val viewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
-    val hostConfiguration = when (viewState) {
-      is ViewState.Preloading -> MutableStateFlow(viewState.hostConfiguration)
-      is ViewState.Bound -> viewState.view.hostConfiguration
+    val uiConfiguration = when (viewState) {
+      is ViewState.Preloading -> MutableStateFlow(viewState.uiConfiguration)
+      is ViewState.Bound -> viewState.view.uiConfiguration
       else -> error("unexpected receiveZiplineSession with no view bound and no preload")
     }
 
@@ -189,7 +189,7 @@ internal class TreehouseAppContent<A : AppService>(
       startViewCodeContentBinding(
         ziplineSession = next,
         isInitialLaunch = previousCodeState is CodeState.Idle,
-        firstHostConfiguration = hostConfiguration,
+        firstUiConfiguration = uiConfiguration,
       ),
     )
 
@@ -210,7 +210,7 @@ internal class TreehouseAppContent<A : AppService>(
   private fun startViewCodeContentBinding(
     ziplineSession: ZiplineSession<A>,
     isInitialLaunch: Boolean,
-    firstHostConfiguration: StateFlow<HostConfiguration>,
+    firstUiConfiguration: StateFlow<UiConfiguration>,
   ): ViewContentCodeBinding<A> {
     dispatchers.checkUi()
 
@@ -223,7 +223,7 @@ internal class TreehouseAppContent<A : AppService>(
       stateFlow = stateFlow,
       isInitialLaunch = isInitialLaunch,
       session = ziplineSession,
-      firstHostConfiguration = firstHostConfiguration,
+      firstUiConfiguration = firstUiConfiguration,
     ).apply {
       start(ziplineSession)
     }
@@ -251,9 +251,9 @@ private class ViewContentCodeBinding<A : AppService>(
   val stateFlow: MutableStateFlow<State<A>>,
   private val isInitialLaunch: Boolean,
   session: ZiplineSession<A>,
-  firstHostConfiguration: StateFlow<HostConfiguration>,
+  firstUiConfiguration: StateFlow<UiConfiguration>,
 ) : EventSink, ChangesSinkService {
-  private val hostConfigurationFlow = SequentialStateFlow(firstHostConfiguration)
+  private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val json = session.zipline.json
 
@@ -367,7 +367,7 @@ private class ViewContentCodeBinding<A : AppService>(
       treehouseUiOrNull = treehouseUi
       treehouseUi.start(
         changesSink = this@ViewContentCodeBinding,
-        hostConfigurations = hostConfigurationFlow,
+        uiConfigurations = uiConfigurationFlow,
       )
     }
   }

@@ -18,6 +18,10 @@ import EmojiSearchKt
 import UIKit
 
 class TextInputBinding: TextInput {
+    private var state = ValuesTextFieldState(text: "", selectionStart: 0, selectionEnd: 0, userEditCount: 0)
+    private var onChange: ((ValuesTextFieldState) -> Void)?
+    private var updating = false
+
     private let root: UITextField = {
         let view = UITextField()
         view.borderStyle = .roundedRect
@@ -25,8 +29,23 @@ class TextInputBinding: TextInput {
         return view
     }()
 
+    init() {
+        let identifier = UIAction.Identifier("TextInputBinding.onTextChanged")
+        root.addAction(UIAction(identifier: identifier, handler: {_ in
+            self.stateChanged(text: self.root.text)
+        }), for: .editingChanged)
+    }
+
     func state(state: ValuesTextFieldState) {
+        if (state.userEditCount < self.state.userEditCount) {
+            return
+        }
+
+        precondition(!updating)
+        updating = true
+        self.state = state
         root.text = state.text
+        updating = false
     }
 
     func hint(hint: String) {
@@ -34,12 +53,25 @@ class TextInputBinding: TextInput {
     }
 
     func onChange(onChange: ((ValuesTextFieldState) -> Void)? = nil) {
-        let identifier = UIAction.Identifier("TextInputBinding.onTextChanged")
+        self.onChange = onChange
+    }
 
-        root.removeAction(identifiedBy: identifier, for: .editingChanged)
-        root.addAction(UIAction(identifier: identifier, handler: { [unowned self] _ in
-            onChange?(ValuesTextFieldState(text: self.root.text ?? "", selectionStart: 0, selectionEnd: 0, userEditCount: 0))
-        }), for: .editingChanged)
+    func stateChanged(text: String?) {
+        // Ignore this update if it isn't a user edit.
+        if (updating) {
+            return
+        }
+
+        let newState = state.userEdit(
+            text: (text ?? ""),
+            selectionStart: 0,
+            selectionEnd: 0
+        )
+
+        if (!state.contentEquals(other: newState)) {
+            state = newState
+            onChange?(newState)
+        }
     }
 
     var modifier: Modifier = ExposedKt.modifier()

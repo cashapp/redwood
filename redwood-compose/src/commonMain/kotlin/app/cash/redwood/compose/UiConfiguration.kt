@@ -19,27 +19,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import app.cash.redwood.ui.HostConfiguration
+import app.cash.redwood.ui.UiConfiguration
 
 /**
- * Provide the configuration of the host display.
+ * Provide various configurations of the UI.
  * This value will be bound automatically.
  * Custom values should only be provided into a composition for testing purposes!
  *
- * @see HostConfiguration.Companion.current
+ * @see UiConfiguration.Companion.current
  */
-public val LocalHostConfiguration: ProvidableCompositionLocal<HostConfiguration> =
+public val LocalUiConfiguration: ProvidableCompositionLocal<UiConfiguration> =
   compositionLocalOf {
-    throw AssertionError("HostConfiguration was not provided!")
+    throw AssertionError("UiConfiguration was not provided!")
   }
 
 /**
  * Expose various configuration properties of the host.
  *
- * @see HostConfiguration
+ * @see UiConfiguration
  */
 @Suppress("unused") // Emulating a CompositionLocal.
-public val HostConfiguration.Companion.current: HostConfiguration
+public val UiConfiguration.Companion.current: UiConfiguration
   @Composable
   @ReadOnlyComposable
-  get() = LocalHostConfiguration.current
+  get() = LocalUiConfiguration.current
