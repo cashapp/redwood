@@ -111,8 +111,6 @@ internal class UIViewFlexContainer(
   }
 
   private inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
-    private var needsLayout = true
-
     override fun intrinsicContentSize(): CValue<CGSize> {
       return CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
     }
@@ -121,24 +119,22 @@ internal class UIViewFlexContainer(
       return measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
     }
 
-    override fun setNeedsLayout() {
-      needsLayout = true
-    }
-
     override fun layoutSubviews() {
-      if (!needsLayout) return
-      needsLayout = false
-
       val bounds = bounds.useContents { size.toUnsafeSize() }
       measure(bounds)
 
-      setContentSize(
-        CGSizeMake(
-          width = container.items.maxOfOrNull { it.right } ?: 0.0,
-          height = container.items.maxOfOrNull { it.bottom } ?: 0.0,
-        ),
-      )
-      superview?.setNeedsLayout()
+      var newWidth = 0.0
+      var newHeight = 0.0
+      for (item in container.items) {
+        newWidth = maxOf(newWidth, item.right)
+        newHeight = maxOf(newHeight, item.bottom)
+      }
+      contentSize.useContents {
+        if (newWidth != width || newHeight != height) {
+          setContentSize(CGSizeMake(newWidth, newHeight))
+          superview?.setNeedsLayout()
+        }
+      }
 
       container.items.forEachIndexed { index, item ->
         typedSubviews[index].setFrame(

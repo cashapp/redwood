@@ -21,6 +21,11 @@ kotlin {
         implementation projects.redwoodWidgetCompose
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.assertk
+      }
+    }
 
     iosArm64Main {
       dependsOn commonMain

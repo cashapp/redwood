@@ -67,7 +67,7 @@ public class UIViewChildren(
   }
 
   private fun invalidate() {
-    parent.setNeedsDisplay()
+    parent.setNeedsLayout()
     parent.invalidateIntrinsicContentSize()
   }
 }
