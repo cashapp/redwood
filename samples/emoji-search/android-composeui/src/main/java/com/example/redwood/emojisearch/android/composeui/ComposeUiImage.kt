@@ -28,6 +28,7 @@ import com.example.redwood.emojisearch.widget.Image
 
 internal class ComposeUiImage : Image<@Composable () -> Unit> {
   private var url by mutableStateOf("")
+  private var onClick by mutableStateOf({})
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
@@ -41,5 +42,9 @@ internal class ComposeUiImage : Image<@Composable () -> Unit> {
 
   override fun url(url: String) {
     this.url = url
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    this.onClick = onClick ?: {}
   }
 }
