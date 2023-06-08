@@ -16,17 +16,9 @@
 package com.example
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexItem
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.Spacing
-import app.cash.redwood.flexbox.isHorizontal
-import app.cash.redwood.flexbox.isVertical
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.AlignSelf
+import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
@@ -35,7 +27,7 @@ import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.Margin
+import app.cash.redwood.yoga.Node
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -63,49 +55,27 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
-internal fun Margin.toSpacing(density: Density) = with(density) {
-  Spacing(
-    left = start.toPx(),
-    right = end.toPx(),
-    top = top.toPx(),
-    bottom = bottom.toPx(),
-  )
-}
-
-internal fun newFlexItem(
-  direction: FlexDirection,
-  density: Density,
-  modifier: Modifier,
-  measurable: Measurable,
-): FlexItem {
-  var flexGrow = DefaultFlexGrow
-  var flexShrink = DefaultFlexShrink
-  var spacing = Spacing.Zero
-  var alignSelf = AlignSelf.Auto
-  modifier.forEach { m ->
-    when (m) {
+internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
+  parentModifier.forEach { childModifier ->
+    when (childModifier) {
       is GrowModifier -> {
-        flexGrow = m.value
+        flexGrow = childModifier.value.toFloat()
       }
       is ShrinkModifier -> {
-        flexShrink = m.value
+        flexShrink = childModifier.value.toFloat()
       }
-      is MarginModifier -> {
-        spacing = m.margin.toSpacing(density)
+      is MarginModifier -> with(density) {
+        marginStart = childModifier.margin.start.toPx().toFloat()
+        marginEnd = childModifier.margin.end.toPx().toFloat()
+        marginTop = childModifier.margin.top.toPx().toFloat()
+        marginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
-      is HorizontalAlignmentModifier -> if (direction.isVertical) {
-        alignSelf = m.alignment.toAlignSelf()
+      is HorizontalAlignmentModifier -> {
+        alignSelf = childModifier.alignment.toAlignSelf()
       }
-      is VerticalAlignmentModifier -> if (direction.isHorizontal) {
-        alignSelf = m.alignment.toAlignSelf()
+      is VerticalAlignmentModifier -> {
+        alignSelf = childModifier.alignment.toAlignSelf()
       }
     }
   }
-  return FlexItem(
-    flexGrow = flexGrow,
-    flexShrink = flexShrink,
-    margin = spacing,
-    alignSelf = alignSelf,
-    measurable = measurable,
-  )
 }

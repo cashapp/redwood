@@ -16,45 +16,11 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.MeasureSpec
-import app.cash.redwood.flexbox.MeasureSpecMode
-import app.cash.redwood.flexbox.Size
+import app.cash.redwood.yoga.MeasureMode
 
-// Android uses 2.75 as a density scale for most recent Pixel devices and iOS
-// uses 3. This aligns the two so the generic values used by Redwood layout are
-// visually similar on both platforms.
-internal const val DensityMultiplier = 1.1
-
-internal fun MeasureSpec.Companion.fromAndroid(measureSpec: Int): MeasureSpec = from(
-  size = View.MeasureSpec.getSize(measureSpec).toDouble(),
-  mode = MeasureSpecMode.fromAndroid(View.MeasureSpec.getMode(measureSpec)),
-)
-
-internal fun MeasureSpec.toAndroid(): Int = View.MeasureSpec.makeMeasureSpec(size.toInt(), mode.toAndroid())
-
-internal fun MeasureSpecMode.Companion.fromAndroid(mode: Int): MeasureSpecMode = when (mode) {
-  View.MeasureSpec.UNSPECIFIED -> Unspecified
-  View.MeasureSpec.EXACTLY -> Exactly
-  View.MeasureSpec.AT_MOST -> AtMost
+internal fun MeasureMode.toAndroid() = when (this) {
+  MeasureMode.AtMost -> View.MeasureSpec.AT_MOST
+  MeasureMode.Exactly -> View.MeasureSpec.EXACTLY
+  MeasureMode.Undefined -> View.MeasureSpec.UNSPECIFIED
   else -> throw AssertionError()
-}
-
-internal fun MeasureSpecMode.toAndroid(): Int = when (this) {
-  MeasureSpecMode.Unspecified -> View.MeasureSpec.UNSPECIFIED
-  MeasureSpecMode.Exactly -> View.MeasureSpec.EXACTLY
-  MeasureSpecMode.AtMost -> View.MeasureSpec.AT_MOST
-  else -> throw AssertionError()
-}
-
-internal class ViewMeasurable(val view: View) : Measurable() {
-  override val requestedWidth get() = view.layoutParams.width.toDouble()
-  override val requestedHeight get() = view.layoutParams.height.toDouble()
-  override val minWidth get() = view.minimumWidth.toDouble()
-  override val minHeight get() = view.minimumHeight.toDouble()
-
-  override fun measure(widthSpec: MeasureSpec, heightSpec: MeasureSpec): Size {
-    view.measure(widthSpec.toAndroid(), heightSpec.toAndroid())
-    return Size(view.measuredWidth.toDouble(), view.measuredHeight.toDouble())
-  }
 }
