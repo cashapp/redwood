@@ -39,7 +39,6 @@ internal class ComposeMeasureCallback(
     height: Float,
     heightMode: MeasureMode,
   ): Size {
-    println("measure $node [$width, $widthMode] [$height, $heightMode]")
     val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
     this.placeable = measurable.measure(constraints)
     return Size(placeable.width.toFloat(), placeable.height.toFloat())
