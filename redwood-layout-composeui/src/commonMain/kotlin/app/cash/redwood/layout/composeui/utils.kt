@@ -27,8 +27,8 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 
 internal class ComposeMeasureCallback(
-  private val measurable: Measurable
-  ) : MeasureCallback {
+  private val measurable: Measurable,
+) : MeasureCallback {
   lateinit var placeable: Placeable
     private set
 
