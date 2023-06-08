@@ -25,12 +25,13 @@ import app.cash.redwood.lazylayout.compose.items
 
 class EmojiSearchTreehouseUi(
   private val httpClient: HttpClient,
+  private val navigator: Navigator,
 ) : TreehouseUi {
   private val lazyColumnProvider = LazyColumnProvider()
 
   @Composable
   override fun Show() {
-    EmojiSearch(httpClient, lazyColumnProvider)
+    EmojiSearch(httpClient, navigator, lazyColumnProvider)
   }
 }
 

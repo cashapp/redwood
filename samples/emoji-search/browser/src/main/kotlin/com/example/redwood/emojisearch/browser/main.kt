@@ -27,6 +27,7 @@ import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient
+import com.example.redwood.emojisearch.presenter.Navigator
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlin.js.json
 import kotlinx.browser.document
@@ -41,6 +42,11 @@ import org.w3c.fetch.RequestInit
 
 fun main() {
   val content = document.getElementById("content") as HTMLElement
+  val navigator = object : Navigator {
+    override fun openUrl(url: String) {
+      window.open(url)
+    }
+  }
 
   @OptIn(DelicateCoroutinesApi::class)
   val composition = RedwoodComposition(
@@ -58,7 +64,7 @@ fun main() {
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {
-    EmojiSearch(httpClient, TruncatingColumnProvider)
+    EmojiSearch(httpClient, navigator, TruncatingColumnProvider)
   }
 }
 

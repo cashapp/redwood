@@ -58,4 +58,5 @@ data class Text(
 @Widget(3)
 data class Image(
   @Property(1) val url: String,
+  @Property(2) @Default("null") val onClick: (() -> Unit)? = null,
 )

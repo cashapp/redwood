@@ -88,7 +88,7 @@ class EmojiSearchActivity : ComponentActivity() {
       appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrl = manifestUrlFlow,
-        hostApi = RealHostApi(httpClient),
+        hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
       )
     )
 
