@@ -25,20 +25,20 @@ import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.layout.LegacyAbstractFlexContainerTest
-import app.cash.redwood.layout.LegacyTestFlexContainer
+import app.cash.redwood.layout.AbstractFlexContainerTest
+import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ComposeUiFlexContainerTest : LegacyAbstractFlexContainerTest<@Composable () -> Unit>() {
+class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -60,13 +60,13 @@ class ComposeUiFlexContainerTest : LegacyAbstractFlexContainerTest<@Composable (
     override var modifier = modifier
   }
 
-  override fun verifySnapshot(container: LegacyTestFlexContainer<@Composable () -> Unit>) {
+  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>) {
     paparazzi.snapshot {
       container.value()
     }
   }
 
-  class ComposeTestFlexContainer(direction: FlexDirection) : LegacyTestFlexContainer<@Composable () -> Unit> {
+  class ComposeTestFlexContainer(direction: FlexDirection) : TestFlexContainer<@Composable () -> Unit> {
     private val delegate = ComposeUiFlexContainer(direction)
     private var childCount = 0
 
