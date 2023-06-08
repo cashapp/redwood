@@ -112,6 +112,10 @@ public class Node internal constructor(
     }
   }
 
+  override fun toString(): String {
+    return "Node($native)"
+  }
+
   private inner class Children : AbstractMutableList<Node>() {
     override val size: Int
       get() = native.children.size

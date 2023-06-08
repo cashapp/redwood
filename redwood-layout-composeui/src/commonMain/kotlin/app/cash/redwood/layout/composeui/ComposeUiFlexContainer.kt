@@ -45,6 +45,7 @@ import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
+import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
 
 internal class ComposeUiFlexContainer(
@@ -159,10 +160,19 @@ internal class ComposeUiFlexContainer(
   ): MeasureResult = with(scope) {
     syncItems(measurables)
 
-    // val measureSpecs = constraints.toMeasureSpecs()
-    rootNode.measure(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
+    val constrainedWidth = if (constraints.hasFixedWidth) {
+      constraints.maxWidth.toFloat()
+    } else {
+      Size.Undefined
+    }
+    val constrainedHeight = if (constraints.hasFixedHeight) {
+      constraints.maxHeight.toFloat()
+    } else {
+      Size.Undefined
+    }
+    rootNode.measure(constrainedWidth, constrainedHeight)
 
-    return layout(constraints.maxWidth, constraints.maxHeight) {
+    return layout(rootNode.width.toInt(), rootNode.height.toInt()) {
       for (node in rootNode.children) {
         val placeable = (node.measureCallback as ComposeMeasureCallback).placeable
         placeable.place(node.left.toInt(), node.top.toInt())
@@ -174,9 +184,9 @@ internal class ComposeUiFlexContainer(
     rootNode.children.clear()
     measurables.forEachIndexed { index, measurable ->
       val childNode = Node()
+      rootNode.children += childNode
       childNode.measureCallback = ComposeMeasureCallback(measurable)
       childNode.applyModifier(children.widgets[index].modifier, density)
-      rootNode.children += childNode
     }
   }
 }

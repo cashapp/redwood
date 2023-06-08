@@ -26,55 +26,27 @@ import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 
-internal fun RedwoodDp.toDp(): Dp {
-  return Dp(toPlatformDp().toFloat())
+internal class ComposeMeasureCallback(
+  private val measurable: Measurable
+  ) : MeasureCallback {
+  lateinit var placeable: Placeable
+    private set
+
+  override fun measure(
+    node: Node,
+    width: Float,
+    widthMode: MeasureMode,
+    height: Float,
+    heightMode: MeasureMode,
+  ): Size {
+    println("measure $node [$width, $widthMode] [$height, $heightMode]")
+    val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
+    this.placeable = measurable.measure(constraints)
+    return Size(placeable.width.toFloat(), placeable.height.toFloat())
+  }
 }
 
-internal data class MeasureSpecs(
-  val width: Float,
-  val widthMode: MeasureMode,
-  val height: Float,
-  val heightMode: MeasureMode,
-)
-
-internal fun Constraints.toMeasureSpecs(): MeasureSpecs {
-  val width: Float
-  val widthMode: MeasureMode
-  val height: Float
-  val heightMode: MeasureMode
-
-  when {
-    hasFixedWidth -> {
-      width = maxWidth.toFloat()
-      widthMode = MeasureMode.Exactly
-    }
-    hasBoundedWidth -> {
-      width = maxWidth.toFloat()
-      widthMode = MeasureMode.AtMost
-    }
-    else -> {
-      width = minWidth.toFloat()
-      widthMode = MeasureMode.Undefined
-    }
-  }
-  when {
-    hasFixedHeight -> {
-      height = maxHeight.toFloat()
-      heightMode = MeasureMode.Exactly
-    }
-    hasBoundedHeight -> {
-      height = maxHeight.toFloat()
-      heightMode = MeasureMode.AtMost
-    }
-    else -> {
-      height = minHeight.toFloat()
-      heightMode = MeasureMode.Undefined
-    }
-  }
-  return MeasureSpecs(width, widthMode, height, heightMode)
-}
-
-private fun measureSpecsToConstraints(
+internal fun measureSpecsToConstraints(
   width: Float,
   widthMode: MeasureMode,
   height: Float,
@@ -117,20 +89,6 @@ private fun measureSpecsToConstraints(
   return Constraints(minWidth, maxWidth, minHeight, maxHeight)
 }
 
-internal class ComposeMeasureCallback(private val measurable: Measurable) : MeasureCallback {
-
-  lateinit var placeable: Placeable
-    private set
-
-  override fun measure(
-    node: Node,
-    width: Float,
-    widthMode: MeasureMode,
-    height: Float,
-    heightMode: MeasureMode,
-  ): Size {
-    val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
-    this.placeable = measurable.measure(constraints)
-    return Size(placeable.width.toFloat(), placeable.height.toFloat())
-  }
+internal fun RedwoodDp.toDp(): Dp {
+  return Dp(toPlatformDp().toFloat())
 }
