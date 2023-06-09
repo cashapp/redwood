@@ -32,5 +32,9 @@ class IosText : Text<UIView> {
 
   override fun text(text: String?) {
     value.text = text
+
+    // This very simple integration wraps the size of whatever text is entered. Calling
+    // this function will update the bounds and trigger relayout in the parent.
+    value.sizeToFit()
   }
 }
