@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-import Foundation
 import EmojiSearchKt
+import Foundation
 
-class IosHostApi : HostApi {
+class IosHostApi: HostApi {
     private let client: URLSession = .init(configuration: .default)
 
-    func httpCall(url: String, headers: [String : String], completionHandler: @escaping (String?, Error?) -> Void) {
+    func httpCall(
+        url: String,
+        headers: [String: String],
+        completionHandler: @escaping (String?, Error?) -> Void
+    ) {
         var request = URLRequest(url: URL(string: url)!)
         for (name, value) in headers {
             request.addValue(value, forHTTPHeaderField: name)
@@ -31,15 +35,18 @@ class IosHostApi : HostApi {
             // thread, so we can bounce back to that thread for now.
             // Switching to the new KMM memory model may remove the need for this.
             DispatchQueue.main.async {
-                completionHandler(data.map {
-                    return String(decoding: $0, as: UTF8.self)
-                }, error)
+                completionHandler(
+                    data.map {
+                        return String(decoding: $0, as: UTF8.self)
+                    },
+                    error
+                )
             }
         }
 
         task.resume()
     }
-    
+
     func openUrl(url: String) {
         // TODO: Add logic to navigate to the browser app and open the given URL
     }

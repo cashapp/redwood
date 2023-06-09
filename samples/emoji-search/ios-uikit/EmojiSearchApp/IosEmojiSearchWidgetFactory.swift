@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import Foundation
-
-import UIKit
 import EmojiSearchKt
+import Foundation
+import UIKit
 
-class IosEmojiSearchWidgetFactory<A : AnyObject>: EmojiSearchWidgetFactory {
+class IosEmojiSearchWidgetFactory<A: AnyObject>: EmojiSearchWidgetFactory {
     let treehouseApp: TreehouseApp<A>
     let widgetSystem: TreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()

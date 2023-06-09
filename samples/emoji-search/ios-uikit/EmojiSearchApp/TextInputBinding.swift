@@ -18,7 +18,12 @@ import EmojiSearchKt
 import UIKit
 
 class TextInputBinding: TextInput {
-    private var state = ValuesTextFieldState(text: "", selectionStart: 0, selectionEnd: 0, userEditCount: 0)
+    private var state = ValuesTextFieldState(
+        text: "",
+        selectionStart: 0,
+        selectionEnd: 0,
+        userEditCount: 0
+    )
     private var onChange: ((ValuesTextFieldState) -> Void)?
     private var updating = false
 
@@ -31,13 +36,19 @@ class TextInputBinding: TextInput {
 
     init() {
         let identifier = UIAction.Identifier("TextInputBinding.onTextChanged")
-        root.addAction(UIAction(identifier: identifier, handler: {_ in
-            self.stateChanged(text: self.root.text)
-        }), for: .editingChanged)
+        root.addAction(
+            UIAction(
+                identifier: identifier,
+                handler: { _ in
+                    self.stateChanged(text: self.root.text)
+                }
+            ),
+            for: .editingChanged
+        )
     }
 
     func state(state: ValuesTextFieldState) {
-        if (state.userEditCount < self.state.userEditCount) {
+        if state.userEditCount < self.state.userEditCount {
             return
         }
 
@@ -58,7 +69,7 @@ class TextInputBinding: TextInput {
 
     func stateChanged(text: String?) {
         // Ignore this update if it isn't a user edit.
-        if (updating) {
+        if updating {
             return
         }
 
@@ -68,7 +79,7 @@ class TextInputBinding: TextInput {
             selectionEnd: 0
         )
 
-        if (!state.contentEquals(other: newState)) {
+        if !state.contentEquals(other: newState) {
             state = newState
             onChange?(newState)
         }

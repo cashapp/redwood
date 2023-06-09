@@ -38,12 +38,25 @@ class RedwoodBuildPlugin : Plugin<Project> {
     target.plugins.apply("com.diffplug.spotless")
     val spotless = target.extensions.getByName("spotless") as SpotlessExtension
     spotless.apply {
-      kotlin {
-        it.target("src/*/kotlin/**/*.kt")
-        it.ktlint(libs.ktlint.get().version).editorConfigOverride(
-          mapOf("ktlint_standard_filename" to "disabled"),
-        )
-        it.licenseHeaderFile(target.rootProject.file("gradle/license-header.txt"))
+      if (target.path == ":") {
+        // Only format Swift files if we are the root project. This is because swift files are
+        // usually in directories which are not inside Gradle modules.
+        format("swift") {
+          it.target("**/*.swift")
+          it.nativeCmd(
+            "swift-format",
+            "/usr/bin/env",
+            listOf("swift-format", "--configuration", target.rootDir.resolve(".swift-format").absolutePath),
+          )
+        }
+      } else {
+        kotlin {
+          it.target("src/*/kotlin/**/*.kt")
+          it.ktlint(libs.ktlint.get().version).editorConfigOverride(
+            mapOf("ktlint_standard_filename" to "disabled"),
+          )
+          it.licenseHeaderFile(target.rootProject.file("gradle/license-header.txt"))
+        }
       }
     }
   }

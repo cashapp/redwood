@@ -1,0 +1,6 @@
+{
+    "indentation": {
+        "spaces": 4
+    },
+    "lineBreakBeforeEachArgument" : true
+}

@@ -1,8 +1,8 @@
+import CounterKt
 import Foundation
 import UIKit
-import CounterKt
 
-class CounterViewController : UIViewController {
+class CounterViewController: UIViewController {
     private var delegate: CounterViewControllerDelegate!
 
     override func viewDidLoad() {

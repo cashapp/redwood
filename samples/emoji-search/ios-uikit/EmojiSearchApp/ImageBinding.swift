@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import Foundation
 import EmojiSearchKt
+import Foundation
 import UIKit
 
 class ImageBinding: Image {
@@ -54,13 +54,13 @@ class ImageBinding: Image {
     }
 
     func onClick(onClick: (() -> Void)? = nil) {
-       guard let onClick else { return }
+        guard let onClick else { return }
         self.onClick = onClick
         let gestureRecognizer = UITapGestureRecognizer()
         gestureRecognizer.addTarget(self, action: #selector(didTapChartView))
         root.addGestureRecognizer(gestureRecognizer)
     }
-    
+
     @objc
     private func didTapChartView() {
         onClick()

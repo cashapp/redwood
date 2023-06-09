@@ -28,6 +28,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
+      - run: brew install swift-format
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoSamples
 
   connected:

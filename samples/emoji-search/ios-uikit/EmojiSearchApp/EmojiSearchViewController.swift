@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import EmojiSearchKt
 import Foundation
 import UIKit
-import EmojiSearchKt
 
-class EmojiSearchViewController : UIViewController {
+class EmojiSearchViewController: UIViewController {
 
     // MARK: - Private Properties
 
@@ -33,7 +33,10 @@ class EmojiSearchViewController : UIViewController {
     }
 
     override func loadView() {
-        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
+        let emojiSearchLauncher = EmojiSearchLauncher(
+            nsurlSession: urlSession,
+            hostApi: IosHostApi()
+        )
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
         let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
         let treehouseView = TreehouseUIKitView(widgetSystem: widgetSystem)
@@ -46,14 +49,14 @@ class EmojiSearchViewController : UIViewController {
     }
 }
 
-class EmojiSearchContent : TreehouseContentSource {
+class EmojiSearchContent: TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
         let treehouesUi = (app as! EmojiSearchPresenter)
         return treehouesUi.launch()
     }
 }
 
-class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
+class EmojiSearchWidgetSystem: TreehouseViewWidgetSystem {
     let treehouseApp: TreehouseApp<EmojiSearchPresenter>
 
     init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {
@@ -66,12 +69,15 @@ class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
     ) -> ProtocolNodeFactory {
         return EmojiSearchProtocolNodeFactory<UIView>(
             provider: EmojiSearchWidgetFactories<UIView>(
-                EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
+                EmojiSearch: IosEmojiSearchWidgetFactory(
+                    treehouseApp: treehouseApp,
+                    widgetSystem: self
+                ),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
             ),
             json: json,
             mismatchHandler: protocolMismatchHandler
-        );
+        )
     }
 }
