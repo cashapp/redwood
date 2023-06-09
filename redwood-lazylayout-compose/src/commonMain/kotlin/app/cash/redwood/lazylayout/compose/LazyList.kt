@@ -75,8 +75,8 @@ internal fun LazyList(
 @Composable
 internal fun RefreshableLazyList(
   isVertical: Boolean,
-  refreshing: Boolean = false,
-  onRefresh: (() -> Unit)? = null,
+  refreshing: Boolean,
+  onRefresh: (() -> Unit)?,
   width: Constraint,
   height: Constraint,
   modifier: Modifier = Modifier,
