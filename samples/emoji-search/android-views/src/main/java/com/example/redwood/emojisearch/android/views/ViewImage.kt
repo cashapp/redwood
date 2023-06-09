@@ -36,4 +36,12 @@ internal class ViewImage(
   override fun url(url: String) {
     value.load(url)
   }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    if (onClick != null) {
+      value.setOnClickListener { onClick() }
+    } else {
+      value.setOnClickListener(null)
+    }
+  }
 }

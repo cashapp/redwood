@@ -27,6 +27,7 @@ class ImageBinding: Image {
     }()
     private let imageLoader: RemoteImageLoader
     private var lastURL: URL?
+    private var onClick: (() -> Void)?
 
     init(imageLoader: RemoteImageLoader) {
         self.imageLoader = imageLoader
@@ -50,6 +51,19 @@ class ImageBinding: Image {
 
             self.root.image = image
         }
+    }
+
+    func onClick(onClick: (() -> Void)? = nil) {
+       guard let onClick else { return }
+        self.onClick = onClick
+        let gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.addTarget(self, action: #selector(didTapChartView))
+        root.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    @objc
+    private func didTapChartView() {
+        onClick()
     }
 }
 

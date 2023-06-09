@@ -15,6 +15,10 @@
  */
 package com.example.redwood.emojisearch.android.views
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 import com.example.redwood.emojisearch.treehouse.HostApi
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -27,11 +31,13 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 
+
 /** Exception for an unexpected, non-2xx HTTP response. */
 class HttpException(response: Response) :
   RuntimeException("HTTP ${response.code} ${response.message}")
 
 class RealHostApi(
+  private val context: Context,
   private val client: OkHttpClient,
 ) : HostApi {
   override suspend fun httpCall(url: String, headers: Map<String, String>): String {
@@ -59,5 +65,11 @@ class RealHostApi(
       )
       continuation.invokeOnCancellation { call.cancel() }
     }
+  }
+
+  override fun openUrl(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.setData(Uri.parse(url))
+    startActivity(context, intent, null)
   }
 }
