@@ -2,7 +2,6 @@ import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.testing'
-apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   publishing()

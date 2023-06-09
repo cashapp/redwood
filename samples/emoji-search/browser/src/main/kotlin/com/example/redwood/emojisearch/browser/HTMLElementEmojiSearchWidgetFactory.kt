@@ -26,7 +26,6 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSpanElement
-import org.w3c.dom.events.MouseEvent
 
 class HTMLElementEmojiSearchWidgetFactory(private val document: Document) : EmojiSearchWidgetFactory<HTMLElement> {
   override fun TextInput(): TextInput<HTMLElement> = HtmlTextInput(document.createElement("input") as HTMLInputElement)

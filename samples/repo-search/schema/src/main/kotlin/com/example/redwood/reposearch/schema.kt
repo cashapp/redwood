@@ -16,11 +16,11 @@
 package com.example.redwood.reposearch
 
 import app.cash.redwood.layout.RedwoodLayout
+import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.lazylayout.RedwoodLazyLayout
 
 @Schema(
   members = [
