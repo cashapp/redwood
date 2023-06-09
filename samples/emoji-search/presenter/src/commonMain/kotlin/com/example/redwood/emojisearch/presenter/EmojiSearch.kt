@@ -117,6 +117,7 @@ fun EmojiSearch(
       state = searchTerm,
       hint = "Search",
       onChange = { searchTerm = it },
+      modifier = Modifier.shrink(0.0),
     )
     columnProvider.create(
       items = filteredEmojis,
