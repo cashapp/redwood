@@ -19,13 +19,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
@@ -84,7 +84,7 @@ class EmojiSearchActivity : ComponentActivity() {
       appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrl = manifestUrlFlow,
-        hostApi = RealHostApi(httpClient),
+        hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
       ),
     )
 

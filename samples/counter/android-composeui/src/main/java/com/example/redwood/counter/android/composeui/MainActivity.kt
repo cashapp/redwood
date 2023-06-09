@@ -18,7 +18,7 @@ package com.example.redwood.counter.android.composeui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.redwood.compose.RedwoodContent
+import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
 import com.example.redwood.counter.composeui.CounterTheme

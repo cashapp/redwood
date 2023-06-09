@@ -47,6 +47,11 @@ fun interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
 }
 
+interface Navigator {
+  /** Open a URL in the app that owns it. For example, a browser. */
+  fun openUrl(url: String)
+}
+
 /**
  * LazyColumn doesn't work in browsers. This indirection allows us to use LazyColumn with a mobile
  * host and regular column with a browser host.
@@ -70,6 +75,7 @@ interface ColumnProvider {
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
+  navigator: Navigator,
   columnProvider: ColumnProvider,
 ) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
@@ -111,6 +117,7 @@ fun EmojiSearch(
       state = searchTerm,
       hint = "Search",
       onChange = { searchTerm = it },
+      modifier = Modifier.shrink(0.0),
     )
     columnProvider.create(
       items = filteredEmojis,
@@ -124,17 +131,23 @@ fun EmojiSearch(
           EmojiImage(
             label = "loading…",
             url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
-          )
+          ),
+          onClick = {},
         )
       },
     ) { image ->
-      Item(image)
+      Item(
+        emojiImage = image,
+        onClick = {
+          navigator.openUrl(image.url)
+        },
+      )
     }
   }
 }
 
 @Composable
-private fun Item(emojiImage: EmojiImage) {
+private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
   Row(
     width = Constraint.Fill,
     verticalAlignment = CrossAxisAlignment.Center,
@@ -142,6 +155,7 @@ private fun Item(emojiImage: EmojiImage) {
     Image(
       url = emojiImage.url,
       modifier = Modifier.margin(Margin(8.dp)),
+      onClick = onClick,
     )
     Text(text = emojiImage.label)
   }

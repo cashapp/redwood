@@ -19,8 +19,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.HostConfiguration
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
@@ -88,34 +88,34 @@ class TreehouseUIKitViewTest {
   }
 
   @Test
-  fun hostConfigurationReflectsInitialUiMode() {
+  fun uiConfigurationReflectsInitialUiMode() {
     val parent = UIWindow()
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
     val layout = TreehouseUIKitView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertThat(layout.hostConfiguration.value).isEqualTo(HostConfiguration(darkMode = true))
+    assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
   }
 
-  @Test fun hostConfigurationEmitsUiModeChanges() = runTest {
+  @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val parent = UIWindow()
 
     val layout = TreehouseUIKitView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    layout.hostConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = false))
+    layout.uiConfiguration.test {
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = false))
 
       parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
       // Style propagation through hierarchy is async so yield to run loop for any posted work.
       NSRunLoop.currentRunLoop.runUntilDate(NSDate())
 
-      assertThat(awaitItem()).isEqualTo(HostConfiguration(darkMode = true))
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = true))
     }
   }
 
-  @Test fun hostConfigurationReflectsInitialSafeAreaInsets() = runTest {
+  @Test fun uiConfigurationReflectsInitialSafeAreaInsets() = runTest {
     val parent = UIWindow()
 
     // We can't override this value so test that they match.
@@ -128,8 +128,8 @@ class TreehouseUIKitViewTest {
     val layout = TreehouseUIKitView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertThat(layout.hostConfiguration.value)
-      .isEqualTo(HostConfiguration(safeAreaInsets = expectedInsets))
+    assertThat(layout.uiConfiguration.value)
+      .isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
   }
 
   private fun viewWidget(view: UIView) = object : Widget<UIView> {

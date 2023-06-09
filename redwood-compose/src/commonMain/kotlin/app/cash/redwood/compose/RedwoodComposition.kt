@@ -20,42 +20,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.DisallowComposableCalls
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.currentComposer
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-/**
- * Render a Redwood composition inside of a different composition such as Compose UI.
- */
-@Composable
-public fun RedwoodContent(
-  provider: Widget.Provider<@Composable () -> Unit>,
-  content: @Composable () -> Unit,
-) {
-  val scope = rememberCoroutineScope()
-  val children = remember(provider, content) { ComposeWidgetChildren() }
-  LaunchedEffect(provider, content) {
-    val composition = RedwoodComposition(
-      scope = scope,
-      container = children,
-      provider = provider,
-    )
-    composition.setContent(content)
-  }
-  children.render()
-}
 
 public interface RedwoodComposition {
   public fun setContent(content: @Composable () -> Unit)
