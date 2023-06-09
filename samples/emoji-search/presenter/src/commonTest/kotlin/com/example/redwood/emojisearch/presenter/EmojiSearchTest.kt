@@ -20,9 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.redwood.testing.flatten
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.widget.ColumnValue
+import app.cash.redwood.testing.flatten
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import com.example.redwood.emojisearch.compose.Text

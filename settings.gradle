@@ -1,4 +1,6 @@
 pluginManagement {
+  includeBuild('build-support/settings')
+
   repositories {
     mavenCentral()
     google()
@@ -8,6 +10,7 @@ pluginManagement {
 
 plugins {
   id "com.gradle.enterprise" version "3.13.3"
+  id 'app.cash.redwood.settings'
 }
 
 dependencyResolutionManagement {

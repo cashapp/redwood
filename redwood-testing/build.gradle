@@ -3,7 +3,6 @@ import app.cash.redwood.buildsupport.KmpTargets
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.android.library'
-apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   composeCompiler()

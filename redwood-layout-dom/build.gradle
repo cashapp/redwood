@@ -1,5 +1,4 @@
 apply plugin: 'org.jetbrains.kotlin.js'
-apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   publishing()
