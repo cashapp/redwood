@@ -41,7 +41,7 @@ class IosHostApi : HostApi {
     }
     
     func openUrl(url: String) {
-        // TODO: Add navigate to browser on device to open the given URL
+        // TODO: Add logic to navigate to the browser app and open the given URL
     }
 
     func close() {
