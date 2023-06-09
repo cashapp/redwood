@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
+import androidx.compose.foundation.clickable
 import coil.compose.AsyncImage
 import com.example.redwood.emojisearch.widget.Image
 
@@ -36,7 +37,9 @@ internal class ComposeUiImage : Image<@Composable () -> Unit> {
     AsyncImage(
       model = url,
       contentDescription = null,
-      modifier = Modifier.size(48.dp)
+      modifier = Modifier
+        .size(48.dp)
+        .clickable(onClick = onClick),
     )
   }
 
