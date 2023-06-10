@@ -24,9 +24,16 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 
+private const val redwoodGroupId = "app.cash.redwood"
+// HEY! If you change the major version update release.yaml doc folder.
+private const val redwoodVersion = "0.5.0-SNAPSHOT"
+
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
   override fun apply(target: Project) {
+    target.group = redwoodGroupId
+    target.version = redwoodVersion
+
     val libs = target.extensions.getByName("libs") as LibrariesForLibs
 
     target.extensions.add(
@@ -95,6 +102,37 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       publishToMavenCentral(SonatypeHost.DEFAULT, automaticRelease = true)
       if (project.providers.systemProperty("RELEASE_SIGNING_ENABLED").getOrElse("true").toBoolean()) {
         signAllPublications()
+      }
+
+      coordinates(redwoodGroupId, project.name, redwoodVersion)
+
+      pom { pom ->
+        pom.name.set(project.name)
+        pom.description.set("Multiplatform reactive UI using Kotlin and Jetpack Compose")
+        pom.inceptionYear.set("2020")
+        pom.url.set("https://github.com/cashapp/redwood/")
+
+        pom.licenses {
+          it.license { license ->
+            license.name.set("Apache-2.0")
+            license.url.set("https://www.apache.org/licenses/LICENSE-2.0")
+            license.distribution.set("repo")
+          }
+        }
+
+        pom.developers {
+          it.developer { developer ->
+            developer.id.set("cashapp")
+            developer.name.set("CashApp")
+            developer.url.set("https://github.com/cashapp")
+          }
+        }
+
+        pom.scm { scm ->
+          scm.url.set("https://github.com/cashapp/redwood/")
+          scm.connection.set("scm:git:git://github.com/cashapp/redwood.git")
+          scm.developerConnection.set("scm:git:ssh://git@github.com/cashapp/redwood.git")
+        }
       }
     }
 

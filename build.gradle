@@ -28,9 +28,6 @@ buildscript {
 apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
-  group = project.property("GROUP") as String
-  version = project.property("VERSION_NAME") as String
-
   tasks.withType(AbstractTestTask).configureEach {
     testLogging {
       if (System.getenv("CI") == "true") {
