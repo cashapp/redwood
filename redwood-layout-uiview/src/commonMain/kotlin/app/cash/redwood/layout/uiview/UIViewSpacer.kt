@@ -21,15 +21,16 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
-import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
 internal class UIViewSpacer : Spacer<UIView> {
   private var width = 0.0
   private var height = 0.0
 
-  private val view = SpacerHostView()
+  private val view = UIView(cValue { CGRectZero })
 
   override val value: UIView get() = view
 
@@ -46,11 +47,9 @@ internal class UIViewSpacer : Spacer<UIView> {
   }
 
   private fun invalidate() {
-    view.invalidateIntrinsicContentSize()
-    view.superview?.setNeedsLayout()
-  }
-
-  private inner class SpacerHostView : UIView(cValue { CGRectZero }) {
-    override fun intrinsicContentSize() = CGSizeMake(width, height)
+    val newBounds = view.bounds.useContents {
+      CGRectMake(origin.x, origin.y, width, height)
+    }
+    view.setBounds(newBounds)
   }
 }

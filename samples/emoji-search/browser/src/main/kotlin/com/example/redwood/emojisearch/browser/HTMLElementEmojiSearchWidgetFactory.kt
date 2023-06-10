@@ -26,6 +26,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.events.MouseEvent
 
 class HTMLElementEmojiSearchWidgetFactory(private val document: Document) : EmojiSearchWidgetFactory<HTMLElement> {
   override fun TextInput(): TextInput<HTMLElement> = HtmlTextInput(document.createElement("input") as HTMLInputElement)
@@ -99,8 +100,11 @@ private class HtmlImage(
   override val value: HTMLImageElement,
 ) : Image<HTMLElement> {
   override var modifier: Modifier = Modifier
-
   override fun url(url: String) {
     value.src = url
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.onclick = { onClick?.invoke() }
   }
 }

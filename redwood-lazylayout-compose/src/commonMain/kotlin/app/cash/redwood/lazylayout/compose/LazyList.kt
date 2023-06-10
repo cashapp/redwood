@@ -34,7 +34,7 @@ internal fun LazyList(
   isVertical: Boolean,
   width: Constraint,
   height: Constraint,
-  modifier: Modifier = Modifier,
+  modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
@@ -75,11 +75,11 @@ internal fun LazyList(
 @Composable
 internal fun RefreshableLazyList(
   isVertical: Boolean,
-  refreshing: Boolean = false,
-  onRefresh: (() -> Unit)? = null,
+  refreshing: Boolean,
+  onRefresh: (() -> Unit)?,
   width: Constraint,
   height: Constraint,
-  modifier: Modifier = Modifier,
+  modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
