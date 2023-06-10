@@ -3,15 +3,13 @@ $dokka.linkExtension:html
 
 module:redwood-compose
 app.cash.redwood.compose
-module:redwood-compose-testing
-app.cash.redwood.compose.testing
+module:redwood-composeui
+app.cash.redwood.composeui
 module:redwood-flexbox
 app.cash.redwood.flexbox
 module:redwood-gradle-plugin
 app.cash.redwood.gradle
 module:redwood-layout-api
-app.cash.redwood.layout.api
-module:redwood-layout-api-density
 app.cash.redwood.layout.api
 module:redwood-layout-compose
 app.cash.redwood.layout.compose
@@ -19,7 +17,7 @@ module:redwood-layout-composeui
 app.cash.redwood.layout.composeui
 module:redwood-layout-dom
 app.cash.redwood.layout.dom
-module:redwood-layout-layoutmodifiers
+module:redwood-layout-modifiers
 app.cash.redwood.layout.modifier
 module:redwood-layout-schema
 app.cash.redwood.layout
@@ -53,8 +51,11 @@ module:redwood-protocol-widget
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
+app.cash.redwood.ui
 module:redwood-schema
 app.cash.redwood.schema
+module:redwood-testing
+app.cash.redwood.testing
 module:redwood-tooling-codegen
 app.cash.redwood.tooling.codegen
 module:redwood-tooling-lint
@@ -67,8 +68,6 @@ module:redwood-treehouse-composeui
 app.cash.redwood.treehouse.composeui
 module:redwood-treehouse-composeui-insets
 app.cash.redwood.treehouse.composeui
-module:redwood-treehouse-configuration
-app.cash.redwood.treehouse
 module:redwood-treehouse-guest
 app.cash.redwood.treehouse
 module:redwood-treehouse-guest-compose

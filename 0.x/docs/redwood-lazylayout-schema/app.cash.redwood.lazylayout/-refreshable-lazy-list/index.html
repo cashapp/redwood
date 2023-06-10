@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RefreshableLazyList</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>redwood</span>            </a>    </div>
+    <div>0.4.0
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":redwood-lazylayout-schema:dokkaHtmlPartial/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-lazylayout-schema::app.cash.redwood.lazylayout/RefreshableLazyList///PointingToDeclaration//-2073777383">
+  <div class="breadcrumbs"><a href="../../index.html">redwood-lazylayout-schema</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.lazylayout</a><span class="delimiter">/</span><span class="current">RefreshableLazyList</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Refreshable</span><wbr><span>Lazy</span><wbr><span><span>List</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">RefreshableLazyList</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>isVertical<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>onViewportChanged<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>firstVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>lastVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>itemsBefore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>itemsAfter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>refreshing<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>onRefresh<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>height<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>placeholder<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>items<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1866497061%2FConstructors%2F-2073777383" anchor-label="RefreshableLazyList" id="1866497061%2FConstructors%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-refreshable-lazy-list.html"><span>Refreshable</span><wbr><span>Lazy</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1866497061%2FConstructors%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isVertical<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">onViewportChanged<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>firstVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>lastVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">itemsBefore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">itemsAfter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">refreshing<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">onRefresh<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">width<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a><span class="token punctuation">, </span></span><span class="parameter ">placeholder<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">items<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1797060187%2FProperties%2F-2073777383" anchor-label="height" id="1797060187%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="height.html"><span><span>height</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1797060187%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="height.html">height</a><span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2027860894%2FProperties%2F-2073777383" anchor-label="isVertical" id="-2027860894%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-vertical.html"><span>is</span><wbr><span><span>Vertical</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2027860894%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="is-vertical.html">isVertical</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1159755400%2FProperties%2F-2073777383" anchor-label="items" id="-1159755400%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items.html"><span><span>items</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1159755400%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="items.html">items</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-902319962%2FProperties%2F-2073777383" anchor-label="itemsAfter" id="-902319962%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items-after.html"><span>items</span><wbr><span><span>After</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-902319962%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="items-after.html">itemsAfter</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-96541063%2FProperties%2F-2073777383" anchor-label="itemsBefore" id="-96541063%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items-before.html"><span>items</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-96541063%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="items-before.html">itemsBefore</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="478192444%2FProperties%2F-2073777383" anchor-label="onRefresh" id="478192444%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-refresh.html"><span>on</span><wbr><span><span>Refresh</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="478192444%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="on-refresh.html">onRefresh</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1505064009%2FProperties%2F-2073777383" anchor-label="onViewportChanged" id="1505064009%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-viewport-changed.html"><span>on</span><wbr><span>Viewport</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1505064009%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="on-viewport-changed.html">onViewportChanged</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>firstVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>lastVisibleItemIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1900059931%2FProperties%2F-2073777383" anchor-label="placeholder" id="-1900059931%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="placeholder.html"><span><span>placeholder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1900059931%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="placeholder.html">placeholder</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-538379813%2FProperties%2F-2073777383" anchor-label="refreshing" id="-538379813%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="refreshing.html"><span><span>refreshing</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-538379813%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="refreshing.html">refreshing</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1980631502%2FProperties%2F-2073777383" anchor-label="width" id="-1980631502%2FProperties%2F-2073777383" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-schema:dokkaHtmlPartial/main" data-filterable-set=":redwood-lazylayout-schema:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="width.html"><span><span>width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1980631502%2FProperties%2F-2073777383"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-schema:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="width.html">width</a><span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
