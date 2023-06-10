@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Button
 import kotlinx.cinterop.ObjCAction
 import platform.UIKit.UIButton
+import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventTouchUpInside
 import platform.UIKit.UIControlStateNormal
 import platform.UIKit.UIView
@@ -26,7 +27,9 @@ import platform.objc.sel_registerName
 
 // NOTE: This class must be public for the click selector to work.
 class IosButton : Button<UIView> {
-  override val value = UIButton()
+  override val value = UIButton().apply {
+    backgroundColor = UIColor.grayColor
+  }
 
   override var modifier: Modifier = Modifier
 
@@ -42,7 +45,7 @@ class IosButton : Button<UIView> {
 
   @ObjCAction
   fun clicked() {
-    onClick!!.invoke()
+    onClick?.invoke()
   }
 
   private var onClick: (() -> Unit)? = null
