@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.compose.Column
@@ -43,8 +44,14 @@ private data class EmojiImage(
 )
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
+@Suppress("FUN_INTERFACE_WITH_SUSPEND_FUNCTION") // https://youtrack.jetbrains.com/issue/KTIJ-7642
 fun interface HttpClient {
   suspend fun call(url: String, headers: Map<String, String>): String
+}
+
+interface Navigator {
+  /** Open a URL in the app that owns it. For example, a browser. */
+  fun openUrl(url: String)
 }
 
 /**
@@ -70,6 +77,7 @@ interface ColumnProvider {
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
+  navigator: Navigator,
   columnProvider: ColumnProvider,
 ) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
@@ -104,13 +112,15 @@ fun EmojiSearch(
 
   Column(
     width = Constraint.Fill,
+    height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = Margin(horizontal = 24.dp),
+    margin = LocalUiConfiguration.current.safeAreaInsets,
   ) {
     TextInput(
       state = searchTerm,
       hint = "Search",
       onChange = { searchTerm = it },
+      modifier = Modifier.shrink(0.0),
     )
     columnProvider.create(
       items = filteredEmojis,
@@ -121,28 +131,38 @@ fun EmojiSearch(
       modifier = Modifier.grow(1.0),
       placeholder = {
         Item(
-          EmojiImage(
-            label = "loading…",
-            url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
-          )
+          emojiImage = loadingEmojiImage,
+          onClick = {},
         )
       },
     ) { image ->
-      Item(image)
+      Item(
+        emojiImage = image,
+        onClick = {
+          navigator.openUrl(image.url)
+        },
+      )
     }
   }
 }
 
 @Composable
-private fun Item(emojiImage: EmojiImage) {
+private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
   Row(
     width = Constraint.Fill,
     verticalAlignment = CrossAxisAlignment.Center,
   ) {
     Image(
       url = emojiImage.url,
-      modifier = Modifier.margin(Margin(8.dp)),
+      modifier = Modifier
+        .margin(Margin(8.dp)),
+      onClick = onClick,
     )
     Text(text = emojiImage.label)
   }
 }
+
+private val loadingEmojiImage = EmojiImage(
+  label = "loading…",
+  url = "https://github.githubassets.com/images/icons/emoji/unicode/231a.png?v8",
+)

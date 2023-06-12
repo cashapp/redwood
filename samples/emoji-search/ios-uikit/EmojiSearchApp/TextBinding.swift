@@ -29,5 +29,9 @@ class TextBinding: Text {
 
     func text(text: String) {
         root.text = text
+
+        // This very simple integration wraps the size of whatever text is entered. Calling
+        // this function will update the bounds and trigger relayout in the parent.
+        root.sizeToFit()
     }
 }
