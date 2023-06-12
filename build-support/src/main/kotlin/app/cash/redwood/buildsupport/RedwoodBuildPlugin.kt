@@ -23,6 +23,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 
 private const val redwoodGroupId = "app.cash.redwood"
 // HEY! If you change the major version update release.yaml doc folder.
@@ -160,6 +161,19 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     // Build an exploded application directory by default for local testing.
     project.tasks.named("assemble").configure { task ->
       task.dependsOn(project.tasks.named("installDist"))
+    }
+
+    // If this module is also being published, attach the bundled application zip so that we get
+    // free versioned hosting from Maven Central.
+    project.plugins.withId("maven-publish") {
+      val publishing = project.extensions.getByName("publishing") as PublishingExtension
+      publishing.publications.withType(MavenPublication::class.java).configureEach { publication ->
+        publication.artifact(project.tasks.named("distZip")) {
+          // We must specify a classifier or else the pom's packaging value will change to
+          // no longer reflect the primary build artifact.
+          it.classifier = "cli"
+        }
+      }
     }
   }
 }
