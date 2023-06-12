@@ -35,6 +35,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun shortRow() {
     val container = flexContainer(FlexDirection.Row)
+    container.alignItems(AlignItems.FlexStart)
     movies.take(5).forEach { movie ->
       container.add(widget(movie))
     }
@@ -43,6 +44,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun shortColumn() {
     val container = flexContainer(FlexDirection.Column)
+    container.alignItems(AlignItems.FlexStart)
     movies.take(5).forEach { movie ->
       container.add(widget(movie))
     }
@@ -51,6 +53,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun longRow() {
     val container = flexContainer(FlexDirection.Row)
+    container.alignItems(AlignItems.FlexStart)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -59,6 +62,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun longColumn() {
     val container = flexContainer(FlexDirection.Column)
+    container.alignItems(AlignItems.FlexStart)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -84,6 +88,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
     container.justifyContent(JustifyContent.Center)
     movies.forEach { movie ->
       container.add(widget(movie))
@@ -95,6 +100,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
     container.justifyContent(JustifyContent.SpaceBetween)
     movies.forEach { movie ->
       container.add(widget(movie))
@@ -106,6 +112,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
     container.justifyContent(JustifyContent.SpaceAround)
     movies.forEach { movie ->
       container.add(widget(movie))
