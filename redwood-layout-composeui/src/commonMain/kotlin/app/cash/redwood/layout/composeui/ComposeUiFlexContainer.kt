@@ -16,6 +16,8 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -30,11 +32,6 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -44,40 +41,38 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.Node
+import app.cash.redwood.yoga.Size
+import app.cash.redwood.yoga.isHorizontal
 
 internal class ComposeUiFlexContainer(
   private val direction: FlexDirection,
 ) : Row<@Composable () -> Unit>, Column<@Composable () -> Unit> {
-  private val container = FlexContainer().apply {
+  private val rootNode = Node().apply {
     flexDirection = direction
-    roundToInt = true
   }
-
   override val children = ComposeWidgetChildren()
-
   override var modifier: RedwoodModifier = RedwoodModifier
 
   private var recomposeTick by mutableStateOf(0)
+  private var width by mutableStateOf(Constraint.Wrap)
+  private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
-
   private var density = Density(1.0)
-  private var marginUpdated = false
-
-  private var composeUiModifier: Modifier by mutableStateOf(Modifier)
 
   override fun width(width: Constraint) {
-    container.fillWidth = width == Constraint.Fill
-    invalidate()
+    this.width = width
   }
 
   override fun height(height: Constraint) {
-    container.fillHeight = height == Constraint.Fill
-    invalidate()
+    this.height = height
   }
 
   override fun margin(margin: Margin) {
-    this.marginUpdated = true
     this.margin = margin
   }
 
@@ -86,28 +81,28 @@ internal class ComposeUiFlexContainer(
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContentOld())
+    justifyContent(horizontalAlignment.toJustifyContent())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItemsOld())
+    alignItems(horizontalAlignment.toAlignItems())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContentOld())
+    justifyContent(verticalAlignment.toJustifyContent())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItemsOld())
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   fun alignItems(alignItems: AlignItems) {
-    container.alignItems = alignItems
+    rootNode.alignItems = alignItems
     invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    container.justifyContent = justifyContent
+    rootNode.justifyContent = justifyContent
     invalidate()
   }
 
@@ -121,30 +116,41 @@ internal class ComposeUiFlexContainer(
         // Observe this so we can manually trigger recomposition.
         recomposeTick
 
-        // Read the density for use in 'measure'.
-        updateDensity(Density(LocalDensity.current.density.toDouble()))
+        // Apply the margin.
+        density = Density(LocalDensity.current.density.toDouble())
+        with(rootNode) {
+          with(density) {
+            marginStart = margin.start.toPx().toFloat()
+            marginEnd = margin.end.toPx().toFloat()
+            marginTop = margin.top.toPx().toFloat()
+            marginBottom = margin.bottom.toPx().toFloat()
+          }
+        }
 
         children.render()
       },
-      modifier = if (overflow == Overflow.Scroll) {
-        if (direction.isHorizontal) {
-          composeUiModifier.horizontalScroll(rememberScrollState())
-        } else {
-          composeUiModifier.verticalScroll(rememberScrollState())
-        }
-      } else {
-        composeUiModifier
-      },
+      modifier = computeModifier(),
       measurePolicy = ::measure,
     )
   }
 
-  private fun updateDensity(density: Density) {
-    if (density != this.density || marginUpdated) {
-      this.density = density
-      this.marginUpdated = false
-      container.margin = margin.toSpacing(density)
+  @Composable
+  private fun computeModifier(): Modifier {
+    var modifier: Modifier = Modifier
+    if (width == Constraint.Fill) {
+      modifier = modifier.fillMaxWidth()
     }
+    if (height == Constraint.Fill) {
+      modifier = modifier.fillMaxHeight()
+    }
+    if (overflow == Overflow.Scroll) {
+      if (direction.isHorizontal) {
+        modifier = modifier.horizontalScroll(rememberScrollState())
+      } else {
+        modifier = modifier.verticalScroll(rememberScrollState())
+      }
+    }
+    return modifier
   }
 
   private fun measure(
@@ -154,26 +160,33 @@ internal class ComposeUiFlexContainer(
   ): MeasureResult = with(scope) {
     syncItems(measurables)
 
-    val (widthSpec, heightSpec) = constraints.toMeasureSpecs()
-    val (width, height) = container.measure(widthSpec, heightSpec)
+    val constrainedWidth = if (constraints.hasFixedWidth) {
+      constraints.maxWidth.toFloat()
+    } else {
+      Size.Undefined
+    }
+    val constrainedHeight = if (constraints.hasFixedHeight) {
+      constraints.maxHeight.toFloat()
+    } else {
+      Size.Undefined
+    }
+    rootNode.measure(constrainedWidth, constrainedHeight)
 
-    return layout(width.toInt(), height.toInt()) {
-      for (item in container.items) {
-        val placeable = (item.measurable as ComposeMeasurable).placeable
-        placeable.place(item.left.toInt(), item.top.toInt())
+    return layout(rootNode.width.toInt(), rootNode.height.toInt()) {
+      for (node in rootNode.children) {
+        val placeable = (node.measureCallback as ComposeMeasureCallback).placeable
+        placeable.place(node.left.toInt(), node.top.toInt())
       }
     }
   }
 
   private fun syncItems(measurables: List<Measurable>) {
-    container.items.clear()
+    rootNode.children.clear()
     measurables.forEachIndexed { index, measurable ->
-      container.items += newFlexItem(
-        direction = direction,
-        density = density,
-        modifier = children.widgets[index].modifier,
-        measurable = ComposeMeasurable(measurable),
-      )
+      val childNode = Node()
+      rootNode.children += childNode
+      childNode.measureCallback = ComposeMeasureCallback(measurable)
+      childNode.applyModifier(children.widgets[index].modifier, density)
     }
   }
 }

@@ -16,11 +16,11 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.yoga.FlexDirection
 
 public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
   override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
