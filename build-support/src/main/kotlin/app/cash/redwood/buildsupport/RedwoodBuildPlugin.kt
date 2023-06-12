@@ -25,6 +25,7 @@ import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 
 private const val redwoodGroupId = "app.cash.redwood"
+
 // HEY! If you change the major version update release.yaml doc folder.
 private const val redwoodVersion = "0.5.0-SNAPSHOT"
 
@@ -44,13 +45,30 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     target.plugins.apply("com.diffplug.spotless")
     val spotless = target.extensions.getByName("spotless") as SpotlessExtension
+    val licenseHeaderFile = target.rootProject.file("gradle/license-header.txt")
     spotless.apply {
+      // The nested build-support Gradle project contains Java sources. Use our root project to
+      // target its sources rather than duplicating the Spotless setup in multiple places.
+      if (target.path == ":") {
+        java {
+          it.target("build-support/settings/src/**/*.java")
+          it.googleJavaFormat(libs.googleJavaFormat.get().version)
+          it.licenseHeaderFile(licenseHeaderFile)
+        }
+      }
+
       kotlin {
-        it.target("src/*/kotlin/**/*.kt")
+        // The nested build-support Gradle project contains Kotlin sources. Use our root project to
+        // target its sources rather than duplicating the Spotless setup in multiple places.
+        if (target.path == ":") {
+          it.target("build-support/src/**/*.kt")
+        } else {
+          it.target("src/*/kotlin/**/*.kt")
+        }
         it.ktlint(libs.ktlint.get().version).editorConfigOverride(
           mapOf("ktlint_standard_filename" to "disabled"),
         )
-        it.licenseHeaderFile(target.rootProject.file("gradle/license-header.txt"))
+        it.licenseHeaderFile(licenseHeaderFile)
       }
     }
   }

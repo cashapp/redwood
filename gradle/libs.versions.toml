@@ -72,5 +72,6 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-core = { module = "io.coil-kt:coil", version.ref = "coil" }
 turbine = "app.cash.turbine:turbine:0.13.0"
 ktlint = "com.pinterest:ktlint:0.49.1"
+googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.17.0"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }

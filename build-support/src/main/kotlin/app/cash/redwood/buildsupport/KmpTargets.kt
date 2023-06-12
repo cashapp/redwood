@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:JvmName("KmpTargets")
+
 package app.cash.redwood.buildsupport
 
 import org.gradle.api.Project
@@ -85,4 +86,3 @@ fun addAllTargets(project: Project, skipJs: Boolean = false) {
     }
   }
 }
-

@@ -164,3 +164,14 @@ allprojects {
     }
   }
 }
+
+afterEvaluate {
+  spotless {
+    kotlin {
+      targetExclude(
+        // Apache 2-licensed files from AOSP.
+        "build-support/src/main/resources/app/cash/redwood/buildsupport/composeHelpers.kt",
+      )
+    }
+  }
+}

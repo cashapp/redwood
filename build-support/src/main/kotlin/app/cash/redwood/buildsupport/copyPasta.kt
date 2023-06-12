@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package app.cash.redwood.buildsupport
 
 import java.nio.charset.StandardCharsets.UTF_8
@@ -58,7 +57,7 @@ abstract class CopyPastaTask @Inject constructor(layout: ProjectLayout) : Defaul
     outputDirectory.convention(
       layout.buildDirectory.zip(fileName) { buildDir, fileName ->
         buildDir.dir("generated").dir("source").dir(fileName)
-      }
+      },
     )
   }
 
