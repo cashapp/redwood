@@ -10,6 +10,7 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
+import androidx.collection.SimpleArrayMap
 import app.cash.redwood.yoga.MeasureCallback
 import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
@@ -17,7 +18,7 @@ import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
 
 internal class YogaLayout(context: Context) : ViewGroup(context) {
-  private val nodes = mutableMapOf<View, Node>()
+  private val nodes = SimpleArrayMap<View, Node>()
   val rootNode = Node()
 
   var applyModifier: (Node, Int) -> Unit = { _, _ -> }
@@ -34,7 +35,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     super.addView(child, index, params)
 
     val childNode = child.asNode()
-    nodes[child] = childNode
+    nodes.put(child, childNode)
     rootNode.children += childNode
   }
 
@@ -84,11 +85,9 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   private fun removeViewFromYogaTree(view: View) {
-    val childNode = nodes[view] ?: return
+    val childNode = nodes.remove(view) ?: return
     val owner = childNode.owner ?: return
-
     owner.children -= childNode
-    nodes -= view
   }
 
   private fun applyLayoutRecursive(node: Node, xOffset: Float, yOffset: Float) {
