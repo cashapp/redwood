@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   composeCompiler()

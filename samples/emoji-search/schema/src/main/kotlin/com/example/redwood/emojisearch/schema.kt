@@ -16,12 +16,12 @@
 package com.example.redwood.emojisearch
 
 import app.cash.redwood.layout.RedwoodLayout
+import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import example.values.TextFieldState
 
 @Schema(

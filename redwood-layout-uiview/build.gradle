@@ -1,7 +1,6 @@
 import app.cash.redwood.buildsupport.FlexboxHelpers
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.build'
 
 redwoodBuild {
   publishing()
