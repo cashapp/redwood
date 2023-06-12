@@ -44,16 +44,7 @@ import platform.darwin.NSObject
 
 private const val reuseIdentifier = "cell"
 
-/**
- * Public function to allow downstream factories to create their own ViewLazyList
- */
-public fun UIViewLazyList(): LazyList<UIView> = UIViewLazyListImpl()
-
-public fun UIViewRefreshableLazyList(
-  refreshControlFactory: () -> UIRefreshControl,
-): RefreshableLazyList<UIView> = UIViewRefreshableLazyListImpl(refreshControlFactory)
-
-internal open class UIViewLazyListImpl() : LazyList<UIView> {
+internal open class UIViewLazyList() : LazyList<UIView> {
 
   private val itemsList = mutableListOf<Widget<UIView>>()
 
@@ -155,14 +146,12 @@ internal open class UIViewLazyListImpl() : LazyList<UIView> {
   override val value: UIView get() = tableView
 }
 
-internal class UIViewRefreshableLazyListImpl(
-  private val refreshControlFactory: () -> UIRefreshControl,
-) : UIViewLazyListImpl(), RefreshableLazyList<UIView> {
+internal class UIViewRefreshableLazyList : UIViewLazyList(), RefreshableLazyList<UIView> {
 
   private var onRefresh: (() -> Unit)? = null
 
   private val refreshControl by lazy {
-    refreshControlFactory().apply {
+    UIRefreshControl().apply {
       setEventHandler(UIControlEventValueChanged) {
         onRefresh?.invoke()
       }
