@@ -107,7 +107,7 @@ internal class MeasureCallbackCompat(val callback: MeasureCallback) : YGMeasureF
     width = width,
     widthMode = widthMode.toYoga(),
     height = height,
-    heightMode = heightMode.toYoga()
+    heightMode = heightMode.toYoga(),
   ).toYoga()
 }
 
