@@ -12,6 +12,7 @@ redwoodBuild {
 dependencies {
   api projects.redwoodLayoutWidget
   implementation projects.redwoodFlexbox
+  implementation projects.redwoodYoga
   implementation libs.androidx.core
   testImplementation projects.redwoodLayoutSharedTest
 }
@@ -24,5 +25,14 @@ android {
   //  https://issuetracker.google.com/issues/249468390
   libraryVariants.all { variant ->
     variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
+  }
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // MIT-licensed files from Meta.
+      "src/main/kotlin/app/cash/redwood/layout/view/YogaLayout.kt",
+    )
   }
 }

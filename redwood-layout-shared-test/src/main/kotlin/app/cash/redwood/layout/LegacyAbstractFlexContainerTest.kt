@@ -16,6 +16,9 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.flexbox.AlignItems
+import app.cash.redwood.flexbox.FlexDirection
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.HorizontalAlignment
@@ -23,15 +26,12 @@ import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.yoga.AlignItems
-import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import org.junit.Test
 
-abstract class AbstractFlexContainerTest<T : Any> {
-  abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
+abstract class LegacyAbstractFlexContainerTest<T : Any> {
+  abstract fun flexContainer(direction: FlexDirection): LegacyTestFlexContainer<T>
   abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
-  abstract fun verifySnapshot(container: TestFlexContainer<T>)
+  abstract fun verifySnapshot(container: LegacyTestFlexContainer<T>)
 
   @Test fun shortRow() {
     val container = flexContainer(FlexDirection.Row)
@@ -74,10 +74,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.margin(Margin(horizontal = 10.dp, vertical = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
-        0 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Start)
-        1 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Center)
-        2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
-        else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
+        0 -> LegacyCrossAxisAlignmentImpl(CrossAxisAlignment.Start)
+        1 -> LegacyCrossAxisAlignmentImpl(CrossAxisAlignment.Center)
+        2 -> LegacyCrossAxisAlignmentImpl(CrossAxisAlignment.End)
+        else -> LegacyCrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
       }
       container.add(widget(movie, modifier))
     }
@@ -121,7 +121,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 }
 
-interface TestFlexContainer<T : Any> {
+interface LegacyTestFlexContainer<T : Any> {
   val value: T
   fun width(constraint: Constraint)
   fun height(constraint: Constraint)
@@ -154,6 +154,6 @@ private val movies = listOf(
   "Seven Samurai",
 )
 
-private data class CrossAxisAlignmentImpl(
+private data class LegacyCrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment, VerticalAlignment

@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
   api projects.redwoodFlexbox
+  api projects.redwoodYoga
   api projects.redwoodLayoutApi
   api projects.redwoodLayoutModifiers
   api projects.redwoodRuntime

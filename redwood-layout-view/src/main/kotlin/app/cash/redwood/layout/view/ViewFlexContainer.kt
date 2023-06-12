@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +22,6 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.MeasureSpec as RedwoodMeasureSpec
-import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -38,47 +31,64 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.isHorizontal
 
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : Row<View>, Column<View> {
-  private val container = FlexContainer().apply {
-    flexDirection = direction
-    roundToInt = true
-  }
+  private val yogaLayout = YogaLayout(context)
   private val density = Density(context.resources)
 
-  private val hostView = HostView(context)
+  private val hostView = HostView()
+  override val value: View get() = hostView
 
-  private val _value = Container()
-  override val value: View = _value
-
-  override val children = ViewGroupChildren(hostView)
+  override val children = ViewGroupChildren(yogaLayout)
 
   override var modifier: Modifier = Modifier
 
-  private var scrollEnabled = false
+  private var width = Constraint.Wrap
+  private var height = Constraint.Wrap
+
+  init {
+    yogaLayout.rootNode.flexDirection = direction
+    yogaLayout.applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, density)
+    }
+  }
 
   override fun width(width: Constraint) {
-    container.fillWidth = width == Constraint.Fill
-    requestLayout()
+    this.width = width
+    invalidate()
   }
 
   override fun height(height: Constraint) {
-    container.fillHeight = height == Constraint.Fill
-    requestLayout()
+    this.height = height
+    invalidate()
   }
 
   override fun margin(margin: Margin) {
-    container.margin = margin.toSpacing(density)
-    requestLayout()
+    with(yogaLayout.rootNode) {
+      with(density) {
+        marginStart = margin.start.toPx().toFloat()
+        marginEnd = margin.end.toPx().toFloat()
+        marginTop = margin.top.toPx().toFloat()
+        marginBottom = margin.bottom.toPx().toFloat()
+      }
+    }
+    invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-    val oldScrollEnabled = scrollEnabled
-    scrollEnabled = overflow == Overflow.Scroll
-    requestLayout(overflowChanged = oldScrollEnabled != scrollEnabled)
+    hostView.scrollEnabled = when (overflow) {
+      Overflow.Clip -> false
+      Overflow.Scroll -> true
+      else -> throw AssertionError()
+    }
+    invalidate()
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -98,38 +108,45 @@ internal class ViewFlexContainer(
   }
 
   fun alignItems(alignItems: AlignItems) {
-    container.alignItems = alignItems
-    requestLayout()
+    yogaLayout.rootNode.alignItems = alignItems
+    invalidate()
   }
 
   fun justifyContent(justifyContent: JustifyContent) {
-    container.justifyContent = justifyContent
-    requestLayout()
+    yogaLayout.rootNode.justifyContent = justifyContent
+    invalidate()
   }
 
-  private fun requestLayout(overflowChanged: Boolean = false) {
-    if (overflowChanged) {
-      _value.updateViewHierarchy()
-    }
-    value.requestLayout()
+  private fun invalidate() {
+    hostView.invalidate()
+    hostView.requestLayout()
   }
 
-  private inner class Container : FrameLayout(context) {
+  private inner class HostView : FrameLayout(context) {
+    var scrollEnabled = false
+      set(new) {
+        val old = field
+        field = new
+        if (old != new) {
+          updateViewHierarchy()
+        }
+      }
+
     init {
       updateViewHierarchy()
     }
 
-    fun updateViewHierarchy() {
+    private fun updateViewHierarchy() {
       removeAllViews()
-      hostView.parent?.let { (it as ViewGroup).removeView(hostView) }
+      (yogaLayout.parent as ViewGroup?)?.removeView(yogaLayout)
+
       if (scrollEnabled) {
-        addView(newScrollView().apply { addView(hostView) })
+        addView(newScrollView().apply { addView(yogaLayout) })
       } else {
-        addView(hostView)
+        addView(yogaLayout)
       }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun newScrollView(): ViewGroup {
       return if (direction.isHorizontal) {
         HorizontalScrollView(context).apply {
@@ -142,35 +159,6 @@ internal class ViewFlexContainer(
       }.apply {
         isHorizontalScrollBarEnabled = false
         isVerticalScrollBarEnabled = false
-      }
-    }
-  }
-
-  private inner class HostView(context: Context) : ViewGroup(context) {
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-      syncItems()
-      val widthSpec = RedwoodMeasureSpec.fromAndroid(widthMeasureSpec)
-      val heightSpec = RedwoodMeasureSpec.fromAndroid(heightMeasureSpec)
-      val (width, height) = container.measure(widthSpec, heightSpec)
-      setMeasuredDimension(width.toInt(), height.toInt())
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-      for (item in container.items) {
-        val view = (item.measurable as ViewMeasurable).view
-        view.layout(item.left.toInt(), item.top.toInt(), item.right.toInt(), item.bottom.toInt())
-      }
-    }
-
-    private fun syncItems() {
-      container.items.clear()
-      children.widgets.forEach { widget ->
-        container.items += newFlexItem(
-          direction = direction,
-          density = density,
-          modifier = widget.modifier,
-          measurable = ViewMeasurable(widget.value),
-        )
       }
     }
   }

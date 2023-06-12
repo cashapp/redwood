@@ -16,15 +16,6 @@
 package com.example
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.FlexItem
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
-import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Measurable
-import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal
 import app.cash.redwood.flexbox.isVertical
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -36,6 +27,10 @@ import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.AlignSelf
+import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.Node
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -63,8 +58,59 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
+internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
+  parentModifier.forEach { childModifier ->
+    when (childModifier) {
+      is GrowModifier -> {
+        flexGrow = childModifier.value.toFloat()
+      }
+      is ShrinkModifier -> {
+        flexShrink = childModifier.value.toFloat()
+      }
+      is MarginModifier -> with(density) {
+        marginStart = childModifier.margin.start.toPx().toFloat()
+        marginEnd = childModifier.margin.end.toPx().toFloat()
+        marginTop = childModifier.margin.top.toPx().toFloat()
+        marginBottom = childModifier.margin.bottom.toPx().toFloat()
+      }
+      is HorizontalAlignmentModifier -> {
+        alignSelf = childModifier.alignment.toAlignSelf()
+      }
+      is VerticalAlignmentModifier -> {
+        alignSelf = childModifier.alignment.toAlignSelf()
+      }
+    }
+  }
+}
+
+internal fun MainAxisAlignment.toJustifyContentOld() = when (this) {
+  MainAxisAlignment.Start -> app.cash.redwood.flexbox.JustifyContent.FlexStart
+  MainAxisAlignment.Center -> app.cash.redwood.flexbox.JustifyContent.Center
+  MainAxisAlignment.End -> app.cash.redwood.flexbox.JustifyContent.FlexEnd
+  MainAxisAlignment.SpaceBetween -> app.cash.redwood.flexbox.JustifyContent.SpaceBetween
+  MainAxisAlignment.SpaceAround -> app.cash.redwood.flexbox.JustifyContent.SpaceAround
+  MainAxisAlignment.SpaceEvenly -> app.cash.redwood.flexbox.JustifyContent.SpaceEvenly
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignItemsOld() = when (this) {
+  CrossAxisAlignment.Start -> app.cash.redwood.flexbox.AlignItems.FlexStart
+  CrossAxisAlignment.Center -> app.cash.redwood.flexbox.AlignItems.Center
+  CrossAxisAlignment.End -> app.cash.redwood.flexbox.AlignItems.FlexEnd
+  CrossAxisAlignment.Stretch -> app.cash.redwood.flexbox.AlignItems.Stretch
+  else -> throw AssertionError()
+}
+
+internal fun CrossAxisAlignment.toAlignSelfOld() = when (this) {
+  CrossAxisAlignment.Start -> app.cash.redwood.flexbox.AlignSelf.FlexStart
+  CrossAxisAlignment.Center -> app.cash.redwood.flexbox.AlignSelf.Center
+  CrossAxisAlignment.End -> app.cash.redwood.flexbox.AlignSelf.FlexEnd
+  CrossAxisAlignment.Stretch -> app.cash.redwood.flexbox.AlignSelf.Stretch
+  else -> throw AssertionError()
+}
+
 internal fun Margin.toSpacing(density: Density) = with(density) {
-  Spacing(
+  app.cash.redwood.flexbox.Spacing(
     left = start.toPx(),
     right = end.toPx(),
     top = top.toPx(),
@@ -73,15 +119,15 @@ internal fun Margin.toSpacing(density: Density) = with(density) {
 }
 
 internal fun newFlexItem(
-  direction: FlexDirection,
+  direction: app.cash.redwood.flexbox.FlexDirection,
   density: Density,
   modifier: Modifier,
-  measurable: Measurable,
-): FlexItem {
-  var flexGrow = DefaultFlexGrow
-  var flexShrink = DefaultFlexShrink
-  var spacing = Spacing.Zero
-  var alignSelf = AlignSelf.Auto
+  measurable: app.cash.redwood.flexbox.Measurable,
+): app.cash.redwood.flexbox.FlexItem {
+  var flexGrow = app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
+  var flexShrink = app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
+  var spacing = app.cash.redwood.flexbox.Spacing.Zero
+  var alignSelf = app.cash.redwood.flexbox.AlignSelf.Auto
   modifier.forEach { m ->
     when (m) {
       is GrowModifier -> {
@@ -94,14 +140,14 @@ internal fun newFlexItem(
         spacing = m.margin.toSpacing(density)
       }
       is HorizontalAlignmentModifier -> if (direction.isVertical) {
-        alignSelf = m.alignment.toAlignSelf()
+        alignSelf = m.alignment.toAlignSelfOld()
       }
       is VerticalAlignmentModifier -> if (direction.isHorizontal) {
-        alignSelf = m.alignment.toAlignSelf()
+        alignSelf = m.alignment.toAlignSelfOld()
       }
     }
   }
-  return FlexItem(
+  return app.cash.redwood.flexbox.FlexItem(
     flexGrow = flexGrow,
     flexShrink = flexShrink,
     margin = spacing,

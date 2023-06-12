@@ -23,14 +23,14 @@ import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -45,7 +45,9 @@ class ViewFlexContainerTest : AbstractFlexContainerTest<View>() {
     showSystemUi = false,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
+  override fun flexContainer(direction: FlexDirection): TestFlexContainer<View> {
+    return ViewTestFlexContainer(paparazzi.context, direction)
+  }
 
   override fun widget(text: String, modifier: Modifier) = object : Widget<View> {
     override val value = TextView(paparazzi.context).apply {
