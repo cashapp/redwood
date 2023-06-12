@@ -79,6 +79,7 @@ include ':redwood-treehouse-host'
 include ':redwood-widget'
 include ':redwood-widget-compose'
 include ':redwood-widget-testing'
+include ':redwood-yoga'
 
 include ':test-schema'
 include ':test-schema:compose'

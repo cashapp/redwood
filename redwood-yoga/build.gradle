@@ -1,0 +1,31 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'kotlinx-atomicfu'
+apply plugin: 'app.cash.redwood.build'
+
+redwoodBuild {
+  publishing()
+}
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+      }
+    }
+  }
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Internal MIT-licensed files from Meta.
+      fileTree("src/commonMain/kotlin/app/cash/redwood/yoga/internal").filter { it.isFile() },
+      fileTree("src/commonTest/kotlin/app/cash/redwood/yoga/internal").filter { it.isFile() },
+    )
+  }
+}
