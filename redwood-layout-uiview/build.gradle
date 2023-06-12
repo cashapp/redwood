@@ -40,3 +40,12 @@ kotlin {
     }
   }
 }
+
+spotless {
+  kotlin {
+    targetExclude(
+      // MIT-licensed files from Meta.
+      "src/commonMain/kotlin/app/cash/redwood/layout/uiview/YogaUIView.kt",
+    )
+  }
+}

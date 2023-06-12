@@ -16,11 +16,6 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.flexbox.AlignItems
-import app.cash.redwood.flexbox.FlexContainer
-import app.cash.redwood.flexbox.FlexDirection
-import app.cash.redwood.flexbox.JustifyContent
-import app.cash.redwood.flexbox.Size
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -31,144 +26,80 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.cValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.CGRectZero
-import platform.CoreGraphics.CGSize
-import platform.CoreGraphics.CGSizeMake
-import platform.UIKit.UIScrollView
+import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.JustifyContent
 import platform.UIKit.UIView
-import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
-  private val container = FlexContainer().apply {
-    flexDirection = direction
-    roundToInt = false
-  }
-  private val view = FlexContainerHostView().apply {
-    showsHorizontalScrollIndicator = false
-    showsVerticalScrollIndicator = false
-  }
+  private val yogaView = YogaUIView()
 
-  override val value: UIView get() = view
-
+  override val value get() = yogaView
   override val children = UIViewChildren(value)
-
   override var modifier: Modifier = Modifier
 
+  init {
+    yogaView.rootNode.flexDirection = direction
+    yogaView.applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, Density.Default)
+    }
+  }
+
   override fun width(width: Constraint) {
-    container.fillWidth = width == Constraint.Fill
+    yogaView.width = width
     invalidate()
   }
 
   override fun height(height: Constraint) {
-    container.fillHeight = height == Constraint.Fill
+    yogaView.height = height
     invalidate()
   }
 
   override fun margin(margin: Margin) {
-    container.margin = margin.toSpacing(Density.Default)
+    with(yogaView.rootNode) {
+      with(Density.Default) {
+        marginStart = margin.start.toPx().toFloat()
+        marginEnd = margin.end.toPx().toFloat()
+        marginTop = margin.top.toPx().toFloat()
+        marginBottom = margin.bottom.toPx().toFloat()
+      }
+    }
     invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-    view.setScrollEnabled(overflow == Overflow.Scroll)
     invalidate()
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContentOld())
+    justifyContent(horizontalAlignment.toJustifyContent())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItemsOld())
+    alignItems(horizontalAlignment.toAlignItems())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContentOld())
+    justifyContent(verticalAlignment.toJustifyContent())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItemsOld())
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   private fun alignItems(alignItems: AlignItems) {
-    container.alignItems = alignItems
+    yogaView.rootNode.alignItems = alignItems
     invalidate()
   }
 
   private fun justifyContent(justifyContent: JustifyContent) {
-    container.justifyContent = justifyContent
+    yogaView.rootNode.justifyContent = justifyContent
     invalidate()
   }
 
   private fun invalidate() {
     value.setNeedsLayout()
   }
-
-  private inner class FlexContainerHostView : UIScrollView(cValue { CGRectZero }) {
-    override fun intrinsicContentSize(): CValue<CGSize> {
-      return CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric)
-    }
-
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      return measure(size.useContents { toUnsafeSize() }).run { CGSizeMake(width, height) }
-    }
-
-    override fun layoutSubviews() {
-      val bounds = bounds.useContents { size.toUnsafeSize() }
-      measure(bounds)
-
-      var newWidth = 0.0
-      var newHeight = 0.0
-      for (item in container.items) {
-        newWidth = maxOf(newWidth, item.right)
-        newHeight = maxOf(newHeight, item.bottom)
-      }
-      contentSize.useContents {
-        if (newWidth != width || newHeight != height) {
-          setContentSize(CGSizeMake(newWidth, newHeight))
-          superview?.setNeedsLayout()
-        }
-      }
-
-      container.items.forEachIndexed { index, item ->
-        typedSubviews[index].setFrame(
-          CGRectMake(
-            x = item.left,
-            y = item.top,
-            width = item.right - item.left,
-            height = item.bottom - item.top,
-          ),
-        )
-      }
-    }
-
-    private fun measure(size: UnsafeSize): Size {
-      syncItems()
-      val (widthSpec, heightSpec) = size.toMeasureSpecs()
-      return container.measure(widthSpec, heightSpec)
-    }
-
-    private fun syncItems() {
-      container.items.clear()
-      children.widgets.forEach { widget ->
-        container.items += newFlexItem(
-          direction = direction,
-          density = Density.Default,
-          modifier = widget.modifier,
-          measurable = UIViewMeasurable(widget.value),
-        )
-      }
-    }
-  }
 }
-
-internal data class UnsafeSize(
-  val width: Double,
-  val height: Double,
-)
