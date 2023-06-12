@@ -81,19 +81,19 @@ internal class UIViewFlexContainer(
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContent())
+    justifyContent(horizontalAlignment.toJustifyContentOld())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItems())
+    alignItems(horizontalAlignment.toAlignItemsOld())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContent())
+    justifyContent(verticalAlignment.toJustifyContentOld())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItems())
+    alignItems(verticalAlignment.toAlignItemsOld())
   }
 
   private fun alignItems(alignItems: AlignItems) {
