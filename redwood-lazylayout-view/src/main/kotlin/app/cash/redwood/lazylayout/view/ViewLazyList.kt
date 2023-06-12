@@ -18,6 +18,7 @@
 package app.cash.redwood.lazylayout.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -89,27 +90,10 @@ internal class Items<VH : RecyclerView.ViewHolder>(
   }
 }
 
-/**
- * Public function to allow downstream factories to create their own LazyList
- */
-public fun ViewLazyList(
-  recyclerViewFactory: () -> RecyclerView,
-): LazyList<View> = ViewLazyListImpl(recyclerViewFactory)
-
-/**
- * Public function to allow downstream factories to create their own RefreshableLazyList
- */
-public fun ViewRefreshableLazyList(
-  recyclerViewFactory: () -> RecyclerView,
-  swipeRefreshLayoutFactory: () -> SwipeRefreshLayout,
-): RefreshableLazyList<View> = RefreshableViewLazyListImpl(recyclerViewFactory, swipeRefreshLayoutFactory)
-
-internal open class ViewLazyListImpl(
-  recyclerViewFactory: () -> RecyclerView,
-) : LazyList<View> {
+internal open class ViewLazyList(context: Context) : LazyList<View> {
   private val scope = MainScope()
 
-  internal val recyclerView: RecyclerView by lazy { recyclerViewFactory() }
+  internal val recyclerView: RecyclerView = RecyclerView(context)
 
   override var modifier: Modifier = Modifier
 
@@ -275,12 +259,11 @@ internal open class ViewLazyListImpl(
   }
 }
 
-internal class RefreshableViewLazyListImpl(
-  recyclerViewFactory: () -> RecyclerView,
-  swipeRefreshLayoutFactory: () -> SwipeRefreshLayout,
-) : ViewLazyListImpl(recyclerViewFactory), RefreshableLazyList<View> {
+internal class ViewRefreshableLazyList(
+  context: Context,
+) : ViewLazyList(context), RefreshableLazyList<View> {
 
-  private val swipeRefreshLayout by lazy { swipeRefreshLayoutFactory() }
+  private val swipeRefreshLayout = SwipeRefreshLayout(context)
 
   override val value: View get() = swipeRefreshLayout
 
