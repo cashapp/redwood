@@ -113,7 +113,6 @@ private class ViewMeasureCallback(val view: UIView) : MeasureCallback {
     height: Float,
     heightMode: MeasureMode,
   ): Size {
-    val view = node.view!!
     val constrainedWidth = when (widthMode) {
       MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> width.toDouble()

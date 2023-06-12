@@ -35,7 +35,6 @@ internal class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaView = YogaUIView()
-  private val density = Density.Default
 
   override val value get() = yogaView
   override val children = UIViewChildren(value)
@@ -44,7 +43,7 @@ internal class UIViewFlexContainer(
   init {
     yogaView.rootNode.flexDirection = direction
     yogaView.applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, density)
+      node.applyModifier(children.widgets[index].modifier, Density.Default)
     }
   }
 
@@ -60,7 +59,7 @@ internal class UIViewFlexContainer(
 
   override fun margin(margin: Margin) {
     with(yogaView.rootNode) {
-      with(density) {
+      with(Density.Default) {
         marginStart = margin.start.toPx().toFloat()
         marginEnd = margin.end.toPx().toFloat()
         marginTop = margin.top.toPx().toFloat()
@@ -75,19 +74,19 @@ internal class UIViewFlexContainer(
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContentOld())
+    justifyContent(horizontalAlignment.toJustifyContent())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItemsOld())
+    alignItems(horizontalAlignment.toAlignItems())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContentOld())
+    justifyContent(verticalAlignment.toJustifyContent())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItemsOld())
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   private fun alignItems(alignItems: AlignItems) {
