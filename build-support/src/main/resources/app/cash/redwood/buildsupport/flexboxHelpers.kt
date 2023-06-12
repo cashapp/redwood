@@ -18,11 +18,11 @@ package com.example
 import app.cash.redwood.Modifier
 import app.cash.redwood.flexbox.AlignItems
 import app.cash.redwood.flexbox.AlignSelf
-import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.FlexDirection
 import app.cash.redwood.flexbox.FlexItem
 import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexGrow
 import app.cash.redwood.flexbox.FlexItem.Companion.DefaultFlexShrink
+import app.cash.redwood.flexbox.JustifyContent
 import app.cash.redwood.flexbox.Measurable
 import app.cash.redwood.flexbox.Spacing
 import app.cash.redwood.flexbox.isHorizontal

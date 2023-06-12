@@ -39,7 +39,7 @@ internal class ComposePlugin : KotlinCompilerPluginSupportPlugin {
   )
 
   override fun applyToCompilation(
-    kotlinCompilation: KotlinCompilation<*>
+    kotlinCompilation: KotlinCompilation<*>,
   ): Provider<List<SubpluginOption>> {
     when (kotlinCompilation.platformType) {
       js -> {
