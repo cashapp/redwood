@@ -63,7 +63,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
         if (target.path == ":") {
           it.target("build-support/src/**/*.kt")
         } else {
-          it.target("src/*/kotlin/**/*.kt")
+          it.target("src/**/*.kt")
+          // Avoid 'build' folders within test fixture projects which may contain generated sources.
+          it.targetExclude("src/test/fixture/**/build/**")
         }
         it.ktlint(libs.ktlint.get().version).editorConfigOverride(
           mapOf("ktlint_standard_filename" to "disabled"),

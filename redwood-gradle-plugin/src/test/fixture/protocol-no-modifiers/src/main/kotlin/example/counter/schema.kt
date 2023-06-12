@@ -16,15 +16,13 @@
 package example.counter
 
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
-import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 
 @Schema(
   [
     CounterBox::class,
-  ]
+  ],
 )
 interface Counter
 

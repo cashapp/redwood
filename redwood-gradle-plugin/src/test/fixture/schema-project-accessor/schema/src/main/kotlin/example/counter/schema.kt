@@ -26,7 +26,7 @@ import app.cash.redwood.schema.Widget
     CounterBox::class,
     CounterText::class,
     CounterButton::class,
-  ]
+  ],
 )
 interface Counter
 
