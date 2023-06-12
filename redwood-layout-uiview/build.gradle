@@ -45,7 +45,7 @@ spotless {
   kotlin {
     targetExclude(
       // MIT-licensed files from Meta.
-      "src/main/kotlin/app/cash/redwood/layout/uiview/YogaUIView.kt",
+      "src/commonMain/kotlin/app/cash/redwood/layout/uiview/YogaUIView.kt",
     )
   }
 }
