@@ -97,4 +97,3 @@ class ComposeUiFlexContainerTest : LegacyAbstractFlexContainerTest<@Composable (
     }
   }
 }
-A
