@@ -81,19 +81,19 @@ internal class ComposeUiFlexContainer(
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContentOld())
+    justifyContent(horizontalAlignment.toJustifyContent())
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItemsOld())
+    alignItems(horizontalAlignment.toAlignItems())
   }
 
   override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContentOld())
+    justifyContent(verticalAlignment.toJustifyContent())
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItemsOld())
+    alignItems(verticalAlignment.toAlignItems())
   }
 
   fun alignItems(alignItems: AlignItems) {
