@@ -15,6 +15,7 @@ dependencies {
   implementation projects.redwoodYoga
   implementation libs.androidx.core
   testImplementation projects.redwoodLayoutSharedTest
+  testImplementation libs.testParameterInjector
 }
 
 android {
