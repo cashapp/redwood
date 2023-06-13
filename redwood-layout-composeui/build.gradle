@@ -19,8 +19,6 @@ kotlin {
       kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get())
       dependencies {
         api projects.redwoodLayoutWidget
-        implementation projects.redwoodFlexbox
-        implementation projects.redwoodYoga
         implementation projects.redwoodWidgetCompose
         implementation projects.redwoodYoga
         implementation libs.jetbrains.compose.foundation
