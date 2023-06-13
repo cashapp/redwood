@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.paparazzi'
 
 redwoodBuild {
   publishing()
@@ -12,6 +13,7 @@ dependencies {
   implementation libs.androidx.recyclerview
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
+  testImplementation projects.redwoodLayoutSharedTest
 }
 
 android {
