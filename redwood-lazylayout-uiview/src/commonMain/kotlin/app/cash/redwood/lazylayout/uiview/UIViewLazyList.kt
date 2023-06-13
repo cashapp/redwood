@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:Suppress(
+  "OVERRIDE_DEPRECATION",
   "PARAMETER_NAME_CHANGED_ON_OVERRIDE",
   "RETURN_TYPE_MISMATCH_ON_OVERRIDE",
 )
