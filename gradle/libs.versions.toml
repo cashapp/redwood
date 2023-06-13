@@ -6,7 +6,7 @@ androidxComposeCompiler = "1.4.5"
 androidx-activity = "1.7.2"
 jbCompose = "1.4.0"
 lint = "31.0.2"
-zipline = "0.9.20"
+zipline = "1.0.0"
 coil = "2.4.0"
 
 [libraries]
