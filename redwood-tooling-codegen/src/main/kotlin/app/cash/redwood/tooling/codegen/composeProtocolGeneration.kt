@@ -507,7 +507,7 @@ internal fun generateProtocolModifierSerializers(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec? {
-  val serializableModifiers = schema.modifier.filter { it.properties.isNotEmpty() }
+  val serializableModifiers = schema.modifiers.filter { it.properties.isNotEmpty() }
   if (serializableModifiers.isEmpty()) {
     return null
   }

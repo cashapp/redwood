@@ -391,12 +391,12 @@ internal fun generateProtocolModifierImpls(
   schema: ProtocolSchema,
   host: ProtocolSchema = schema,
 ): FileSpec? {
-  if (schema.modifier.isEmpty()) {
+  if (schema.modifiers.isEmpty()) {
     return null
   }
   return FileSpec.builder(schema.widgetPackage(host), "modifierImpls")
     .apply {
-      for (modifier in schema.modifier) {
+      for (modifier in schema.modifiers) {
         val typeName = ClassName(schema.widgetPackage(host), modifier.type.flatName + "Impl")
         val typeBuilder = if (modifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
@@ -470,8 +470,8 @@ private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec
     .returns(Redwood.Modifier)
     .beginControlFlow("val serializer = when (tag.value)")
     .apply {
-      val modifier = schemaSet.allModifiers()
-      if (modifier.isEmpty()) {
+      val modifiers = schemaSet.allModifiers()
+      if (modifiers.isEmpty()) {
         addAnnotation(
           AnnotationSpec.builder(Suppress::class)
             .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
@@ -479,7 +479,7 @@ private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec
         )
       } else {
         val host = schemaSet.schema
-        for ((localSchema, modifier) in modifier) {
+        for ((localSchema, modifier) in modifiers) {
           val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
           if (modifier.properties.isEmpty()) {
             addStatement("%L -> return %T", modifier.tag, typeName)

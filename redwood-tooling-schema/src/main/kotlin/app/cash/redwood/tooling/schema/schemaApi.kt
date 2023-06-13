@@ -37,7 +37,7 @@ public interface Schema {
   public val documentation: String?
   public val scopes: List<FqType>
   public val widgets: List<Widget>
-  public val modifier: List<Modifier>
+  public val modifiers: List<Modifier>
   public val dependencies: List<FqType>
 }
 
@@ -140,7 +140,7 @@ public interface ProtocolSchemaSet : SchemaSet {
 
 public interface ProtocolSchema : Schema {
   override val widgets: List<ProtocolWidget>
-  override val modifier: List<ProtocolModifier>
+  override val modifiers: List<ProtocolModifier>
   override val dependencies: List<FqType> get() = taggedDependencies.values.toList()
   public val taggedDependencies: Map<Int, FqType>
 

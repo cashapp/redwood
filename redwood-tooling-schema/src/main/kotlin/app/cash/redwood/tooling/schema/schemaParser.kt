@@ -210,7 +210,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
-    modifier = modifier,
+    modifiers = modifier,
     taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
