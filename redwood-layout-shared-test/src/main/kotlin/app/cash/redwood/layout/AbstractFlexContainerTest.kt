@@ -44,6 +44,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun shortColumn() {
     val container = flexContainer(FlexDirection.Column)
+    container.height(Constraint.Wrap)
     container.alignItems(AlignItems.FlexStart)
     movies.take(5).forEach { movie ->
       container.add(widget(movie))

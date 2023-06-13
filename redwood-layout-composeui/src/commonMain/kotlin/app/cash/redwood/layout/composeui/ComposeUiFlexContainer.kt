@@ -32,6 +32,8 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import app.cash.redwood.Modifier as RedwoodModifier
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -129,7 +131,7 @@ internal class ComposeUiFlexContainer(
 
         children.render()
       },
-      modifier = computeModifier(),
+      modifier = computeModifier().background(Color.Blue),
       measurePolicy = ::measure,
     )
   }
