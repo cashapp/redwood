@@ -5,8 +5,6 @@ module:redwood-compose
 app.cash.redwood.compose
 module:redwood-composeui
 app.cash.redwood.composeui
-module:redwood-flexbox
-app.cash.redwood.flexbox
 module:redwood-gradle-plugin
 app.cash.redwood.gradle
 module:redwood-layout-api
