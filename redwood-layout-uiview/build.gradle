@@ -16,7 +16,6 @@ kotlin {
       kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.uiview'))
       dependencies {
         api projects.redwoodLayoutWidget
-        implementation projects.redwoodFlexbox
         implementation projects.redwoodWidgetCompose
         implementation projects.redwoodYoga
       }
