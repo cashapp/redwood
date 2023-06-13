@@ -32,11 +32,11 @@ import app.cash.redwood.yoga.JustifyContent
 import platform.UIKit.UIView
 
 internal class UIViewFlexContainer(
-  private val direction: FlexDirection,
+  direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaView = YogaUIView()
 
-  override val value get() = yogaView
+  override val value: UIView get() = yogaView
   override val children = UIViewChildren(value)
   override var modifier: Modifier = Modifier
 

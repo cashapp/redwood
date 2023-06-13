@@ -44,12 +44,44 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     calculateLayoutWithSize(bounds)
 
     for (childNode in rootNode.children) {
-      YGApplyLayoutToViewHierarchy(childNode)
+      layoutNodes(childNode)
+    }
+  }
+
+  private fun layoutNodes(node: Node) {
+    val x = node.left.toDouble()
+    val y = node.top.toDouble()
+    val width = node.width.toDouble()
+    val height = node.height.toDouble()
+    node.view.setFrame(CGRectMake(x, y, width, height))
+
+    for (childNode in node.children) {
+      layoutNodes(childNode)
+    }
+  }
+
+  private fun syncNodes() {
+    val subviews = typedSubviews
+    if (subviews.isEmpty()) {
+      rootNode.children.clear()
+      rootNode.measureCallback = UIViewMeasureCallback(this)
+      return
+    }
+
+    // Nodes with children cannot have measure functions.
+    rootNode.measureCallback = null
+
+    val currentViews = rootNode.children.map { it.view }
+    if (currentViews != subviews) {
+      rootNode.children.clear()
+      for (view in subviews) {
+        rootNode.children += view.asNode()
+      }
     }
   }
 
   private fun calculateLayoutWithSize(size: Size): Size {
-    YGAttachNodesFromViewHierachy(this)
+    syncNodes()
 
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
@@ -76,27 +108,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
   }
 }
 
-private fun YGAttachNodesFromViewHierachy(yoga: YogaUIView) {
-  if (yoga.typedSubviews.isEmpty()) {
-    yoga.rootNode.children.clear()
-    yoga.rootNode.measureCallback = ViewMeasureCallback(yoga)
-    return
-  }
-
-  // Nodes with children cannot have measure functions.
-  yoga.rootNode.measureCallback = null
-
-  val currentViews = yoga.rootNode.children.mapNotNull { it.view }
-  val subviews = yoga.typedSubviews
-  if (currentViews != subviews) {
-    yoga.rootNode.children.clear()
-    for (view in subviews) {
-      yoga.rootNode.children += view.asNode()
-    }
-  }
-}
-
-private class ViewMeasureCallback(val view: UIView) : MeasureCallback {
+private class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
   override fun measure(
     node: Node,
     width: Float,
@@ -125,38 +137,26 @@ private class ViewMeasureCallback(val view: UIView) : MeasureCallback {
     }
 
     return Size(
-      width = YGSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
-      height = YGSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
+      width = sanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
+      height = sanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
     )
   }
-}
 
-private fun YGSanitizeMeasurement(
-  constrainedSize: Double,
-  measuredSize: Float,
-  measureMode: MeasureMode,
-): Float = when (measureMode) {
-  MeasureMode.Exactly -> constrainedSize.toFloat()
-  MeasureMode.AtMost -> measuredSize
-  MeasureMode.Undefined -> measuredSize
-  else -> throw AssertionError()
-}
-
-private fun YGApplyLayoutToViewHierarchy(node: Node) {
-  val x = node.left.toDouble()
-  val y = node.top.toDouble()
-  val width = node.width.toDouble()
-  val height = node.height.toDouble()
-  node.view!!.setFrame(CGRectMake(x, y, width, height))
-
-  for (childNode in node.children) {
-    YGApplyLayoutToViewHierarchy(childNode)
+  private fun sanitizeMeasurement(
+    constrainedSize: Double,
+    measuredSize: Float,
+    measureMode: MeasureMode,
+  ): Float = when (measureMode) {
+    MeasureMode.Exactly -> constrainedSize.toFloat()
+    MeasureMode.AtMost -> measuredSize
+    MeasureMode.Undefined -> measuredSize
+    else -> throw AssertionError()
   }
 }
 
 private fun UIView.asNode(): Node {
   val childNode = Node()
-  childNode.measureCallback = ViewMeasureCallback(this)
+  childNode.measureCallback = UIViewMeasureCallback(this)
   return childNode
 }
 
@@ -166,5 +166,5 @@ private fun CValue<CGSize>.toSize() = useContents {
 
 private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
-private val Node.view: UIView?
-  get() = (measureCallback as ViewMeasureCallback?)?.view
+private val Node.view: UIView
+  get() = (measureCallback as UIViewMeasureCallback).view
