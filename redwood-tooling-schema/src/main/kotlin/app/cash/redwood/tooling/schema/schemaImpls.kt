@@ -46,7 +46,7 @@ internal data class ParsedProtocolSchema(
   override val documentation: String? = null,
   override val scopes: List<FqType> = emptyList(),
   override val widgets: List<ParsedProtocolWidget> = emptyList(),
-  override val modifier: List<ParsedProtocolModifier> = emptyList(),
+  override val modifiers: List<ParsedProtocolModifier> = emptyList(),
   @SerialName("dependencies")
   override val taggedDependencies: Map<Int, FqType> = emptyMap(),
 ) : ProtocolSchema {
@@ -80,7 +80,7 @@ internal data class ParsedProtocolSchema(
         widgets = schema.widgets.map { widget ->
           widget.copy(tag = tagOffset + widget.tag)
         },
-        modifier = schema.modifier.map { modifier ->
+        modifiers = schema.modifiers.map { modifier ->
           modifier.copy(tag = tagOffset + modifier.tag)
         },
       )

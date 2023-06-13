@@ -50,11 +50,11 @@ class ModifierGenerationTest {
   @Test fun `simple names do not collide`() {
     val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
 
-    val topType = schema.modifier.single { it.type.flatName == "ModifierGenerationTestContentDescription" }
+    val topType = schema.modifiers.single { it.type.flatName == "ModifierGenerationTestContentDescription" }
     val topTypeSpec = generateModifierInterface(schema, topType)
     assertThat(topTypeSpec.toString()).contains("interface ModifierGenerationTestContentDescription")
 
-    val nestedType = schema.modifier.single { it.type.flatName == "ModifierGenerationTestNavigationBarContentDescription" }
+    val nestedType = schema.modifiers.single { it.type.flatName == "ModifierGenerationTestNavigationBarContentDescription" }
     val nestedTypeSpec = generateModifierInterface(schema, nestedType)
     assertThat(nestedTypeSpec.toString()).contains("interface ModifierGenerationTestNavigationBarContentDescription")
   }
@@ -74,7 +74,7 @@ class ModifierGenerationTest {
   @Test fun `layout modifier functions are stable`() {
     val schema = ProtocolSchemaSet.parse(ScopedModifierSchema::class).schema
 
-    val modifier = schema.modifier.single { it.type.names.last() == "ScopedModifier" }
+    val modifier = schema.modifiers.single { it.type.names.last() == "ScopedModifier" }
     val scope = modifier.scopes.single { it.names.last() == "ModifierScope" }
     val scopeSpec = generateScope(schema, scope)
     assertThat(scopeSpec.toString()).contains(
@@ -114,7 +114,7 @@ class ModifierGenerationTest {
   @Test fun deprecation() {
     val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
 
-    val modifier = schema.modifier.single()
+    val modifier = schema.modifiers.single()
     val fileSpec = generateModifierInterface(schema, modifier)
     assertThat(fileSpec.toString()).all {
       contains(

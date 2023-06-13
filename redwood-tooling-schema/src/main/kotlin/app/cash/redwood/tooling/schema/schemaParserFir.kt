@@ -345,7 +345,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
-    modifier = modifier,
+    modifiers = modifier,
     taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema },
   )
 }

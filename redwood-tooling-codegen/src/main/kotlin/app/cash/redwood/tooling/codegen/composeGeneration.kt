@@ -213,7 +213,7 @@ internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(Redwood.LayoutScopeMarker)
 
-      for (modifier in schema.modifier) {
+      for (modifier in schema.modifiers) {
         if (scope !in modifier.scopes) {
           continue
         }
@@ -240,11 +240,11 @@ internal class SomethingImpl(...): Something {
 }
 */
 internal fun generateModifierImpls(schema: Schema): FileSpec? {
-  if (schema.modifier.isEmpty()) return null
+  if (schema.modifiers.isEmpty()) return null
 
   return FileSpec.builder(schema.composePackage(), "modifier")
     .apply {
-      for (modifier in schema.modifier) {
+      for (modifier in schema.modifiers) {
         addType(generateModifierImpl(schema, modifier))
       }
     }
