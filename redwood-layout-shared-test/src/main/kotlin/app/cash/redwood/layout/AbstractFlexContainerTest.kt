@@ -30,7 +30,11 @@ import org.junit.Test
 
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
+  abstract fun widget(
+    text: String,
+    width: Constraint = Constraint.Wrap,
+    modifier: Modifier = Modifier,
+  ): Widget<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>)
 
   @Test fun shortRow() {
@@ -79,7 +83,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
         else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
       }
-      container.add(widget(movie, modifier))
+      container.add(widget(movie, modifier = modifier))
     }
     verifySnapshot(container)
   }
@@ -116,6 +120,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.justifyContent(JustifyContent.SpaceAround)
     movies.forEach { movie ->
       container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test
+  fun columnWithWidthFillAndChildrenWithWidthFill() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    movies.forEach { movie ->
+      container.add(widget(movie, width = Constraint.Fill))
     }
     verifySnapshot(container)
   }

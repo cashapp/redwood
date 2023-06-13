@@ -19,6 +19,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
@@ -55,8 +58,14 @@ class ViewFlexContainerTest(
     return ViewTestFlexContainer(paparazzi.context, direction)
   }
 
-  override fun widget(text: String, modifier: Modifier) = object : Widget<View> {
+  override fun widget(text: String, width: Constraint, modifier: Modifier) = object : Widget<View> {
     override val value = TextView(paparazzi.context).apply {
+      // Always explicitly set [layoutParams] as parent implementations of
+      // [ViewGroup.generateDefaultLayoutParams] can differ.
+      layoutParams = LayoutParams(
+        if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT,
+        WRAP_CONTENT,
+      )
       background = ColorDrawable(Color.GREEN)
       textSize = 18f
       setTextColor(Color.BLACK)
