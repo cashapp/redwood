@@ -78,7 +78,7 @@ class ViewLazyListTest(
     }
 
     override fun height(constraint: Constraint) {
-      delegate.width(constraint)
+      delegate.height(constraint)
     }
 
     override fun alignItems(alignItems: AlignItems) {
