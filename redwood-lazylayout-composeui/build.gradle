@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.paparazzi'
 
 redwoodBuild {
   composeCompiler()
@@ -27,6 +28,13 @@ kotlin {
         implementation projects.redwoodWidgetCompose
         implementation libs.jetbrains.compose.foundation
         implementation libs.jetbrains.compose.material
+      }
+    }
+
+    androidUnitTest {
+      dependencies {
+        implementation projects.redwoodLayoutSharedTest
+        implementation libs.testParameterInjector
       }
     }
   }
