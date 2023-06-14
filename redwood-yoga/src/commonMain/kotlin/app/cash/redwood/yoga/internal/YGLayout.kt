@@ -13,13 +13,13 @@ import app.cash.redwood.yoga.internal.enums.YGDirection
 
 internal class YGLayout {
   private val flags = mutableMapOf<Any?, Any>()
-  val position = MutableList(4) { 0f }
-  val dimensions = MutableList(2) { Yoga.YGUndefined }
-  val margin = MutableList(4) { 0f }
-  val border = MutableList(4) { 0f }
-  val padding = MutableList(4) { 0f }
+  val position = FloatArray(4) { 0f }
+  val dimensions = FloatArray(2) { Yoga.YGUndefined }
+  val margin = FloatArray(4) { 0f }
+  val border = FloatArray(4) { 0f }
+  val padding = FloatArray(4) { 0f }
   val cachedMeasurements = MutableList(YG_MAX_CACHED_RESULT_COUNT) { YGCachedMeasurement() }
-  val measuredDimensions = MutableList(2) { Yoga.YGUndefined }
+  val measuredDimensions = FloatArray(2) { Yoga.YGUndefined }
   val cachedLayout = YGCachedMeasurement()
   var computedFlexBasisGeneration = 0
   var computedFlexBasis = YGFloatOptional()
