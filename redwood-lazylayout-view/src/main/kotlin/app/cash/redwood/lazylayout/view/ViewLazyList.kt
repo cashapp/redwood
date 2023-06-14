@@ -99,7 +99,14 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
   final override val placeholder = Placeholders(recyclerView.recycledViewPool)
 
-  private val linearLayoutManager = LinearLayoutManager(recyclerView.context)
+  private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
+    // Identical to the implementation of [LinearLayout.generateDefaultLayoutParams].
+    override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams? = when (orientation) {
+      RecyclerView.HORIZONTAL -> RecyclerView.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+      RecyclerView.VERTICAL -> RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+      else -> null
+    }
+  }
   private val adapter = LazyContentItemListAdapter(placeholder)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
   private var viewport = IntRange.EMPTY
@@ -247,10 +254,6 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
   }
 
   class Container(context: Context) : FrameLayout(context) {
-    init {
-      layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-    }
-
     // Identical to the implementation of [YogaLayout.generateDefaultLayoutParams].
     override fun generateDefaultLayoutParams(): LayoutParams {
       return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
