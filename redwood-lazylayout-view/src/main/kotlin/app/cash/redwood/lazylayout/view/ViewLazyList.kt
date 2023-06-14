@@ -211,17 +211,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+      val container = Container(parent.context)
       return when (viewType) {
-        VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(
-          Container(parent.context).apply {
-            layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-          },
-        )
-        VIEW_TYPE_ITEM -> ViewHolder.Item(
-          Container(parent.context).apply {
-            layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-          },
-        )
+        VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(container)
+        VIEW_TYPE_ITEM -> ViewHolder.Item(container)
         else -> error("Unrecognized viewType: $viewType")
       }
     }
@@ -253,7 +246,11 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     }
   }
 
-  private class Container(context: Context) : FrameLayout(context) {
+  class Container(context: Context) : FrameLayout(context) {
+    init {
+      layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+    }
+
     // Identical to the implementation of [YogaLayout.generateDefaultLayoutParams].
     override fun generateDefaultLayoutParams(): LayoutParams {
       return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
@@ -261,8 +258,8 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
   }
 
   sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    class Placeholder(val container: FrameLayout) : ViewHolder(container)
-    class Item(val container: FrameLayout) : ViewHolder(container)
+    class Placeholder(val container: Container) : ViewHolder(container)
+    class Item(val container: Container) : ViewHolder(container)
   }
 }
 
