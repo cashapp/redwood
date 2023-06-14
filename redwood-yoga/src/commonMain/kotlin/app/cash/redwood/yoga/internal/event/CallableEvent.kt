@@ -20,7 +20,7 @@ internal class LayoutData : CallableEvent {
   var cachedLayouts = 0
   var cachedMeasures = 0
   var measureCallbacks = 0
-  val measureCallbackReasonsCount = MutableList(LayoutPassReason.COUNT) { 0 }
+  val measureCallbackReasonsCount = IntArray(LayoutPassReason.COUNT) { 0 }
 }
 
 internal class LayoutPassStartEventData(
