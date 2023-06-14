@@ -33,17 +33,23 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
+import com.android.resources.LayoutDirection
+import com.google.testing.junit.testparameterinjector.TestParameter
+import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
-class ComposeUiFlexContainerTest : AbstractFlexContainerTest<@Composable () -> Unit>() {
+// TODO Support RTL layout direction in `redwood-layout-composeui`
+@RunWith(TestParameterInjector::class)
+class ComposeUiFlexContainerTest(
+  @TestParameter layoutDirection: LayoutDirection,
+) : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
-    deviceConfig = DeviceConfig.PIXEL_6,
+    deviceConfig = DeviceConfig.PIXEL_6.copy(layoutDirection = layoutDirection),
     theme = "android:Theme.Material.Light.NoActionBar",
+    supportsRtl = true,
     showSystemUi = false,
   )
 
