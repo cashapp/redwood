@@ -1,0 +1,30 @@
+import app.cash.redwood.buildsupport.CKlibUtils
+import app.cash.redwood.buildsupport.KmpTargets
+import co.touchlab.cklib.gradle.CompileToBitcode
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'co.touchlab.cklib'
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+
+kotlin {
+  KmpTargets.addAllTargets(project, true /* skipJs */)
+
+  targets.all { target ->
+    if (target.platformType.name == "native") {
+      target.compilations.main.cinterops.create("yoga") {
+        includeDirs("native/yoga")
+      }
+    }
+  }
+}
+
+cklib {
+  config.kotlinVersion = libs.versions.kotlin.get()
+  config.llvmHome = CKlibUtils.llvmHome()
+  create("yoga", file("native/yoga"), ["main"]) { ctb ->
+    ctb.language = CompileToBitcode.Language.CPP
+    ctb.srcDirs = project.files(file("native/yoga"))
+    ctb.compilerArgs.addAll("-DKONAN_MI_MALLOC=1")
+  }
+}
