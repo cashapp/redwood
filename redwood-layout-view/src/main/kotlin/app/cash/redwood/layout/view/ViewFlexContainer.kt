@@ -18,8 +18,11 @@ package app.cash.redwood.layout.view
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
@@ -50,9 +53,6 @@ internal class ViewFlexContainer(
 
   override var modifier: Modifier = Modifier
 
-  private var width = Constraint.Wrap
-  private var height = Constraint.Wrap
-
   init {
     yogaLayout.rootNode.flexDirection = direction
     yogaLayout.applyModifier = { node, index ->
@@ -61,12 +61,16 @@ internal class ViewFlexContainer(
   }
 
   override fun width(width: Constraint) {
-    this.width = width
+    hostView.updateLayoutParams {
+      this.width = if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
     invalidate()
   }
 
   override fun height(height: Constraint) {
-    this.height = height
+    hostView.updateLayoutParams {
+      this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
     invalidate()
   }
 
@@ -133,6 +137,7 @@ internal class ViewFlexContainer(
       }
 
     init {
+      layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
       updateViewHierarchy()
     }
 
