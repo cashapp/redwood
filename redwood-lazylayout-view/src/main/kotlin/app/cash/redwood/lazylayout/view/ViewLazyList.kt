@@ -213,12 +213,12 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       return when (viewType) {
         VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(
-          FrameLayout(parent.context).apply {
+          Container(parent.context).apply {
             layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
           },
         )
         VIEW_TYPE_ITEM -> ViewHolder.Item(
-          FrameLayout(parent.context).apply {
+          Container(parent.context).apply {
             layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
           },
         )
@@ -250,6 +250,13 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
           holder.container.addView(view)
         }
       }
+    }
+  }
+
+  private class Container(context: Context) : FrameLayout(context) {
+    // Identical to the implementation of [YogaLayout.generateDefaultLayoutParams].
+    override fun generateDefaultLayoutParams(): LayoutParams {
+      return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
     }
   }
 
