@@ -16,17 +16,21 @@
 package com.example.redwood.emojisearch.android.views
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
@@ -77,6 +81,7 @@ class EmojiSearchActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
+      eventListener = appEventListener,
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
@@ -98,5 +103,15 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onDestroy() {
     scope.cancel()
     super.onDestroy()
+  }
+}
+
+val appEventListener: EventListener = object : EventListener() {
+  override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+    Log.w("Treehouse", "codeLoadFailed", exception)
+  }
+
+  override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+    Log.i("Treehouse", "codeLoadSuccess")
   }
 }
