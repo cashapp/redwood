@@ -23,6 +23,7 @@ class ImageBinding: Image {
         let view = ImageView()
         view.contentMode = .scaleAspectFit
         view.setContentHuggingPriority(.required, for: .horizontal)
+        view.isUserInteractionEnabled = true
         return view
     }()
     private let imageLoader: RemoteImageLoader
@@ -54,16 +55,15 @@ class ImageBinding: Image {
     }
 
     func onClick(onClick: (() -> Void)? = nil) {
-       guard let onClick else { return }
         self.onClick = onClick
         let gestureRecognizer = UITapGestureRecognizer()
-        gestureRecognizer.addTarget(self, action: #selector(didTapChartView))
+        gestureRecognizer.addTarget(self, action: #selector(didTapImage))
         root.addGestureRecognizer(gestureRecognizer)
     }
     
     @objc
-    private func didTapChartView() {
-        onClick()
+    private func didTapImage() {
+        onClick?()
     }
 }
 
