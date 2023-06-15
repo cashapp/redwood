@@ -18,6 +18,7 @@ package app.cash.redwood.lazylayout.composeui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -36,10 +37,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.toPlatformDp
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -54,6 +58,7 @@ internal class ComposeUiLazyList :
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
   private var width by mutableStateOf(Constraint.Wrap)
   private var height by mutableStateOf(Constraint.Wrap)
+  private var margin by mutableStateOf(Margin.Zero)
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
@@ -91,6 +96,10 @@ internal class ComposeUiLazyList :
 
   override fun height(height: Constraint) {
     this.height = height
+  }
+
+  override fun margin(margin: Margin) {
+    this.margin = margin
   }
 
   override val value = @Composable {
@@ -131,6 +140,12 @@ internal class ComposeUiLazyList :
       val modifier = Modifier
         .run { if (width == Constraint.Fill) fillMaxWidth() else this }
         .run { if (height == Constraint.Fill) fillMaxHeight() else this }
+        .padding(
+          start = margin.start.toPlatformDp().dp,
+          top = margin.top.toPlatformDp().dp,
+          end = margin.end.toPlatformDp().dp,
+          bottom = margin.bottom.toPlatformDp().dp,
+        )
         .pullRefresh(state = refreshState, enabled = onRefresh != null)
       if (isVertical) {
         LazyColumn(

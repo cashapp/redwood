@@ -68,6 +68,7 @@ interface ColumnProvider {
     onRefresh: (() -> Unit)?,
     width: Constraint,
     height: Constraint,
+    margin: Margin,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
@@ -128,6 +129,7 @@ fun EmojiSearch(
       onRefresh = { refreshSignal++ },
       width = Constraint.Fill,
       height = Constraint.Wrap,
+      margin = Margin.Zero,
       modifier = Modifier.grow(1.0),
       placeholder = {
         Item(

@@ -23,6 +23,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
@@ -91,6 +92,7 @@ private object TruncatingColumnProvider : ColumnProvider {
     onRefresh: (() -> Unit)?,
     width: Constraint,
     height: Constraint,
+    margin: Margin,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
@@ -98,6 +100,7 @@ private object TruncatingColumnProvider : ColumnProvider {
     Column(
       width = width,
       height = height,
+      margin = margin,
       modifier = modifier,
     ) {
       for (item in items.take(25)) {

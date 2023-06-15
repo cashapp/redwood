@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
 private const val OffscreenItemsBufferCount = 30
@@ -34,6 +35,7 @@ internal fun LazyList(
   isVertical: Boolean,
   width: Constraint,
   height: Constraint,
+  margin: Margin,
   modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -60,6 +62,7 @@ internal fun LazyList(
     },
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
@@ -79,6 +82,7 @@ internal fun RefreshableLazyList(
   onRefresh: (() -> Unit)?,
   width: Constraint,
   height: Constraint,
+  margin: Margin,
   modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -107,6 +111,7 @@ internal fun RefreshableLazyList(
     onRefresh = onRefresh,
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {

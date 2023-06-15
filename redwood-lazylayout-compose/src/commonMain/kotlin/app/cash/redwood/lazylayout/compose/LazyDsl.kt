@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.ui.Margin
 
 @LayoutScopeMarker
 public interface LazyListScope {
@@ -73,6 +74,7 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
 public fun LazyRow(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
+  margin: Margin = Margin.Zero,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -81,6 +83,7 @@ public fun LazyRow(
     isVertical = false,
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -94,6 +97,7 @@ public fun LazyRow(
   onRefresh: (() -> Unit)?,
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
+  margin: Margin = Margin.Zero,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -104,6 +108,7 @@ public fun LazyRow(
     onRefresh = onRefresh,
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -114,6 +119,7 @@ public fun LazyRow(
 public fun LazyColumn(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
+  margin: Margin = Margin.Zero,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -122,6 +128,7 @@ public fun LazyColumn(
     isVertical = true,
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -135,6 +142,7 @@ public fun LazyColumn(
   onRefresh: (() -> Unit)?,
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
+  margin: Margin = Margin.Zero,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -145,6 +153,7 @@ public fun LazyColumn(
     onRefresh = onRefresh,
     width = width,
     height = height,
+    margin = margin,
     modifier = modifier,
     placeholder = placeholder,
     content = content,

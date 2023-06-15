@@ -25,6 +25,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.ObjCClass
@@ -140,6 +141,10 @@ internal open class UIViewLazyList() : LazyList<UIView> {
   }
 
   override fun height(height: Constraint) {
+  }
+
+  override fun margin(margin: Margin) {
+    // TODO Set margin of UIViewLazyList when set
   }
 
   override var modifier: Modifier = Modifier

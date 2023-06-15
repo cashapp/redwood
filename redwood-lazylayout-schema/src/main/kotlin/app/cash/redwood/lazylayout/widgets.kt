@@ -19,6 +19,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.ui.Margin
 
 @Widget(1)
 public data class LazyList(
@@ -28,6 +29,7 @@ public data class LazyList(
   @Property(4) val itemsAfter: Int,
   @Property(5) val width: Constraint,
   @Property(6) val height: Constraint,
+  @Property(7) val margin: Margin,
   @Children(1) val placeholder: () -> Unit,
   @Children(2) val items: () -> Unit,
 )
@@ -42,6 +44,7 @@ public data class RefreshableLazyList(
   @Property(6) val onRefresh: (() -> Unit)?,
   @Property(7) val width: Constraint,
   @Property(8) val height: Constraint,
+  @Property(9) val margin: Margin,
   @Children(1) val placeholder: () -> Unit,
   @Children(2) val items: () -> Unit,
 )
