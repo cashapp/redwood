@@ -16,6 +16,7 @@
 
 import Foundation
 import EmojiSearchKt
+import UIKit
 
 class IosHostApi : HostApi {
     private let client: URLSession = .init(configuration: .default)
@@ -39,9 +40,12 @@ class IosHostApi : HostApi {
 
         task.resume()
     }
-    
+
     func openUrl(url: String) {
-        // TODO: Add logic to navigate to the browser app and open the given URL
+        guard let url = URL(string: url) else { return }
+        DispatchQueue.main.async {
+            UIApplication.shared.open(url)
+        }
     }
 
     func close() {
