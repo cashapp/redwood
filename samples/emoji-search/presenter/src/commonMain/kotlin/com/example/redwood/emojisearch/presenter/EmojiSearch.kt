@@ -70,7 +70,7 @@ interface ColumnProvider {
     height: Constraint,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
-    itemContent: @Composable (item: T) -> Unit,
+    itemContent: @Composable (index: Int, item: T) -> Unit,
   )
 }
 
@@ -131,12 +131,14 @@ fun EmojiSearch(
       modifier = Modifier.grow(1.0),
       placeholder = {
         Item(
+          index = -1,
           emojiImage = loadingEmojiImage,
           onClick = {},
         )
       },
-    ) { image ->
+    ) { index, image ->
       Item(
+        index,
         emojiImage = image,
         onClick = {
           navigator.openUrl(image.url)
@@ -147,7 +149,7 @@ fun EmojiSearch(
 }
 
 @Composable
-private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
+private fun Item(index: Int, emojiImage: EmojiImage, onClick: () -> Unit) {
   Row(
     width = Constraint.Fill,
     verticalAlignment = CrossAxisAlignment.Center,
@@ -155,7 +157,7 @@ private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
     Image(
       url = emojiImage.url,
       modifier = Modifier
-        .margin(Margin(8.dp)),
+        .margin(Margin(if (index == 3) 24.dp else 8.dp)),
       onClick = onClick,
     )
     Text(text = emojiImage.label)

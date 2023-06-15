@@ -21,6 +21,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
+import app.cash.redwood.lazylayout.compose.itemsIndexed
 import app.cash.redwood.treehouse.TreehouseUi
 
 class EmojiSearchTreehouseUi(
@@ -46,7 +47,7 @@ private class LazyColumnProvider : ColumnProvider {
     height: Constraint,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
-    itemContent: @Composable (item: T) -> Unit,
+    itemContent: @Composable (index: Int, item: T) -> Unit,
   ) {
     LazyColumn(
       refreshing = refreshing,
@@ -56,7 +57,7 @@ private class LazyColumnProvider : ColumnProvider {
       modifier = modifier,
       placeholder = placeholder,
     ) {
-      items(items, itemContent)
+      itemsIndexed(items, itemContent)
     }
   }
 }
