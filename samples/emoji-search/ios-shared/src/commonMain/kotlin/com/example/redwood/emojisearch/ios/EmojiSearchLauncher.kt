@@ -15,8 +15,11 @@
  */
 package com.example.redwood.emojisearch.ios
 
+import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
+import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
@@ -26,6 +29,7 @@ import com.example.redwood.emojisearch.treehouse.HostApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.flowOf
+import platform.Foundation.NSLog
 import platform.Foundation.NSURLSession
 
 class EmojiSearchLauncher(
@@ -42,6 +46,15 @@ class EmojiSearchLauncher(
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+      eventListener = object : EventListener() {
+        override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+          NSLog("Treehouse: codeLoadFailed: $exception")
+        }
+
+        override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+          NSLog("Treehouse: codeLoadSuccess")
+        }
+      },
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)
