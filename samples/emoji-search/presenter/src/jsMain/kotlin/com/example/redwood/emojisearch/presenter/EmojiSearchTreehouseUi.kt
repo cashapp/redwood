@@ -22,6 +22,7 @@ import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
 import app.cash.redwood.treehouse.TreehouseUi
+import app.cash.redwood.ui.Margin
 
 class EmojiSearchTreehouseUi(
   private val httpClient: HttpClient,
@@ -44,6 +45,7 @@ private class LazyColumnProvider : ColumnProvider {
     onRefresh: (() -> Unit)?,
     width: Constraint,
     height: Constraint,
+    margin: Margin,
     modifier: Modifier,
     placeholder: @Composable () -> Unit,
     itemContent: @Composable (item: T) -> Unit,
@@ -53,6 +55,7 @@ private class LazyColumnProvider : ColumnProvider {
       onRefresh = onRefresh,
       width = width,
       height = height,
+      margin = margin,
       modifier = modifier,
       placeholder = placeholder,
     ) {

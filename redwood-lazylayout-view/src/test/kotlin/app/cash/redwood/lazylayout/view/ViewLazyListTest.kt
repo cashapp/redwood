@@ -88,6 +88,7 @@ class ViewLazyListTest(
     }
 
     override fun margin(margin: Margin) {
+      delegate.margin(margin)
     }
 
     override fun add(widget: Widget<View>) {

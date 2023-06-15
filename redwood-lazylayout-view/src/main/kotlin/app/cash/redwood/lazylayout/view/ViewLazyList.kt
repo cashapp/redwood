@@ -26,6 +26,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.doOnDetach
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -33,6 +34,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.MainScope
@@ -99,6 +102,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
   final override val placeholder = Placeholders(recyclerView.recycledViewPool)
 
+  private val density = Density(context.resources)
   private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
     // Identical to the implementation of [LinearLayout.generateDefaultLayoutParams].
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams? = when (orientation) {
@@ -147,6 +151,17 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
   override fun height(height: Constraint) {
     recyclerView.updateLayoutParams {
       this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
+    }
+  }
+
+  override fun margin(margin: Margin) {
+    with(density) {
+      recyclerView.updatePaddingRelative(
+        start = margin.start.toPx().toInt(),
+        top = margin.top.toPx().toInt(),
+        end = margin.end.toPx().toInt(),
+        bottom = margin.bottom.toPx().toInt(),
+      )
     }
   }
 

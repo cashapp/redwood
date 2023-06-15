@@ -94,6 +94,7 @@ class ComposeUiLazyListTest(
     }
 
     override fun margin(margin: Margin) {
+      delegate.margin(margin)
     }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
