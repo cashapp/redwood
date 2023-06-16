@@ -18,8 +18,6 @@ package app.cash.redwood.treehouse
 import android.content.Context
 import android.os.Looper
 import android.util.Log
-import app.cash.zipline.Zipline
-import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.asZiplineHttpClient
