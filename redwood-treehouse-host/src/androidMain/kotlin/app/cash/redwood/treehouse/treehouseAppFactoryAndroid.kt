@@ -36,7 +36,7 @@ public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
-  eventListener: EventListener = defaultEventListener,
+  eventListener: EventListener = EventListener(),
   embeddedDir: Path? = null,
   embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",
@@ -99,15 +99,5 @@ internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
 
   override fun checkZipline() {
     check(Thread.currentThread() == ziplineThread)
-  }
-}
-
-public val defaultEventListener: EventListener = object : EventListener() {
-  override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
-    Log.w("Treehouse", "codeLoadFailed", exception)
-  }
-
-  override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
-    Log.i("Treehouse", "codeLoadSuccess")
   }
 }
