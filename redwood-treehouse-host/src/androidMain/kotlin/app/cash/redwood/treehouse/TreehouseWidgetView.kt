@@ -20,6 +20,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
@@ -30,6 +32,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -43,6 +46,9 @@ public class TreehouseWidgetView(
       check(value == null || field == null) { "View already bound to a listener" }
       field = value
     }
+
+  override var saveCallback: TreehouseView.SaveCallback? = null
+  override var restoredId: String? = null
 
   /**
    * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
@@ -92,6 +98,31 @@ public class TreehouseWidgetView(
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
+  override fun onSaveInstanceState(): Parcelable? {
+    val id = UUID.randomUUID().toString()
+    val superState = super.onSaveInstanceState()
+    saveCallback?.performSave(id)
+    return SavedState(superState, id)
+  }
+
+  override fun onRestoreInstanceState(state: Parcelable?) {
+    // Hard problems to solve:
+    //   Do we get positive confirmation when no state is coming?
+    //   Ie. should we delay launching the Content until state is ready,
+    //   or will we never find out if state isn't ever coming?
+
+    // A good model for state is:
+    // showing pixels on screen currently requires 3 things to be ready:
+    //   - the code (downloaded and initialized)
+    //   - the content (setContent() is called)
+    //   - this view is attached to the screen
+    // Our plan here:
+    //   - just add one more thing that needs to be ready! The state
+
+    state as SavedState
+    this.restoredId = state.id
+    super.onRestoreInstanceState(state.superState)
+  }
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
@@ -100,5 +131,34 @@ public class TreehouseWidgetView(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
       safeAreaInsets = insets.toMargin(Density(resources)),
     )
+  }
+
+  private class SavedState : BaseSavedState {
+    val id: String
+
+    constructor(superState: Parcelable?, id: String) : super(superState) {
+      this.id = id
+    }
+    private constructor(parcel: Parcel) : super(parcel) {
+      id = parcel.readString()!!
+    }
+
+    override fun writeToParcel(out: Parcel, flags: Int) {
+      super.writeToParcel(out, flags)
+      out.writeString(id)
+    }
+
+    companion object {
+      @JvmField
+      val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
+        override fun createFromParcel(parcel: Parcel): SavedState {
+          return SavedState(parcel)
+        }
+
+        override fun newArray(size: Int): Array<SavedState?> {
+          return arrayOfNulls(size)
+        }
+      }
+    }
   }
 }

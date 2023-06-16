@@ -18,6 +18,8 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.UiConfiguration
@@ -27,10 +29,14 @@ import kotlinx.coroutines.flow.StateFlow
 public fun RedwoodComposition.bind(
   treehouseUi: TreehouseUi,
   uiConfigurations: StateFlow<UiConfiguration>,
+  saveableStateRegistry: SaveableStateRegistry,
 ) {
   setContent {
     val uiConfiguration by uiConfigurations.collectAsState()
-    CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
+    CompositionLocalProvider(
+      LocalUiConfiguration provides uiConfiguration,
+      LocalSaveableStateRegistry provides saveableStateRegistry,
+    ) {
       treehouseUi.Show()
     }
   }

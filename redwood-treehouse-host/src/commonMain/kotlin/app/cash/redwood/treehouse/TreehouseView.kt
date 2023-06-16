@@ -30,6 +30,8 @@ public interface TreehouseView {
   public val widgetSystem: WidgetSystem
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener?
+  public var saveCallback: SaveCallback?
+  public var restoredId: String?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
@@ -38,6 +40,12 @@ public interface TreehouseView {
   public fun interface ReadyForContentChangeListener {
     /** Called when [TreehouseView.readyForContent] has changed. */
     public fun onReadyForContentChanged(view: TreehouseView)
+  }
+
+  @ObjCName("TreehouseViewSaveCallback", exact = true)
+  public interface SaveCallback {
+    /** Called on the UI dispatcher to save the state for the current content. */
+    public fun performSave(id: String)
   }
 
   @ObjCName("TreehouseViewWidgetSystem", exact = true)

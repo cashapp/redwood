@@ -49,6 +49,7 @@ jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradl
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jbCompose" }
+jetbrains-compose-runtime-saveable = { module = "org.jetbrains.compose.runtime:runtime-saveable", version.ref = "jbCompose" }
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jbCompose" }

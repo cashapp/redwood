@@ -17,6 +17,7 @@ kotlin {
       dependencies {
         api projects.redwoodCompose
         api projects.redwoodProtocol
+        api libs.okio
         api libs.zipline
       }
     }
