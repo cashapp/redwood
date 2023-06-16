@@ -33,6 +33,18 @@ abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>)
 
+  @Test fun emptyRow() {
+    val container = flexContainer(FlexDirection.Row)
+    container.alignItems(AlignItems.FlexStart)
+    verifySnapshot(container)
+  }
+
+  @Test fun emptyColumn() {
+    val container = flexContainer(FlexDirection.Column)
+    container.alignItems(AlignItems.FlexStart)
+    verifySnapshot(container)
+  }
+
   @Test fun shortRow() {
     val container = flexContainer(FlexDirection.Row)
     container.alignItems(AlignItems.FlexStart)

@@ -24,14 +24,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
-    rootNode.measureCallback = ViewMeasureCallback(this)
     applyLayoutParams(rootNode, layoutParams)
   }
 
   override fun addView(child: View, index: Int, params: LayoutParams) {
-    // Nodes with children cannot have measure functions.
-    rootNode.measureCallback = null
-
     super.addView(child, index, params)
 
     val childNode = child.asNode()
@@ -90,18 +86,19 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     owner.children -= childNode
   }
 
-  private fun applyLayoutRecursive(node: Node, xOffset: Float, yOffset: Float) {
-    val view = (node.measureCallback as ViewMeasureCallback?)?.view
+  private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
+    val view = node.view
     if (view != null && view !== this) {
       if (view.visibility == GONE) return
 
-      val left = (xOffset + node.left).roundToInt()
-      val top = (yOffset + node.top).roundToInt()
       val width = node.width.roundToInt()
       val height = node.height.roundToInt()
       val widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
       val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
       view.measure(widthSpec, heightSpec)
+
+      val left = (xOffset + node.left).roundToInt()
+      val top = (yOffset + node.top).roundToInt()
       val right = left + view.measuredWidth
       val bottom = top + view.measuredHeight
       view.layout(left, top, right, bottom)
@@ -109,15 +106,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     if (view === this) {
       for (child in node.children) {
-        applyLayoutRecursive(child, xOffset, yOffset)
+        applyLayout(child, xOffset, yOffset)
       }
     } else if (view !is YogaLayout) {
       for (child in node.children) {
-        applyLayoutRecursive(
-          node = child,
-          xOffset = xOffset + node.left,
-          yOffset = yOffset + node.top,
-        )
+        val left = xOffset + node.left
+        val top = yOffset + node.top
+        applyLayout(child, left, top)
       }
     }
   }
@@ -126,7 +121,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     val widthSpec = MeasureSpec.makeMeasureSpec(right - left, MeasureSpec.EXACTLY)
     val heightSpec = MeasureSpec.makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY)
     calculateLayout(widthSpec, heightSpec)
-    applyLayoutRecursive(rootNode, 0f, 0f)
+    applyLayout(rootNode, 0f, 0f)
   }
 
   override fun onMeasure(widthSpec: Int, heightSpec: Int) {
@@ -193,3 +188,6 @@ private class ViewMeasureCallback(val view: View) : MeasureCallback {
     return Size(view.measuredWidth.toFloat(), view.measuredHeight.toFloat())
   }
 }
+
+private val Node.view: View?
+  get() = (measureCallback as ViewMeasureCallback?)?.view
