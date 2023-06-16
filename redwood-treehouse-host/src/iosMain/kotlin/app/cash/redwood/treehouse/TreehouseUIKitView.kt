@@ -38,6 +38,8 @@ public class TreehouseUIKitView(
   override val widgetSystem: WidgetSystem,
 ) : TreehouseView {
   public val view: UIView = RootUiView(this)
+  override var saveCallback: TreehouseView.SaveCallback? = null
+  override var restoredId: String? = null
 
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {

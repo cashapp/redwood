@@ -31,7 +31,7 @@ public interface TreehouseView {
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener?
   public var saveCallback: SaveCallback?
-  public var restoredId: String?
+  public val restoredId: String?
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()

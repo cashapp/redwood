@@ -47,15 +47,17 @@ public class TreehouseWidgetView(
       field = value
     }
 
-  override var saveCallback: TreehouseView.SaveCallback? = null
-  override var restoredId: String? = null
-
   /**
    * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
    * [onAttachedToWindow] returns and true until [onDetachedFromWindow] returns.
    */
   override var readyForContent: Boolean = false
     private set
+
+  override var restoredId: String? = null
+    private set
+
+  override var saveCallback: TreehouseView.SaveCallback? = null
 
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
