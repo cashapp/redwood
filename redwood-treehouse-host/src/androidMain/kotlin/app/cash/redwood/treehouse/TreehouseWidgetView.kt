@@ -106,19 +106,6 @@ public class TreehouseWidgetView(
   }
 
   override fun onRestoreInstanceState(state: Parcelable?) {
-    // Hard problems to solve:
-    //   Do we get positive confirmation when no state is coming?
-    //   Ie. should we delay launching the Content until state is ready,
-    //   or will we never find out if state isn't ever coming?
-
-    // A good model for state is:
-    // showing pixels on screen currently requires 3 things to be ready:
-    //   - the code (downloaded and initialized)
-    //   - the content (setContent() is called)
-    //   - this view is attached to the screen
-    // Our plan here:
-    //   - just add one more thing that needs to be ready! The state
-
     state as SavedState
     this.restoredId = state.id
     super.onRestoreInstanceState(state.superState)
@@ -149,6 +136,8 @@ public class TreehouseWidgetView(
     }
 
     companion object {
+
+      // Android OS relies on CREATOR to restore SavedState
       @JvmField
       val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
         override fun createFromParcel(parcel: Parcel): SavedState {
