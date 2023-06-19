@@ -44,4 +44,13 @@ public interface TreehouseDispatchers {
    * @throws IllegalStateException if invoked on non-zipline thread.
    */
   public fun checkZipline()
+
+  /**
+   * Release the threads owned by this instance. On most platforms this will not release the UI
+   * thread, as it is not owned by this instance.
+   *
+   * Most applications should not to call this; instead they should allow these dispatchers to
+   * run until the process exits. This may be useful in tests.
+   */
+  public fun close()
 }
