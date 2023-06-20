@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.compose.ProtocolBridge
@@ -51,9 +52,12 @@ private class RedwoodZiplineTreehouseUi(
 
   private lateinit var composition: RedwoodComposition
 
+  private lateinit var saveableStateRegistry: SaveableStateRegistry
+
   override fun start(
     changesSink: ChangesSinkService,
     uiConfigurations: StateFlow<UiConfiguration>,
+    stateSnapshot: StateSnapshot?,
   ) {
     val composition = ProtocolRedwoodComposition(
       scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
@@ -63,7 +67,21 @@ private class RedwoodZiplineTreehouseUi(
     )
     this.composition = composition
 
-    composition.bind(treehouseUi, uiConfigurations)
+    this.saveableStateRegistry = SaveableStateRegistry(
+      restoredValues = stateSnapshot?.toValuesMap(),
+      canBeSaved = { true },
+    )
+
+    composition.bind(
+      treehouseUi = treehouseUi,
+      uiConfigurations = uiConfigurations,
+      saveableStateRegistry = saveableStateRegistry,
+    )
+  }
+
+  override fun snapshotState(): StateSnapshot? {
+    val savedState = saveableStateRegistry.performSave()
+    return savedState.toStateSnapshot()
   }
 
   override fun close() {

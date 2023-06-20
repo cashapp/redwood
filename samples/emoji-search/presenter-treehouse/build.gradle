@@ -18,6 +18,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api libs.okio
         api projects.redwoodTreehouse
       }
     }

@@ -15,6 +15,7 @@ kotlin {
       dependencies {
         api projects.redwoodProtocolCompose
         api libs.jetbrains.compose.runtime
+        api libs.jetbrains.compose.runtime.saveable
       }
     }
   }

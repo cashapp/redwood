@@ -252,7 +252,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val isInitialLaunch: Boolean,
   session: ZiplineSession<A>,
   firstUiConfiguration: StateFlow<UiConfiguration>,
-) : EventSink, ChangesSinkService {
+) : EventSink, ChangesSinkService, TreehouseView.SaveCallback {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val json = session.zipline.json
@@ -291,6 +291,9 @@ private class ViewContentCodeBinding<A : AppService>(
     if (canceled) return
 
     viewOrNull = view
+
+    view.saveCallback = this
+
     @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
     bridgeOrNull = ProtocolBridge(
       container = view.children as Widget.Children<Any>,
@@ -365,16 +368,29 @@ private class ViewContentCodeBinding<A : AppService>(
       val scopedAppService = session.appService.withScope(ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
+      val restoredId = viewOrNull?.restoredId
+      val restoredState = if (restoredId != null) app.stateStore.get(restoredId) else null
       treehouseUi.start(
         changesSink = this@ViewContentCodeBinding,
         uiConfigurations = uiConfigurationFlow,
+        stateSnapshot = restoredState,
       )
+    }
+  }
+
+  override fun performSave(id: String) {
+    appScope.launch(app.dispatchers.zipline) {
+      val state = treehouseUiOrNull?.snapshotState() ?: return@launch
+      appScope.launch(app.dispatchers.ui) {
+        app.stateStore.put(id, state)
+      }
     }
   }
 
   fun cancel() {
     app.dispatchers.checkUi()
     canceled = true
+    viewOrNull?.saveCallback = null
     viewOrNull = null
     bridgeOrNull = null
     appScope.launch(app.dispatchers.zipline) {

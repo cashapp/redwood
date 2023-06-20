@@ -52,6 +52,8 @@ public fun <A : AppService> TreehouseContent(
       override val widgetSystem = widgetSystem
       override val readyForContent = true
       override var readyForContentChangeListener: ReadyForContentChangeListener? = null
+      override var saveCallback: TreehouseView.SaveCallback? = null
+      override val restoredId: String? = null
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }

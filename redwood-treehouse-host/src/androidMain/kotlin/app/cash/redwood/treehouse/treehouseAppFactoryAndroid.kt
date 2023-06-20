@@ -40,6 +40,7 @@ public fun TreehouseAppFactory(
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
   concurrentDownloads: Int = 8,
+  stateStore: StateStore = MemoryStateStore(),
 ): TreehouseApp.Factory = TreehouseApp.Factory(
   platform = AndroidTreehousePlatform(context),
   dispatchers = AndroidTreehouseDispatchers(),
@@ -52,6 +53,7 @@ public fun TreehouseAppFactory(
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
   concurrentDownloads = concurrentDownloads,
+  stateStore = stateStore,
 )
 
 internal class AndroidTreehousePlatform(
