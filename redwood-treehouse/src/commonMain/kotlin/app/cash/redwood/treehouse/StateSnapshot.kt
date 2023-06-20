@@ -22,7 +22,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.int
+import kotlinx.serialization.json.double
 
 @Serializable
 public class StateSnapshot(
@@ -75,8 +75,8 @@ private fun JsonElement?.fromJsonElement(): Any {
       if (isBoolean(this)) {
         return this.boolean
       }
-      if (isInt(this)) {
-        return this.int
+      if (isDouble(this)) {
+        return this.double
       } else {
         error("unexpected type: $this")
       }
@@ -99,9 +99,9 @@ private fun isBoolean(jsonPrimitive: JsonPrimitive): Boolean {
   }
 }
 
-private fun isInt(jsonPrimitive: JsonPrimitive): Boolean {
+private fun isDouble(jsonPrimitive: JsonPrimitive): Boolean {
   return try {
-    jsonPrimitive.int
+    jsonPrimitive.double
     true
   } catch (e: NumberFormatException) {
     false

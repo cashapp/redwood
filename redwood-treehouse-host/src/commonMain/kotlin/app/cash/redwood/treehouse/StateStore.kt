@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+/** All functions are invoked on the UI dispatcher. */
 public interface StateStore {
   public suspend fun put(id: String, value: StateSnapshot)
   public suspend fun get(id: String): StateSnapshot?

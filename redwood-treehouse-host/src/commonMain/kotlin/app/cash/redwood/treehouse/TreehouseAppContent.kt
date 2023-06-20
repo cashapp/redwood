@@ -383,7 +383,6 @@ private class ViewContentCodeBinding<A : AppService>(
       val state = treehouseUiOrNull?.snapshotState() ?: return@launch
       appScope.launch(app.dispatchers.ui) {
         app.stateStore.put(id, state)
-        println("=== id: $id, $state")
       }
     }
   }
