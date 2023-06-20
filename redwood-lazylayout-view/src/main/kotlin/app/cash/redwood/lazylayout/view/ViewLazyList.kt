@@ -234,6 +234,9 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val container = Container(parent.context)
+      // [onBindViewHolder] is invoked before the default layout params are set, so
+      // [View.getLayoutParams] will be null unless explicitly set.
+      container.layoutParams = (parent as RecyclerView).layoutManager!!.generateDefaultLayoutParams()
       return when (viewType) {
         VIEW_TYPE_PLACEHOLDER -> ViewHolder.Placeholder(container)
         VIEW_TYPE_ITEM -> ViewHolder.Item(container)
