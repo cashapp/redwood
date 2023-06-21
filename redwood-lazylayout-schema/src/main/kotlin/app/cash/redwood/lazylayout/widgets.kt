@@ -16,6 +16,7 @@
 package app.cash.redwood.lazylayout
 
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.lazylayout.api.ItemCounts
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
@@ -25,8 +26,7 @@ import app.cash.redwood.ui.Margin
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
   @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
-  @Property(3) val itemsBefore: Int,
-  @Property(4) val itemsAfter: Int,
+  @Property(3) val itemCounts: ItemCounts,
   @Property(5) val width: Constraint,
   @Property(6) val height: Constraint,
   @Property(7) val margin: Margin,
@@ -38,8 +38,7 @@ public data class LazyList(
 public data class RefreshableLazyList(
   @Property(1) val isVertical: Boolean,
   @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
-  @Property(3) val itemsBefore: Int,
-  @Property(4) val itemsAfter: Int,
+  @Property(3) val itemCounts: ItemCounts,
   @Property(5) val refreshing: Boolean,
   @Property(6) val onRefresh: (() -> Unit)?,
   @Property(7) val width: Constraint,

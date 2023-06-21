@@ -23,9 +23,11 @@ package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.lazylayout.api.ItemCounts
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlin.math.max
@@ -54,10 +56,12 @@ import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 import platform.UIKit.indexPathForRow
 import platform.UIKit.item
+import platform.darwin.ItemCount
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 internal interface Items: Widget.Children<UIView> {
+  var itemCounts: ItemCounts
   var itemsBefore: Int
   var itemsAfter: Int
   var isFinishedInitialLoad: Boolean
@@ -65,13 +69,14 @@ internal interface Items: Widget.Children<UIView> {
   fun itemCount(): Int
 }
 
-internal open class UIViewLazyList() : LazyList<UIView> {
+internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
   // Data
   override val placeholder: Widget.Children<UIView> = MutableListChildren()
 
   override val items: Items = object : Items {
 
+    override var itemCounts: ItemCounts = ItemCounts(0, 0,0,0)
     override var itemsBefore: Int = 0
     override var itemsAfter: Int = 0
     override var isFinishedInitialLoad: Boolean = false
@@ -92,10 +97,11 @@ internal open class UIViewLazyList() : LazyList<UIView> {
       // This is because CollectionView and TableViews do not fetch their cells in ascending order
       // but does it randomly so we can't guarantee that we have enough items in here to fill the initial
       // set
-      if (index == 13) {
+      if (index > 13) {
         isFinishedInitialLoad = true
         collectionView.reloadData()
       }
+
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -133,7 +139,7 @@ internal open class UIViewLazyList() : LazyList<UIView> {
     }
 
     override fun itemCount(): Int {
-      return max(itemsBefore - 1, 0 ) + viewPortList.count() + itemsAfter
+      return itemCounts.totalItemCount
     }
   }
 
@@ -184,6 +190,9 @@ internal open class UIViewLazyList() : LazyList<UIView> {
         ) as LazyListContainerCell
 
         val widget = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
+        // TODO: get placeholder on cache misses
+          // Resolve after match
+
         println("🟢 cellForItemAtIndexPath index: ${cellForItemAtIndexPath.item} count: ${items.itemCount()} text: ${(widget.value.subviews.first { it is UILabel } as UILabel).text}")
         cell.setView(widget.value)
 
@@ -259,15 +268,12 @@ internal open class UIViewLazyList() : LazyList<UIView> {
     this.onViewportChanged = onViewportChanged
   }
 
-  override fun itemsBefore(itemsBefore: Int) {
-    println("🟤 itemsBefore $itemsBefore")
-    items.itemsBefore = itemsBefore
+  override fun itemCounts(itemCounts: ItemCounts) {
+    println("🟤 itemCounts $itemCounts")
+    items.itemCounts = itemCounts
   }
 
-  override fun itemsAfter(itemsAfter: Int) {
-    println("🟤 itemsAfter $itemsAfter")
-    items.itemsAfter = itemsAfter
-  }
+  //override fun items
 
   // TODO Dynamically update width and height of UIViewLazyList when set
   // @Veyndan - Shouldn't this be done by the parent?
@@ -287,6 +293,15 @@ internal open class UIViewLazyList() : LazyList<UIView> {
   override var modifier: Modifier = Modifier
 
   override val value: UIView get() = collectionView
+
+  override fun onEndChanges() {
+    println("🟤 onEndChanges")
+//    if (!items.isFinishedInitialLoad) {
+//      items.isFinishedInitialLoad = true
+//      collectionView.reloadData()
+//    }
+//    collectionView.reloadData()
+  }
 }
 
 private const val reuseIdentifier = "LazyListContainerCell"

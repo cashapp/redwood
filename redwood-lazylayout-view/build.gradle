@@ -13,7 +13,8 @@ dependencies {
   implementation libs.androidx.recyclerview
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
-  testImplementation projects.redwoodLayoutSharedTest
+    implementation project(path: ':redwood-lazylayout-api')
+    testImplementation projects.redwoodLayoutSharedTest
   testImplementation libs.testParameterInjector
 }
 

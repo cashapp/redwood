@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.lazylayout.api.ItemCounts
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
@@ -48,6 +49,11 @@ internal fun LazyList(
   var placeholderPoolSize by remember { mutableStateOf(20) }
   LazyList(
     isVertical,
+    itemsCount = ItemCounts(
+      itemsBefore = itemsBefore,
+      itemsAfter = itemsAfter,
+      windowedItemCount = itemProvider.itemCount,
+    ),
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->

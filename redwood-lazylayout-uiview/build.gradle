@@ -17,6 +17,7 @@ kotlin {
       dependencies {
         api projects.redwoodLazylayoutWidget
         implementation projects.redwoodWidgetCompose
+        implementation project(path: ':redwood-lazylayout-api')
       }
     }
   }

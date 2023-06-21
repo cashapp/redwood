@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.lazylayout.api.ItemCounts
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Density
@@ -173,6 +174,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     this.onViewportChanged = onViewportChanged
   }
 
+  override fun itemCounts(itemCounts: ItemCounts) {
+    TODO("Not yet implemented")
+  }
+
   private fun updateViewport() {
     val newViewport = linearLayoutManager.findFirstVisibleItemPosition()..linearLayoutManager.findLastVisibleItemPosition()
     if (newViewport != viewport) {
@@ -288,6 +293,9 @@ internal class ViewRefreshableLazyList(
   private val swipeRefreshLayout = SwipeRefreshLayout(context)
 
   override val value: View get() = swipeRefreshLayout
+  override fun itemCounts(itemCounts: ItemCounts) {
+    TODO("Not yet implemented")
+  }
 
   init {
     swipeRefreshLayout.apply {
@@ -295,6 +303,10 @@ internal class ViewRefreshableLazyList(
       // TODO Dynamically update width and height of RefreshableViewLazyList when set
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
+  }
+
+  override fun itemCounts(itemCounts: ItemCounts) {
+    TODO("Not yet implemented")
   }
 
   override fun refreshing(refreshing: Boolean) {
