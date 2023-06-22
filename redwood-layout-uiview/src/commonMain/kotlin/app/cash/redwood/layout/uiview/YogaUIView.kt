@@ -64,12 +64,8 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     val subviews = typedSubviews
     if (subviews.isEmpty()) {
       rootNode.children.clear()
-      rootNode.measureCallback = UIViewMeasureCallback(this)
       return
     }
-
-    // Nodes with children cannot have measure functions.
-    rootNode.measureCallback = null
 
     val currentViews = rootNode.children.map { it.view }
     if (currentViews != subviews) {
