@@ -10,7 +10,6 @@ import android.content.Context
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import androidx.collection.SimpleArrayMap
 import app.cash.redwood.yoga.MeasureCallback
 import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
@@ -18,72 +17,11 @@ import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
 
 internal class YogaLayout(context: Context) : ViewGroup(context) {
-  private val nodes = SimpleArrayMap<View, Node>()
   val rootNode = Node()
-
   var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
     applyLayoutParams(rootNode, layoutParams)
-  }
-
-  override fun addView(child: View, index: Int, params: LayoutParams) {
-    super.addView(child, index, params)
-
-    val childNode = child.asNode()
-    nodes.put(child, childNode)
-    rootNode.children += childNode
-  }
-
-  override fun removeView(view: View) {
-    removeViewFromYogaTree(view)
-    super.removeView(view)
-  }
-
-  override fun removeViewAt(index: Int) {
-    removeViewFromYogaTree(getChildAt(index))
-    super.removeViewAt(index)
-  }
-
-  override fun removeViewInLayout(view: View) {
-    removeViewFromYogaTree(view)
-    super.removeViewInLayout(view)
-  }
-
-  override fun removeViews(start: Int, count: Int) {
-    for (i in start until start + count) {
-      removeViewFromYogaTree(getChildAt(i))
-    }
-    super.removeViews(start, count)
-  }
-
-  override fun removeViewsInLayout(start: Int, count: Int) {
-    for (i in start until start + count) {
-      removeViewFromYogaTree(getChildAt(i))
-    }
-    super.removeViewsInLayout(start, count)
-  }
-
-  override fun removeAllViews() {
-    val childCount = childCount
-    for (i in 0 until childCount) {
-      removeViewFromYogaTree(getChildAt(i))
-    }
-    super.removeAllViews()
-  }
-
-  override fun removeAllViewsInLayout() {
-    val childCount = childCount
-    for (i in 0 until childCount) {
-      removeViewFromYogaTree(getChildAt(i))
-    }
-    super.removeAllViewsInLayout()
-  }
-
-  private fun removeViewFromYogaTree(view: View) {
-    val childNode = nodes.remove(view) ?: return
-    val owner = childNode.owner ?: return
-    owner.children -= childNode
   }
 
   private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
@@ -145,6 +83,8 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   }
 
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
+    syncNodes()
+
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
     }
@@ -162,6 +102,30 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       MeasureSpec.UNSPECIFIED -> {}
     }
     rootNode.measure(Size.Undefined, Size.Undefined)
+  }
+
+  private fun syncNodes() {
+    if (areNodeAndViewListsEqual()) {
+      return
+    }
+
+    rootNode.children.clear()
+    for (index in 0 until childCount) {
+      rootNode.children += getChildAt(index).asNode()
+    }
+  }
+
+  private fun areNodeAndViewListsEqual(): Boolean {
+    if (childCount != rootNode.children.size) {
+      return false
+    }
+
+    for (index in 0 until childCount) {
+      if (getChildAt(index) != rootNode.children[index].view) {
+        return false
+      }
+    }
+    return true
   }
 
   private fun View.asNode(): Node {
