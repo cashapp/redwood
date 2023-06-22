@@ -36,6 +36,7 @@ abstract class AbstractFrameClockTest {
       override val zipline get() = ui
       override fun checkUi() {}
       override fun checkZipline() {}
+      override fun close() {}
     }
     frameClock.start(this, dispatchers)
 
