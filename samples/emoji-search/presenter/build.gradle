@@ -10,6 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api libs.okio
         api projects.samples.emojiSearch.schema.compose
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose

@@ -20,6 +20,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
@@ -30,6 +32,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -50,6 +53,11 @@ public class TreehouseWidgetView(
    */
   override var readyForContent: Boolean = false
     private set
+
+  override var restoredId: String? = null
+    private set
+
+  override var saveCallback: TreehouseView.SaveCallback? = null
 
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
@@ -92,6 +100,18 @@ public class TreehouseWidgetView(
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
+  override fun onSaveInstanceState(): Parcelable? {
+    val id = UUID.randomUUID().toString()
+    val superState = super.onSaveInstanceState()
+    saveCallback?.performSave(id)
+    return SavedState(superState, id)
+  }
+
+  override fun onRestoreInstanceState(state: Parcelable?) {
+    state as SavedState
+    this.restoredId = state.id
+    super.onRestoreInstanceState(state.superState)
+  }
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
@@ -100,5 +120,36 @@ public class TreehouseWidgetView(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
       safeAreaInsets = insets.toMargin(Density(resources)),
     )
+  }
+
+  private class SavedState : BaseSavedState {
+    val id: String
+
+    constructor(superState: Parcelable?, id: String) : super(superState) {
+      this.id = id
+    }
+    private constructor(parcel: Parcel) : super(parcel) {
+      id = parcel.readString()!!
+    }
+
+    override fun writeToParcel(out: Parcel, flags: Int) {
+      super.writeToParcel(out, flags)
+      out.writeString(id)
+    }
+
+    companion object {
+
+      // Android OS relies on CREATOR to restore SavedState
+      @JvmField
+      val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
+        override fun createFromParcel(parcel: Parcel): SavedState {
+          return SavedState(parcel)
+        }
+
+        override fun newArray(size: Int): Array<SavedState?> {
+          return arrayOfNulls(size)
+        }
+      }
+    }
   }
 }

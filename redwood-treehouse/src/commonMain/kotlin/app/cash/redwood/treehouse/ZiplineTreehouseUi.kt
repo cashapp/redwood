@@ -31,5 +31,7 @@ public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     changesSink: ChangesSinkService,
     uiConfigurations: StateFlow<UiConfiguration>,
+    stateSnapshot: StateSnapshot?,
   )
+  public fun snapshotState(): StateSnapshot? = null
 }

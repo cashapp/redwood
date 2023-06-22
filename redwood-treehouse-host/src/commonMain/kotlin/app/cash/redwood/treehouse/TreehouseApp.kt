@@ -62,6 +62,8 @@ public class TreehouseApp<A : AppService> private constructor(
    */
   internal val boundContents = mutableListOf<TreehouseAppContent<A>>()
 
+  internal val stateStore: StateStore = factory.stateStore
+
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
    * returned value will be invalid when new code is loaded.
@@ -221,6 +223,7 @@ public class TreehouseApp<A : AppService> private constructor(
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
     internal val concurrentDownloads: Int,
+    internal val stateStore: StateStore,
   ) : Closeable {
     internal val eventPublisher = EventPublisher(eventListener)
 

@@ -22,6 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalUiConfiguration
@@ -87,6 +90,13 @@ fun EmojiSearch(
   var refreshSignal by remember { mutableStateOf(0) }
   var refreshing by remember { mutableStateOf(false) }
 
+  val searchTermSaver = object : Saver<TextFieldState, String> {
+    override fun restore(value: String) = TextFieldState(value)
+    override fun SaverScope.save(value: TextFieldState) = value.text
+  }
+
+  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
+
   LaunchedEffect(refreshSignal) {
     try {
       refreshing = true
@@ -103,7 +113,6 @@ fun EmojiSearch(
     }
   }
 
-  var searchTerm by remember { mutableStateOf(TextFieldState()) }
   val filteredEmojis by derivedStateOf {
     val searchTerms = searchTerm.text.split(" ")
     allEmojis.filter { image ->
@@ -118,7 +127,7 @@ fun EmojiSearch(
     margin = LocalUiConfiguration.current.safeAreaInsets,
   ) {
     TextInput(
-      state = searchTerm,
+      state = TextFieldState(searchTerm.text),
       hint = "Search",
       onChange = { searchTerm = it },
       modifier = Modifier.shrink(0.0),

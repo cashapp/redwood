@@ -15,6 +15,7 @@
  */
 package com.example.redwood.emojisearch.android.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -41,11 +42,15 @@ import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
 
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
 
+  @SuppressLint("ResourceType")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -68,6 +73,8 @@ class EmojiSearchActivity : ComponentActivity() {
 
     setContentView(
       TreehouseWidgetView(this, widgetSystem).apply {
+        // The view needs to have an id for Android to populate saved data back
+        this.id = 9000
         treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )
@@ -82,6 +89,11 @@ class EmojiSearchActivity : ComponentActivity() {
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
       eventListener = appEventListener,
+      stateStore = FileStateStore(
+        json = Json,
+        fileSystem = FileSystem.SYSTEM,
+        directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
+      ),
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
