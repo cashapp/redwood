@@ -102,7 +102,6 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
     }
 
     override fun itemCount(): Int {
-      // TODO: replace with this with "ItemCounts"
       return max(itemsBefore - 1, 0) + viewPortList.count() + itemsAfter
     }
   }
