@@ -33,5 +33,15 @@ public interface ZiplineTreehouseUi : ZiplineService, EventSink {
     uiConfigurations: StateFlow<UiConfiguration>,
     stateSnapshot: StateSnapshot?,
   )
+
+  @Deprecated(
+    "delete after 2023-07-23",
+    ReplaceWith("start(changesSink, uiConfigurations, null)"),
+  )
+  public fun start(
+    changesSink: ChangesSinkService,
+    uiConfigurations: StateFlow<UiConfiguration>,
+  )
+
   public fun snapshotState(): StateSnapshot? = null
 }
