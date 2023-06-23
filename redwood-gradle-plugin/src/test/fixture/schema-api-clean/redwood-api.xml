@@ -1,0 +1,14 @@
+<schema version="1" type="example.counter.Counter">
+  <widget tag="1" type="example.counter.CounterBox">
+    <children tag="1" name="children"/>
+  </widget>
+  <widget tag="2" type="example.counter.CounterText">
+    <property tag="1" name="text" type="kotlin.String?"/>
+    <property tag="2" name="color" type="kotlin.String"/>
+  </widget>
+  <widget tag="3" type="example.counter.CounterButton">
+    <property tag="1" name="text" type="kotlin.String?"/>
+    <property tag="2" name="enabled" type="kotlin.Boolean"/>
+    <event tag="3" name="onClick"/>
+  </widget>
+</schema>

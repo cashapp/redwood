@@ -15,42 +15,63 @@
  */
 package app.cash.redwood.tooling.schema
 
+import app.cash.redwood.tooling.schema.ValidationMode.Check
+import app.cash.redwood.tooling.schema.ValidationMode.Generate
+import app.cash.redwood.tooling.schema.ValidationResult.Failure
+import app.cash.redwood.tooling.schema.ValidationResult.Success
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
+import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.path
 import java.io.File
 import java.net.URLClassLoader
-import kotlin.io.path.createDirectories
-import kotlin.io.path.writeText
 
-internal class JsonCommand : CliktCommand(
-  name = "json",
-  help = "Parse schema members into a JSON representation",
+internal class ApiCommand : CliktCommand(
+  name = "api",
+  help = "Write schema protocol API to XML, or validate schema compatibility with existing XML",
 ) {
-  private val out by option().path().required()
-    .help("Directory into which JSON is written")
+  private val file by option("-f", "--file")
+    .path()
+    .required()
+    .help("XML file")
 
   private val classpath by option("-cp", "--class-path")
     .file()
     .split(File.pathSeparator)
     .required()
 
+  private val mode by option("-m", "--mode")
+    .choice("check" to Check, "generate" to Generate)
+    .default(Check)
+
   private val schemaTypeName by argument("schema")
     .help("Fully-qualified class name for the @Schema-annotated interface")
+
+  private val fixCommand by option("--fix-with")
+    .help("The command to generate an updated file (reported in failure messages)")
+    .default("generate")
 
   override fun run() {
     val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
     val schemaType = classLoader.loadClass(schemaTypeName).kotlin
     val schema = ProtocolSchemaSet.parse(schemaType).schema
-    val embeddedSchema = schema.toEmbeddedSchema()
-    val path = out.resolve(embeddedSchema.path)
-    path.parent.createDirectories()
-    path.writeText(embeddedSchema.json)
+    val currentApi = ApiSchema(schema)
+
+    when (val result = currentApi.validateAgainst(file, mode, fixCommand)) {
+      is Failure -> {
+        throw PrintMessage(result.message, true)
+      }
+      Success -> {
+        // Nothing to do!
+      }
+    }
   }
 }

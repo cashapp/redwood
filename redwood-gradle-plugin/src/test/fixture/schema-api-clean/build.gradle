@@ -6,7 +6,6 @@ buildscript {
     classpath "app.cash.redwood:redwood-gradle-plugin:$redwoodVersion"
     classpath libs.androidGradlePlugin
     classpath libs.kotlin.gradlePlugin
-    classpath libs.kotlin.serializationPlugin
   }
 
   repositories {
@@ -15,25 +14,6 @@ buildscript {
     }
     mavenCentral()
     google()
-  }
-}
-
-allprojects {
-  repositories {
-    maven {
-      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
-    }
-    mavenCentral()
-    google()
-  }
-
-  tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
-  }
-
-  tasks.withType(KotlinJvmCompile).configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
   }
 }
 
@@ -46,7 +26,21 @@ dependencies {
 
 redwoodSchema {
   type = 'example.counter.Counter'
+}
 
-  // Test fixture. It does not need to be stable.
-  apiTracking = false
+repositories {
+  maven {
+    url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+  }
+  mavenCentral()
+  google()
+}
+
+tasks.withType(JavaCompile).configureEach {
+  sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+  targetCompatibility = JavaVersion.VERSION_1_8.toString()
+}
+
+tasks.withType(KotlinJvmCompile).configureEach {
+  compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
 }

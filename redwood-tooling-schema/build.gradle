@@ -13,6 +13,7 @@ dependencies {
   api projects.redwoodSchema
   api libs.kotlin.reflect
   implementation libs.kotlinx.serialization.json
+  implementation libs.xmlutil.serialization
   implementation libs.kotlin.compilerEmbeddable
   implementation libs.clikt
 
@@ -20,6 +21,7 @@ dependencies {
   testImplementation libs.junit
   testImplementation libs.assertk
   testImplementation libs.testParameterInjector
+  testImplementation libs.jimfs
 }
 
 // In order to simplify writing test schemas, inject the test sources and

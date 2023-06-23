@@ -1,0 +1,10 @@
+<schema version="1" type="com.example.redwood.counter.Schema">
+  <widget tag="2" type="com.example.redwood.counter.Text">
+    <property tag="1" name="text" type="kotlin.String?"/>
+  </widget>
+  <widget tag="3" type="com.example.redwood.counter.Button">
+    <property tag="1" name="text" type="kotlin.String?"/>
+    <property tag="2" name="enabled" type="kotlin.Boolean"/>
+    <event tag="3" name="onClick" nullable="true"/>
+  </widget>
+</schema>
