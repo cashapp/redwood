@@ -39,7 +39,6 @@ import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
 
-// TODO Support RTL layout direction in `redwood-layout-composeui`
 @RunWith(TestParameterInjector::class)
 class ComposeUiFlexContainerTest(
   @TestParameter layoutDirection: LayoutDirection,
