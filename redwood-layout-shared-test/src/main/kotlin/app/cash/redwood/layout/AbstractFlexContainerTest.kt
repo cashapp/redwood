@@ -28,6 +28,7 @@ import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
 import com.google.testing.junit.testparameterinjector.TestParameter
 import org.junit.Assume.assumeFalse
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 abstract class AbstractFlexContainerTest<T : Any> {
@@ -98,12 +99,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun columnWithAlignItems(
+  @Test fun layoutWithAlignItems(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
     @TestParameter alignItemsEnum: AlignItemsEnum,
   ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     assumeFalse(alignItemsEnum == AlignItemsEnum.Baseline)
+    val flexDirection = flexDirectionEnum.toFlexDirection()
     val alignItems = alignItemsEnum.toAlignItems()
-    val container = flexContainer(FlexDirection.Column)
+    val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.alignItems(alignItems)
@@ -186,6 +190,20 @@ private val movies = listOf(
 private data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment, VerticalAlignment
+
+enum class FlexDirectionEnum {
+  Row,
+  RowReverse,
+  Column,
+  ColumnReverse,
+}
+
+private fun FlexDirectionEnum.toFlexDirection() = when (this) {
+  FlexDirectionEnum.Row -> FlexDirection.Row
+  FlexDirectionEnum.RowReverse -> FlexDirection.RowReverse
+  FlexDirectionEnum.Column -> FlexDirection.Column
+  FlexDirectionEnum.ColumnReverse -> FlexDirection.ColumnReverse
+}
 
 enum class AlignItemsEnum {
   FlexStart,
