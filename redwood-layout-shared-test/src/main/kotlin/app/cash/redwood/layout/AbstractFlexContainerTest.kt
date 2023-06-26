@@ -96,6 +96,50 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
+  @Test fun columnWithAlignItemsFlexStart() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun columnWithAlignItemsFlexEnd() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexEnd)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun columnWithAlignItemsCenter() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.Center)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun columnWithAlignItemsStretch() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.Stretch)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container)
+  }
+
   @Test fun columnWithJustifyContentCenter() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
