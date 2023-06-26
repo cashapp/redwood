@@ -30,7 +30,9 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -42,6 +44,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
@@ -119,6 +122,11 @@ internal class ComposeUiFlexContainer(
         // Apply the margin.
         density = Density(LocalDensity.current.density.toDouble())
         with(rootNode) {
+          direction = when (LocalLayoutDirection.current) {
+            LayoutDirection.Ltr -> Direction.LTR
+            LayoutDirection.Rtl -> Direction.RTL
+          }
+
           with(density) {
             marginStart = margin.start.toPx().toFloat()
             marginEnd = margin.end.toPx().toFloat()
