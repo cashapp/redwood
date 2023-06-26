@@ -83,7 +83,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun columnWithMarginAndDifferentAlignments() {
     val container = flexContainer(FlexDirection.Column)
-    container.margin(Margin(horizontal = 10.dp, vertical = 20.dp))
+    container.margin(Margin(start = 5.dp, end = 10.dp, top = 20.dp, bottom = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
         0 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Start)
