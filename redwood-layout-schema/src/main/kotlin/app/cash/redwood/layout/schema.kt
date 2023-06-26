@@ -27,6 +27,8 @@ import app.cash.redwood.schema.Schema
     Margin::class,
     HorizontalAlignment::class,
     VerticalAlignment::class,
+    Width::class,
+    Height::class,
   ],
 )
 public interface RedwoodLayout

@@ -19,10 +19,12 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
+import app.cash.redwood.layout.modifier.Height as HeightModifier
 import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
+import app.cash.redwood.layout.modifier.Width as WidthModifier
 import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.AlignSelf
@@ -75,6 +77,16 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
       }
       is VerticalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
+      }
+      is WidthModifier -> with(density) {
+        val width = childModifier.width.toPx().toFloat()
+        requestedMinWidth = width
+        requestedMaxWidth = width
+      }
+      is HeightModifier -> with(density) {
+        val height = childModifier.height.toPx().toFloat()
+        requestedMinHeight = height
+        requestedMaxHeight = height
       }
     }
   }

@@ -17,6 +17,7 @@ package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.schema.Modifier
+import app.cash.redwood.ui.Dp
 
 /**
  * Configure how much of the remaining space in the layout should be assigned to this item.
@@ -64,4 +65,20 @@ public data class HorizontalAlignment(
 @Modifier(5, RowScope::class)
 public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,
+)
+
+/**
+ * Set a required width for an item.
+ */
+@Modifier(6, RowScope::class, ColumnScope::class)
+public data class Width(
+  val width: Dp,
+)
+
+/**
+ * Set a required height for an item.
+ */
+@Modifier(7, RowScope::class, ColumnScope::class)
+public data class Height(
+  val height: Dp,
 )

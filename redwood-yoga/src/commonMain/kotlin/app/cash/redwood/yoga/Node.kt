@@ -67,6 +67,12 @@ public class Node internal constructor(
   public var requestedHeight: Float
     get() = Yoga.YGNodeStyleGetHeight(native).value
     set(value) = Yoga.YGNodeStyleSetHeight(native, value)
+  public var requestedMinWidth: Float
+    get() = Yoga.YGNodeStyleGetMinWidth(native).value
+    set(value) = Yoga.YGNodeStyleSetMinWidth(native, value)
+  public var requestedMinHeight: Float
+    get() = Yoga.YGNodeStyleGetMinHeight(native).value
+    set(value) = Yoga.YGNodeStyleSetMinHeight(native, value)
   public var requestedMaxWidth: Float
     get() = Yoga.YGNodeStyleGetMaxWidth(native).value
     set(value) = Yoga.YGNodeStyleSetMaxWidth(native, value)

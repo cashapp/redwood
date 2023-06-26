@@ -756,6 +756,14 @@ internal object Yoga {
     return node.style.dimensions[YGDimension.YGDimensionHeight.ordinal]
   }
 
+  fun YGNodeStyleGetMinWidth(node: YGNode): YGValue {
+    return node.style.minDimensions[YGDimension.YGDimensionWidth.ordinal]
+  }
+
+  fun YGNodeStyleGetMinHeight(node: YGNode): YGValue {
+    return node.style.minDimensions[YGDimension.YGDimensionHeight.ordinal]
+  }
+
   fun YGNodeStyleGetMaxWidth(node: YGNode): YGValue {
     return node.style.maxDimensions[YGDimension.YGDimensionWidth.ordinal]
   }
