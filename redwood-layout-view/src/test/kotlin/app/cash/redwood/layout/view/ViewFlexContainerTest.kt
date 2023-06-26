@@ -37,7 +37,6 @@ import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
 
-// TODO Support RTL layout direction in `redwood-layout-view`
 @RunWith(TestParameterInjector::class)
 class ViewFlexContainerTest(
   @TestParameter layoutDirection: LayoutDirection,

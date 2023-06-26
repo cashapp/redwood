@@ -28,6 +28,9 @@ public class Node internal constructor(
   public val children: MutableList<Node> = Children()
   public val owner: Node?
     get() = native.owner?.let(::Node)
+  public var direction: Direction
+    get() = native.style.direction().toDirection()
+    set(value) = Yoga.YGNodeStyleSetDirection(native, value.toYoga())
   public var flexDirection: FlexDirection
     get() = native.style.flexDirection().toFlexDirection()
     set(value) = Yoga.YGNodeStyleSetFlexDirection(native, value.toYoga())

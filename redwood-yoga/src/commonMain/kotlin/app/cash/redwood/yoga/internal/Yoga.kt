@@ -503,6 +503,18 @@ internal object Yoga {
     node.setBaselineFunc(baselineFunc)
   }
 
+  fun YGNodeStyleSetDirection(
+    node: YGNode,
+    value: YGDirection
+  ) {
+    updateStyle(
+      node,
+      YGDirection::class,
+      value,
+      YGStyle::directionBitfieldRef
+    )
+  }
+
   fun YGNodeStyleSetFlexDirection(
     node: YGNode,
     flexDirection: YGFlexDirection,

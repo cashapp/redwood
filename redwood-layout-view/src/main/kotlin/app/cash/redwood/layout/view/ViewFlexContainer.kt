@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.view
 
 import android.content.Context
+import android.util.LayoutDirection
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -35,6 +36,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.yoga.AlignItems
+import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.isHorizontal
@@ -54,6 +56,11 @@ internal class ViewFlexContainer(
   override var modifier: Modifier = Modifier
 
   init {
+    yogaLayout.rootNode.direction = when (hostView.resources.configuration.layoutDirection) {
+      LayoutDirection.LTR -> Direction.LTR
+      LayoutDirection.RTL -> Direction.RTL
+      else -> throw AssertionError()
+    }
     yogaLayout.rootNode.flexDirection = direction
     yogaLayout.applyModifier = { node, index ->
       node.applyModifier(children.widgets[index].modifier, density)
