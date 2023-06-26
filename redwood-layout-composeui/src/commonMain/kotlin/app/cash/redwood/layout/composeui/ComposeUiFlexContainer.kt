@@ -49,10 +49,10 @@ import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
 
 internal class ComposeUiFlexContainer(
-  private val direction: FlexDirection,
+  private val flexDirection: FlexDirection,
 ) : Row<@Composable () -> Unit>, Column<@Composable () -> Unit> {
   private val rootNode = Node().apply {
-    flexDirection = direction
+    flexDirection = this@ComposeUiFlexContainer.flexDirection
   }
   override val children = ComposeWidgetChildren()
   override var modifier: RedwoodModifier = RedwoodModifier
@@ -144,7 +144,7 @@ internal class ComposeUiFlexContainer(
       modifier = modifier.fillMaxHeight()
     }
     if (overflow == Overflow.Scroll) {
-      if (direction.isHorizontal) {
+      if (flexDirection.isHorizontal) {
         modifier = modifier.horizontalScroll(rememberScrollState())
       } else {
         modifier = modifier.verticalScroll(rememberScrollState())

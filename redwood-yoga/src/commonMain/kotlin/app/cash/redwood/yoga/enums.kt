@@ -17,6 +17,23 @@ package app.cash.redwood.yoga
 
 import kotlin.jvm.JvmInline
 
+@JvmInline
+public value class Direction private constructor(private val ordinal: Int) {
+
+  override fun toString(): String = when (ordinal) {
+    0 -> "Inherit"
+    1 -> "LTR"
+    2 -> "RTL"
+    else -> throw AssertionError()
+  }
+
+  public companion object {
+    public val Inherit: Direction = Direction(0)
+    public val LTR: Direction = Direction(1)
+    public val RTL: Direction = Direction(2)
+  }
+}
+
 /**
  * The direction children items are placed inside the flex container, it determines the
  * direction of the main axis (and the cross axis, perpendicular to the main axis).

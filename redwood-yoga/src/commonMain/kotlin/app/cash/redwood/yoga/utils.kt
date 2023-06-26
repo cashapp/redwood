@@ -18,10 +18,18 @@ package app.cash.redwood.yoga
 import app.cash.redwood.yoga.internal.YGNode
 import app.cash.redwood.yoga.internal.YGSize
 import app.cash.redwood.yoga.internal.enums.YGAlign
+import app.cash.redwood.yoga.internal.enums.YGDirection
 import app.cash.redwood.yoga.internal.enums.YGFlexDirection
 import app.cash.redwood.yoga.internal.enums.YGJustify
 import app.cash.redwood.yoga.internal.enums.YGMeasureMode
 import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
+
+internal fun Direction.toYoga() = when (this) {
+  Direction.Inherit -> YGDirection.YGDirectionInherit
+  Direction.LTR -> YGDirection.YGDirectionLTR
+  Direction.RTL -> YGDirection.YGDirectionRTL
+  else -> throw AssertionError()
+}
 
 internal fun FlexDirection.toYoga() = when (this) {
   FlexDirection.Row -> YGFlexDirection.YGFlexDirectionRow
@@ -58,6 +66,12 @@ internal fun AlignSelf.toYoga() = when (this) {
   AlignSelf.Stretch -> YGAlign.YGAlignStretch
   AlignSelf.Auto -> YGAlign.YGAlignAuto
   else -> throw AssertionError()
+}
+
+internal fun YGDirection.toDirection() = when (this) {
+  YGDirection.YGDirectionInherit -> Direction.Inherit
+  YGDirection.YGDirectionLTR -> Direction.LTR
+  YGDirection.YGDirectionRTL -> Direction.RTL
 }
 
 internal fun YGFlexDirection.toFlexDirection() = when (this) {
