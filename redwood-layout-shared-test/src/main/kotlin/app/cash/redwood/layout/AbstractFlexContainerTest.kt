@@ -26,6 +26,8 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
+import com.google.testing.junit.testparameterinjector.TestParameter
+import org.junit.Assume.assumeFalse
 import org.junit.Test
 
 abstract class AbstractFlexContainerTest<T : Any> {
@@ -96,44 +98,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun columnWithAlignItemsFlexStart() {
+  @Test fun columnWithAlignItems(
+    @TestParameter alignItemsEnum: AlignItemsEnum,
+  ) {
+    assumeFalse(alignItemsEnum == AlignItemsEnum.Baseline)
+    val alignItems = alignItemsEnum.toAlignItems()
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun columnWithAlignItemsFlexEnd() {
-    val container = flexContainer(FlexDirection.Column)
-    container.width(Constraint.Fill)
-    container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexEnd)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun columnWithAlignItemsCenter() {
-    val container = flexContainer(FlexDirection.Column)
-    container.width(Constraint.Fill)
-    container.height(Constraint.Fill)
-    container.alignItems(AlignItems.Center)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun columnWithAlignItemsStretch() {
-    val container = flexContainer(FlexDirection.Column)
-    container.width(Constraint.Fill)
-    container.height(Constraint.Fill)
-    container.alignItems(AlignItems.Stretch)
+    container.alignItems(alignItems)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -213,3 +186,19 @@ private val movies = listOf(
 private data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment, VerticalAlignment
+
+enum class AlignItemsEnum {
+  FlexStart,
+  FlexEnd,
+  Center,
+  Baseline,
+  Stretch,
+}
+
+private fun AlignItemsEnum.toAlignItems() = when (this) {
+  AlignItemsEnum.FlexStart -> AlignItems.FlexStart
+  AlignItemsEnum.FlexEnd -> AlignItems.FlexEnd
+  AlignItemsEnum.Center -> AlignItems.Center
+  AlignItemsEnum.Baseline -> AlignItems.Baseline
+  AlignItemsEnum.Stretch -> AlignItems.Stretch
+}
