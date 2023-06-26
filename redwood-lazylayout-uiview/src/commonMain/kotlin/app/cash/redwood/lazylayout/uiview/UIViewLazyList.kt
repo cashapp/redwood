@@ -23,6 +23,7 @@ package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
@@ -235,6 +236,10 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
   override fun margin(margin: Margin) {
     collectionView.contentInset = UIEdgeInsetsMake(margin.top.value, margin.start.value, margin.end.value, margin.bottom.value)
+  }
+
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    // TODO Support CrossAxisAlignment in `redwood-lazylayout-uiview`
   }
 
   override var modifier: Modifier = Modifier

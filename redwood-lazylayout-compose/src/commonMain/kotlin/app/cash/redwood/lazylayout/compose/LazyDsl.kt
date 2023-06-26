@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.LayoutScopeMarker
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
 
 @LayoutScopeMarker
@@ -75,6 +76,7 @@ public fun LazyRow(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
+  verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -84,6 +86,7 @@ public fun LazyRow(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = verticalAlignment,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -98,6 +101,7 @@ public fun LazyRow(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
+  verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -109,6 +113,7 @@ public fun LazyRow(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = verticalAlignment,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -120,6 +125,7 @@ public fun LazyColumn(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
+  horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -129,6 +135,7 @@ public fun LazyColumn(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = horizontalAlignment,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
@@ -143,6 +150,7 @@ public fun LazyColumn(
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
+  horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   modifier: Modifier = Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -154,6 +162,7 @@ public fun LazyColumn(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = horizontalAlignment,
     modifier = modifier,
     placeholder = placeholder,
     content = content,
