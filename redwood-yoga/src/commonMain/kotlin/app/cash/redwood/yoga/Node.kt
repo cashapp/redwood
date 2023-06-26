@@ -50,11 +50,11 @@ public class Node internal constructor(
     get() = Yoga.YGNodeStyleGetFlexShrink(native)
     set(value) = Yoga.YGNodeStyleSetFlexShrink(native, value)
   public var marginStart: Float
-    get() = getMargin(YGEdge.YGEdgeLeft)
-    set(value) = setMargin(YGEdge.YGEdgeLeft, value)
+    get() = getMargin(YGEdge.YGEdgeStart)
+    set(value) = setMargin(YGEdge.YGEdgeStart, value)
   public var marginEnd: Float
-    get() = getMargin(YGEdge.YGEdgeRight)
-    set(value) = setMargin(YGEdge.YGEdgeRight, value)
+    get() = getMargin(YGEdge.YGEdgeEnd)
+    set(value) = setMargin(YGEdge.YGEdgeEnd, value)
   public var marginTop: Float
     get() = getMargin(YGEdge.YGEdgeTop)
     set(value) = setMargin(YGEdge.YGEdgeTop, value)
