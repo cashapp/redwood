@@ -151,14 +151,12 @@ internal class ComposeUiLazyList :
         LazyColumn(
           modifier = modifier,
           state = state,
-          horizontalAlignment = Alignment.CenterHorizontally,
           content = content,
         )
       } else {
         LazyRow(
           modifier = modifier,
           state = state,
-          verticalAlignment = Alignment.CenterVertically,
           content = content,
         )
       }
