@@ -131,6 +131,8 @@ internal class ViewFlexContainer(
   private fun invalidate() {
     hostView.invalidate()
     hostView.requestLayout()
+    yogaLayout.invalidate()
+    yogaLayout.requestLayout()
   }
 
   private inner class HostView : FrameLayout(context) {

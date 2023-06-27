@@ -38,7 +38,7 @@ import org.junit.Test
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
   abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
-  abstract fun verifySnapshot(container: TestFlexContainer<T>)
+  abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
 
   @Test fun emptyRow() {
     val container = flexContainer(FlexDirection.Row)
@@ -119,6 +119,20 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(widget(movie))
     }
     verifySnapshot(container)
+  }
+
+  @Test
+  fun columnWithUpdatedAlignItems() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.Center)
+    movies.forEach { movie ->
+      container.add(widget(movie))
+    }
+    verifySnapshot(container, "Center")
+    container.alignItems(AlignItems.FlexEnd)
+    verifySnapshot(container, "FlexEnd")
   }
 
   @Test fun columnWithJustifyContentCenter() {

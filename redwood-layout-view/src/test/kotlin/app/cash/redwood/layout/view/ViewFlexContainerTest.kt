@@ -64,8 +64,8 @@ class ViewFlexContainerTest(
     override var modifier = modifier
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<View>) {
-    paparazzi.snapshot(container.value)
+  override fun verifySnapshot(container: TestFlexContainer<View>, name: String?) {
+    paparazzi.snapshot(container.value, name)
   }
 
   class ViewTestFlexContainer(context: Context, direction: FlexDirection) : TestFlexContainer<View> {
