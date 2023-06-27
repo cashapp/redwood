@@ -65,8 +65,8 @@ class ComposeUiFlexContainerTest(
     override var modifier = modifier
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>) {
-    paparazzi.snapshot {
+  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
+    paparazzi.snapshot(name) {
       container.value()
     }
   }
