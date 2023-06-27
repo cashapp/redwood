@@ -23,6 +23,7 @@ import app.cash.redwood.layout.modifier.Height as HeightModifier
 import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
+import app.cash.redwood.layout.modifier.Size as SizeModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.modifier.Width as WidthModifier
 import app.cash.redwood.ui.Density
@@ -84,6 +85,14 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
         requestedMaxWidth = width
       }
       is HeightModifier -> with(density) {
+        val height = childModifier.height.toPx().toFloat()
+        requestedMinHeight = height
+        requestedMaxHeight = height
+      }
+      is SizeModifier -> with(density) {
+        val width = childModifier.width.toPx().toFloat()
+        requestedMinWidth = width
+        requestedMaxWidth = width
         val height = childModifier.height.toPx().toFloat()
         requestedMinHeight = height
         requestedMaxHeight = height

@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.ui.Dp
@@ -199,10 +200,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.alignItems(AlignItems.FlexStart)
     repeat(10) { index ->
-      val modifier = Modifier
-        .then(WidthImpl(50.dp))
-        .then(HeightImpl(50.dp))
-      container.add(widget("$index", modifier))
+      container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
     }
     verifySnapshot(container)
   }
@@ -252,6 +250,11 @@ private data class WidthImpl(
 private data class HeightImpl(
   override val height: Dp,
 ) : Height
+
+private data class SizeImpl(
+  override val width: Dp,
+  override val height: Dp,
+) : Size
 
 enum class FlexDirectionEnum {
   Row,

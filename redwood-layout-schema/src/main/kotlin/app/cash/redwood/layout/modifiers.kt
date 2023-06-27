@@ -82,3 +82,12 @@ public data class Width(
 public data class Height(
   val height: Dp,
 )
+
+/**
+ * Set a required width and height for an item.
+ */
+@Modifier(8, RowScope::class, ColumnScope::class)
+public data class Size(
+  val width: Dp,
+  val height: Dp,
+)
