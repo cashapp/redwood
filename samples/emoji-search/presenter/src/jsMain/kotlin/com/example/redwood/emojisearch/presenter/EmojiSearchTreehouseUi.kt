@@ -59,7 +59,7 @@ private class LazyColumnProvider : ColumnProvider {
       modifier = modifier,
       placeholder = placeholder,
     ) {
-      items(items, itemContent)
+      items(items) { itemContent(it) }
     }
   }
 }

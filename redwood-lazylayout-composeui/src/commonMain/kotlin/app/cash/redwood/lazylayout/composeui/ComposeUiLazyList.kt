@@ -114,6 +114,7 @@ internal class ComposeUiLazyList :
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
         // TODO If CrossAxisAlignment is Stretch, pass Modifier.fillParentMaxWidth() to child widget.
+        // TODO Apply Modifier.alignment on child widgets.
         item.value.invoke()
       }
     }

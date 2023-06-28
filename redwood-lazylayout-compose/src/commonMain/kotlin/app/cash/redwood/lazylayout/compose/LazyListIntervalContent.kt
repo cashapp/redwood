@@ -33,7 +33,7 @@ internal class LazyListIntervalContent(
 
   override fun items(
     count: Int,
-    itemContent: @Composable (index: Int) -> Unit,
+    itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
   ) {
     intervals.addInterval(
       count,
@@ -43,7 +43,7 @@ internal class LazyListIntervalContent(
     )
   }
 
-  override fun item(content: @Composable () -> Unit) {
+  override fun item(content: @Composable LazyItemScope.() -> Unit) {
     intervals.addInterval(
       1,
       LazyListInterval(
@@ -54,5 +54,5 @@ internal class LazyListIntervalContent(
 }
 
 internal class LazyListInterval(
-  val item: @Composable (index: Int) -> Unit,
+  val item: @Composable LazyItemScope.(index: Int) -> Unit,
 ) : LazyLayoutIntervalContent.Interval
