@@ -18,8 +18,12 @@ package app.cash.redwood.layout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
+import app.cash.redwood.layout.modifier.Width
+import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
@@ -31,6 +35,7 @@ import org.junit.Assume.assumeFalse
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 
+@Suppress("JUnitMalformedDeclaration")
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
   abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
@@ -166,6 +171,39 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
     verifySnapshot(container)
   }
+
+  @Test fun containerWithFixedWidthItems() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
+    repeat(10) { index ->
+      container.add(widget("$index", WidthImpl(50.dp)))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun containerWithFixedHeightItems() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
+    repeat(10) { index ->
+      container.add(widget("$index", HeightImpl(50.dp)))
+    }
+    verifySnapshot(container)
+  }
+
+  @Test fun containerWithFixedSizeItems() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
+    repeat(10) { index ->
+      container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
+    }
+    verifySnapshot(container)
+  }
 }
 
 interface TestFlexContainer<T : Any> {
@@ -204,6 +242,19 @@ private val movies = listOf(
 private data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment, VerticalAlignment
+
+private data class WidthImpl(
+  override val width: Dp,
+) : Width
+
+private data class HeightImpl(
+  override val height: Dp,
+) : Height
+
+private data class SizeImpl(
+  override val width: Dp,
+  override val height: Dp,
+) : Size
 
 enum class FlexDirectionEnum {
   Row,

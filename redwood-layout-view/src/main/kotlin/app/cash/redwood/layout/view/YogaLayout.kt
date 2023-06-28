@@ -85,10 +85,6 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
     syncNodes()
 
-    for ((index, node) in rootNode.children.withIndex()) {
-      applyModifier(node, index)
-    }
-
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> rootNode.requestedWidth = widthSize
@@ -101,6 +97,12 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       MeasureSpec.AT_MOST -> rootNode.requestedMaxHeight = heightSize
       MeasureSpec.UNSPECIFIED -> {}
     }
+
+    // This must be applied immediately before measure.
+    for ((index, node) in rootNode.children.withIndex()) {
+      applyModifier(node, index)
+    }
+
     rootNode.measure(Size.Undefined, Size.Undefined)
   }
 

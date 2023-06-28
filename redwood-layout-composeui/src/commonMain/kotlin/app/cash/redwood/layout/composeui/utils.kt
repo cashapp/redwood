@@ -29,8 +29,18 @@ import app.cash.redwood.yoga.Size
 internal class ComposeMeasureCallback(
   private val measurable: Measurable,
 ) : MeasureCallback {
-  lateinit var placeable: Placeable
-    private set
+  private var placeable: Placeable? = null
+
+  fun getPlaceable(node: Node): Placeable {
+    var placeable = placeable
+
+    // This occurs when 'measure' was skipped - usually due to the node already having a fixed size.
+    if (placeable == null) {
+      placeable = createPlaceable(node.width, MeasureMode.Exactly, node.height, MeasureMode.Exactly)
+    }
+
+    return placeable
+  }
 
   override fun measure(
     node: Node,
@@ -39,9 +49,18 @@ internal class ComposeMeasureCallback(
     height: Float,
     heightMode: MeasureMode,
   ): Size {
-    val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
-    this.placeable = measurable.measure(constraints)
+    val placeable = createPlaceable(width, widthMode, height, heightMode)
     return Size(placeable.width.toFloat(), placeable.height.toFloat())
+  }
+
+  private fun createPlaceable(
+    width: Float,
+    widthMode: MeasureMode,
+    height: Float,
+    heightMode: MeasureMode,
+  ): Placeable {
+    val constraints = measureSpecsToConstraints(width, widthMode, height, heightMode)
+    return measurable.measure(constraints).also { placeable = it }
   }
 }
 
