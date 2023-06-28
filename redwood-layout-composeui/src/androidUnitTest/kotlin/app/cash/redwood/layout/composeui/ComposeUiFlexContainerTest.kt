@@ -72,7 +72,9 @@ class ComposeUiFlexContainerTest(
   }
 
   class ComposeTestFlexContainer(direction: FlexDirection) : TestFlexContainer<@Composable () -> Unit> {
-    private val delegate = ComposeUiFlexContainer(direction)
+    private val delegate = ComposeUiFlexContainer(direction).apply {
+      testOnlyModifier = Modifier.background(Color.Blue)
+    }
     private var childCount = 0
 
     override val value get() = delegate.value

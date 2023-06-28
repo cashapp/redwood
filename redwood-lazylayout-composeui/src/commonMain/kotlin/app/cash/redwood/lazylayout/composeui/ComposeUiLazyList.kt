@@ -62,6 +62,8 @@ internal class ComposeUiLazyList :
   private var margin by mutableStateOf(Margin.Zero)
   private var crossAxisAlignment by mutableStateOf(CrossAxisAlignment.Start)
 
+  internal var testOnlyModifier: Modifier? = null
+
   override var modifier: RedwoodModifier = RedwoodModifier
 
   override val placeholder = ComposeWidgetChildren()
@@ -154,6 +156,7 @@ internal class ComposeUiLazyList :
           bottom = margin.bottom.toPlatformDp().dp,
         )
         .pullRefresh(state = refreshState, enabled = onRefresh != null)
+        .run { testOnlyModifier?.let { then(it) } ?: this }
       if (isVertical) {
         val horizontalAlignment = when (crossAxisAlignment) {
           CrossAxisAlignment.Start -> Alignment.Start

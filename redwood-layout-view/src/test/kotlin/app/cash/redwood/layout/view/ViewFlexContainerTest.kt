@@ -69,7 +69,9 @@ class ViewFlexContainerTest(
   }
 
   class ViewTestFlexContainer(context: Context, direction: FlexDirection) : TestFlexContainer<View> {
-    private val delegate = ViewFlexContainer(context, direction)
+    private val delegate = ViewFlexContainer(context, direction).apply {
+      value.setBackgroundColor(Color.BLUE)
+    }
     private var childCount = 0
 
     override val value get() = delegate.value
