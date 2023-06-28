@@ -76,8 +76,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun columnWithMarginAndDifferentAlignments() {
-    val container = flexContainer(FlexDirection.Column)
+  @Test fun layoutWithMarginAndDifferentAlignments(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
+    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val container = flexContainer(flexDirection)
     container.margin(Margin(start = 5.dp, end = 10.dp, top = 20.dp, bottom = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
