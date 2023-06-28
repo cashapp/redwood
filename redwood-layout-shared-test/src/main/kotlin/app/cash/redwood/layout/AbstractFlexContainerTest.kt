@@ -18,10 +18,9 @@ package app.cash.redwood.layout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Alignment
 import app.cash.redwood.layout.modifier.Height
-import app.cash.redwood.layout.modifier.HorizontalAlignment
 import app.cash.redwood.layout.modifier.Size
-import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
@@ -94,10 +93,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.margin(Margin(start = 5.dp, end = 10.dp, top = 20.dp, bottom = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
-        0 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Start)
-        1 -> CrossAxisAlignmentImpl(CrossAxisAlignment.Center)
-        2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
-        else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
+        0 -> AlignmentImpl(CrossAxisAlignment.Start)
+        1 -> AlignmentImpl(CrossAxisAlignment.Center)
+        2 -> AlignmentImpl(CrossAxisAlignment.End)
+        else -> AlignmentImpl(CrossAxisAlignment.Stretch)
       }
       container.add(widget(movie, modifier))
     }
@@ -239,9 +238,9 @@ private val movies = listOf(
   "Seven Samurai",
 )
 
-private data class CrossAxisAlignmentImpl(
+private data class AlignmentImpl(
   override val alignment: CrossAxisAlignment,
-) : HorizontalAlignment, VerticalAlignment
+) : Alignment
 
 private data class WidthImpl(
   override val width: Dp,
