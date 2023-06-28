@@ -182,7 +182,7 @@ internal class ComposeUiFlexContainer(
 
     return layout(rootNode.width.toInt(), rootNode.height.toInt()) {
       for (node in rootNode.children) {
-        val placeable = (node.measureCallback as ComposeMeasureCallback).placeable
+        val placeable = (node.measureCallback as ComposeMeasureCallback).getPlaceable(node)
         placeable.place(node.left.toInt(), node.top.toInt())
       }
     }
