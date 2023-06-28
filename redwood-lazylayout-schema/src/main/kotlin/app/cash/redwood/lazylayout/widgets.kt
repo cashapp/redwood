@@ -16,6 +16,7 @@
 package app.cash.redwood.lazylayout
 
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
@@ -30,6 +31,7 @@ public data class LazyList(
   @Property(5) val width: Constraint,
   @Property(6) val height: Constraint,
   @Property(7) val margin: Margin,
+  @Property(8) val crossAxisAlignment: CrossAxisAlignment,
   @Children(1) val placeholder: () -> Unit,
   @Children(2) val items: () -> Unit,
 )
@@ -45,6 +47,7 @@ public data class RefreshableLazyList(
   @Property(7) val width: Constraint,
   @Property(8) val height: Constraint,
   @Property(9) val margin: Margin,
+  @Property(10) val crossAxisAlignment: CrossAxisAlignment,
   @Children(1) val placeholder: () -> Unit,
   @Children(2) val items: () -> Unit,
 )

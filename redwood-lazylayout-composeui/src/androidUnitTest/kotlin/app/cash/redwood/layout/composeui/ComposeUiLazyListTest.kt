@@ -28,6 +28,7 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
@@ -88,6 +89,14 @@ class ComposeUiLazyListTest(
     }
 
     override fun alignItems(alignItems: AlignItems) {
+      val crossAxisAlignment = when (alignItems) {
+        AlignItems.FlexStart -> CrossAxisAlignment.Start
+        AlignItems.Center -> CrossAxisAlignment.Center
+        AlignItems.FlexEnd -> CrossAxisAlignment.End
+        AlignItems.Stretch -> CrossAxisAlignment.Stretch
+        else -> throw AssertionError()
+      }
+      delegate.crossAxisAlignment(crossAxisAlignment)
     }
 
     override fun justifyContent(justifyContent: JustifyContent) {

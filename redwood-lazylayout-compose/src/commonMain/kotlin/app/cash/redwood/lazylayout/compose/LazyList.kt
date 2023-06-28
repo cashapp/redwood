@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
@@ -36,6 +37,7 @@ internal fun LazyList(
   width: Constraint,
   height: Constraint,
   margin: Margin,
+  crossAxisAlignment: CrossAxisAlignment,
   modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -63,6 +65,7 @@ internal fun LazyList(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
@@ -83,6 +86,7 @@ internal fun RefreshableLazyList(
   width: Constraint,
   height: Constraint,
   margin: Margin,
+  crossAxisAlignment: CrossAxisAlignment,
   modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -112,6 +116,7 @@ internal fun RefreshableLazyList(
     width = width,
     height = height,
     margin = margin,
+    crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {

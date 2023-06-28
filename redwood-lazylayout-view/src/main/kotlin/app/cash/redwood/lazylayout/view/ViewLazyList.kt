@@ -19,6 +19,7 @@ package app.cash.redwood.lazylayout.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -32,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Density
@@ -104,9 +106,8 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
   private val density = Density(context.resources)
   private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
-    // Identical to the implementation of [LinearLayout.generateDefaultLayoutParams].
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams? = when (orientation) {
-      RecyclerView.HORIZONTAL -> RecyclerView.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+      RecyclerView.HORIZONTAL -> RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
       RecyclerView.VERTICAL -> RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
       else -> null
     }
@@ -165,6 +166,11 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     }
   }
 
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    adapter.crossAxisAlignment = crossAxisAlignment
+    adapter.notifyItemRangeChanged(0, adapter.itemCount)
+  }
+
   override fun isVertical(isVertical: Boolean) {
     linearLayoutManager.orientation = if (isVertical) RecyclerView.VERTICAL else RecyclerView.HORIZONTAL
   }
@@ -208,6 +214,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
   private class LazyContentItemListAdapter(
     val placeholders: Placeholders,
   ) : RecyclerView.Adapter<ViewHolder>() {
+    var crossAxisAlignment = CrossAxisAlignment.Start
     lateinit var items: Items<ViewHolder>
 
     /**
@@ -233,7 +240,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-      val container = Container(parent.context)
+      val container = FrameLayout(parent.context)
       // [onBindViewHolder] is invoked before the default layout params are set, so
       // [View.getLayoutParams] will be null unless explicitly set.
       container.layoutParams = (parent as RecyclerView).layoutManager!!.generateDefaultLayoutParams()
@@ -246,11 +253,26 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
       lastItemHeight = holder.itemView.height
+      val layoutParams = if (crossAxisAlignment == CrossAxisAlignment.Stretch) {
+        FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+      } else {
+        FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+      }
+      layoutParams.apply {
+        gravity = when (crossAxisAlignment) {
+          CrossAxisAlignment.Start -> Gravity.START
+          CrossAxisAlignment.Center -> Gravity.CENTER
+          CrossAxisAlignment.End -> Gravity.END
+          CrossAxisAlignment.Stretch -> Gravity.START
+          else -> throw AssertionError()
+        }
+      }
       when (holder) {
         is ViewHolder.Placeholder -> {
           if (holder.container.childCount == 0) {
             val placeholder = placeholders.takeOrNull()
             if (placeholder != null) {
+              placeholder.value.layoutParams = layoutParams
               holder.container.addView(placeholder.value)
               holder.itemView.updateLayoutParams { height = WRAP_CONTENT }
             } else if (holder.container.height == 0) {
@@ -258,6 +280,8 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
               // to a non-zero height so that it's visible.
               holder.itemView.updateLayoutParams { height = lastItemHeight }
             }
+          } else {
+            holder.container.getChildAt(0).layoutParams = layoutParams
           }
         }
         is ViewHolder.Item -> {
@@ -265,22 +289,16 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
           val view = items.widgets[index].value
           holder.container.removeAllViews()
           (view.parent as? FrameLayout)?.removeAllViews()
+          view.layoutParams = layoutParams
           holder.container.addView(view)
         }
       }
     }
   }
 
-  class Container(context: Context) : FrameLayout(context) {
-    // Identical to the implementation of [YogaLayout.generateDefaultLayoutParams].
-    override fun generateDefaultLayoutParams(): LayoutParams {
-      return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-    }
-  }
-
   sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    class Placeholder(val container: Container) : ViewHolder(container)
-    class Item(val container: Container) : ViewHolder(container)
+    class Placeholder(val container: FrameLayout) : ViewHolder(container)
+    class Item(val container: FrameLayout) : ViewHolder(container)
   }
 }
 

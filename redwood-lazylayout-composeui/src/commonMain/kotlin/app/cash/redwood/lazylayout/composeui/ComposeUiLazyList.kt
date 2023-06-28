@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
@@ -59,6 +60,7 @@ internal class ComposeUiLazyList :
   private var width by mutableStateOf(Constraint.Wrap)
   private var height by mutableStateOf(Constraint.Wrap)
   private var margin by mutableStateOf(Margin.Zero)
+  private var crossAxisAlignment by mutableStateOf(CrossAxisAlignment.Start)
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
@@ -102,9 +104,14 @@ internal class ComposeUiLazyList :
     this.margin = margin
   }
 
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    this.crossAxisAlignment = crossAxisAlignment
+  }
+
   override val value = @Composable {
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
+        // TODO If CrossAxisAlignment is Stretch, pass Modifier.fillParentMaxWidth() to child widget.
         item.value.invoke()
       }
     }
@@ -148,15 +155,30 @@ internal class ComposeUiLazyList :
         )
         .pullRefresh(state = refreshState, enabled = onRefresh != null)
       if (isVertical) {
+        val horizontalAlignment = when (crossAxisAlignment) {
+          CrossAxisAlignment.Start -> Alignment.Start
+          CrossAxisAlignment.Center -> Alignment.CenterHorizontally
+          CrossAxisAlignment.End -> Alignment.End
+          CrossAxisAlignment.Stretch -> Alignment.Start
+          else -> throw AssertionError()
+        }
         LazyColumn(
           modifier = modifier,
           state = state,
+          horizontalAlignment = horizontalAlignment,
           content = content,
         )
       } else {
         LazyRow(
           modifier = modifier,
           state = state,
+          verticalAlignment = when (crossAxisAlignment) {
+            CrossAxisAlignment.Start -> Alignment.Top
+            CrossAxisAlignment.Center -> Alignment.CenterVertically
+            CrossAxisAlignment.End -> Alignment.Bottom
+            CrossAxisAlignment.Stretch -> Alignment.Top
+            else -> throw AssertionError()
+          },
           content = content,
         )
       }
