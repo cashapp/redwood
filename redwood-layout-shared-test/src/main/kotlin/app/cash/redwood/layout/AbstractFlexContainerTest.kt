@@ -50,6 +50,22 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
+  @Test fun layoutWithConstraints(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+    @TestParameter widthEnum: ConstraintEnum,
+    @TestParameter heightEnum: ConstraintEnum,
+  ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
+    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val width = widthEnum.toConstraint()
+    val height = heightEnum.toConstraint()
+    val container = flexContainer(flexDirection)
+    container.width(width)
+    container.height(height)
+    container.add(widget(movies.first()))
+    verifySnapshot(container)
+  }
+
   @Test fun shortLayout(
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
   ) {
@@ -232,6 +248,16 @@ private fun FlexDirectionEnum.toFlexDirection() = when (this) {
   FlexDirectionEnum.RowReverse -> FlexDirection.RowReverse
   FlexDirectionEnum.Column -> FlexDirection.Column
   FlexDirectionEnum.ColumnReverse -> FlexDirection.ColumnReverse
+}
+
+enum class ConstraintEnum {
+  Wrap,
+  Fill,
+}
+
+private fun ConstraintEnum.toConstraint() = when (this) {
+  ConstraintEnum.Wrap -> Constraint.Wrap
+  ConstraintEnum.Fill -> Constraint.Fill
 }
 
 enum class AlignItemsEnum {
