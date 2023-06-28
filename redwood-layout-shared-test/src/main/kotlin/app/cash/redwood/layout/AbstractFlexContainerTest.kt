@@ -40,29 +40,22 @@ abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
 
-  @Test fun emptyRow() {
-    val container = flexContainer(FlexDirection.Row)
+  @Test fun emptyLayout(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
+    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val container = flexContainer(flexDirection)
     container.alignItems(AlignItems.FlexStart)
     verifySnapshot(container)
   }
 
-  @Test fun emptyColumn() {
-    val container = flexContainer(FlexDirection.Column)
-    container.alignItems(AlignItems.FlexStart)
-    verifySnapshot(container)
-  }
-
-  @Test fun shortRow() {
-    val container = flexContainer(FlexDirection.Row)
-    container.alignItems(AlignItems.FlexStart)
-    movies.take(5).forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun shortColumn() {
-    val container = flexContainer(FlexDirection.Column)
+  @Test fun shortLayout(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
+    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val container = flexContainer(flexDirection)
     container.alignItems(AlignItems.FlexStart)
     movies.take(5).forEach { movie ->
       container.add(widget(movie))
@@ -70,17 +63,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun longRow() {
-    val container = flexContainer(FlexDirection.Row)
-    container.alignItems(AlignItems.FlexStart)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun longColumn() {
-    val container = flexContainer(FlexDirection.Column)
+  @Test fun longLayout(
+    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  ) {
+    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
+    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val container = flexContainer(flexDirection)
     container.alignItems(AlignItems.FlexStart)
     movies.forEach { movie ->
       container.add(widget(movie))
@@ -135,36 +123,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "FlexEnd")
   }
 
-  @Test fun columnWithJustifyContentCenter() {
+  @Test fun columnWithJustifyContent(
+    @TestParameter justifyContentEnum: JustifyContentEnum,
+  ) {
+    assumeTrue(justifyContentEnum in listOf(JustifyContentEnum.Center, JustifyContentEnum.SpaceBetween, JustifyContentEnum.SpaceAround))
+    val justifyContent = justifyContentEnum.toJustifyContent()
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.alignItems(AlignItems.FlexStart)
-    container.justifyContent(JustifyContent.Center)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun columnWithJustifyContentSpaceBetween() {
-    val container = flexContainer(FlexDirection.Column)
-    container.width(Constraint.Fill)
-    container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
-    container.justifyContent(JustifyContent.SpaceBetween)
-    movies.forEach { movie ->
-      container.add(widget(movie))
-    }
-    verifySnapshot(container)
-  }
-
-  @Test fun columnWithJustifyContentSpaceAround() {
-    val container = flexContainer(FlexDirection.Column)
-    container.width(Constraint.Fill)
-    container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
-    container.justifyContent(JustifyContent.SpaceAround)
+    container.justifyContent(justifyContent)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -283,4 +251,22 @@ private fun AlignItemsEnum.toAlignItems() = when (this) {
   AlignItemsEnum.Center -> AlignItems.Center
   AlignItemsEnum.Baseline -> AlignItems.Baseline
   AlignItemsEnum.Stretch -> AlignItems.Stretch
+}
+
+enum class JustifyContentEnum {
+  FlexStart,
+  FlexEnd,
+  Center,
+  SpaceBetween,
+  SpaceAround,
+  SpaceEvenly,
+}
+
+private fun JustifyContentEnum.toJustifyContent() = when (this) {
+  JustifyContentEnum.FlexStart -> JustifyContent.FlexStart
+  JustifyContentEnum.FlexEnd -> JustifyContent.FlexEnd
+  JustifyContentEnum.Center -> JustifyContent.Center
+  JustifyContentEnum.SpaceBetween -> JustifyContent.SpaceBetween
+  JustifyContentEnum.SpaceAround -> JustifyContent.SpaceAround
+  JustifyContentEnum.SpaceEvenly -> JustifyContent.SpaceEvenly
 }
