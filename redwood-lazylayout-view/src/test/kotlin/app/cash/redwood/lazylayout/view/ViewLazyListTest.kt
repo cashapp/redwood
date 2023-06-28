@@ -68,8 +68,10 @@ class ViewLazyListTest(
   }
 
   class ViewTestFlexContainer(context: Context, direction: FlexDirection) : TestFlexContainer<View> {
-    private val delegate = ViewLazyList(context)
-      .apply { isVertical(direction == FlexDirection.Column) }
+    private val delegate = ViewLazyList(context).apply {
+      isVertical(direction == FlexDirection.Column)
+      value.background = ColorDrawable(Color.BLUE)
+    }
     private var childCount = 0
 
     override val value get() = delegate.value

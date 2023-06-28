@@ -67,6 +67,8 @@ internal class ComposeUiFlexContainer(
   private var margin by mutableStateOf(Margin.Zero)
   private var density = Density(1.0)
 
+  internal var testOnlyModifier: Modifier? = null
+
   override fun width(width: Constraint) {
     this.width = width
   }
@@ -158,6 +160,7 @@ internal class ComposeUiFlexContainer(
         modifier = modifier.verticalScroll(rememberScrollState())
       }
     }
+    testOnlyModifier?.let { modifier = modifier.then(it) }
     return modifier
   }
 

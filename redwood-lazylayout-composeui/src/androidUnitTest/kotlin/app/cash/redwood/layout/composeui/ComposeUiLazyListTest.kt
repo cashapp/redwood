@@ -74,8 +74,10 @@ class ComposeUiLazyListTest(
   }
 
   class ComposeTestFlexContainer(direction: FlexDirection) : TestFlexContainer<@Composable () -> Unit> {
-    private val delegate = ComposeUiLazyList()
-      .apply { isVertical(direction == FlexDirection.Column) }
+    private val delegate = ComposeUiLazyList().apply {
+      isVertical(direction == FlexDirection.Column)
+      testOnlyModifier = Modifier.background(Color.Blue)
+    }
     private var childCount = 0
 
     override val value get() = delegate.value
