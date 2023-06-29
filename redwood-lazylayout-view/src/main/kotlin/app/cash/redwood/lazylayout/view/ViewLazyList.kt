@@ -34,6 +34,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Alignment
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Density
@@ -253,20 +254,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
       lastItemHeight = holder.itemView.height
-      val layoutParams = if (crossAxisAlignment == CrossAxisAlignment.Stretch) {
-        FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-      } else {
-        FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-      }
-      layoutParams.apply {
-        gravity = when (crossAxisAlignment) {
-          CrossAxisAlignment.Start -> Gravity.START
-          CrossAxisAlignment.Center -> Gravity.CENTER
-          CrossAxisAlignment.End -> Gravity.END
-          CrossAxisAlignment.Stretch -> Gravity.START
-          else -> throw AssertionError()
-        }
-      }
+      val layoutParams = layoutParams(crossAxisAlignment)
       when (holder) {
         is ViewHolder.Placeholder -> {
           if (holder.container.childCount == 0) {
@@ -286,11 +274,12 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
         }
         is ViewHolder.Item -> {
           val index = position - items.itemsBefore
-          val view = items.widgets[index].value
+          val widget = items.widgets[index]
           holder.container.removeAllViews()
-          (view.parent as? FrameLayout)?.removeAllViews()
-          view.layoutParams = layoutParams
-          holder.container.addView(view)
+          (widget.value.parent as? FrameLayout)?.removeAllViews()
+          widget.value.layoutParams = layoutParams
+          holder.container.addView(widget.value)
+          widget.value.applyModifier(widget.modifier)
         }
       }
     }
@@ -325,5 +314,32 @@ internal class ViewRefreshableLazyList(
   override fun onRefresh(onRefresh: (() -> Unit)?) {
     swipeRefreshLayout.isEnabled = onRefresh != null
     swipeRefreshLayout.setOnRefreshListener(onRefresh)
+  }
+}
+
+private fun layoutParams(crossAxisAlignment: CrossAxisAlignment): FrameLayout.LayoutParams {
+  val layoutParams = if (crossAxisAlignment == CrossAxisAlignment.Stretch) {
+    FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+  } else {
+    FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+  }
+  return layoutParams.apply {
+    gravity = when (crossAxisAlignment) {
+      CrossAxisAlignment.Start -> Gravity.START
+      CrossAxisAlignment.Center -> Gravity.CENTER
+      CrossAxisAlignment.End -> Gravity.END
+      CrossAxisAlignment.Stretch -> Gravity.START
+      else -> throw AssertionError()
+    }
+  }
+}
+
+private fun View.applyModifier(parentModifier: Modifier) {
+  parentModifier.forEach { childModifier ->
+    when (childModifier) {
+      is Alignment -> {
+        this.layoutParams = layoutParams(childModifier.alignment)
+      }
+    }
   }
 }

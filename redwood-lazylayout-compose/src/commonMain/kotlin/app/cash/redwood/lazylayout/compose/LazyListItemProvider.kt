@@ -27,7 +27,9 @@ import app.cash.redwood.lazylayout.compose.layout.LazyLayoutItemProvider
 // Copied from https://github.com/androidx/androidx/blob/a733905d282ecdba574bc5e35d6b0ebf83c82dcd/compose/foundation/foundation/src/commonMain/kotlin/androidx/compose/foundation/lazy/LazyListItemProvider.kt
 // Removed support for content types, header indices, item scope, and pinnable items.
 
-internal interface LazyListItemProvider : LazyLayoutItemProvider
+internal interface LazyListItemProvider : LazyLayoutItemProvider {
+  val itemScope: LazyItemScopeImpl
+}
 
 @Composable
 internal fun rememberLazyListItemProvider(
@@ -37,12 +39,14 @@ internal fun rememberLazyListItemProvider(
   return remember(latestContent) {
     LazyListItemProviderImpl(
       latestContent = { latestContent.value },
+      itemScope = LazyItemScopeImpl,
     )
   }
 }
 
 private class LazyListItemProviderImpl(
   private val latestContent: () -> (LazyListScope.() -> Unit),
+  override val itemScope: LazyItemScopeImpl,
 ) : LazyListItemProvider {
   private val listContent by derivedStateOf(referentialEqualityPolicy()) {
     LazyListIntervalContent(latestContent())
@@ -53,7 +57,7 @@ private class LazyListItemProviderImpl(
   @Composable
   override fun Item(index: Int) {
     listContent.withInterval(index) { localIndex, content ->
-      content.item(localIndex)
+      content.item(itemScope, localIndex)
     }
   }
 }

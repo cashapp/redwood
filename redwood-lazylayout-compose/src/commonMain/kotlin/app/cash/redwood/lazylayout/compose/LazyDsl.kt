@@ -25,25 +25,25 @@ import app.cash.redwood.ui.Margin
 @LayoutScopeMarker
 public interface LazyListScope {
   public fun item(
-    content: @Composable () -> Unit,
+    content: @Composable LazyItemScope.() -> Unit,
   )
 
   public fun items(
     count: Int,
-    itemContent: @Composable (index: Int) -> Unit,
+    itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
   )
 }
 
 public inline fun <T> LazyListScope.items(
   items: List<T>,
-  crossinline itemContent: @Composable (item: T) -> Unit,
+  crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
 ): Unit = items(items.size) {
   itemContent(items[it])
 }
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
-  crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
+  crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
 ): Unit = items(
   items.size,
 ) {
@@ -52,7 +52,7 @@ public inline fun <T> LazyListScope.itemsIndexed(
 
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
-  crossinline itemContent: @Composable (item: T) -> Unit,
+  crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
 ): Unit = items(
   items.size,
 ) {
@@ -61,7 +61,7 @@ public inline fun <T> LazyListScope.items(
 
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
-  crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
+  crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
 ): Unit = items(
   items.size,
 ) {
