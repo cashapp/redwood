@@ -99,6 +99,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val flexDirection = flexDirectionEnum.toFlexDirection()
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
     container.margin(Margin(start = 5.dp, end = 10.dp, top = 20.dp, bottom = 20.dp))
     movies.forEachIndexed { index, movie ->
       val modifier = when (index % 4) {
