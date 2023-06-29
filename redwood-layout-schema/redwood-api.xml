@@ -1,0 +1,46 @@
+<schema version="1" type="app.cash.redwood.layout.RedwoodLayout">
+  <widget tag="1" type="app.cash.redwood.layout.Row">
+    <property tag="1" name="width" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="2" name="height" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="3" name="margin" type="app.cash.redwood.ui.Margin"/>
+    <property tag="4" name="overflow" type="app.cash.redwood.layout.api.Overflow"/>
+    <property tag="5" name="horizontalAlignment" type="app.cash.redwood.layout.api.MainAxisAlignment"/>
+    <property tag="6" name="verticalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <children tag="1" name="children"/>
+  </widget>
+  <widget tag="2" type="app.cash.redwood.layout.Column">
+    <property tag="1" name="width" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="2" name="height" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="3" name="margin" type="app.cash.redwood.ui.Margin"/>
+    <property tag="4" name="overflow" type="app.cash.redwood.layout.api.Overflow"/>
+    <property tag="5" name="horizontalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <property tag="6" name="verticalAlignment" type="app.cash.redwood.layout.api.MainAxisAlignment"/>
+    <children tag="1" name="children"/>
+  </widget>
+  <widget tag="3" type="app.cash.redwood.layout.Spacer">
+    <property tag="1" name="width" type="app.cash.redwood.ui.Dp"/>
+    <property tag="2" name="height" type="app.cash.redwood.ui.Dp"/>
+  </widget>
+  <modifier tag="1" type="app.cash.redwood.layout.Grow">
+    <property name="value" type="kotlin.Double"/>
+  </modifier>
+  <modifier tag="2" type="app.cash.redwood.layout.Shrink">
+    <property name="value" type="kotlin.Double"/>
+  </modifier>
+  <modifier tag="3" type="app.cash.redwood.layout.Margin">
+    <property name="margin" type="app.cash.redwood.ui.Margin"/>
+  </modifier>
+  <modifier tag="4" type="app.cash.redwood.layout.Alignment">
+    <property name="alignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+  </modifier>
+  <modifier tag="6" type="app.cash.redwood.layout.Width">
+    <property name="width" type="app.cash.redwood.ui.Dp"/>
+  </modifier>
+  <modifier tag="7" type="app.cash.redwood.layout.Height">
+    <property name="height" type="app.cash.redwood.ui.Dp"/>
+  </modifier>
+  <modifier tag="8" type="app.cash.redwood.layout.Size">
+    <property name="height" type="app.cash.redwood.ui.Dp"/>
+    <property name="width" type="app.cash.redwood.ui.Dp"/>
+  </modifier>
+</schema>

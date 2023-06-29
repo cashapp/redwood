@@ -23,6 +23,7 @@ import com.github.ajalt.clikt.core.subcommands
 public fun main(vararg args: String) {
   NoOpCliktCommand()
     .subcommands(
+      ApiCommand(),
       JsonCommand(),
     )
     .main(args)

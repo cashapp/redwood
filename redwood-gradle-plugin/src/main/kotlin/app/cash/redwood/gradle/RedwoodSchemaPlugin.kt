@@ -17,8 +17,11 @@ package app.cash.redwood.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin.JAR_TASK_NAME
 import org.gradle.jvm.tasks.Jar
-import org.gradle.language.base.plugins.LifecycleBasePlugin
+import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
+import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.Companion.MAIN_COMPILATION_NAME
 
@@ -28,6 +31,8 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       "redwoodSchema",
       RedwoodSchemaExtension::class.java,
     )
+
+    extension.apiTracking.convention(true)
 
     var applied = false
     project.plugins.withId("org.jetbrains.kotlin.jvm") {
@@ -52,8 +57,8 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
     val compilation = kotlin.target.compilations.getByName(MAIN_COMPILATION_NAME)
     val classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName)
 
-    val generate = project.tasks.register("redwoodGenerate", RedwoodSchemaTask::class.java) {
-      it.group = LifecycleBasePlugin.BUILD_GROUP
+    val generateJson = project.tasks.register("redwoodJsonGenerate", RedwoodSchemaJsonTask::class.java) {
+      it.group = BUILD_GROUP
       it.description = "Generate parsed schema JSON"
 
       it.toolClasspath.from(toolingConfiguration)
@@ -61,9 +66,42 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.schemaType.set(extension.type)
       it.classpath.from(classpath, compilation.output.classesDirs)
     }
+    project.tasks.named(JAR_TASK_NAME, Jar::class.java).configure {
+      it.from(generateJson)
+    }
 
-    project.tasks.named("jar", Jar::class.java).configure {
-      it.from(generate)
+    // Wait for build script to run before checking if API tracking is still enabled.
+    project.afterEvaluate {
+      if (extension.apiTracking.get()) {
+        val apiFile = project.layout.projectDirectory.file("redwood-api.xml")
+
+        project.tasks.register(RedwoodApiGenerateTaskName, RedwoodSchemaApiGenerateTask::class.java) {
+          it.group = BUILD_GROUP
+          it.description = "Write an updated API tracking file for the current schema"
+
+          it.toolClasspath.from(toolingConfiguration)
+          it.apiFile.set(apiFile)
+          it.schemaType.set(extension.type)
+          it.classpath.from(classpath, compilation.output.classesDirs)
+        }
+
+        val apiCheck =
+          project.tasks.register("redwoodApiCheck", RedwoodSchemaApiCheckTask::class.java) {
+            it.group = VERIFICATION_GROUP
+            it.description = "Validate the API tracking file against the latest schema"
+
+            it.toolClasspath.from(toolingConfiguration)
+            it.apiFile.set(apiFile)
+            it.schemaType.set(extension.type)
+            it.classpath.from(classpath, compilation.output.classesDirs)
+
+            // Dummy output required to skip task if no inputs have changed.
+            it.dummyOutputFile.set(project.layout.buildDirectory.file("tmp/redwoodApiCheckDummy.txt"))
+          }
+        project.tasks.named(CHECK_TASK_NAME).configure {
+          it.dependsOn(apiCheck)
+        }
+      }
     }
 
     compilation.defaultSourceSet.dependencies {
@@ -71,3 +109,5 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
     }
   }
 }
+
+internal const val RedwoodApiGenerateTaskName = "redwoodApiGenerate"

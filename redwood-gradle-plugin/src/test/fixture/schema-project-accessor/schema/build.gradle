@@ -7,4 +7,7 @@ dependencies {
 
 redwoodSchema {
   type = 'example.counter.Counter'
+
+  // Test fixture. It does not need to be stable.
+  apiTracking = false
 }

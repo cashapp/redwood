@@ -1,0 +1,28 @@
+<schema version="1" type="app.cash.redwood.lazylayout.RedwoodLazyLayout">
+  <widget tag="1" type="app.cash.redwood.lazylayout.LazyList">
+    <property tag="1" name="isVertical" type="kotlin.Boolean"/>
+    <property tag="3" name="itemsBefore" type="kotlin.Int"/>
+    <property tag="4" name="itemsAfter" type="kotlin.Int"/>
+    <property tag="5" name="width" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="6" name="height" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="7" name="margin" type="app.cash.redwood.ui.Margin"/>
+    <property tag="8" name="crossAxisAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <event tag="2" name="onViewportChanged" params="kotlin.Int,kotlin.Int"/>
+    <children tag="1" name="placeholder"/>
+    <children tag="2" name="items"/>
+  </widget>
+  <widget tag="2" type="app.cash.redwood.lazylayout.RefreshableLazyList">
+    <property tag="1" name="isVertical" type="kotlin.Boolean"/>
+    <property tag="3" name="itemsBefore" type="kotlin.Int"/>
+    <property tag="4" name="itemsAfter" type="kotlin.Int"/>
+    <property tag="5" name="refreshing" type="kotlin.Boolean"/>
+    <property tag="7" name="width" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="8" name="height" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="9" name="margin" type="app.cash.redwood.ui.Margin"/>
+    <property tag="10" name="crossAxisAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <event tag="2" name="onViewportChanged" params="kotlin.Int,kotlin.Int"/>
+    <event tag="6" name="onRefresh" nullable="true"/>
+    <children tag="1" name="placeholder"/>
+    <children tag="2" name="items"/>
+  </widget>
+</schema>

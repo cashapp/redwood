@@ -42,10 +42,10 @@ import com.android.tools.lint.helpers.DefaultUastParser
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.file
 import com.intellij.pom.java.LanguageLevel
 import com.intellij.pom.java.LanguageLevel.JDK_1_7
@@ -63,7 +63,8 @@ internal class LintCommand : CliktCommand(name = "check") {
     .file()
     .multiple(required = true)
   private val classpath by option("-cp", "--class-path")
-    .convert { it.split(File.pathSeparator).map(::File) }
+    .file()
+    .split(File.pathSeparator)
     .default(emptyList())
 
   override fun run() {

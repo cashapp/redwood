@@ -7,4 +7,7 @@ dependencies {
 
 redwoodSchema {
   type = 'example.redwood.ExampleSchema'
+
+  // Private, test-only module. It does not need to be stable.
+  apiTracking = false
 }

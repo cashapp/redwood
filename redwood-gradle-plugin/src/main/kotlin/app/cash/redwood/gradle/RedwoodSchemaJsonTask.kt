@@ -32,7 +32,7 @@ import org.gradle.workers.WorkParameters
 import org.gradle.workers.WorkerExecutor
 
 @CacheableTask
-internal abstract class RedwoodSchemaTask @Inject constructor(
+internal abstract class RedwoodSchemaJsonTask @Inject constructor(
   private val workerExecutor: WorkerExecutor,
 ) : DefaultTask() {
   @get:Classpath
@@ -50,7 +50,7 @@ internal abstract class RedwoodSchemaTask @Inject constructor(
   @TaskAction
   fun run() {
     val queue = workerExecutor.noIsolation()
-    queue.submit(RedwoodSchemaWorker::class.java) {
+    queue.submit(RedwoodSchemaJsonWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
       it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
@@ -59,16 +59,16 @@ internal abstract class RedwoodSchemaTask @Inject constructor(
   }
 }
 
-private interface RedwoodSchemaParameters : WorkParameters {
+private interface RedwoodSchemaJsonParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
   val classpath: ConfigurableFileCollection
   val schemaType: Property<String>
   val outputDir: DirectoryProperty
 }
 
-private abstract class RedwoodSchemaWorker @Inject constructor(
+private abstract class RedwoodSchemaJsonWorker @Inject constructor(
   private val execOperations: ExecOperations,
-) : WorkAction<RedwoodSchemaParameters> {
+) : WorkAction<RedwoodSchemaJsonParameters> {
   override fun execute() {
     parameters.outputDir.get().asFile.deleteRecursively()
 

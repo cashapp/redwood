@@ -20,4 +20,10 @@ import org.gradle.api.provider.Property
 public abstract class RedwoodSchemaExtension {
   /** The fully-qualified name of the `@Schema`-annotated interface. */
   public abstract val type: Property<String>
+
+  /**
+   * Control whether an API file is generated for tracking schema compatibility.
+   * The default is true.
+   */
+  public abstract val apiTracking: Property<Boolean>
 }
