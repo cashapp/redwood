@@ -58,6 +58,7 @@ class ViewFlexContainerTest(
     override val value = TextView(paparazzi.context).apply {
       background = ColorDrawable(Color.GREEN)
       textSize = 18f
+      textDirection = View.TEXT_DIRECTION_LOCALE
       setTextColor(Color.BLACK)
       this.text = text
     }
