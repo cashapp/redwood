@@ -153,6 +153,12 @@ allprojects {
     }
   }
 
+  plugins.withId('org.jetbrains.compose') {
+    project.compose {
+      kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().version
+    }
+  }
+
   // Disable the release build type because we never need it for sample applications.
   plugins.withId('com.android.application') {
     project.android {
