@@ -28,7 +28,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build ziplineApiCheck -PredwoodNoSamples
 
   connected:
     runs-on: macos-latest
@@ -133,7 +133,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew -p samples/emoji-search build
+      - run: ./gradlew -p samples/emoji-search build ziplineApiCheck
 
       - name: Build Emoji Search iOS (UIKit)
         run: |
@@ -155,7 +155,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew -p samples/repo-search build
+      - run: ./gradlew -p samples/repo-search build ziplineApiCheck
 
   publish:
     runs-on: macos-latest

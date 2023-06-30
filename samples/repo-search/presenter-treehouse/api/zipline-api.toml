@@ -1,0 +1,22 @@
+[com.example.redwood.reposearch.treehouse.HostApi]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # suspend fun httpCall(kotlin.String, kotlin.collections.Map<kotlin.String,kotlin.String>): kotlin.String
+  "0T9AW1Kn",
+]
+
+[com.example.redwood.reposearch.treehouse.RepoSearchPresenter]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun launch(): app.cash.redwood.treehouse.ZiplineTreehouseUi
+  "sqKEI1vX",
+
+  # val appLifecycle: app.cash.redwood.treehouse.AppLifecycle
+  "odhmO/d6",
+]
