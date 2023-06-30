@@ -52,10 +52,18 @@ public data class Margin(
 )
 
 /**
- * Set the alignment for an item.
+ * Set the alignment for an item along the horizontal axis.
  */
-@Modifier(4, RowScope::class, ColumnScope::class)
-public data class Alignment(
+@Modifier(4, ColumnScope::class)
+public data class HorizontalAlignment(
+  val alignment: CrossAxisAlignment,
+)
+
+/**
+ * Set the alignment for an item along the vertical axis.
+ */
+@Modifier(5, RowScope::class)
+public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,
 )
 

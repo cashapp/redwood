@@ -18,12 +18,13 @@ package com.example
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.modifier.Alignment as AlignmentModifier
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
 import app.cash.redwood.layout.modifier.Height as HeightModifier
+import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.Size as SizeModifier
+import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.modifier.Width as WidthModifier
 import app.cash.redwood.ui.Density
 import app.cash.redwood.yoga.AlignItems
@@ -72,7 +73,10 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
         marginTop = childModifier.margin.top.toPx().toFloat()
         marginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
-      is AlignmentModifier -> {
+      is HorizontalAlignmentModifier -> {
+        alignSelf = childModifier.alignment.toAlignSelf()
+      }
+      is VerticalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
       }
       is WidthModifier -> with(density) {
