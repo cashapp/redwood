@@ -18,12 +18,15 @@ package app.cash.redwood.layout.composeui
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
@@ -147,11 +150,15 @@ internal class ComposeUiFlexContainer(
   @Composable
   private fun computeModifier(): Modifier {
     var modifier: Modifier = Modifier
-    if (width == Constraint.Fill) {
-      modifier = modifier.fillMaxWidth()
+    modifier = if (width == Constraint.Fill) {
+      modifier.fillMaxWidth()
+    } else {
+      modifier.wrapContentWidth(Alignment.Start, unbounded = true)
     }
-    if (height == Constraint.Fill) {
-      modifier = modifier.fillMaxHeight()
+    modifier = if (height == Constraint.Fill) {
+      modifier.fillMaxHeight()
+    } else {
+      modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
     if (overflow == Overflow.Scroll) {
       if (flexDirection.isHorizontal) {
