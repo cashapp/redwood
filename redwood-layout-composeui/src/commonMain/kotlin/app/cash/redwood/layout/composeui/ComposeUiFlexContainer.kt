@@ -34,6 +34,9 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.Modifier as RedwoodModifier
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.ui.Alignment
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -147,11 +150,15 @@ internal class ComposeUiFlexContainer(
   @Composable
   private fun computeModifier(): Modifier {
     var modifier: Modifier = Modifier
-    if (width == Constraint.Fill) {
-      modifier = modifier.fillMaxWidth()
+    modifier = if (width == Constraint.Fill) {
+      modifier.fillMaxWidth()
+    } else {
+      modifier.wrapContentWidth(Alignment.Start, unbounded = true)
     }
-    if (height == Constraint.Fill) {
-      modifier = modifier.fillMaxHeight()
+    modifier = if (height == Constraint.Fill) {
+      modifier.fillMaxHeight()
+    } else {
+      modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
     if (overflow == Overflow.Scroll) {
       if (flexDirection.isHorizontal) {
