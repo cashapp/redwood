@@ -30,7 +30,10 @@
   <modifier tag="3" type="app.cash.redwood.layout.Margin">
     <property name="margin" type="app.cash.redwood.ui.Margin"/>
   </modifier>
-  <modifier tag="4" type="app.cash.redwood.layout.Alignment">
+  <modifier tag="4" type="app.cash.redwood.layout.HorizontalAlignment">
+    <property name="alignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+  </modifier>
+  <modifier tag="5" type="app.cash.redwood.layout.VerticalAlignment">
     <property name="alignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
   </modifier>
   <modifier tag="6" type="app.cash.redwood.layout.Width">
