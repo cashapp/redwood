@@ -25,12 +25,10 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.UntrackedTask
 import org.gradle.process.ExecOperations
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
@@ -79,20 +77,19 @@ internal abstract class RedwoodSchemaApiCheckTask @Inject constructor(
   }
 }
 
-@UntrackedTask(because = "it is explicitly run and not part of a lifecycle task")
 internal abstract class RedwoodSchemaApiGenerateTask @Inject constructor(
   private val workerExecutor: WorkerExecutor,
 ) : DefaultTask() {
-  @get:Internal // Despite being untracked, Gradle requires we annotate properties.
+  @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
-  @get:Internal // Despite being untracked, Gradle requires we annotate properties.
+  @get:Classpath
   abstract val classpath: ConfigurableFileCollection
 
-  @get:Internal // Despite being untracked, Gradle requires we annotate properties.
+  @get:Input
   abstract val schemaType: Property<String>
 
-  @get:Internal // Despite being untracked, Gradle requires we annotate properties.
+  @get:OutputFile
   abstract val apiFile: RegularFileProperty
 
   @TaskAction
