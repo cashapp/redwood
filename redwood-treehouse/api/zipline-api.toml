@@ -1,0 +1,64 @@
+[app.cash.redwood.treehouse.AppLifecycle]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun sendFrame(kotlin.Long): kotlin.Unit
+  "5nQA0rL/",
+
+  # fun start(app.cash.redwood.treehouse.AppLifecycle.Host): kotlin.Unit
+  "Xd61ecfL",
+]
+
+[app.cash.redwood.treehouse.AppLifecycle.Host]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun onUnknownEvent(app.cash.redwood.protocol.WidgetTag, app.cash.redwood.protocol.EventTag): kotlin.Unit
+  "jmKreoSS",
+
+  # fun onUnknownEventNode(app.cash.redwood.protocol.Id, app.cash.redwood.protocol.EventTag): kotlin.Unit
+  "fm35ryMh",
+
+  # fun requestFrame(): kotlin.Unit
+  "/TkBiP/u",
+]
+
+[app.cash.redwood.treehouse.AppService]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # val appLifecycle: app.cash.redwood.treehouse.AppLifecycle
+  "odhmO/d6",
+]
+
+[app.cash.redwood.treehouse.ChangesSinkService]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun sendChanges(kotlin.collections.List): kotlin.Unit
+  "W8qOuU0t",
+]
+
+[app.cash.redwood.treehouse.ZiplineTreehouseUi]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun sendEvent(app.cash.redwood.protocol.Event): kotlin.Unit
+  "NSFL6TSu",
+
+  # fun snapshotState(): app.cash.redwood.treehouse.StateSnapshot
+  "mPBGCHFl",
+
+  # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
+  "FiVQXMQW",
+]

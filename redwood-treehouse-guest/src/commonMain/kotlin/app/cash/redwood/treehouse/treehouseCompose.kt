@@ -79,13 +79,6 @@ private class RedwoodZiplineTreehouseUi(
     )
   }
 
-  override fun start(
-    changesSink: ChangesSinkService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-  ) {
-    return start(changesSink, uiConfigurations, null)
-  }
-
   override fun snapshotState(): StateSnapshot? {
     val savedState = saveableStateRegistry.performSave()
     return savedState.toStateSnapshot()
