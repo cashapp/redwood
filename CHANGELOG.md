@@ -2,6 +2,44 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2023-07-05
+
+This release marks Redwood's "beta" period which provides slightly more stability guarantees than
+before. All future releases up to (but NOT including) 1.0 will have protocol and service
+compatibility with older versions. In practice, what this means is that you can use Redwood 0.6
+(and beyond) to compile and deploy Treehouse guest code which will run inside a Treehouse host
+from Redwood 0.5.
+
+Redwood still reserves the right to make binary- and source-incompatible changes within the host
+code or within the guest code.
+
+New:
+- The relevant tags and names from your schema will now automatically be tracked in an API file and
+  changes will be validated to be backwards-compatible. The `redwoodApiGenerate` Gradle task will
+  generate or update the file, and the `redwoodApiCheck` task will validate the current schema as
+  part of the `check` lifecycle task.
+- `width`, `height`, and `size` modifiers allow precise control over widget size within
+  Redwood layout.
+- Preliminary support for `rememberSaveable` within Treehouse guest code with persistence only
+  available on Android hosts.
+
+Changes:
+- The flexbox implementation has changed from being a Kotlin port of the Google's Java flexbox
+  layout to using Facebook's Yoga library.
+- `LazyList` now has arguments for `margin` and cross-axis alignment
+  (`verticalAlignment` for `LazyRow`, `horizontalAlignment` for `LazyColumn`)
+- Remove the ability to use custom implementations of `LazyList`. Any missing functionality from
+  the built-in versions should be filed as a feature request.
+- The command-line tools (codegen, lint, schema) are now uploaded to Maven Central as standalone
+  zip files in addition to each regular jar artifact for use with non-Gradle build systems.
+
+Fixed:
+- RTL layout direction is now supported by the Compose UI and View-based implementations of
+  Redwood layout.
+
+This version only works with Kotlin 1.8.22.
+
+
 ## [0.4.0] - 2023-06-09
 
 New:
@@ -150,7 +188,8 @@ This version only works with Kotlin 1.7.20.
 
 
 
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/cashapp/redwood/releases/tag/0.5.0
 [0.4.0]: https://github.com/cashapp/redwood/releases/tag/0.4.0
 [0.3.0]: https://github.com/cashapp/redwood/releases/tag/0.3.0
 [0.2.1]: https://github.com/cashapp/redwood/releases/tag/0.2.1

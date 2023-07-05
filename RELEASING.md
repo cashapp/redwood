@@ -7,8 +7,9 @@
    2. Add a link URL to ensure the header link works.
    3. Add a new `Unreleased` section to the top.
 
-3. Update the `README.md` so the "Usage" section reflects the new release version and the
-   snapshot section reflects the next "SNAPSHOT" version.
+3. Update the `README.md`:
+   1. Update the Kotlin compatibility table with the new version.
+   <!--2. Update the "Usage" section to reflect the new release version and the snapshot section to reflect the next "SNAPSHOT" version.-->
 
 4. Commit
 

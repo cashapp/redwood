@@ -155,6 +155,17 @@ fun Counter(value: Int = 0) {
 }
 ```
 
+### Version compatibility
+
+Since Kotlin compiler plugins are an unstable API, certain versions of Redwood only work with
+certain versions of Kotlin.
+
+| Kotlin | Redwood       |
+|--------|---------------|
+| 1.8.22 | 0.5.0         |
+| 1.8.20 | 0.3.0 - 0.4.0 |
+| 1.7.20 | 0.1.0 - 0.2.1 |
+
 
 [compose-server-side]: https://github.com/ShikaSD/compose-server-side
 [compose]: https://developer.android.com/jetpack/compose
