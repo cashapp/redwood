@@ -20,36 +20,42 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
+import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
 internal class UIViewSpacer : Spacer<UIView> {
-  private var width = 0.0
-  private var height = 0.0
-
-  private val view = UIView(cValue { CGRectZero })
-
+  private val view = SpacerUIView()
   override val value: UIView get() = view
-
   override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
-    this.width = with(Density.Default) { width.toPx() }
+    view.width = with(Density.Default) { width.toPx() }
     invalidate()
   }
 
   override fun height(height: Dp) {
-    this.height = with(Density.Default) { height.toPx() }
+    view.height = with(Density.Default) { height.toPx() }
     invalidate()
   }
 
   private fun invalidate() {
-    val newBounds = view.bounds.useContents {
-      CGRectMake(origin.x, origin.y, width, height)
+    value.setNeedsLayout()
+  }
+
+  private inner class SpacerUIView : UIView(cValue { CGRectZero }) {
+    var width = 0.0
+    var height = 0.0
+
+    override fun intrinsicContentSize(): CValue<CGSize> {
+      return CGSizeMake(width, height)
     }
-    view.setBounds(newBounds)
+
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      return CGSizeMake(width, height)
+    }
   }
 }
