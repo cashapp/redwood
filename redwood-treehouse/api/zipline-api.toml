@@ -59,9 +59,6 @@ functions = [
   # fun snapshotState(): app.cash.redwood.treehouse.StateSnapshot
   "mPBGCHFl",
 
-  # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>): kotlin.Unit
-  "CDVqG6vq",
-
   # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
   "FiVQXMQW",
 ]
