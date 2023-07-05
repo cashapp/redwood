@@ -28,7 +28,7 @@ import org.gradle.api.publish.maven.MavenPublication
 private const val redwoodGroupId = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val redwoodVersion = "0.5.0"
+private const val redwoodVersion = "0.6.0-SNAPSHOT"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
