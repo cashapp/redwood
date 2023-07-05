@@ -67,7 +67,7 @@ internal class ApiCommand : CliktCommand(
 
     when (val result = currentApi.validateAgainst(file, mode, fixCommand)) {
       is Failure -> {
-        throw PrintMessage(result.message, true)
+        throw PrintMessage(result.message, statusCode = 127, printError = true)
       }
       Success -> {
         // Nothing to do!
