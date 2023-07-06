@@ -29,15 +29,22 @@ import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
+import platform.CoreGraphics.CGRectZero
+import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
 ) : Row<UIView>, Column<UIView> {
   private val yogaView = YogaUIView()
+  private val hostView = HostUIView()
 
-  override val value: UIView get() = yogaView
-  override val children = UIViewChildren(value)
+  override val value: UIView get() = hostView
+  override val children = UIViewChildren(yogaView)
   override var modifier: Modifier = Modifier
 
   init {
@@ -70,6 +77,7 @@ internal class UIViewFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
+    hostView.scrollEnabled = overflow == Overflow.Scroll
     invalidate()
   }
 
@@ -100,6 +108,83 @@ internal class UIViewFlexContainer(
   }
 
   private fun invalidate() {
-    value.setNeedsLayout()
+    hostView.setNeedsLayout()
+    yogaView.setNeedsLayout()
+  }
+
+  private inner class HostUIView : UIView(cValue { CGRectZero }) {
+    var scrollEnabled = false
+      set(new) {
+        val old = field
+        field = new
+        if (old != new) {
+          updateViewHierarchy()
+        }
+      }
+
+    init {
+      updateViewHierarchy()
+    }
+
+    override fun intrinsicContentSize(): CValue<CGSize> {
+      return yogaView.intrinsicContentSize()
+    }
+
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      return yogaView.sizeThatFits(size)
+    }
+
+    override fun layoutSubviews() {
+      yogaView.setFrame(frame)
+      yogaView.layoutSubviews()
+
+      if (scrollEnabled) {
+        val scrollView = typedSubviews.first() as UIScrollView
+        scrollView.setFrame(frame)
+        scrollView.layoutSubviews()
+
+        val nodes = yogaView.rootNode.children
+        if (nodes.isEmpty()) {
+          scrollView.setContentSize(CGSizeMake(0.0, 0.0))
+        } else {
+          var left = Float.MAX_VALUE
+          var right = Float.MIN_VALUE
+          var top = Float.MAX_VALUE
+          var bottom = Float.MIN_VALUE
+          println("START")
+          for (node in nodes) {
+            left = minOf(left, node.left)
+            right = maxOf(right, node.left + node.width)
+            top = minOf(top, node.top)
+            bottom = maxOf(bottom, node.top + node.height)
+            println("HERE $left $right $top $bottom")
+          }
+          println("END")
+          val contentSize = CGSizeMake(
+            width = (right - left).toDouble(),
+            height = (bottom - top).toDouble(),
+          )
+          scrollView.setContentSize(contentSize)
+        }
+      }
+    }
+
+    private fun updateViewHierarchy() {
+      typedSubviews.forEach { it.removeFromSuperview() }
+      yogaView.removeFromSuperview()
+
+      if (scrollEnabled) {
+        addSubview(newScrollView().apply { addSubview(yogaView) })
+      } else {
+        addSubview(yogaView)
+      }
+    }
+
+    private fun newScrollView(): UIScrollView {
+      return UIScrollView().apply {
+        showsHorizontalScrollIndicator = false
+        showsVerticalScrollIndicator = false
+      }
+    }
   }
 }

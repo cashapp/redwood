@@ -30,6 +30,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.ui.Margin
@@ -123,6 +124,7 @@ fun EmojiSearch(
   Column(
     width = Constraint.Fill,
     height = Constraint.Fill,
+    overflow = Overflow.Scroll,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     margin = LocalUiConfiguration.current.safeAreaInsets,
   ) {
@@ -132,33 +134,17 @@ fun EmojiSearch(
       onChange = { searchTerm = it },
       modifier = Modifier.shrink(0.0),
     )
-    columnProvider.create(
-      items = filteredEmojis,
-      refreshing = refreshing,
-      onRefresh = { refreshSignal++ },
-      width = Constraint.Fill,
-      height = Constraint.Wrap,
-      margin = Margin.Zero,
-      modifier = Modifier.grow(1.0),
-      placeholder = {
-        Item(
-          emojiImage = loadingEmojiImage,
-          onClick = {},
-        )
-      },
-    ) { image ->
-      Item(
-        emojiImage = image,
-        onClick = {
-          navigator.openUrl(image.url)
-        },
-      )
+    filteredEmojis.take(10).forEach { image ->
+      Item(image)
     }
   }
 }
 
 @Composable
-private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
+private fun Item(
+  emojiImage: EmojiImage,
+  onClick: () -> Unit = {},
+) {
   Row(
     width = Constraint.Fill,
     verticalAlignment = CrossAxisAlignment.Center,

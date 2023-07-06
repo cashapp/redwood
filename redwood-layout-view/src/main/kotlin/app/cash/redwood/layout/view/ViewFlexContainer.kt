@@ -94,11 +94,7 @@ internal class ViewFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
-    hostView.scrollEnabled = when (overflow) {
-      Overflow.Clip -> false
-      Overflow.Scroll -> true
-      else -> throw AssertionError()
-    }
+    hostView.scrollEnabled = overflow == Overflow.Scroll
     invalidate()
   }
 
