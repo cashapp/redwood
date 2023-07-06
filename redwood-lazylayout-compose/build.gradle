@@ -16,6 +16,15 @@ kotlin {
         api projects.redwoodLazylayoutWidget
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
+        implementation libs.kotlinx.coroutines.test
+        implementation projects.testSchema.composeProtocol
+        implementation projects.testSchema.testing
+      }
+    }
   }
 }
 

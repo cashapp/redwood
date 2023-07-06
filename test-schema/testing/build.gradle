@@ -10,7 +10,9 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLayoutWidget
+        api projects.redwoodLazylayoutWidget
         api projects.redwoodLayoutTesting
+        api projects.redwoodLazylayoutTesting
         api projects.testSchema.widget
       }
     }
