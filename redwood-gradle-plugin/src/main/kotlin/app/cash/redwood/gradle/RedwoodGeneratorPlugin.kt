@@ -83,9 +83,9 @@ public abstract class RedwoodGeneratorPlugin(
       isCanBeConsumed = false
       isVisible = false
     }
-    val generate = project.tasks.register("redwoodGenerate", RedwoodGeneratorTask::class.java) {
+    val generate = project.tasks.register("redwoodKotlinGenerate", RedwoodGeneratorTask::class.java) {
       it.group = BUILD_GROUP
-      it.description = "Generate Redwood sources"
+      it.description = "Generate Redwood Kotlin sources"
 
       it.toolClasspath.from(toolingConfiguration)
       it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
