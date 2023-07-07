@@ -51,6 +51,7 @@ class ProtocolNodeFactoryTest {
       ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
 
@@ -66,6 +67,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -88,6 +90,7 @@ class ProtocolNodeFactoryTest {
           override fun TextInput() = recordingTextInput
         },
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       json = json,
     )
@@ -122,6 +125,7 @@ class ProtocolNodeFactoryTest {
           override fun TextInput() = recordingTextInput
         },
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       json = json,
     )
@@ -153,6 +157,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
     val button = factory.create(WidgetTag(4))!!
@@ -184,6 +189,7 @@ class ProtocolNodeFactoryTest {
           override fun TextInput() = recordingTextInput
         },
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       json = json,
       mismatchHandler = handler,
@@ -223,6 +229,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
     val button = factory.create(WidgetTag(4))!!
@@ -239,6 +246,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -262,6 +270,7 @@ class ProtocolNodeFactoryTest {
           override fun TextInput() = recordingTextInput
         },
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       json = json,
     )
@@ -278,6 +287,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
     val button = factory.create(WidgetTag(4))!!
@@ -296,6 +306,7 @@ class ProtocolNodeFactoryTest {
       provider = ExampleSchemaWidgetFactories(
         ExampleSchema = EmptyExampleSchemaWidgetFactory(),
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -319,6 +330,7 @@ class ProtocolNodeFactoryTest {
           override fun TextInput() = recordingTextInput
         },
         RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
       json = json,
     )

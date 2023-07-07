@@ -16,6 +16,7 @@
 package example.redwood
 
 import app.cash.redwood.layout.RedwoodLayout
+import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Modifier
@@ -43,6 +44,7 @@ import kotlin.time.Duration
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
+    Dependency(2, RedwoodLazyLayout::class),
   ],
 )
 public interface ExampleSchema

@@ -39,6 +39,7 @@ class ProtocolBridgeTest {
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),
       ),
       eventSink = ::error,
@@ -62,6 +63,7 @@ class ProtocolBridgeTest {
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),
       ),
       eventSink = ::error,
@@ -86,6 +88,7 @@ class ProtocolBridgeTest {
         provider = ExampleSchemaWidgetFactories(
           ExampleSchema = EmptyExampleSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),
       ),
       eventSink = ::error,

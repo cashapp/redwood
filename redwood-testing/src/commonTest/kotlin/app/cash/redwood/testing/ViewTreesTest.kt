@@ -19,6 +19,7 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenTag
@@ -117,6 +118,7 @@ class ViewTreesTest {
     val mutableFactories = ExampleSchemaWidgetFactories(
       ExampleSchema = ExampleSchemaTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val protocolNodes = ExampleSchemaProtocolNodeFactory(mutableFactories)
     val widgetContainer = MutableListChildren<WidgetValue>()

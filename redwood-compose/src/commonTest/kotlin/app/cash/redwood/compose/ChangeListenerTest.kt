@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
@@ -82,6 +83,7 @@ abstract class AbstractChangeListenerTest {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, button::changes)
 
@@ -102,6 +104,7 @@ abstract class AbstractChangeListenerTest {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, button::changes)
 
@@ -123,6 +126,7 @@ abstract class AbstractChangeListenerTest {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, button::changes)
 
@@ -145,6 +149,7 @@ abstract class AbstractChangeListenerTest {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, button::changes)
 
@@ -169,6 +174,7 @@ abstract class AbstractChangeListenerTest {
         override fun Row() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, row::changes)
 
@@ -195,6 +201,7 @@ abstract class AbstractChangeListenerTest {
         override fun Row() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val c = backgroundScope.launchComposition(factories, row::changes)
 
