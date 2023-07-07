@@ -31,7 +31,7 @@ import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-class HTMLElementRedwoodLayoutWidgetFactory(
+public class HTMLElementRedwoodLayoutWidgetFactory(
   private val document: Document,
 ) : RedwoodLayoutWidgetFactory<HTMLElement> {
   override fun Column(): Column<HTMLElement> =

@@ -24,6 +24,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 private const val redwoodGroupId = "app.cash.redwood"
 
@@ -162,6 +163,23 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     project.tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial::class.java) { task ->
       task.dokkaSourceSets.configureEach {
         it.suppressGeneratedFiles.set(false) // document generated code
+      }
+    }
+
+    // Published modules should be explicit about their API visibility.
+    var explicit = false
+    val kotlinPluginHandler: (Plugin<Any>) -> Unit = {
+      val kotlin = project.extensions.getByType(KotlinTopLevelExtension::class.java)
+      kotlin.explicitApi()
+      explicit = true
+    }
+    project.plugins.withId("org.jetbrains.kotlin.android", kotlinPluginHandler)
+    project.plugins.withId("org.jetbrains.kotlin.js", kotlinPluginHandler)
+    project.plugins.withId("org.jetbrains.kotlin.jvm", kotlinPluginHandler)
+    project.plugins.withId("org.jetbrains.kotlin.multiplatform", kotlinPluginHandler)
+    project.afterEvaluate {
+      check(explicit) {
+        """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
       }
     }
   }

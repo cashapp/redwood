@@ -39,30 +39,6 @@ allprojects {
     outputs.upToDateWhen { false }
   }
 
-  // List of Redwood modules that aren't published.
-  def privateApiModules = [
-    ":redwood-layout-shared-test"
-  ]
-
-  if (project.path.startsWith(':redwood-') && !privateApiModules.contains(project.path)) {
-    plugins.withId('org.jetbrains.kotlin.multiplatform') {
-      kotlin {
-        explicitApi()
-      }
-    }
-
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { task ->
-      // Only enable strict mode for non-test sources.
-      if (!task.name.toLowerCase().contains('test')) {
-        compilerOptions {
-          freeCompilerArgs.addAll([
-            '-Xexplicit-api=strict',
-          ])
-        }
-      }
-    }
-  }
-
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
     kotlin {
       sourceSets {
