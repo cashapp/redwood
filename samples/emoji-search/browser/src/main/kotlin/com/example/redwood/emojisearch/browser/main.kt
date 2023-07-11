@@ -16,7 +16,9 @@
 package com.example.redwood.emojisearch.browser
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import app.cash.redwood.Modifier
+import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.api.Constraint
@@ -24,6 +26,7 @@ import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.HTMLElementChildren
 import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
@@ -65,7 +68,9 @@ fun main() {
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {
-    EmojiSearch(httpClient, navigator, TruncatingColumnProvider)
+    CompositionLocalProvider(LocalUiConfiguration provides UiConfiguration()) {
+      EmojiSearch(httpClient, navigator, TruncatingColumnProvider)
+    }
   }
 }
 
