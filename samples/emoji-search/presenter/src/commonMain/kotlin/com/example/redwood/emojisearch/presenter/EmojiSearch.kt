@@ -35,6 +35,7 @@ import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
+import app.cash.redwood.lazylayout.compose.rememberLazyListState
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
@@ -101,6 +102,12 @@ fun EmojiSearch(
     }
   }
 
+  val lazyListState = rememberLazyListState()
+
+  LaunchedEffect(searchTerm) {
+    lazyListState.scrollToItem(0)
+  }
+
   Column(
     width = Constraint.Fill,
     height = Constraint.Fill,
@@ -116,6 +123,7 @@ fun EmojiSearch(
     LazyColumn(
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
+      state = lazyListState,
       width = Constraint.Fill,
       modifier = Modifier.grow(1.0),
       placeholder = {

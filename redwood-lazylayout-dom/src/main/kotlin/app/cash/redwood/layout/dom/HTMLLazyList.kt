@@ -20,6 +20,7 @@ package app.cash.redwood.layout.dom
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
@@ -52,6 +53,9 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  }
+
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
   }
 
   override fun isVertical(isVertical: Boolean) {

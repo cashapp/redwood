@@ -18,6 +18,7 @@ package app.cash.redwood.lazylayout.compose
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyListValue
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
@@ -52,6 +53,7 @@ class LazyListTest {
           height = Constraint.Wrap,
           margin = Margin(0.0.dp),
           crossAxisAlignment = CrossAxisAlignment.Start,
+          scrollItemIndex = ScrollItemIndex(0, 0),
           placeholder = List(20) { TextValue(Modifier, "Placeholder") },
           items = emptyList(),
         ),

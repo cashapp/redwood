@@ -24,6 +24,7 @@ package app.cash.redwood.lazylayout.uiview
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
@@ -48,11 +49,13 @@ import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
 import platform.UIKit.UICollectionViewFlowLayout
 import platform.UIKit.UICollectionViewLayout
 import platform.UIKit.UICollectionViewScrollDirection
+import platform.UIKit.UICollectionViewScrollPositionTop
 import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIRefreshControl
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
+import platform.UIKit.indexPathForItem
 import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
@@ -240,6 +243,16 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     // TODO Support CrossAxisAlignment in `redwood-lazylayout-uiview`
+  }
+
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+    if (items.itemCount() > scrollItemIndex.index) {
+      collectionView.scrollToItemAtIndexPath(
+        NSIndexPath.indexPathForItem(scrollItemIndex.index.toLong(), 0),
+        UICollectionViewScrollPositionTop,
+        animated = false,
+      )
+    }
   }
 
   override var modifier: Modifier = Modifier

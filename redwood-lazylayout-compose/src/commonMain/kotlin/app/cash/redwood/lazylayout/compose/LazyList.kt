@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
@@ -34,6 +35,7 @@ private const val OffscreenItemsBufferCount = 30
 @Composable
 internal fun LazyList(
   isVertical: Boolean,
+  state: LazyListState,
   width: Constraint,
   height: Constraint,
   margin: Margin,
@@ -43,10 +45,10 @@ internal fun LazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var firstVisibleItemIndex by remember { mutableStateOf(0) }
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   var placeholderPoolSize by remember { mutableStateOf(20) }
   LazyList(
     isVertical,
@@ -59,7 +61,7 @@ internal fun LazyList(
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      firstVisibleItemIndex = localFirstVisibleItemIndex
+      state.firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     width = width,
@@ -67,6 +69,7 @@ internal fun LazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
+    scrollItemIndex = scrollItemIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
@@ -83,6 +86,7 @@ internal fun RefreshableLazyList(
   isVertical: Boolean,
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  state: LazyListState,
   width: Constraint,
   height: Constraint,
   margin: Margin,
@@ -92,10 +96,10 @@ internal fun RefreshableLazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var firstVisibleItemIndex by remember { mutableStateOf(0) }
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(firstVisibleItemIndex) { (firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
@@ -108,7 +112,7 @@ internal fun RefreshableLazyList(
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      firstVisibleItemIndex = localFirstVisibleItemIndex
+      state.firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     refreshing = refreshing,
@@ -118,6 +122,7 @@ internal fun RefreshableLazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
+    scrollItemIndex = scrollItemIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {

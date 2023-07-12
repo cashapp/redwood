@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
@@ -61,6 +62,7 @@ internal class ComposeUiLazyList :
   private var height by mutableStateOf(Constraint.Wrap)
   private var margin by mutableStateOf(Margin.Zero)
   private var crossAxisAlignment by mutableStateOf(CrossAxisAlignment.Start)
+  private var scrollItemIndex by mutableStateOf<ScrollItemIndex?>(null)
 
   internal var testOnlyModifier: Modifier? = null
 
@@ -110,6 +112,10 @@ internal class ComposeUiLazyList :
     this.crossAxisAlignment = crossAxisAlignment
   }
 
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+    this.scrollItemIndex = scrollItemIndex
+  }
+
   override val value = @Composable {
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
@@ -143,6 +149,11 @@ internal class ComposeUiLazyList :
       LaunchedEffect(lastVisibleItemIndex) {
         lastVisibleItemIndex?.let { lastVisibleItemIndex ->
           onViewportChanged!!(state.firstVisibleItemIndex, lastVisibleItemIndex)
+        }
+      }
+      LaunchedEffect(scrollItemIndex) {
+        scrollItemIndex?.index?.let { index ->
+          state.scrollToItem(index)
         }
       }
 
