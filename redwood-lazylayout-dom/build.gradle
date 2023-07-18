@@ -1,0 +1,18 @@
+apply plugin: 'org.jetbrains.kotlin.js'
+
+redwoodBuild {
+}
+
+kotlin {
+  js {
+    browser()
+  }
+
+  sourceSets {
+    main {
+      dependencies {
+        api projects.redwoodLazylayoutWidget
+      }
+    }
+  }
+}

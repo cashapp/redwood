@@ -18,6 +18,7 @@ kotlin {
         implementation projects.samples.emojiSearch.schema.widget
         implementation projects.samples.emojiSearch.presenter
         implementation projects.redwoodLayoutDom
+        implementation projects.redwoodLazylayoutDom
         implementation libs.kotlinx.coroutines.core
       }
     }

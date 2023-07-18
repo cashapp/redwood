@@ -32,13 +32,15 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
+import app.cash.redwood.lazylayout.compose.LazyColumn
+import app.cash.redwood.lazylayout.compose.items
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(
@@ -57,32 +59,11 @@ interface Navigator {
   fun openUrl(url: String)
 }
 
-/**
- * LazyColumn doesn't work in browsers. This indirection allows us to use LazyColumn with a mobile
- * host and regular column with a browser host.
- *
- * TODO LazyColumn should work outside of Treehouse https://github.com/cashapp/redwood/issues/605.
- */
-interface ColumnProvider {
-  @Composable
-  fun <T> create(
-    items: List<T>,
-    refreshing: Boolean,
-    onRefresh: (() -> Unit)?,
-    width: Constraint,
-    height: Constraint,
-    margin: Margin,
-    modifier: Modifier,
-    placeholder: @Composable () -> Unit,
-    itemContent: @Composable (item: T) -> Unit,
-  )
-}
-
+@OptIn(ExperimentalRedwoodLazyLayoutApi::class)
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
-  columnProvider: ColumnProvider,
 ) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
@@ -132,13 +113,10 @@ fun EmojiSearch(
       onChange = { searchTerm = it },
       modifier = Modifier.shrink(0.0),
     )
-    columnProvider.create(
-      items = filteredEmojis,
+    LazyColumn(
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
       width = Constraint.Fill,
-      height = Constraint.Wrap,
-      margin = Margin.Zero,
       modifier = Modifier.grow(1.0),
       placeholder = {
         Item(
@@ -146,13 +124,15 @@ fun EmojiSearch(
           onClick = {},
         )
       },
-    ) { image ->
-      Item(
-        emojiImage = image,
-        onClick = {
-          navigator.openUrl(image.url)
-        },
-      )
+    ) {
+      items(filteredEmojis) { image ->
+        Item(
+          emojiImage = image,
+          onClick = {
+            navigator.openUrl(image.url)
+          },
+        )
+      }
     }
   }
 }

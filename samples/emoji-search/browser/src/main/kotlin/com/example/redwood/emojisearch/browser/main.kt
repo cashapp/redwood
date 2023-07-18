@@ -15,20 +15,14 @@
  */
 package com.example.redwood.emojisearch.browser
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
-import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.ui.Margin
+import app.cash.redwood.layout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.HTMLElementChildren
-import com.example.redwood.emojisearch.presenter.ColumnProvider
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient
 import com.example.redwood.emojisearch.presenter.Navigator
@@ -59,17 +53,13 @@ fun main() {
     provider = EmojiSearchWidgetFactories(
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
-      RedwoodLazyLayout = object : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
-        // For now we use a ColumnProvider to replace these with a normal Column.
-        override fun LazyList() = throw UnsupportedOperationException()
-        override fun RefreshableLazyList() = throw UnsupportedOperationException()
-      },
+      RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
     ),
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {
     CompositionLocalProvider(LocalUiConfiguration provides UiConfiguration()) {
-      EmojiSearch(httpClient, navigator, TruncatingColumnProvider)
+      EmojiSearch(httpClient, navigator)
     }
   }
 }
@@ -86,31 +76,5 @@ private class FetchHttpClient(
       jsonHeaders[key] = value
     }
     return window.fetch(url, RequestInit(headers = jsonHeaders)).await().text().await()
-  }
-}
-
-private object TruncatingColumnProvider : ColumnProvider {
-  @Composable
-  override fun <T> create(
-    items: List<T>,
-    refreshing: Boolean,
-    onRefresh: (() -> Unit)?,
-    width: Constraint,
-    height: Constraint,
-    margin: Margin,
-    modifier: Modifier,
-    placeholder: @Composable () -> Unit,
-    itemContent: @Composable (item: T) -> Unit,
-  ) {
-    Column(
-      width = width,
-      height = height,
-      margin = margin,
-      modifier = modifier,
-    ) {
-      for (item in items.take(25)) {
-        itemContent(item)
-      }
-    }
   }
 }
