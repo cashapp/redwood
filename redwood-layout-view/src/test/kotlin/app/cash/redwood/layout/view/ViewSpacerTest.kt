@@ -40,7 +40,6 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
     deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
     renderingMode = SessionParams.RenderingMode.SHRINK,
-    showSystemUi = false,
   )
 
   override fun widget(

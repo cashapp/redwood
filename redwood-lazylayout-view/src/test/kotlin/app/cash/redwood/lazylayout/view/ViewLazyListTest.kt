@@ -48,7 +48,6 @@ class ViewLazyListTest(
     deviceConfig = DeviceConfig.PIXEL_6.copy(layoutDirection = layoutDirection),
     theme = "android:Theme.Material.Light.NoActionBar",
     supportsRtl = true,
-    showSystemUi = false,
   )
 
   override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)

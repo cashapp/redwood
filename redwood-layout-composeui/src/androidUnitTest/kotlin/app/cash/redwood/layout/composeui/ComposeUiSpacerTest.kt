@@ -39,7 +39,6 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
     deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
     renderingMode = SessionParams.RenderingMode.SHRINK,
-    showSystemUi = false,
   )
 
   override fun widget(
