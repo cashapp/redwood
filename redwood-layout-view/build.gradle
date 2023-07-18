@@ -26,6 +26,11 @@ android {
   libraryVariants.all { variant ->
     variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
   }
+
+  buildFeatures {
+    // TODO Remove once https://github.com/cashapp/paparazzi/issues/472 fixed.
+    androidResources = true
+  }
 }
 
 spotless {
