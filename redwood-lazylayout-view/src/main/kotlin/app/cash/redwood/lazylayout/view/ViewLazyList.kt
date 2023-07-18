@@ -34,6 +34,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Density
@@ -169,6 +170,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     adapter.crossAxisAlignment = crossAxisAlignment
     adapter.notifyItemRangeChanged(0, adapter.itemCount)
+  }
+
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+    recyclerView.scrollToPosition(scrollItemIndex.index)
   }
 
   override fun isVertical(isVertical: Boolean) {

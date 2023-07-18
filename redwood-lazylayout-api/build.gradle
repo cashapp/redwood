@@ -1,0 +1,22 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.serialization.core
+      }
+    }
+  }
+}

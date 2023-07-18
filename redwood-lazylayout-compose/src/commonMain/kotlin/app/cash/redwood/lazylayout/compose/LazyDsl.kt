@@ -73,6 +73,7 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
 
 @Composable
 public fun LazyRow(
+  state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
@@ -83,6 +84,7 @@ public fun LazyRow(
 ) {
   LazyList(
     isVertical = false,
+    state = state,
     width = width,
     height = height,
     margin = margin,
@@ -98,6 +100,7 @@ public fun LazyRow(
 public fun LazyRow(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
@@ -110,6 +113,7 @@ public fun LazyRow(
     isVertical = false,
     refreshing = refreshing,
     onRefresh = onRefresh,
+    state = state,
     width = width,
     height = height,
     margin = margin,
@@ -122,6 +126,7 @@ public fun LazyRow(
 
 @Composable
 public fun LazyColumn(
+  state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
@@ -132,6 +137,7 @@ public fun LazyColumn(
 ) {
   LazyList(
     isVertical = true,
+    state = state,
     width = width,
     height = height,
     margin = margin,
@@ -147,6 +153,7 @@ public fun LazyColumn(
 public fun LazyColumn(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
@@ -159,6 +166,7 @@ public fun LazyColumn(
     isVertical = true,
     refreshing = refreshing,
     onRefresh = onRefresh,
+    state = state,
     width = width,
     height = height,
     margin = margin,

@@ -7,6 +7,7 @@ redwoodBuild {
 
 dependencies {
   api projects.redwoodLayoutApi
+  api projects.redwoodLazylayoutApi
 }
 
 redwoodSchema {
