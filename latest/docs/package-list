@@ -27,6 +27,8 @@ module:redwood-layout-view
 app.cash.redwood.layout.view
 module:redwood-layout-widget
 app.cash.redwood.layout.widget
+module:redwood-lazylayout-api
+app.cash.redwood.lazylayout.api
 module:redwood-lazylayout-compose
 app.cash.redwood.lazylayout.compose
 module:redwood-lazylayout-composeui
