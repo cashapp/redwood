@@ -30,6 +30,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
@@ -60,9 +62,25 @@ interface Navigator {
   fun openUrl(url: String)
 }
 
-@OptIn(ExperimentalRedwoodLazyLayoutApi::class)
+enum class Variant {
+  LAZY_COLUMN, SCROLLABLE_FLEXBOX
+}
+
 @Composable
 fun EmojiSearch(
+  httpClient: HttpClient,
+  navigator: Navigator,
+  variant: Variant = Variant.LAZY_COLUMN,
+) {
+  when (variant) {
+    Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
+    Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient, navigator)
+  }
+}
+
+@OptIn(ExperimentalRedwoodLazyLayoutApi::class)
+@Composable
+private fun LazyColumn(
   httpClient: HttpClient,
   navigator: Navigator,
 ) {
@@ -146,10 +164,119 @@ fun EmojiSearch(
 }
 
 @Composable
-private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
+private fun NestedFlexBoxContainers(httpClient: HttpClient, navigator: Navigator) {
+  val allEmojis = remember { mutableStateListOf<EmojiImage>() }
+
+  val searchTermSaver = object : Saver<TextFieldState, String> {
+    override fun restore(value: String) = TextFieldState(value)
+    override fun SaverScope.save(value: TextFieldState) = value.text
+  }
+
+  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
+
+  LaunchedEffect(Unit) {
+    try {
+      val emojisJson = httpClient.call(
+        url = "https://api.github.com/emojis",
+        headers = mapOf("Accept" to "application/vnd.github.v3+json"),
+      )
+      val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
+
+      allEmojis.clear()
+      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+    } catch (e: Exception) {
+      println("Failed to load https://api.github.com/emojis $e")
+    }
+  }
+
+  val filteredEmojis by derivedStateOf {
+    val searchTerms = searchTerm.text.split(" ")
+    allEmojis.filter { image ->
+      searchTerms.all { image.label.contains(it, ignoreCase = true) }
+    }
+  }
+
+  Column(
+    width = Constraint.Fill,
+    height = Constraint.Fill,
+    overflow = Overflow.Clip,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    margin = LocalUiConfiguration.current.safeAreaInsets,
+    verticalAlignment = MainAxisAlignment.Start,
+  ) {
+    TextInput(
+      state = TextFieldState(searchTerm.text),
+      hint = "Search",
+      onChange = { searchTerm = it },
+      modifier = Modifier.shrink(0.0),
+    )
+
+    if (filteredEmojis.count() > 0) {
+      Text(
+        text = "Scroll Column - Nested Scroll Row + B Emojis",
+        modifier = Modifier.margin(Margin(12.dp)),
+      )
+      Column(
+        width = Constraint.Fill,
+        height = Constraint.Fill,
+        overflow = Overflow.Scroll,
+        horizontalAlignment = CrossAxisAlignment.Stretch,
+        modifier = Modifier.shrink(1.0),
+      ) {
+        Text(
+          text = "Scroll Row - A Emojis",
+          modifier = Modifier.margin(Margin(12.dp)),
+        )
+        Row(
+          width = Constraint.Wrap,
+          height = Constraint.Wrap,
+          overflow = Overflow.Scroll,
+          verticalAlignment = CrossAxisAlignment.Center,
+        ) {
+          val filtered = filteredEmojis.filter { it.label.startsWith("a") }.take(30)
+          filtered.forEach { image ->
+            Item(image)
+          }
+        }
+        filteredEmojis.filter { it.label.startsWith("b") }.take(30).forEach { image ->
+          Item(image)
+        }
+      }
+      Text(
+        text = "Scroll FlexRow - People Emojis",
+        modifier = Modifier.margin(Margin(12.dp)),
+      )
+      Row(
+        width = Constraint.Wrap,
+        height = Constraint.Wrap,
+        overflow = Overflow.Scroll,
+        verticalAlignment = CrossAxisAlignment.Center,
+      ) {
+        val filtered =
+          filteredEmojis.filter { it.label.contains(Regex("man|woman|person")) }.take(30)
+        filtered.forEach { image ->
+          Item(image)
+        }
+      }
+    } else {
+      Text(
+        text = "Empty",
+        modifier = Modifier.margin(Margin(12.dp)),
+      )
+    }
+  }
+}
+
+@Composable
+private fun Item(
+  emojiImage: EmojiImage,
+  onClick: () -> Unit = {},
+) {
   Row(
     width = Constraint.Fill,
+    height = Constraint.Wrap,
     verticalAlignment = CrossAxisAlignment.Center,
+    horizontalAlignment = MainAxisAlignment.Start,
   ) {
     Image(
       url = emojiImage.url,

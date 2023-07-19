@@ -25,6 +25,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
@@ -35,10 +36,9 @@ import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
-  direction: FlexDirection,
-) : Row<UIView>, Column<UIView> {
+  private val direction: FlexDirection,
+) : Row<UIView>, Column<UIView>, ChangeListener {
   private val yogaView = YogaUIView()
-
   override val value: UIView get() = yogaView
   override val children = UIViewChildren(
     value,
@@ -64,12 +64,10 @@ internal class UIViewFlexContainer(
 
   override fun width(width: Constraint) {
     yogaView.width = width
-    invalidate()
   }
 
   override fun height(height: Constraint) {
     yogaView.height = height
-    invalidate()
   }
 
   override fun margin(margin: Margin) {
@@ -81,11 +79,10 @@ internal class UIViewFlexContainer(
         marginBottom = margin.bottom.toPx().toFloat()
       }
     }
-    invalidate()
   }
 
   override fun overflow(overflow: Overflow) {
-    invalidate()
+    yogaView.scrollEnabled = overflow == Overflow.Scroll
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -106,15 +103,13 @@ internal class UIViewFlexContainer(
 
   private fun alignItems(alignItems: AlignItems) {
     yogaView.rootNode.alignItems = alignItems
-    invalidate()
   }
 
   private fun justifyContent(justifyContent: JustifyContent) {
     yogaView.rootNode.justifyContent = justifyContent
-    invalidate()
   }
 
-  private fun invalidate() {
+  override fun onEndChanges() {
     value.setNeedsLayout()
   }
 }
