@@ -64,9 +64,15 @@ internal interface ViewPortItems : Widget.Children<UIView> {
   var placeholders: MutableList<Widget<UIView>>
   var itemsBefore: Int
   var itemsAfter: Int
-  fun itemForGlobalIndex(index: Int): UIView
+  var collectionView: UICollectionView?
+  fun itemForGlobalIndex(index: Int): ViewPortItem
   fun itemCount(): Int
 }
+
+internal data class ViewPortItem(
+  val widget: Widget<UIView>,
+  val size: CValue<CGSize>,
+)
 
 internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
@@ -75,11 +81,13 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
     override var itemsBefore: Int = 0
     override var itemsAfter: Int = 0
+    override var collectionView: UICollectionView? = null
 
-    private val viewPortList = mutableListOf<Widget<UIView>>()
+    private val viewPortList = mutableListOf<ViewPortItem>()
 
     override fun insert(index: Int, widget: Widget<UIView>) {
-      viewPortList.add(index, widget)
+      val size = widget.value.sizeThatFits(containerSize())
+      viewPortList.add(index, ViewPortItem(widget, size))
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -93,20 +101,24 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
     override fun onModifierUpdated() {}
 
     // Fetch the item from the viewPortList relative to the entire collection view
-    override fun itemForGlobalIndex(index: Int): UIView {
+    override fun itemForGlobalIndex(index: Int): ViewPortItem {
       val viewPortIndex: Int = max(index - itemsBefore, 0)
 
       viewPortList.getOrNull(viewPortIndex)?.let {
-        return it.value
+        return it
       }
 
       // If we don't have a value, fallback to our pools of placeholders
       val placeholderIndex = index % placeholders.size
-      return placeholders.get(placeholderIndex).value
+      return ViewPortItem(placeholders.get(placeholderIndex), containerSize())
     }
 
     override fun itemCount(): Int {
       return max(itemsBefore - 1, 0) + viewPortList.count() + itemsAfter
+    }
+
+    private fun containerSize(): CValue<CGSize> {
+      return collectionView?.frame()?.useContents { size.readValue() } ?: CGSizeMake(0.0, 0.0)
     }
   }
 
@@ -157,7 +169,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
         ) as LazyListContainerCell
 
         val view = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
-        cell.set(view)
+        cell.set(view.widget.value)
 
         return cell
       }
@@ -170,16 +182,12 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
         layout: UICollectionViewLayout,
         sizeForItemAtIndexPath: NSIndexPath,
       ): CValue<CGSize> {
-        // TODO: Calculate size for individual items. This commented code currently hangs the UI Thread
-//        val item = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt())
-//        collectionView.frame().useContents {
-//          item.sizeThatFits(size.readValue()).useContents {
-//            return CGSizeMake(width, height)
-//          }
-//        }
-
-        // TODO: Handle size for horizontal scrollDirection
-        return CGSizeMake(collectionView.frame().useContents { size.width }, 64.0)
+        val itemSize = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt()).size
+        return if (isVertical) {
+          CGSizeMake(collectionView.frame().useContents { size.width }, itemSize.useContents { height })
+        } else {
+          CGSizeMake(itemSize.useContents { width }, collectionView.frame().useContents { size.height })
+        }
       }
 
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
@@ -207,10 +215,16 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
       LazyListContainerCell(CGRectZero.readValue()).classForCoder() as ObjCClass?,
       reuseIdentifier,
     )
+    items.collectionView = this
   }
 
   // LazyList
+
+  private var isVertical = true
+
   override fun isVertical(isVertical: Boolean) {
+    this.isVertical = isVertical
+
     if (!isVertical) {
       collectionViewFlowLayout.scrollDirection = if (isVertical) {
         UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
