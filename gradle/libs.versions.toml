@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.8.22"
+kotlin = "1.9.0"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization = "1.5.1"
 androidx-activity = "1.7.2"
@@ -44,7 +44,7 @@ androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 
 google-material = { module = "com.google.android.material:material", version = "1.9.0" }
 
-jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.4.8"
+jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.0"
 jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jbCompose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }
