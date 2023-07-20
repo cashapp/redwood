@@ -62,6 +62,7 @@ open EmojiSearchApp.xcworkspace
 ```
 
 Then build and run the app. The shared Kotlin code will be built automatically as part of building the iOS app, and also rebuilt as needed.
+NB: To see local changes to the shared Kotlin code reflected in the iOS app, be sure to fully re-build the project (i.e. using ⌘R, not ⌃⌘R).
 
 The app pulls the JavaScript from the presenters server and requires it to be running in order to work.
 
