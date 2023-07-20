@@ -36,6 +36,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -188,6 +189,14 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
         } else {
           CGSizeMake(itemSize.useContents { width }, collectionView.frame().useContents { size.height })
         }
+      }
+
+      override fun collectionView(
+        collectionView: UICollectionView,
+        layout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAtIndex: NSInteger,
+      ): CGFloat {
+        return 0.0
       }
 
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
