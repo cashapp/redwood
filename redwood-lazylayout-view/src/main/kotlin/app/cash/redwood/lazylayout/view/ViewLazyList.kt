@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.annotation.ColorInt
 import androidx.core.view.doOnDetach
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
@@ -330,5 +331,9 @@ internal class ViewRefreshableLazyList(
   override fun onRefresh(onRefresh: (() -> Unit)?) {
     swipeRefreshLayout.isEnabled = onRefresh != null
     swipeRefreshLayout.setOnRefreshListener(onRefresh)
+  }
+
+  override fun pullRefreshContentColor(@ColorInt pullRefreshContentColor: UInt) {
+    swipeRefreshLayout.setColorSchemeColors(pullRefreshContentColor.toInt())
   }
 }

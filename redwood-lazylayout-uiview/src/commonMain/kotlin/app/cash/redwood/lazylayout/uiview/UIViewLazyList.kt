@@ -51,6 +51,7 @@ import platform.UIKit.UICollectionViewFlowLayout
 import platform.UIKit.UICollectionViewLayout
 import platform.UIKit.UICollectionViewScrollDirection
 import platform.UIKit.UICollectionViewScrollPositionTop
+import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIRefreshControl
@@ -343,4 +344,15 @@ internal class UIViewRefreshableLazyList : UIViewLazyList(), RefreshableLazyList
       refreshControl.removeFromSuperview()
     }
   }
+
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+    refreshControl.tintColor = UIColor(pullRefreshContentColor)
+  }
 }
+
+private fun UIColor(color: UInt): UIColor = UIColor(
+  alpha = ((color and 0xFF000000u) shr 24).toDouble(),
+  red = ((color and 0x00FF0000u) shr 16).toDouble(),
+  green = ((color and 0x0000FF00u) shr 8).toDouble(),
+  blue = (color and 0x000000FFu).toDouble(),
+)

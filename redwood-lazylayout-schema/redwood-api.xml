@@ -22,6 +22,7 @@
     <property tag="9" name="margin" type="app.cash.redwood.ui.Margin"/>
     <property tag="10" name="crossAxisAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
     <property tag="11" name="scrollItemIndex" type="app.cash.redwood.lazylayout.api.ScrollItemIndex"/>
+    <property tag="12" name="pullRefreshContentColor" type="kotlin.UInt"/>
     <event tag="2" name="onViewportChanged" params="kotlin.Int,kotlin.Int"/>
     <event tag="6" name="onRefresh" nullable="true"/>
     <children tag="1" name="placeholder"/>
