@@ -16,6 +16,7 @@
 package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -38,7 +39,9 @@ import app.cash.redwood.lazylayout.compose.items
 import app.cash.redwood.lazylayout.compose.rememberLazyListState
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
+import com.example.redwood.emojisearch.compose.Colors
 import com.example.redwood.emojisearch.compose.Image
+import com.example.redwood.emojisearch.compose.LocalColors
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
@@ -157,7 +160,11 @@ private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
         .margin(Margin(8.dp)),
       onClick = onClick,
     )
-    Text(text = emojiImage.label)
+    // Removing the `CompositionLocalProvider` wrapper will cause the default primary color to be used.
+    // This color is defined in Colors.kt, and is currently set to black (0xFF000000).
+    CompositionLocalProvider(LocalColors provides Colors(0xFF00FF00u)) {
+      Text(text = emojiImage.label)
+    }
   }
 }
 

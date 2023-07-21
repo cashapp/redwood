@@ -19,12 +19,12 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.Modifier
-import com.example.redwood.emojisearch.widget.Text
 import com.google.android.material.R as MaterialR
+import com.example.redwood.emojisearch.widget.InternalText
 
 internal class ViewText(
   override val value: TextView,
-) : Text<View> {
+) : InternalText<View> {
   override var modifier: Modifier = Modifier
 
   init {
@@ -36,5 +36,9 @@ internal class ViewText(
 
   override fun text(text: String) {
     value.text = text
+  }
+
+  override fun color(color: UInt) {
+    value.setTextColor(color.toInt())
   }
 }

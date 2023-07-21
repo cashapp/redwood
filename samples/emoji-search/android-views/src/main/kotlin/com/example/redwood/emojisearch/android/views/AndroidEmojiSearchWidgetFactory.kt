@@ -21,13 +21,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
-import com.example.redwood.emojisearch.widget.Text
+import com.example.redwood.emojisearch.widget.InternalText
 import com.example.redwood.emojisearch.widget.TextInput
 
 class AndroidEmojiSearchWidgetFactory(
   private val context: Context,
 ) : EmojiSearchWidgetFactory<View> {
   override fun TextInput(): TextInput<View> = ViewTextInput(context)
-  override fun Text(): Text<View> = ViewText(TextView(context))
+  override fun InternalText(): InternalText<View> = ViewText(TextView(context))
   override fun Image(): Image<View> = ViewImage(ImageView(context))
 }

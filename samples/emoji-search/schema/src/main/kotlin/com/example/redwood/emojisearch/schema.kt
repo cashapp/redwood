@@ -27,7 +27,7 @@ import example.values.TextFieldState
 @Schema(
   members = [
     TextInput::class,
-    Text::class,
+    InternalText::class,
     Image::class,
   ],
   dependencies = [
@@ -51,8 +51,9 @@ data class TextInput(
 )
 
 @Widget(2)
-data class Text(
+data class InternalText(
   @Property(1) val text: String,
+  @Property(2) val color: UInt,
 )
 
 @Widget(3)
