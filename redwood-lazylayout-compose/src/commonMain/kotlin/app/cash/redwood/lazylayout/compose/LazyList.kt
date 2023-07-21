@@ -91,6 +91,7 @@ internal fun RefreshableLazyList(
   height: Constraint,
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
+  pullRefreshContentColor: UInt,
   modifier: Modifier,
   placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
@@ -124,6 +125,7 @@ internal fun RefreshableLazyList(
     modifier = modifier,
     scrollItemIndex = scrollItemIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
+    pullRefreshContentColor = pullRefreshContentColor,
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
         key(index) {

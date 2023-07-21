@@ -80,4 +80,7 @@ internal class HTMLRefreshableLazyList(
 
   override fun onRefresh(onRefresh: (() -> Unit)?) {
   }
+
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+  }
 }

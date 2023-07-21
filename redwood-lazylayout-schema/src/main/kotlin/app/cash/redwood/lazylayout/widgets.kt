@@ -51,6 +51,7 @@ public data class RefreshableLazyList(
   @Property(9) val margin: Margin,
   @Property(10) val crossAxisAlignment: CrossAxisAlignment,
   @Property(11) val scrollItemIndex: ScrollItemIndex,
+  @Property(12) val pullRefreshContentColor: UInt,
   @Children(1) val placeholder: () -> Unit,
   @Children(2) val items: () -> Unit,
 )

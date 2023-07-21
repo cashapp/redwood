@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
@@ -63,6 +64,7 @@ internal class ComposeUiLazyList :
   private var margin by mutableStateOf(Margin.Zero)
   private var crossAxisAlignment by mutableStateOf(CrossAxisAlignment.Start)
   private var scrollItemIndex by mutableStateOf<ScrollItemIndex?>(null)
+  private var pullRefreshContentColor by mutableStateOf(Color.Black)
 
   internal var testOnlyModifier: Modifier? = null
 
@@ -116,6 +118,10 @@ internal class ComposeUiLazyList :
     this.scrollItemIndex = scrollItemIndex
   }
 
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+    this.pullRefreshContentColor = Color(pullRefreshContentColor.toLong())
+  }
+
   override val value = @Composable {
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
@@ -139,6 +145,7 @@ internal class ComposeUiLazyList :
         state = refreshState,
         // Should this be placed somewhere different when horizontal
         modifier = Modifier.align(Alignment.TopCenter),
+        contentColor = pullRefreshContentColor,
       )
 
       // TODO Fix item count truncation
