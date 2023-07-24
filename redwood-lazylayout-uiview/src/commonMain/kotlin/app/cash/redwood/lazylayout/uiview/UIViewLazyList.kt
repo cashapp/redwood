@@ -27,8 +27,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
-import app.cash.redwood.lazylayout.widget.WindowedItemList
-import app.cash.redwood.lazylayout.widget.WindowedItemListImpl
+import app.cash.redwood.lazylayout.widget.WindowedChildren
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
@@ -64,24 +63,6 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal class ViewPortItems :
-  Widget.Children<UIView>, WindowedItemList<Widget<UIView>> by WindowedItemListImpl() {
-
-  override fun insert(index: Int, widget: Widget<UIView>) {
-    items.add(index, widget)
-  }
-
-  override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    items.move(fromIndex, toIndex, count)
-  }
-
-  override fun remove(index: Int, count: Int) {
-    items.remove(index, count = count)
-  }
-
-  override fun onModifierUpdated() {}
-}
-
 private fun UICollectionView.size(): CValue<CGSize> {
   return frame().useContents { size.readValue() }
 }
@@ -94,7 +75,7 @@ private data class ViewPortItem(
 internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 
   // Fetch the item relative to the entire collection view
-  private fun ViewPortItems.itemForGlobalIndex(index: Int): ViewPortItem {
+  private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): ViewPortItem {
     items.getOrNull(max(index - itemsBefore, 0))?.let {
       return ViewPortItem(it, it.value.sizeThatFits(collectionView.size()))
     }
@@ -183,7 +164,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
     )
   }
 
-  final override val items: ViewPortItems = ViewPortItems()
+  final override val items = WindowedChildren<UIView>(UICollectionViewListUpdateCallback(collectionView))
 
   override val placeholder = MutableListChildren<UIView>()
 

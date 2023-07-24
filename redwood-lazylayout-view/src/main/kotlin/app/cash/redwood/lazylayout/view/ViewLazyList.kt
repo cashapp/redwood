@@ -38,8 +38,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
-import app.cash.redwood.lazylayout.widget.WindowedItemList
-import app.cash.redwood.lazylayout.widget.WindowedItemListImpl
+import app.cash.redwood.lazylayout.widget.WindowedChildren
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
@@ -68,31 +67,6 @@ internal class Placeholders(
   override fun onModifierUpdated() {}
 }
 
-internal class Items<VH : RecyclerView.ViewHolder>(
-  private val adapter: RecyclerView.Adapter<VH>,
-) : Widget.Children<View>, WindowedItemList<Widget<View>> by WindowedItemListImpl() {
-
-  override fun insert(index: Int, widget: Widget<View>) {
-    items.add(index, widget)
-    adapter.notifyItemInserted(itemsBefore + index)
-  }
-
-  override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    items.move(fromIndex, toIndex, count)
-    check(count == 1)
-    // TODO Support arbitrary count.
-    adapter.notifyItemMoved(itemsBefore + fromIndex, itemsBefore + toIndex)
-  }
-
-  override fun remove(index: Int, count: Int) {
-    items.remove(index, count)
-    adapter.notifyItemRangeRemoved(itemsBefore + index, count)
-  }
-
-  override fun onModifierUpdated() {
-  }
-}
-
 internal open class ViewLazyList(context: Context) : LazyList<View> {
   private val scope = MainScope()
 
@@ -116,7 +90,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
 
   override val value: View get() = recyclerView
 
-  final override val items = Items(adapter)
+  final override val items = WindowedChildren<View>(RecyclerViewAdapterListUpdateCallback(adapter))
 
   init {
     adapter.items = items
@@ -217,7 +191,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     val placeholders: Placeholders,
   ) : RecyclerView.Adapter<ViewHolder>() {
     var crossAxisAlignment = CrossAxisAlignment.Start
-    lateinit var items: Items<ViewHolder>
+    lateinit var items: WindowedChildren<View>
 
     /**
      * When we haven't loaded enough placeholders for the viewport height, we set a blank view while

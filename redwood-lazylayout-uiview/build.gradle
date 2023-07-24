@@ -13,7 +13,6 @@ kotlin {
 
   sourceSets {
     commonMain {
-      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.lazylayout.uiview'))
       dependencies {
         api projects.redwoodLazylayoutWidget
         implementation projects.redwoodWidgetCompose
