@@ -62,12 +62,13 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal class ViewPortItems : Widget.Children<UIView> {
+internal class ViewPortItems(
+  private val collectionView: UICollectionView,
+) : Widget.Children<UIView> {
   internal var placeholders = mutableListOf<Widget<UIView>>()
 
   internal var itemsBefore: Int = 0
   internal var itemsAfter: Int = 0
-  internal var collectionView: UICollectionView? = null
 
   private val viewPortList = mutableListOf<ViewPortItem>()
 
@@ -104,7 +105,7 @@ internal class ViewPortItems : Widget.Children<UIView> {
   }
 
   private fun containerSize(): CValue<CGSize> {
-    return collectionView?.frame()?.useContents { size.readValue() } ?: CGSizeMake(0.0, 0.0)
+    return collectionView.frame().useContents { size.readValue() }
   }
 }
 
@@ -115,32 +116,6 @@ internal data class ViewPortItem(
 
 internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 
-  final override val items: ViewPortItems = ViewPortItems()
-
-  override val placeholder: Widget.Children<UIView> = MutableListChildren(list = items.placeholders)
-
-  private val viewPortListCoordinator = object {
-    var minIndex: Int = 0
-    var maxIndex: Int = 0
-
-    fun notifyViewportChanged() {
-      onViewportChanged(minIndex, maxIndex)
-    }
-
-    fun updateViewport(minIndex: Int, maxIndex: Int) {
-      if (minIndex != this.minIndex || maxIndex != this.maxIndex) {
-        this.minIndex = minIndex
-        this.maxIndex = maxIndex
-
-        notifyViewportChanged()
-      }
-    }
-  }
-
-  // A callback to tell LazyList that we have an update to the window of items available
-  private lateinit var onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit
-
-  // UICollectionView + Protocols
   private var collectionViewFlowLayout: UICollectionViewFlowLayout =
     object : UICollectionViewFlowLayout() {}
 
@@ -218,8 +193,32 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
       LazyListContainerCell(CGRectZero.readValue()).classForCoder() as ObjCClass?,
       reuseIdentifier,
     )
-    items.collectionView = this
   }
+
+  final override val items: ViewPortItems = ViewPortItems(collectionView)
+
+  override val placeholder: Widget.Children<UIView> = MutableListChildren(list = items.placeholders)
+
+  private val viewPortListCoordinator = object {
+    var minIndex: Int = 0
+    var maxIndex: Int = 0
+
+    fun notifyViewportChanged() {
+      onViewportChanged(minIndex, maxIndex)
+    }
+
+    fun updateViewport(minIndex: Int, maxIndex: Int) {
+      if (minIndex != this.minIndex || maxIndex != this.maxIndex) {
+        this.minIndex = minIndex
+        this.maxIndex = maxIndex
+
+        notifyViewportChanged()
+      }
+    }
+  }
+
+  // A callback to tell LazyList that we have an update to the window of items available
+  private lateinit var onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit
 
   // LazyList
 
