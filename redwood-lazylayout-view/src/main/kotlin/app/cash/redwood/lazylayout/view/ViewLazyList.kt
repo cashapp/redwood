@@ -38,9 +38,10 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.lazylayout.widget.WindowedItemList
+import app.cash.redwood.lazylayout.widget.WindowedItemListImpl
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -69,27 +70,22 @@ internal class Placeholders(
 
 internal class Items<VH : RecyclerView.ViewHolder>(
   private val adapter: RecyclerView.Adapter<VH>,
-) : Widget.Children<View> {
-  internal var itemsBefore = 0
-  internal var itemsAfter = 0
-
-  private val _widgets = MutableListChildren<View>()
-  val widgets: List<Widget<View>> get() = _widgets
+) : Widget.Children<View>, WindowedItemList<Widget<View>> by WindowedItemListImpl() {
 
   override fun insert(index: Int, widget: Widget<View>) {
-    _widgets.insert(index, widget)
+    items.add(index, widget)
     adapter.notifyItemInserted(itemsBefore + index)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    _widgets.move(fromIndex, toIndex, count)
+    items.move(fromIndex, toIndex, count)
     check(count == 1)
     // TODO Support arbitrary count.
     adapter.notifyItemMoved(itemsBefore + fromIndex, itemsBefore + toIndex)
   }
 
   override fun remove(index: Int, count: Int) {
-    _widgets.remove(index, count)
+    items.remove(index, count)
     adapter.notifyItemRangeRemoved(itemsBefore + index, count)
   }
 
@@ -209,7 +205,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     val delta = itemsAfter - items.itemsAfter
     items.itemsAfter = itemsAfter
 
-    val positionStart = items.itemsBefore + items.widgets.size
+    val positionStart = items.itemsBefore + items.items.size
     if (delta > 0) {
       adapter.notifyItemRangeInserted(positionStart, delta)
     } else {
@@ -238,11 +234,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
         }
       }
 
-    override fun getItemCount(): Int = items.itemsBefore + items.widgets.size + items.itemsAfter
+    override fun getItemCount(): Int = items.size
 
     override fun getItemViewType(position: Int): Int {
-      val index = position - items.itemsBefore
-      return if (index in items.widgets.indices) VIEW_TYPE_ITEM else VIEW_TYPE_PLACEHOLDER
+      return if (items[position] != null) VIEW_TYPE_ITEM else VIEW_TYPE_PLACEHOLDER
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -291,8 +286,7 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
           }
         }
         is ViewHolder.Item -> {
-          val index = position - items.itemsBefore
-          val view = items.widgets[index].value
+          val view = items[position]!!.value
           holder.container.removeAllViews()
           (view.parent as? FrameLayout)?.removeAllViews()
           view.layoutParams = layoutParams

@@ -27,11 +27,12 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
+import app.cash.redwood.lazylayout.widget.WindowedItemList
+import app.cash.redwood.lazylayout.widget.WindowedItemListImpl
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
-import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.readValue
@@ -64,44 +65,33 @@ import platform.darwin.NSObject
 
 internal class ViewPortItems(
   private val collectionView: UICollectionView,
-) : Widget.Children<UIView> {
+) : Widget.Children<UIView>, WindowedItemList<ViewPortItem> by WindowedItemListImpl() {
   internal var placeholders = mutableListOf<Widget<UIView>>()
-
-  internal var itemsBefore: Int = 0
-  internal var itemsAfter: Int = 0
-
-  private val viewPortList = mutableListOf<ViewPortItem>()
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     val size = widget.value.sizeThatFits(containerSize())
-    viewPortList.add(index, ViewPortItem(widget, size))
+    items.add(index, ViewPortItem(widget, size))
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    viewPortList.move(fromIndex, toIndex, count)
+    items.move(fromIndex, toIndex, count)
   }
 
   override fun remove(index: Int, count: Int) {
-    viewPortList.remove(index, count = count)
+    items.remove(index, count = count)
   }
 
   override fun onModifierUpdated() {}
 
-  // Fetch the item from the viewPortList relative to the entire collection view
+  // Fetch the item relative to the entire collection view
   internal fun itemForGlobalIndex(index: Int): ViewPortItem {
-    val viewPortIndex: Int = max(index - itemsBefore, 0)
-
-    viewPortList.getOrNull(viewPortIndex)?.let {
+    get(index)?.let {
       return it
     }
 
     // If we don't have a value, fallback to our pools of placeholders
     val placeholderIndex = index % placeholders.size
     return ViewPortItem(placeholders[placeholderIndex], containerSize())
-  }
-
-  internal fun itemCount(): Int {
-    return max(itemsBefore - 1, 0) + viewPortList.count() + itemsAfter
   }
 
   private fun containerSize(): CValue<CGSize> {
@@ -126,7 +116,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
         collectionView: UICollectionView,
         numberOfItemsInSection: NSInteger,
       ): NSInteger {
-        return items.itemCount().toLong()
+        return items.size.toLong()
       }
 
       override fun collectionView(
@@ -262,7 +252,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
-    if (items.itemCount() > scrollItemIndex.index) {
+    if (items.size > scrollItemIndex.index) {
       collectionView.scrollToItemAtIndexPath(
         NSIndexPath.indexPathForItem(scrollItemIndex.index.toLong(), 0),
         UICollectionViewScrollPositionTop,
