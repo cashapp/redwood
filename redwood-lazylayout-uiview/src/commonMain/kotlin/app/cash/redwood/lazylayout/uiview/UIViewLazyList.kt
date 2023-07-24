@@ -33,6 +33,7 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
+import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.readValue
@@ -85,7 +86,7 @@ internal class ViewPortItems(
 
   // Fetch the item relative to the entire collection view
   internal fun itemForGlobalIndex(index: Int): ViewPortItem {
-    get(index)?.let {
+    items.getOrNull(max(index - itemsBefore, 0))?.let {
       return it
     }
 
