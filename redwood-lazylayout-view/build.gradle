@@ -1,3 +1,5 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
+
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
@@ -19,6 +21,13 @@ dependencies {
 
 android {
   namespace 'app.cash.redwood.lazylayout.view'
+
+  def helpers = ComposeHelpers.get(tasks, 'app.cash.redwood.lazylayout.view').get()
+  // TODO Should be able to do `sourceSets.main.kotlin.srcDir(helpers)`.
+  //  https://issuetracker.google.com/issues/249468390
+  libraryVariants.all { variant ->
+    variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
+  }
 
   buildFeatures {
     // TODO Remove once https://github.com/cashapp/paparazzi/issues/472 fixed.
