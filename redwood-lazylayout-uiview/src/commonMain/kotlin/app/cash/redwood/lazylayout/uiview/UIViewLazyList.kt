@@ -63,27 +63,12 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-private fun UICollectionView.size(): CValue<CGSize> {
-  return frame().useContents { size.readValue() }
-}
-
-private data class ViewPortItem(
-  val widget: Widget<UIView>,
-  val size: CValue<CGSize>,
-)
-
 internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 
   // Fetch the item relative to the entire collection view
-  private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): ViewPortItem {
-    items.getOrNull(max(index - itemsBefore, 0))?.let {
-      return ViewPortItem(it, it.value.sizeThatFits(collectionView.size()))
-    }
-
-    // If we don't have a value, fallback to our pools of placeholders
-    val placeholderIndex = index % placeholder.size
-    val widget = placeholder[placeholderIndex]
-    return ViewPortItem(widget, widget.value.sizeThatFits(collectionView.size()))
+  private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): Widget<UIView> {
+    return items.getOrNull(max(index - itemsBefore, 0))
+      ?: placeholder[index % placeholder.size]
   }
 
   private var collectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -107,8 +92,8 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
           forIndexPath = cellForItemAtIndexPath,
         ) as LazyListContainerCell
 
-        val view = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
-        cell.set(view.widget.value)
+        val widget = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
+        cell.set(widget.value)
 
         return cell
       }
@@ -121,7 +106,8 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
         layout: UICollectionViewLayout,
         sizeForItemAtIndexPath: NSIndexPath,
       ): CValue<CGSize> {
-        val itemSize = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt()).size
+        val widget = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt())
+        val itemSize = widget.value.sizeThatFits(collectionView.frame().useContents { size.readValue() })
         return if (isVertical) {
           CGSizeMake(collectionView.frame().useContents { size.width }, itemSize.useContents { height })
         } else {
