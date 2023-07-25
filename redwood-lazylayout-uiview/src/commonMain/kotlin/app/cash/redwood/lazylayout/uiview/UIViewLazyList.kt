@@ -25,9 +25,9 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
-import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.lazylayout.widget.WindowedChildren
+import app.cash.redwood.lazylayout.widget.WindowedLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
@@ -63,15 +63,19 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
+internal open class UIViewLazyList(
+  private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(),
+  internal val collectionView: UICollectionView = UICollectionView(
+    CGRectZero.readValue(),
+    collectionViewFlowLayout,
+  ),
+) : WindowedLazyList<UIView>(UICollectionViewListUpdateCallback(collectionView)), ChangeListener {
 
   // Fetch the item relative to the entire collection view
   private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): Widget<UIView> {
     return items.getOrNull(max(index - itemsBefore, 0))
       ?: placeholder[index % placeholder.size]
   }
-
-  private var collectionViewFlowLayout = UICollectionViewFlowLayout()
 
   private val collectionViewDataSource: UICollectionViewDataSourceProtocol =
     object : NSObject(), UICollectionViewDataSourceProtocol {
@@ -128,7 +132,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 
         if (visibleIndexPaths.isNotEmpty()) {
           // TODO: Optimize this for less operations
-          viewPortListCoordinator.updateViewport(
+          updateViewport(
             visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() },
             visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() },
           )
@@ -136,48 +140,22 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
       }
     }
 
-  internal val collectionView = UICollectionView(
-    frame = CGRectZero.readValue(),
-    collectionViewLayout = this.collectionViewFlowLayout,
-  ).apply {
-    dataSource = collectionViewDataSource
-    delegate = collectionViewDelegate
-    prefetchingEnabled = true
-
-    registerClass(
-      LazyListContainerCell(CGRectZero.readValue()).classForCoder() as ObjCClass?,
-      reuseIdentifier,
-    )
-  }
-
-  final override val items = WindowedChildren<UIView>(UICollectionViewListUpdateCallback(collectionView))
-
   override val placeholder = MutableListChildren<UIView>()
 
-  private val viewPortListCoordinator = object {
-    var minIndex: Int = 0
-    var maxIndex: Int = 0
+  private var isVertical = true
 
-    fun notifyViewportChanged() {
-      onViewportChanged(minIndex, maxIndex)
-    }
+  init {
+    collectionView.apply {
+      dataSource = collectionViewDataSource
+      delegate = collectionViewDelegate
+      prefetchingEnabled = true
 
-    fun updateViewport(minIndex: Int, maxIndex: Int) {
-      if (minIndex != this.minIndex || maxIndex != this.maxIndex) {
-        this.minIndex = minIndex
-        this.maxIndex = maxIndex
-
-        notifyViewportChanged()
-      }
+      registerClass(
+        LazyListContainerCell(CGRectZero.readValue()).classForCoder() as ObjCClass?,
+        reuseIdentifier,
+      )
     }
   }
-
-  // A callback to tell LazyList that we have an update to the window of items available
-  private lateinit var onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit
-
-  // LazyList
-
-  private var isVertical = true
 
   override fun isVertical(isVertical: Boolean) {
     this.isVertical = isVertical
@@ -187,18 +165,6 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
     } else {
       UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
     }
-  }
-
-  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
-    this.onViewportChanged = onViewportChanged
-  }
-
-  override fun itemsBefore(itemsBefore: Int) {
-    items.itemsBefore = itemsBefore
-  }
-
-  override fun itemsAfter(itemsAfter: Int) {
-    items.itemsAfter = itemsAfter
   }
 
   // TODO Dynamically update width and height of UIViewLazyList when set

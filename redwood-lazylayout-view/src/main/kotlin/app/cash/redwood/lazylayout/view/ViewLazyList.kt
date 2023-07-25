@@ -36,9 +36,9 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
-import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.lazylayout.widget.WindowedChildren
+import app.cash.redwood.lazylayout.widget.WindowedLazyList
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
@@ -67,16 +67,16 @@ internal class Placeholders(
   override fun onModifierUpdated() {}
 }
 
-internal open class ViewLazyList(context: Context) : LazyList<View> {
+internal open class ViewLazyList private constructor(
+  internal val recyclerView: RecyclerView,
+  override val placeholder: Placeholders = Placeholders(recyclerView.recycledViewPool),
+  private val adapter: LazyContentItemListAdapter = LazyContentItemListAdapter(placeholder),
+) : WindowedLazyList<View>(RecyclerViewAdapterListUpdateCallback(adapter)) {
   private val scope = MainScope()
-
-  internal val recyclerView: RecyclerView = RecyclerView(context)
 
   override var modifier: Modifier = Modifier
 
-  final override val placeholder = Placeholders(recyclerView.recycledViewPool)
-
-  private val density = Density(context.resources)
+  private val density = Density(recyclerView.context.resources)
   private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams? = when (orientation) {
       RecyclerView.HORIZONTAL -> RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
@@ -84,13 +84,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
       else -> null
     }
   }
-  private val adapter = LazyContentItemListAdapter(placeholder)
-  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
-  private var viewport = IntRange.EMPTY
 
   override val value: View get() = recyclerView
 
-  final override val items = WindowedChildren<View>(RecyclerViewAdapterListUpdateCallback(adapter))
+  constructor(context: Context) : this(RecyclerView(context))
 
   init {
     adapter.items = items
@@ -103,7 +100,10 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            updateViewport()
+            updateViewport(
+              linearLayoutManager.findFirstVisibleItemPosition(),
+              linearLayoutManager.findLastVisibleItemPosition(),
+            )
           }
         },
       )
@@ -151,18 +151,6 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     linearLayoutManager.orientation = if (isVertical) RecyclerView.VERTICAL else RecyclerView.HORIZONTAL
   }
 
-  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
-    this.onViewportChanged = onViewportChanged
-  }
-
-  private fun updateViewport() {
-    val newViewport = linearLayoutManager.findFirstVisibleItemPosition()..linearLayoutManager.findLastVisibleItemPosition()
-    if (newViewport != viewport) {
-      this.viewport = newViewport
-      onViewportChanged?.invoke(newViewport.first, newViewport.last)
-    }
-  }
-
   @SuppressLint("NotifyDataSetChanged")
   override fun itemsBefore(itemsBefore: Int) {
     items.itemsBefore = itemsBefore
@@ -173,18 +161,6 @@ internal open class ViewLazyList(context: Context) : LazyList<View> {
     //  This then increases the value of itemsBefore,
     //  and the cycle continues until the backing dataset is exhausted.
     adapter.notifyDataSetChanged()
-  }
-
-  override fun itemsAfter(itemsAfter: Int) {
-    val delta = itemsAfter - items.itemsAfter
-    items.itemsAfter = itemsAfter
-
-    val positionStart = items.itemsBefore + items.items.size
-    if (delta > 0) {
-      adapter.notifyItemRangeInserted(positionStart, delta)
-    } else {
-      adapter.notifyItemRangeRemoved(positionStart, -delta)
-    }
   }
 
   private class LazyContentItemListAdapter(
