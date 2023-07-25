@@ -64,14 +64,11 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal class ViewPortItems(
-  private val collectionView: UICollectionView,
-) : Widget.Children<UIView>, WindowedItemList<ViewPortItem> by WindowedItemListImpl() {
-  internal var placeholders = mutableListOf<Widget<UIView>>()
+internal class ViewPortItems :
+  Widget.Children<UIView>, WindowedItemList<Widget<UIView>> by WindowedItemListImpl() {
 
   override fun insert(index: Int, widget: Widget<UIView>) {
-    val size = widget.value.sizeThatFits(containerSize())
-    items.add(index, ViewPortItem(widget, size))
+    items.add(index, widget)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -83,29 +80,29 @@ internal class ViewPortItems(
   }
 
   override fun onModifierUpdated() {}
-
-  // Fetch the item relative to the entire collection view
-  internal fun itemForGlobalIndex(index: Int): ViewPortItem {
-    items.getOrNull(max(index - itemsBefore, 0))?.let {
-      return it
-    }
-
-    // If we don't have a value, fallback to our pools of placeholders
-    val placeholderIndex = index % placeholders.size
-    return ViewPortItem(placeholders[placeholderIndex], containerSize())
-  }
-
-  private fun containerSize(): CValue<CGSize> {
-    return collectionView.frame().useContents { size.readValue() }
-  }
 }
 
-internal data class ViewPortItem(
+private fun UICollectionView.size(): CValue<CGSize> {
+  return frame().useContents { size.readValue() }
+}
+
+private data class ViewPortItem(
   val widget: Widget<UIView>,
   val size: CValue<CGSize>,
 )
 
 internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
+
+  // Fetch the item relative to the entire collection view
+  private fun ViewPortItems.itemForGlobalIndex(index: Int): ViewPortItem {
+    items.getOrNull(max(index - itemsBefore, 0))?.let {
+      return ViewPortItem(it, it.value.sizeThatFits(collectionView.size()))
+    }
+
+    // If we don't have a value, fallback to our pools of placeholders
+    val placeholderIndex = index % placeholder.size
+    return ViewPortItem(placeholder[placeholderIndex], collectionView.size())
+  }
 
   private var collectionViewFlowLayout: UICollectionViewFlowLayout =
     object : UICollectionViewFlowLayout() {}
@@ -186,9 +183,9 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
     )
   }
 
-  final override val items: ViewPortItems = ViewPortItems(collectionView)
+  final override val items: ViewPortItems = ViewPortItems()
 
-  override val placeholder: Widget.Children<UIView> = MutableListChildren(list = items.placeholders)
+  override val placeholder = MutableListChildren<UIView>()
 
   private val viewPortListCoordinator = object {
     var minIndex: Int = 0
@@ -271,6 +268,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 }
 
 private const val reuseIdentifier = "LazyListContainerCell"
+
 private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCell(frame) {
 
   private var widgetView: UIView? = null
@@ -283,11 +281,13 @@ private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCel
     }
     widgetView = null
   }
+
   fun set(widgetView: UIView) {
     this.widgetView = widgetView
     contentView.addSubview(widgetView)
     contentView.layoutIfNeeded()
   }
+
   override fun layoutSubviews() {
     super.layoutSubviews()
     widgetView?.setFrame(this.contentView.bounds)
