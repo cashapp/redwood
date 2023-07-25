@@ -15,16 +15,16 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-public interface WindowedItemList<T : Any> : List<T?> {
-  public var itemsBefore: Int
-  public var itemsAfter: Int
-  public val items: MutableList<T>
+internal interface WindowedItemList<T : Any> : List<T?> {
+  var itemsBefore: Int
+  var itemsAfter: Int
+  val items: MutableList<T>
 }
 
-public class WindowedItemListImpl<T : Any> : WindowedItemList<T>, AbstractList<T?>() {
-  public override var itemsBefore: Int = 0
-  public override var itemsAfter: Int = 0
-  public override val items: MutableList<T> = mutableListOf()
+internal class WindowedItemListImpl<T : Any> : WindowedItemList<T>, AbstractList<T?>() {
+  override var itemsBefore: Int = 0
+  override var itemsAfter: Int = 0
+  override val items: MutableList<T> = mutableListOf()
 
   override val size: Int
     get() = itemsBefore + items.size + itemsAfter
