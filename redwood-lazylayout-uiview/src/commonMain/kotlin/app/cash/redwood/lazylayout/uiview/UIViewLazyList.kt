@@ -82,7 +82,8 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
 
     // If we don't have a value, fallback to our pools of placeholders
     val placeholderIndex = index % placeholder.size
-    return ViewPortItem(placeholder[placeholderIndex], collectionView.size())
+    val widget = placeholder[placeholderIndex]
+    return ViewPortItem(widget, widget.value.sizeThatFits(collectionView.size()))
   }
 
   private var collectionViewFlowLayout = UICollectionViewFlowLayout()
