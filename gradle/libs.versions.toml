@@ -5,7 +5,7 @@ kotlinx-serialization = "1.5.1"
 androidxComposeCompiler = "1.4.5"
 androidx-activity = "1.7.2"
 jbCompose = "1.4.1"
-lint = "31.0.2"
+lint = "31.1.0"
 zipline = "1.1.0"
 coil = "2.4.0"
 
