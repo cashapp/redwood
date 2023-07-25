@@ -196,12 +196,10 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
   override fun isVertical(isVertical: Boolean) {
     this.isVertical = isVertical
 
-    if (!isVertical) {
-      collectionViewFlowLayout.scrollDirection = if (isVertical) {
-        UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
-      } else {
-        UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
-      }
+    collectionViewFlowLayout.scrollDirection = if (isVertical) {
+      UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
+    } else {
+      UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
     }
   }
 
