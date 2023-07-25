@@ -85,8 +85,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
     return ViewPortItem(placeholder[placeholderIndex], collectionView.size())
   }
 
-  private var collectionViewFlowLayout: UICollectionViewFlowLayout =
-    object : UICollectionViewFlowLayout() {}
+  private var collectionViewFlowLayout = UICollectionViewFlowLayout()
 
   private val collectionViewDataSource: UICollectionViewDataSourceProtocol =
     object : NSObject(), UICollectionViewDataSourceProtocol {
