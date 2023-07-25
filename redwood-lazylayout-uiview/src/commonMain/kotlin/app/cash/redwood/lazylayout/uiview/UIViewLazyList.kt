@@ -50,7 +50,8 @@ import platform.UIKit.UICollectionViewDataSourceProtocol
 import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
 import platform.UIKit.UICollectionViewFlowLayout
 import platform.UIKit.UICollectionViewLayout
-import platform.UIKit.UICollectionViewScrollDirection
+import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
+import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
 import platform.UIKit.UICollectionViewScrollPositionTop
 import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventValueChanged
@@ -112,7 +113,7 @@ internal open class UIViewLazyList(
       ): CValue<CGSize> {
         val widget = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt())
         val itemSize = widget.value.sizeThatFits(collectionView.frame().useContents { size.readValue() })
-        return if (isVertical) {
+        return if (collectionViewFlowLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
           CGSizeMake(collectionView.frame().useContents { size.width }, itemSize.useContents { height })
         } else {
           CGSizeMake(itemSize.useContents { width }, collectionView.frame().useContents { size.height })
@@ -142,8 +143,6 @@ internal open class UIViewLazyList(
 
   override val placeholder = MutableListChildren<UIView>()
 
-  private var isVertical = true
-
   init {
     collectionView.apply {
       dataSource = collectionViewDataSource
@@ -158,12 +157,10 @@ internal open class UIViewLazyList(
   }
 
   override fun isVertical(isVertical: Boolean) {
-    this.isVertical = isVertical
-
     collectionViewFlowLayout.scrollDirection = if (isVertical) {
-      UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
+      UICollectionViewScrollDirectionVertical
     } else {
-      UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
+      UICollectionViewScrollDirectionHorizontal
     }
   }
 
