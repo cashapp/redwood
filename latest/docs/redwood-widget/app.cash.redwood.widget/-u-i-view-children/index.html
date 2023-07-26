@@ -57,6 +57,10 @@
       <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button></div>
 <div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">UIViewChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parent<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ view, index -&gt;
     parent.insertSubview(view, index.convert&lt;NSInteger&gt;())
+  }<span class="token punctuation">, </span></span><span class="parameter ">remove<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>{ index, count -&gt;
+    Array(count) {
+      parent.typedSubviews[index].also(UIView::removeFromSuperview)
+    }
   }</span></span><span class="token punctuation">)</span></div></div>    </div>
   </div>
   <div class="tabbedcontent">
@@ -64,12 +68,12 @@
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-331582048%2FConstructors%2F141335592" anchor-label="UIViewChildren" id="-331582048%2FConstructors%2F141335592" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain"></a>
+        <div class="table"><a data-name="-1098890821%2FConstructors%2F141335592" anchor-label="UIViewChildren" id="-1098890821%2FConstructors%2F141335592" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain"></a>
           <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-u-i-view-children.html"><span>UIView</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-331582048%2FConstructors%2F141335592"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1098890821%2FConstructors%2F141335592"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -78,6 +82,10 @@
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button></div>
 <div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parent<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ view, index -&gt;
     parent.insertSubview(view, index.convert&lt;NSInteger&gt;())
+  }<span class="token punctuation">, </span></span><span class="parameter ">remove<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>{ index, count -&gt;
+    Array(count) {
+      parent.typedSubviews[index].also(UIView::removeFromSuperview)
+    }
   }</span></span><span class="token punctuation">)</span></div></div>                  </div>
                 </div>
               </div>
