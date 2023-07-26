@@ -29,7 +29,10 @@ import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.Node
+import kotlinx.cinterop.convert
 import platform.UIKit.UIView
+import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
@@ -37,7 +40,19 @@ internal class UIViewFlexContainer(
   private val yogaView = YogaUIView()
 
   override val value: UIView get() = yogaView
-  override val children = UIViewChildren(value)
+  override val children = UIViewChildren(
+    value,
+    insert = { view, index ->
+      yogaView.rootNode.children.add(index, view.asNode())
+      value.insertSubview(view, index.convert<NSInteger>())
+    },
+    remove = { index, count ->
+      yogaView.rootNode.children.remove(index, count)
+      Array(count) {
+        value.typedSubviews[index].also(UIView::removeFromSuperview)
+      }
+    },
+  )
   override var modifier: Modifier = Modifier
 
   init {
@@ -102,4 +117,10 @@ internal class UIViewFlexContainer(
   private fun invalidate() {
     value.setNeedsLayout()
   }
+}
+
+private fun UIView.asNode(): Node {
+  val childNode = Node()
+  childNode.measureCallback = UIViewMeasureCallback(this)
+  return childNode
 }

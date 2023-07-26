@@ -25,6 +25,11 @@ public class UIViewChildren(
   private val insert: (UIView, Int) -> Unit = { view, index ->
     parent.insertSubview(view, index.convert<NSInteger>())
   },
+  private val remove: (index: Int, count: Int) -> Array<UIView> = { index, count ->
+    Array(count) {
+      parent.typedSubviews[index].also(UIView::removeFromSuperview)
+    }
+  },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
   public val widgets: List<Widget<UIView>> get() = _widgets
@@ -38,9 +43,7 @@ public class UIViewChildren(
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
-    val subviews = Array(count) {
-      parent.typedSubviews[fromIndex].also(UIView::removeFromSuperview)
-    }
+    val subviews = remove.invoke(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
       toIndex - count
@@ -56,9 +59,7 @@ public class UIViewChildren(
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
 
-    repeat(count) {
-      parent.typedSubviews[index].removeFromSuperview()
-    }
+    remove.invoke(index, count)
     invalidate()
   }
 
