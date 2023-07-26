@@ -32,7 +32,6 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
-import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.readValue
@@ -74,8 +73,7 @@ internal open class UIViewLazyList(
 
   // Fetch the item relative to the entire collection view
   private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): Widget<UIView> {
-    return items.getOrNull(max(index - itemsBefore, 0))
-      ?: placeholder[index % placeholder.size]
+    return get(index) ?: placeholder[index % placeholder.size]
   }
 
   private val collectionViewDataSource: UICollectionViewDataSourceProtocol =
