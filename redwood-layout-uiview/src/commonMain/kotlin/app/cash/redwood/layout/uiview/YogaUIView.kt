@@ -7,8 +7,6 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.yoga.MeasureCallback
-import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
@@ -60,25 +58,7 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     }
   }
 
-  private fun syncNodes() {
-    val subviews = typedSubviews
-    if (subviews.isEmpty()) {
-      rootNode.children.clear()
-      return
-    }
-
-    val currentViews = rootNode.children.map { it.view }
-    if (currentViews != subviews) {
-      rootNode.children.clear()
-      for (view in subviews) {
-        rootNode.children += view.asNode()
-      }
-    }
-  }
-
   private fun calculateLayoutWithSize(size: Size): Size {
-    syncNodes()
-
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
     }
@@ -102,62 +82,6 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
       return dimension.toFloat()
     }
   }
-}
-
-private class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
-  override fun measure(
-    node: Node,
-    width: Float,
-    widthMode: MeasureMode,
-    height: Float,
-    heightMode: MeasureMode,
-  ): Size {
-    val constrainedWidth = when (widthMode) {
-      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
-      else -> width.toDouble()
-    }
-    val constrainedHeight = when (heightMode) {
-      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
-      else -> height.toDouble()
-    }
-
-    // The default implementation of sizeThatFits: returns the existing size of
-    // the view. That means that if we want to layout an empty UIView, which
-    // already has a frame set, its measured size should be CGSizeZero, but
-    // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
-    // for more information.
-    val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
-      Size(0f, 0f)
-    } else {
-      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toSize()
-    }
-
-    return Size(
-      width = sanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
-      height = sanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
-    )
-  }
-
-  private fun sanitizeMeasurement(
-    constrainedSize: Double,
-    measuredSize: Float,
-    measureMode: MeasureMode,
-  ): Float = when (measureMode) {
-    MeasureMode.Exactly -> constrainedSize.toFloat()
-    MeasureMode.AtMost -> measuredSize
-    MeasureMode.Undefined -> measuredSize
-    else -> throw AssertionError()
-  }
-}
-
-private fun UIView.asNode(): Node {
-  val childNode = Node()
-  childNode.measureCallback = UIViewMeasureCallback(this)
-  return childNode
-}
-
-private fun CValue<CGSize>.toSize() = useContents {
-  Size(width.toFloat(), height.toFloat())
 }
 
 private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
