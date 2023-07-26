@@ -8,10 +8,7 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
-import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import app.cash.redwood.yoga.MeasureCallback
-import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
@@ -69,22 +66,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     setMeasuredDimension(width, height)
   }
 
-  private fun applyLayoutParams(node: Node, layoutParams: LayoutParams?) {
-    if (layoutParams != null) {
-      val width = layoutParams.width
-      if (width >= 0) {
-        node.requestedWidth = width.toFloat()
-      }
-      val height = layoutParams.height
-      if (height >= 0) {
-        node.requestedHeight = height.toFloat()
-      }
-    }
-  }
-
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
-    syncNodes()
-
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> rootNode.requestedWidth = widthSize
@@ -105,55 +87,20 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     rootNode.measure(Size.Undefined, Size.Undefined)
   }
-
-  private fun syncNodes() {
-    if (areNodeAndViewListsEqual()) {
-      return
-    }
-
-    rootNode.children.clear()
-    for (index in 0 until childCount) {
-      rootNode.children += getChildAt(index).asNode()
-    }
-  }
-
-  private fun areNodeAndViewListsEqual(): Boolean {
-    if (childCount != rootNode.children.size) {
-      return false
-    }
-
-    for (index in 0 until childCount) {
-      if (getChildAt(index) != rootNode.children[index].view) {
-        return false
-      }
-    }
-    return true
-  }
-
-  private fun View.asNode(): Node {
-    val childNode = Node()
-    childNode.measureCallback = ViewMeasureCallback(this)
-    applyLayoutParams(childNode, layoutParams)
-    return childNode
-  }
-}
-
-private class ViewMeasureCallback(val view: View) : MeasureCallback {
-  override fun measure(
-    node: Node,
-    width: Float,
-    widthMode: MeasureMode,
-    height: Float,
-    heightMode: MeasureMode,
-  ): Size {
-    val safeWidth = if (width.isFinite()) width.roundToInt() else 0
-    val safeHeight = if (height.isFinite()) height.roundToInt() else 0
-    val widthSpec = MeasureSpec.makeMeasureSpec(safeWidth, widthMode.toAndroid())
-    val heightSpec = MeasureSpec.makeMeasureSpec(safeHeight, heightMode.toAndroid())
-    view.measure(widthSpec, heightSpec)
-    return Size(view.measuredWidth.toFloat(), view.measuredHeight.toFloat())
-  }
 }
 
 private val Node.view: View?
   get() = (measureCallback as ViewMeasureCallback?)?.view
+
+internal fun applyLayoutParams(node: Node, layoutParams: ViewGroup.LayoutParams?) {
+  if (layoutParams != null) {
+    val width = layoutParams.width
+    if (width >= 0) {
+      node.requestedWidth = width.toFloat()
+    }
+    val height = layoutParams.height
+    if (height >= 0) {
+      node.requestedHeight = height.toFloat()
+    }
+  }
+}
