@@ -30,6 +30,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
@@ -42,6 +43,8 @@ import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 private data class EmojiImage(
@@ -114,42 +117,21 @@ fun EmojiSearch(
     horizontalAlignment = CrossAxisAlignment.Stretch,
     margin = LocalUiConfiguration.current.safeAreaInsets,
   ) {
-    TextInput(
-      state = TextFieldState(searchTerm.text),
-      hint = "Search",
-      onChange = { searchTerm = it },
-      modifier = Modifier.shrink(0.0),
-    )
-    LazyColumn(
-      refreshing = refreshing,
-      onRefresh = { refreshSignal++ },
-      state = lazyListState,
-      width = Constraint.Fill,
-      modifier = Modifier.grow(1.0),
-      placeholder = {
-        Item(
-          emojiImage = loadingEmojiImage,
-          onClick = {},
-        )
-      },
-    ) {
-      items(filteredEmojis) { image ->
-        Item(
-          emojiImage = image,
-          onClick = {
-            navigator.openUrl(image.url)
-          },
-        )
-      }
+    filteredEmojis.take(5).forEach { image ->
+      Item(
+        emojiImage = image,
+        onClick = {
+          navigator.openUrl(image.url)
+        },
+      )
     }
   }
 }
 
 @Composable
 private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
-  Row(
+  Column(
     width = Constraint.Fill,
-    verticalAlignment = CrossAxisAlignment.Center,
   ) {
     Image(
       url = emojiImage.url,
@@ -157,7 +139,14 @@ private fun Item(emojiImage: EmojiImage, onClick: () -> Unit) {
         .margin(Margin(8.dp)),
       onClick = onClick,
     )
-    Text(text = emojiImage.label)
+    var showText by remember { mutableStateOf(false) }
+    LaunchedEffect(true) {
+      delay(1.seconds)
+      showText = true
+    }
+    if (showText) {
+      Text(text = emojiImage.label)
+    }
   }
 }
 
