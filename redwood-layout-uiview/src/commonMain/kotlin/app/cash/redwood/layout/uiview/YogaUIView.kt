@@ -7,19 +7,26 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.yoga.FlexDirection
+import app.cash.redwood.yoga.MeasureCallback
+import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UILabel
+import platform.UIKit.UIScrollView
+import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class YogaUIView : UIView(cValue { CGRectZero }) {
+internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
   val rootNode = Node()
 
   var width = Constraint.Wrap
@@ -27,20 +34,52 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
 
   var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
+  init {
+    // TODO: Support Scroll Indicators
+    showsVerticalScrollIndicator = false
+    showsHorizontalScrollIndicator = false
+    contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
+  }
+
   override fun intrinsicContentSize(): CValue<CGSize> {
     return calculateLayoutWithSize(Size(Size.Undefined, Size.Undefined)).toCGSize()
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    val bounds = size.useContents { sizeToBounds(this) }
-    val output = calculateLayoutWithSize(bounds)
-    return output.toCGSize()
+    val constrainedSize = size.useContents { sizeForConstraints(this) }
+    val calculatedSize = calculateLayoutWithSize(constrainedSize)
+    return calculatedSize.toCGSize()
   }
 
   override fun layoutSubviews() {
-    val bounds = bounds.useContents { sizeToBounds(size) }
-    calculateLayoutWithSize(bounds)
+    super.layoutSubviews()
 
+    // Based on the constraints of Fill or Wrap, we
+    // calculate a size that the container should fit in.
+    val bounds = bounds.useContents {
+      sizeForConstraints(size)
+    }
+
+    if (scrollEnabled) {
+      // When scrolling is enabled, we want to calculate and apply the contentSize
+      // separately and have it grow a much as needed in the flexDirection.
+      // This duplicates the calculation we're doing above, and should be
+      // combined into one call.
+      val scrollSize = if (rootNode.flexDirection == FlexDirection.Column) {
+        Size(bounds.width, Size.Undefined)
+      } else {
+        Size(Size.Undefined, bounds.height)
+      }
+      val contentSize = calculateLayoutWithSize(scrollSize)
+      setContentSize(contentSize.toCGSize())
+      calculateLayoutWithSize(bounds)
+    } else {
+      // If we're not scrolling, the contentSize should equal the size of the view.
+      val containerSize = calculateLayoutWithSize(bounds)
+      setContentSize(containerSize.toCGSize())
+    }
+
+    // Layout the nodes based on the calculatedLayouts above.
     for (childNode in rootNode.children) {
       layoutNodes(childNode)
     }
@@ -68,19 +107,24 @@ internal class YogaUIView : UIView(cValue { CGRectZero }) {
     return Size(rootNode.width, rootNode.height)
   }
 
-  private fun sizeToBounds(size: CGSize): Size {
+  private fun sizeForConstraints(size: CGSize): Size {
     return Size(
-      width = sizeToBoundsDimension(width, size.width),
-      height = sizeToBoundsDimension(height, size.height),
+      width = sizeForConstraintsDimension(width, size.width),
+      height = sizeForConstraintsDimension(height, size.height),
     )
   }
 
-  private fun sizeToBoundsDimension(constraint: Constraint, dimension: Double): Float {
+  private fun sizeForConstraintsDimension(constraint: Constraint, dimension: Double): Float {
     if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
       return Size.Undefined
     } else {
       return dimension.toFloat()
     }
+  }
+
+  override fun setScrollEnabled(scrollEnabled: Boolean) {
+    super.setScrollEnabled(scrollEnabled)
+    setNeedsLayout()
   }
 }
 

@@ -68,7 +68,6 @@ public class UIViewChildren(
   }
 
   private fun invalidate() {
-    parent.setNeedsLayout()
-    parent.invalidateIntrinsicContentSize()
+    (parent.superview ?: parent).setNeedsLayout()
   }
 }
