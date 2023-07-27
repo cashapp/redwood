@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -33,6 +34,10 @@ public class StateSnapshot(
       entry.value.map { mutableStateOf(it.fromJsonElement()) }
     }
   }
+
+  @JvmInline
+  @Serializable
+  public value class Id(public val value: String?)
 }
 
 /**

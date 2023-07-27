@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.CodeListener
+import app.cash.redwood.treehouse.StateSnapshot
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView
@@ -53,7 +54,7 @@ public fun <A : AppService> TreehouseContent(
       override val readyForContent = true
       override var readyForContentChangeListener: ReadyForContentChangeListener? = null
       override var saveCallback: TreehouseView.SaveCallback? = null
-      override val restoredId: String? = null
+      override val stateSnapshotId = StateSnapshot.Id(null)
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }

@@ -368,8 +368,8 @@ private class ViewContentCodeBinding<A : AppService>(
       val scopedAppService = session.appService.withScope(ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
-      val restoredId = viewOrNull?.restoredId
-      val restoredState = if (restoredId != null) app.stateStore.get(restoredId) else null
+      val restoredId = viewOrNull?.stateSnapshotId
+      val restoredState = if (restoredId != null) app.stateStore.get(restoredId.value.orEmpty()) else null
       treehouseUi.start(
         changesSink = this@ViewContentCodeBinding,
         uiConfigurations = uiConfigurationFlow,
