@@ -69,7 +69,7 @@ private class RedwoodZiplineTreehouseUi(
 
     this.saveableStateRegistry = SaveableStateRegistry(
       restoredValues = stateSnapshot?.toValuesMap(),
-      canBeSaved = { stateSnapshot?.canBeSaved() ?: false },
+      canBeSaved = { stateSnapshot?.canBeSaved() ?: true },
     )
 
     composition.bind(
