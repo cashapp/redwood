@@ -39,7 +39,7 @@ public class TreehouseUIKitView(
 ) : TreehouseView {
   public val view: UIView = RootUiView(this)
   override var saveCallback: TreehouseView.SaveCallback? = null
-  override var restoredId: String? = null
+  override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {

@@ -54,7 +54,7 @@ public class TreehouseWidgetView(
   override var readyForContent: Boolean = false
     private set
 
-  override var restoredId: String? = null
+  override var stateSnapshotId = StateSnapshot.Id(null)
     private set
 
   override var saveCallback: TreehouseView.SaveCallback? = null
@@ -109,7 +109,7 @@ public class TreehouseWidgetView(
 
   override fun onRestoreInstanceState(state: Parcelable?) {
     state as SavedState
-    this.restoredId = state.id
+    this.stateSnapshotId = StateSnapshot.Id(state.id)
     super.onRestoreInstanceState(state.superState)
   }
   private fun computeUiConfiguration(
