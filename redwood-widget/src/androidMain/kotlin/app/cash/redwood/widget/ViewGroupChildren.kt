@@ -20,13 +20,19 @@ import android.view.ViewGroup
 
 public class ViewGroupChildren(
   private val parent: ViewGroup,
+  private val insert: (index: Int, view: View) -> Unit = { index, view ->
+    parent.addView(view, index)
+  },
+  private val remove: (index: Int, count: Int) -> Unit = { index, count ->
+    parent.removeViews(index, count)
+  },
 ) : Widget.Children<View> {
   private val _widgets = ArrayList<Widget<View>>()
   public val widgets: List<Widget<View>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<View>) {
     _widgets.add(index, widget)
-    parent.addView(widget.value, index)
+    insert(index, widget.value)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -35,7 +41,7 @@ public class ViewGroupChildren(
     val views = Array(count) { offset ->
       parent.getChildAt(fromIndex + offset)
     }
-    parent.removeViews(fromIndex, count)
+    remove.invoke(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
       toIndex - count
@@ -43,13 +49,13 @@ public class ViewGroupChildren(
       toIndex
     }
     views.forEachIndexed { offset, view ->
-      parent.addView(view, newIndex + offset)
+      insert(newIndex + offset, view)
     }
   }
 
   override fun remove(index: Int, count: Int) {
     _widgets.remove(index, count)
-    parent.removeViews(index, count)
+    remove.invoke(index, count)
   }
 
   override fun onModifierUpdated() {

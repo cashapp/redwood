@@ -39,6 +39,7 @@ import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.JustifyContent
+import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.isHorizontal
 
 internal class ViewFlexContainer(
@@ -51,7 +52,17 @@ internal class ViewFlexContainer(
   private val hostView = HostView()
   override val value: View get() = hostView
 
-  override val children = ViewGroupChildren(yogaLayout)
+  override val children = ViewGroupChildren(
+    yogaLayout,
+    insert = { index, view ->
+      yogaLayout.rootNode.children.add(index, view.asNode())
+      yogaLayout.addView(view, index)
+    },
+    remove = { index, count ->
+      yogaLayout.rootNode.children.remove(index, count)
+      yogaLayout.removeViews(index, count)
+    },
+  )
 
   override var modifier: Modifier = Modifier
 
@@ -176,4 +187,11 @@ internal class ViewFlexContainer(
       }
     }
   }
+}
+
+private fun View.asNode(): Node {
+  val childNode = Node()
+  childNode.measureCallback = ViewMeasureCallback(this)
+  applyLayoutParams(childNode, layoutParams)
+  return childNode
 }

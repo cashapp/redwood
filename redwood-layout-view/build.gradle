@@ -1,3 +1,4 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
 import app.cash.redwood.buildsupport.FlexboxHelpers
 
 apply plugin: 'com.android.library'
@@ -20,11 +21,13 @@ dependencies {
 android {
   namespace 'app.cash.redwood.layout.view'
 
-  def helpers = FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.view').get()
+  def composeHelpers = ComposeHelpers.get(tasks, 'app.cash.redwood.layout.view').get()
+  def flexboxHelpers = FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.view').get()
   // TODO Should be able to do `sourceSets.main.kotlin.srcDir(helpers)`.
   //  https://issuetracker.google.com/issues/249468390
   libraryVariants.all { variant ->
-    variant.registerJavaGeneratingTask(helpers, helpers.outputDirectory.get().asFile)
+    variant.registerJavaGeneratingTask(composeHelpers, composeHelpers.outputDirectory.get().asFile)
+    variant.registerJavaGeneratingTask(flexboxHelpers, flexboxHelpers.outputDirectory.get().asFile)
   }
 
   buildFeatures {
