@@ -40,7 +40,7 @@ public class StateSnapshot(
       // Test if the content is serializable
       toValuesMap()
       true
-    } catch (t: Throwable) {
+    } catch (t: IllegalStateException) {
       false
     }
   }
