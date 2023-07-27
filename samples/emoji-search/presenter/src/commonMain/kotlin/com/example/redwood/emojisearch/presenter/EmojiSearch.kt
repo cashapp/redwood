@@ -63,18 +63,19 @@ interface Navigator {
 }
 
 enum class Variant {
-  LAZY_COLUMN, SCROLLABLE_FLEXBOX
+  LAZY_COLUMN, SCROLLABLE_FLEXBOX, LAUNCHED_EFFECT
 }
 
 @Composable
 fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
-  variant: Variant = Variant.LAZY_COLUMN,
+  variant: Variant = Variant.LAUNCHED_EFFECT,
 ) {
   when (variant) {
     Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
     Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient, navigator)
+    Variant.LAUNCHED_EFFECT -> LaunchedEffectTest(httpClient)
   }
 }
 
@@ -261,6 +262,77 @@ private fun NestedFlexBoxContainers(httpClient: HttpClient, navigator: Navigator
     } else {
       Text(
         text = "Empty",
+        modifier = Modifier.margin(Margin(12.dp)),
+      )
+    }
+  }
+}
+
+@Composable
+private fun LaunchedEffectTest(httpClient: HttpClient) {
+  val allEmojis = remember { mutableStateListOf<EmojiImage>() }
+
+  val searchTermSaver = object : Saver<TextFieldState, String> {
+    override fun restore(value: String) = TextFieldState(value)
+    override fun SaverScope.save(value: TextFieldState) = value.text
+  }
+
+  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
+
+  LaunchedEffect(Unit) {
+    try {
+      val emojisJson = httpClient.call(
+        url = "https://api.github.com/emojis",
+        headers = mapOf("Accept" to "application/vnd.github.v3+json"),
+      )
+      val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
+
+      allEmojis.clear()
+      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+      println("🟢 AllEmojis updated via http LaunchedEffect")
+    } catch (e: Exception) {
+      println("Failed to load https://api.github.com/emojis $e")
+    }
+  }
+
+  val filteredEmojis by derivedStateOf {
+    val searchTerms = searchTerm.text.split(" ")
+    allEmojis.filter { image ->
+      searchTerms.all { image.label.contains(it, ignoreCase = true) }
+    }
+  }
+
+  Column(
+    width = Constraint.Fill,
+    height = Constraint.Fill,
+    overflow = Overflow.Clip,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    margin = LocalUiConfiguration.current.safeAreaInsets,
+    verticalAlignment = MainAxisAlignment.Start,
+  ) {
+    if (filteredEmojis.count() > 0) {
+      Text(
+        text = "🟢 LOADED EMOJIS",
+        modifier = Modifier.margin(Margin(12.dp)),
+      )
+      filteredEmojis.filter { it.label.startsWith("a") }.take(30).forEach { image ->
+        Item(image)
+      }
+
+      filteredEmojis.filter { it.label.startsWith("b") }.take(30).forEach { image ->
+        Item(image)
+      }
+      filteredEmojis.filter { it.label.startsWith("c") }.take(30).forEach { image ->
+        Item(image)
+      }
+
+      // Adding this 4th reference to filteredEmojis causes the UI to not update.
+//      filteredEmojis.filter { it.label.startsWith("d") }.take(30).forEach { image ->
+//        Item(image)
+//      }
+    } else {
+      Text(
+        text = "🔴 LOADING EMOJIS",
         modifier = Modifier.margin(Margin(12.dp)),
       )
     }
