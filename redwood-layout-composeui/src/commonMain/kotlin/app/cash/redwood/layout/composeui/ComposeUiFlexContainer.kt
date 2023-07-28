@@ -41,22 +41,19 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
-import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
 
 internal class ComposeUiFlexContainer(
   private val flexDirection: FlexDirection,
-) : Row<@Composable () -> Unit>, Column<@Composable () -> Unit> {
+) : FlexContainer<@Composable () -> Unit> {
   private val rootNode = Node().apply {
     flexDirection = this@ComposeUiFlexContainer.flexDirection
   }
@@ -88,29 +85,13 @@ internal class ComposeUiFlexContainer(
     this.overflow = overflow
   }
 
-  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContent())
-  }
-
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItems())
-  }
-
-  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContent())
-  }
-
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItems())
-  }
-
-  fun alignItems(alignItems: AlignItems) {
-    rootNode.alignItems = alignItems
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    rootNode.alignItems = crossAxisAlignment.toAlignItems()
     invalidate()
   }
 
-  fun justifyContent(justifyContent: JustifyContent) {
-    rootNode.justifyContent = justifyContent
+  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
     invalidate()
   }
 

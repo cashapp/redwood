@@ -87,11 +87,11 @@ class ComposeUiFlexContainerTest(
     }
 
     override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-      delegate.alignItems(crossAxisAlignment.toAlignItems())
+      delegate.crossAxisAlignment(crossAxisAlignment)
     }
 
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
-      delegate.justifyContent(mainAxisAlignment.toJustifyContent())
+      delegate.mainAxisAlignment(mainAxisAlignment)
     }
 
     override fun margin(margin: Margin) {

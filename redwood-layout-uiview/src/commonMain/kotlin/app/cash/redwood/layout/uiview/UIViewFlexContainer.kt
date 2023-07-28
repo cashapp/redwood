@@ -20,16 +20,13 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
 import kotlinx.cinterop.convert
 import platform.UIKit.UIView
@@ -37,7 +34,7 @@ import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
-) : Row<UIView>, Column<UIView>, ChangeListener {
+) : FlexContainer<UIView>, ChangeListener {
   private val yogaView = YogaUIView()
   override val value: UIView get() = yogaView
   override val children = UIViewChildren(
@@ -85,28 +82,12 @@ internal class UIViewFlexContainer(
     yogaView.scrollEnabled = overflow == Overflow.Scroll
   }
 
-  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    justifyContent(horizontalAlignment.toJustifyContent())
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    yogaView.rootNode.alignItems = crossAxisAlignment.toAlignItems()
   }
 
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    alignItems(horizontalAlignment.toAlignItems())
-  }
-
-  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    justifyContent(verticalAlignment.toJustifyContent())
-  }
-
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    alignItems(verticalAlignment.toAlignItems())
-  }
-
-  private fun alignItems(alignItems: AlignItems) {
-    yogaView.rootNode.alignItems = alignItems
-  }
-
-  private fun justifyContent(justifyContent: JustifyContent) {
-    yogaView.rootNode.justifyContent = justifyContent
+  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    yogaView.rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
   }
 
   override fun onEndChanges() {
