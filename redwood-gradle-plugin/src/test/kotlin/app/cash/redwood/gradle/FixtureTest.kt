@@ -179,6 +179,28 @@ class FixtureTest {
     fixtureGradleRunner(fixtureDir).build()
   }
 
+  @Test fun customCompilerCoordinates() {
+    val fixtureDir = File("src/test/fixture/custom-compiler-coordinates")
+    fixtureGradleRunner(fixtureDir).build()
+  }
+
+  @Test fun customCompilerInvalid() {
+    val fixtureDir = File("src/test/fixture/custom-compiler-invalid")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
+    assertThat(result.output).contains(
+      """
+      |Illegal format of 'redwood.kotlinCompilerPlugin' property.
+      |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
+      |Actual value: 'wrong:format'
+      """.trimMargin(),
+    )
+  }
+
+  @Test fun customCompilerVersion() {
+    val fixtureDir = File("src/test/fixture/custom-compiler-version")
+    fixtureGradleRunner(fixtureDir).build()
+  }
+
   private fun fixtureGradleRunner(
     fixtureDir: File,
     vararg tasks: String = arrayOf("clean", "build"),
