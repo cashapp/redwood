@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.treehouse.composeui
 
+import androidx.compose.runtime.Composable
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import kotlinx.cinterop.useContents
 import platform.UIKit.UIApplication
 
+@Composable
 public actual fun safeAreaInsets(): Margin {
   val keyWindow = UIApplication.sharedApplication.keyWindow ?: return Margin.Zero
   return keyWindow.safeAreaInsets.useContents {
