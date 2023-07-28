@@ -27,6 +27,7 @@ import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -140,6 +141,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
     verifySnapshot(container, "Center")
     container.crossAxisAlignment(CrossAxisAlignment.End)
+    container.onEndChanges()
     verifySnapshot(container, "FlexEnd")
   }
 
@@ -205,7 +207,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 }
 
-interface TestFlexContainer<T : Any> {
+interface TestFlexContainer<T : Any> : ChangeListener {
   val value: T
   fun width(constraint: Constraint)
   fun height(constraint: Constraint)

@@ -112,5 +112,8 @@ class ComposeUiFlexContainerTest(
     override fun add(widget: Widget<@Composable () -> Unit>) {
       delegate.children.insert(childCount++, widget)
     }
+
+    override fun onEndChanges() {
+    }
   }
 }
