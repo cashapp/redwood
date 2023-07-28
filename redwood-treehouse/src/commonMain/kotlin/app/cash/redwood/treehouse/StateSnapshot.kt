@@ -35,6 +35,16 @@ public class StateSnapshot(
     }
   }
 
+  public fun canBeSaved(): Boolean {
+    return try {
+      // Test if the content is serializable
+      toValuesMap()
+      true
+    } catch (t: IllegalStateException) {
+      false
+    }
+  }
+
   @JvmInline
   @Serializable
   public value class Id(public val value: String?)
