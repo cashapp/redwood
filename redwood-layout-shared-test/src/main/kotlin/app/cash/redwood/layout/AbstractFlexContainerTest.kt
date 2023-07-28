@@ -38,7 +38,7 @@ import org.junit.Test
 @Suppress("JUnitMalformedDeclaration")
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(text: String, modifier: Modifier = Modifier): Widget<T>
+  abstract fun widget(text: String, modifier: Modifier = Modifier): Text<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
 
   @Test fun emptyLayout(
@@ -194,6 +194,18 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
     verifySnapshot(container)
   }
+
+  @Test fun childWithUpdatedProperty() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.alignItems(AlignItems.FlexStart)
+    val widget = widget("")
+    container.add(widget)
+    verifySnapshot(container, "initial")
+    widget.text(movies.first())
+    verifySnapshot(container, "updated")
+  }
 }
 
 interface TestFlexContainer<T : Any> {
@@ -204,6 +216,10 @@ interface TestFlexContainer<T : Any> {
   fun justifyContent(justifyContent: JustifyContent)
   fun margin(margin: Margin)
   fun add(widget: Widget<T>)
+}
+
+interface Text<T : Any> : Widget<T> {
+  fun text(text: String)
 }
 
 private val movies = listOf(

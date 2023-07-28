@@ -25,6 +25,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
@@ -52,14 +53,19 @@ class ViewLazyListTest(
 
   override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
 
-  override fun widget(text: String, modifier: Modifier) = object : Widget<View> {
+  override fun widget(text: String, modifier: Modifier) = object : Text<View> {
     override val value = TextView(paparazzi.context).apply {
       background = ColorDrawable(Color.GREEN)
       textSize = 18f
       setTextColor(Color.BLACK)
       this.text = text
     }
+
     override var modifier = modifier
+
+    override fun text(text: String) {
+      value.text = text
+    }
   }
 
   override fun verifySnapshot(container: TestFlexContainer<View>, name: String?) {

@@ -18,6 +18,9 @@ package app.cash.redwood.layout.composeui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -27,6 +30,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
@@ -55,15 +59,22 @@ class ComposeUiLazyListTest(
 
   override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
 
-  override fun widget(text: String, modifier: RedwoodModifier) = object : Widget<@Composable () -> Unit> {
+  override fun widget(text: String, modifier: RedwoodModifier) = object : Text<@Composable () -> Unit> {
+    private var text by mutableStateOf(text)
+
     override val value = @Composable {
       BasicText(
-        text = text,
+        text = this.text,
         style = TextStyle(fontSize = 18.sp, color = Color.Black),
         modifier = Modifier.background(Color.Green),
       )
     }
+
     override var modifier = modifier
+
+    override fun text(text: String) {
+      this.text = text
+    }
   }
 
   override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
