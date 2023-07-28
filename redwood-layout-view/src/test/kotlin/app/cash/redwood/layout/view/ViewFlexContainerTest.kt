@@ -99,5 +99,9 @@ class ViewFlexContainerTest(
     override fun add(widget: Widget<View>) {
       delegate.children.insert(childCount++, widget)
     }
+
+    override fun onEndChanges() {
+      delegate.onEndChanges()
+    }
   }
 }
