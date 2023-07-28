@@ -148,13 +148,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   @Test fun columnWithMainAxisAlignment(
     @TestParameter mainAxisAlignmentEnum: MainAxisAlignmentEnum,
   ) {
-    assumeTrue(
-      mainAxisAlignmentEnum in listOf(
-        MainAxisAlignmentEnum.Center,
-        MainAxisAlignmentEnum.SpaceBetween,
-        MainAxisAlignmentEnum.SpaceAround
-      )
-    )
+    assumeTrue(mainAxisAlignmentEnum in listOf(MainAxisAlignmentEnum.Center, MainAxisAlignmentEnum.SpaceBetween, MainAxisAlignmentEnum.SpaceAround))
     val mainAxisAlignment = mainAxisAlignmentEnum.value
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
