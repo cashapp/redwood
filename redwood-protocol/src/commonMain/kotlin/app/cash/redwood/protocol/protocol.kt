@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.protocol
 
+import dev.drewhamilton.poko.ArrayContentBased
+import dev.drewhamilton.poko.ArrayContentSupport
 import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -32,6 +34,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
+@OptIn(ArrayContentSupport::class)
 @Serializable
 @Poko
 public class Event(
@@ -39,7 +42,7 @@ public class Event(
   public val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
   public val tag: EventTag,
-  public val args: List<JsonElement> = emptyList(),
+  @ArrayContentBased public val args: Array<JsonElement> = emptyArray(),
 )
 
 @Serializable
@@ -68,12 +71,13 @@ public class PropertyChange(
   public val value: JsonElement = JsonNull,
 ) : ValueChange
 
+@OptIn(ArrayContentSupport::class)
 @Serializable
 @SerialName("modifier")
 @Poko
 public class ModifierChange(
   override val id: Id,
-  public val elements: List<ModifierElement> = emptyList(),
+  @ArrayContentBased public val elements: Array<ModifierElement> = emptyArray(),
 ) : ValueChange
 
 @Serializable(with = ModifierElementSerializer::class)
@@ -143,6 +147,7 @@ public sealed interface ChildrenChange : Change {
     public val count: Int,
   ) : ChildrenChange
 
+  @OptIn(ArrayContentSupport::class)
   @Serializable
   @SerialName("remove")
   @Poko
@@ -151,7 +156,7 @@ public sealed interface ChildrenChange : Change {
     override val tag: ChildrenTag,
     public val index: Int,
     public val count: Int,
-    public val removedIds: List<Id>,
+    @ArrayContentBased public val removedIds: Array<Id>,
   ) : ChildrenChange {
     init {
       require(count == removedIds.size) {
