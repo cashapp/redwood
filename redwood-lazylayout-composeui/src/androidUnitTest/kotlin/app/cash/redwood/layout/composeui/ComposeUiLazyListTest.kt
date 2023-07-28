@@ -29,12 +29,11 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -89,18 +88,11 @@ class ComposeUiLazyListTest(
       delegate.height(constraint)
     }
 
-    override fun alignItems(alignItems: AlignItems) {
-      val crossAxisAlignment = when (alignItems) {
-        AlignItems.FlexStart -> CrossAxisAlignment.Start
-        AlignItems.Center -> CrossAxisAlignment.Center
-        AlignItems.FlexEnd -> CrossAxisAlignment.End
-        AlignItems.Stretch -> CrossAxisAlignment.Stretch
-        else -> throw AssertionError()
-      }
+    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
       delegate.crossAxisAlignment(crossAxisAlignment)
     }
 
-    override fun justifyContent(justifyContent: JustifyContent) {
+    override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     }
 
     override fun margin(margin: Margin) {

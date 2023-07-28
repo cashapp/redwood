@@ -28,11 +28,11 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -86,12 +86,12 @@ class ComposeUiFlexContainerTest(
       delegate.height(constraint)
     }
 
-    override fun alignItems(alignItems: AlignItems) {
-      delegate.alignItems(alignItems)
+    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+      delegate.alignItems(crossAxisAlignment.toAlignItems())
     }
 
-    override fun justifyContent(justifyContent: JustifyContent) {
-      delegate.justifyContent(justifyContent)
+    override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+      delegate.justifyContent(mainAxisAlignment.toJustifyContent())
     }
 
     override fun margin(margin: Margin) {
