@@ -110,5 +110,8 @@ class ViewLazyListTest(
     override fun add(widget: Widget<View>) {
       delegate.items.insert(childCount++, widget)
     }
+
+    override fun onEndChanges() {
+    }
   }
 }
