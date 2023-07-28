@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'app.cash.zipline'
 
 kotlin {
-  android()
+  androidTarget()
 
   sourceSets {
     commonMain {

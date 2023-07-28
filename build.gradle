@@ -46,6 +46,8 @@ allprojects {
       kotlin {
         sourceSets.configureEach {
           languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
+          languageSettings.optIn('kotlinx.cinterop.BetaInteropApi')
+          languageSettings.optIn('kotlinx.cinterop.ExperimentalForeignApi')
         }
       }
     }
@@ -75,16 +77,10 @@ allprojects {
 
   // Workaround for https://github.com/Kotlin/dokka/issues/2977.
   // We disable the C Interop IDE metadata task when generating documentation using Dokka.
-  gradle.taskGraph.whenReady {
-    def hasDokkaTasks = gradle.taskGraph.allTasks.any {
-      it instanceof org.jetbrains.dokka.gradle.AbstractDokkaTask
-    }
-    if (hasDokkaTasks) {
-      tasks.withType(
-        org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask
-      ).configureEach {
-        enabled = false
-      }
+  tasks.withType(org.jetbrains.dokka.gradle.AbstractDokkaTask) {
+    def taskClass = Class.forName("org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask") as Class<Task>
+    parent?.subprojects?.forEach {
+      dependsOn(it.tasks.withType(taskClass))
     }
   }
 

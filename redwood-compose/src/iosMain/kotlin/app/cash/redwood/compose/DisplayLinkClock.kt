@@ -17,6 +17,7 @@ package app.cash.redwood.compose
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.convert
 import platform.Foundation.NSRunLoop
@@ -44,7 +45,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
   }
 
   private fun tickClock() {
-    val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+    val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
     clock.sendFrame(nanos)
 
     // Detach from the run loop. We will re-attach if new frame awaiters appear.
@@ -57,6 +58,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
    * interface, but we also don't want to leak it into public API. The contained function
    * must be public for the selector to work.
    */
+  @OptIn(BetaInteropApi::class)
   private class SelectorTarget(private val target: DisplayLinkClock) : NSObject() {
     @ObjCAction
     fun tickClock() {

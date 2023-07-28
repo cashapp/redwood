@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.VfsBasedProjectEnvironment
+import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.GroupedKtSources
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerInput
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFir
@@ -65,7 +66,7 @@ import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
 import org.jetbrains.kotlin.fir.types.classId
-import org.jetbrains.kotlin.fir.types.isFunctionalType
+import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isNullable
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
@@ -133,12 +134,16 @@ public fun parseProtocolSchema(
     }
   }
 
+  val sourceFiles = files.map(::KtVirtualFileSourceFile).toSet()
   val input = ModuleCompilerInput(
     targetId = TargetId(DEFAULT_MODULE_NAME, "redwood-parser"),
+    groupedSources = GroupedKtSources(
+      platformSources = sourceFiles,
+      commonSources = emptyList(),
+      sourcesByModuleName = mapOf(DEFAULT_MODULE_NAME to sourceFiles),
+    ),
     commonPlatform = CommonPlatforms.defaultCommonPlatform,
-    commonSources = emptyList(),
     platform = JvmPlatforms.unspecifiedJvmPlatform,
-    platformSources = files.map(::KtVirtualFileSourceFile),
     configuration = configuration,
   )
 
@@ -163,7 +168,7 @@ public fun parseProtocolSchema(
     diagnosticsReporter = reporter,
     performanceManager = null,
   )
-  val platformOutput = output.platformOutput
+  val platformOutput = output.outputs.first()
   val firFiles = platformOutput.fir
   val firSession = platformOutput.session
 
@@ -373,7 +378,7 @@ private fun FirContext.parseWidget(
       val documentation = parameter.source?.findAndParseKDoc()
 
       if (propertyAnnotation != null) {
-        if (type.isFunctionalType(firSession)) {
+        if (type.isBasicFunctionType(firSession)) {
           val arguments = type.typeArguments.dropLast(1) // Drop Unit return type.
           ParsedProtocolEvent(
             tag = propertyAnnotation.tag,

@@ -35,7 +35,7 @@ internal class IosDisplayLinkClock : FrameClock {
     this.displayLinkTarget = DisplayLinkTarget {
       unsubscribe()
       scope.launch(dispatchers.zipline) {
-        val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+        val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
         appLifecycle?.sendFrame(nanos)
         appLifecycle = null
       }
