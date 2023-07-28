@@ -26,10 +26,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
-import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.ui.Margin
+import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -74,33 +71,16 @@ class ViewFlexContainerTest(
     paparazzi.snapshot(container.value, name)
   }
 
-  class ViewTestFlexContainer(context: Context, direction: FlexDirection) : TestFlexContainer<View> {
-    private val delegate = ViewFlexContainer(context, direction).apply {
-      value.setBackgroundColor(Color.BLUE)
-    }
+  class ViewTestFlexContainer private constructor(
+    private val delegate: ViewFlexContainer,
+  ) : TestFlexContainer<View>, FlexContainer<View> by delegate {
     private var childCount = 0
 
-    override val value get() = delegate.value
-
-    override fun width(constraint: Constraint) {
-      delegate.width(constraint)
-    }
-
-    override fun height(constraint: Constraint) {
-      delegate.height(constraint)
-    }
-
-    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-      delegate.crossAxisAlignment(crossAxisAlignment)
-    }
-
-    override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
-      delegate.mainAxisAlignment(mainAxisAlignment)
-    }
-
-    override fun margin(margin: Margin) {
-      delegate.margin(margin)
-    }
+    constructor(context: Context, direction: FlexDirection) : this(
+      ViewFlexContainer(context, direction).apply {
+        value.setBackgroundColor(Color.BLUE)
+      },
+    )
 
     override fun add(widget: Widget<View>) {
       delegate.children.insert(childCount++, widget)
