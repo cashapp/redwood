@@ -62,7 +62,7 @@ public abstract class RedwoodGeneratorPlugin(
 
   override fun apply(project: Project) {
     if (strategy == Compose) {
-      project.plugins.apply(RedwoodPlugin::class.java)
+      project.plugins.apply(RedwoodComposePlugin::class.java)
     }
     if (strategy == ComposeProtocol || strategy == WidgetProtocol) {
       project.plugins.apply("org.jetbrains.kotlin.plugin.serialization")

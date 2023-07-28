@@ -125,7 +125,7 @@ allprojects {
       }
     }
     android.composeOptions {
-      kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+      kotlinCompilerExtensionVersion libs.androidx.compose.compiler.get().version
     }
   }
 

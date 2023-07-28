@@ -43,8 +43,8 @@ gradlePlugin {
     redwood {
       id = "app.cash.redwood"
       displayName = "Redwood"
-      description = "Redwood client Gradle plugin"
-      implementationClass = "app.cash.redwood.gradle.RedwoodPlugin"
+      description = "Redwood Compose Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodComposePlugin"
     }
     redwoodLint {
       id = "app.cash.redwood.lint"
@@ -121,8 +121,6 @@ buildConfig {
   }
 
   packageName('app.cash.redwood.gradle')
-  buildConfigField("String", "composeCompilerGroupId", "\"${libs.jetbrains.compose.compiler.get().module.group}\"")
-  buildConfigField("String", "composeCompilerArtifactId", "\"${libs.jetbrains.compose.compiler.get().module.name}\"")
   buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
 }
