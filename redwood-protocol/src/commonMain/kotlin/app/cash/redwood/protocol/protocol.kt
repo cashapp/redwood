@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.protocol
 
+import dev.drewhamilton.poko.ArrayContentBased
+import dev.drewhamilton.poko.ArrayContentSupport
+import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -31,13 +34,14 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
+@OptIn(ArrayContentSupport::class)
 @Serializable
-public data class Event(
+@Poko public class Event(
   /** Identifier for the widget from which this event originated. */
-  val id: Id,
+  public val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
-  val tag: EventTag,
-  val args: List<JsonElement> = emptyList(),
+  public val tag: EventTag,
+  @ArrayContentBased public val args: Array<JsonElement> = emptyArray(),
 )
 
 @Serializable
@@ -48,33 +52,34 @@ public sealed interface Change {
 
 @Serializable
 @SerialName("create")
-public data class Create(
+@Poko public class Create(
   override val id: Id,
-  val tag: WidgetTag,
+  public val tag: WidgetTag,
 ) : Change
 
 public sealed interface ValueChange : Change
 
 @Serializable
 @SerialName("property")
-public data class PropertyChange(
+@Poko public class PropertyChange(
   override val id: Id,
   /** Identifies which property changed on the widget with [id]. */
-  val tag: PropertyTag,
-  val value: JsonElement = JsonNull,
+  public val tag: PropertyTag,
+  public val value: JsonElement = JsonNull,
 ) : ValueChange
 
+@OptIn(ArrayContentSupport::class)
 @Serializable
 @SerialName("modifier")
-public data class ModifierChange(
+@Poko public class ModifierChange(
   override val id: Id,
-  val elements: List<ModifierElement> = emptyList(),
+  @ArrayContentBased public val elements: Array<ModifierElement> = emptyArray(),
 ) : ValueChange
 
 @Serializable(with = ModifierElementSerializer::class)
-public data class ModifierElement(
-  val tag: ModifierTag,
-  val value: JsonElement = DefaultValue,
+@Poko public class ModifierElement(
+  public val tag: ModifierTag,
+  public val value: JsonElement = DefaultValue,
 ) {
   internal companion object {
     val DefaultValue get() = JsonNull
@@ -118,31 +123,32 @@ public sealed interface ChildrenChange : Change {
 
   @Serializable
   @SerialName("add")
-  public data class Add(
+  @Poko public class Add(
     override val id: Id,
     override val tag: ChildrenTag,
-    val childId: Id,
-    val index: Int,
+    public val childId: Id,
+    public val index: Int,
   ) : ChildrenChange
 
   @Serializable
   @SerialName("move")
-  public data class Move(
+  @Poko public class Move(
     override val id: Id,
     override val tag: ChildrenTag,
-    val fromIndex: Int,
-    val toIndex: Int,
-    val count: Int,
+    public val fromIndex: Int,
+    public val toIndex: Int,
+    public val count: Int,
   ) : ChildrenChange
 
+  @OptIn(ArrayContentSupport::class)
   @Serializable
   @SerialName("remove")
-  public data class Remove(
+  @Poko public class Remove(
     override val id: Id,
     override val tag: ChildrenTag,
-    val index: Int,
-    val count: Int,
-    val removedIds: List<Id>,
+    public val index: Int,
+    public val count: Int,
+    @ArrayContentBased public val removedIds: Array<Id>,
   ) : ChildrenChange {
     init {
       require(count == removedIds.size) {
