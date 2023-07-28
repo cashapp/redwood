@@ -18,6 +18,7 @@ package app.cash.redwood.layout
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
 import app.cash.redwood.layout.modifier.Size
@@ -28,11 +29,8 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.JustifyContent
 import com.google.testing.junit.testparameterinjector.TestParameter
-import org.junit.Assume.assumeFalse
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 
@@ -48,7 +46,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.toFlexDirection()
     val container = flexContainer(flexDirection)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     verifySnapshot(container)
   }
 
@@ -74,7 +72,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.toFlexDirection()
     val container = flexContainer(flexDirection)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
       container.add(widget(movie))
     }
@@ -87,7 +85,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.toFlexDirection()
     val container = flexContainer(flexDirection)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -115,18 +113,17 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithAlignItems(
+  @Test fun layoutWithCrossAxisAlignment(
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
-    @TestParameter alignItemsEnum: AlignItemsEnum,
+    @TestParameter crossAxisAlignmentEnum: CrossAxisAlignmentEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    assumeFalse(alignItemsEnum == AlignItemsEnum.Baseline)
     val flexDirection = flexDirectionEnum.toFlexDirection()
-    val alignItems = alignItemsEnum.toAlignItems()
+    val crossAxisAlignment = crossAxisAlignmentEnum.toCrossAxisAlignment()
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(alignItems)
+    container.crossAxisAlignment(crossAxisAlignment)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -134,30 +131,30 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test
-  fun columnWithUpdatedAlignItems() {
+  fun columnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.Center)
+    container.crossAxisAlignment(CrossAxisAlignment.Center)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
     verifySnapshot(container, "Center")
-    container.alignItems(AlignItems.FlexEnd)
+    container.crossAxisAlignment(CrossAxisAlignment.End)
     container.onEndChanges()
     verifySnapshot(container, "FlexEnd")
   }
 
-  @Test fun columnWithJustifyContent(
-    @TestParameter justifyContentEnum: JustifyContentEnum,
+  @Test fun columnWithMainAxisAlignment(
+    @TestParameter mainAxisAlignmentEnum: MainAxisAlignmentEnum,
   ) {
-    assumeTrue(justifyContentEnum in listOf(JustifyContentEnum.Center, JustifyContentEnum.SpaceBetween, JustifyContentEnum.SpaceAround))
-    val justifyContent = justifyContentEnum.toJustifyContent()
+    assumeTrue(mainAxisAlignmentEnum in listOf(MainAxisAlignmentEnum.Center, MainAxisAlignmentEnum.SpaceBetween, MainAxisAlignmentEnum.SpaceAround))
+    val mainAxisAlignment = mainAxisAlignmentEnum.toMainAxisAlignment()
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
-    container.justifyContent(justifyContent)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
+    container.mainAxisAlignment(mainAxisAlignment)
     movies.forEach { movie ->
       container.add(widget(movie))
     }
@@ -168,7 +165,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
       container.add(widget("$index", WidthImpl(50.dp)))
     }
@@ -179,7 +176,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
       container.add(widget("$index", HeightImpl(50.dp)))
     }
@@ -190,7 +187,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
       container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
     }
@@ -201,7 +198,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.alignItems(AlignItems.FlexStart)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
     val widget = widget("")
     container.add(widget)
     verifySnapshot(container, "initial")
@@ -214,8 +211,8 @@ interface TestFlexContainer<T : Any> : ChangeListener {
   val value: T
   fun width(constraint: Constraint)
   fun height(constraint: Constraint)
-  fun alignItems(alignItems: AlignItems)
-  fun justifyContent(justifyContent: JustifyContent)
+  fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)
+  fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun add(widget: Widget<T>)
 }
@@ -280,36 +277,34 @@ private fun ConstraintEnum.toConstraint() = when (this) {
   ConstraintEnum.Fill -> Constraint.Fill
 }
 
-enum class AlignItemsEnum {
-  FlexStart,
-  FlexEnd,
+enum class CrossAxisAlignmentEnum {
+  Start,
   Center,
-  Baseline,
+  End,
   Stretch,
 }
 
-private fun AlignItemsEnum.toAlignItems() = when (this) {
-  AlignItemsEnum.FlexStart -> AlignItems.FlexStart
-  AlignItemsEnum.FlexEnd -> AlignItems.FlexEnd
-  AlignItemsEnum.Center -> AlignItems.Center
-  AlignItemsEnum.Baseline -> AlignItems.Baseline
-  AlignItemsEnum.Stretch -> AlignItems.Stretch
+private fun CrossAxisAlignmentEnum.toCrossAxisAlignment() = when (this) {
+  CrossAxisAlignmentEnum.Start -> CrossAxisAlignment.Start
+  CrossAxisAlignmentEnum.End -> CrossAxisAlignment.End
+  CrossAxisAlignmentEnum.Center -> CrossAxisAlignment.Center
+  CrossAxisAlignmentEnum.Stretch -> CrossAxisAlignment.Stretch
 }
 
-enum class JustifyContentEnum {
-  FlexStart,
-  FlexEnd,
+enum class MainAxisAlignmentEnum {
+  Start,
   Center,
+  End,
   SpaceBetween,
   SpaceAround,
   SpaceEvenly,
 }
 
-private fun JustifyContentEnum.toJustifyContent() = when (this) {
-  JustifyContentEnum.FlexStart -> JustifyContent.FlexStart
-  JustifyContentEnum.FlexEnd -> JustifyContent.FlexEnd
-  JustifyContentEnum.Center -> JustifyContent.Center
-  JustifyContentEnum.SpaceBetween -> JustifyContent.SpaceBetween
-  JustifyContentEnum.SpaceAround -> JustifyContent.SpaceAround
-  JustifyContentEnum.SpaceEvenly -> JustifyContent.SpaceEvenly
+private fun MainAxisAlignmentEnum.toMainAxisAlignment() = when (this) {
+  MainAxisAlignmentEnum.Start -> MainAxisAlignment.Start
+  MainAxisAlignmentEnum.Center -> MainAxisAlignment.Center
+  MainAxisAlignmentEnum.End -> MainAxisAlignment.End
+  MainAxisAlignmentEnum.SpaceBetween -> MainAxisAlignment.SpaceBetween
+  MainAxisAlignmentEnum.SpaceAround -> MainAxisAlignment.SpaceAround
+  MainAxisAlignmentEnum.SpaceEvenly -> MainAxisAlignment.SpaceEvenly
 }
