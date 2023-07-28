@@ -44,7 +44,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val flexDirection = flexDirectionEnum.value
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     verifySnapshot(container)
@@ -56,9 +56,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter heightEnum: ConstraintEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
-    val width = widthEnum.toConstraint()
-    val height = heightEnum.toConstraint()
+    val flexDirection = flexDirectionEnum.value
+    val width = widthEnum.value
+    val height = heightEnum.value
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
@@ -70,7 +70,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val flexDirection = flexDirectionEnum.value
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
@@ -83,7 +83,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val flexDirection = flexDirectionEnum.value
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
@@ -96,7 +96,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
+    val flexDirection = flexDirectionEnum.value
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -118,8 +118,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter crossAxisAlignmentEnum: CrossAxisAlignmentEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.toFlexDirection()
-    val crossAxisAlignment = crossAxisAlignmentEnum.toCrossAxisAlignment()
+    val flexDirection = flexDirectionEnum.value
+    val crossAxisAlignment = crossAxisAlignmentEnum.value
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -149,7 +149,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     @TestParameter mainAxisAlignmentEnum: MainAxisAlignmentEnum,
   ) {
     assumeTrue(mainAxisAlignmentEnum in listOf(MainAxisAlignmentEnum.Center, MainAxisAlignmentEnum.SpaceBetween, MainAxisAlignmentEnum.SpaceAround))
-    val mainAxisAlignment = mainAxisAlignmentEnum.toMainAxisAlignment()
+    val mainAxisAlignment = mainAxisAlignmentEnum.value
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -253,58 +253,30 @@ private data class SizeImpl(
   override val height: Dp,
 ) : Size
 
-enum class FlexDirectionEnum {
-  Row,
-  RowReverse,
-  Column,
-  ColumnReverse,
+enum class FlexDirectionEnum(val value: FlexDirection) {
+  Row(FlexDirection.Row),
+  RowReverse(FlexDirection.RowReverse),
+  Column(FlexDirection.Column),
+  ColumnReverse(FlexDirection.ColumnReverse),
 }
 
-private fun FlexDirectionEnum.toFlexDirection() = when (this) {
-  FlexDirectionEnum.Row -> FlexDirection.Row
-  FlexDirectionEnum.RowReverse -> FlexDirection.RowReverse
-  FlexDirectionEnum.Column -> FlexDirection.Column
-  FlexDirectionEnum.ColumnReverse -> FlexDirection.ColumnReverse
+enum class ConstraintEnum(val value: Constraint) {
+  Wrap(Constraint.Wrap),
+  Fill(Constraint.Fill),
 }
 
-enum class ConstraintEnum {
-  Wrap,
-  Fill,
+enum class CrossAxisAlignmentEnum(val value: CrossAxisAlignment) {
+  Start(CrossAxisAlignment.Start),
+  Center(CrossAxisAlignment.Center),
+  End(CrossAxisAlignment.End),
+  Stretch(CrossAxisAlignment.Stretch),
 }
 
-private fun ConstraintEnum.toConstraint() = when (this) {
-  ConstraintEnum.Wrap -> Constraint.Wrap
-  ConstraintEnum.Fill -> Constraint.Fill
-}
-
-enum class CrossAxisAlignmentEnum {
-  Start,
-  Center,
-  End,
-  Stretch,
-}
-
-private fun CrossAxisAlignmentEnum.toCrossAxisAlignment() = when (this) {
-  CrossAxisAlignmentEnum.Start -> CrossAxisAlignment.Start
-  CrossAxisAlignmentEnum.End -> CrossAxisAlignment.End
-  CrossAxisAlignmentEnum.Center -> CrossAxisAlignment.Center
-  CrossAxisAlignmentEnum.Stretch -> CrossAxisAlignment.Stretch
-}
-
-enum class MainAxisAlignmentEnum {
-  Start,
-  Center,
-  End,
-  SpaceBetween,
-  SpaceAround,
-  SpaceEvenly,
-}
-
-private fun MainAxisAlignmentEnum.toMainAxisAlignment() = when (this) {
-  MainAxisAlignmentEnum.Start -> MainAxisAlignment.Start
-  MainAxisAlignmentEnum.Center -> MainAxisAlignment.Center
-  MainAxisAlignmentEnum.End -> MainAxisAlignment.End
-  MainAxisAlignmentEnum.SpaceBetween -> MainAxisAlignment.SpaceBetween
-  MainAxisAlignmentEnum.SpaceAround -> MainAxisAlignment.SpaceAround
-  MainAxisAlignmentEnum.SpaceEvenly -> MainAxisAlignment.SpaceEvenly
+enum class MainAxisAlignmentEnum(val value: MainAxisAlignment) {
+  Start(MainAxisAlignment.Start),
+  Center(MainAxisAlignment.Center),
+  End(MainAxisAlignment.End),
+  SpaceBetween(MainAxisAlignment.SpaceBetween),
+  SpaceAround(MainAxisAlignment.SpaceAround),
+  SpaceEvenly(MainAxisAlignment.SpaceEvenly),
 }
