@@ -209,8 +209,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
 interface TestFlexContainer<T : Any> : ChangeListener {
   val value: T
-  fun width(constraint: Constraint)
-  fun height(constraint: Constraint)
+  fun width(width: Constraint)
+  fun height(height: Constraint)
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)

@@ -31,11 +31,9 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
-import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
-import app.cash.redwood.ui.Margin
+import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -82,32 +80,19 @@ class ComposeUiLazyListTest(
     }
   }
 
-  class ComposeTestFlexContainer(direction: FlexDirection) : TestFlexContainer<@Composable () -> Unit> {
-    private val delegate = ComposeUiLazyList().apply {
-      isVertical(direction == FlexDirection.Column)
-      testOnlyModifier = Modifier.background(Color.Blue)
-    }
+  class ComposeTestFlexContainer private constructor(
+    private val delegate: ComposeUiLazyList,
+  ) : TestFlexContainer<@Composable () -> Unit>, LazyList<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
-    override val value get() = delegate.value
-
-    override fun width(constraint: Constraint) {
-      delegate.width(constraint)
-    }
-
-    override fun height(constraint: Constraint) {
-      delegate.height(constraint)
-    }
-
-    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-      delegate.crossAxisAlignment(crossAxisAlignment)
-    }
+    constructor(direction: FlexDirection) : this(
+      ComposeUiLazyList().apply {
+        isVertical(direction == FlexDirection.Column)
+        testOnlyModifier = Modifier.background(Color.Blue)
+      },
+    )
 
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
-    }
-
-    override fun margin(margin: Margin) {
-      delegate.margin(margin)
     }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
