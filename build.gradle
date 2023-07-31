@@ -39,10 +39,12 @@ allprojects {
     outputs.upToDateWhen { false }
   }
 
-  plugins.withId('org.jetbrains.kotlin.multiplatform') {
-    kotlin {
-      sourceSets {
-        all {
+  // Apply opt-in annotations everywhere except the test-schema where we want to ensure the
+  // generated code isn't relying on them (without also generating appropriate opt-ins).
+  if (!project.path.startsWith(":test-schema")) {
+    plugins.withId('org.jetbrains.kotlin.multiplatform') {
+      kotlin {
+        sourceSets.configureEach {
           languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
         }
       }
