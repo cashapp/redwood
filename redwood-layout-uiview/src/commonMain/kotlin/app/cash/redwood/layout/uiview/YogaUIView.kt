@@ -22,13 +22,13 @@ import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
+internal class YogaUIView(
+  private val applyModifier: (Node, Int) -> Unit,
+) : UIScrollView(cValue { CGRectZero }) {
   val rootNode = Node()
 
   var width = Constraint.Wrap
   var height = Constraint.Wrap
-
-  var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
     // TODO: Support Scroll Indicators

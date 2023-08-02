@@ -35,7 +35,11 @@ import platform.darwin.NSInteger
 internal class UIViewFlexContainer(
   private val direction: FlexDirection,
 ) : FlexContainer<UIView>, ChangeListener {
-  private val yogaView = YogaUIView()
+  private val yogaView: YogaUIView = YogaUIView(
+    applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, Density.Default)
+    },
+  )
   override val value: UIView get() = yogaView
   override val children = UIViewChildren(
     value,
@@ -54,9 +58,6 @@ internal class UIViewFlexContainer(
 
   init {
     yogaView.rootNode.flexDirection = direction
-    yogaView.applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, Density.Default)
-    }
   }
 
   override fun width(width: Constraint) {

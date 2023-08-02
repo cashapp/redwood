@@ -6,6 +6,7 @@
  */
 package app.cash.redwood.layout.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,12 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
 
-internal class YogaLayout(context: Context) : ViewGroup(context) {
+@SuppressLint("ViewConstructor")
+internal class YogaLayout(
+  context: Context,
+  private val applyModifier: (Node, Int) -> Unit,
+) : ViewGroup(context) {
   val rootNode = Node()
-  var applyModifier: (Node, Int) -> Unit = { _, _ -> }
 
   init {
     applyLayoutParams(rootNode, layoutParams)
