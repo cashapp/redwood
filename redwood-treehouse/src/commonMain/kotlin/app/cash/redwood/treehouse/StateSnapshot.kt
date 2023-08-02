@@ -22,8 +22,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.double
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
 
 @Serializable
 public class StateSnapshot(
@@ -87,14 +87,7 @@ private fun JsonElement?.fromJsonElement(): Any {
       if (this.isString) {
         return content
       }
-      if (isBoolean(this)) {
-        return this.boolean
-      }
-      if (isDouble(this)) {
-        return this.double
-      } else {
-        error("unexpected type: $this")
-      }
+      return booleanOrNull ?: doubleOrNull ?: error("unexpected type: $this")
       // TODO add other primitive types (double, float, long) when needed
     }
 
@@ -102,23 +95,5 @@ private fun JsonElement?.fromJsonElement(): Any {
     // TODO: map, numbers
     // is Map<*, *> -> JsonElement
     else -> error("unexpected type: $this")
-  }
-}
-
-private fun isBoolean(jsonPrimitive: JsonPrimitive): Boolean {
-  return try {
-    jsonPrimitive.boolean
-    true
-  } catch (e: IllegalStateException) {
-    false
-  }
-}
-
-private fun isDouble(jsonPrimitive: JsonPrimitive): Boolean {
-  return try {
-    jsonPrimitive.double
-    true
-  } catch (e: NumberFormatException) {
-    false
   }
 }
