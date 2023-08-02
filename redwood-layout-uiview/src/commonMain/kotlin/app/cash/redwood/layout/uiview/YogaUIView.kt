@@ -8,19 +8,15 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.yoga.FlexDirection
-import app.cash.redwood.yoga.MeasureCallback
-import app.cash.redwood.yoga.MeasureMode
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
-import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
-import platform.UIKit.UILabel
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior
 import platform.UIKit.UIView
@@ -42,13 +38,12 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(Size(Size.Undefined, Size.Undefined)).toCGSize()
+    return calculateLayoutWithSize(CGSizeMake(Size.Undefined.toDouble(), Size.Undefined.toDouble()))
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
     val constrainedSize = size.useContents { sizeForConstraints(this) }
-    val calculatedSize = calculateLayoutWithSize(constrainedSize)
-    return calculatedSize.toCGSize()
+    return calculateLayoutWithSize(constrainedSize)
   }
 
   override fun layoutSubviews() {
@@ -65,18 +60,20 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
       // separately and have it grow a much as needed in the flexDirection.
       // This duplicates the calculation we're doing above, and should be
       // combined into one call.
-      val scrollSize = if (rootNode.flexDirection == FlexDirection.Column) {
-        Size(bounds.width, Size.Undefined)
-      } else {
-        Size(Size.Undefined, bounds.height)
+      val scrollSize = bounds.useContents {
+        if (rootNode.flexDirection == FlexDirection.Column) {
+          CGSizeMake(width, Size.Undefined.toDouble())
+        } else {
+          CGSizeMake(Size.Undefined.toDouble(), height)
+        }
       }
       val contentSize = calculateLayoutWithSize(scrollSize)
-      setContentSize(contentSize.toCGSize())
+      setContentSize(contentSize)
       calculateLayoutWithSize(bounds)
     } else {
       // If we're not scrolling, the contentSize should equal the size of the view.
       val containerSize = calculateLayoutWithSize(bounds)
-      setContentSize(containerSize.toCGSize())
+      setContentSize(containerSize)
     }
 
     // Layout the nodes based on the calculatedLayouts above.
@@ -97,28 +94,28 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
     }
   }
 
-  private fun calculateLayoutWithSize(size: Size): Size {
+  private fun calculateLayoutWithSize(size: CValue<CGSize>): CValue<CGSize> {
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
     }
 
-    rootNode.measure(size.width, size.height)
+    size.useContents { rootNode.measure(width.toFloat(), height.toFloat()) }
 
-    return Size(rootNode.width, rootNode.height)
+    return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }
 
-  private fun sizeForConstraints(size: CGSize): Size {
-    return Size(
+  private fun sizeForConstraints(size: CGSize): CValue<CGSize> {
+    return CGSizeMake(
       width = sizeForConstraintsDimension(width, size.width),
       height = sizeForConstraintsDimension(height, size.height),
     )
   }
 
-  private fun sizeForConstraintsDimension(constraint: Constraint, dimension: Double): Float {
+  private fun sizeForConstraintsDimension(constraint: Constraint, dimension: Double): Double {
     if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
-      return Size.Undefined
+      return Size.Undefined.toDouble()
     } else {
-      return dimension.toFloat()
+      return dimension
     }
   }
 
@@ -127,8 +124,6 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }) {
     setNeedsLayout()
   }
 }
-
-private fun Size.toCGSize() = CGSizeMake(width.toDouble(), height.toDouble())
 
 private val Node.view: UIView
   get() = (measureCallback as UIViewMeasureCallback).view
