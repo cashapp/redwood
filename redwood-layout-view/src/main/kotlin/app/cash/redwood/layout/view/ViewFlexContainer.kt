@@ -44,7 +44,12 @@ internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : FlexContainer<View>, ChangeListener {
-  private val yogaLayout = YogaLayout(context)
+  private val yogaLayout: YogaLayout = YogaLayout(
+    context,
+    applyModifier = { node, index ->
+      node.applyModifier(children.widgets[index].modifier, density)
+    },
+  )
   private val density = Density(context.resources)
 
   private val hostView = HostView()
@@ -71,9 +76,6 @@ internal class ViewFlexContainer(
       else -> throw AssertionError()
     }
     yogaLayout.rootNode.flexDirection = direction
-    yogaLayout.applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, density)
-    }
   }
 
   override fun width(width: Constraint) {
