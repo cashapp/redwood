@@ -54,22 +54,16 @@ public class StateSnapshot(
  * Supported types:
  * String, Boolean, Int, List (of supported primitive types), Map (of supported primitive types)
  */
-public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot? {
-  val map = mutableMapOf<String, List<JsonElement?>>()
-  this.forEach { entry ->
-    val list = entry.value.map { element ->
+public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnapshot(
+  mapValues { entry ->
+    entry.value.map { element ->
       when (element) {
-        is MutableState<*> -> {
-          element.value.toJsonElement()
-        }
-
+        is MutableState<*> -> element.value.toJsonElement()
         else -> error("unexpected type: $this")
       }
     }
-    map[entry.key] = list
-  }
-  return StateSnapshot(map)
-}
+  },
+)
 
 private fun Any?.toJsonElement(): JsonElement {
   return when (this) {
