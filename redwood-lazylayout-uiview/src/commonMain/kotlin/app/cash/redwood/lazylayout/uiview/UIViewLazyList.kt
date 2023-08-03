@@ -39,7 +39,6 @@ import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
-import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSIndexPath
 import platform.Foundation.classForCoder
@@ -48,7 +47,9 @@ import platform.UIKit.UICollectionViewCell
 import platform.UIKit.UICollectionViewDataSourceProtocol
 import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
 import platform.UIKit.UICollectionViewFlowLayout
+import platform.UIKit.UICollectionViewFlowLayoutAutomaticSize
 import platform.UIKit.UICollectionViewLayout
+import platform.UIKit.UICollectionViewLayoutAttributes
 import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
 import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
 import platform.UIKit.UICollectionViewScrollPositionTop
@@ -64,7 +65,9 @@ import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 internal open class UIViewLazyList(
-  private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(),
+  private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout().apply {
+    estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize.readValue()
+  },
   internal val collectionView: UICollectionView = UICollectionView(
     CGRectZero.readValue(),
     collectionViewFlowLayout,
@@ -95,6 +98,9 @@ internal open class UIViewLazyList(
           forIndexPath = cellForItemAtIndexPath,
         ) as LazyListContainerCell
 
+        cell.collectionViewFrame = collectionView.frame
+        cell.collectionViewFlowLayout = collectionViewFlowLayout
+
         val widget = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
         cell.set(widget.value)
 
@@ -104,20 +110,6 @@ internal open class UIViewLazyList(
 
   private val collectionViewDelegate: UICollectionViewDelegateFlowLayoutProtocol =
     object : NSObject(), UICollectionViewDelegateFlowLayoutProtocol {
-      override fun collectionView(
-        collectionView: UICollectionView,
-        layout: UICollectionViewLayout,
-        sizeForItemAtIndexPath: NSIndexPath,
-      ): CValue<CGSize> {
-        val widget = items.itemForGlobalIndex(sizeForItemAtIndexPath.item.toInt())
-        val itemSize = widget.value.sizeThatFits(collectionView.frame().useContents { size.readValue() })
-        return if (collectionViewFlowLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
-          CGSizeMake(collectionView.frame().useContents { size.width }, itemSize.useContents { height })
-        } else {
-          CGSizeMake(itemSize.useContents { width }, collectionView.frame().useContents { size.height })
-        }
-      }
-
       override fun collectionView(
         collectionView: UICollectionView,
         layout: UICollectionViewLayout,
@@ -196,6 +188,8 @@ internal open class UIViewLazyList(
 private const val reuseIdentifier = "LazyListContainerCell"
 
 private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCell(frame) {
+  lateinit var collectionViewFrame: CValue<CGRect>
+  lateinit var collectionViewFlowLayout: UICollectionViewFlowLayout
 
   private var widgetView: UIView? = null
   override fun initWithFrame(frame: CValue<CGRect>): UICollectionViewCell = LazyListContainerCell(frame)
@@ -217,6 +211,19 @@ private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCel
   override fun layoutSubviews() {
     super.layoutSubviews()
     widgetView?.setFrame(this.contentView.bounds)
+  }
+
+  override fun preferredLayoutAttributesFittingAttributes(
+    layoutAttributes: UICollectionViewLayoutAttributes,
+  ): UICollectionViewLayoutAttributes {
+    val itemSize = widgetView!!.sizeThatFits(collectionViewFrame.useContents { size.readValue() })
+    return layoutAttributes.apply {
+      size = if (collectionViewFlowLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+        CGSizeMake(collectionViewFrame.useContents { size.width }, itemSize.useContents { height })
+      } else {
+        CGSizeMake(itemSize.useContents { width }, collectionViewFrame.useContents { size.height })
+      }
+    }
   }
 }
 
