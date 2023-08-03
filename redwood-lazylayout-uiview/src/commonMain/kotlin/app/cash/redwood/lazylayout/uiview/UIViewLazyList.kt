@@ -98,7 +98,7 @@ internal open class UIViewLazyList(
           forIndexPath = cellForItemAtIndexPath,
         ) as LazyListContainerCell
 
-        cell.collectionView = collectionView
+        cell.collectionViewFrame = collectionView.frame
         cell.collectionViewFlowLayout = collectionViewFlowLayout
 
         val widget = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
@@ -188,7 +188,7 @@ internal open class UIViewLazyList(
 private const val reuseIdentifier = "LazyListContainerCell"
 
 private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCell(frame) {
-  lateinit var collectionView: UICollectionView
+  lateinit var collectionViewFrame: CValue<CGRect>
   lateinit var collectionViewFlowLayout: UICollectionViewFlowLayout
 
   private var widgetView: UIView? = null
@@ -216,12 +216,12 @@ private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCel
   override fun preferredLayoutAttributesFittingAttributes(
     layoutAttributes: UICollectionViewLayoutAttributes,
   ): UICollectionViewLayoutAttributes {
-    val itemSize = widgetView!!.sizeThatFits(collectionView.frame.useContents { size.readValue() })
+    val itemSize = widgetView!!.sizeThatFits(collectionViewFrame.useContents { size.readValue() })
     return layoutAttributes.apply {
       size = if (collectionViewFlowLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        CGSizeMake(collectionView.frame.useContents { size.width }, itemSize.useContents { height })
+        CGSizeMake(collectionViewFrame.useContents { size.width }, itemSize.useContents { height })
       } else {
-        CGSizeMake(itemSize.useContents { width }, collectionView.frame.useContents { size.height })
+        CGSizeMake(itemSize.useContents { width }, collectionViewFrame.useContents { size.height })
       }
     }
   }
