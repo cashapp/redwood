@@ -77,7 +77,9 @@ allprojects {
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile) {
     kotlinOptions.freeCompilerArgs += [
+      // https://github.com/JetBrains/compose-multiplatform/issues/3421
       '-Xpartial-linkage=disable',
+      // https://github.com/JetBrains/compose-multiplatform/issues/3418
       '-Xklib-enable-signature-clash-checks=false',
     ]
   }
@@ -85,9 +87,8 @@ allprojects {
   // Workaround for https://github.com/Kotlin/dokka/issues/2977.
   // We disable the C Interop IDE metadata task when generating documentation using Dokka.
   tasks.withType(org.jetbrains.dokka.gradle.AbstractDokkaTask) {
-    def taskClass = Class.forName("org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask") as Class<Task>
     parent?.subprojects?.forEach {
-      dependsOn(it.tasks.withType(taskClass))
+      dependsOn(it.tasks.withType(org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask))
     }
   }
 
