@@ -75,6 +75,12 @@ allprojects {
     }
   }
 
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile) {
+    kotlinOptions.freeCompilerArgs += [
+      "-Xpartial-linkage=disable"
+    ]
+  }
+
   // Workaround for https://github.com/Kotlin/dokka/issues/2977.
   // We disable the C Interop IDE metadata task when generating documentation using Dokka.
   tasks.withType(org.jetbrains.dokka.gradle.AbstractDokkaTask) {

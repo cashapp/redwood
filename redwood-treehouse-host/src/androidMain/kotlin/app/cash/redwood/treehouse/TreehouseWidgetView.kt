@@ -54,7 +54,7 @@ public class TreehouseWidgetView(
   override var readyForContent: Boolean = false
     private set
 
-  override var stateSnapshotId = StateSnapshot.Id(null)
+  override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
     private set
 
   override var saveCallback: TreehouseView.SaveCallback? = null
