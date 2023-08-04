@@ -5,10 +5,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'com.android.library'
 
 redwoodBuild {
-  // TODO Re-enable the Compose compiler. This is not strictly required because we only use the
-  //  @Immutable and @Stable annotations, but it's a best-practice to still run it and get the
-  //  generated field on the type.
-  // composeCompiler()
+  composeCompiler()
   publishing()
 }
 

@@ -77,7 +77,8 @@ allprojects {
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile) {
     kotlinOptions.freeCompilerArgs += [
-      "-Xpartial-linkage=disable"
+      '-Xpartial-linkage=disable',
+      '-Xklib-enable-signature-clash-checks=false',
     ]
   }
 
