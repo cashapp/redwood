@@ -41,7 +41,7 @@ public interface ProtocolNode<W : Any> {
 
   public fun apply(change: PropertyChange, eventSink: EventSink)
 
-  public fun updateModifier(elements: List<ModifierElement>)
+  public fun updateModifier(elements: Array<ModifierElement>)
 
   /**
    * Return one of this node's children groups by its [tag].
