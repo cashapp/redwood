@@ -36,7 +36,7 @@ internal class ProtocolWidgetChildren(
 
   override fun remove(index: Int, count: Int) {
     val removingIds = ids.subList(index, index + count)
-    val removedIds = removingIds.toList()
+    val removedIds = removingIds.toTypedArray()
     removingIds.clear()
 
     for (removedId in removedIds) {

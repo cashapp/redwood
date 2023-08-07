@@ -123,8 +123,8 @@ public class ProtocolBridge<W : Any>(
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
 ) : ProtocolNode<W>, Widget<W> {
-  override fun updateModifier(elements: List<ModifierElement>) {
-    throw AssertionError("unexpected: $elements")
+  override fun updateModifier(elements: Array<ModifierElement>) {
+    throw AssertionError("unexpected: ${elements.contentToString()}")
   }
 
   override fun apply(change: PropertyChange, eventSink: EventSink) {

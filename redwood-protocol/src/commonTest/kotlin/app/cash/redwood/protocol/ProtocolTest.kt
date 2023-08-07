@@ -41,13 +41,13 @@ class ProtocolTest {
   }
 
   @Test fun eventNonEmptyArgs() {
-    val model = Event(Id(1), EventTag(2), listOf(JsonPrimitive("Hello"), JsonPrimitive(2)))
+    val model = Event(Id(1), EventTag(2), arrayOf(JsonPrimitive("Hello"), JsonPrimitive(2)))
     val json = """{"id":1,"tag":2,"args":["Hello",2]}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
 
   @Test fun eventEmptyArgs() {
-    val model = Event(Id(1), EventTag(2), listOf())
+    val model = Event(Id(1), EventTag(2), arrayOf())
     val json = """{"id":1,"tag":2}"""
     assertJsonRoundtrip(Event.serializer(), model, json)
   }
@@ -57,10 +57,10 @@ class ProtocolTest {
       Create(Id(1), WidgetTag(2)),
       ChildrenChange.Add(Id(1), ChildrenTag(2), Id(3), 4),
       ChildrenChange.Move(Id(1), ChildrenTag(2), 3, 4, 5),
-      ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7), Id(8))),
+      ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, arrayOf(Id(5), Id(6), Id(7), Id(8))),
       ModifierChange(
         Id(1),
-        listOf(
+        arrayOf(
           ModifierElement(
             ModifierTag(1),
             buildJsonObject { },
@@ -100,7 +100,7 @@ class ProtocolTest {
 
   @Test fun removeCountMustMatchListSize() {
     val t = assertFailsWith<IllegalArgumentException> {
-      ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7)))
+      ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, arrayOf(Id(5), Id(6), Id(7)))
     }
     assertThat(t).hasMessage("Count 4 != Removed ID list size 3")
   }

@@ -31,7 +31,7 @@ class SnapshotChangeListTest {
     val expected = SnapshotChangeList(
       listOf(
         Create(Id(1), WidgetTag(1)),
-        ModifierChange(Id(1), emptyList()),
+        ModifierChange(Id(1), emptyArray()),
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("Hello")),
         Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
@@ -58,11 +58,11 @@ class SnapshotChangeListTest {
       SnapshotChangeList(
         listOf(
           Create(Id(1), WidgetTag(1)),
-          ModifierChange(Id(1), emptyList()),
+          ModifierChange(Id(1), emptyArray()),
           Move(Id.Root, ChildrenTag.Root, 1, 2, 3),
           PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("Hello")),
           Add(Id.Root, ChildrenTag.Root, Id(1), 0),
-          Remove(Id.Root, ChildrenTag.Root, 1, 2, listOf(Id(3), Id(4))),
+          Remove(Id.Root, ChildrenTag.Root, 1, 2, arrayOf(Id(3), Id(4))),
         ),
       )
     }.hasMessage(
