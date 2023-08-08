@@ -21,10 +21,7 @@ kotlin {
 
 spotless {
   kotlin {
-    targetExclude(
-      // Internal MIT-licensed files from Meta.
-      fileTree("src/commonMain/kotlin/app/cash/redwood/yoga/internal").filter { it.isFile() },
-      fileTree("src/commonTest/kotlin/app/cash/redwood/yoga/internal").filter { it.isFile() },
-    )
+    // Internal MIT-licensed files from Meta.
+    targetExclude("src/**/kotlin/app/cash/redwood/yoga/internal/**")
   }
 }
