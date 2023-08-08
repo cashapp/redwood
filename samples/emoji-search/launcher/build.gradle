@@ -7,7 +7,7 @@ kotlin {
   iosX64()
   iosSimulatorArm64()
 
-  android()
+  androidTarget()
 
   sourceSets {
     commonMain {

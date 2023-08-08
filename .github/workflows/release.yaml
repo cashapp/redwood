@@ -24,7 +24,8 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ARTIFACT_SIGNING_PRIVATE_KEY }}
-        run: ./gradlew publish dokkaHtmlMultiModule browserProductionWebpack
+        run: ./gradlew publish browserProductionWebpack
+        #run: ./gradlew publish dokkaHtmlMultiModule browserProductionWebpack
 
       - name: Extract release notes
         id: release_notes
@@ -36,14 +37,14 @@ jobs:
           body: ${{ steps.release_notes.outputs.release_notes }}
           discussionCategory: Announcements
 
-      - name: Deploy docs to website
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: site
-          FOLDER: build/dokka/htmlMultiModule/
-          TARGET_FOLDER: 0.x/docs/
-          CLEAN: true
+      #- name: Deploy docs to website
+      #  uses: JamesIves/github-pages-deploy-action@releases/v3
+      #  with:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    BRANCH: site
+      #    FOLDER: build/dokka/htmlMultiModule/
+      #    TARGET_FOLDER: 0.x/docs/
+      #    CLEAN: true
 
       - name: Deploy counter sample to website
         uses: JamesIves/github-pages-deploy-action@releases/v3

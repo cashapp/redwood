@@ -50,7 +50,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
       CVDisplayLinkSetOutputCallback(
         displayLink.value,
         staticCFunction { _, _, _, _, _, _ ->
-          val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+          val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
           clock.sendFrame(nanos)
 
           // A frame was delivered. Stop the DisplayLink callback. It will get started again

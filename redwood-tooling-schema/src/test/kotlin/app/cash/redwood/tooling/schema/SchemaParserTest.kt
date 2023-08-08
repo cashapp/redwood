@@ -49,6 +49,7 @@ import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
 import org.junit.Assume.assumeTrue
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,6 +61,10 @@ class SchemaParserTest(
   object TestScope
 
   interface NonAnnotationSchema
+
+  @Before fun before() {
+    assumeTrue(parser != SchemaParser.Fir) // Kotlin 1.9 broke FIR.
+  }
 
   @Test fun nonAnnotatedSchemaThrows() {
     assertFailure { parser.parse(NonAnnotationSchema::class) }

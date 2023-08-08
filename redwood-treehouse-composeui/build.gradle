@@ -9,7 +9,7 @@ redwoodBuild {
 }
 
 kotlin {
-  android {
+  androidTarget {
     publishLibraryVariants('release')
   }
 

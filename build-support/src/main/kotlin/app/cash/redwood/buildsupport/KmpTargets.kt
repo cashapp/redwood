@@ -25,7 +25,7 @@ fun addAllTargets(project: Project, skipJs: Boolean = false) {
   project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
     project.extensions.getByType(KotlinMultiplatformExtension::class.java).apply {
       if (project.plugins.hasPlugin("com.android.library")) {
-        android {
+        androidTarget {
           publishLibraryVariants("release")
         }
       }

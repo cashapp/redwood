@@ -10,7 +10,7 @@ buildscript {
     classpath libs.atomicFuPlugin
     classpath libs.androidGradlePlugin
     classpath libs.gradleMavenPublishPlugin
-    classpath libs.dokkaPlugin
+    // classpath libs.dokkaPlugin
     classpath libs.spotlessPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
@@ -25,7 +25,8 @@ buildscript {
   }
 }
 
-apply plugin: 'org.jetbrains.dokka'
+// TODO Re-enable dokka once https://github.com/Kotlin/dokka/issues/2977 is fixed.
+// apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
   tasks.withType(AbstractTestTask).configureEach {
@@ -46,6 +47,8 @@ allprojects {
       kotlin {
         sourceSets.configureEach {
           languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
+          languageSettings.optIn('kotlinx.cinterop.BetaInteropApi')
+          languageSettings.optIn('kotlinx.cinterop.ExperimentalForeignApi')
         }
       }
     }
@@ -73,19 +76,13 @@ allprojects {
     }
   }
 
-  // Workaround for https://github.com/Kotlin/dokka/issues/2977.
-  // We disable the C Interop IDE metadata task when generating documentation using Dokka.
-  gradle.taskGraph.whenReady {
-    def hasDokkaTasks = gradle.taskGraph.allTasks.any {
-      it instanceof org.jetbrains.dokka.gradle.AbstractDokkaTask
-    }
-    if (hasDokkaTasks) {
-      tasks.withType(
-        org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask
-      ).configureEach {
-        enabled = false
-      }
-    }
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile) {
+    kotlinOptions.freeCompilerArgs += [
+      // https://github.com/JetBrains/compose-multiplatform/issues/3421
+      '-Xpartial-linkage=disable',
+      // https://github.com/JetBrains/compose-multiplatform/issues/3418
+      '-Xklib-enable-signature-clash-checks=false',
+    ]
   }
 
   // Disable the release linking tasks because we never need it for iOS sample applications.
