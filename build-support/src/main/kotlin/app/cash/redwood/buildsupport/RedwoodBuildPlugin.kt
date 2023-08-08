@@ -85,7 +85,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
   override fun publishing() {
     project.plugins.apply("com.vanniktech.maven.publish")
-    project.plugins.apply("org.jetbrains.dokka")
+    // project.plugins.apply("org.jetbrains.dokka")
 
     val publishing = project.extensions.getByName("publishing") as PublishingExtension
     publishing.apply {
@@ -160,11 +160,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     // DokkaTaskPartial configures subprojects for multimodule docs
     // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
-    project.tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial::class.java) { task ->
-      task.dokkaSourceSets.configureEach {
-        it.suppressGeneratedFiles.set(false) // document generated code
-      }
-    }
+    // project.tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial::class.java) { task ->
+    //   task.dokkaSourceSets.configureEach {
+    //     it.suppressGeneratedFiles.set(false) // document generated code
+    //   }
+    // }
 
     // Published modules should be explicit about their API visibility.
     var explicit = false

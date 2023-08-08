@@ -27,7 +27,7 @@ dependencies {
   compileOnly gradleApi()
   compileOnly libs.kotlin.gradlePlugin
   implementation libs.gradleMavenPublishPlugin
-  implementation libs.dokkaPlugin
+  // implementation libs.dokkaPlugin
   implementation libs.spotlessPlugin
 
   // Expose the generated version catalog API to the plugin.

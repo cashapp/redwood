@@ -10,7 +10,7 @@ buildscript {
     classpath libs.atomicFuPlugin
     classpath libs.androidGradlePlugin
     classpath libs.gradleMavenPublishPlugin
-    classpath libs.dokkaPlugin
+    // classpath libs.dokkaPlugin
     classpath libs.spotlessPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
@@ -25,7 +25,8 @@ buildscript {
   }
 }
 
-apply plugin: 'org.jetbrains.dokka'
+// TODO Re-enable dokka once https://github.com/Kotlin/dokka/issues/2977 is fixed.
+// apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
   tasks.withType(AbstractTestTask).configureEach {
@@ -82,14 +83,6 @@ allprojects {
       // https://github.com/JetBrains/compose-multiplatform/issues/3418
       '-Xklib-enable-signature-clash-checks=false',
     ]
-  }
-
-  // Workaround for https://github.com/Kotlin/dokka/issues/2977.
-  // We disable the C Interop IDE metadata task when generating documentation using Dokka.
-  tasks.withType(org.jetbrains.dokka.gradle.AbstractDokkaTask) {
-    parent?.subprojects?.forEach {
-      dependsOn(it.tasks.withType(org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask))
-    }
   }
 
   // Disable the release linking tasks because we never need it for iOS sample applications.
