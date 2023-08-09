@@ -17,14 +17,16 @@ package app.cash.redwood.ui
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.Serializable
 
 @[Immutable Serializable]
-public data class Margin(
-  val start: Dp = 0.dp,
-  val end: Dp = 0.dp,
-  val top: Dp = 0.dp,
-  val bottom: Dp = 0.dp,
+@Poko
+public class Margin(
+  public val start: Dp = 0.dp,
+  public val end: Dp = 0.dp,
+  public val top: Dp = 0.dp,
+  public val bottom: Dp = 0.dp,
 ) {
 
   override fun toString(): String = when {

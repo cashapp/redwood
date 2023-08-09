@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.ui
 
+import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class UiConfiguration(
-  val darkMode: Boolean = false,
-  val safeAreaInsets: Margin = Margin.Zero,
+@Poko
+public class UiConfiguration(
+  public val darkMode: Boolean = false,
+  public val safeAreaInsets: Margin = Margin.Zero,
 ) {
   public companion object
 }
