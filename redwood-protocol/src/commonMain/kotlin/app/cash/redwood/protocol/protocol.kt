@@ -56,7 +56,7 @@ private object EventSerializer : KSerializer<Event> {
     ArraySerializer(JsonElement.serializer())
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor(
-    serialName = Event::class.qualifiedName!!,
+    serialName = "app.cash.redwood.protocol.Event",
   ) {
       element<Id>("id")
       element<EventTag>("tag")
