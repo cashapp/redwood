@@ -205,7 +205,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: samples/counter/browser/build/distributions
+          FOLDER: samples/counter/browser/build/dist/js/productionExecutable
           TARGET_FOLDER: latest/counter/
           CLEAN: true
 
@@ -214,6 +214,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: samples/emoji-search/browser/build/distributions
+          FOLDER: samples/emoji-search/browser/build/dist/js/productionExecutable
           TARGET_FOLDER: latest/emoji-search/
           CLEAN: true
