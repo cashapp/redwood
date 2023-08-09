@@ -10,6 +10,7 @@
       "matchPackagePrefixes": [
         "androidx.compose.compiler",
         "app.cash.zipline",
+        "dev.drewhamilton.poko",
         "org.jetbrains.compose.compiler",
         "org.jetbrains.kotlin:kotlin",
       ],
