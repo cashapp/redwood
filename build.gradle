@@ -30,17 +30,6 @@ buildscript {
 // apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
-  tasks.withType(AbstractTestTask).configureEach {
-    testLogging {
-      if (System.getenv("CI") == "true") {
-        events = ["failed", "skipped", "passed"]
-      }
-      exceptionFormat "full"
-    }
-    // Force tests to always run to avoid caching issues.
-    outputs.upToDateWhen { false }
-  }
-
   // Apply opt-in annotations everywhere except the test-schema where we want to ensure the
   // generated code isn't relying on them (without also generating appropriate opt-ins).
   if (!project.path.startsWith(":test-schema")) {
