@@ -166,6 +166,26 @@ certain versions of Kotlin.
 | 1.8.20 | 0.3.0 - 0.4.0 |
 | 1.7.20 | 0.1.0 - 0.2.1 |
 
+### Custom Compose Compiler
+
+Each version of Redwood ships with a specific JetBrains Compose compiler version which works with
+a single version of Kotlin (see [version table](#version-compatibility) above). Newer versions of
+the Compose compiler or alternate Compose compilers can be specified using the Gradle extension.
+
+To use a new version of the JetBrains Compose compiler version:
+```kotlin
+redwood {
+  kotlinCompilerPlugin.set("1.4.8")
+}
+```
+
+To use an alternate Compose compiler dependency:
+```kotlin
+redwood {
+  kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
+}
+```
+
 
 [compose-server-side]: https://github.com/ShikaSD/compose-server-side
 [compose]: https://developer.android.com/jetpack/compose
