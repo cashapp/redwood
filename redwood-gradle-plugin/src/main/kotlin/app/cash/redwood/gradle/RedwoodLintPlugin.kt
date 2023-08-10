@@ -29,10 +29,8 @@ import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
-import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.Companion.MAIN_COMPILATION_NAME
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
@@ -64,8 +62,6 @@ public class RedwoodLintPlugin : Plugin<Project> {
           configureKotlinMultiplatformTargets(project, rootTask)
         }
         rootTask
-      } else if (project.plugins.hasPlugin("org.jetbrains.kotlin.js")) {
-        configureKotlinJsProject(project)
       } else if (project.plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
         configureKotlinJvmProject(project)
       } else if (project.plugins.hasPlugin("org.jetbrains.kotlin.android")) {
@@ -156,15 +152,6 @@ private fun configureKotlinMultiplatformTargets(
       it.dependsOn(task)
     }
   }
-}
-
-private fun configureKotlinJsProject(
-  project: Project,
-): TaskProvider<out Task> {
-  val kotlin = project.extensions.getByType(KotlinJsProjectExtension::class.java)
-  // Cast to supertype avoids deprecation on subtype of related mutable DSL API.
-  val target = (kotlin as KotlinSingleTargetExtension<*>).target
-  return createKotlinTargetRedwoodLintTask(project, target, baseTaskName)
 }
 
 private fun configureKotlinJvmProject(

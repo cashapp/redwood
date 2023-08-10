@@ -200,7 +200,6 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       explicit = true
     }
     project.plugins.withId("org.jetbrains.kotlin.android", kotlinPluginHandler)
-    project.plugins.withId("org.jetbrains.kotlin.js", kotlinPluginHandler)
     project.plugins.withId("org.jetbrains.kotlin.jvm", kotlinPluginHandler)
     project.plugins.withId("org.jetbrains.kotlin.multiplatform", kotlinPluginHandler)
     project.afterEvaluate {

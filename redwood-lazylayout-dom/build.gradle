@@ -1,4 +1,4 @@
-apply plugin: 'org.jetbrains.kotlin.js'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 redwoodBuild {
 }
@@ -9,7 +9,7 @@ kotlin {
   }
 
   sourceSets {
-    main {
+    commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
       }

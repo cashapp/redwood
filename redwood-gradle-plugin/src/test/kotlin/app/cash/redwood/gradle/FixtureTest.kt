@@ -131,15 +131,6 @@ class FixtureTest {
     )
   }
 
-  @Test fun lintJs() {
-    val fixtureDir = File("src/test/fixture/lint-js")
-    val result = fixtureGradleRunner(fixtureDir).build()
-    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
-    assertThat(lintTasks).containsExactly(
-      ":redwoodLint",
-    )
-  }
-
   @Test fun lintJvm() {
     val fixtureDir = File("src/test/fixture/lint-jvm")
     val result = fixtureGradleRunner(fixtureDir).build()
