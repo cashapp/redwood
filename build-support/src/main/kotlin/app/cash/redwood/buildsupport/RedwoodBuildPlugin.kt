@@ -24,6 +24,11 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.testing.AbstractTestTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 private const val redwoodGroupId = "app.cash.redwood"
@@ -33,11 +38,13 @@ private const val redwoodVersion = "0.7.0-SNAPSHOT"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
+  private lateinit var libs: LibrariesForLibs
+
   override fun apply(target: Project) {
     target.group = redwoodGroupId
     target.version = redwoodVersion
 
-    val libs = target.extensions.getByName("libs") as LibrariesForLibs
+    libs = target.extensions.getByName("libs") as LibrariesForLibs
 
     target.extensions.add(
       RedwoodBuildExtension::class.java,
@@ -45,13 +52,18 @@ class RedwoodBuildPlugin : Plugin<Project> {
       RedwoodBuildExtensionImpl(target),
     )
 
-    target.plugins.apply("com.diffplug.spotless")
-    val spotless = target.extensions.getByName("spotless") as SpotlessExtension
-    val licenseHeaderFile = target.rootProject.file("gradle/license-header.txt")
+    target.configureCommonSpotless()
+    target.configureCommonTesting()
+  }
+
+  private fun Project.configureCommonSpotless() {
+    plugins.apply("com.diffplug.spotless")
+    val spotless = extensions.getByName("spotless") as SpotlessExtension
+    val licenseHeaderFile = rootProject.file("gradle/license-header.txt")
     spotless.apply {
       // The nested build-support Gradle project contains Java sources. Use our root project to
       // target its sources rather than duplicating the Spotless setup in multiple places.
-      if (target.path == ":") {
+      if (path == ":") {
         java {
           it.target("build-support/settings/src/**/*.java")
           it.googleJavaFormat(libs.googleJavaFormat.get().version)
@@ -62,7 +74,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       kotlin {
         // The nested build-support Gradle project contains Kotlin sources. Use our root project to
         // target its sources rather than duplicating the Spotless setup in multiple places.
-        if (target.path == ":") {
+        if (path == ":") {
           it.target("build-support/src/**/*.kt")
         } else {
           it.target("src/**/*.kt")
@@ -74,6 +86,20 @@ class RedwoodBuildPlugin : Plugin<Project> {
         )
         it.licenseHeaderFile(licenseHeaderFile)
       }
+    }
+  }
+
+  private fun Project.configureCommonTesting() {
+    tasks.withType(AbstractTestTask::class.java).configureEach { task ->
+      task.testLogging {
+        if (System.getenv("CI") == "true") {
+          it.events = setOf(FAILED, SKIPPED, PASSED)
+        }
+        it.exceptionFormat = FULL
+      }
+      // Force tests to always run to avoid caching issues.
+      // TODO Delete this! Anything not working is bad/missing task inputs or a bug.
+      task.outputs.upToDateWhen { false }
     }
   }
 }
