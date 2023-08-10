@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.buildsupport
 
+import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
@@ -29,6 +30,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 private const val redwoodGroupId = "app.cash.redwood"
@@ -54,6 +56,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     target.configureCommonSpotless()
     target.configureCommonTesting()
+    target.configureCommonCompose()
   }
 
   private fun Project.configureCommonSpotless() {
@@ -100,6 +103,24 @@ class RedwoodBuildPlugin : Plugin<Project> {
       // Force tests to always run to avoid caching issues.
       // TODO Delete this! Anything not working is bad/missing task inputs or a bug.
       task.outputs.upToDateWhen { false }
+    }
+  }
+
+  /**
+   * Force Android Compose UI and JetPack Compose UI usage to Compose compiler versions which
+   * are compatible with the project's Kotlin version.
+   */
+  private fun Project.configureCommonCompose() {
+    plugins.withId("com.android.base") {
+      val android = extensions.getByName("android") as BaseExtension
+      android.composeOptions {
+        it.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.get().version
+      }
+    }
+
+    plugins.withId("org.jetbrains.compose") {
+      val compose = extensions.getByName("compose") as ComposeExtension
+      compose.kotlinCompilerPlugin.set(libs.jetbrains.compose.compiler.get().version)
     }
   }
 }
