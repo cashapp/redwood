@@ -1,4 +1,4 @@
-apply plugin: 'org.jetbrains.kotlin.js'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood'
 
 // The name of the final JS file to be referenced from HTML.
@@ -13,7 +13,7 @@ kotlin {
   }
 
   sourceSets {
-    main {
+    commonMain {
       dependencies {
         implementation projects.samples.emojiSearch.schema.widget
         implementation projects.samples.emojiSearch.presenter
