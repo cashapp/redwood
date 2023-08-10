@@ -2,6 +2,34 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2023-08-10
+
+New:
+- Support for specifying custom Compose compiler versions. This will allow you to use the latest
+  version of Redwood with newer versions of Kotlin than it explicitly supports.
+
+  See [the README](https://github.com/cashapp/redwood/#custom-compose-compiler) for more information.
+- `LazyList` can now be programmatically scrolled through its `ScrollItemIndex` parameter.
+- Pull-to-refresh indicator color on `LazyList` is now customizable through
+  `pullRefreshContentColor` parameter.
+
+Changes:
+- Many public types have been migrated away from `data class` to regular classes with
+  `equals`/`hashCode`/`toString()`. If you were relying on destructuring or `copy()` for these
+  types you will need to migrate to doing this manually.
+
+Fix:
+- The emoji search browser sample no longer crashes on first load.
+- Lots of rendering and performance fixes for UIKit version of `LazyList`
+  - Only measure items which are visible in the active viewport.
+  - Remove some default item spacing imposed by the backing `UICollectionViewFlowLayout`.
+  - Share most of the internal bookkeeping logic with the Android implementations for consistency
+    and correctness.
+  - Placeholders are now correctly sized along the main axis.
+
+This version works with Kotlin 1.9.0 by default.
+
+
 ## [0.5.0] - 2023-07-05
 
 This release marks Redwood's "beta" period which provides slightly more stability guarantees than
@@ -188,7 +216,8 @@ This version only works with Kotlin 1.7.20.
 
 
 
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/cashapp/redwood/releases/tag/0.6.0
 [0.5.0]: https://github.com/cashapp/redwood/releases/tag/0.5.0
 [0.4.0]: https://github.com/cashapp/redwood/releases/tag/0.4.0
 [0.3.0]: https://github.com/cashapp/redwood/releases/tag/0.3.0
