@@ -115,7 +115,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
    */
   private fun Project.configureCommonCompose() {
     plugins.withId("com.android.base") {
-      println("XXXXX $path")
       val android = extensions.getByName("android") as BaseExtension
       android.composeOptions {
         it.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.get().version
