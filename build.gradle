@@ -4,14 +4,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 buildscript {
   dependencies {
-    classpath libs.kotlin.gradlePlugin
     classpath libs.kotlin.serializationPlugin
-    classpath libs.jetbrains.compose.gradlePlugin
     classpath libs.atomicFuPlugin
-    classpath libs.androidGradlePlugin
-    classpath libs.gradleMavenPublishPlugin
-    // classpath libs.dokkaPlugin
-    classpath libs.spotlessPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
     classpath libs.paparazzi.gradlePlugin
@@ -112,15 +106,6 @@ allprojects {
         checkDependencies true
         checkReleaseBuilds false // Full lint runs as part of 'build' task.
       }
-    }
-    android.composeOptions {
-      kotlinCompilerExtensionVersion libs.androidx.compose.compiler.get().version
-    }
-  }
-
-  plugins.withId('org.jetbrains.compose') {
-    project.compose {
-      kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().version
     }
   }
 

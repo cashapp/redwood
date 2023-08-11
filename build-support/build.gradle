@@ -25,10 +25,12 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly libs.kotlin.gradlePlugin
+  implementation libs.kotlin.gradlePlugin
   implementation libs.gradleMavenPublishPlugin
   // implementation libs.dokkaPlugin
   implementation libs.spotlessPlugin
+  implementation libs.androidGradlePlugin
+  implementation libs.jetbrains.compose.gradlePlugin
 
   // Expose the generated version catalog API to the plugin.
   implementation(files(libs.class.superclass.protectionDomain.codeSource.location))
