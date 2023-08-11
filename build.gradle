@@ -90,35 +90,6 @@ allprojects {
       }
     }
   }
-
-  plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
-    project.android {
-      compileSdk 33
-      compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-      }
-      defaultConfig {
-        minSdk 21
-        targetSdk 33
-      }
-      lint {
-        checkDependencies true
-        checkReleaseBuilds false // Full lint runs as part of 'build' task.
-      }
-    }
-  }
-
-  // Disable the release build type because we never need it for sample applications.
-  plugins.withId('com.android.application') {
-    project.android {
-      variantFilter { variant ->
-        if (variant.buildType.name == 'release') {
-          variant.ignore = true
-        }
-      }
-    }
-  }
 }
 
 afterEvaluate {

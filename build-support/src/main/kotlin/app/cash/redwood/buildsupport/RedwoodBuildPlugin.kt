@@ -15,11 +15,13 @@
  */
 package app.cash.redwood.buildsupport
 
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
@@ -57,6 +59,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     target.configureCommonSpotless()
     target.configureCommonTesting()
     target.configureCommonCompose()
+    target.configureCommonAndroid()
   }
 
   private fun Project.configureCommonSpotless() {
@@ -112,6 +115,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
    */
   private fun Project.configureCommonCompose() {
     plugins.withId("com.android.base") {
+      println("XXXXX $path")
       val android = extensions.getByName("android") as BaseExtension
       android.composeOptions {
         it.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.get().version
@@ -121,6 +125,37 @@ class RedwoodBuildPlugin : Plugin<Project> {
     plugins.withId("org.jetbrains.compose") {
       val compose = extensions.getByName("compose") as ComposeExtension
       compose.kotlinCompilerPlugin.set(libs.jetbrains.compose.compiler.get().version)
+    }
+  }
+
+  private fun Project.configureCommonAndroid() {
+    plugins.withId("com.android.base") {
+      val android = extensions.getByName("android") as BaseExtension
+      android.apply {
+        compileSdkVersion(33)
+        compileOptions {
+          it.sourceCompatibility = JavaVersion.VERSION_1_8
+          it.targetCompatibility = JavaVersion.VERSION_1_8
+        }
+        defaultConfig {
+          it.minSdk = 21
+          it.targetSdk = 33
+        }
+        lintOptions {
+          it.isCheckDependencies = true
+          it.isCheckReleaseBuilds = false // Full lint runs as part of 'build' task.
+        }
+      }
+    }
+
+    // Disable the release build type because we never need it for sample applications.
+    plugins.withId("com.android.application") {
+      val android = extensions.getByName("android") as AppExtension
+      android.variantFilter { variant ->
+        if (variant.buildType.name == "release") {
+          variant.ignore = true
+        }
+      }
     }
   }
 }
