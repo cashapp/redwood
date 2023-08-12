@@ -60,15 +60,6 @@ allprojects {
     }
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile) {
-    kotlinOptions.freeCompilerArgs += [
-      // https://github.com/JetBrains/compose-multiplatform/issues/3421
-      '-Xpartial-linkage=disable',
-      // https://github.com/JetBrains/compose-multiplatform/issues/3418
-      '-Xklib-enable-signature-clash-checks=false',
-    ]
-  }
-
   // Disable the release linking tasks because we never need it for iOS sample applications.
   // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
   plugins.withId('org.jetbrains.kotlin.multiplatform') {
