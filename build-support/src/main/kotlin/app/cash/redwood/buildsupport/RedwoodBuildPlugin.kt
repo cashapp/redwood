@@ -33,6 +33,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 private const val redwoodGroupId = "app.cash.redwood"
@@ -124,6 +125,15 @@ class RedwoodBuildPlugin : Plugin<Project> {
     plugins.withId("org.jetbrains.compose") {
       val compose = extensions.getByName("compose") as ComposeExtension
       compose.kotlinCompilerPlugin.set(libs.jetbrains.compose.compiler.get().version)
+    }
+
+    tasks.withType(KotlinJsCompile::class.java) {
+      it.kotlinOptions.freeCompilerArgs += listOf(
+        // https://github.com/JetBrains/compose-multiplatform/issues/3421
+        "-Xpartial-linkage=disable",
+        // https://github.com/JetBrains/compose-multiplatform/issues/3418
+        "-Xklib-enable-signature-clash-checks=false",
+      )
     }
   }
 
