@@ -69,9 +69,11 @@ private class RedwoodZiplineTreehouseUi(
 
     this.saveableStateRegistry = SaveableStateRegistry(
       restoredValues = stateSnapshot?.toValuesMap(),
-      // about `canBeSaved`: values will only be restored by SaveableStateRegistry if `canBeSaved` is true
-      // `canBeSaved` essentially tests if values saved (and to be restored) are serializable
-      canBeSaved = { stateSnapshot?.canBeSaved() ?: true },
+      // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
+      // With current serialization mechanism of stateSnapshot, this field is always true, an update
+      // to lambda of this field might be needed when serialization mechanism of stateSnapshot
+      // is changed.
+      canBeSaved = { true },
     )
 
     composition.bind(
