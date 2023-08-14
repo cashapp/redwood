@@ -22,11 +22,6 @@ kotlin {
         implementation projects.redwoodYoga
       }
     }
-    commonTest {
-      dependencies {
-        implementation libs.assertk
-      }
-    }
 
     iosArm64Main {
       dependsOn commonMain
