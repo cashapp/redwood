@@ -27,14 +27,22 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 private const val redwoodGroupId = "app.cash.redwood"
 
@@ -61,6 +69,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     target.configureCommonTesting()
     target.configureCommonCompose()
     target.configureCommonAndroid()
+    target.configureCommonKotlin()
   }
 
   private fun Project.configureCommonSpotless() {
@@ -163,6 +172,64 @@ class RedwoodBuildPlugin : Plugin<Project> {
       android.variantFilter { variant ->
         if (variant.buildType.name == "release") {
           variant.ignore = true
+        }
+      }
+    }
+  }
+
+  private fun Project.configureCommonKotlin() {
+    tasks.withType(KotlinCompile::class.java).configureEach {
+      it.kotlinOptions.freeCompilerArgs += listOf(
+        "-progressive", // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+      )
+    }
+
+    val javaVersion = JavaVersion.VERSION_1_8
+    tasks.withType(KotlinJvmCompile::class.java).configureEach {
+      it.kotlinOptions {
+        jvmTarget = javaVersion.toString()
+        freeCompilerArgs += listOf(
+          "-Xjvm-default=all",
+        )
+      }
+    }
+    // Kotlin requires the Java compatibility matches.
+    tasks.withType(JavaCompile::class.java).configureEach {
+      it.sourceCompatibility = javaVersion.toString()
+      it.targetCompatibility = javaVersion.toString()
+    }
+
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
+
+      // Apply opt-in annotations everywhere except the test-schema where we want to ensure the
+      // generated code isn't relying on them (without also generating appropriate opt-ins).
+      if (!path.startsWith(":test-schema")) {
+        kotlin.sourceSets.configureEach {
+          it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+          it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
+          it.languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+      }
+
+      kotlin.targets.withType(KotlinNativeTarget::class.java) { target ->
+        target.binaries.withType(Framework::class.java) {
+          it.linkerOpts += "-lsqlite3"
+        }
+      }
+
+      // Disable the release linking tasks because we never need it for iOS sample applications.
+      // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
+      kotlin.targets.withType(KotlinNativeTarget::class.java) { target ->
+        target.binaries.all {
+          if (it.buildType == NativeBuildType.RELEASE) {
+            it.linkTask.enabled = false
+          }
+        }
+      }
+      tasks.withType(FatFrameworkTask::class.java).configureEach {
+        if (it.name.contains("Release")) {
+          it.enabled = false
         }
       }
     }

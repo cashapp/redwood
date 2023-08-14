@@ -1,7 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-
 buildscript {
   dependencies {
     classpath libs.kotlin.serializationPlugin
@@ -22,66 +18,6 @@ buildscript {
 
 // TODO Re-enable dokka once https://github.com/Kotlin/dokka/issues/2977 is fixed.
 // apply plugin: 'org.jetbrains.dokka'
-
-allprojects {
-  // Apply opt-in annotations everywhere except the test-schema where we want to ensure the
-  // generated code isn't relying on them (without also generating appropriate opt-ins).
-  if (!project.path.startsWith(":test-schema")) {
-    plugins.withId('org.jetbrains.kotlin.multiplatform') {
-      kotlin {
-        sourceSets.configureEach {
-          languageSettings.optIn('kotlin.experimental.ExperimentalObjCName')
-          languageSettings.optIn('kotlinx.cinterop.BetaInteropApi')
-          languageSettings.optIn('kotlinx.cinterop.ExperimentalForeignApi')
-        }
-      }
-    }
-  }
-
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach {
-    compilerOptions {
-      freeCompilerArgs.addAll([
-        '-progressive', // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
-      ])
-    }
-  }
-
-  tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
-  }
-
-  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_1_8)
-      freeCompilerArgs.addAll([
-        '-Xjvm-default=all',
-      ])
-    }
-  }
-
-  // Disable the release linking tasks because we never need it for iOS sample applications.
-  // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
-  plugins.withId('org.jetbrains.kotlin.multiplatform') {
-    kotlin {
-      targets.withType(KotlinNativeTarget) {
-        binaries.all {
-          if (it.buildType == NativeBuildType.RELEASE) {
-            it.linkTask.enabled = false
-          }
-        }
-        binaries.withType(org.jetbrains.kotlin.gradle.plugin.mpp.Framework) {
-          linkerOpts += "-lsqlite3"
-        }
-      }
-    }
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask).configureEach {
-      if (it.name.contains("Release")) {
-        it.enabled = false
-      }
-    }
-  }
-}
 
 afterEvaluate {
   spotless {
