@@ -17,7 +17,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation libs.jetbrains.compose.runtime
-        implementation libs.kotlinx.serialization.core
+        implementation libs.kotlinx.serialization.json
       }
     }
     commonTest {

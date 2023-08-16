@@ -15,79 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import kotlin.jvm.JvmInline
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
-
-@Serializable
-public class StateSnapshot(
-  public val content: Map<String, List<JsonElement?>>,
-) {
-  public fun toValuesMap(): Map<String, List<Any?>>? {
-    return content.mapValues { entry ->
-      entry.value.map { mutableStateOf(it.fromJsonElement()) }
-    }
-  }
-
-  public fun canBeSaved(): Boolean {
-    return try {
-      // Test if the content is serializable
-      toValuesMap()
-      true
-    } catch (t: IllegalStateException) {
-      false
-    }
-  }
-
-  @JvmInline
-  @Serializable
-  public value class Id(public val value: String?)
-}
-
-/**
- * Supported types:
- * String, Boolean, Int, List (of supported primitive types), Map (of supported primitive types)
- */
-public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnapshot(
-  mapValues { entry ->
-    entry.value.map { element ->
-      when (element) {
-        is MutableState<*> -> element.value.toJsonElement()
-        else -> error("unexpected type: $this")
-      }
-    }
-  },
+@Deprecated(
+  "StateSnapshot has been moved to redwood-runtime.",
+  ReplaceWith("StateSnapshot", "app.cash.redwood.StateSnapshot"),
 )
-
-private fun Any?.toJsonElement(): JsonElement {
-  return when (this) {
-    is String -> JsonPrimitive(this)
-    is List<*> -> JsonArray(map { it.toJsonElement() })
-    is JsonElement -> this
-    else -> error("unexpected type: $this")
-    // TODO: add support to Map<*, *>
-  }
-}
-
-private fun JsonElement?.fromJsonElement(): Any {
-  return when (this) {
-    is JsonPrimitive -> {
-      if (this.isString) {
-        return content
-      }
-      return booleanOrNull ?: doubleOrNull ?: error("unexpected type: $this")
-      // TODO add other primitive types (double, float, long) when needed
-    }
-
-    is JsonArray -> listOf({ this.forEach { it.toJsonElement() } })
-    // TODO: map, numbers
-    // is Map<*, *> -> JsonElement
-    else -> error("unexpected type: $this")
-  }
-}
+public typealias StateSnapshot = app.cash.redwood.StateSnapshot
