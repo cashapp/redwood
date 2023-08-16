@@ -198,7 +198,7 @@ jobs:
       #    CLEAN: true
 
       - name: Build sample web apps
-        run: ./gradlew -p samples browserProductionWebpack
+        run: ./gradlew -p samples jsBrowserProductionWebpack
 
       - name: Deploy counter sample to website
         uses: JamesIves/github-pages-deploy-action@releases/v3
