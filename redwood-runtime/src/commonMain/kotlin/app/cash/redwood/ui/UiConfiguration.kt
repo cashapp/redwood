@@ -23,6 +23,15 @@ import kotlinx.serialization.Serializable
 public class UiConfiguration(
   public val darkMode: Boolean = false,
   public val safeAreaInsets: Margin = Margin.Zero,
+  /**
+   * The size of the viewport into which the composition is rendering. This could be as lage as the
+   * entire screen or as small as an individual view within a larger native screen.
+   *
+   * This does not offer any information on the size of the individual composables which are
+   * rendering within the composition, but is the frame into which they will render. The root
+   * composable if stretching to fill the viewport will match this size.
+   */
+  public val viewportSize: Size = Size.Zero,
 ) {
   public companion object
 }

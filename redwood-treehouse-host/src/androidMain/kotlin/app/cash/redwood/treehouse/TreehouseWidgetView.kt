@@ -29,6 +29,7 @@ import androidx.core.graphics.Insets
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
@@ -92,6 +93,12 @@ public class TreehouseWidgetView(
     readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
+  @SuppressLint("DrawAllocation") // It's only on layout.
+  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+    mutableUiConfiguration.value = computeUiConfiguration()
+    super.onLayout(changed, left, top, right, bottom)
+  }
+
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
     mutableUiConfiguration.value = computeUiConfiguration(config = newConfig)
@@ -112,13 +119,16 @@ public class TreehouseWidgetView(
     this.stateSnapshotId = StateSnapshot.Id(state.id)
     super.onRestoreInstanceState(state.superState)
   }
+
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
+    viewportSize: Size = with(Density(resources)) { Size(width.toDp(), height.toDp()) },
   ): UiConfiguration {
     return UiConfiguration(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
       safeAreaInsets = insets.toMargin(Density(resources)),
+      viewportSize = viewportSize,
     )
   }
 

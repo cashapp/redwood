@@ -20,13 +20,16 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
 import platform.UIKit.UITraitCollection
@@ -54,7 +57,7 @@ public class TreehouseUIKitView(
   override val children: Widget.Children<UIView> get() = _children
 
   private val mutableUiConfiguration =
-    MutableStateFlow(computeUiConfiguration(view.traitCollection))
+    MutableStateFlow(computeUiConfiguration(view.traitCollection, view.bounds))
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
@@ -72,16 +75,25 @@ public class TreehouseUIKitView(
   }
 
   internal fun updateUiConfiguration() {
-    mutableUiConfiguration.value = computeUiConfiguration(view.traitCollection)
+    mutableUiConfiguration.value = computeUiConfiguration(
+      traitCollection = view.traitCollection,
+      bounds = view.bounds,
+    )
   }
 }
 
 private fun computeUiConfiguration(
   traitCollection: UITraitCollection,
+  bounds: CValue<CGRect>,
 ): UiConfiguration {
   return UiConfiguration(
     darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark,
     safeAreaInsets = computeSafeAreaInsets(),
+    viewportSize = bounds.useContents {
+      with(Density.Default) {
+        Size(size.width.toDp(), size.height.toDp())
+      }
+    },
   )
 }
 
@@ -98,6 +110,9 @@ private class RootUiView(
   private val treehouseView: TreehouseUIKitView,
 ) : UIView(cValue { CGRectZero }) {
   override fun layoutSubviews() {
+    // Bounds likely changed. Report new size.
+    treehouseView.updateUiConfiguration()
+
     subviews.forEach {
       (it as UIView).setFrame(bounds)
     }
