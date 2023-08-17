@@ -26,7 +26,7 @@ dependencies {
   debugImplementation libs.jetbrains.compose.ui.tooling
   implementation projects.redwoodLayoutComposeui
   implementation projects.redwoodLazylayoutComposeui
-  implementation projects.redwoodTreehouseComposeui
   implementation projects.redwoodTreehouseHost
+  implementation projects.redwoodTreehouseHostComposeui
   implementation projects.redwoodWidgetCompose
 }

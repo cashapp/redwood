@@ -1,0 +1,32 @@
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
+
+kotlin {
+  androidTarget {
+    publishLibraryVariants('release')
+  }
+
+  KmpTargets.addAllTargets(project, true /* skipJs */)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodTreehouse
+        api projects.redwoodTreehouseHost
+        implementation libs.jetbrains.compose.foundation
+        implementation projects.redwoodWidgetCompose
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.treehouse.composeui'
+}
