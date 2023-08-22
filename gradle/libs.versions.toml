@@ -4,7 +4,7 @@ kotlinx-coroutines = "1.7.3"
 kotlinx-serialization = "1.5.1"
 androidx-activity = "1.7.2"
 jbCompose = "1.4.3"
-lint = "31.1.0"
+lint = "31.1.1"
 zipline = "1.2.0"
 coil = "2.4.0"
 
