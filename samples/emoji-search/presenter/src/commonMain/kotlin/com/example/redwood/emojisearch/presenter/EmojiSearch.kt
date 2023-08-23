@@ -63,7 +63,7 @@ interface Navigator {
 }
 
 enum class Variant {
-  LAZY_COLUMN, SCROLLABLE_FLEXBOX
+  LAZY_COLUMN, SCROLLABLE_FLEXBOX, BUGGY_COLUMNS
 }
 
 @Composable
@@ -75,6 +75,7 @@ fun EmojiSearch(
   when (variant) {
     Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
     Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient, navigator)
+    Variant.BUGGY_COLUMNS -> BuggyNestedColumns(httpClient, navigator)
   }
 }
 
@@ -262,6 +263,54 @@ private fun NestedFlexBoxContainers(httpClient: HttpClient, navigator: Navigator
       Text(
         text = "Empty",
         modifier = Modifier.margin(Margin(12.dp)),
+      )
+    }
+  }
+}
+
+@Composable
+private fun BuggyNestedColumns(httpClient: HttpClient, navigator: Navigator) {
+  // Full-screen parent column
+  Column(
+    width = Constraint.Fill,
+    height = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Center,
+  ) {
+    // Header
+    Column(
+      width = Constraint.Fill,
+      horizontalAlignment = CrossAxisAlignment.Center,
+    ) {
+      Item(
+        emojiImage = loadingEmojiImage,
+        onClick = {},
+      )
+      Item(
+        emojiImage = loadingEmojiImage,
+        onClick = {},
+      )
+      Item(
+        emojiImage = loadingEmojiImage,
+        onClick = {},
+      )
+      Item(
+        emojiImage = loadingEmojiImage,
+        onClick = {},
+      )
+    }
+    // Body (sibling of Header)
+    // Given a height with a Fill constraint, and a Center alignment,
+    // the Item should be vertically cenetered in the remaining space, but isn't.
+    // Instead, the content is effectively pushed down by the height of the Header.
+    Column(
+      horizontalAlignment = CrossAxisAlignment.Center,
+      width = Constraint.Fill,
+      height = Constraint.Fill,
+      verticalAlignment = MainAxisAlignment.Center,
+    ) {
+      Item(
+        emojiImage = loadingEmojiImage,
+        onClick = {},
       )
     }
   }
