@@ -94,6 +94,7 @@ private fun computeUiConfiguration(
         Size(size.width.toDp(), size.height.toDp())
       }
     },
+    density = Density.Default.rawDensity,
   )
 }
 
