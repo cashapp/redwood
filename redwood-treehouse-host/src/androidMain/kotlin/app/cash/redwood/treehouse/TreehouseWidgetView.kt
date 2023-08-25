@@ -123,12 +123,18 @@ public class TreehouseWidgetView(
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
-    viewportSize: Size = with(Density(resources)) { Size(width.toDp(), height.toDp()) },
   ): UiConfiguration {
+    val viewportSize: Size
+    val density: Double
+    with(Density(resources)) {
+      density = rawDensity
+      viewportSize = Size(width.toDp(), height.toDp())
+    }
     return UiConfiguration(
       darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
       safeAreaInsets = insets.toMargin(Density(resources)),
       viewportSize = viewportSize,
+      density = density,
     )
   }
 

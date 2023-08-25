@@ -32,6 +32,11 @@ public class UiConfiguration(
    * composable if stretching to fill the viewport will match this size.
    */
   public val viewportSize: Size = Size.Zero,
+  /**
+   * The density of the display. This can be used to convert [Dp] within other properties back to
+   * raw pixels, if needed.
+   */
+  public val density: Double = 1.0,
 ) {
   public companion object
 }

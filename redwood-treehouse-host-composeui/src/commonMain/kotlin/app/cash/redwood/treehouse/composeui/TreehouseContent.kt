@@ -51,10 +51,12 @@ public fun <A : AppService> TreehouseContent(
   contentSource: TreehouseContentSource<A>,
 ) {
   var viewportSize by remember { mutableStateOf(Size.Zero) }
+  val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
     darkMode = isSystemInDarkTheme(),
     safeAreaInsets = safeAreaInsets(),
     viewportSize = viewportSize,
+    density = density.density.toDouble(),
   )
 
   val treehouseView = remember(widgetSystem) {
@@ -79,7 +81,6 @@ public fun <A : AppService> TreehouseContent(
     }
   }
 
-  val density = LocalDensity.current
   Box(
     modifier = Modifier.onSizeChanged { size ->
       viewportSize = with(Density(density.density.toDouble())) {
