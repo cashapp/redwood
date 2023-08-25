@@ -1,22 +1,21 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.generator.widget'
+apply plugin: 'app.cash.redwood.generator.compose.protocol'
 
 kotlin {
   KmpTargets.addAllTargets(project)
 
+  // Ensure our codegen correctly works in explicit API mode.
+  explicitApi()
+
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutWidget
-        api projects.redwoodLazylayoutWidget
+        api projects.testApp.schema.compose
       }
     }
   }
-
-  // Ensure our codegen correctly works in explicit API mode.
-  explicitApi()
 
   targets.all {
     compilations.all {
@@ -35,6 +34,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.testSchema
+  source = projects.testApp.schema
   type = 'example.redwood.ExampleSchema'
 }

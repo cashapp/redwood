@@ -202,9 +202,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
       val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
 
-      // Apply opt-in annotations everywhere except the test-schema where we want to ensure the
+      // Apply opt-in annotations everywhere except the test-app schema where we want to ensure the
       // generated code isn't relying on them (without also generating appropriate opt-ins).
-      if (!path.startsWith(":test-schema")) {
+      if (!path.startsWith(":test-app:schema:")) {
         kotlin.sourceSets.configureEach {
           it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
           it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")

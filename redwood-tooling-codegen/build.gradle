@@ -10,8 +10,8 @@ dependencies {
   implementation libs.kotlinPoet
   implementation libs.clikt
 
-  testImplementation projects.testSchema
-  testImplementation projects.testSchema.compose
+  testImplementation projects.testApp.schema
+  testImplementation projects.testApp.schema.compose
   testImplementation libs.junit
   testImplementation libs.assertk
 }

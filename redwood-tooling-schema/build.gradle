@@ -17,7 +17,7 @@ dependencies {
   implementation libs.kotlin.compilerEmbeddable
   implementation libs.clikt
 
-  testImplementation projects.testSchema
+  testImplementation projects.testApp.schema
   testImplementation libs.junit
   testImplementation libs.assertk
   testImplementation libs.testParameterInjector

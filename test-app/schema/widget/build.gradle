@@ -1,7 +1,7 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.generator.testing'
+apply plugin: 'app.cash.redwood.generator.widget'
 
 kotlin {
   KmpTargets.addAllTargets(project)
@@ -11,9 +11,6 @@ kotlin {
       dependencies {
         api projects.redwoodLayoutWidget
         api projects.redwoodLazylayoutWidget
-        api projects.redwoodLayoutTesting
-        api projects.redwoodLazylayoutTesting
-        api projects.testSchema.widget
       }
     }
   }
@@ -38,6 +35,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.testSchema
+  source = projects.testApp.schema
   type = 'example.redwood.ExampleSchema'
 }
