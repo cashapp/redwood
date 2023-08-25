@@ -21,7 +21,6 @@ import example.redwood.widget.Button2
 import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
 import example.redwood.widget.ScopedRow
-import example.redwood.widget.Space
 import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 
@@ -40,5 +39,4 @@ open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing>
   }
   override fun Button2(): Button2<Nothing> = TODO()
   override fun TextInput(): TextInput<Nothing> = TODO()
-  override fun Space(): Space<Nothing> = TODO()
 }
