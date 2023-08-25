@@ -23,8 +23,8 @@ kotlin {
       dependencies {
         implementation libs.kotlin.test
         implementation libs.assertk
-        implementation projects.testSchema.compose
-        implementation projects.testSchema.widgetProtocol
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.widgetProtocol
       }
     }
   }

@@ -1,7 +1,7 @@
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood.generator.compose.protocol'
+apply plugin: 'app.cash.redwood.generator.compose'
 
 kotlin {
   KmpTargets.addAllTargets(project)
@@ -12,7 +12,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.testSchema.compose
+        api projects.testApp.schema.widget
+        api projects.testApp.schema.modifiers
       }
     }
   }
@@ -34,6 +35,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.testSchema
+  source = projects.testApp.schema
   type = 'example.redwood.ExampleSchema'
 }

@@ -26,8 +26,8 @@ kotlin {
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
         implementation projects.redwoodTesting
-        implementation projects.testSchema.compose
-        implementation projects.testSchema.composeProtocol
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.composeProtocol
       }
     }
     nonJsMain {

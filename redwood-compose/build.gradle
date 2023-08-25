@@ -25,10 +25,10 @@ kotlin {
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation libs.assertk
-        implementation projects.testSchema.testing
-        implementation projects.testSchema.compose
-        implementation projects.testSchema.composeProtocol
-        implementation projects.testSchema.widgetProtocol
+        implementation projects.testApp.schema.testing
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.widgetProtocol
       }
     }
     androidMain {
