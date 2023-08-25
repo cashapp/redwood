@@ -40,7 +40,6 @@ import kotlin.time.Duration
     Button::class,
     Button2::class,
     TextInput::class,
-    Space::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -87,9 +86,6 @@ public data class TextInput(
   @Property(4) val onChangeCustomType: (Duration) -> Unit,
   @Property(5) val maxLength: Int,
 )
-
-@Widget(6)
-public object Space
 
 public object TestScope
 
