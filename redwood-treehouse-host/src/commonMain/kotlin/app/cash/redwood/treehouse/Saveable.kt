@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.RedwoodView
-import app.cash.redwood.protocol.widget.RedwoodView.ReadyForContentChangeListener
+import kotlin.native.ObjCName
 
-class CountingReadyForContentChangeListener : ReadyForContentChangeListener {
-  var count = 0
+@ObjCName("Saveable", exact = true)
+public interface Saveable {
+  public var saveCallback: SaveCallback?
+  public val stateSnapshotId: StateSnapshot.Id
 
-  override fun onReadyForContentChanged(view: RedwoodView) {
-    count++
+  @ObjCName("SaveableSaveCallback", exact = true)
+  public interface SaveCallback {
+    /** Called on the UI dispatcher to save the state for the current content. */
+    public fun performSave(id: String)
   }
 }

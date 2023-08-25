@@ -20,6 +20,7 @@ import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.Json
 
@@ -38,7 +39,7 @@ public class ChangeListRenderer<W : Any>(
 
   @Suppress("UNCHECKED_CAST")
   public fun render(
-    view: TreehouseView,
+    view: RedwoodView,
     changeList: SnapshotChangeList,
   ) {
     view.reset()

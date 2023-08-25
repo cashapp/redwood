@@ -26,8 +26,9 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.core.graphics.Insets
-import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.protocol.widget.RedwoodView
+import app.cash.redwood.protocol.widget.RedwoodView.ReadyForContentChangeListener
+import app.cash.redwood.protocol.widget.RedwoodView.WidgetSystem
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
@@ -41,7 +42,7 @@ import kotlinx.coroutines.flow.StateFlow
 public class TreehouseWidgetView(
   context: Context,
   override val widgetSystem: WidgetSystem,
-) : FrameLayout(context), TreehouseView {
+) : FrameLayout(context), RedwoodView, Saveable {
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
@@ -58,7 +59,7 @@ public class TreehouseWidgetView(
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
     private set
 
-  override var saveCallback: TreehouseView.SaveCallback? = null
+  override var saveCallback: Saveable.SaveCallback? = null
 
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children

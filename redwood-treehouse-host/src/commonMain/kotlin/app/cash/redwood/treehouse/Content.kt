@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.widget.RedwoodView
 import app.cash.redwood.ui.UiConfiguration
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CancellationException
@@ -47,7 +48,7 @@ public interface Content {
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun bind(view: TreehouseView)
+  public fun bind(view: RedwoodView)
 
   /**
    * Suspends until content is available; either it is already in the view or it is preloaded and a call to [bind]

@@ -27,14 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import app.cash.redwood.protocol.widget.RedwoodView
+import app.cash.redwood.protocol.widget.RedwoodView.ReadyForContentChangeListener
+import app.cash.redwood.protocol.widget.RedwoodView.WidgetSystem
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.CodeListener
-import app.cash.redwood.treehouse.StateSnapshot
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
-import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Size
@@ -57,23 +56,21 @@ public fun <A : AppService> TreehouseContent(
     viewportSize = viewportSize,
   )
 
-  val treehouseView = remember(widgetSystem) {
-    object : TreehouseView {
+  val redwoodView = remember(widgetSystem) {
+    object : RedwoodView {
       override val children = ComposeWidgetChildren()
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
       override val widgetSystem = widgetSystem
       override val readyForContent = true
       override var readyForContentChangeListener: ReadyForContentChangeListener? = null
-      override var saveCallback: TreehouseView.SaveCallback? = null
-      override val stateSnapshotId = StateSnapshot.Id(null)
       override fun reset() = children.remove(0, children.widgets.size)
     }
   }
-  LaunchedEffect(treehouseView, uiConfiguration) {
-    treehouseView.uiConfiguration.value = uiConfiguration
+  LaunchedEffect(redwoodView, uiConfiguration) {
+    redwoodView.uiConfiguration.value = uiConfiguration
   }
-  DisposableEffect(treehouseView, contentSource, codeListener) {
-    val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp, codeListener)
+  DisposableEffect(redwoodView, contentSource, codeListener) {
+    val closeable = contentSource.bindWhenReady(redwoodView, treehouseApp, codeListener)
     onDispose {
       closeable.close()
     }
@@ -87,6 +84,6 @@ public fun <A : AppService> TreehouseContent(
       }
     },
   ) {
-    treehouseView.children.render()
+    redwoodView.children.render()
   }
 }

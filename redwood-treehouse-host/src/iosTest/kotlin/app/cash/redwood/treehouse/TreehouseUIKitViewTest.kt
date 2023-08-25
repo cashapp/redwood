@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.protocol.widget.RedwoodView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin

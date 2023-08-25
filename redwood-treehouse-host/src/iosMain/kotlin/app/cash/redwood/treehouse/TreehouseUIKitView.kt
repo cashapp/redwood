@@ -15,8 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.protocol.widget.RedwoodView
+import app.cash.redwood.protocol.widget.RedwoodView.ReadyForContentChangeListener
+import app.cash.redwood.protocol.widget.RedwoodView.WidgetSystem
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
@@ -39,10 +40,8 @@ import platform.UIKit.UIView
 @ObjCName("TreehouseUIKitView", exact = true)
 public class TreehouseUIKitView(
   override val widgetSystem: WidgetSystem,
-) : TreehouseView {
+) : RedwoodView {
   public val view: UIView = RootUiView(this)
-  override var saveCallback: TreehouseView.SaveCallback? = null
-  override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
@@ -107,11 +106,11 @@ private fun computeSafeAreaInsets(): Margin {
 }
 
 private class RootUiView(
-  private val treehouseView: TreehouseUIKitView,
+  private val redwoodView: TreehouseUIKitView,
 ) : UIView(cValue { CGRectZero }) {
   override fun layoutSubviews() {
     // Bounds likely changed. Report new size.
-    treehouseView.updateUiConfiguration()
+    redwoodView.updateUiConfiguration()
 
     subviews.forEach {
       (it as UIView).setFrame(bounds)
@@ -119,11 +118,11 @@ private class RootUiView(
   }
 
   override fun didMoveToSuperview() {
-    treehouseView.superviewChanged()
+    redwoodView.superviewChanged()
   }
 
   override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
-    treehouseView.updateUiConfiguration()
+    redwoodView.updateUiConfiguration()
   }
 }

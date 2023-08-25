@@ -20,6 +20,7 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.widget.RedwoodView
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
@@ -51,7 +52,7 @@ private sealed interface ViewState {
   ) : ViewState
 
   class Bound(
-    val view: TreehouseView,
+    val view: RedwoodView,
   ) : ViewState
 }
 
@@ -102,7 +103,7 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
-  override fun bind(view: TreehouseView) {
+  override fun bind(view: RedwoodView) {
     treehouseApp.dispatchers.checkUi()
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
@@ -231,9 +232,9 @@ internal class TreehouseAppContent<A : AppService>(
 }
 
 /**
- * Connects a [TreehouseView], a [TreehouseContentSource], and a [ZiplineSession].
+ * Connects a [RedwoodView], a [TreehouseContentSource], and a [ZiplineSession].
  *
- * The TreehouseView may not be known immediately, as in [Content.preload].
+ * The RedwoodView may not be known immediately, as in [Content.preload].
  *
  * Canceled by [TreehouseAppContent] if the view is unbound from its content, or if the code is
  * updated.
@@ -252,7 +253,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val isInitialLaunch: Boolean,
   session: ZiplineSession<A>,
   firstUiConfiguration: StateFlow<UiConfiguration>,
-) : EventSink, ChangesSinkService, TreehouseView.SaveCallback {
+) : EventSink, ChangesSinkService, Saveable.SaveCallback {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val json = session.zipline.json
@@ -260,7 +261,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
-  private var viewOrNull: TreehouseView? = null
+  private var viewOrNull: RedwoodView? = null
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
   private var bridgeOrNull: ProtocolBridge<*>? = null
@@ -282,7 +283,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
   private var initViewCalled: Boolean = false
 
-  fun initView(view: TreehouseView) {
+  fun initView(view: RedwoodView) {
     app.dispatchers.checkUi()
 
     require(!initViewCalled)
@@ -292,7 +293,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
     viewOrNull = view
 
-    view.saveCallback = this
+    (view as? Saveable)?.saveCallback = this
 
     @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
     bridgeOrNull = ProtocolBridge(
@@ -368,7 +369,7 @@ private class ViewContentCodeBinding<A : AppService>(
       val scopedAppService = session.appService.withScope(ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
-      val restoredId = viewOrNull?.stateSnapshotId
+      val restoredId = (viewOrNull as? Saveable)?.stateSnapshotId
       val restoredState = if (restoredId != null) app.stateStore.get(restoredId.value.orEmpty()) else null
       treehouseUi.start(
         changesSink = this@ViewContentCodeBinding,
@@ -390,7 +391,7 @@ private class ViewContentCodeBinding<A : AppService>(
   fun cancel() {
     app.dispatchers.checkUi()
     canceled = true
-    viewOrNull?.saveCallback = null
+    (viewOrNull as? Saveable)?.saveCallback = null
     viewOrNull = null
     bridgeOrNull = null
     appScope.launch(app.dispatchers.zipline) {

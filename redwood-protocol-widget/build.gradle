@@ -15,6 +15,7 @@ kotlin {
     commonMain {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.widget'))
       dependencies {
+        api libs.kotlinx.coroutines.core
         api projects.redwoodProtocol
         api projects.redwoodWidget
       }

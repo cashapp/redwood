@@ -20,11 +20,11 @@ package com.example.redwood.emojisearch.ios
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.protocol.widget.RedwoodView
+import app.cash.redwood.protocol.widget.RedwoodView.WidgetSystem
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIKitView
-import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
@@ -54,5 +54,5 @@ fun modifier(): Modifier = Modifier
 
 fun <A : AppService> bindWhenReady(
   content: Content,
-  view: TreehouseView,
+  view: RedwoodView,
 ): Closeable = content.bindWhenReady(view)

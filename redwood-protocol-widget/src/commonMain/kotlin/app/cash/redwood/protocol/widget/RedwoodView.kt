@@ -13,42 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.redwood.protocol.widget.ProtocolNode
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
-@ObjCName("TreehouseView", exact = true)
-public interface TreehouseView {
+@ObjCName("RedwoodView", exact = true)
+public interface RedwoodView {
   public val children: Widget.Children<*>
   public val uiConfiguration: StateFlow<UiConfiguration>
   public val widgetSystem: WidgetSystem
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener?
-  public var saveCallback: SaveCallback?
-  public val stateSnapshotId: StateSnapshot.Id
 
   /** Invoked when new code is loaded. This should at minimum clear all [children]. */
   public fun reset()
 
-  @ObjCName("TreehouseViewReadyForContentChangeListener", exact = true)
+  @ObjCName("RedwoodViewReadyForContentChangeListener", exact = true)
   public fun interface ReadyForContentChangeListener {
-    /** Called when [TreehouseView.readyForContent] has changed. */
-    public fun onReadyForContentChanged(view: TreehouseView)
+    /** Called when [RedwoodView.readyForContent] has changed. */
+    public fun onReadyForContentChanged(view: RedwoodView)
   }
 
-  @ObjCName("TreehouseViewSaveCallback", exact = true)
-  public interface SaveCallback {
-    /** Called on the UI dispatcher to save the state for the current content. */
-    public fun performSave(id: String)
-  }
-
-  @ObjCName("TreehouseViewWidgetSystem", exact = true)
+  @ObjCName("RedwoodViewWidgetSystem", exact = true)
   public fun interface WidgetSystem {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(

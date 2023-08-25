@@ -36,13 +36,13 @@ class EmojiSearchViewController : UIViewController {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp()
         let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
-        let treehouseView = TreehouseUIKitView(widgetSystem: widgetSystem)
+        let redwoodView = TreehouseUIKitView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: EmojiSearchContent(),
             codeListener: CodeListener()
         )
-        ExposedKt.bindWhenReady(content: content, view: treehouseView)
-        view = treehouseView.view
+        ExposedKt.bindWhenReady(content: content, view: redwoodView)
+        view = redwoodView.view
     }
 }
 
@@ -53,7 +53,7 @@ class EmojiSearchContent : TreehouseContentSource {
     }
 }
 
-class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
+class EmojiSearchWidgetSystem : RedwoodViewWidgetSystem {
     let treehouseApp: TreehouseApp<EmojiSearchPresenter>
 
     init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {

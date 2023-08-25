@@ -15,17 +15,18 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+import app.cash.redwood.protocol.widget.RedwoodView
+import app.cash.redwood.protocol.widget.RedwoodView.ReadyForContentChangeListener
 import okio.Closeable
 
 /**
  * Binds this content to [view] whenever the view is
- * [ready for content][TreehouseView.readyForContent]. The content will bind and unbind as this view
+ * [ready for content][RedwoodView.readyForContent]. The content will bind and unbind as this view
  * is attached and detached from the UI.
  *
  * Returns a closeable that unbinds from the content and stops tracking the ready state.
  */
-public fun Content.bindWhenReady(view: TreehouseView): Closeable {
+public fun Content.bindWhenReady(view: RedwoodView): Closeable {
   val listener = ReadyForContentChangeListener {
     if (view.readyForContent) {
       bind(view)
@@ -46,7 +47,7 @@ public fun Content.bindWhenReady(view: TreehouseView): Closeable {
 }
 
 public fun <A : AppService> TreehouseContentSource<A>.bindWhenReady(
-  view: TreehouseView,
+  view: RedwoodView,
   app: TreehouseApp<A>,
   codeListener: CodeListener = CodeListener(),
 ): Closeable {
