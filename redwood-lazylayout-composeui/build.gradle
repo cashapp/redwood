@@ -35,7 +35,7 @@ android {
   namespace 'app.cash.redwood.lazylayout.composeui'
 
   buildFeatures {
-    // TODO Remove once https://github.com/cashapp/paparazzi/issues/472 fixed.
+    // For Paparazzi, which internally uses resources to set itself up.
     androidResources = true
   }
 }
