@@ -150,7 +150,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     plugins.withId("com.android.base") {
       val android = extensions.getByName("android") as BaseExtension
       android.apply {
-        compileSdkVersion(33)
+        compileSdkVersion(34)
         compileOptions {
           it.sourceCompatibility = JavaVersion.VERSION_1_8
           it.targetCompatibility = JavaVersion.VERSION_1_8
