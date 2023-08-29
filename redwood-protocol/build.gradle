@@ -16,13 +16,16 @@ kotlin {
       dependencies {
         api libs.kotlinx.serialization.core
         api libs.kotlinx.serialization.json
-      }
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api libs.kotlinx.serialization.core
+        api libs.kotlinx.serialization.json
+
         implementation libs.assertk
-      }
+        implementation libs.kotlin.test
+}
     }
   }
 }

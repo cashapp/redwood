@@ -15,15 +15,18 @@ kotlin {
     commonMain {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.widget.compose'))
       dependencies {
-        api projects.redwoodWidget
         api libs.jetbrains.compose.runtime
-      }
+        api projects.redwoodWidget
+}
     }
     commonTest {
       dependencies {
+        api libs.jetbrains.compose.runtime
+        api projects.redwoodWidget
+
         implementation libs.kotlinx.coroutines.core
         implementation projects.redwoodWidgetTesting
-      }
+}
     }
   }
 }

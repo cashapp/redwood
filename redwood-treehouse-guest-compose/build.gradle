@@ -13,10 +13,10 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodProtocolCompose
         api libs.jetbrains.compose.runtime
         api libs.jetbrains.compose.runtime.saveable
-      }
+        api projects.redwoodProtocolCompose
+}
     }
   }
 }

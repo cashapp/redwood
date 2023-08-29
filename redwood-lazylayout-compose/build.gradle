@@ -14,16 +14,18 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
-      }
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api projects.redwoodLazylayoutWidget
+
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation projects.testApp.schema.composeProtocol
         implementation projects.testApp.schema.testing
-      }
+}
     }
   }
 }

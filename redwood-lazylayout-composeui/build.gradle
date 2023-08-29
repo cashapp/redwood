@@ -16,17 +16,23 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
-        implementation projects.redwoodWidgetCompose
+
         implementation libs.jetbrains.compose.foundation
         implementation libs.jetbrains.compose.material
-      }
+        implementation projects.redwoodWidgetCompose
+}
     }
 
     androidUnitTest {
       dependencies {
-        implementation projects.redwoodLayoutSharedTest
+        api projects.redwoodLazylayoutWidget
+
+        implementation libs.jetbrains.compose.foundation
+        implementation libs.jetbrains.compose.material
         implementation libs.testParameterInjector
-      }
+        implementation projects.redwoodLayoutSharedTest
+        implementation projects.redwoodWidgetCompose
+}
     }
   }
 }

@@ -23,48 +23,99 @@ kotlin {
         api projects.redwoodProtocol
         api projects.redwoodProtocolWidget
         api projects.redwoodTreehouse
-      }
+}
     }
 
     androidMain {
       dependencies {
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
         api libs.okHttp
+        api libs.okio
+        api libs.zipline
+        api libs.zipline.loader
+        api projects.redwoodProtocol
+        api projects.redwoodProtocolWidget
+        api projects.redwoodTreehouse
+
         implementation libs.androidx.core
-      }
+}
     }
 
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
+        api libs.okHttp
+        api libs.okio
+        api libs.zipline
+        api libs.zipline.loader
+        api projects.redwoodProtocol
+        api projects.redwoodProtocolWidget
+        api projects.redwoodTreehouse
+
+        implementation libs.androidx.core
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation libs.turbine
-      }
+}
     }
     androidUnitTest {
       dependsOn(commonTest)
       dependencies {
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
+        api libs.okHttp
+        api libs.okio
+        api libs.zipline
+        api libs.zipline.loader
+        api projects.redwoodProtocol
+        api projects.redwoodProtocolWidget
+        api projects.redwoodTreehouse
+
+        implementation libs.androidx.core
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
         implementation libs.robolectric
-      }
+        implementation libs.turbine
+}
     }
   }
 }
 
 dependencies {
-  androidTestImplementation libs.junit
-  androidTestImplementation libs.turbine
-  androidTestImplementation libs.androidx.test.runner
-  androidTestImplementation libs.kotlinx.coroutines.test
-  androidTestImplementation libs.assertk
+        api libs.kotlinx.coroutines.core
+        api libs.kotlinx.serialization.json
+        api libs.okHttp
+        api libs.okio
+        api libs.zipline
+        api libs.zipline.loader
+        api projects.redwoodProtocol
+        api projects.redwoodProtocolWidget
+        api projects.redwoodTreehouse
 
-  // The kotlin.test library provides JVM variants for multiple testing frameworks. The Kotlin
-  // plugin does not apply the capability to configurations created by the Android plugin.
-  androidTestImplementation(libs.kotlin.test) {
+        implementation libs.androidx.core
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation libs.robolectric
+        implementation libs.turbine
+
+        androidTestImplementation libs.androidx.test.runner
+        androidTestImplementation libs.assertk
+        androidTestImplementation libs.junit
+        // The kotlin.test library provides JVM variants for multiple testing frameworks. The Kotlin
+        // plugin does not apply the capability to configurations created by the Android plugin.
+        androidTestImplementation(libs.kotlin.test) {
     capabilities {
       requireCapability(
         "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
     }
-  }
+        androidTestImplementation libs.kotlinx.coroutines.test
+        androidTestImplementation libs.turbine
+}
 }
 
 android {

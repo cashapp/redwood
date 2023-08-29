@@ -18,18 +18,22 @@ kotlin {
         api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
         api projects.redwoodProtocolCompose
-      }
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodProtocolCompose
+
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.composeProtocol
         implementation projects.testApp.schema.testing
         implementation projects.testApp.schema.widgetProtocol
-      }
+}
     }
   }
 }

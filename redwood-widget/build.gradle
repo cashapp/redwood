@@ -16,19 +16,26 @@ kotlin {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.widget'))
       dependencies {
         api projects.redwoodRuntime
-      }
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api projects.redwoodRuntime
+
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation projects.redwoodWidgetTesting
-      }
+}
     }
     androidUnitTest {
       dependencies {
+        api projects.redwoodRuntime
+
+        implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.robolectric
-      }
+        implementation projects.redwoodWidgetTesting
+}
     }
   }
 }

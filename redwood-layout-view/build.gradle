@@ -12,10 +12,12 @@ redwoodBuild {
 
 dependencies {
   api projects.redwoodLayoutWidget
-  implementation projects.redwoodYoga
+
   implementation libs.androidx.core
-  testImplementation projects.redwoodLayoutSharedTest
+  implementation projects.redwoodYoga
+
   testImplementation libs.testParameterInjector
+  testImplementation projects.redwoodLayoutSharedTest
 }
 
 android {

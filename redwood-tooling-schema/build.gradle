@@ -10,18 +10,19 @@ redwoodBuild {
 }
 
 dependencies {
-  api projects.redwoodSchema
   api libs.kotlin.reflect
+  api projects.redwoodSchema
+
+  implementation libs.clikt
+  implementation libs.kotlin.compilerEmbeddable
   implementation libs.kotlinx.serialization.json
   implementation libs.xmlutil.serialization
-  implementation libs.kotlin.compilerEmbeddable
-  implementation libs.clikt
 
-  testImplementation projects.testApp.schema
-  testImplementation libs.junit
   testImplementation libs.assertk
-  testImplementation libs.testParameterInjector
   testImplementation libs.jimfs
+  testImplementation libs.junit
+  testImplementation libs.testParameterInjector
+  testImplementation projects.testApp.schema
 }
 
 // In order to simplify writing test schemas, inject the test sources and

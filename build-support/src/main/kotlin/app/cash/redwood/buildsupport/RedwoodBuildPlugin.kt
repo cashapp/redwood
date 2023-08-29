@@ -65,14 +65,16 @@ class RedwoodBuildPlugin : Plugin<Project> {
       RedwoodBuildExtensionImpl(target),
     )
 
-    target.configureCommonSpotless()
+    target.configureCommonStaticAnalysis()
     target.configureCommonTesting()
     target.configureCommonCompose()
     target.configureCommonAndroid()
     target.configureCommonKotlin()
   }
 
-  private fun Project.configureCommonSpotless() {
+  private fun Project.configureCommonStaticAnalysis() {
+    plugins.apply("com.squareup.sort-dependencies")
+
     plugins.apply("com.diffplug.spotless")
     val spotless = extensions.getByName("spotless") as SpotlessExtension
     val licenseHeaderFile = rootProject.file("gradle/license-header.txt")

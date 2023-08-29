@@ -2,13 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
+  api libs.junit
+  api libs.testParameterInjector
   api projects.redwoodLayoutApi
   api projects.redwoodLayoutModifiers
   api projects.redwoodRuntime
   api projects.redwoodWidget
   api projects.redwoodYoga
-  api libs.junit
-  api libs.testParameterInjector
 }
 
 android {

@@ -14,36 +14,67 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
         api projects.redwoodWidget
-        api libs.jetbrains.compose.runtime
-      }
+}
     }
     commonTest {
       dependencies {
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+
+        implementation libs.assertk
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
-        implementation libs.assertk
-        implementation projects.testApp.schema.testing
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.testing
         implementation projects.testApp.schema.widgetProtocol
-      }
+}
     }
     androidMain {
       dependencies {
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+
         implementation libs.androidx.core
-      }
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.testing
+        implementation projects.testApp.schema.widgetProtocol
+}
     }
   }
 }
 
 dependencies {
-  androidTestImplementation libs.junit
-  androidTestImplementation libs.androidx.test.runner
-  androidTestImplementation libs.kotlinx.coroutines.test
-  androidTestImplementation libs.assertk
+        api libs.jetbrains.compose.runtime
+        api libs.kotlinx.coroutines.core
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+
+        implementation libs.androidx.core
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.testing
+        implementation projects.testApp.schema.widgetProtocol
+
+        androidTestImplementation libs.androidx.test.runner
+        androidTestImplementation libs.assertk
+        androidTestImplementation libs.junit
+        androidTestImplementation libs.kotlinx.coroutines.test
 }
 
 android {

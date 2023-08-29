@@ -30,7 +30,7 @@ dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.8.20"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.20.0"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
 buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
-dependencySortPlugin = "com.squareup:sort-dependencies-gradle-plugin:0.2"
+dependencySortPlugin = "com.squareup:sort-dependencies-gradle-plugin:0.4"
 
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx.activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }

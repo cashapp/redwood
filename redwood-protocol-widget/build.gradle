@@ -17,15 +17,18 @@ kotlin {
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodWidget
-      }
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api projects.redwoodProtocol
+        api projects.redwoodWidget
+
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.widgetProtocol
-      }
+}
     }
   }
 }

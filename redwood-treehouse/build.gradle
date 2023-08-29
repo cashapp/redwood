@@ -15,11 +15,11 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodCompose
-        api projects.redwoodProtocol
         api libs.okio
         api libs.zipline
-      }
+        api projects.redwoodCompose
+        api projects.redwoodProtocol
+}
     }
   }
 }

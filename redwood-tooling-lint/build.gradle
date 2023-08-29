@@ -12,13 +12,13 @@ redwoodBuild {
 dependencies {
   implementation libs.clikt
   implementation libs.kotlinx.serialization.core
-  implementation libs.xmlutil.serialization
   implementation libs.lint.core
+  implementation libs.xmlutil.serialization
 
-  testImplementation libs.kotlin.test
-  testImplementation libs.junit
   testImplementation libs.assertk
   testImplementation libs.jimfs
+  testImplementation libs.junit
+  testImplementation libs.kotlin.test
 }
 
 tasks.withType(JavaCompile).configureEach {

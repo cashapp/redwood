@@ -29,13 +29,13 @@ tasks.withType(KotlinJvmCompile).configureEach {
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly libs.kotlin.gradlePlugin
   compileOnly libs.androidGradlePlugin
+  compileOnly libs.kotlin.gradlePlugin
 
+  testImplementation gradleTestKit()
+  testImplementation libs.assertk
   testImplementation libs.junit
   testImplementation libs.testParameterInjector
-  testImplementation libs.assertk
-  testImplementation gradleTestKit()
 }
 
 gradlePlugin {

@@ -16,19 +16,22 @@ kotlin {
     commonMain {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.compose'))
       dependencies {
-        api projects.redwoodProtocol
         api projects.redwoodCompose
-      }
+        api projects.redwoodProtocol
+}
     }
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
+        api projects.redwoodCompose
+        api projects.redwoodProtocol
+
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation projects.redwoodTesting
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.composeProtocol
-      }
+}
     }
     nonJsMain {
       dependsOn(commonMain)

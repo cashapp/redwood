@@ -19,17 +19,23 @@ kotlin {
       kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get())
       dependencies {
         api projects.redwoodLayoutWidget
+
+        implementation libs.jetbrains.compose.foundation
         implementation projects.redwoodWidgetCompose
         implementation projects.redwoodYoga
-        implementation libs.jetbrains.compose.foundation
-      }
+}
     }
 
     androidUnitTest {
       dependencies {
-        implementation projects.redwoodLayoutSharedTest
+        api projects.redwoodLayoutWidget
+
+        implementation libs.jetbrains.compose.foundation
         implementation libs.testParameterInjector
-      }
+        implementation projects.redwoodLayoutSharedTest
+        implementation projects.redwoodWidgetCompose
+        implementation projects.redwoodYoga
+}
     }
   }
 }

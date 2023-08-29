@@ -7,11 +7,12 @@ redwoodBuild {
 
 dependencies {
   api projects.redwoodToolingSchema
-  implementation libs.kotlinPoet
-  implementation libs.clikt
 
+  implementation libs.clikt
+  implementation libs.kotlinPoet
+
+  testImplementation libs.assertk
+  testImplementation libs.junit
   testImplementation projects.testApp.schema
   testImplementation projects.testApp.schema.compose
-  testImplementation libs.junit
-  testImplementation libs.assertk
 }

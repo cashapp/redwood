@@ -11,12 +11,14 @@ redwoodBuild {
 
 dependencies {
   api projects.redwoodLazylayoutWidget
+
   implementation libs.androidx.core
   implementation libs.androidx.recyclerview
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
-  testImplementation projects.redwoodLayoutSharedTest
+
   testImplementation libs.testParameterInjector
+  testImplementation projects.redwoodLayoutSharedTest
 }
 
 android {
