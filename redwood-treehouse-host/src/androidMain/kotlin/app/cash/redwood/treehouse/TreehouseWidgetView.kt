@@ -17,31 +17,20 @@ package app.cash.redwood.treehouse
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Configuration.UI_MODE_NIGHT_MASK
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
-import androidx.core.graphics.Insets
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.Size
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.widget.Widget
 import java.util.UUID
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("ViewConstructor")
 public class TreehouseWidgetView(
   context: Context,
   override val widgetSystem: WidgetSystem,
-) : FrameLayout(context), TreehouseView {
+) : RedwoodWidgetView(context), TreehouseView {
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
@@ -60,22 +49,8 @@ public class TreehouseWidgetView(
 
   override var saveCallback: TreehouseView.SaveCallback? = null
 
-  private val _children = ViewGroupChildren(this)
-  override val children: Widget.Children<View> get() = _children
-
-  private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
-
-  override val uiConfiguration: StateFlow<UiConfiguration>
-    get() = mutableUiConfiguration
-
-  init {
-    setOnWindowInsetsChangeListener { insets ->
-      mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)
-    }
-  }
-
   override fun reset() {
-    _children.remove(0, _children.widgets.size)
+    children.remove(0, (children as ViewGroupChildren).widgets.size)
 
     // Ensure any out-of-band views are also removed.
     removeAllViews()
@@ -93,17 +68,6 @@ public class TreehouseWidgetView(
     readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
-  @SuppressLint("DrawAllocation") // It's only on layout.
-  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-    mutableUiConfiguration.value = computeUiConfiguration()
-    super.onLayout(changed, left, top, right, bottom)
-  }
-
-  override fun onConfigurationChanged(newConfig: Configuration) {
-    super.onConfigurationChanged(newConfig)
-    mutableUiConfiguration.value = computeUiConfiguration(config = newConfig)
-  }
-
   override fun generateDefaultLayoutParams(): LayoutParams =
     LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
@@ -118,24 +82,6 @@ public class TreehouseWidgetView(
     state as SavedState
     this.stateSnapshotId = StateSnapshot.Id(state.id)
     super.onRestoreInstanceState(state.superState)
-  }
-
-  private fun computeUiConfiguration(
-    config: Configuration = context.resources.configuration,
-    insets: Insets = rootWindowInsetsCompat.safeDrawing,
-  ): UiConfiguration {
-    val viewportSize: Size
-    val density: Double
-    with(Density(resources)) {
-      density = rawDensity
-      viewportSize = Size(width.toDp(), height.toDp())
-    }
-    return UiConfiguration(
-      darkMode = (config.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES,
-      safeAreaInsets = insets.toMargin(Density(resources)),
-      viewportSize = viewportSize,
-      density = density,
-    )
   }
 
   private class SavedState : BaseSavedState {
