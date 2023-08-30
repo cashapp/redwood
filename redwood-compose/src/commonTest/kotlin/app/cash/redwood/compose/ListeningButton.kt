@@ -18,7 +18,7 @@ package app.cash.redwood.compose
 import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
-import example.redwood.widget.Button
+import com.example.redwood.testing.widget.Button
 
 class ListeningButton : Button<WidgetValue>, ChangeListener {
   private val changes = ArrayList<String>()

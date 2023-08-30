@@ -34,11 +34,11 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.testing.TestRedwoodComposition
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import example.redwood.compose.Button
-import example.redwood.compose.Button2
-import example.redwood.compose.Row
-import example.redwood.compose.TestSchemaProtocolBridge
-import example.redwood.compose.Text
+import com.example.redwood.testing.compose.Button
+import com.example.redwood.testing.compose.Button2
+import com.example.redwood.testing.compose.Row
+import com.example.redwood.testing.compose.TestSchemaProtocolBridge
+import com.example.redwood.testing.compose.Text
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.job

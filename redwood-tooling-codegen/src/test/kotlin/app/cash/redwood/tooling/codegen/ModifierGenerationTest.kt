@@ -22,7 +22,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import example.redwood.compose.TestScope
+import com.example.redwood.testing.compose.TestScope
 import kotlin.DeprecationLevel.ERROR
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds

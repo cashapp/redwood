@@ -29,8 +29,8 @@ import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import example.redwood.compose.TestSchemaProtocolBridge
-import example.redwood.compose.TestScope
+import com.example.redwood.testing.compose.TestSchemaProtocolBridge
+import com.example.redwood.testing.compose.TestScope
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
