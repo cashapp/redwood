@@ -23,7 +23,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsMatch
-import example.redwood.ExampleSchema
+import example.redwood.TestSchema
 import kotlin.text.RegexOption.MULTILINE
 import org.junit.Test
 
@@ -59,7 +59,7 @@ class WidgetProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifier are included in serialization`() {
-    val schema = ProtocolSchemaSet.parse(ExampleSchema::class)
+    val schema = ProtocolSchemaSet.parse(TestSchema::class)
 
     val fileSpec = generateWidgetProtocolModifierSerialization(schema)
     assertThat(fileSpec.toString()).all {

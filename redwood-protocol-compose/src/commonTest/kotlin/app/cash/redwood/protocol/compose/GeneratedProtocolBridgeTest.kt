@@ -29,7 +29,7 @@ import app.cash.redwood.protocol.WidgetTag
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import example.redwood.compose.ExampleSchemaProtocolBridge
+import example.redwood.compose.TestSchemaProtocolBridge
 import example.redwood.compose.TestScope
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -47,8 +47,8 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ExampleSchemaProtocolBridge.create(json)
-    val textInput = bridge.provider.ExampleSchema.TextInput()
+    val bridge = TestSchemaProtocolBridge.create(json)
+    val textInput = bridge.provider.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
 
@@ -65,8 +65,8 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ExampleSchemaProtocolBridge.create(json)
-    val button = bridge.provider.ExampleSchema.Button()
+    val bridge = TestSchemaProtocolBridge.create(json)
+    val button = bridge.provider.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customType(10.seconds)
@@ -95,8 +95,8 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ExampleSchemaProtocolBridge.create(json)
-    val button = bridge.provider.ExampleSchema.Button()
+    val bridge = TestSchemaProtocolBridge.create(json)
+    val button = bridge.provider.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customTypeWithDefault(10.seconds, "sup")
@@ -125,8 +125,8 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = ExampleSchemaProtocolBridge.create(json)
-    val textInput = bridge.provider.ExampleSchema.TextInput()
+    val bridge = TestSchemaProtocolBridge.create(json)
+    val textInput = bridge.provider.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
 
@@ -141,8 +141,8 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val bridge = ExampleSchemaProtocolBridge.create()
-    val button = bridge.provider.ExampleSchema.Button() as ProtocolWidget
+    val bridge = TestSchemaProtocolBridge.create()
+    val button = bridge.provider.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -153,8 +153,8 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = ExampleSchemaProtocolBridge.create(mismatchHandler = handler)
-    val button = bridge.provider.ExampleSchema.Button() as ProtocolWidget
+    val bridge = TestSchemaProtocolBridge.create(mismatchHandler = handler)
+    val button = bridge.provider.TestSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 
@@ -162,7 +162,7 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventNodeThrowsDefault() {
-    val bridge = ExampleSchemaProtocolBridge.create()
+    val bridge = TestSchemaProtocolBridge.create()
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendEvent(Event(Id(3456543), EventTag(1)))
     }
@@ -171,7 +171,7 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventNodeCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = ExampleSchemaProtocolBridge.create(mismatchHandler = handler)
+    val bridge = TestSchemaProtocolBridge.create(mismatchHandler = handler)
 
     bridge.sendEvent(Event(Id(3456543), EventTag(1)))
 

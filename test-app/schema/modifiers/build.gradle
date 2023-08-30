@@ -27,5 +27,5 @@ kotlin {
 
 redwoodSchema {
   source = projects.testApp.schema
-  type = 'example.redwood.ExampleSchema'
+  type = 'example.redwood.TestSchema'
 }

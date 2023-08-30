@@ -43,7 +43,7 @@ import assertk.assertions.isTrue
 import assertk.assertions.message
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
-import example.redwood.ExampleSchema
+import example.redwood.TestSchema
 import java.io.File
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
@@ -747,7 +747,7 @@ class SchemaParserTest(
   @Schema(
     members = [],
     dependencies = [
-      Dependency(1, ExampleSchema::class),
+      Dependency(1, TestSchema::class),
     ],
   )
   object SchemaDependencyHasDependency
@@ -756,7 +756,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(SchemaDependencyHasDependency::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "Schema dependency example.redwood.ExampleSchema also has its own dependencies. " +
+        "Schema dependency example.redwood.TestSchema also has its own dependencies. " +
           "For now, only a single level of dependencies is supported.",
       )
   }

@@ -46,7 +46,7 @@ import kotlin.time.Duration
     Dependency(2, RedwoodLazyLayout::class),
   ],
 )
-public interface ExampleSchema
+public interface TestSchema
 
 @Widget(1)
 public data class Row(

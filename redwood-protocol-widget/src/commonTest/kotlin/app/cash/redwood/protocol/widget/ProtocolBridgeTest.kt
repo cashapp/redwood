@@ -25,8 +25,8 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.hasMessage
-import example.redwood.widget.ExampleSchemaProtocolNodeFactory
-import example.redwood.widget.ExampleSchemaWidgetFactories
+import example.redwood.widget.TestSchemaProtocolNodeFactory
+import example.redwood.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
@@ -35,9 +35,9 @@ class ProtocolBridgeTest {
   @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaProtocolNodeFactory(
-        provider = ExampleSchemaWidgetFactories(
-          ExampleSchema = EmptyExampleSchemaWidgetFactory(),
+      factory = TestSchemaProtocolNodeFactory(
+        provider = TestSchemaWidgetFactories(
+          TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -59,9 +59,9 @@ class ProtocolBridgeTest {
   @Test fun duplicateIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaProtocolNodeFactory(
-        provider = ExampleSchemaWidgetFactories(
-          ExampleSchema = EmptyExampleSchemaWidgetFactory(),
+      factory = TestSchemaProtocolNodeFactory(
+        provider = TestSchemaWidgetFactories(
+          TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -84,9 +84,9 @@ class ProtocolBridgeTest {
   @Test fun removeRemoves() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = ExampleSchemaProtocolNodeFactory(
-        provider = ExampleSchemaWidgetFactories(
-          ExampleSchema = EmptyExampleSchemaWidgetFactory(),
+      factory = TestSchemaProtocolNodeFactory(
+        provider = TestSchemaWidgetFactories(
+          TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
         ),

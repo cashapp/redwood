@@ -46,7 +46,7 @@ suspend fun <R> ExampleTester(
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
   val factories = ExampleWidgetFactories(
-    ExampleSchema = ExampleSchemaTestingWidgetFactory(),
+    TestSchema = TestSchemaTestingWidgetFactory(),
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()

@@ -22,7 +22,7 @@ import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
-import example.redwood.ExampleSchema
+import example.redwood.TestSchema
 import org.junit.Test
 
 class ComposeProtocolGenerationTest {
@@ -52,7 +52,7 @@ class ComposeProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifier are included in serialization`() {
-    val schemaSet = ProtocolSchemaSet.parse(ExampleSchema::class)
+    val schemaSet = ProtocolSchemaSet.parse(TestSchema::class)
 
     val fileSpec = generateComposeProtocolModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).all {
