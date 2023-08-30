@@ -30,7 +30,7 @@ import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-public abstract class RedwoodWidgetView(
+public open class RedwoodWidgetView(
   context: Context,
 ) : FrameLayout(context), RedwoodView {
   private val _children = ViewGroupChildren(this)

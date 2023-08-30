@@ -33,9 +33,9 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
-public abstract class RedwoodUIKitView : RedwoodView {
-  public abstract val view: UIView
-
+public open class RedwoodUIKitView(
+  public val view: UIView,
+) : RedwoodView {
   private val _children = UIViewChildren(view)
   override val children: Widget.Children<UIView> get() = _children
 

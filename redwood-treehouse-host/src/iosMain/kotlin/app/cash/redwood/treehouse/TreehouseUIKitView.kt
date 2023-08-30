@@ -24,10 +24,10 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.UIView
 
 @ObjCName("TreehouseUIKitView", exact = true)
-public class TreehouseUIKitView(
+public class TreehouseUIKitView private constructor(
   override val widgetSystem: WidgetSystem,
-) : TreehouseView, RedwoodUIKitView() {
-  public override val view: UIView = RootUiView(this)
+  view: UIView,
+) : TreehouseView, RedwoodUIKitView(view) {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
@@ -39,6 +39,12 @@ public class TreehouseUIKitView(
 
   override val readyForContent: Boolean
     get() = view.superview != null
+
+  public constructor(widgetSystem: WidgetSystem) : this(widgetSystem, RootUiView())
+
+  init {
+    (view as RootUiView).treehouseView = this
+  }
 
   override fun reset() {
     children.remove(0, (children as UIViewChildren).widgets.size)
@@ -53,9 +59,9 @@ public class TreehouseUIKitView(
   }
 }
 
-private class RootUiView(
-  private val treehouseView: TreehouseUIKitView,
-) : UIView(cValue { CGRectZero }) {
+private class RootUiView : UIView(cValue { CGRectZero }) {
+  lateinit var treehouseView: TreehouseUIKitView
+
   override fun layoutSubviews() {
     // Bounds likely changed. Report new size.
     treehouseView.updateUiConfiguration()
