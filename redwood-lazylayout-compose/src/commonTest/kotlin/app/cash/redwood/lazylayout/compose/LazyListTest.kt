@@ -24,9 +24,9 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import example.redwood.compose.Text
-import example.redwood.widget.TestSchemaTester
-import example.redwood.widget.TextValue
+import com.example.redwood.testing.compose.Text
+import com.example.redwood.testing.widget.TestSchemaTester
+import com.example.redwood.testing.widget.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

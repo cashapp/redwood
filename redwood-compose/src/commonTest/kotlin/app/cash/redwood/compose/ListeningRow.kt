@@ -19,7 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
-import example.redwood.widget.Row
+import com.example.redwood.testing.widget.Row
 
 class ListeningRow : Row<WidgetValue>, ChangeListener {
   private val changes = ArrayList<String>()

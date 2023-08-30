@@ -30,10 +30,10 @@ import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import example.redwood.compose.TestScope
-import example.redwood.widget.TestSchemaProtocolNodeFactory
-import example.redwood.widget.TestSchemaWidgetFactories
-import example.redwood.widget.TextInput
+import com.example.redwood.testing.compose.TestScope
+import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TextInput
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration

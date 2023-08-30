@@ -16,13 +16,13 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
-import example.redwood.widget.Button
-import example.redwood.widget.Button2
-import example.redwood.widget.Row
-import example.redwood.widget.ScopedRow
-import example.redwood.widget.TestSchemaWidgetFactory
-import example.redwood.widget.Text
-import example.redwood.widget.TextInput
+import com.example.redwood.testing.widget.Button
+import com.example.redwood.testing.widget.Button2
+import com.example.redwood.testing.widget.Row
+import com.example.redwood.testing.widget.ScopedRow
+import com.example.redwood.testing.widget.TestSchemaWidgetFactory
+import com.example.redwood.testing.widget.Text
+import com.example.redwood.testing.widget.TextInput
 
 open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
   override fun Row(): Row<Nothing> = TODO()

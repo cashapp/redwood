@@ -25,8 +25,8 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.hasMessage
-import example.redwood.widget.TestSchemaProtocolNodeFactory
-import example.redwood.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive

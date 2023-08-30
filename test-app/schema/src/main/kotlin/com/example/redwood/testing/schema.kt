@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.redwood
+package com.example.redwood.testing
 
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
