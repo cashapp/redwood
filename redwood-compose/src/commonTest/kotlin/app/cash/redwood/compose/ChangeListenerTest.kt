@@ -30,33 +30,33 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import example.redwood.compose.Button
-import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
 import example.redwood.compose.ScopedRow
+import example.redwood.compose.TestSchemaProtocolBridge
 import example.redwood.compose.TestScope
 import example.redwood.compose.Text
-import example.redwood.widget.ExampleSchemaProtocolNodeFactory
-import example.redwood.widget.ExampleSchemaTestingWidgetFactory
-import example.redwood.widget.ExampleSchemaWidgetFactories
-import example.redwood.widget.ExampleSchemaWidgetFactory
+import example.redwood.widget.TestSchemaProtocolNodeFactory
+import example.redwood.widget.TestSchemaTestingWidgetFactory
+import example.redwood.widget.TestSchemaWidgetFactories
+import example.redwood.widget.TestSchemaWidgetFactory
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 
 class DirectChangeListenerTest : AbstractChangeListenerTest() {
   override fun <T> CoroutineScope.launchComposition(
-    factories: ExampleSchemaWidgetFactories<WidgetValue>,
+    factories: TestSchemaWidgetFactories<WidgetValue>,
     snapshot: () -> T,
   ) = TestRedwoodComposition(this, factories, MutableListChildren(), snapshot)
 }
 
 class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
   override fun <T> CoroutineScope.launchComposition(
-    factories: ExampleSchemaWidgetFactories<WidgetValue>,
+    factories: TestSchemaWidgetFactories<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
-    val composeBridge = ExampleSchemaProtocolBridge.create()
-    val widgetBridge = ProtocolBridge(MutableListChildren(), ExampleSchemaProtocolNodeFactory(factories)) {
+    val composeBridge = TestSchemaProtocolBridge.create()
+    val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolNodeFactory(factories)) {
       throw AssertionError()
     }
     return TestRedwoodComposition(this, composeBridge.provider, composeBridge.root) {
@@ -72,14 +72,14 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
 abstract class AbstractChangeListenerTest {
   // There is no test parameter injector in multiplatform, so we fake it with subtypes.
   abstract fun <T> CoroutineScope.launchComposition(
-    factories: ExampleSchemaWidgetFactories<WidgetValue>,
+    factories: TestSchemaWidgetFactories<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T>
 
   @Test fun propertyChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
@@ -99,8 +99,8 @@ abstract class AbstractChangeListenerTest {
 
   @Test fun unrelatedPropertyChangeDoesNotNotifyWidget() = runTest {
     val button = ListeningButton()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
@@ -121,8 +121,8 @@ abstract class AbstractChangeListenerTest {
 
   @Test fun modifierChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
@@ -144,8 +144,8 @@ abstract class AbstractChangeListenerTest {
 
   @Test fun multipleChangesNotifyWidgetOnce() = runTest {
     val button = ListeningButton()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
@@ -169,8 +169,8 @@ abstract class AbstractChangeListenerTest {
 
   @Test fun childrenChangeNotifiesWidget() = runTest {
     val row = ListeningRow()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Row() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
@@ -196,8 +196,8 @@ abstract class AbstractChangeListenerTest {
 
   @Test fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
     val row = ListeningRow()
-    val factories = ExampleSchemaWidgetFactories(
-      ExampleSchema = object : ExampleSchemaWidgetFactory<WidgetValue> by ExampleSchemaTestingWidgetFactory() {
+    val factories = TestSchemaWidgetFactories(
+      TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Row() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),

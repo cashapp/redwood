@@ -25,7 +25,7 @@ import app.cash.redwood.ui.dp
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import example.redwood.compose.Text
-import example.redwood.widget.ExampleSchemaTester
+import example.redwood.widget.TestSchemaTester
 import example.redwood.widget.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -33,7 +33,7 @@ import kotlinx.coroutines.test.runTest
 class LazyListTest {
   @Test
   fun emptyLazyColumn() = runTest {
-    val snapshot = ExampleSchemaTester {
+    val snapshot = TestSchemaTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
         }

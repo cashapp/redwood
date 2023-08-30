@@ -36,8 +36,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import example.redwood.compose.Button
 import example.redwood.compose.Button2
-import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
+import example.redwood.compose.TestSchemaProtocolBridge
 import example.redwood.compose.Text
 import kotlin.test.Test
 import kotlin.test.fail
@@ -48,7 +48,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
 class ProtocolTest {
-  private val bridge = ExampleSchemaProtocolBridge.create()
+  private val bridge = TestSchemaProtocolBridge.create()
 
   @Test fun widgetVersionPropagated() = runTest {
     val composition = ProtocolRedwoodComposition(

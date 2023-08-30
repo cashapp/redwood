@@ -18,13 +18,13 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.Modifier
 import example.redwood.widget.Button
 import example.redwood.widget.Button2
-import example.redwood.widget.ExampleSchemaWidgetFactory
 import example.redwood.widget.Row
 import example.redwood.widget.ScopedRow
+import example.redwood.widget.TestSchemaWidgetFactory
 import example.redwood.widget.Text
 import example.redwood.widget.TextInput
 
-open class EmptyExampleSchemaWidgetFactory : ExampleSchemaWidgetFactory<Nothing> {
+open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
   override fun Row(): Row<Nothing> = TODO()
   override fun ScopedRow(): ScopedRow<Nothing> = TODO()
   override fun Text(): Text<Nothing> = TODO()

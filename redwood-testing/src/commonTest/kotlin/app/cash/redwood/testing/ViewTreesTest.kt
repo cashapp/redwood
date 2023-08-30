@@ -34,13 +34,13 @@ import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import example.redwood.compose.ExampleSchemaProtocolBridge
 import example.redwood.compose.Row
+import example.redwood.compose.TestSchemaProtocolBridge
 import example.redwood.compose.Text
-import example.redwood.widget.ExampleSchemaProtocolNodeFactory
-import example.redwood.widget.ExampleSchemaTester
-import example.redwood.widget.ExampleSchemaTestingWidgetFactory
-import example.redwood.widget.ExampleSchemaWidgetFactories
+import example.redwood.widget.TestSchemaProtocolNodeFactory
+import example.redwood.widget.TestSchemaTester
+import example.redwood.widget.TestSchemaTestingWidgetFactory
+import example.redwood.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.runTest
@@ -62,7 +62,7 @@ class ViewTreesTest {
       }
     }
 
-    val snapshot = ExampleSchemaTester {
+    val snapshot = TestSchemaTester {
       setContent(content)
       awaitSnapshot()
     }
@@ -96,16 +96,16 @@ class ViewTreesTest {
     )
 
     // Ensure the normal view tree APIs produce the expected list of changes.
-    assertThat(snapshot.toChangeList(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.toChangeList(TestSchemaProtocolBridge).changes)
       .isEqualTo(expected)
-    assertThat(snapshot.single().toChangeList(ExampleSchemaProtocolBridge).changes)
+    assertThat(snapshot.single().toChangeList(TestSchemaProtocolBridge).changes)
       .isEqualTo(expected)
 
     // Validate that the normal Compose protocol backend produces the same list of changes.
     lateinit var protocolChanges: List<Change>
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = ExampleSchemaProtocolBridge.create(),
+      bridge = TestSchemaProtocolBridge.create(),
       changesSink = { protocolChanges = it },
       widgetVersion = UInt.MAX_VALUE,
     )
@@ -115,12 +115,12 @@ class ViewTreesTest {
     assertThat(protocolChanges).isEqualTo(expected)
 
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
-    val mutableFactories = ExampleSchemaWidgetFactories(
-      ExampleSchema = ExampleSchemaTestingWidgetFactory(),
+    val mutableFactories = TestSchemaWidgetFactories(
+      TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val protocolNodes = ExampleSchemaProtocolNodeFactory(mutableFactories)
+    val protocolNodes = TestSchemaProtocolNodeFactory(mutableFactories)
     val widgetContainer = MutableListChildren<WidgetValue>()
     val widgetBridge = ProtocolBridge(widgetContainer, protocolNodes) {
       throw AssertionError()
