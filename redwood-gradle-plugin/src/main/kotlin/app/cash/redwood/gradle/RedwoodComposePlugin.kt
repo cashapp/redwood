@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.gradle
 
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -29,6 +30,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 private const val extensionName = "redwood"
+private const val redwoodComposeArtifactId = "redwood-compose"
 
 public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   private lateinit var extension: RedwoodComposeExtension
@@ -37,6 +39,44 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
     super.apply(target)
 
     extension = target.extensions.create(extensionName, RedwoodComposeExtension::class.java)
+
+    target.plugins.withId("org.jetbrains.compose") {
+      throw IllegalStateException(
+        """
+        |The Redwood Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.
+        |
+        |Both plugins attempt to configure the Compose compiler plugin which is incompatible. To use Redwood
+        |within a JetBrains Compose project you only need to add the runtime dependency:
+        |
+        |    kotlin {
+        |      sourceSets {
+        |        commonMain {
+        |          dependencies {
+        |            implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+        |          }
+        |        }
+        |      }
+        |    }
+        """.trimMargin(),
+      )
+    }
+    target.plugins.withId("com.android.base") {
+      val android = target.extensions.getByName("android") as BaseExtension
+      target.afterEvaluate {
+        check(android.buildFeatures.compose != true) {
+          """
+          |The Redwood Gradle plugin cannot be applied to an Android project which enables Compose.
+          |
+          |Both plugins attempt to configure the Compose compiler plugin which is incompatible. To use Redwood
+          |within an Android Compose-based project you only need to add the runtime dependency:
+          |
+          |    dependencies {
+          |      implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+          |    }
+          """.trimMargin()
+        }
+      }
+    }
 
     // TODO Automatically run lint on usages of our Compose plugin once the check works.
     //  target.plugins.apply(RedwoodLintPlugin::class.java)
@@ -64,7 +104,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      api(project.redwoodDependency("redwood-compose"))
+      api(project.redwoodDependency(redwoodComposeArtifactId))
     }
 
     when (kotlinCompilation.platformType) {

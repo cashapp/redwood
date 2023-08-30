@@ -192,6 +192,22 @@ class FixtureTest {
     fixtureGradleRunner(fixtureDir).build()
   }
 
+  @Test fun withAndroidPluginComposeFeature() {
+    val fixtureDir = File("src/test/fixture/with-android-plugin-compose-feature")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
+    assertThat(result.output).contains(
+      "The Redwood Gradle plugin cannot be applied to an Android project which enables Compose.",
+    )
+  }
+
+  @Test fun withJetbrainsComposePlugin() {
+    val fixtureDir = File("src/test/fixture/with-jetbrains-compose-plugin")
+    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
+    assertThat(result.output).contains(
+      "The Redwood Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.",
+    )
+  }
+
   private fun fixtureGradleRunner(
     fixtureDir: File,
     vararg tasks: String = arrayOf("clean", "build"),
