@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,9 +24,6 @@ import androidx.core.graphics.Insets
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.RedwoodView
-import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.widget.RedwoodWidgetView
 import app.cash.redwood.widget.ViewGroupChildren
 import java.util.UUID
 

@@ -26,6 +26,11 @@ kotlin {
         implementation projects.redwoodWidgetTesting
       }
     }
+    androidMain {
+      dependencies {
+        implementation libs.androidx.core
+      }
+    }
     androidUnitTest {
       dependencies {
         implementation libs.robolectric
