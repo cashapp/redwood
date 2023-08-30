@@ -17,10 +17,9 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.widget.RedwoodUIView
+import app.cash.redwood.widget.RootUiView
 import app.cash.redwood.widget.UIViewChildren
-import kotlinx.cinterop.cValue
-import platform.CoreGraphics.CGRectZero
-import platform.UIKit.UITraitCollection
 import platform.UIKit.UIView
 
 @Deprecated(
@@ -50,7 +49,8 @@ public class TreehouseUIView private constructor(
   public constructor(widgetSystem: WidgetSystem) : this(widgetSystem, RootUiView())
 
   init {
-    (view as RootUiView).treehouseView = this
+    (view as RootUiView).redwoodView = this
+    view.didMoveToSuperview = ::superviewChanged
   }
 
   override fun reset() {
@@ -61,29 +61,7 @@ public class TreehouseUIView private constructor(
     (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
-  internal fun superviewChanged() {
+  private fun superviewChanged() {
     readyForContentChangeListener?.onReadyForContentChanged(this)
-  }
-}
-
-private class RootUiView : UIView(cValue { CGRectZero }) {
-  lateinit var treehouseView: TreehouseUIView
-
-  override fun layoutSubviews() {
-    // Bounds likely changed. Report new size.
-    treehouseView.updateUiConfiguration()
-
-    subviews.forEach {
-      (it as UIView).setFrame(bounds)
-    }
-  }
-
-  override fun didMoveToSuperview() {
-    treehouseView.superviewChanged()
-  }
-
-  override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    treehouseView.updateUiConfiguration()
   }
 }

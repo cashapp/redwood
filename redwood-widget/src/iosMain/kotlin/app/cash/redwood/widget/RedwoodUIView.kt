@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.widget
 
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.RedwoodView
-import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle
@@ -50,6 +49,29 @@ public open class RedwoodUIView(
       traitCollection = view.traitCollection,
       bounds = view.bounds,
     )
+  }
+}
+
+public class RootUiView : UIView(cValue { CGRectZero }) {
+  public lateinit var redwoodView: RedwoodUIView
+  public lateinit var didMoveToSuperview: () -> Unit
+
+  override fun layoutSubviews() {
+    // Bounds likely changed. Report new size.
+    redwoodView.updateUiConfiguration()
+
+    subviews.forEach {
+      (it as UIView).setFrame(bounds)
+    }
+  }
+
+  override fun didMoveToSuperview() {
+    didMoveToSuperview.invoke()
+  }
+
+  override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    redwoodView.updateUiConfiguration()
   }
 }
 
