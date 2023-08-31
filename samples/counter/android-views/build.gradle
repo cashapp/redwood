@@ -6,6 +6,7 @@ dependencies {
   implementation projects.samples.counter.schema.widget
   implementation projects.samples.counter.presenter
   implementation projects.redwoodLayoutView
+  implementation projects.redwoodWidget
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material
   implementation libs.androidx.core

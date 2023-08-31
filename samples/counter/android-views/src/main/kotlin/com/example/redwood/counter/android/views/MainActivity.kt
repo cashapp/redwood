@@ -16,12 +16,11 @@
 package com.example.redwood.counter.android.views
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.widget.ViewGroupChildren
+import app.cash.redwood.widget.RedwoodWidgetView
 import com.example.redwood.counter.presenter.Counter
 import com.example.redwood.counter.widget.SchemaWidgetFactories
 import kotlinx.coroutines.CoroutineScope
@@ -33,10 +32,12 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val root = findViewById<ViewGroup>(android.R.id.content)!!
+    val redwoodView = RedwoodWidgetView(this)
+    setContentView(redwoodView)
+
     val composition = RedwoodComposition(
       scope = scope,
-      container = ViewGroupChildren(root),
+      container = redwoodView.children,
       provider = SchemaWidgetFactories(
         Schema = AndroidWidgetFactory(this),
         RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this),
