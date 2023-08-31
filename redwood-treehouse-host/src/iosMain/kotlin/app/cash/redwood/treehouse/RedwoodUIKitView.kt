@@ -35,7 +35,7 @@ import platform.UIKit.UIView
 
 public open class RedwoodUIKitView(
   public val view: UIView,
-) : RedwoodView {
+) : RedwoodView<UIView> {
   private val _children = UIViewChildren(view)
   override val children: Widget.Children<UIView> get() = _children
 
