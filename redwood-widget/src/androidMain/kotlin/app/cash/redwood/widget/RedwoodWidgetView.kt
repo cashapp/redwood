@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 public open class RedwoodWidgetView(
   context: Context,
-) : FrameLayout(context), RedwoodView {
+) : FrameLayout(context), RedwoodView<View> {
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 

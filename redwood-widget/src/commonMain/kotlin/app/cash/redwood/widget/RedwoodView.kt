@@ -20,7 +20,7 @@ import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
 
 @ObjCName("RedwoodView", exact = true)
-public interface RedwoodView {
-  public val children: Widget.Children<*>
+public interface RedwoodView<W : Any> {
+  public val children: Widget.Children<W>
   public val uiConfiguration: StateFlow<UiConfiguration>
 }
