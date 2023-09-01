@@ -19,9 +19,9 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
-import com.example.redwood.testing.widget.Row
+import com.example.redwood.testing.widget.TestRow
 
-class ListeningRow : Row<WidgetValue>, ChangeListener {
+class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
   private val changes = ArrayList<String>()
   fun changes(): List<String> {
     val snapshot = changes.toList()

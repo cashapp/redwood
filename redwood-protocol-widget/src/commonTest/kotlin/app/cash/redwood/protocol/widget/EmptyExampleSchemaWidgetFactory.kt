@@ -18,15 +18,15 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.Modifier
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.Button2
-import com.example.redwood.testing.widget.Row
-import com.example.redwood.testing.widget.ScopedRow
+import com.example.redwood.testing.widget.ScopedTestRow
+import com.example.redwood.testing.widget.TestRow
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
 import com.example.redwood.testing.widget.TextInput
 
 open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
-  override fun Row(): Row<Nothing> = TODO()
-  override fun ScopedRow(): ScopedRow<Nothing> = TODO()
+  override fun TestRow(): TestRow<Nothing> = TODO()
+  override fun ScopedTestRow(): ScopedTestRow<Nothing> = TODO()
   override fun Text(): Text<Nothing> = TODO()
   override fun Button() = object : Button<Nothing> {
     override val value get() = TODO()

@@ -30,8 +30,8 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import com.example.redwood.testing.compose.Button
-import com.example.redwood.testing.compose.Row
-import com.example.redwood.testing.compose.ScopedRow
+import com.example.redwood.testing.compose.ScopedTestRow
+import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.compose.Text
@@ -168,10 +168,10 @@ abstract class AbstractChangeListenerTest {
   }
 
   @Test fun childrenChangeNotifiesWidget() = runTest {
-    val row = ListeningRow()
+    val row = ListeningTestRow()
     val factories = TestSchemaWidgetFactories(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
-        override fun Row() = row
+        override fun TestRow() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
@@ -180,7 +180,7 @@ abstract class AbstractChangeListenerTest {
 
     var two by mutableStateOf(false)
     c.setContent {
-      Row {
+      TestRow {
         Button("one", onClick = null)
         if (two) {
           Button("two", onClick = null)
@@ -195,10 +195,10 @@ abstract class AbstractChangeListenerTest {
   }
 
   @Test fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
-    val row = ListeningRow()
+    val row = ListeningTestRow()
     val factories = TestSchemaWidgetFactories(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
-        override fun Row() = row
+        override fun TestRow() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
@@ -207,8 +207,8 @@ abstract class AbstractChangeListenerTest {
 
     var two by mutableStateOf(false)
     c.setContent {
-      Row {
-        ScopedRow {
+      TestRow {
+        ScopedTestRow {
           Button("one", onClick = null)
           if (two) {
             Button("two", onClick = null)

@@ -34,7 +34,7 @@ import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.compose.Row
+import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
@@ -50,12 +50,12 @@ import kotlinx.serialization.json.JsonPrimitive
 class ViewTreesTest {
   @Test fun nested() = runTest {
     val content = @Composable {
-      Row {
-        Row {
+      TestRow {
+        TestRow {
           Text("One Fish")
           Text("Two Fish")
         }
-        Row {
+        TestRow {
           Text("Red Fish")
           Text("Blue Fish")
         }
