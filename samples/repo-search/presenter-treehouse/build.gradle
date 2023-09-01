@@ -23,7 +23,7 @@ kotlin {
       dependencies {
         api projects.redwoodTreehouseGuest
         api projects.samples.repoSearch.presenter
-        implementation projects.samples.repoSearch.schema.compose.protocol
+        implementation projects.testApp.schema.composeProtocol
       }
     }
   }

@@ -18,11 +18,16 @@ package com.example.redwood.reposearch.android.views
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import com.example.redwood.reposearch.widget.RepoSearchWidgetFactory
-import com.example.redwood.reposearch.widget.Text
+import com.example.redwood.testing.widget.TestSchemaWidgetFactory
+import com.example.redwood.testing.widget.Text
 
-class AndroidRepoSearchWidgetFactory(
+class AndroidTestSchemaWidgetFactory(
   private val context: Context,
-) : RepoSearchWidgetFactory<View> {
+) : TestSchemaWidgetFactory<View> {
   override fun Text(): Text<View> = ViewText(TextView(context))
+  override fun TestRow() = throw UnsupportedOperationException()
+  override fun ScopedTestRow() = throw UnsupportedOperationException()
+  override fun Button() = TODO()
+  override fun Button2() = TODO()
+  override fun TextInput() = TODO()
 }

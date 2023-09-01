@@ -18,8 +18,8 @@ package com.example.redwood.reposearch.treehouse
 import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import com.example.redwood.reposearch.compose.RepoSearchProtocolBridge
 import com.example.redwood.reposearch.presenter.RepoSearchTreehouseUi
+import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import kotlinx.serialization.json.Json
 
 class RealRepoSearchPresenter(
@@ -27,7 +27,7 @@ class RealRepoSearchPresenter(
   private val json: Json,
 ) : RepoSearchPresenter {
   override val appLifecycle = StandardAppLifecycle(
-    protocolBridgeFactory = RepoSearchProtocolBridge,
+    protocolBridgeFactory = TestSchemaProtocolBridge,
     json = json,
     widgetVersion = 0U,
   )

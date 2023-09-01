@@ -124,9 +124,4 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:repo-search:launcher'
   include ':samples:repo-search:presenter'
   include ':samples:repo-search:presenter-treehouse'
-  include ':samples:repo-search:schema'
-  include ':samples:repo-search:schema:compose'
-  include ':samples:repo-search:schema:compose:protocol'
-  include ':samples:repo-search:schema:widget'
-  include ':samples:repo-search:schema:widget:protocol'
 }

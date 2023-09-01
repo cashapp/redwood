@@ -8,7 +8,7 @@ android {
 dependencies {
   implementation projects.samples.repoSearch.launcher
   implementation projects.samples.repoSearch.presenterTreehouse
-  implementation projects.samples.repoSearch.schema.widget.protocol
+  implementation projects.testApp.schema.widgetProtocol
   implementation projects.redwoodLayoutView
   implementation projects.redwoodLazylayoutView
   implementation libs.androidx.appCompat
