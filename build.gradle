@@ -16,8 +16,7 @@ buildscript {
   }
 }
 
-// TODO Re-enable dokka once https://github.com/Kotlin/dokka/issues/2977 is fixed.
-// apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'org.jetbrains.dokka'
 
 afterEvaluate {
   spotless {
