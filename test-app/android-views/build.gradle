@@ -1,0 +1,17 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+  namespace "com.example.redwood.testing.android.views"
+}
+
+dependencies {
+  implementation projects.testApp.launcher
+  implementation projects.testApp.presenterTreehouse
+  implementation projects.testApp.schema.widgetProtocol
+  implementation projects.redwoodLayoutView
+  implementation projects.redwoodLazylayoutView
+  implementation libs.androidx.appCompat
+  implementation libs.androidx.core
+  implementation libs.google.material
+}
