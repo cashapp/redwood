@@ -1,5 +1,0 @@
-<schema version="1" type="com.example.redwood.reposearch.RepoSearch">
-  <widget tag="1" type="com.example.redwood.reposearch.Text">
-    <property tag="1" name="text" type="kotlin.String"/>
-  </widget>
-</schema>

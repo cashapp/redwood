@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
-import com.example.redwood.reposearch.compose.Text
+import com.example.redwood.testing.compose.Text
 
 // TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
 fun interface HttpClient {

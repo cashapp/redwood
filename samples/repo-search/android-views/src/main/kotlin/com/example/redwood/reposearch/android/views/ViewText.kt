@@ -19,7 +19,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.Modifier
-import com.example.redwood.reposearch.widget.Text
+import com.example.redwood.testing.widget.Text
 import com.google.android.material.R as MaterialR
 
 internal class ViewText(
@@ -34,7 +34,7 @@ internal class ViewText(
     }
   }
 
-  override fun text(text: String) {
+  override fun text(text: String?) {
     value.text = text
   }
 }

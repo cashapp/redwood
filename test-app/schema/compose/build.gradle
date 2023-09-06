@@ -12,6 +12,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api projects.redwoodLayoutCompose
         api projects.testApp.schema.widget
         api projects.testApp.schema.modifiers
       }
