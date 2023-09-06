@@ -34,6 +34,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -243,7 +244,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
   override fun publishing() {
     project.plugins.apply("com.vanniktech.maven.publish")
-    // project.plugins.apply("org.jetbrains.dokka")
+    project.plugins.apply("org.jetbrains.dokka")
 
     val publishing = project.extensions.getByName("publishing") as PublishingExtension
     publishing.apply {
@@ -318,11 +319,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     // DokkaTaskPartial configures subprojects for multimodule docs
     // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
-    // project.tasks.withType(org.jetbrains.dokka.gradle.DokkaTaskPartial::class.java) { task ->
-    //   task.dokkaSourceSets.configureEach {
-    //     it.suppressGeneratedFiles.set(false) // document generated code
-    //   }
-    // }
+    project.tasks.withType(DokkaTaskPartial::class.java) { task ->
+      task.dokkaSourceSets.configureEach {
+        it.suppressGeneratedFiles.set(false) // document generated code
+      }
+    }
 
     // Published modules should be explicit about their API visibility.
     var explicit = false
