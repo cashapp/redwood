@@ -23,11 +23,18 @@ import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIView
 
-@ObjCName("TreehouseUIKitView", exact = true)
-public class TreehouseUIKitView private constructor(
+@Deprecated(
+  "Renamed to `TreehouseUIView` for consistency with other `TreehouseView` implementations.",
+  ReplaceWith("TreehouseUIView", "app.cash.redwood.treehouse.TreehouseUIView"),
+)
+// `TreehouseUIKitView` should be the name in Objective C, but `@ObjCName` cannot be applied to a typealias.
+public typealias TreehouseUIKitView = TreehouseUIView
+
+@ObjCName("TreehouseUIView", exact = true)
+public class TreehouseUIView private constructor(
   override val widgetSystem: WidgetSystem,
   view: UIView,
-) : TreehouseView, RedwoodUIKitView(view) {
+) : TreehouseView, RedwoodUIView(view) {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
@@ -60,7 +67,7 @@ public class TreehouseUIKitView private constructor(
 }
 
 private class RootUiView : UIView(cValue { CGRectZero }) {
-  lateinit var treehouseView: TreehouseUIKitView
+  lateinit var treehouseView: TreehouseUIView
 
   override fun layoutSubviews() {
     // Bounds likely changed. Report new size.

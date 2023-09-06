@@ -38,9 +38,9 @@ import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
 import platform.UIKit.UIWindow
 
-class TreehouseUIKitViewTest {
+class TreehouseUIViewTest {
   @Test fun widgetsAddChildViews() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
 
     val view = UIView()
     layout.children.insert(0, viewWidget(view))
@@ -51,7 +51,7 @@ class TreehouseUIKitViewTest {
 
   @Test fun attachAndDetachSendsStateChange() {
     val parent = UIView()
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
     val listener = CountingReadyForContentChangeListener()
 
     layout.readyForContentChangeListener = listener
@@ -65,7 +65,7 @@ class TreehouseUIKitViewTest {
   }
 
   @Test fun resetClearsUntrackedChildren() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
 
     layout.view.addSubview(UIView())
     assertThat(layout.view.subviews).hasSize(1)
@@ -75,7 +75,7 @@ class TreehouseUIKitViewTest {
   }
 
   @Test fun resetClearsTrackedWidgets() {
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
 
     // Needed to access internal state which cannot be reasonably observed through the public API.
     val children = layout.children as UIViewChildren
@@ -92,7 +92,7 @@ class TreehouseUIKitViewTest {
     val parent = UIWindow()
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
     assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
@@ -101,7 +101,7 @@ class TreehouseUIKitViewTest {
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val parent = UIWindow()
 
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
     layout.uiConfiguration.test {
@@ -125,7 +125,7 @@ class TreehouseUIKitViewTest {
       }
     }
 
-    val layout = TreehouseUIKitView(throwingWidgetSystem)
+    val layout = TreehouseUIView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
     assertThat(layout.uiConfiguration.value)
