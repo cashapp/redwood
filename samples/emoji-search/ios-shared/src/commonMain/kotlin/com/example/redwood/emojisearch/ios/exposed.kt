@@ -22,7 +22,7 @@ import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
-import app.cash.redwood.treehouse.TreehouseUIKitView
+import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
@@ -39,7 +39,7 @@ fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
   protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
-  treehouseUIKitView: TreehouseUIKitView,
+  treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   widgetSystem: WidgetSystem,

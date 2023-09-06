@@ -33,7 +33,7 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
-public open class RedwoodUIKitView(
+public open class RedwoodUIView(
   public val view: UIView,
 ) : RedwoodView<UIView> {
   private val _children = UIViewChildren(view)
