@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.widget.RedwoodWidgetView
+import app.cash.redwood.widget.RedwoodLayout
 import com.example.redwood.counter.presenter.Counter
 import com.example.redwood.counter.widget.SchemaWidgetFactories
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val redwoodView = RedwoodWidgetView(this)
+    val redwoodView = RedwoodLayout(this)
     setContentView(redwoodView)
 
     val composition = RedwoodComposition(

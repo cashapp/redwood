@@ -27,7 +27,7 @@ import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-public open class RedwoodWidgetView(
+public open class RedwoodLayout(
   context: Context,
 ) : FrameLayout(context), RedwoodView<View> {
   private val _children = ViewGroupChildren(this)

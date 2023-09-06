@@ -23,15 +23,21 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
-import app.cash.redwood.widget.RedwoodWidgetView
+import app.cash.redwood.widget.RedwoodLayout
 import app.cash.redwood.widget.ViewGroupChildren
 import java.util.UUID
 
+@Deprecated(
+  "Renamed to `TreehouseLayout` for consistency with other `TreehouseView` implementations.",
+  ReplaceWith("TreehouseLayout", "app.cash.redwood.treehouse.TreehouseLayout"),
+)
+public typealias TreehouseWidgetView = TreehouseLayout
+
 @SuppressLint("ViewConstructor")
-public class TreehouseWidgetView(
+public class TreehouseLayout(
   context: Context,
   override val widgetSystem: WidgetSystem,
-) : RedwoodWidgetView(context), TreehouseView {
+) : RedwoodLayout(context), TreehouseView {
   override var readyForContentChangeListener: ReadyForContentChangeListener? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }

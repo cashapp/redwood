@@ -27,8 +27,8 @@ import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
+import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
@@ -72,7 +72,7 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     setContentView(
-      TreehouseWidgetView(this, widgetSystem).apply {
+      TreehouseLayout(this, widgetSystem).apply {
         // The view needs to have an id for Android to populate saved data back
         this.id = 9000
         treehouseContentSource.bindWhenReady(this, treehouseApp)
