@@ -92,7 +92,12 @@ include ':test-app:schema:testing'
 include ':test-app:schema:widget'
 include ':test-app:schema:widget-protocol'
 
-if (!hasProperty('redwoodNoSamples')) {
+if (!hasProperty('redwoodNoApps')) {
+  include ':test-app:android-views'
+  include ':test-app:launcher'
+  include ':test-app:presenter'
+  include ':test-app:presenter-treehouse'
+
   include ':samples:counter:android-composeui'
   include ':samples:counter:android-views'
   include ':samples:counter:android-tests'
@@ -119,9 +124,4 @@ if (!hasProperty('redwoodNoSamples')) {
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'
   include ':samples:emoji-search:values'
-
-  include ':samples:repo-search:android-views'
-  include ':samples:repo-search:launcher'
-  include ':samples:repo-search:presenter'
-  include ':samples:repo-search:presenter-treehouse'
 }

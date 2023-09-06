@@ -1,0 +1,21 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'app.cash.zipline'
+
+kotlin {
+  androidTarget()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation projects.testApp.presenterTreehouse
+        api projects.redwoodTreehouseHost
+        api libs.zipline.loader
+      }
+    }
+  }
+}
+
+android {
+  namespace 'com.example.redwood.testing.launcher'
+}

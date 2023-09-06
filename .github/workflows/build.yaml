@@ -28,7 +28,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoSamples
+      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
 
   connected:
     runs-on: macos-latest
@@ -141,7 +141,7 @@ jobs:
           pod install
           xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
-  sample-repo:
+  test-app:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -155,7 +155,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew -p samples/repo-search build
+      - run: ./gradlew -p test-app build
 
   publish:
     runs-on: macos-latest
@@ -167,7 +167,7 @@ jobs:
       - paparazzi
       - sample-counter
       - sample-emoji
-      - sample-repo
+      - test-app
     steps:
       - uses: actions/checkout@v4
 
