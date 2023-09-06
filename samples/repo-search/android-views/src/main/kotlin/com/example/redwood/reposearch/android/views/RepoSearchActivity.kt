@@ -24,8 +24,8 @@ import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
+import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseWidgetView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
@@ -66,7 +66,7 @@ class RepoSearchActivity : ComponentActivity() {
     }
 
     setContentView(
-      TreehouseWidgetView(this, widgetSystem).apply {
+      TreehouseLayout(this, widgetSystem).apply {
         treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )
