@@ -56,7 +56,7 @@ class ComposeProtocolGenerationTest {
 
     val fileSpec = generateComposeProtocolModifierSerialization(schemaSet)
     assertThat(fileSpec.toString()).all {
-      contains("is RowVerticalAlignment -> RowVerticalAlignmentSerializer.encode(json, this)")
+      contains("is TestRowVerticalAlignment -> TestRowVerticalAlignmentSerializer.encode(json, this)")
       contains("is Grow -> GrowSerializer.encode(json, this)")
     }
   }

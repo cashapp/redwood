@@ -28,9 +28,9 @@ import kotlin.time.Duration
 
 @Schema(
   members = [
-    Row::class,
-    ScopedRow::class,
-    RowVerticalAlignment::class,
+    TestRow::class,
+    ScopedTestRow::class,
+    TestRowVerticalAlignment::class,
     AccessibilityDescription::class,
     CustomType::class,
     CustomTypeStateless::class,
@@ -48,16 +48,24 @@ import kotlin.time.Duration
 )
 public interface TestSchema
 
+/**
+ * A trivial row-like type for testing purposes only.
+ * Use redwood-layout for any real views in the test app.
+ */
 @Widget(1)
-public data class Row(
+public data class TestRow(
   @Children(1) val children: () -> Unit,
 )
 
-public object RowScope
+public object TestRowScope
 
+/**
+ * A trivial row-like type with a scope for testing purposes only.
+ * Use redwood-layout for any real views in the test app.
+ */
 @Widget(2)
-public data class ScopedRow(
-  @Children(1) val children: RowScope.() -> Unit,
+public data class ScopedTestRow(
+  @Children(1) val children: TestRowScope.() -> Unit,
 )
 
 @Widget(3)
@@ -91,8 +99,8 @@ public object TestScope
 
 public object SecondaryTestScope
 
-@Modifier(1, RowScope::class)
-public data class RowVerticalAlignment(
+@Modifier(1, TestRowScope::class)
+public data class TestRowVerticalAlignment(
   /** -1 for top, 0 for middle, 1 for bottom. */
   val direction: Int,
 )

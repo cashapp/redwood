@@ -36,7 +36,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Button2
-import com.example.redwood.testing.compose.Row
+import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.Text
 import kotlin.test.Test
@@ -71,9 +71,9 @@ class ProtocolTest {
     val composition = testProtocolComposition()
 
     composition.setContent {
-      Row {
+      TestRow {
         Text("hey")
-        Row {
+        TestRow {
           Text("hello")
         }
       }
