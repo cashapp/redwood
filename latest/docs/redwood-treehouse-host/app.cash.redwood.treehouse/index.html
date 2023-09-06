@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>app.cash.redwood.treehouse</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
-<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
@@ -29,28 +32,34 @@
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../index.html">
-<span>redwood</span>            </a>    </div>
-    <div>0.6.0-SNAPSHOT
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            redwood
+                    </a>            </div>
+            <div class="library-version">0.7.0-SNAPSHOT
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/androidMain">android</button>
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">common</button>
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/iosMain">ios</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="redwood-treehouse-host::app.cash.redwood.treehouse////PointingToDeclaration//1780664049">
   <div class="breadcrumbs"><a href="../index.html">redwood-treehouse-host</a><span class="delimiter">/</span><span class="current">app.cash.redwood.treehouse</span></div>
   <div class="cover ">
@@ -136,6 +145,23 @@
               </div>
             </div>
           </div>
+<a data-name="-312912643%2FClasslikes%2F-1484861639" anchor-label="RedwoodUIKitView" id="-312912643%2FClasslikes%2F-1484861639" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/iosMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-redwood-u-i-kit-view/index.html"><span>Redwood</span><wbr><span>UIKit</span><wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-312912643%2FClasslikes%2F-1484861639"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-treehouse-host:dokkaHtmlPartial/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-redwood-u-i-kit-view/index.html">RedwoodUIKitView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>view<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="944921654%2FClasslikes%2F723931153" anchor-label="StateStore" id="944921654%2FClasslikes%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
@@ -208,7 +234,7 @@
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-treehouse-host:dokkaHtmlPartial/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-treehouse-u-i-kit-view/index.html">TreehouseUIKitView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>widgetSystem<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-treehouse-u-i-kit-view/index.html">TreehouseUIKitView</a> : <a href="-redwood-u-i-kit-view/index.html">RedwoodUIKitView</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -240,7 +266,7 @@
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-treehouse-host:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-treehouse-widget-view/index.html">TreehouseWidgetView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>widgetSystem<span class="token operator">: </span><a href="-treehouse-view/-widget-system/index.html">TreehouseView.WidgetSystem</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/widget/FrameLayout.html">FrameLayout</a>, <a href="-treehouse-view/index.html">TreehouseView</a></div></div>                  </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-treehouse-widget-view/index.html">TreehouseWidgetView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>widgetSystem<span class="token operator">: </span><a href="-treehouse-view/-widget-system/index.html">TreehouseView.WidgetSystem</a></span></span><span class="token punctuation">)</span> : <a href="../../redwood-widget/app.cash.redwood.widget/-redwood-widget-view/index.html">RedwoodWidgetView</a>, <a href="-treehouse-view/index.html">TreehouseView</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -289,8 +315,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 
