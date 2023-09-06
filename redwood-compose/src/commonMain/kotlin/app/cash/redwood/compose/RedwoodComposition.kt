@@ -29,11 +29,13 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 public interface RedwoodComposition {
@@ -51,12 +53,26 @@ public fun <W : Any> RedwoodComposition(
   provider: Widget.Provider<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, view, NodeApplier(provider, view.children, onEndChanges))
+  return RedwoodComposition(scope, view.children, view.uiConfiguration, provider, onEndChanges)
+}
+
+/**
+ * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
+ * must have a [MonotonicFrameClock] key which is being ticked.
+ */
+public fun <W : Any> RedwoodComposition(
+  scope: CoroutineScope,
+  container: Widget.Children<W>,
+  uiConfigurations: StateFlow<UiConfiguration>,
+  provider: Widget.Provider<W>,
+  onEndChanges: () -> Unit = {},
+): RedwoodComposition {
+  return WidgetRedwoodComposition(scope, uiConfigurations, NodeApplier(provider, container, onEndChanges))
 }
 
 private class WidgetRedwoodComposition<W : Any>(
   private val scope: CoroutineScope,
-  private val view: RedwoodView<W>,
+  private val uiConfigurations: StateFlow<UiConfiguration>,
   applier: NodeApplier<W>,
 ) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
@@ -81,7 +97,7 @@ private class WidgetRedwoodComposition<W : Any>(
 
   override fun setContent(content: @Composable () -> Unit) {
     composition.setContent {
-      val uiConfiguration by view.uiConfiguration.collectAsState()
+      val uiConfiguration by uiConfigurations.collectAsState()
       CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
         content()
       }

@@ -22,8 +22,6 @@ import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.RedwoodView
-import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
@@ -38,11 +36,7 @@ public fun ProtocolRedwoodComposition(
   widgetVersion: UInt,
   uiConfigurations: StateFlow<UiConfiguration>,
 ): RedwoodComposition {
-  val view = object : RedwoodView<Nothing> {
-    override val children: Widget.Children<Nothing> = bridge.root
-    override val uiConfiguration: StateFlow<UiConfiguration> = uiConfigurations
-  }
-  val composition = RedwoodComposition(scope, view, bridge.provider) {
+  val composition = RedwoodComposition(scope, bridge.root, uiConfigurations, bridge.provider) {
     bridge.getChangesOrNull()?.let(changesSink::sendChanges)
   }
   return ProtocolRedwoodComposition(composition, widgetVersion)
