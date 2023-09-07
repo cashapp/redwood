@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.testing.presenter
+package com.example.redwood.testing.treehouse
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.layout.compose.Column
-import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.dp
-import com.example.redwood.testing.compose.Text
+import app.cash.redwood.treehouse.TreehouseUi
+import com.example.redwood.testing.presenter.HttpClient
+import com.example.redwood.testing.presenter.TestApp
 
-// TODO Switch to https://github.com/cashapp/zipline/issues/490 once available.
-fun interface HttpClient {
-  suspend fun call(url: String, headers: Map<String, String>): String
-}
+class TestAppTreehouseUi(
+  httpClient: HttpClient,
+) : TreehouseUi {
+  private val testApp = TestApp(httpClient)
 
-@Composable
-fun RepoSearch(
-  repository: Repository,
-) {
-  Column(margin = Margin(16.dp)) {
-    Text(text = repository.fullName)
+  @Composable
+  override fun Show() {
+    testApp.Show()
   }
 }
