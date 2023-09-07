@@ -16,14 +16,16 @@
 package app.cash.redwood.widget
 
 import kotlinx.cinterop.convert
+import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
 @ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
   private val parent: UIView,
-  private val insert: (UIView, Int) -> Unit = { view, index ->
-    parent.insertSubview(view, index.convert<NSInteger>())
+  private val insert: (UIView, Int) -> Unit = when (parent) {
+    is UIStackView -> { view, index -> parent.insertArrangedSubview(view, index.convert()) }
+    else -> { view, index -> parent.insertSubview(view, index.convert<NSInteger>()) }
   },
   private val remove: (index: Int, count: Int) -> Array<UIView> = { index, count ->
     Array(count) {
