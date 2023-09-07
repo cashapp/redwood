@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.composeui
+package app.cash.redwood.composeui
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.ui.Default
@@ -23,7 +23,7 @@ import kotlinx.cinterop.useContents
 import platform.AppKit.NSScreen
 
 @Composable
-internal actual fun safeAreaInsets(): Margin {
+public actual fun safeAreaInsets(): Margin {
   val mainScreen = NSScreen.mainScreen ?: return Margin.Zero
   return mainScreen.safeAreaInsets.useContents {
     with(Density.Default) {
