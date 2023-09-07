@@ -15,11 +15,25 @@
  */
 package app.cash.redwood.composeui
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Size
+import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.dp as redwoodDp
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
@@ -31,13 +45,36 @@ public fun RedwoodContent(
 ) {
   val scope = rememberCoroutineScope()
   val children = remember(provider, content) { ComposeWidgetChildren() }
+
+  var viewportSize by remember { mutableStateOf(Size.Zero) }
+  val density = LocalDensity.current
+  val uiConfiguration = UiConfiguration(
+    darkMode = isSystemInDarkTheme(),
+    safeAreaInsets = safeAreaInsets(),
+    viewportSize = viewportSize,
+    density = density.density.toDouble(),
+  )
+
   LaunchedEffect(provider, content) {
     val composition = RedwoodComposition(
       scope = scope,
       container = children,
       provider = provider,
     )
-    composition.setContent(content)
+    composition.setContent {
+      CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
+        content()
+      }
+    }
   }
-  children.render()
+
+  Box(
+    modifier = Modifier.onSizeChanged { size ->
+      viewportSize = with(Density(density.density.toDouble())) {
+        Size(size.width.toDp().value.redwoodDp, size.height.toDp().value.redwoodDp)
+      }
+    },
+  ) {
+    children.render()
+  }
 }
