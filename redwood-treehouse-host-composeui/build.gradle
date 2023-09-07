@@ -21,6 +21,7 @@ kotlin {
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseHost
         implementation libs.jetbrains.compose.foundation
+        implementation projects.redwoodComposeui
         implementation projects.redwoodWidgetCompose
       }
     }

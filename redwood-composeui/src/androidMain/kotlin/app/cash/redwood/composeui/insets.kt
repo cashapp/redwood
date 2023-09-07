@@ -15,7 +15,7 @@
  */
 @file:JvmName("insetsAndroid")
 
-package app.cash.redwood.treehouse.composeui
+package app.cash.redwood.composeui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -29,7 +29,7 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.fromPlatformDp
 
 @Composable
-internal actual fun safeAreaInsets(): Margin {
+public actual fun safeAreaInsets(): Margin {
   val layoutDirection = LocalLayoutDirection.current
   return WindowInsets.safeDrawing.asPaddingValues().toMargin(layoutDirection)
 }

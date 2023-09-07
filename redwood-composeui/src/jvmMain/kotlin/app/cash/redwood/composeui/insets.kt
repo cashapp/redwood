@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.composeui
+@file:JvmName("insetsJvm")
+
+package app.cash.redwood.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.ui.Default
+import androidx.compose.ui.platform.LocalDensity
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
-import kotlinx.cinterop.useContents
-import platform.UIKit.UIApplication
+import java.awt.GraphicsEnvironment
+import java.awt.Insets
+import java.awt.Toolkit
 
 @Composable
-internal actual fun safeAreaInsets(): Margin {
-  val keyWindow = UIApplication.sharedApplication.keyWindow ?: return Margin.Zero
-  return keyWindow.safeAreaInsets.useContents {
-    with(Density.Default) {
-      Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
-    }
-  }
+public actual fun safeAreaInsets(): Margin {
+  val configuration = GraphicsEnvironment.getLocalGraphicsEnvironment()
+    .defaultScreenDevice.defaultConfiguration
+  val density = Density(LocalDensity.current.density.toDouble())
+  return Toolkit.getDefaultToolkit().getScreenInsets(configuration).toMargin(density)
+}
+
+private fun Insets.toMargin(density: Density) = with(density) {
+  Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
 }

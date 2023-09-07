@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:JvmName("insetsJvm")
-
-package app.cash.redwood.treehouse.composeui
+package app.cash.redwood.composeui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalDensity
-import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
-import java.awt.GraphicsEnvironment
-import java.awt.Insets
-import java.awt.Toolkit
 
+/** Return the device's insets in screen density-independent pixels. */
 @Composable
-internal actual fun safeAreaInsets(): Margin {
-  val configuration = GraphicsEnvironment.getLocalGraphicsEnvironment()
-    .defaultScreenDevice.defaultConfiguration
-  val density = Density(LocalDensity.current.density.toDouble())
-  return Toolkit.getDefaultToolkit().getScreenInsets(configuration).toMargin(density)
-}
-
-private fun Insets.toMargin(density: Density) = with(density) {
-  Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
-}
+public expect fun safeAreaInsets(): Margin
