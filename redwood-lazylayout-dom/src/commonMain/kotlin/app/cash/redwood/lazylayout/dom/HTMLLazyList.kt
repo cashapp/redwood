@@ -15,7 +15,7 @@
  */
 @file:Suppress("FunctionName")
 
-package app.cash.redwood.layout.dom
+package app.cash.redwood.lazylayout.dom
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
