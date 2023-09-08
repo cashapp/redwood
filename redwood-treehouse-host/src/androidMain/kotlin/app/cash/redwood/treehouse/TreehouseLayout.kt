@@ -36,9 +36,9 @@ public typealias TreehouseWidgetView = TreehouseLayout
 @SuppressLint("ViewConstructor")
 public class TreehouseLayout(
   context: Context,
-  override val widgetSystem: WidgetSystem,
-) : RedwoodLayout(context), TreehouseView {
-  override var readyForContentChangeListener: ReadyForContentChangeListener? = null
+  override val widgetSystem: WidgetSystem<View>,
+) : RedwoodLayout(context), TreehouseView<View> {
+  override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
       field = value

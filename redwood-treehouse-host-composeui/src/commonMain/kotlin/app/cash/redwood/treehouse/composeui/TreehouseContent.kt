@@ -47,7 +47,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 public fun <A : AppService> TreehouseContent(
   treehouseApp: TreehouseApp<A>,
-  widgetSystem: WidgetSystem,
+  widgetSystem: WidgetSystem<@Composable () -> Unit>,
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
 ) {
@@ -61,12 +61,12 @@ public fun <A : AppService> TreehouseContent(
   )
 
   val treehouseView = remember(widgetSystem) {
-    object : TreehouseView {
+    object : TreehouseView<@Composable () -> Unit> {
       override val children = ComposeWidgetChildren()
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
       override val widgetSystem = widgetSystem
       override val readyForContent = true
-      override var readyForContentChangeListener: ReadyForContentChangeListener? = null
+      override var readyForContentChangeListener: ReadyForContentChangeListener<@Composable () -> Unit>? = null
       override var saveCallback: TreehouseView.SaveCallback? = null
       override val stateSnapshotId = StateSnapshot.Id(null)
       override fun reset() = children.remove(0, children.widgets.size)

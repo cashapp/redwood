@@ -25,8 +25,8 @@ import okio.Closeable
  *
  * Returns a closeable that unbinds from the content and stops tracking the ready state.
  */
-public fun Content.bindWhenReady(view: TreehouseView): Closeable {
-  val listener = ReadyForContentChangeListener {
+public fun <W : Any> Content.bindWhenReady(view: TreehouseView<W>): Closeable {
+  val listener = ReadyForContentChangeListener<W> {
     if (view.readyForContent) {
       bind(view)
     } else {
@@ -45,8 +45,8 @@ public fun Content.bindWhenReady(view: TreehouseView): Closeable {
   }
 }
 
-public fun <A : AppService> TreehouseContentSource<A>.bindWhenReady(
-  view: TreehouseView,
+public fun <A : AppService, W : Any> TreehouseContentSource<A>.bindWhenReady(
+  view: TreehouseView<W>,
   app: TreehouseApp<A>,
   codeListener: CodeListener = CodeListener(),
 ): Closeable {

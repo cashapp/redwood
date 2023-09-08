@@ -16,6 +16,7 @@
 package com.example.redwood.testing.android.views
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
@@ -50,7 +51,7 @@ class TestAppActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(TestAppPresenter::launch)
 
-    val widgetSystem = object : TreehouseView.WidgetSystem {
+    val widgetSystem = object : TreehouseView.WidgetSystem<View> {
       override fun widgetFactory(
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,

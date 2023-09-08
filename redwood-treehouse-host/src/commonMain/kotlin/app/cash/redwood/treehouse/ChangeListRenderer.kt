@@ -20,7 +20,6 @@ import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.redwood.protocol.widget.ProtocolNode
-import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.Json
 
 /**
@@ -38,12 +37,12 @@ public class ChangeListRenderer<W : Any>(
 
   @Suppress("UNCHECKED_CAST")
   public fun render(
-    view: TreehouseView,
+    view: TreehouseView<W>,
     changeList: SnapshotChangeList,
   ) {
     view.reset()
     val bridge = ProtocolBridge(
-      container = view.children as Widget.Children<W>,
+      container = view.children,
       factory = view.widgetSystem.widgetFactory(
         json,
         ProtocolMismatchHandler.Throwing,
