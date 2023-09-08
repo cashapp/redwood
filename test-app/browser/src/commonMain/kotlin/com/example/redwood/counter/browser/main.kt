@@ -19,7 +19,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testing.presenter.HttpClient
 import com.example.redwood.testing.presenter.TestApp
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
@@ -39,7 +39,7 @@ fun main() {
   @OptIn(DelicateCoroutinesApi::class)
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
-    container = HTMLElementChildren(content),
+    view = content.asRedwoodView(),
     provider = TestSchemaWidgetFactories(
       TestSchema = HtmlWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
