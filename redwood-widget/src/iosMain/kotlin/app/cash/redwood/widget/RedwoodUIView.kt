@@ -21,12 +21,10 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.cinterop.CValue
-import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
-import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle
@@ -44,34 +42,11 @@ public open class RedwoodUIView(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
-  internal fun updateUiConfiguration() {
+  protected fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,
       bounds = view.bounds,
     )
-  }
-}
-
-public class RootUiView : UIView(cValue { CGRectZero }) {
-  public lateinit var redwoodView: RedwoodUIView
-  public lateinit var didMoveToSuperview: () -> Unit
-
-  override fun layoutSubviews() {
-    // Bounds likely changed. Report new size.
-    redwoodView.updateUiConfiguration()
-
-    subviews.forEach {
-      (it as UIView).setFrame(bounds)
-    }
-  }
-
-  override fun didMoveToSuperview() {
-    didMoveToSuperview.invoke()
-  }
-
-  override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    redwoodView.updateUiConfiguration()
   }
 }
 
