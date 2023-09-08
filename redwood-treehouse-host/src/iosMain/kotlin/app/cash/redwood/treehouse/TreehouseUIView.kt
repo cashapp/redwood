@@ -52,7 +52,6 @@ public class TreehouseUIView private constructor(
 
   init {
     (view as RootUiView).treehouseView = this
-    view.didMoveToSuperview = ::superviewChanged
   }
 
   override fun reset() {
@@ -69,7 +68,6 @@ public class TreehouseUIView private constructor(
 
   private class RootUiView : UIView(cValue { CGRectZero }) {
     lateinit var treehouseView: TreehouseUIView
-    lateinit var didMoveToSuperview: () -> Unit
 
     override fun layoutSubviews() {
       // Bounds likely changed. Report new size.
@@ -81,7 +79,7 @@ public class TreehouseUIView private constructor(
     }
 
     override fun didMoveToSuperview() {
-      didMoveToSuperview.invoke()
+      treehouseView.superviewChanged()
     }
 
     override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
