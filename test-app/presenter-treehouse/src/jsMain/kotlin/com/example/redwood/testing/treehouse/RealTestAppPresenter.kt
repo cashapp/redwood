@@ -19,7 +19,6 @@ import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
-import com.example.redwood.testing.presenter.TestAppTreehouseUi
 import kotlinx.serialization.json.Json
 
 class RealTestAppPresenter(

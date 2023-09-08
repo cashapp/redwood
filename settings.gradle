@@ -94,6 +94,7 @@ include ':test-app:schema:widget-protocol'
 
 if (!hasProperty('redwoodNoApps')) {
   include ':test-app:android-views'
+  include ':test-app:browser'
   include ':test-app:launcher'
   include ':test-app:presenter'
   include ':test-app:presenter-treehouse'

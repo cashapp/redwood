@@ -26,12 +26,11 @@ import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.LazyColumn
-import app.cash.redwood.treehouse.TreehouseUi
 import kotlinx.serialization.json.Json
 
-class TestAppTreehouseUi(
+class TestApp(
   private val httpClient: HttpClient,
-) : TreehouseUi {
+) {
   private var latestSearchTerm = "android"
 
   private val pager: Pager<Int, Repository> = run {
@@ -45,14 +44,14 @@ class TestAppTreehouseUi(
   }
 
   @Composable
-  override fun Show() {
+  fun Show() {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
     LazyColumn(
       width = Constraint.Fill,
-      placeholder = { RepoSearch(Repository(fullName = "Placeholder…", 0)) },
+      placeholder = { RepositoryItem(Repository(fullName = "Placeholder…", 0)) },
     ) {
       items(lazyPagingItems.itemCount) { index ->
-        RepoSearch(lazyPagingItems[index]!!)
+        RepositoryItem(lazyPagingItems[index]!!)
       }
     }
   }
