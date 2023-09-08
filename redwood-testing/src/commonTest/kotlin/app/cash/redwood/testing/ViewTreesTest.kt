@@ -31,6 +31,7 @@ import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -42,6 +43,7 @@ import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
@@ -108,6 +110,7 @@ class ViewTreesTest {
       bridge = TestSchemaProtocolBridge.create(),
       changesSink = { protocolChanges = it },
       widgetVersion = UInt.MAX_VALUE,
+      uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
     composition.setContent(content)
     composition.cancel()

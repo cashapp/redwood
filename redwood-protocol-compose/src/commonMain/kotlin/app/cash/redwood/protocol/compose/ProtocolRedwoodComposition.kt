@@ -21,7 +21,9 @@ import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.ChangesSink
+import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
@@ -32,8 +34,9 @@ public fun ProtocolRedwoodComposition(
   bridge: ProtocolBridge,
   changesSink: ChangesSink,
   widgetVersion: UInt,
+  uiConfigurations: StateFlow<UiConfiguration>,
 ): RedwoodComposition {
-  val composition = RedwoodComposition(scope, bridge.root, bridge.provider) {
+  val composition = RedwoodComposition(scope, bridge.root, uiConfigurations, bridge.provider) {
     bridge.getChangesOrNull()?.let(changesSink::sendChanges)
   }
   return ProtocolRedwoodComposition(composition, widgetVersion)

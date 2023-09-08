@@ -15,14 +15,11 @@
  */
 package com.example.redwood.emojisearch.browser
 
-import androidx.compose.runtime.CompositionLocalProvider
-import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient
 import com.example.redwood.emojisearch.presenter.Navigator
@@ -49,7 +46,7 @@ fun main() {
   @OptIn(DelicateCoroutinesApi::class)
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
-    container = HTMLElementChildren(content),
+    view = content.asRedwoodView(),
     provider = EmojiSearchWidgetFactories(
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
@@ -58,9 +55,7 @@ fun main() {
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {
-    CompositionLocalProvider(LocalUiConfiguration provides UiConfiguration()) {
-      EmojiSearch(httpClient, navigator)
-    }
+    EmojiSearch(httpClient, navigator)
   }
 }
 

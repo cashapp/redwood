@@ -18,7 +18,7 @@ package com.example.redwood.counter.browser
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
-import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.counter.presenter.Counter
 import com.example.redwood.counter.widget.SchemaWidgetFactories
 import kotlinx.browser.document
@@ -33,7 +33,7 @@ fun main() {
   @OptIn(DelicateCoroutinesApi::class)
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
-    container = HTMLElementChildren(content),
+    view = content.asRedwoodView(),
     provider = SchemaWidgetFactories(
       Schema = HtmlWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),

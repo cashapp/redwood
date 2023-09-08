@@ -18,6 +18,7 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -26,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withTimeout
@@ -37,9 +39,10 @@ public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  uiConfigurations: StateFlow<UiConfiguration>,
   createSnapshot: () -> S,
 ): TestRedwoodComposition<S> {
-  return RealTestRedwoodComposition(scope, provider, container, createSnapshot)
+  return RealTestRedwoodComposition(scope, provider, container, uiConfigurations, createSnapshot)
 }
 
 public interface TestRedwoodComposition<S> : RedwoodComposition {
@@ -56,6 +59,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  uiConfigurations: StateFlow<UiConfiguration>,
   createSnapshot: () -> S,
 ) : TestRedwoodComposition<S> {
   /** Emit frames manually in [sendFrames]. */
@@ -69,6 +73,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   private val composition = RedwoodComposition(
     scope = scope + clock,
     container = container,
+    uiConfigurations = uiConfigurations,
     provider = provider,
     onEndChanges = {
       val newSnapshot = createSnapshot()

@@ -18,7 +18,6 @@ package app.cash.redwood.composeui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +27,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
+import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /** Render a Redwood composition inside of Compose UI. */
 @Composable
@@ -44,7 +44,6 @@ public fun RedwoodContent(
   content: @Composable () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
-  val children = remember(provider, content) { ComposeWidgetChildren() }
 
   var viewportSize by remember { mutableStateOf(Size.Zero) }
   val density = LocalDensity.current
@@ -55,17 +54,22 @@ public fun RedwoodContent(
     density = density.density.toDouble(),
   )
 
-  LaunchedEffect(provider, content) {
+  val redwoodView = remember {
+    object : RedwoodView<@Composable () -> Unit> {
+      override val children = ComposeWidgetChildren()
+      override val uiConfiguration = MutableStateFlow(uiConfiguration)
+    }
+  }
+  LaunchedEffect(redwoodView, uiConfiguration) {
+    redwoodView.uiConfiguration.value = uiConfiguration
+  }
+  LaunchedEffect(redwoodView, provider, content) {
     val composition = RedwoodComposition(
       scope = scope,
-      container = children,
+      view = redwoodView,
       provider = provider,
     )
-    composition.setContent {
-      CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
-        content()
-      }
-    }
+    composition.setContent(content)
   }
 
   Box(
@@ -75,6 +79,6 @@ public fun RedwoodContent(
       }
     },
   ) {
-    children.render()
+    redwoodView.children.render()
   }
 }
