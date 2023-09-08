@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.widget
 
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.RedwoodView
-import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +42,7 @@ public open class RedwoodUIView(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
-  internal fun updateUiConfiguration() {
+  protected fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,
       bounds = view.bounds,
