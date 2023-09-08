@@ -42,7 +42,7 @@ fun exposedTypes(
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
-  widgetSystem: WidgetSystem,
+  widgetSystem: WidgetSystem<*>,
   widgetFactories: EmojiSearchWidgetFactories<*>,
 ) {
   throw AssertionError()
@@ -54,5 +54,5 @@ fun modifier(): Modifier = Modifier
 
 fun <A : AppService> bindWhenReady(
   content: Content,
-  view: TreehouseView,
+  view: TreehouseView<*>,
 ): Closeable = content.bindWhenReady(view)

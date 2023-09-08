@@ -33,13 +33,13 @@ public typealias TreehouseUIKitView = TreehouseUIView
 
 @ObjCName("TreehouseUIView", exact = true)
 public class TreehouseUIView private constructor(
-  override val widgetSystem: WidgetSystem,
+  override val widgetSystem: WidgetSystem<UIView>,
   view: UIView,
-) : TreehouseView, RedwoodUIView(view) {
+) : TreehouseView<UIView>, RedwoodUIView(view) {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
-  override var readyForContentChangeListener: ReadyForContentChangeListener? = null
+  override var readyForContentChangeListener: ReadyForContentChangeListener<UIView>? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }
       field = value
@@ -48,7 +48,7 @@ public class TreehouseUIView private constructor(
   override val readyForContent: Boolean
     get() = view.superview != null
 
-  public constructor(widgetSystem: WidgetSystem) : this(widgetSystem, RootUiView())
+  public constructor(widgetSystem: WidgetSystem<UIView>) : this(widgetSystem, RootUiView())
 
   init {
     (view as RootUiView).treehouseView = this

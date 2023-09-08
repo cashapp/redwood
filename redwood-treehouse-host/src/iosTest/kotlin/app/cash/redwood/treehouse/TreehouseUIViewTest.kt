@@ -52,7 +52,7 @@ class TreehouseUIViewTest {
   @Test fun attachAndDetachSendsStateChange() {
     val parent = UIView()
     val layout = TreehouseUIView(throwingWidgetSystem)
-    val listener = CountingReadyForContentChangeListener()
+    val listener = CountingReadyForContentChangeListener<UIView>()
 
     layout.readyForContentChangeListener = listener
     assertThat(listener.count).isEqualTo(0)
@@ -138,5 +138,5 @@ class TreehouseUIViewTest {
   }
 
   private val throwingWidgetSystem =
-    WidgetSystem { _, _ -> throw UnsupportedOperationException() }
+    WidgetSystem<UIView> { _, _ -> throw UnsupportedOperationException() }
 }

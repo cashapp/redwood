@@ -51,7 +51,7 @@ private sealed interface ViewState {
   ) : ViewState
 
   class Bound(
-    val view: TreehouseView,
+    val view: TreehouseView<*>,
   ) : ViewState
 }
 
@@ -102,7 +102,7 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
-  override fun bind(view: TreehouseView) {
+  override fun bind(view: TreehouseView<*>) {
     treehouseApp.dispatchers.checkUi()
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
@@ -260,7 +260,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
-  private var viewOrNull: TreehouseView? = null
+  private var viewOrNull: TreehouseView<*>? = null
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
   private var bridgeOrNull: ProtocolBridge<*>? = null
@@ -282,7 +282,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
   private var initViewCalled: Boolean = false
 
-  fun initView(view: TreehouseView) {
+  fun initView(view: TreehouseView<*>) {
     app.dispatchers.checkUi()
 
     require(!initViewCalled)

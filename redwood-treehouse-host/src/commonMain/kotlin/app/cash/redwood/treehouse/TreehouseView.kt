@@ -24,12 +24,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
 @ObjCName("TreehouseView", exact = true)
-public interface TreehouseView {
-  public val children: Widget.Children<*>
+public interface TreehouseView<W : Any> {
+  public val children: Widget.Children<W>
   public val uiConfiguration: StateFlow<UiConfiguration>
-  public val widgetSystem: WidgetSystem
+  public val widgetSystem: WidgetSystem<W>
   public val readyForContent: Boolean
-  public var readyForContentChangeListener: ReadyForContentChangeListener?
+  public var readyForContentChangeListener: ReadyForContentChangeListener<W>?
   public var saveCallback: SaveCallback?
   public val stateSnapshotId: StateSnapshot.Id
 
@@ -37,9 +37,9 @@ public interface TreehouseView {
   public fun reset()
 
   @ObjCName("TreehouseViewReadyForContentChangeListener", exact = true)
-  public fun interface ReadyForContentChangeListener {
+  public fun interface ReadyForContentChangeListener<W : Any> {
     /** Called when [TreehouseView.readyForContent] has changed. */
-    public fun onReadyForContentChanged(view: TreehouseView)
+    public fun onReadyForContentChanged(view: TreehouseView<W>)
   }
 
   @ObjCName("TreehouseViewSaveCallback", exact = true)
@@ -49,11 +49,11 @@ public interface TreehouseView {
   }
 
   @ObjCName("TreehouseViewWidgetSystem", exact = true)
-  public fun interface WidgetSystem {
+  public fun interface WidgetSystem<W : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
-    ): ProtocolNode.Factory<*>
+    ): ProtocolNode.Factory<W>
   }
 }

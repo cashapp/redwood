@@ -47,7 +47,7 @@ public interface Content {
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun bind(view: TreehouseView)
+  public fun bind(view: TreehouseView<*>)
 
   /**
    * Suspends until content is available; either it is already in the view or it is preloaded and a call to [bind]

@@ -62,7 +62,7 @@ class TreehouseLayoutTest {
     val activity = Robolectric.buildActivity(Activity::class.java).resume().visible().get()
     val parent = activity.findViewById<ViewGroup>(android.R.id.content)
     val layout = TreehouseLayout(context, throwingWidgetSystem)
-    val listener = CountingReadyForContentChangeListener()
+    val listener = CountingReadyForContentChangeListener<View>()
 
     layout.readyForContentChangeListener = listener
     assertThat(listener.count).isEqualTo(0)
@@ -145,5 +145,5 @@ class TreehouseLayoutTest {
   }
 
   private val throwingWidgetSystem =
-    WidgetSystem { _, _ -> throw UnsupportedOperationException() }
+    WidgetSystem<View> { _, _ -> throw UnsupportedOperationException() }
 }
