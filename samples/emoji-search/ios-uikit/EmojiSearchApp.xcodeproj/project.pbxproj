@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,15 +17,12 @@
 		C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */; };
 		C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */; };
 		CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */; };
-		CB85EE5426648F6900A4B218 /* Pods_EmojiSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */; };
 		CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F76552810A8A8008CF457 /* IosHostApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmojiSearchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosEmojiSearchWidgetFactory.swift; sourceTree = "<group>"; };
 		10AA3D4D28C0EA40006F125E /* TextBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBinding.swift; sourceTree = "<group>"; };
-		4B9986777126F871E922EFF8 /* Pods-EmojiSearchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.release.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.release.xcconfig"; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		635661D421F12B7E00DD7240 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		635661D921F12B7E00DD7240 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -38,7 +35,6 @@
 		C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputBinding.swift; sourceTree = "<group>"; };
 		CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSearchViewController.swift; sourceTree = "<group>"; };
 		CB9F76552810A8A8008CF457 /* IosHostApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosHostApi.swift; sourceTree = "<group>"; };
-		FE5DC566933F8A25E4B4D71D /* Pods-EmojiSearchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmojiSearchApp.debug.xcconfig"; path = "Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,7 +42,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB85EE5426648F6900A4B218 /* Pods_EmojiSearchApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,8 +54,6 @@
 				63E90CF521FEBBB700449E04 /* main.framework */,
 				635661D321F12B7E00DD7240 /* EmojiSearchApp */,
 				635661D221F12B7E00DD7240 /* Products */,
-				B5604532F7F0C4349EF67F9C /* Pods */,
-				C6AEA68F26E2A3BD052DEDBB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,23 +84,6 @@
 			path = EmojiSearchApp;
 			sourceTree = "<group>";
 		};
-		B5604532F7F0C4349EF67F9C /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				FE5DC566933F8A25E4B4D71D /* Pods-EmojiSearchApp.debug.xcconfig */,
-				4B9986777126F871E922EFF8 /* Pods-EmojiSearchApp.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		C6AEA68F26E2A3BD052DEDBB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				00A9C28A8FE3CCC0B75F8DBE /* Pods_EmojiSearchApp.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -115,11 +91,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 635661E321F12B8000DD7240 /* Build configuration list for PBXNativeTarget "EmojiSearchApp" */;
 			buildPhases = (
-				C0A74553EE688F26124F6281 /* [CP] Check Pods Manifest.lock */,
+				00DD12E22AAF46C500CA3FD3 /* ShellScript */,
 				635661CD21F12B7E00DD7240 /* Sources */,
 				635661CE21F12B7E00DD7240 /* Frameworks */,
 				635661CF21F12B7E00DD7240 /* Resources */,
-				596E05BFED0D5D6968D3601E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -178,24 +153,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		596E05BFED0D5D6968D3601E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EmojiSearchApp/Pods-EmojiSearchApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C0A74553EE688F26124F6281 /* [CP] Check Pods Manifest.lock */ = {
+		00DD12E22AAF46C500CA3FD3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -203,19 +161,14 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-EmojiSearchApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "cd \"$SRCROOT/../../..\"\n./gradlew :samples:emoji-search:ios-shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -377,13 +330,13 @@
 		};
 		635661E421F12B8000DD7240 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE5DC566933F8A25E4B4D71D /* Pods-EmojiSearchApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../ios-shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = EmojiSearchApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -397,6 +350,8 @@
 					"-framework",
 					"\"EmojiSearchKt\"",
 					"-ObjC",
+					"-framework",
+					EmojiSearchKt,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.zipline.sample.emojisearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -408,13 +363,13 @@
 		};
 		635661E521F12B8000DD7240 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4B9986777126F871E922EFF8 /* Pods-EmojiSearchApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2UER9BPG44;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../ios-shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = EmojiSearchApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -428,6 +383,8 @@
 					"-framework",
 					"\"EmojiSearchKt\"",
 					"-ObjC",
+					"-framework",
+					EmojiSearchKt,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.zipline.sample.emojisearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
