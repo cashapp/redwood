@@ -26,7 +26,7 @@ import app.cash.redwood.ui.Margin
 @Widget(1)
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
-  @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
+  @Property(2) val onViewportChanged: (firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit,
   @Property(3) val itemsBefore: Int,
   @Property(4) val itemsAfter: Int,
   @Property(5) val width: Constraint,
@@ -41,7 +41,7 @@ public data class LazyList(
 @Widget(2)
 public data class RefreshableLazyList(
   @Property(1) val isVertical: Boolean,
-  @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
+  @Property(2) val onViewportChanged: (firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit,
   @Property(3) val itemsBefore: Int,
   @Property(4) val itemsAfter: Int,
   @Property(5) val refreshing: Boolean,

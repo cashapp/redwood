@@ -54,7 +54,7 @@ internal class ComposeUiLazyList :
   LazyList<@Composable () -> Unit>,
   RefreshableLazyList<@Composable () -> Unit> {
   private var isVertical by mutableStateOf(false)
-  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
+  private var onViewportChanged: ((firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit)? by mutableStateOf(null)
   private var itemsBefore by mutableStateOf(0)
   private var itemsAfter by mutableStateOf(0)
   private var isRefreshing by mutableStateOf(false)
@@ -78,7 +78,7 @@ internal class ComposeUiLazyList :
     this.isVertical = isVertical
   }
 
-  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+  override fun onViewportChanged(onViewportChanged: (firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit) {
     this.onViewportChanged = onViewportChanged
   }
 

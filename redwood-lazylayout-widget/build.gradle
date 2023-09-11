@@ -19,6 +19,14 @@ kotlin {
         api projects.redwoodLazylayoutApi
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation libs.turbine
+      }
+    }
   }
 }
 

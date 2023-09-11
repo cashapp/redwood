@@ -122,7 +122,6 @@ internal open class UIViewLazyList(
         val visibleIndexPaths = collectionView.indexPathsForVisibleItems()
 
         if (visibleIndexPaths.isNotEmpty()) {
-          // TODO: Optimize this for less operations
           updateViewport(
             visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() },
             visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() },

@@ -45,24 +45,24 @@ internal fun LazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var lastVisibleItemIndex by remember { mutableStateOf(0) }
+  var lastPagedItemIndex by remember { mutableStateOf(0) }
   val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
-  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val itemsAfter = remember(lastPagedItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastPagedItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
   val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   var placeholderPoolSize by remember { mutableStateOf(20) }
   LazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
-    onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
-      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
+    onViewportChanged = { localFirstPagedItemIndex, localLastPagedItemIndex ->
+      val visibleItemCount = localLastPagedItemIndex - localFirstPagedItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
       // We only ever want to increase the pool size.
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      state.firstVisibleItemIndex = localFirstVisibleItemIndex
-      lastVisibleItemIndex = localLastVisibleItemIndex
+      state.firstVisibleItemIndex = localFirstPagedItemIndex
+      lastPagedItemIndex = localLastPagedItemIndex
     },
     width = width,
     height = height,
@@ -97,24 +97,24 @@ internal fun RefreshableLazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var lastVisibleItemIndex by remember { mutableStateOf(0) }
+  var lastPagedItemIndex by remember { mutableStateOf(0) }
   val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
-  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val itemsAfter = remember(lastPagedItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastPagedItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
   val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
-    onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
-      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
+    onViewportChanged = { localFirstPagedItemIndex, localLastPagedItemIndex ->
+      val visibleItemCount = localLastPagedItemIndex - localFirstPagedItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
       // We only ever want to increase the pool size.
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      state.firstVisibleItemIndex = localFirstVisibleItemIndex
-      lastVisibleItemIndex = localLastVisibleItemIndex
+      state.firstVisibleItemIndex = localFirstPagedItemIndex
+      lastPagedItemIndex = localLastPagedItemIndex
     },
     refreshing = refreshing,
     onRefresh = onRefresh,

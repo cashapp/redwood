@@ -62,7 +62,7 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
     value.style.flexDirection = if (isVertical) "column" else "row"
   }
 
-  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+  override fun onViewportChanged(onViewportChanged: (firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit) {
   }
 
   override fun itemsBefore(itemsBefore: Int) {

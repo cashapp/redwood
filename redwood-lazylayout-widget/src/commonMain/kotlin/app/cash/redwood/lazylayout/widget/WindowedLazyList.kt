@@ -19,9 +19,9 @@ public abstract class WindowedLazyList<W : Any>(
   private val listUpdateCallback: ListUpdateCallback,
 ) : LazyList<W> {
 
-  private var firstVisibleItemIndex = 0
-  private var lastVisibleItemIndex = 0
-  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
+  private var firstPagedItemIndex = 0
+  private var lastPagedItemIndex = 0
+  private var onViewportChanged: ((firstPagedItemIndex: Int, lastPagedItemIndex: Int) -> Unit)? = null
 
   final override val items: WindowedChildren<W> = WindowedChildren(listUpdateCallback)
 
@@ -29,11 +29,17 @@ public abstract class WindowedLazyList<W : Any>(
     this.onViewportChanged = onViewportChanged
   }
 
-  protected fun updateViewport(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
-    if (firstVisibleItemIndex != this.firstVisibleItemIndex || lastVisibleItemIndex != this.lastVisibleItemIndex) {
-      this.firstVisibleItemIndex = firstVisibleItemIndex
-      this.lastVisibleItemIndex = lastVisibleItemIndex
-      onViewportChanged?.invoke(firstVisibleItemIndex, lastVisibleItemIndex)
+  public fun updateViewport(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    // Paginate the results so `onViewportChanged` isn't blasted with a bunch of updates. This is
+    // particularly important when using `LazyList` in Treehouse (compared to plain Redwood), as
+    // the serialization cost between the host-guest bridge can be expensive.
+    val viewportItemCount = lastVisibleItemIndex - firstVisibleItemIndex + 1
+    val firstPagedItemIndex = (((firstVisibleItemIndex / viewportItemCount) * viewportItemCount) - viewportItemCount).coerceAtLeast(0)
+    val lastPagedItemIndex = (((lastVisibleItemIndex / viewportItemCount) * viewportItemCount) + viewportItemCount * 2).coerceAtMost(items.items.size)
+    if (firstPagedItemIndex != this.firstPagedItemIndex || lastPagedItemIndex != this.lastPagedItemIndex) {
+      this.firstPagedItemIndex = firstPagedItemIndex
+      this.lastPagedItemIndex = lastPagedItemIndex
+      onViewportChanged?.invoke(firstPagedItemIndex, lastPagedItemIndex)
     }
   }
 
