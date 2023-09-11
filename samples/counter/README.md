@@ -33,9 +33,7 @@ Running Counter on iOS
 
 Run this:
 ```
-cd samples/counter/ios-uikit
-pod install
-open CounterApp.xcworkspace
+open samples/counter/ios-uikit/CounterApp.xcodeproj
 ```
 
 Then build and run the app. The shared Kotlin code will be built automatically as part of building the iOS app, and also rebuilt as needed.

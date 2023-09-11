@@ -15,9 +15,6 @@ local.properties
 *.xcworkspace
 xcuserdata
 
-# Cocoapods
-Pods
-
 # Paparazzi
 redwood-layout-composeui/out/failures
 redwood-layout-view/out/failures

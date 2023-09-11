@@ -115,9 +115,7 @@ jobs:
 
       - name: Build Counter iOS (UIKit)
         run: |
-          cd samples/counter/ios-uikit
-          pod install
-          xcodebuild -workspace CounterApp.xcworkspace -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+          xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   sample-emoji:
     runs-on: macos-latest
@@ -137,9 +135,7 @@ jobs:
 
       - name: Build Emoji Search iOS (UIKit)
         run: |
-          cd samples/emoji-search/ios-uikit
-          pod install
-          xcodebuild -workspace EmojiSearchApp.xcworkspace -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+          xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   test-app:
     runs-on: macos-latest

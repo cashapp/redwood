@@ -56,9 +56,7 @@ Running Emoji-Search on iOS
 
 Run this:
 ```
-cd samples/emoji-search/ios-uikit
-pod install
-open EmojiSearchApp.xcworkspace
+open samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj
 ```
 
 Then build and run the app. The shared Kotlin code will be built automatically as part of building the iOS app, and also rebuilt as needed.
