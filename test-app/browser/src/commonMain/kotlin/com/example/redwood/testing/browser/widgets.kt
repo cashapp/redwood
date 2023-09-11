@@ -13,33 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.counter.browser
+package com.example.redwood.testing.browser
 
+import app.cash.redwood.Modifier
 import com.example.redwood.testing.widget.Button
-import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
-import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 
-class HtmlWidgetFactory(
-  private val document: Document,
-) : TestSchemaWidgetFactory<HTMLElement> {
-  override fun Text(): Text<HTMLElement> {
-    val span = document.createElement("span") as HTMLSpanElement
-    return HtmlText(span)
+class HtmlText(
+  override val value: HTMLSpanElement,
+) : Text<HTMLElement> {
+  override var modifier: Modifier = Modifier
+
+  override fun text(text: String?) {
+    value.textContent = text
+  }
+}
+
+class HtmlButton(
+  override val value: HTMLButtonElement,
+) : Button<HTMLElement> {
+  override var modifier: Modifier = Modifier
+
+  override fun text(text: String?) {
+    value.textContent = text
   }
 
-  override fun Button(): Button<HTMLElement> {
-    val button = document.createElement("button") as HTMLButtonElement
-    return HtmlButton(button)
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.onclick = if (onClick != null) {
+      { onClick() }
+    } else {
+      null
+    }
   }
-
-  override fun TextInput() = TODO()
-  override fun Button2() = TODO()
-
-  override fun ScopedTestRow() = throw UnsupportedOperationException()
-
-  override fun TestRow() = throw UnsupportedOperationException()
 }
