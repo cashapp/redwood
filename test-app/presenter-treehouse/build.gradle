@@ -3,6 +3,10 @@ apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.zipline'
 
 kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
   jvm()
 
   js {

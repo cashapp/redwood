@@ -18,7 +18,9 @@ package com.example.redwood.testing.treehouse
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.zipline.ZiplineService
+import kotlin.native.ObjCName
 
+@ObjCName("TestAppPresenter", exact = true)
 interface TestAppPresenter : AppService, ZiplineService {
   fun launch(): ZiplineTreehouseUi
 }

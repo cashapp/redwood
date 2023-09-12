@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.testing.treehouse
 
-import app.cash.zipline.ZiplineService
-import kotlin.native.ObjCName
+import UIKit
 
-@ObjCName("HostApi", exact = true)
-interface HostApi : ZiplineService {
-  /** Decodes the response as a string and returns it. */
-  suspend fun httpCall(url: String, headers: Map<String, String>): String
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
 }
