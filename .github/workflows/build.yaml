@@ -114,8 +114,7 @@ jobs:
           script: ./gradlew -p samples/counter connectedCheck
 
       - name: Build Counter iOS (UIKit)
-        run: |
-          xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+        run: xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   sample-emoji:
     runs-on: macos-latest
@@ -134,8 +133,7 @@ jobs:
       - run: ./gradlew -p samples/emoji-search build
 
       - name: Build Emoji Search iOS (UIKit)
-        run: |
-          xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+        run: xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   test-app:
     runs-on: macos-latest
@@ -152,6 +150,9 @@ jobs:
         continue-on-error: true
 
       - run: ./gradlew -p test-app build
+
+      - name: Build TestApp iOS (UIKit)
+        run: xcodebuild -project test-app/ios-uikit/TestApp.xcodeproj -scheme TestApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   publish:
     runs-on: macos-latest

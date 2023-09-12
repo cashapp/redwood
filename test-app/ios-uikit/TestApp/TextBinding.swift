@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2022 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.testing.treehouse
 
-import app.cash.zipline.ZiplineService
-import kotlin.native.ObjCName
+import Foundation
+import TestAppKt
+import UIKit
 
-@ObjCName("HostApi", exact = true)
-interface HostApi : ZiplineService {
-  /** Decodes the response as a string and returns it. */
-  suspend fun httpCall(url: String, headers: Map<String, String>): String
+class TextBinding: Text {
+    private let root: UILabel = {
+        let view = UILabel()
+        return view
+    }()
+
+    var modifier: Modifier = ExposedKt.modifier()
+    var value: Any { root }
+
+    func text(text: String?) {
+        root.text = text
+
+        // This very simple integration wraps the size of whatever text is entered. Calling
+        // this function will update the bounds and trigger relayout in the parent.
+        root.sizeToFit()
+    }
 }

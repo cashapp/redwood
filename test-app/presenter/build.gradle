@@ -3,9 +3,14 @@ apply plugin: 'app.cash.redwood'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
   js {
     browser()
   }
+
   jvm()
 
   sourceSets {
