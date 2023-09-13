@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyListValue
+import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import assertk.assertThat
@@ -43,19 +44,8 @@ class LazyListTest {
 
     assertThat(snapshot)
       .containsExactly(
-        LazyListValue(
-          Modifier,
-          isVertical = true,
-          onViewportChanged = { _, _ -> },
-          itemsBefore = 0,
-          itemsAfter = 0,
-          width = Constraint.Wrap,
-          height = Constraint.Wrap,
-          margin = Margin(0.0.dp),
-          crossAxisAlignment = CrossAxisAlignment.Start,
-          scrollItemIndex = ScrollItemIndex(0, 0),
+        DefaultLazyListValue.copy(
           placeholder = List(20) { TextValue(Modifier, "Placeholder") },
-          items = emptyList(),
         ),
       )
   }
@@ -89,20 +79,54 @@ class LazyListTest {
 
     assertThat(snapshot)
       .containsExactly(
-        LazyListValue(
-          Modifier,
-          isVertical = true,
-          onViewportChanged = { _, _ -> },
-          itemsBefore = 0,
+        DefaultLazyListValue.copy(
           itemsAfter = expectedItemsAfter,
-          width = Constraint.Wrap,
-          height = Constraint.Wrap,
-          margin = Margin(0.0.dp),
-          crossAxisAlignment = CrossAxisAlignment.Start,
-          scrollItemIndex = ScrollItemIndex(0, 0),
           placeholder = List(20) { TextValue(Modifier, "Placeholder") },
           items = List(expectedItemCount) { TextValue(Modifier, it.toString()) },
         ),
       )
   }
 }
+
+private val DefaultLazyListValue = LazyListValue(
+  Modifier,
+  isVertical = true,
+  onViewportChanged = { _, _ -> },
+  itemsBefore = 0,
+  itemsAfter = 0,
+  width = Constraint.Wrap,
+  height = Constraint.Wrap,
+  margin = Margin(0.0.dp),
+  crossAxisAlignment = CrossAxisAlignment.Start,
+  scrollItemIndex = ScrollItemIndex(0, 0),
+  placeholder = emptyList(),
+  items = emptyList(),
+)
+
+private fun LazyListValue.copy(
+  modifier: Modifier = this.modifier,
+  isVertical: Boolean = this.isVertical,
+  onViewportChanged: (Int, Int) -> Unit = this.onViewportChanged,
+  itemsBefore: Int = this.itemsBefore,
+  itemsAfter: Int = this.itemsAfter,
+  width: Constraint = this.width,
+  height: Constraint = this.height,
+  margin: Margin = this.margin,
+  crossAxisAlignment: CrossAxisAlignment = this.crossAxisAlignment,
+  scrollItemIndex: ScrollItemIndex = this.scrollItemIndex,
+  placeholder: List<WidgetValue> = this.placeholder,
+  items: List<WidgetValue> = this.items,
+) = LazyListValue(
+  modifier = modifier,
+  isVertical = isVertical,
+  onViewportChanged = onViewportChanged,
+  itemsBefore = itemsBefore,
+  itemsAfter = itemsAfter,
+  width = width,
+  height = height,
+  margin = margin,
+  crossAxisAlignment = crossAxisAlignment,
+  scrollItemIndex = scrollItemIndex,
+  placeholder = placeholder,
+  items = items,
+)
