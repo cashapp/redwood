@@ -23,7 +23,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.1'
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.2'
 
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.22.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.0"
