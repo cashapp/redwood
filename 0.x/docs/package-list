@@ -27,6 +27,8 @@ module:redwood-layout-view
 app.cash.redwood.layout.view
 module:redwood-layout-widget
 app.cash.redwood.layout.widget
+module:redwood-lazylayout-api
+app.cash.redwood.lazylayout.api
 module:redwood-lazylayout-compose
 app.cash.redwood.lazylayout.compose
 module:redwood-lazylayout-composeui
@@ -62,16 +64,14 @@ module:redwood-tooling-schema
 app.cash.redwood.tooling.schema
 module:redwood-treehouse
 app.cash.redwood.treehouse
-module:redwood-treehouse-composeui
-app.cash.redwood.treehouse.composeui
-module:redwood-treehouse-composeui-insets
-app.cash.redwood.treehouse.composeui
 module:redwood-treehouse-guest
 app.cash.redwood.treehouse
 module:redwood-treehouse-guest-compose
 app.cash.redwood.treehouse
 module:redwood-treehouse-host
 app.cash.redwood.treehouse
+module:redwood-treehouse-host-composeui
+app.cash.redwood.treehouse.composeui
 module:redwood-widget
 app.cash.redwood.widget
 module:redwood-widget-compose

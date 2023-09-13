@@ -1,0 +1,303 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WindowedLazyList</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            redwood
+                    </a>            </div>
+            <div class="library-version">0.7.0
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-lazylayout-widget::app.cash.redwood.lazylayout.widget/WindowedLazyList///PointingToDeclaration//-1198042463">
+  <div class="breadcrumbs"><a href="../../index.html">redwood-lazylayout-widget</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.lazylayout.widget</a><span class="delimiter">/</span><span class="current">WindowedLazyList</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Windowed</span><wbr><span>Lazy</span><wbr><span><span>List</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">WindowedLazyList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listUpdateCallback<span class="token operator">: </span><a href="../-list-update-callback/index.html">ListUpdateCallback</a></span></span><span class="token punctuation">)</span> : <a href="../-lazy-list/index.html">LazyList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt; </span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1671073687%2FConstructors%2F-1198042463" anchor-label="WindowedLazyList" id="1671073687%2FConstructors%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-windowed-lazy-list.html"><span>Windowed</span><wbr><span>Lazy</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1671073687%2FConstructors%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listUpdateCallback<span class="token operator">: </span><a href="../-list-update-callback/index.html">ListUpdateCallback</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="911826322%2FProperties%2F-1198042463" anchor-label="items" id="911826322%2FProperties%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items.html"><span><span>items</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="911826322%2FProperties%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">val </span><a href="items.html">items</a><span class="token operator">: </span><a href="../-windowed-children/index.html">WindowedChildren</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">{tag=2}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1616010488%2FProperties%2F-1198042463" anchor-label="modifier" id="-1616010488%2FProperties%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1616010488%2FProperties%2F-1198042463"><span><span>modifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1616010488%2FProperties%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="index.html#-1616010488%2FProperties%2F-1198042463">modifier</a><span class="token operator">: </span><a href="../../../redwood-runtime/app.cash.redwood/-modifier/index.html">Modifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1133507278%2FProperties%2F-1198042463" anchor-label="placeholder" id="1133507278%2FProperties%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/placeholder.html"><span><span>placeholder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1133507278%2FProperties%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-lazy-list/placeholder.html">placeholder</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">{tag=1}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1934104470%2FProperties%2F-1198042463" anchor-label="value" id="-1934104470%2FProperties%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1934104470%2FProperties%2F-1198042463"><span><span>value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1934104470%2FProperties%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#-1934104470%2FProperties%2F-1198042463">value</a><span class="token operator">: </span><a href="index.html">W</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-636600165%2FFunctions%2F-1198042463" anchor-label="crossAxisAlignment" id="-636600165%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/cross-axis-alignment.html"><span>cross</span><wbr><span>Axis</span><wbr><span><span>Alignment</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-636600165%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/cross-axis-alignment.html"><span class="token function">crossAxisAlignment</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">crossAxisAlignment<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-cross-axis-alignment/index.html">CrossAxisAlignment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=8}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2086990245%2FFunctions%2F-1198042463" anchor-label="height" id="-2086990245%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/height.html"><span><span>height</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2086990245%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/height.html"><span class="token function">height</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">height<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=6}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="981676766%2FFunctions%2F-1198042463" anchor-label="isVertical" id="981676766%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/is-vertical.html"><span>is</span><wbr><span><span>Vertical</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="981676766%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/is-vertical.html"><span class="token function">isVertical</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isVertical<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=1}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-272513174%2FFunctions%2F-1198042463" anchor-label="itemsAfter" id="-272513174%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items-after.html"><span>items</span><wbr><span><span>After</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-272513174%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="items-after.html"><span class="token function">itemsAfter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">itemsAfter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=4}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1557644047%2FFunctions%2F-1198042463" anchor-label="itemsBefore" id="-1557644047%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="items-before.html"><span>items</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1557644047%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="items-before.html"><span class="token function">itemsBefore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">itemsBefore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=3}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-799582527%2FFunctions%2F-1198042463" anchor-label="margin" id="-799582527%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/margin.html"><span><span>margin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-799582527%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/margin.html"><span class="token function">margin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">margin<span class="token operator">: </span><a href="../../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=7}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-721505659%2FFunctions%2F-1198042463" anchor-label="onViewportChanged" id="-721505659%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-viewport-changed.html"><span>on</span><wbr><span>Viewport</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-721505659%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-viewport-changed.html"><span class="token function">onViewportChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onViewportChanged<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=2}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1721479673%2FFunctions%2F-1198042463" anchor-label="scrollItemIndex" id="-1721479673%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/scroll-item-index.html"><span>scroll</span><wbr><span>Item</span><wbr><span><span>Index</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1721479673%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/scroll-item-index.html"><span class="token function">scrollItemIndex</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scrollItemIndex<span class="token operator">: </span><a href="../../../redwood-lazylayout-api/app.cash.redwood.lazylayout.api/-scroll-item-index/index.html">ScrollItemIndex</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=9}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1542434908%2FFunctions%2F-1198042463" anchor-label="width" id="-1542434908%2FFunctions%2F-1198042463" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-lazy-list/width.html"><span><span>width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1542434908%2FFunctions%2F-1198042463"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-lazylayout-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-lazy-list/width.html"><span class="token function">width</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">width<span class="token operator">: </span><a href="../../../redwood-layout-api/app.cash.redwood.layout.api/-constraint/index.html">Constraint</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">{tag=5}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

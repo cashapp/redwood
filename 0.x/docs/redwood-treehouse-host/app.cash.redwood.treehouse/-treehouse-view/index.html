@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>TreehouseView</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
@@ -29,31 +32,37 @@
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../index.html">
-<span>redwood</span>            </a>    </div>
-    <div>0.5.0
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            redwood
+                    </a>            </div>
+            <div class="library-version">0.7.0
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">common</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="redwood-treehouse-host::app.cash.redwood.treehouse/TreehouseView///PointingToDeclaration//723931153">
   <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse-host</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><span class="current">TreehouseView</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Treehouse</span><wbr><span><span>View</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseView"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="index.html">TreehouseView</a></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-widget-view/index.html">TreehouseWidgetView</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-u-i-kit-view/index.html">TreehouseUIKitView</a></div></span></div><div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseView"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="index.html">TreehouseView</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span> : <a href="../../../redwood-widget/app.cash.redwood.widget/-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt; </span></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-layout/index.html">TreehouseLayout</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-treehouse-u-i-view/index.html">TreehouseUIView</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -70,7 +79,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseViewReadyForContentChangeListener"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-ready-for-content-change-listener/index.html">ReadyForContentChangeListener</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseViewReadyForContentChangeListener"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-ready-for-content-change-listener/index.html">ReadyForContentChangeListener</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ready-for-content-change-listener/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -100,7 +109,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseViewWidgetSystem"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-widget-system/index.html">WidgetSystem</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseViewWidgetSystem"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-widget-system/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -109,17 +118,17 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-560778773%2FProperties%2F723931153" anchor-label="children" id="-560778773%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="-1426021659%2FProperties%2F723931153" anchor-label="children" id="-1426021659%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="children.html"><span><span>children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-560778773%2FProperties%2F723931153"></span>
+                  <div><a href="index.html#-1426021659%2FProperties%2F723931153"><span><span>children</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1426021659%2FProperties%2F723931153"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="children.html">children</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#-1426021659%2FProperties%2F723931153">children</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -149,22 +158,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="ready-for-content-change-listener.html">readyForContentChangeListener</a><span class="token operator">: </span><a href="-ready-for-content-change-listener/index.html">TreehouseView.ReadyForContentChangeListener</a><span class="token operator">?</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1476119143%2FProperties%2F723931153" anchor-label="restoredId" id="-1476119143%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="restored-id.html"><span>restored</span><wbr><span><span>Id</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1476119143%2FProperties%2F723931153"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="restored-id.html">restoredId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="ready-for-content-change-listener.html">readyForContentChangeListener</a><span class="token operator">: </span><a href="-ready-for-content-change-listener/index.html">TreehouseView.ReadyForContentChangeListener</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -184,17 +178,32 @@
               </div>
             </div>
           </div>
-<a data-name="-1637246130%2FProperties%2F723931153" anchor-label="uiConfiguration" id="-1637246130%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
+<a data-name="1241867360%2FProperties%2F723931153" anchor-label="stateSnapshotId" id="1241867360%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="ui-configuration.html"><span>ui</span><wbr><span><span>Configuration</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1637246130%2FProperties%2F723931153"></span>
+                  <div><a href="state-snapshot-id.html"><span>state</span><wbr><span>Snapshot</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1241867360%2FProperties%2F723931153"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="ui-configuration.html">uiConfiguration</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="state-snapshot-id.html">stateSnapshotId</a><span class="token operator">: </span><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-state-snapshot/-id/index.html">StateSnapshot.Id</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1659108628%2FProperties%2F723931153" anchor-label="uiConfiguration" id="1659108628%2FProperties%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1659108628%2FProperties%2F723931153"><span>ui</span><wbr><span><span>Configuration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1659108628%2FProperties%2F723931153"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#1659108628%2FProperties%2F723931153">uiConfiguration</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -209,7 +218,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="widget-system.html">widgetSystem</a><span class="token operator">: </span><a href="-widget-system/index.html">TreehouseView.WidgetSystem</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="widget-system.html">widgetSystem</a><span class="token operator">: </span><a href="-widget-system/index.html">TreehouseView.WidgetSystem</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">W</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -218,17 +227,17 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1119050017%2FFunctions%2F723931153" anchor-label="reset" id="1119050017%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="1734482535%2FFunctions%2F723931153" anchor-label="reset" id="1734482535%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="reset.html"><span><span>reset</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1119050017%2FFunctions%2F723931153"></span>
+                  <div><a href="index.html#1734482535%2FFunctions%2F723931153"><span><span>reset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1734482535%2FFunctions%2F723931153"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="reset.html"><span class="token function">reset</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when new code is loaded. This should at minimum clear all <a href="children.html">children</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#1734482535%2FFunctions%2F723931153"><span class="token function">reset</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -241,8 +250,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 
