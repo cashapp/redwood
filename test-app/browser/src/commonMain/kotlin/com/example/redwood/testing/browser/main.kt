@@ -21,7 +21,7 @@ import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testing.presenter.HttpClient
-import com.example.redwood.testing.presenter.TestApp
+import com.example.redwood.testing.presenter.RepoSearch
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.js.json
 import kotlinx.browser.document
@@ -53,8 +53,7 @@ fun main() {
     response.text().await()
   }
 
-  val ui = TestApp(client)
   composition.setContent {
-    ui.Show()
+    RepoSearch(client)
   }
 }

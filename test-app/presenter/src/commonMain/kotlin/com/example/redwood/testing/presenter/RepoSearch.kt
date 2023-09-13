@@ -16,6 +16,9 @@
 package com.example.redwood.testing.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.PagingSource
@@ -28,31 +31,30 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import kotlinx.serialization.json.Json
 
-class TestApp(
-  private val httpClient: HttpClient,
-) {
-  private var latestSearchTerm = "android"
+private val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20).apply {
+  check(pageSize == initialLoadSize) {
+    "As GitHub uses offset based pagination, an elegant PagingSource implementation requires each page to be of equal size."
+  }
+}
 
-  private val pager: Pager<Int, Repository> = run {
-    val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20)
-    check(pagingConfig.pageSize == pagingConfig.initialLoadSize) {
-      "As GitHub uses offset based pagination, an elegant PagingSource implementation requires each page to be of equal size."
-    }
+@Composable
+fun RepoSearch(httpClient: HttpClient) {
+  // TODO Make term interactive with TextInput.
+  val latestSearchTerm by remember { mutableStateOf("android") }
+
+  val pager = remember(httpClient, latestSearchTerm) {
     Pager(pagingConfig) {
       RepositoryPagingSource(httpClient, latestSearchTerm)
     }
   }
 
-  @Composable
-  fun Show() {
-    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-    LazyColumn(
-      width = Constraint.Fill,
-      placeholder = { RepositoryItem(Repository(fullName = "Placeholder…", 0)) },
-    ) {
-      items(lazyPagingItems.itemCount) { index ->
-        RepositoryItem(lazyPagingItems[index]!!)
-      }
+  val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
+  LazyColumn(
+    width = Constraint.Fill,
+    placeholder = { RepositoryItem(Repository(fullName = "Placeholder…", 0)) },
+  ) {
+    items(lazyPagingItems.itemCount) { index ->
+      RepositoryItem(lazyPagingItems[index]!!)
     }
   }
 }
