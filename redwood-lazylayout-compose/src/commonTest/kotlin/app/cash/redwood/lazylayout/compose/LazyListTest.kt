@@ -61,14 +61,25 @@ class LazyListTest {
   }
 
   @Test
-  fun populatedLazyColumn() = runTest {
+  fun populatedLazyColumnVariesItemsAfter_0() =
+    populatedLazyColumnVariesItemsAfter(10, 0, 10)
+
+  @Test
+  fun populatedLazyColumnVariesItemsAfter_1() =
+    populatedLazyColumnVariesItemsAfter(100, 85, 15)
+
+  private fun populatedLazyColumnVariesItemsAfter(
+    itemCount: Int,
+    expectedItemsAfter: Int,
+    expectedItemCount: Int,
+  ) = runTest {
     val snapshot = TestSchemaTester {
       setContent {
         LazyColumn(
           state = rememberLazyListState(),
           placeholder = { Text("Placeholder") },
         ) {
-          items(10) {
+          items(itemCount) {
             Text(it.toString())
           }
         }
@@ -83,14 +94,14 @@ class LazyListTest {
           isVertical = true,
           onViewportChanged = { _, _ -> },
           itemsBefore = 0,
-          itemsAfter = 0,
+          itemsAfter = expectedItemsAfter,
           width = Constraint.Wrap,
           height = Constraint.Wrap,
           margin = Margin(0.0.dp),
           crossAxisAlignment = CrossAxisAlignment.Start,
           scrollItemIndex = ScrollItemIndex(0, 0),
           placeholder = List(20) { TextValue(Modifier, "Placeholder") },
-          items = List(10) { TextValue(Modifier, it.toString()) },
+          items = List(expectedItemCount) { TextValue(Modifier, it.toString()) },
         ),
       )
   }
