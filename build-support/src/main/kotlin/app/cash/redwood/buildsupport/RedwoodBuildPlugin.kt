@@ -48,7 +48,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 private const val redwoodGroupId = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val redwoodVersion = "0.7.0-SNAPSHOT"
+private const val redwoodVersion = "0.7.0"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {

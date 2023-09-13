@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2023-09-13
+
+New:
+- Expose viewport size and density in `UiConfiguration`.
+- `RedwoodView` and platform-specific subtypes provide a turnkey view into which a
+  `RedwoodComposition` can be rendered. `TreehouseView` now extends `RedwoodView`.
+
+Changed:
+- Remove support for the Kotlin/JS plugin (`org.jetbrains.kotlin.js`). This plugin is deprecated
+  and projects should be migrated to Kotlin multiplatform plugin (`org.jetbrains.kotlin.multiplatform`).
+- Some `TreehouseView` subtypes were renamed to better match platform conventions:
+  - `TreehouseWidgetView` is now `TreehouseLayout` for Android.
+  - `TreehouseUIKitView` is now `TreehouseUIView` for iOS.
+- `UIViewChildren` now supports `UIStackView` automatically.
+- Package name of types in 'lazylayout-dom' artifact is now `lazylayout` instead of just `layout`.
+
+This version works with Kotlin 1.9.10 by default.
+
+
 ## [0.6.0] - 2023-08-10
 
 New:
@@ -216,7 +235,8 @@ This version only works with Kotlin 1.7.20.
 
 
 
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/cashapp/redwood/releases/tag/0.7.0
 [0.6.0]: https://github.com/cashapp/redwood/releases/tag/0.6.0
 [0.5.0]: https://github.com/cashapp/redwood/releases/tag/0.5.0
 [0.4.0]: https://github.com/cashapp/redwood/releases/tag/0.4.0
