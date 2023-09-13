@@ -42,6 +42,14 @@ public open class RedwoodUIView(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
+  override fun reset() {
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    @Suppress("UNCHECKED_CAST") // Correct generic lost by cinterop.
+    (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
+  }
+
   protected fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,

@@ -53,6 +53,8 @@ public fun <W : Any> RedwoodComposition(
   provider: Widget.Provider<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
+  view.reset()
+
   return RedwoodComposition(scope, view.children, view.uiConfiguration, provider, onEndChanges)
 }
 

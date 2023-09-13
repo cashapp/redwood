@@ -24,7 +24,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
-import app.cash.redwood.widget.ViewGroupChildren
 import java.util.UUID
 
 @Deprecated(
@@ -55,13 +54,6 @@ public class TreehouseLayout(
     private set
 
   override var saveCallback: TreehouseView.SaveCallback? = null
-
-  override fun reset() {
-    children.remove(0, (children as ViewGroupChildren).widgets.size)
-
-    // Ensure any out-of-band views are also removed.
-    removeAllViews()
-  }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
