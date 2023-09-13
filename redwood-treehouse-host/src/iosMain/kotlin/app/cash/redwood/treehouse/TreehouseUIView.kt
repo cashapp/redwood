@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
-import app.cash.redwood.widget.UIViewChildren
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UITraitCollection
@@ -52,14 +51,6 @@ public class TreehouseUIView private constructor(
 
   init {
     (view as RootUiView).treehouseView = this
-  }
-
-  override fun reset() {
-    children.remove(0, (children as UIViewChildren).widgets.size)
-
-    // Ensure any out-of-band views are also removed.
-    @Suppress("UNCHECKED_CAST") // Correct generic lost by cinterop.
-    (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
   }
 
   private fun superviewChanged() {

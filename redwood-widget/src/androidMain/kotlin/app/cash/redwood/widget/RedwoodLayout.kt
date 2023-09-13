@@ -38,6 +38,13 @@ public open class RedwoodLayout(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
+  override fun reset() {
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band views are also removed.
+    removeAllViews()
+  }
+
   init {
     setOnWindowInsetsChangeListener { insets ->
       mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)

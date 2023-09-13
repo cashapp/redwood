@@ -58,6 +58,9 @@ public fun RedwoodContent(
     object : RedwoodView<@Composable () -> Unit> {
       override val children = ComposeWidgetChildren()
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
+      override fun reset() {
+        children.remove(0, children.widgets.size)
+      }
     }
   }
   LaunchedEffect(redwoodView, uiConfiguration) {

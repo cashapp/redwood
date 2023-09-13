@@ -22,6 +22,7 @@ import app.cash.redwood.widget.Widget.Children
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
 
@@ -33,9 +34,10 @@ public fun HTMLElement.asRedwoodView(): RedwoodView<HTMLElement> {
 }
 
 private class RedwoodHTMLElementView(
-  element: HTMLElement,
+  private val element: HTMLElement,
 ) : RedwoodView<HTMLElement> {
-  override val children: Children<HTMLElement> = HTMLElementChildren(element)
+  private val _children = HTMLElementChildren(element)
+  override val children: Children<HTMLElement> get() = _children
   override val uiConfiguration = MutableStateFlow(
     UiConfiguration(
       darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches,
@@ -60,5 +62,12 @@ private class RedwoodHTMLElementView(
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+  }
+
+  override fun reset() {
+    _children.remove(0, _children.widgets.size)
+
+    // Ensure any out-of-band nodes are also removed.
+    element.clear()
   }
 }

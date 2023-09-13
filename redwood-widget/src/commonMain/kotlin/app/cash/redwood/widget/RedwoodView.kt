@@ -23,4 +23,11 @@ import kotlinx.coroutines.flow.StateFlow
 public interface RedwoodView<W : Any> {
   public val children: Widget.Children<W>
   public val uiConfiguration: StateFlow<UiConfiguration>
+
+  /**
+   * This should at minimum clear all [children].
+   *
+   * Invoke when switching the backing composition to prepare the view for an initial load.
+   */
+  public fun reset()
 }

@@ -29,9 +29,6 @@ public interface TreehouseView<W : Any> : RedwoodView<W> {
   public var saveCallback: SaveCallback?
   public val stateSnapshotId: StateSnapshot.Id
 
-  /** Invoked when new code is loaded. This should at minimum clear all [children]. */
-  public fun reset()
-
   @ObjCName("TreehouseViewReadyForContentChangeListener", exact = true)
   public fun interface ReadyForContentChangeListener<W : Any> {
     /** Called when [TreehouseView.readyForContent] has changed. */
