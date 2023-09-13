@@ -59,4 +59,39 @@ class LazyListTest {
         ),
       )
   }
+
+  @Test
+  fun populatedLazyColumn() = runTest {
+    val snapshot = TestSchemaTester {
+      setContent {
+        LazyColumn(
+          state = rememberLazyListState(),
+          placeholder = { Text("Placeholder") },
+        ) {
+          items(10) {
+            Text(it.toString())
+          }
+        }
+      }
+      awaitSnapshot()
+    }
+
+    assertThat(snapshot)
+      .containsExactly(
+        LazyListValue(
+          Modifier,
+          isVertical = true,
+          onViewportChanged = { _, _ -> },
+          itemsBefore = 0,
+          itemsAfter = 0,
+          width = Constraint.Wrap,
+          height = Constraint.Wrap,
+          margin = Margin(0.0.dp),
+          crossAxisAlignment = CrossAxisAlignment.Start,
+          scrollItemIndex = ScrollItemIndex(0, 0),
+          placeholder = List(20) { TextValue(Modifier, "Placeholder") },
+          items = List(10) { TextValue(Modifier, it.toString()) },
+        ),
+      )
+  }
 }
