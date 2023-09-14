@@ -28,6 +28,16 @@ Or this (to use the Android View frontend):
 ```
 
 
+Running Counter on Desktop
+----------------------
+
+Run this:
+
+```
+./gradlew :samples:counter:desktop-composeui:run
+```
+
+
 Running Counter on iOS
 ----------------------
 
