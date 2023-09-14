@@ -19,15 +19,7 @@ import Foundation
 import UIKit
 import TestAppKt
 
-class IosTestSchemaWidgetFactory<A : AnyObject>: TestSchemaWidgetFactory {
-    let treehouseApp: TreehouseApp<A>
-    let widgetSystem: TreehouseViewWidgetSystem
-
-    init(treehouseApp: TreehouseApp<A>, widgetSystem: TreehouseViewWidgetSystem) {
-        self.treehouseApp = treehouseApp
-        self.widgetSystem = widgetSystem
-    }
-
+class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
     func TextInput() -> TextInput {
         fatalError()
     }
@@ -37,7 +29,7 @@ class IosTestSchemaWidgetFactory<A : AnyObject>: TestSchemaWidgetFactory {
     }
 
     func Button() -> Button {
-        fatalError()
+        return ButtonBinding()
     }
     
     func Button2() -> Button2 {

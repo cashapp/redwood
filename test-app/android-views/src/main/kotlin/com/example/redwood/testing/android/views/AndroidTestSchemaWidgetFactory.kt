@@ -17,7 +17,9 @@ package com.example.redwood.testing.android.views
 
 import android.content.Context
 import android.view.View
+import android.widget.Button as ButtonWidget
 import android.widget.TextView
+import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
 
@@ -27,7 +29,7 @@ class AndroidTestSchemaWidgetFactory(
   override fun Text(): Text<View> = ViewText(TextView(context))
   override fun TestRow() = throw UnsupportedOperationException()
   override fun ScopedTestRow() = throw UnsupportedOperationException()
-  override fun Button() = TODO()
+  override fun Button(): Button<View> = ViewButton(ButtonWidget(context))
   override fun Button2() = TODO()
   override fun TextInput() = TODO()
 }
