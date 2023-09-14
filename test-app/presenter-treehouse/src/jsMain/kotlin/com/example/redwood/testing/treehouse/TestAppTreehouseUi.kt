@@ -18,15 +18,13 @@ package com.example.redwood.testing.treehouse
 import androidx.compose.runtime.Composable
 import app.cash.redwood.treehouse.TreehouseUi
 import com.example.redwood.testing.presenter.HttpClient
-import com.example.redwood.testing.presenter.TestApp
+import com.example.redwood.testing.presenter.RepoSearch
 
 class TestAppTreehouseUi(
-  httpClient: HttpClient,
+  private val httpClient: HttpClient,
 ) : TreehouseUi {
-  private val testApp = TestApp(httpClient)
-
   @Composable
   override fun Show() {
-    testApp.Show()
+    RepoSearch(httpClient)
   }
 }
