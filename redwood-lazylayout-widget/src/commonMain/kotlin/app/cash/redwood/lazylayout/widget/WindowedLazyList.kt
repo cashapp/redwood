@@ -21,7 +21,7 @@ public abstract class WindowedLazyList<W : Any>(
 
   private var firstVisibleItemIndex = 0
   private var lastVisibleItemIndex = 0
-  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
+  protected var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
 
   final override val items: WindowedChildren<W> = WindowedChildren(listUpdateCallback)
 
@@ -29,7 +29,7 @@ public abstract class WindowedLazyList<W : Any>(
     this.onViewportChanged = onViewportChanged
   }
 
-  protected fun updateViewport(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+  public fun updateViewport(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
     if (firstVisibleItemIndex != this.firstVisibleItemIndex || lastVisibleItemIndex != this.lastVisibleItemIndex) {
       this.firstVisibleItemIndex = firstVisibleItemIndex
       this.lastVisibleItemIndex = lastVisibleItemIndex
