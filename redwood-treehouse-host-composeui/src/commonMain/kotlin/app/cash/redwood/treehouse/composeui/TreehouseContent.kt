@@ -38,6 +38,7 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
@@ -51,6 +52,8 @@ public fun <A : AppService> TreehouseContent(
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
 ) {
+  val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+
   var viewportSize by remember { mutableStateOf(Size.Zero) }
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
@@ -63,6 +66,7 @@ public fun <A : AppService> TreehouseContent(
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView<@Composable () -> Unit> {
       override val children = ComposeWidgetChildren()
+      override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
       override val widgetSystem = widgetSystem
       override val readyForContent = true
@@ -92,3 +96,6 @@ public fun <A : AppService> TreehouseContent(
     treehouseView.children.render()
   }
 }
+
+@Composable
+internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher

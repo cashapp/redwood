@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CancellationException
@@ -40,7 +41,10 @@ public interface Content {
   /**
    * Immediately begins preparing the widget tree.
    */
-  public fun preload(uiConfiguration: UiConfiguration)
+  public fun preload(
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    uiConfiguration: UiConfiguration,
+  )
 
   /**
    * It is an error to bind multiple views simultaneously.

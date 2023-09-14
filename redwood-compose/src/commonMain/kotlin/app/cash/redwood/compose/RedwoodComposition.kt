@@ -29,6 +29,7 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
@@ -55,7 +56,14 @@ public fun <W : Any> RedwoodComposition(
 ): RedwoodComposition {
   view.reset()
 
-  return RedwoodComposition(scope, view.children, view.uiConfiguration, provider, onEndChanges)
+  return RedwoodComposition(
+    scope,
+    view.children,
+    view.onBackPressedDispatcher,
+    view.uiConfiguration,
+    provider,
+    onEndChanges,
+  )
 }
 
 /**
@@ -65,15 +73,22 @@ public fun <W : Any> RedwoodComposition(
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
+  onBackPressedDispatcher: OnBackPressedDispatcher,
   uiConfigurations: StateFlow<UiConfiguration>,
   provider: Widget.Provider<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  return WidgetRedwoodComposition(scope, uiConfigurations, NodeApplier(provider, container, onEndChanges))
+  return WidgetRedwoodComposition(
+    scope,
+    onBackPressedDispatcher,
+    uiConfigurations,
+    NodeApplier(provider, container, onEndChanges),
+  )
 }
 
 private class WidgetRedwoodComposition<W : Any>(
   private val scope: CoroutineScope,
+  private val onBackPressedDispatcher: OnBackPressedDispatcher,
   private val uiConfigurations: StateFlow<UiConfiguration>,
   applier: NodeApplier<W>,
 ) : RedwoodComposition {
@@ -100,7 +115,10 @@ private class WidgetRedwoodComposition<W : Any>(
   override fun setContent(content: @Composable () -> Unit) {
     composition.setContent {
       val uiConfiguration by uiConfigurations.collectAsState()
-      CompositionLocalProvider(LocalUiConfiguration provides uiConfiguration) {
+      CompositionLocalProvider(
+        LocalOnBackPressedDispatcher provides onBackPressedDispatcher,
+        LocalUiConfiguration provides uiConfiguration,
+      ) {
         content()
       }
     }

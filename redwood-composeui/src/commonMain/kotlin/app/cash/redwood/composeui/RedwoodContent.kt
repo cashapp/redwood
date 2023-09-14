@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
@@ -45,6 +46,8 @@ public fun RedwoodContent(
 ) {
   val scope = rememberCoroutineScope()
 
+  val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+
   var viewportSize by remember { mutableStateOf(Size.Zero) }
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
@@ -57,6 +60,7 @@ public fun RedwoodContent(
   val redwoodView = remember {
     object : RedwoodView<@Composable () -> Unit> {
       override val children = ComposeWidgetChildren()
+      override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
       override fun reset() {
         children.remove(0, children.widgets.size)
@@ -85,3 +89,6 @@ public fun RedwoodContent(
     redwoodView.children.render()
   }
 }
+
+@Composable
+internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher

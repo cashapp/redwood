@@ -20,6 +20,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import app.cash.redwood.Modifier
+import app.cash.redwood.compose.BackHandler
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Constraint.Companion
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -37,11 +38,13 @@ fun TestApp(httpClient: HttpClient) {
   if (activeScreen == null) {
     HomeScreen(screen)
   } else {
+    val onBack = { screen.value = null }
+    BackHandler(onBack = onBack)
     Column(
       width = Constraint.Fill,
       height = Constraint.Fill,
     ) {
-      Button("Back", onClick = { screen.value = null })
+      Button("Back", onClick = onBack)
       activeScreen.Show(httpClient, modifier = Modifier.grow(1.0))
     }
   }

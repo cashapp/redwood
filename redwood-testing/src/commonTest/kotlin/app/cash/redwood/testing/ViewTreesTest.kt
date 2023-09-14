@@ -31,6 +31,9 @@ import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
@@ -110,6 +113,13 @@ class ViewTreesTest {
       bridge = TestSchemaProtocolBridge.create(),
       changesSink = { protocolChanges = it },
       widgetVersion = UInt.MAX_VALUE,
+      onBackPressedDispatcher = object : OnBackPressedDispatcher {
+        override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+          return object : Cancellable {
+            override fun cancel() = Unit
+          }
+        }
+      },
       uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
     composition.setContent(content)

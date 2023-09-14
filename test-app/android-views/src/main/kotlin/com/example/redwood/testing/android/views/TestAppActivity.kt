@@ -67,7 +67,7 @@ class TestAppActivity : ComponentActivity() {
     }
 
     setContentView(
-      TreehouseLayout(this, widgetSystem).apply {
+      TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
         treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )

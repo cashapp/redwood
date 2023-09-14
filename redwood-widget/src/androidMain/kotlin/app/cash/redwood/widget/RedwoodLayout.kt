@@ -20,20 +20,40 @@ import android.content.Context
 import android.content.res.Configuration
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import androidx.core.graphics.Insets
+import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+@SuppressLint("ViewConstructor")
 public open class RedwoodLayout(
   context: Context,
+  androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
 ) : FrameLayout(context), RedwoodView<View> {
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 
   private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
+
+  override val onBackPressedDispatcher: RedwoodOnBackPressedDispatcher =
+    object : RedwoodOnBackPressedDispatcher {
+      override fun addCallback(onBackPressedCallback: RedwoodOnBackPressedCallback): Cancellable {
+        val androidOnBackPressedCallback = onBackPressedCallback.toAndroid()
+        androidOnBackPressedDispatcher.addCallback(androidOnBackPressedCallback)
+        return object : Cancellable {
+          override fun cancel() {
+            androidOnBackPressedCallback.remove()
+          }
+        }
+      }
+    }
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
@@ -80,3 +100,10 @@ public open class RedwoodLayout(
     )
   }
 }
+
+private fun RedwoodOnBackPressedCallback.toAndroid(): AndroidOnBackPressedCallback =
+  object : AndroidOnBackPressedCallback(this@toAndroid.isEnabled) {
+    override fun handleOnBackPressed() {
+      this@toAndroid.handleOnBackPressed()
+    }
+  }

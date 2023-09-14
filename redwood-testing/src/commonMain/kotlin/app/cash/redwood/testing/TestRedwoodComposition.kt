@@ -18,6 +18,9 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import kotlin.time.Duration
@@ -73,6 +76,13 @@ private class RealTestRedwoodComposition<W : Any, S>(
   private val composition = RedwoodComposition(
     scope = scope + clock,
     container = container,
+    onBackPressedDispatcher = object : OnBackPressedDispatcher {
+      override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+        return object : Cancellable {
+          override fun cancel() = Unit
+        }
+      }
+    },
     uiConfigurations = uiConfigurations,
     provider = provider,
     onEndChanges = {

@@ -37,6 +37,16 @@ functions = [
   "odhmO/d6",
 ]
 
+[app.cash.redwood.treehouse.CancellableService]
+
+functions = [
+  # fun cancel(): kotlin.Unit
+  "EhTc1FUm",
+
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+]
+
 [app.cash.redwood.treehouse.ChangesSinkService]
 
 functions = [
@@ -45,6 +55,29 @@ functions = [
 
   # fun sendChanges(kotlin.collections.List): kotlin.Unit
   "W8qOuU0t",
+]
+
+[app.cash.redwood.treehouse.OnBackPressedCallbackService]
+
+functions = [
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun handleOnBackPressed(): kotlin.Unit
+  "NjIN59uX",
+
+  # var isEnabled: kotlin.Boolean
+  "yKh+yo1c",
+]
+
+[app.cash.redwood.treehouse.OnBackPressedDispatcherService]
+
+functions = [
+  # fun addCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService): app.cash.redwood.treehouse.CancellableService
+  "F7ShXQYg",
+
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
 ]
 
 [app.cash.redwood.treehouse.ZiplineTreehouseUi]
@@ -58,6 +91,9 @@ functions = [
 
   # fun snapshotState(): app.cash.redwood.treehouse.StateSnapshot
   "mPBGCHFl",
+
+  # fun start(app.cash.redwood.treehouse.ChangesSinkService, app.cash.redwood.treehouse.OnBackPressedDispatcherService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
+  "UkTy28z8",
 
   # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
   "FiVQXMQW",

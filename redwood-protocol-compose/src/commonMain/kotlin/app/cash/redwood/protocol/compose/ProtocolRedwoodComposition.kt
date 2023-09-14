@@ -21,6 +21,7 @@ import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.ChangesSink
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -34,9 +35,10 @@ public fun ProtocolRedwoodComposition(
   bridge: ProtocolBridge,
   changesSink: ChangesSink,
   widgetVersion: UInt,
+  onBackPressedDispatcher: OnBackPressedDispatcher,
   uiConfigurations: StateFlow<UiConfiguration>,
 ): RedwoodComposition {
-  val composition = RedwoodComposition(scope, bridge.root, uiConfigurations, bridge.provider) {
+  val composition = RedwoodComposition(scope, bridge.root, onBackPressedDispatcher, uiConfigurations, bridge.provider) {
     bridge.getChangesOrNull()?.let(changesSink::sendChanges)
   }
   return ProtocolRedwoodComposition(composition, widgetVersion)

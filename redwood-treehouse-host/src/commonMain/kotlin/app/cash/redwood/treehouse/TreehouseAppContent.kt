@@ -20,6 +20,8 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
@@ -47,6 +49,7 @@ private sealed interface ViewState {
   object None : ViewState
 
   class Preloading(
+    val onBackPressedDispatcher: OnBackPressedDispatcher,
     val uiConfiguration: UiConfiguration,
   ) : ViewState
 
@@ -73,13 +76,16 @@ internal class TreehouseAppContent<A : AppService>(
 
   private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
 
-  override fun preload(uiConfiguration: UiConfiguration) {
+  override fun preload(
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    uiConfiguration: UiConfiguration,
+  ) {
     treehouseApp.dispatchers.checkUi()
     val previousState = stateFlow.value
 
     check(previousState.viewState is ViewState.None)
 
-    val nextViewState = ViewState.Preloading(uiConfiguration)
+    val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
 
     // Start the code if necessary.
     val ziplineSession = treehouseApp.ziplineSession
@@ -89,6 +95,7 @@ internal class TreehouseAppContent<A : AppService>(
           startViewCodeContentBinding(
             ziplineSession = ziplineSession,
             isInitialLaunch = true,
+            onBackPressedDispatcher = onBackPressedDispatcher,
             firstUiConfiguration = MutableStateFlow(nextViewState.uiConfiguration),
           ),
         )
@@ -120,6 +127,7 @@ internal class TreehouseAppContent<A : AppService>(
           startViewCodeContentBinding(
             ziplineSession = ziplineSession,
             isInitialLaunch = true,
+            onBackPressedDispatcher = nextViewState.view.onBackPressedDispatcher,
             firstUiConfiguration = nextViewState.view.uiConfiguration,
           ),
         )
@@ -179,6 +187,12 @@ internal class TreehouseAppContent<A : AppService>(
     val viewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
+    val onBackPressedDispatcher = when (viewState) {
+      is ViewState.Preloading -> viewState.onBackPressedDispatcher
+      is ViewState.Bound -> viewState.view.onBackPressedDispatcher
+      else -> error("unexpected receiveZiplineSession with no view bound and no preload")
+    }
+
     val uiConfiguration = when (viewState) {
       is ViewState.Preloading -> MutableStateFlow(viewState.uiConfiguration)
       is ViewState.Bound -> viewState.view.uiConfiguration
@@ -189,6 +203,7 @@ internal class TreehouseAppContent<A : AppService>(
       startViewCodeContentBinding(
         ziplineSession = next,
         isInitialLaunch = previousCodeState is CodeState.Idle,
+        onBackPressedDispatcher = onBackPressedDispatcher,
         firstUiConfiguration = uiConfiguration,
       ),
     )
@@ -210,6 +225,7 @@ internal class TreehouseAppContent<A : AppService>(
   private fun startViewCodeContentBinding(
     ziplineSession: ZiplineSession<A>,
     isInitialLaunch: Boolean,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
     firstUiConfiguration: StateFlow<UiConfiguration>,
   ): ViewContentCodeBinding<A> {
     dispatchers.checkUi()
@@ -223,6 +239,7 @@ internal class TreehouseAppContent<A : AppService>(
       stateFlow = stateFlow,
       isInitialLaunch = isInitialLaunch,
       session = ziplineSession,
+      onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
     ).apply {
       start(ziplineSession)
@@ -251,6 +268,7 @@ private class ViewContentCodeBinding<A : AppService>(
   val stateFlow: MutableStateFlow<State<A>>,
   private val isInitialLaunch: Boolean,
   session: ZiplineSession<A>,
+  private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
 ) : EventSink, ChangesSinkService, TreehouseView.SaveCallback {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
@@ -372,6 +390,30 @@ private class ViewContentCodeBinding<A : AppService>(
       val restoredState = if (restoredId != null) app.stateStore.get(restoredId.value.orEmpty()) else null
       treehouseUi.start(
         changesSink = this@ViewContentCodeBinding,
+        onBackPressedDispatcher = object : OnBackPressedDispatcherService {
+          override fun addCallback(onBackPressedCallback: OnBackPressedCallbackService): CancellableService {
+            app.dispatchers.checkZipline()
+            val cancellable = onBackPressedDispatcher.addCallback(
+              object : OnBackPressedCallback(onBackPressedCallback.isEnabled) {
+                override fun handleOnBackPressed() {
+                  bindingScope.launch(app.dispatchers.zipline) {
+                    onBackPressedCallback.handleOnBackPressed()
+                  }
+                }
+              },
+            )
+            return object : CancellableService {
+              override fun cancel() {
+                app.dispatchers.checkZipline()
+                cancellable.cancel()
+              }
+
+              override fun close() {
+                cancel()
+              }
+            }
+          }
+        },
         uiConfigurations = uiConfigurationFlow,
         stateSnapshot = restoredState,
       )

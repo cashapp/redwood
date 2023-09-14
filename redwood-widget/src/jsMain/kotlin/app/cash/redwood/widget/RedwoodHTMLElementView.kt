@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp
@@ -38,6 +41,16 @@ private class RedwoodHTMLElementView(
 ) : RedwoodView<HTMLElement> {
   private val _children = HTMLElementChildren(element)
   override val children: Children<HTMLElement> get() = _children
+
+  override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
+    override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+      // TODO Delegate `onBackPressedCallback` to browser
+      return object : Cancellable {
+        override fun cancel() = Unit
+      }
+    }
+  }
+
   override val uiConfiguration = MutableStateFlow(
     UiConfiguration(
       darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches,
