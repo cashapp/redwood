@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.testing.treehouse
+package com.example.redwood.testing.android.views
 
-import androidx.compose.runtime.Composable
-import app.cash.redwood.treehouse.TreehouseUi
-import com.example.redwood.testing.presenter.HttpClient
-import com.example.redwood.testing.presenter.TestApp
+import android.view.View
+import android.widget.Button as WidgetButton
+import app.cash.redwood.Modifier
+import com.example.redwood.testing.widget.Button
 
-class TestAppTreehouseUi(
-  private val httpClient: HttpClient,
-) : TreehouseUi {
-  @Composable
-  override fun Show() {
-    TestApp(httpClient)
+internal class ViewButton(
+  override val value: WidgetButton,
+) : Button<View> {
+  override var modifier: Modifier = Modifier
+
+  override fun text(text: String?) {
+    value.text = text
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.setOnClickListener(
+      if (onClick != null) {
+        { onClick.invoke() }
+      } else {
+        null
+      },
+    )
   }
 }

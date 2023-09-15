@@ -35,7 +35,7 @@ class TestAppViewController : UIViewController {
     override func loadView() {
         let testAppLauncher = TestAppLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = testAppLauncher.createTreehouseApp()
-        let widgetSystem = TestSchemaWidgetSystem(treehouseApp: treehouseApp)
+        let widgetSystem = TestSchemaWidgetSystem()
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: TestAppContent(),
@@ -54,19 +54,13 @@ class TestAppContent : TreehouseContentSource {
 }
 
 class TestSchemaWidgetSystem : TreehouseViewWidgetSystem {
-    let treehouseApp: TreehouseApp<TestAppPresenter>
-
-    init(treehouseApp: TreehouseApp<TestAppPresenter>) {
-        self.treehouseApp = treehouseApp
-    }
-
     func widgetFactory(
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
     ) -> ProtocolNodeFactory {
         return TestSchemaProtocolNodeFactory<UIView>(
             provider: TestSchemaWidgetFactories<UIView>(
-                TestSchema: IosTestSchemaWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
+                TestSchema: IosTestSchemaWidgetFactory(),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
             ),
