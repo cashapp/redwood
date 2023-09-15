@@ -32,7 +32,7 @@ import com.example.redwood.testing.compose.Text
 
 @Composable
 fun TestApp(httpClient: HttpClient) {
-  val screen = remember { mutableStateOf<Screen?>(Screen.RepoSearch) }
+  val screen = remember { mutableStateOf<Screen?>(null) }
   val activeScreen = screen.value
   if (activeScreen == null) {
     HomeScreen(screen)
