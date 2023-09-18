@@ -19,7 +19,6 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.redwood.protocol.widget.ProtocolNode
 import kotlinx.serialization.json.Json
 
 /**
@@ -35,7 +34,6 @@ public class ChangeListRenderer<W : Any>(
     throw IllegalStateException("unexpected event: $event")
   }
 
-  @Suppress("UNCHECKED_CAST")
   public fun render(
     view: TreehouseView<W>,
     changeList: SnapshotChangeList,
@@ -46,7 +44,7 @@ public class ChangeListRenderer<W : Any>(
       factory = view.widgetSystem.widgetFactory(
         json,
         ProtocolMismatchHandler.Throwing,
-      ) as ProtocolNode.Factory<W>,
+      ),
       eventSink = refuseAllEvents,
     )
     bridge.sendChanges(changeList.changes)
