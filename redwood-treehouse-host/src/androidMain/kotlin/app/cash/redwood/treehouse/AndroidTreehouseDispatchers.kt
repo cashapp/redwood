@@ -30,7 +30,7 @@ internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
 
   /** The single thread that runs all JavaScript. We only have one QuickJS instance at a time. */
   private val executorService = Executors.newSingleThreadExecutor { runnable ->
-    Thread(runnable, "Treehouse")
+    Thread(null, runnable, "Treehouse", ZIPLINE_THREAD_STACK_SIZE.toLong())
       .also { ziplineThread = it }
   }
 

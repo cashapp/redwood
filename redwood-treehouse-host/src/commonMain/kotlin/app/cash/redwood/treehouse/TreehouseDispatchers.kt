@@ -54,3 +54,9 @@ public interface TreehouseDispatchers {
    */
   public fun close()
 }
+
+/**
+ * We configure an 8 MiB thread size because we've experimentally found that's sufficient for our
+ * guest programs.
+ */
+internal val ZIPLINE_THREAD_STACK_SIZE = 8 * 1024 * 1024
