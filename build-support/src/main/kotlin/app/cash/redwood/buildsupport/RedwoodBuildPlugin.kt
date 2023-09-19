@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.buildsupport
 
-import com.android.build.gradle.AppExtension
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
@@ -169,10 +169,10 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     // Disable the release build type because we never need it for sample applications.
     plugins.withId("com.android.application") {
-      val android = extensions.getByName("android") as AppExtension
-      android.variantFilter { variant ->
-        if (variant.buildType.name == "release") {
-          variant.ignore = true
+      val android = extensions.getByType(AndroidComponentsExtension::class.java)
+      android.beforeVariants {
+        if (it.buildType == "release") {
+          it.enable = false
         }
       }
     }
