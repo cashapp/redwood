@@ -15,9 +15,12 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.cinterop.CValue
@@ -38,6 +41,14 @@ public open class RedwoodUIView(
 
   private val mutableUiConfiguration =
     MutableStateFlow(computeUiConfiguration(view.traitCollection, view.bounds))
+
+  override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
+    override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+      return object : Cancellable {
+        override fun cancel() = Unit
+      }
+    }
+  }
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration

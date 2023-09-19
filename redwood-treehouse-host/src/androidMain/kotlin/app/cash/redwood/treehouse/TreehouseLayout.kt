@@ -21,6 +21,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
@@ -36,7 +37,8 @@ public typealias TreehouseWidgetView = TreehouseLayout
 public class TreehouseLayout(
   context: Context,
   override val widgetSystem: WidgetSystem<View>,
-) : RedwoodLayout(context), TreehouseView<View> {
+  androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
+) : RedwoodLayout(context, androidOnBackPressedDispatcher), TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }

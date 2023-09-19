@@ -29,7 +29,7 @@ kotlin {
     androidMain {
       dependencies {
         api libs.okHttp
-        implementation libs.androidx.core
+        implementation libs.androidx.activity
       }
     }
 

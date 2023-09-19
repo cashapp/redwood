@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val redwoodView = RedwoodLayout(this)
+    val redwoodView = RedwoodLayout(this, onBackPressedDispatcher)
     setContentView(redwoodView)
 
     val composition = RedwoodComposition(

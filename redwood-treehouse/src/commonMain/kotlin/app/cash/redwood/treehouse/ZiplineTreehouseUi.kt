@@ -30,6 +30,17 @@ import kotlinx.coroutines.flow.StateFlow
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   public fun start(
     changesSink: ChangesSinkService,
+    onBackPressedDispatcher: OnBackPressedDispatcherService,
+    uiConfigurations: StateFlow<UiConfiguration>,
+    stateSnapshot: StateSnapshot?,
+  )
+
+  @Deprecated(
+    "Use `start` method that takes in an `OnBackPressedDispatcherService` instead.",
+    ReplaceWith("start(changesSink, TODO(), uiConfigurations, stateSnapshot)"),
+  )
+  public fun start(
+    changesSink: ChangesSinkService,
     uiConfigurations: StateFlow<UiConfiguration>,
     stateSnapshot: StateSnapshot?,
   )
