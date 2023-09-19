@@ -41,28 +41,25 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [26])
 class TreehouseLayoutTest {
-  private val context = RuntimeEnvironment.getApplication()!!
+  private val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
 
   @Test fun widgetsAddChildViews() {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
 
-    val view = View(context)
+    val view = View(activity)
     layout.children.insert(0, viewWidget(view))
     assertThat(layout.childCount).isEqualTo(1)
     assertThat(layout.getChildAt(0)).isSameAs(view)
   }
 
   @Test fun attachAndDetachSendsStateChange() {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
     val parent = activity.findViewById<ViewGroup>(android.R.id.content)
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     val listener = CountingReadyForContentChangeListener<View>()
 
     layout.readyForContentChangeListener = listener
@@ -76,10 +73,9 @@ class TreehouseLayoutTest {
   }
 
   @Test fun resetClearsUntrackedChildren() {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
 
-    layout.addView(View(context))
+    layout.addView(View(activity))
     assertThat(layout.childCount).isEqualTo(1)
 
     layout.reset()
@@ -87,13 +83,12 @@ class TreehouseLayoutTest {
   }
 
   @Test fun resetClearsTrackedWidgets() {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
 
     // Needed to access internal state which cannot be reasonably observed through the public API.
     val children = layout.children as ViewGroupChildren
 
-    children.insert(0, viewWidget(View(context)))
+    children.insert(0, viewWidget(View(activity)))
     assertThat(children.widgets).hasSize(1)
 
     layout.reset()
@@ -101,21 +96,19 @@ class TreehouseLayoutTest {
   }
 
   @Test fun uiConfigurationReflectsInitialUiMode() {
-    val newConfig = Configuration(context.resources.configuration)
+    val newConfig = Configuration(activity.resources.configuration)
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
-    val newContext = context.createConfigurationContext(newConfig) // Needs API 26.
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
+    val newContext = activity.createConfigurationContext(newConfig) // Needs API 26.
     val layout = TreehouseLayout(newContext, throwingWidgetSystem, activity.onBackPressedDispatcher)
     assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
   }
 
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
       assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = false))
 
-      val newConfig = Configuration(context.resources.configuration)
+      val newConfig = Configuration(activity.resources.configuration)
       newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
 
       layout.dispatchConfigurationChanged(newConfig)
@@ -124,8 +117,7 @@ class TreehouseLayoutTest {
   }
 
   @Test fun uiConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
-    val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
-    val layout = TreehouseLayout(context, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
       assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = Margin.Zero))
       val insets = Insets.of(10, 20, 30, 40)
@@ -133,7 +125,7 @@ class TreehouseLayoutTest {
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
         .build()
       ViewCompat.dispatchApplyWindowInsets(layout, windowInsets)
-      val expectedInsets = with(Density(context.resources)) {
+      val expectedInsets = with(Density(activity.resources)) {
         Margin(
           start = insets.left.toDp(),
           end = insets.right.toDp(),

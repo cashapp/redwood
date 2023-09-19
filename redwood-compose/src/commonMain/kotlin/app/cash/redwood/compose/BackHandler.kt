@@ -20,15 +20,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.staticCompositionLocalOf
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 
 public val LocalOnBackPressedDispatcher: ProvidableCompositionLocal<OnBackPressedDispatcher> =
-  compositionLocalOf {
+  staticCompositionLocalOf {
     throw AssertionError("OnBackPressedDispatcher was not provided!")
   }
 
@@ -37,6 +37,21 @@ public val OnBackPressedDispatcher.Companion.current: OnBackPressedDispatcher
   @ReadOnlyComposable
   get() = LocalOnBackPressedDispatcher.current
 
+/**
+ * An effect for handling presses of the system back button.
+ *
+ * Calling this in your composable adds the given lambda to the [OnBackPressedDispatcher] of the
+ * [LocalOnBackPressedDispatcher].
+ *
+ * If this is called by nested composables, if enabled, the inner most composable will consume
+ * the call to system back and invoke its lambda. The call will continue to propagate up until it
+ * finds an enabled BackHandler.
+ *
+ * The [onBack] lambda is never invoked on platforms that don't have a system back button.
+ *
+ * @param enabled if this BackHandler should be enabled
+ * @param onBack the action invoked by pressing the system back
+ */
 // Multiplatform variant of
 // https://github.com/androidx/androidx/blob/94ae1a9fb3ce778295e8cc724ae29f1231436bcb/activity/activity-compose/src/main/java/androidx/activity/compose/BackHandler.kt#L82
 @Composable
