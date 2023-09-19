@@ -13,6 +13,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api libs.jetbrains.compose.runtime.saveable
         api projects.redwoodLazylayoutWidget
       }
     }
