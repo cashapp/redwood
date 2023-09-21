@@ -2,9 +2,6 @@
 
 Redwood is a library for building reactive Android, iOS, and web UIs using Kotlin.
 
-**Redwood is currently under development and not ready for use by anyone.**
-
-
 ### Reactive UIs
 
 Android and iOS UI frameworks model the user interface as a ‘mutable view tree’ or document object
