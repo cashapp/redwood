@@ -265,13 +265,15 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         //
         // ./gradlew publishAllPublicationsToInternalRepository -DRELEASE_SIGNING_ENABLED=false
         val internalUrl = project.providers.gradleProperty("internalUrl")
-        if (internalUrl.isPresent) {
+        val internalUsername = project.providers.gradleProperty("internalUsername")
+        val internalPassword = project.providers.gradleProperty("internalPassword")
+        if (internalUrl.isPresent && internalUsername.isPresent && internalPassword.isPresent) {
           it.maven {
             it.name = "internal"
             it.setUrl(internalUrl)
             it.credentials {
-              it.username = project.providers.gradleProperty("internalUsername").get()
-              it.password = project.providers.gradleProperty("internalPassword").get()
+              it.username = internalUsername.get()
+              it.password = internalPassword.get()
             }
           }
         }
