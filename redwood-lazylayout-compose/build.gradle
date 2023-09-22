@@ -14,6 +14,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
+        implementation libs.jetbrains.compose.runtime.saveable
       }
     }
     commonTest {
