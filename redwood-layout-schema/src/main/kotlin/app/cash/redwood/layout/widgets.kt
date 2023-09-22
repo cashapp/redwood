@@ -169,3 +169,42 @@ public data class Spacer(
   @Default("Dp(0.0)")
   val height: Dp,
 )
+
+/**
+ * Lays out widgets along the z-axis inside a Box.
+ */
+@Widget(9)
+public data class Box(
+
+  /**
+   * Applies margin (space) around the box.
+   *
+   * This can also be applied to an individual widget using `Modifier.margin`.
+   */
+  @Property(1)
+  @Default("Margin.Zero")
+  val margin: Margin,
+
+  /**
+   * Sets the default horizontal alignment for widgets in this Box.
+   *
+   * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
+   */
+  @Property(2)
+  @Default("CrossAxisAlignment.Start")
+  val horizontalAlignment: CrossAxisAlignment,
+
+  /**
+   * Sets the vertical alignment for widgets in this Box.
+   */
+  @Property(3)
+  @Default("MainAxisAlignment.Start")
+  val verticalAlignment: MainAxisAlignment,
+
+  /**
+   * A slot to add widgets in.
+   */
+  @Children(1) val children: BoxScope.() -> Unit,
+)
+
+public object BoxScope
