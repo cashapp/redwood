@@ -29,7 +29,7 @@ import kotlinx.serialization.json.intOrNull
 
 @Serializable
 public class StateSnapshot(
-  public val content: Map<String, List<@Contextual Saveable>>
+  public val content: Map<String, List<@Contextual Saveable>>,
 ) {
   public fun toValuesMap(): Map<String, List<Any?>> {
     return content.mapValues { entry ->
@@ -54,8 +54,8 @@ public class StateSnapshot(
  */
 public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnapshot(
   mapValues { entry ->
-    entry.value.map {element ->
-      when(element) {
+    entry.value.map { element ->
+      when (element) {
         is MutableState<*> -> Saveable(true, element.value.toJsonElement())
         else -> Saveable(false, element.toJsonElement())
       }
@@ -89,7 +89,7 @@ private fun JsonElement?.fromJsonElement(): Any {
   }
 }
 
-public data class Saveable (
+public data class Saveable(
   val isMutableState: Boolean,
-  val value: JsonElement
+  val value: JsonElement,
 )

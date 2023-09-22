@@ -109,8 +109,7 @@ private class RedwoodZiplineTreehouseUi(
     )
   }
 
-  override fun snapshotState(): StateSnapshot? {
-    // performSave is not picking up other values, why?
+  override fun snapshotState(): StateSnapshot {
     val savedState = saveableStateRegistry.performSave()
     return savedState.toStateSnapshot()
   }

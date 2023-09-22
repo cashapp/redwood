@@ -15,18 +15,17 @@
  */
 package app.cash.redwood.lazylayout.compose
 
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 @Composable
 public fun rememberLazyListState(
   initialFirstVisibleItemIndex: Int = 0,
 ): LazyListState {
-  return rememberSaveable(saver = LazyListState.Saver) {
+  return remember {
     LazyListState(
       initialFirstVisibleItemIndex,
     )
@@ -46,18 +45,5 @@ public class LazyListState(
   ) {
     firstVisibleItemIndex = index
     scrollToItemTriggeredId++
-  }
-  public companion object {
-    /**
-     * The default [Saver] implementation for [LazyListState].
-     */
-    public val Saver: Saver<LazyListState, *> = Saver(
-      save = { it.firstVisibleItemIndex },
-      restore = {
-        LazyListState(
-          firstVisibleItemIndex = it,
-        )
-      }
-    )
   }
 }

@@ -36,7 +36,6 @@ import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
-import app.cash.redwood.lazylayout.compose.LazyListState
 import app.cash.redwood.lazylayout.compose.items
 import app.cash.redwood.lazylayout.compose.rememberLazyListState
 import app.cash.redwood.ui.Margin
@@ -97,9 +96,7 @@ private fun LazyColumn(
     override fun SaverScope.save(value: TextFieldState) = value.text
   }
 
-  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) {
-    mutableStateOf(TextFieldState(""))
-  }
+  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
 
   LaunchedEffect(refreshSignal) {
     try {
@@ -176,14 +173,7 @@ private fun NestedFlexBoxContainers(httpClient: HttpClient, navigator: Navigator
     override fun SaverScope.save(value: TextFieldState) = value.text
   }
 
-  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) {
-    error("boom")
-    mutableStateOf(TextFieldState(""))
-  }
-  var searchTerm1 by rememberSaveable(stateSaver = searchTermSaver) {
-    error("boom")
-    mutableStateOf(TextFieldState("hhh"))
-  }
+  var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
 
   LaunchedEffect(Unit) {
     try {
