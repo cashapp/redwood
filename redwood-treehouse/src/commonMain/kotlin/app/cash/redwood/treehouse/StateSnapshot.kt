@@ -18,20 +18,28 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlin.jvm.JvmInline
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.intOrNull
 
 @Serializable
 public class StateSnapshot(
-  public val content: Map<String, List<JsonElement?>>,
+  public val content: Map<String, List<@Contextual Saveable>>,
 ) {
-  public fun toValuesMap(): Map<String, List<Any?>>? {
+  public fun toValuesMap(): Map<String, List<Any?>> {
     return content.mapValues { entry ->
-      entry.value.map { mutableStateOf(it.fromJsonElement()) }
+      entry.value.map {
+        if (it.isMutableState) {
+          mutableStateOf(it.value)
+        } else {
+          it.value.fromJsonElement()
+        }
+      }
     }
   }
 
@@ -48,8 +56,8 @@ public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnaps
   mapValues { entry ->
     entry.value.map { element ->
       when (element) {
-        is MutableState<*> -> element.value.toJsonElement()
-        else -> error("unexpected type: $this")
+        is MutableState<*> -> Saveable(true, element.value.toJsonElement())
+        else -> Saveable(false, element.toJsonElement())
       }
     }
   },
@@ -58,6 +66,7 @@ public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnaps
 private fun Any?.toJsonElement(): JsonElement {
   return when (this) {
     is String -> JsonPrimitive(this)
+    is Int -> JsonPrimitive(this)
     is List<*> -> JsonArray(map { it.toJsonElement() })
     is JsonElement -> this
     else -> error("unexpected type: $this")
@@ -68,11 +77,9 @@ private fun Any?.toJsonElement(): JsonElement {
 private fun JsonElement?.fromJsonElement(): Any {
   return when (this) {
     is JsonPrimitive -> {
-      if (this.isString) {
-        return content
-      }
-      return booleanOrNull ?: doubleOrNull ?: error("unexpected type: $this")
-      // TODO add other primitive types (double, float, long) when needed
+      if (this.isString) return content
+      return booleanOrNull ?: doubleOrNull ?: intOrNull ?: error("unexpected type: $this")
+      // TODO add other primitive types (float, long) when needed
     }
 
     is JsonArray -> listOf({ this.forEach { it.toJsonElement() } })
@@ -81,3 +88,8 @@ private fun JsonElement?.fromJsonElement(): Any {
     else -> error("unexpected type: $this")
   }
 }
+
+public data class Saveable(
+  val isMutableState: Boolean,
+  val value: JsonElement,
+)

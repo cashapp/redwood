@@ -21,6 +21,13 @@ kotlin {
         api libs.zipline
       }
     }
+
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
+      }
+    }
   }
 }
 

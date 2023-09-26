@@ -109,7 +109,7 @@ private class RedwoodZiplineTreehouseUi(
     )
   }
 
-  override fun snapshotState(): StateSnapshot? {
+  override fun snapshotState(): StateSnapshot {
     val savedState = saveableStateRegistry.performSave()
     return savedState.toStateSnapshot()
   }
