@@ -30,9 +30,7 @@ class TestAppViewController : UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
-    }
 
-    override func loadView() {
         let testAppLauncher = TestAppLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = testAppLauncher.createTreehouseApp()
         let widgetSystem = TestSchemaWidgetSystem()
@@ -42,7 +40,15 @@ class TestAppViewController : UIViewController {
             codeListener: CodeListener()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
-        view = treehouseView.view
+
+        let tv = treehouseView.view
+        tv.translatesAutoresizingMaskIntoConstraints = false
+
+        self.view.addSubview(tv)
+        let safeGuide = self.view.safeAreaLayoutGuide
+        tv.heightAnchor.constraint(equalTo: safeGuide.heightAnchor).isActive = true
+        tv.widthAnchor.constraint(equalTo: safeGuide.widthAnchor).isActive = true
+        tv.topAnchor.constraint(equalTo: safeGuide.topAnchor).isActive = true
     }
 }
 
