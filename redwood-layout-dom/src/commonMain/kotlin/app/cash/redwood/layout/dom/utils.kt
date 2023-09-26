@@ -22,6 +22,7 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
 import kotlin.math.roundToInt
+import org.w3c.dom.css.CSSStyleDeclaration
 
 internal fun Dp.toPxString(): String = with(Density(1.0)) {
   "${toPx().roundToInt()}px"
@@ -56,3 +57,15 @@ internal fun Overflow.toCss() = when (this) {
   Overflow.Scroll -> "scroll"
   else -> throw AssertionError()
 }
+
+internal var CSSStyleDeclaration.marginInlineStart: String
+  get() = this.getPropertyValue("margin-inline-start")
+  set(value) {
+    this.setProperty("margin-inline-start", value)
+  }
+
+internal var CSSStyleDeclaration.marginInlineEnd: String
+  get() = this.getPropertyValue("margin-inline-end")
+  set(value) {
+    this.setProperty("margin-inline-end", value)
+  }
