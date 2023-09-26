@@ -47,8 +47,6 @@ class ButtonBinding: Button {
     }
     
     @objc func clicked() {
-        if (self.onClick != nil) {
-            self.onClick()
-        }
+        self.onClick?()
     }
 }
