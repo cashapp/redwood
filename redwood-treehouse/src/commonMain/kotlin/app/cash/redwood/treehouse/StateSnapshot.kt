@@ -77,7 +77,7 @@ private fun Any?.toJsonElement(): JsonElement {
 private fun JsonElement?.fromJsonElement(): Any {
   return when (this) {
     is JsonPrimitive -> {
-      if (this.isString) { return content }
+      if (this.isString) return content
       return booleanOrNull ?: doubleOrNull ?: intOrNull ?: error("unexpected type: $this")
       // TODO add other primitive types (float, long) when needed
     }

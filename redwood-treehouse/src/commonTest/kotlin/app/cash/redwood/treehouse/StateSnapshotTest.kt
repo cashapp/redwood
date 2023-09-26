@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import assertk.assertThat
+import assertk.assertions.containsOnly
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -45,11 +46,14 @@ class StateSnapshotTest {
   fun toStateSnapshotWorksAsExpected() {
     val storedStateSnapshot = storedStateSnapshot()
     val stateSnapshot = storedStateSnapshot.toStateSnapshot()
-    assertThat(stateSnapshot.content["key1"]!![0]).isEqualTo(Saveable(true, JsonPrimitive(1)))
-    assertThat(stateSnapshot.content["key2"]!![0]).isEqualTo(Saveable(false, JsonPrimitive(1)))
-    assertThat(stateSnapshot.content["key3"]!![0]).isEqualTo(Saveable(true, JsonPrimitive("str")))
-    assertThat(stateSnapshot.content["key4"]!![0]).isEqualTo(Saveable(false, JsonPrimitive("str")))
+    assertThat(stateSnapshot.content).containsOnly(
+      "key1" to listOf(Saveable(true, JsonPrimitive(1))),
+      "key2" to listOf(Saveable(false, JsonPrimitive(1))),
+      "key3" to listOf(Saveable(true, JsonPrimitive("str"))),
+      "key4" to listOf(Saveable(false, JsonPrimitive("str"))),
+    )
   }
+
   private fun stateSnapshot() = StateSnapshot(
     mapOf(
       "key1" to listOf(Saveable(true, JsonPrimitive(1))),
