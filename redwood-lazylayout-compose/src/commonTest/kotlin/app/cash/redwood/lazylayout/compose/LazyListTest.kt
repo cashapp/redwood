@@ -29,7 +29,6 @@ import app.cash.redwood.lazylayout.widget.WindowedLazyList
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
@@ -40,7 +39,6 @@ import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import com.example.redwood.testing.widget.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
 class LazyListTest {
@@ -148,7 +146,6 @@ private suspend fun <R> TestSchemaTester(
       this,
       factories,
       container,
-      MutableStateFlow(UiConfiguration()),
     ) {
       container.map { it.value }
     }

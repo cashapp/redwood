@@ -67,10 +67,6 @@ internal object Redwood {
     .build()
 }
 
-internal object RedwoodRuntime {
-  val UiConfiguration = ClassName("app.cash.redwood.ui", "UiConfiguration")
-}
-
 internal object RedwoodTesting {
   val TestRedwoodComposition = ClassName("app.cash.redwood.testing", "TestRedwoodComposition")
   val WidgetValue = ClassName("app.cash.redwood.testing", "WidgetValue")
@@ -144,5 +140,4 @@ internal object KotlinxSerialization {
 
 internal object KotlinxCoroutines {
   val coroutineScope = MemberName("kotlinx.coroutines", "coroutineScope")
-  val MutableStateFlow = MemberName("kotlinx.coroutines.flow", "MutableStateFlow")
 }

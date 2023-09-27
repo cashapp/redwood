@@ -25,7 +25,6 @@ import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -42,14 +41,13 @@ import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
 class DirectChangeListenerTest : AbstractChangeListenerTest() {
   override fun <T> CoroutineScope.launchComposition(
     factories: TestSchemaWidgetFactories<WidgetValue>,
     snapshot: () -> T,
-  ) = TestRedwoodComposition(this, factories, MutableListChildren(), MutableStateFlow(UiConfiguration()), snapshot)
+  ) = TestRedwoodComposition(this, factories, MutableListChildren(), createSnapshot = snapshot)
 }
 
 class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
@@ -61,7 +59,7 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
     val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolNodeFactory(factories)) {
       throw AssertionError()
     }
-    return TestRedwoodComposition(this, composeBridge.provider, composeBridge.root, MutableStateFlow(UiConfiguration())) {
+    return TestRedwoodComposition(this, composeBridge.provider, composeBridge.root) {
       composeBridge.getChangesOrNull()?.let { changes ->
         widgetBridge.sendChanges(changes)
       }

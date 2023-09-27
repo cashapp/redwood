@@ -237,7 +237,6 @@ class ProtocolTest {
       scope = backgroundScope,
       provider = bridge.provider,
       container = bridge.root,
-      uiConfigurations = MutableStateFlow(UiConfiguration()),
     ) {
       bridge.getChangesOrNull() ?: emptyList()
     }

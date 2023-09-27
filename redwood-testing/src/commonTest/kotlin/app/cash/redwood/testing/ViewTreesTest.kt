@@ -18,6 +18,7 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.compose.current
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.Change
@@ -37,6 +38,7 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
@@ -45,6 +47,7 @@ import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
 import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.plus
@@ -141,5 +144,21 @@ class ViewTreesTest {
     widgetBridge.sendChanges(expected)
 
     assertThat(widgetContainer.map { it.value }).isEqualTo(snapshot)
+  }
+
+  @Test fun uiConfigurationWorks() = runTest {
+    TestSchemaTester {
+      setContent {
+        Text("Dark: ${UiConfiguration.current.darkMode}")
+      }
+
+      val first = awaitSnapshot()
+      assertThat(first).containsExactly(TextValue(text = "Dark: false"))
+
+      uiConfigurations.value = UiConfiguration(darkMode = true)
+
+      val second = awaitSnapshot()
+      assertThat(second).containsExactly(TextValue(text = "Dark: true"))
+    }
   }
 }
