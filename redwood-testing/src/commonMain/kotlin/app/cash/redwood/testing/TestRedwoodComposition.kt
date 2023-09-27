@@ -69,7 +69,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
-  initialUiConfigurations: UiConfiguration,
+  initialUiConfiguration: UiConfiguration,
   createSnapshot: () -> S,
 ) : TestRedwoodComposition<S> {
   /** Emit frames manually in [sendFrames]. */
