@@ -34,6 +34,7 @@ import com.example.redwood.testing.compose.Text
 private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
   put("Repo Search") { RepoSearch(httpClient) }
   put("UI Configuration") { UiConfigurationValues() }
+  put("Box Sandbox") { BoxSandbox() }
 }
 
 @Stable
