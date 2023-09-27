@@ -29,7 +29,13 @@ import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.lazylayout.compose.LazyColumn
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.dp
+import com.example.redwood.testing.compose.Text
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 private val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20).apply {
@@ -39,7 +45,7 @@ private val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20).app
 }
 
 @Composable
-internal fun RepoSearch(httpClient: HttpClient, modifier: Modifier = Modifier) {
+fun RepoSearch(httpClient: HttpClient, modifier: Modifier = Modifier) {
   // TODO Make term interactive with TextInput.
   val latestSearchTerm by remember { mutableStateOf("android") }
 
@@ -59,6 +65,15 @@ internal fun RepoSearch(httpClient: HttpClient, modifier: Modifier = Modifier) {
     items(lazyPagingItems.itemCount) { index ->
       RepositoryItem(lazyPagingItems[index]!!)
     }
+  }
+}
+
+@Composable
+private fun RepositoryItem(
+  repository: Repository,
+) {
+  Column(margin = Margin(16.dp)) {
+    Text(text = repository.fullName)
   }
 }
 
@@ -99,3 +114,15 @@ private class RepositoryPagingSource(
     const val FIRST_PAGE_INDEX = 1
   }
 }
+
+@Serializable
+private data class Repositories(
+  @SerialName("total_count") val totalCount: Int,
+  val items: List<Repository>,
+)
+
+@Serializable
+private data class Repository(
+  @SerialName("full_name") val fullName: String,
+  @SerialName("stargazers_count") val stargazersCount: Int,
+)
