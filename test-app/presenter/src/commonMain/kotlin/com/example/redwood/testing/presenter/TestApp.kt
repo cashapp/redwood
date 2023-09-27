@@ -21,9 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import app.cash.redwood.Modifier
 import app.cash.redwood.compose.BackHandler
-import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.Constraint.Companion
-import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Constraint.Companion.Fill
+import app.cash.redwood.layout.api.CrossAxisAlignment.Companion.Stretch
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
@@ -40,12 +39,17 @@ fun TestApp(httpClient: HttpClient) {
   } else {
     val onBack = { screen.value = null }
     BackHandler(onBack = onBack)
-    Column(
-      width = Constraint.Fill,
-      height = Constraint.Fill,
-    ) {
+    Column(width = Fill, height = Fill) {
       Button("Back", onClick = onBack)
-      activeScreen.Show(httpClient, modifier = Modifier.grow(1.0))
+
+      // TODO This should be a Box.
+      Column(
+        width = Fill,
+        horizontalAlignment = Stretch,
+        modifier = Modifier.grow(1.0).horizontalAlignment(Stretch),
+      ) {
+        activeScreen.Show(httpClient)
+      }
     }
   }
 }
@@ -54,29 +58,29 @@ fun TestApp(httpClient: HttpClient) {
 enum class Screen {
   RepoSearch {
     @Composable
-    override fun Show(httpClient: HttpClient, modifier: Modifier) {
-      RepoSearch(httpClient, modifier)
+    override fun Show(httpClient: HttpClient) {
+      RepoSearch(httpClient)
     }
   },
   UiConfiguration {
     @Composable
-    override fun Show(httpClient: HttpClient, modifier: Modifier) {
-      UiConfigurationValues(modifier)
+    override fun Show(httpClient: HttpClient) {
+      UiConfigurationValues()
     }
   },
   ;
 
   @Composable
-  abstract fun Show(httpClient: HttpClient, modifier: Modifier)
+  abstract fun Show(httpClient: HttpClient)
 }
 
 @Composable
 private fun HomeScreen(screen: MutableState<Screen?>) {
   Column(
-    width = Constraint.Fill,
-    height = Companion.Fill,
+    width = Fill,
+    height = Fill,
     overflow = Overflow.Scroll,
-    horizontalAlignment = CrossAxisAlignment.Stretch,
+    horizontalAlignment = Stretch,
   ) {
     Text("Test App Screens:", modifier = Modifier.margin(Margin(8.dp)))
     Screen.entries.forEach {
