@@ -18,6 +18,7 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.compose.current
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
@@ -30,7 +31,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withTimeout
@@ -42,10 +43,10 @@ public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
-  uiConfigurations: StateFlow<UiConfiguration>,
+  initialUiConfiguration: UiConfiguration = UiConfiguration(),
   createSnapshot: () -> S,
 ): TestRedwoodComposition<S> {
-  return RealTestRedwoodComposition(scope, provider, container, uiConfigurations, createSnapshot)
+  return RealTestRedwoodComposition(scope, provider, container, initialUiConfiguration, createSnapshot)
 }
 
 public interface TestRedwoodComposition<S> : RedwoodComposition {
@@ -55,6 +56,12 @@ public interface TestRedwoodComposition<S> : RedwoodComposition {
    * @throws TimeoutCancellationException if no new snapshot is produced before [timeout].
    */
   public suspend fun awaitSnapshot(timeout: Duration = 1.seconds): S
+
+  /**
+   * The mutable [UiConfiguration] instance bound to [UiConfiguration.current][current]
+   * inside the composition.
+   */
+  public val uiConfigurations: MutableStateFlow<UiConfiguration>
 }
 
 /** Performs Redwood composition strictly for testing. */
@@ -62,7 +69,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
-  uiConfigurations: StateFlow<UiConfiguration>,
+  initialUiConfiguration: UiConfiguration,
   createSnapshot: () -> S,
 ) : TestRedwoodComposition<S> {
   /** Emit frames manually in [sendFrames]. */
@@ -72,6 +79,8 @@ private class RealTestRedwoodComposition<W : Any, S>(
 
   /** Channel with the most recent snapshot, if any. */
   private val snapshots = Channel<S>(Channel.CONFLATED)
+
+  override val uiConfigurations = MutableStateFlow(initialUiConfiguration)
 
   private val composition = RedwoodComposition(
     scope = scope + clock,

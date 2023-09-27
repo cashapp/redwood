@@ -50,7 +50,7 @@ suspend fun <R> ExampleTester(
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
-  val tester = TestRedwoodComposition(this, factories, container, MutableStateFlow(UiConfiguration())) {
+  val tester = TestRedwoodComposition(this, factories, container) {
     container.map { it.value }
   }
   try {
@@ -86,7 +86,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("val tester = %T(this, factories, container, %M(%T()))", RedwoodTesting.TestRedwoodComposition, KotlinxCoroutines.MutableStateFlow, RedwoodRuntime.UiConfiguration)
+        .beginControlFlow("val tester = %T(this, factories, container)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
         .beginControlFlow("try")
