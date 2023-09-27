@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
@@ -35,6 +36,10 @@ import org.w3c.dom.HTMLElement
 public class HTMLElementRedwoodLayoutWidgetFactory(
   private val document: Document,
 ) : RedwoodLayoutWidgetFactory<HTMLElement> {
+  override fun Box(): Box<HTMLElement> {
+    TODO("Not yet implemented")
+  }
+
   override fun Column(): Column<HTMLElement> =
     HTMLFlexContainer(
       value = document.createElement("div") as HTMLDivElement,

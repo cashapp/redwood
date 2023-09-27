@@ -169,3 +169,61 @@ public data class Spacer(
   @Default("Dp(0.0)")
   val height: Dp,
 )
+
+/**
+ * Lays out widgets along the z-axis in a column.
+ *
+ * Minimum and maximum heights do not include margins.
+ */
+@Widget(4)
+public data class Box(
+  /**
+   * Sets whether the box's width will match its widest child ([Constraint.Wrap]) or match the width
+   * of its parent ([Constraint.Fill]).
+   */
+  @Property(1)
+  @Default("Constraint.Wrap")
+  val width: Constraint,
+
+  /**
+   * Sets whether the box's height will match its tallest child ([Constraint.Wrap]) or match the
+   * height of its parent ([Constraint.Fill]).
+   */
+  @Property(2)
+  @Default("Constraint.Wrap")
+  val height: Constraint,
+
+  /**
+   * Applies margin (space) around the box.
+   *
+   * This can also be applied to an individual widget using `Modifier.margin`.
+   */
+  @Property(3)
+  @Default("Margin.Zero")
+  val margin: Margin,
+
+  /**
+   * Sets the default horizontal alignment for widgets in this Box.
+   *
+   * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
+   */
+  @Property(4)
+  @Default("CrossAxisAlignment.Start")
+  val horizontalAlignment: CrossAxisAlignment,
+
+  /**
+   * Sets the default vertical alignment for widgets in this Box.
+   *
+   * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
+   */
+  @Property(5)
+  @Default("CrossAxisAlignment.Start")
+  val verticalAlignment: CrossAxisAlignment,
+
+  /**
+   * A slot to add widgets in.
+   */
+  @Children(1) val children: BoxScope.() -> Unit,
+)
+
+public object BoxScope

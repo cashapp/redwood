@@ -46,7 +46,7 @@ public data class Shrink(
 /**
  * Add additional space around the item.
  */
-@Modifier(3, RowScope::class, ColumnScope::class)
+@Modifier(3, RowScope::class, ColumnScope::class, BoxScope::class)
 public data class Margin(
   val margin: app.cash.redwood.ui.Margin,
 )
@@ -54,7 +54,7 @@ public data class Margin(
 /**
  * Set the alignment for an item along the horizontal axis.
  */
-@Modifier(4, ColumnScope::class)
+@Modifier(4, ColumnScope::class, BoxScope::class)
 public data class HorizontalAlignment(
   val alignment: CrossAxisAlignment,
 )
@@ -62,7 +62,7 @@ public data class HorizontalAlignment(
 /**
  * Set the alignment for an item along the vertical axis.
  */
-@Modifier(5, RowScope::class)
+@Modifier(5, RowScope::class, BoxScope::class)
 public data class VerticalAlignment(
   val alignment: CrossAxisAlignment,
 )
@@ -70,7 +70,7 @@ public data class VerticalAlignment(
 /**
  * Set a required width for an item.
  */
-@Modifier(6, RowScope::class, ColumnScope::class)
+@Modifier(6, RowScope::class, ColumnScope::class, BoxScope::class)
 public data class Width(
   val width: Dp,
 )
@@ -78,7 +78,7 @@ public data class Width(
 /**
  * Set a required height for an item.
  */
-@Modifier(7, RowScope::class, ColumnScope::class)
+@Modifier(7, RowScope::class, ColumnScope::class, BoxScope::class)
 public data class Height(
   val height: Dp,
 )
@@ -86,7 +86,7 @@ public data class Height(
 /**
  * Set a required width and height for an item.
  */
-@Modifier(8, RowScope::class, ColumnScope::class)
+@Modifier(8, RowScope::class, ColumnScope::class, BoxScope::class)
 public data class Size(
   val width: Dp,
   val height: Dp,
