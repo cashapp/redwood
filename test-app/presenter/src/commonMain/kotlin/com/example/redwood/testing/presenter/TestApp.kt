@@ -58,6 +58,12 @@ enum class Screen {
       RepoSearch(httpClient, modifier)
     }
   },
+  UiConfiguration {
+    @Composable
+    override fun Show(httpClient: HttpClient, modifier: Modifier) {
+      UiConfigurationValues(modifier)
+    }
+  },
   ;
 
   @Composable
