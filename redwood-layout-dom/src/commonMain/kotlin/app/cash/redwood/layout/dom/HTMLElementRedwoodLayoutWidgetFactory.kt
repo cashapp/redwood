@@ -77,8 +77,8 @@ private class HTMLFlexContainer(
 
   override fun margin(margin: Margin) {
     value.style.apply {
-      marginLeft = margin.start.toPxString()
-      marginRight = margin.end.toPxString()
+      marginInlineStart = margin.start.toPxString()
+      marginInlineEnd = margin.end.toPxString()
       marginTop = margin.top.toPxString()
       marginBottom = margin.bottom.toPxString()
     }
