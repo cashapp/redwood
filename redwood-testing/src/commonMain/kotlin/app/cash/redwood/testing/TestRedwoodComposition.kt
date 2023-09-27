@@ -43,7 +43,7 @@ public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
-  initialUiConfigurations: UiConfiguration = UiConfiguration(),
+  initialUiConfiguration: UiConfiguration = UiConfiguration(),
   createSnapshot: () -> S,
 ): TestRedwoodComposition<S> {
   return RealTestRedwoodComposition(scope, provider, container, initialUiConfigurations, createSnapshot)
