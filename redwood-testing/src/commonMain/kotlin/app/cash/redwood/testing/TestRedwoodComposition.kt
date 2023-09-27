@@ -46,7 +46,7 @@ public fun <W : Any, S> TestRedwoodComposition(
   initialUiConfiguration: UiConfiguration = UiConfiguration(),
   createSnapshot: () -> S,
 ): TestRedwoodComposition<S> {
-  return RealTestRedwoodComposition(scope, provider, container, initialUiConfigurations, createSnapshot)
+  return RealTestRedwoodComposition(scope, provider, container, initialUiConfiguration, createSnapshot)
 }
 
 public interface TestRedwoodComposition<S> : RedwoodComposition {
