@@ -80,7 +80,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   /** Channel with the most recent snapshot, if any. */
   private val snapshots = Channel<S>(Channel.CONFLATED)
 
-  override val uiConfigurations = MutableStateFlow(initialUiConfigurations)
+  override val uiConfigurations = MutableStateFlow(initialUiConfiguration)
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
