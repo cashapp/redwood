@@ -17,12 +17,14 @@
 import Foundation
 import UIKit
 import EmojiSearchKt
+import SnackBar
 
-class EmojiSearchViewController : UIViewController {
-
+class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     // MARK: - Private Properties
 
     private let urlSession: URLSession = .init(configuration: .default)
+    private var success = true
+    private var snackBar: SnackBarPresentable? = nil
 
     // MARK: - UIViewController
 
@@ -34,7 +36,7 @@ class EmojiSearchViewController : UIViewController {
 
     override func loadView() {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
-        let treehouseApp = emojiSearchLauncher.createTreehouseApp()
+        let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
         let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
@@ -43,6 +45,29 @@ class EmojiSearchViewController : UIViewController {
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
         view = treehouseView.view
+    }
+
+    func codeLoadFailed() {
+        if (success) {
+            // Only show the Snackbar on the first transition from success.
+            success = false
+            let snackBar = SnackBar.make(in: view, message: "Unable to load guest code from server", duration: SnackBar.Duration.infinite)
+                .setAction(with: "Dismiss", action: { self.maybeDismissSnackBar() })
+            snackBar.show()
+            self.snackBar = snackBar
+        }
+    }
+
+    func codeLoadSuccess() {
+        success = true
+        maybeDismissSnackBar()
+    }
+
+    private func maybeDismissSnackBar() {
+        if let snackBar = snackBar {
+            snackBar.dismiss()
+            self.snackBar = nil
+        }
     }
 }
 
