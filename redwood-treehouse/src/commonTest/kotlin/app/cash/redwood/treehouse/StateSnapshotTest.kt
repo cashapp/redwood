@@ -32,12 +32,12 @@ class StateSnapshotTest {
     val valuesMap = stateSnapshot.toValuesMap()
     assertThat(valuesMap.entries.size).isEqualTo(4)
     assertTrue(valuesMap["key1"]!![0] is MutableState<*>)
-    assertThat((valuesMap["key1"]!![0] as MutableState<*>).value).isEqualTo(JsonPrimitive(1))
+    assertThat((valuesMap["key1"]!![0] as MutableState<*>).value).isEqualTo(1.0)
 
     assertThat(valuesMap["key2"]).isEqualTo(listOf(1.0))
 
     assertThat(valuesMap["key3"]!![0] is MutableState<*>)
-    assertThat((valuesMap["key3"]!![0] as MutableState<*>).value).isEqualTo(JsonPrimitive("str"))
+    assertThat((valuesMap["key3"]!![0] as MutableState<*>).value).isEqualTo("str")
 
     assertThat(valuesMap["key4"]).isEqualTo(listOf("str"))
   }

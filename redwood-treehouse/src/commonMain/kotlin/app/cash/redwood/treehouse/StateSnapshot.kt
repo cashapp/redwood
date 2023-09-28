@@ -34,7 +34,7 @@ public class StateSnapshot(
     return content.mapValues { entry ->
       entry.value.map {
         if (it.isMutableState) {
-          mutableStateOf(it.value)
+          mutableStateOf(it.value.fromJsonElement())
         } else {
           it.value.fromJsonElement()
         }
