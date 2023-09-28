@@ -51,6 +51,7 @@ public fun <A : AppService> TreehouseContent(
   widgetSystem: WidgetSystem<@Composable () -> Unit>,
   codeListener: CodeListener = CodeListener(),
   contentSource: TreehouseContentSource<A>,
+  modifier: Modifier = Modifier,
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
 
@@ -87,7 +88,7 @@ public fun <A : AppService> TreehouseContent(
   }
 
   Box(
-    modifier = Modifier.onSizeChanged { size ->
+    modifier = modifier.onSizeChanged { size ->
       viewportSize = with(Density(density.density.toDouble())) {
         Size(size.width.toDp().value.redwoodDp, size.height.toDp().value.redwoodDp)
       }
