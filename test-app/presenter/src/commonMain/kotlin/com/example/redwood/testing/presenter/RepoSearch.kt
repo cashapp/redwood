@@ -27,7 +27,6 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.lazylayout.compose.LazyColumn
@@ -45,7 +44,7 @@ private val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20).app
 }
 
 @Composable
-fun RepoSearch(httpClient: HttpClient, modifier: Modifier = Modifier) {
+fun RepoSearch(httpClient: HttpClient) {
   // TODO Make term interactive with TextInput.
   val latestSearchTerm by remember { mutableStateOf("android") }
 
@@ -59,7 +58,6 @@ fun RepoSearch(httpClient: HttpClient, modifier: Modifier = Modifier) {
   LazyColumn(
     width = Constraint.Fill,
     height = Constraint.Fill,
-    modifier = modifier,
     placeholder = { RepositoryItem(Repository(fullName = "Placeholder…", 0)) },
   ) {
     items(lazyPagingItems.itemCount) { index ->
