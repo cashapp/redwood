@@ -21,10 +21,8 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractSpacerTest
 import app.cash.redwood.layout.widget.Spacer
-import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
 import com.android.ide.common.rendering.api.SessionParams
 import org.junit.Rule
@@ -41,15 +39,7 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
     renderingMode = SessionParams.RenderingMode.SHRINK,
   )
 
-  override fun widget(
-    width: Int,
-    height: Int,
-    modifier: Modifier,
-  ): Spacer<@Composable () -> Unit> = ComposeUiSpacer().apply {
-    this.modifier = modifier
-    width(width.dp)
-    height(height.dp)
-  }
+  override fun widget(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
 
   override fun wrap(widget: Widget<@Composable () -> Unit>, horizontal: Boolean) = @Composable {
     if (horizontal) {

@@ -54,8 +54,8 @@ class ComposeUiFlexContainerTest(
 
   override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
 
-  override fun widget(text: String, modifier: RedwoodModifier) = object : Text<@Composable () -> Unit> {
-    private var text by mutableStateOf(text)
+  override fun widget() = object : Text<@Composable () -> Unit> {
+    private var text by mutableStateOf("")
 
     override val value = @Composable {
       BasicText(
@@ -65,7 +65,7 @@ class ComposeUiFlexContainerTest(
       )
     }
 
-    override var modifier = modifier
+    override var modifier: RedwoodModifier = RedwoodModifier
 
     override fun text(text: String) {
       this.text = text
