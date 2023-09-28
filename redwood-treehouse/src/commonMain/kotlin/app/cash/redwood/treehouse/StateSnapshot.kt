@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlin.jvm.JvmInline
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -29,13 +28,13 @@ import kotlinx.serialization.json.intOrNull
 
 @Serializable
 public class StateSnapshot(
-  public val content: Map<String, List<@Contextual Saveable>>,
+  public val content: Map<String, List<Saveable>>,
 ) {
   public fun toValuesMap(): Map<String, List<Any?>> {
     return content.mapValues { entry ->
       entry.value.map {
         if (it.isMutableState) {
-          mutableStateOf(it.value)
+          mutableStateOf(it.value.fromJsonElement())
         } else {
           it.value.fromJsonElement()
         }
@@ -89,6 +88,7 @@ private fun JsonElement?.fromJsonElement(): Any {
   }
 }
 
+@Serializable
 public data class Saveable(
   val isMutableState: Boolean,
   val value: JsonElement,
