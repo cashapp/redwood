@@ -57,6 +57,12 @@ public class TreehouseLayout(
 
   override var saveCallback: TreehouseView.SaveCallback? = null
 
+  init {
+    // The view needs to have an id for Android to populate saved data back
+    @SuppressLint("ResourceType")
+    id = 9000
+  }
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     readyForContent = true

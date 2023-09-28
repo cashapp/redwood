@@ -73,8 +73,6 @@ class EmojiSearchActivity : ComponentActivity() {
 
     setContentView(
       TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
-        // The view needs to have an id for Android to populate saved data back
-        this.id = 9000
         treehouseContentSource.bindWhenReady(this, treehouseApp)
       },
     )
