@@ -22,6 +22,7 @@ import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testing.presenter.HttpClient
 import com.example.redwood.testing.presenter.TestApp
+import com.example.redwood.testing.presenter.TestContext
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.js.json
 import kotlinx.browser.document
@@ -53,7 +54,8 @@ fun main() {
     response.text().await()
   }
 
+  val context = TestContext(client)
   composition.setContent {
-    TestApp(client)
+    TestApp(context)
   }
 }

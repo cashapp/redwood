@@ -19,12 +19,15 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.treehouse.TreehouseUi
 import com.example.redwood.testing.presenter.HttpClient
 import com.example.redwood.testing.presenter.TestApp
+import com.example.redwood.testing.presenter.TestContext
 
 class TestAppTreehouseUi(
-  private val httpClient: HttpClient,
+  httpClient: HttpClient,
 ) : TreehouseUi {
+  private val context = TestContext(httpClient)
+
   @Composable
   override fun Show() {
-    TestApp(httpClient)
+    TestApp(context)
   }
 }

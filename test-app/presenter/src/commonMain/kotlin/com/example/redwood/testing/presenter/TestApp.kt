@@ -17,6 +17,7 @@ package com.example.redwood.testing.presenter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import app.cash.redwood.Modifier
@@ -30,52 +31,50 @@ import app.cash.redwood.ui.dp
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Text
 
+private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
+  put("Repo Search") { RepoSearch(httpClient) }
+  put("UI Configuration") { UiConfigurationValues() }
+}
+
+@Stable
+class TestContext(
+  val httpClient: HttpClient,
+)
+
 @Composable
-fun TestApp(httpClient: HttpClient) {
-  val screen = remember { mutableStateOf<Screen?>(null) }
-  val activeScreen = screen.value
-  if (activeScreen == null) {
-    HomeScreen(screen)
+fun TestApp(context: TestContext) {
+  val screenKeyState = remember { mutableStateOf<String?>(null) }
+  val screenKey = screenKeyState.value
+  if (screenKey == null) {
+    ScreenList(screenKeyState)
   } else {
-    val onBack = { screen.value = null }
+    val onBack = { screenKeyState.value = null }
     BackHandler(onBack = onBack)
+
     Column(width = Fill, height = Fill) {
       Button("Back", onClick = onBack)
 
-      // TODO This should be a Box.
-      Column(
-        width = Fill,
-        horizontalAlignment = Stretch,
-        modifier = Modifier.grow(1.0).horizontalAlignment(Stretch),
-      ) {
-        activeScreen.Show(httpClient)
+      val content = screens[screenKey]
+      if (content == null) {
+        Text("No screen found with key '$screenKey'!")
+      } else {
+        // TODO This should be a Box.
+        Column(
+          width = Fill,
+          horizontalAlignment = Stretch,
+          modifier = Modifier.grow(1.0).horizontalAlignment(Stretch),
+        ) {
+          with(context) {
+            content()
+          }
+        }
       }
     }
   }
 }
 
-@Suppress("unused") // Used via reflection.
-enum class Screen {
-  RepoSearch {
-    @Composable
-    override fun Show(httpClient: HttpClient) {
-      RepoSearch(httpClient)
-    }
-  },
-  UiConfiguration {
-    @Composable
-    override fun Show(httpClient: HttpClient) {
-      UiConfigurationValues()
-    }
-  },
-  ;
-
-  @Composable
-  abstract fun Show(httpClient: HttpClient)
-}
-
 @Composable
-private fun HomeScreen(screen: MutableState<Screen?>) {
+private fun ScreenList(screen: MutableState<String?>) {
   Column(
     width = Fill,
     height = Fill,
@@ -83,9 +82,9 @@ private fun HomeScreen(screen: MutableState<Screen?>) {
     horizontalAlignment = Stretch,
   ) {
     Text("Test App Screens:", modifier = Modifier.margin(Margin(8.dp)))
-    Screen.entries.forEach {
-      Button(it.name, onClick = {
-        screen.value = it
+    for (key in screens.keys) {
+      Button(key, onClick = {
+        screen.value = key
       })
     }
   }
