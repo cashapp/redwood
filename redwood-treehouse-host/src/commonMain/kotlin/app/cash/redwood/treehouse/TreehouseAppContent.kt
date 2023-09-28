@@ -423,9 +423,7 @@ private class ViewContentCodeBinding<A : AppService>(
   override fun performSave(id: String) {
     appScope.launch(app.dispatchers.zipline) {
       val state = treehouseUiOrNull?.snapshotState() ?: return@launch
-      appScope.launch(app.dispatchers.ui) {
-        app.stateStore.put(id, state)
-      }
+      app.stateStore.put(id, state)
     }
   }
 
