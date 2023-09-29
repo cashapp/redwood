@@ -30,7 +30,7 @@ import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Text
 
 @Composable
-fun BoxSandbox(modifier: Modifier = Modifier) {
+fun BoxSandbox() {
   Column(
     width = Constraint.Fill,
     height = Constraint.Fill,
