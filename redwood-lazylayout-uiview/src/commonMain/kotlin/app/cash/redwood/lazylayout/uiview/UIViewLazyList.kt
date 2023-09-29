@@ -25,39 +25,35 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
+import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
-import app.cash.redwood.lazylayout.widget.WindowedChildren
-import app.cash.redwood.lazylayout.widget.WindowedLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
-import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
-import platform.CoreGraphics.CGSizeMake
+import platform.CoreGraphics.CGSize
 import platform.Foundation.NSIndexPath
 import platform.Foundation.classForCoder
-import platform.UIKit.UICollectionView
-import platform.UIKit.UICollectionViewCell
-import platform.UIKit.UICollectionViewDataSourceProtocol
-import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
-import platform.UIKit.UICollectionViewFlowLayout
-import platform.UIKit.UICollectionViewFlowLayoutAutomaticSize
-import platform.UIKit.UICollectionViewLayout
-import platform.UIKit.UICollectionViewLayoutAttributes
-import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionHorizontal
-import platform.UIKit.UICollectionViewScrollDirection.UICollectionViewScrollDirectionVertical
-import platform.UIKit.UICollectionViewScrollPositionTop
 import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIRefreshControl
 import platform.UIKit.UIScrollView
+import platform.UIKit.UITableView
+import platform.UIKit.UITableViewAutomaticDimension
+import platform.UIKit.UITableViewCell
+import platform.UIKit.UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone
+import platform.UIKit.UITableViewCellStyle
+import platform.UIKit.UITableViewDataSourceProtocol
+import platform.UIKit.UITableViewDelegateProtocol
+import platform.UIKit.UITableViewRowAnimationNone
+import platform.UIKit.UITableViewScrollPosition
 import platform.UIKit.UIView
 import platform.UIKit.indexPathForItem
 import platform.UIKit.item
@@ -65,65 +61,78 @@ import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 internal open class UIViewLazyList(
-  private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout().apply {
-    estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize.readValue()
-  },
-  internal val collectionView: UICollectionView = UICollectionView(
+  internal val tableView: UITableView = UITableView(
     CGRectZero.readValue(),
-    collectionViewFlowLayout,
   ),
-) : WindowedLazyList<UIView>(UICollectionViewListUpdateCallback(collectionView)), ChangeListener {
+) : LazyList<UIView>, ChangeListener {
+  override var modifier: Modifier = Modifier
 
-  // Fetch the item relative to the entire collection view
-  private fun WindowedChildren<UIView>.itemForGlobalIndex(index: Int): Widget<UIView> {
-    return get(index) ?: placeholder[index % placeholder.size]
-  }
+  override val value: UIView
+    get() = tableView
 
-  private val collectionViewDataSource: UICollectionViewDataSourceProtocol =
-    object : NSObject(), UICollectionViewDataSourceProtocol {
+  protected var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
 
-      override fun collectionView(
-        collectionView: UICollectionView,
-        numberOfItemsInSection: NSInteger,
-      ): NSInteger {
-        return items.size.toLong()
-      }
-
-      override fun collectionView(
-        collectionView: UICollectionView,
-        cellForItemAtIndexPath: NSIndexPath,
-      ): UICollectionViewCell {
-        val cell = collectionView.dequeueReusableCellWithReuseIdentifier(
-          identifier = reuseIdentifier,
-          forIndexPath = cellForItemAtIndexPath,
-        ) as LazyListContainerCell
-
-        cell.collectionViewFrame = collectionView.frame
-        cell.collectionViewFlowLayout = collectionViewFlowLayout
-
-        val widget = items.itemForGlobalIndex(cellForItemAtIndexPath.item.toInt())
-        cell.set(widget.value)
-
-        return cell
-      }
+  private val processor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+    override fun createCell(
+      cell: Cell<LazyListContainerCell, UIView>,
+      widget: Widget<UIView>,
+      index: Int,
+    ): LazyListContainerCell {
+      val result = tableView.dequeueReusableCellWithIdentifier(
+        identifier = reuseIdentifier,
+        forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
+      ) as LazyListContainerCell
+      require(result.cell == null)
+      result.cell = cell
+      result.setWidget(widget.value)
+      return result
     }
 
-  private val collectionViewDelegate: UICollectionViewDelegateFlowLayoutProtocol =
-    object : NSObject(), UICollectionViewDelegateFlowLayoutProtocol {
-      override fun collectionView(
-        collectionView: UICollectionView,
-        layout: UICollectionViewLayout,
-        minimumLineSpacingForSectionAtIndex: NSInteger,
-      ): CGFloat {
-        return 0.0
-      }
+    override fun setWidget(cell: LazyListContainerCell, widget: Widget<UIView>) {
+      cell.setWidget(widget.value)
+    }
 
+    override fun insertRows(index: Int, count: Int) {
+      // TODO(jwilson): pass a range somehow when 'count' is large?
+      tableView.insertRowsAtIndexPaths(
+        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+        UITableViewRowAnimationNone,
+      )
+    }
+
+    override fun deleteRows(index: Int, count: Int) {
+      // TODO(jwilson): pass a range somehow when 'count' is large?
+      tableView.deleteRowsAtIndexPaths(
+        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+        UITableViewRowAnimationNone,
+      )
+    }
+  }
+
+  override val placeholder: Widget.Children<UIView> = processor.placeholder
+
+  override val items: Widget.Children<UIView> = processor.items
+
+  private val dataSource = object : NSObject(), UITableViewDataSourceProtocol {
+    override fun tableView(
+      tableView: UITableView,
+      numberOfRowsInSection: NSInteger,
+    ) = processor.size.toLong()
+
+    override fun tableView(
+      tableView: UITableView,
+      cellForRowAtIndexPath: NSIndexPath,
+    ) = processor.getCell(cellForRowAtIndexPath.item.toInt())
+  }
+
+  private val tableViewDelegate: UITableViewDelegateProtocol =
+    object : NSObject(), UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
-        val visibleIndexPaths = collectionView.indexPathsForVisibleItems()
+        val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
 
         if (visibleIndexPaths.isNotEmpty()) {
           // TODO: Optimize this for less operations
-          updateViewport(
+          onViewportChanged?.invoke(
             visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() },
             visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() },
           )
@@ -131,27 +140,29 @@ internal open class UIViewLazyList(
       }
     }
 
-  override val placeholder = MutableListChildren<UIView>()
-
   init {
-    collectionView.apply {
-      dataSource = collectionViewDataSource
-      delegate = collectionViewDelegate
+    tableView.apply {
+      dataSource = this@UIViewLazyList.dataSource
+      delegate = tableViewDelegate
       prefetchingEnabled = true
+      rowHeight = UITableViewAutomaticDimension
+      estimatedRowHeight = 44.0
+      separatorStyle = UITableViewCellSeparatorStyleNone
 
       registerClass(
-        LazyListContainerCell(CGRectZero.readValue()).classForCoder() as ObjCClass?,
-        reuseIdentifier,
+        cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, reuseIdentifier)
+          .initWithFrame(CGRectZero.readValue()).classForCoder() as ObjCClass?,
+        forCellReuseIdentifier = reuseIdentifier,
       )
     }
   }
 
+  final override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {
+    this.onViewportChanged = onViewportChanged
+  }
+
   override fun isVertical(isVertical: Boolean) {
-    collectionViewFlowLayout.scrollDirection = if (isVertical) {
-      UICollectionViewScrollDirectionVertical
-    } else {
-      UICollectionViewScrollDirectionHorizontal
-    }
+    // TODO: support horizontal LazyLists.
   }
 
   // TODO Dynamically update width and height of UIViewLazyList when set
@@ -160,7 +171,12 @@ internal open class UIViewLazyList(
   override fun height(height: Constraint) {}
 
   override fun margin(margin: Margin) {
-    collectionView.contentInset = UIEdgeInsetsMake(margin.top.value, margin.start.value, margin.end.value, margin.bottom.value)
+    tableView.contentInset = UIEdgeInsetsMake(
+      margin.top.value,
+      margin.start.value,
+      margin.end.value,
+      margin.bottom.value,
+    )
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
@@ -168,61 +184,96 @@ internal open class UIViewLazyList(
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
-    if (items.size > scrollItemIndex.index) {
-      collectionView.scrollToItemAtIndexPath(
+    if (scrollItemIndex.index < processor.size) {
+      tableView.scrollToRowAtIndexPath(
         NSIndexPath.indexPathForItem(scrollItemIndex.index.toLong(), 0),
-        UICollectionViewScrollPositionTop,
+        UITableViewScrollPosition.UITableViewScrollPositionTop,
         animated = false,
       )
     }
   }
 
-  override var modifier: Modifier = Modifier
+  override fun itemsBefore(itemsBefore: Int) {
+    processor.itemsBefore(itemsBefore)
+  }
 
-  override val value: UIView get() = collectionView
+  override fun itemsAfter(itemsAfter: Int) {
+    processor.itemsAfter(itemsAfter)
+  }
+
   override fun onEndChanges() {
-    collectionView.reloadData()
+    processor.onEndChanges()
   }
 }
 
 private const val reuseIdentifier = "LazyListContainerCell"
 
-private class LazyListContainerCell(frame: CValue<CGRect>) : UICollectionViewCell(frame) {
-  lateinit var collectionViewFrame: CValue<CGRect>
-  lateinit var collectionViewFlowLayout: UICollectionViewFlowLayout
+internal class LazyListContainerCell(
+  style: UITableViewCellStyle,
+  reuseIdentifier: String?,
+) : UITableViewCell(style, reuseIdentifier) {
+  internal var cell: LazyListUpdateProcessor.Cell<LazyListContainerCell, UIView>? = null
+  internal var widgetView: UIView? = null
 
-  private var widgetView: UIView? = null
-  override fun initWithFrame(frame: CValue<CGRect>): UICollectionViewCell = LazyListContainerCell(frame)
-  override fun prepareForReuse() {
-    super.prepareForReuse()
-    // clear out subviews here
-    this.contentView.subviews.forEach {
-      (it as UIView).removeFromSuperview()
-    }
-    widgetView = null
+  override fun initWithStyle(
+    style: UITableViewCellStyle,
+    reuseIdentifier: String?,
+  ): UITableViewCell = LazyListContainerCell(style, reuseIdentifier)
+
+  override fun initWithFrame(
+    frame: CValue<CGRect>,
+  ): UITableViewCell {
+    return LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, null)
+      .apply { setFrame(frame) }
   }
 
-  fun set(widgetView: UIView) {
+  override fun willMoveToSuperview(newSuperview: UIView?) {
+    super.willMoveToSuperview(newSuperview)
+
+    // Confirm the cell is bound when it's about to be displayed.
+    if (superview == null && newSuperview != null) {
+      require(cell!!.isBound) { "about to display a cell that isn't bound!" }
+    }
+
+    // Unbind the cell when its view is detached from the table.
+    if (superview != null && newSuperview == null) {
+      removeAllSubviews()
+      cell?.unbind()
+      cell = null
+    }
+  }
+
+  override fun prepareForReuse() {
+    super.prepareForReuse()
+    removeAllSubviews()
+    cell?.unbind()
+    cell = null
+  }
+
+  fun setWidget(widgetView: UIView) {
     this.widgetView = widgetView
+
+    removeAllSubviews()
     contentView.addSubview(widgetView)
-    contentView.layoutIfNeeded()
+    contentView.translatesAutoresizingMaskIntoConstraints = false
+    setNeedsLayout()
   }
 
   override fun layoutSubviews() {
     super.layoutSubviews()
-    widgetView?.setFrame(this.contentView.bounds)
+
+    val widgetView = this.widgetView ?: return
+    widgetView.setFrame(bounds)
+    contentView.setFrame(bounds)
   }
 
-  override fun preferredLayoutAttributesFittingAttributes(
-    layoutAttributes: UICollectionViewLayoutAttributes,
-  ): UICollectionViewLayoutAttributes {
-    val itemSize = widgetView!!.sizeThatFits(collectionViewFrame.useContents { size.readValue() })
-    return layoutAttributes.apply {
-      size = if (collectionViewFlowLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        CGSizeMake(collectionViewFrame.useContents { size.width }, itemSize.useContents { height })
-      } else {
-        CGSizeMake(itemSize.useContents { width }, collectionViewFrame.useContents { size.height })
-      }
+  override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    return widgetView?.sizeThatFits(size) ?: return super.sizeThatFits(size)
+  }
+
+  private fun removeAllSubviews() {
+    contentView.subviews.forEach {
+      (it as UIView).removeFromSuperview()
     }
   }
 }
@@ -253,8 +304,8 @@ internal class UIViewRefreshableLazyList : UIViewLazyList(), RefreshableLazyList
     this.onRefresh = onRefresh
 
     if (onRefresh != null) {
-      if (collectionView.refreshControl != refreshControl) {
-        collectionView.refreshControl = refreshControl
+      if (tableView.refreshControl != refreshControl) {
+        tableView.refreshControl = refreshControl
       }
     } else {
       refreshControl.removeFromSuperview()

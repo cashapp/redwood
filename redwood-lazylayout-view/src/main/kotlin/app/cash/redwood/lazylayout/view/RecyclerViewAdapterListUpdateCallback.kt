@@ -16,7 +16,6 @@
 package app.cash.redwood.lazylayout.view
 
 import androidx.recyclerview.widget.RecyclerView
-import app.cash.redwood.lazylayout.widget.ListUpdateCallback
 
 internal class RecyclerViewAdapterListUpdateCallback(
   private val adapter: RecyclerView.Adapter<*>,
