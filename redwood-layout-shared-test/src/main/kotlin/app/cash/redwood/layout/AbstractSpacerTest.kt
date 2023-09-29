@@ -15,21 +15,23 @@
  */
 package app.cash.redwood.layout
 
-import app.cash.redwood.Modifier
+import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
 import org.junit.Test
 
 abstract class AbstractSpacerTest<T : Any> {
 
-  abstract fun widget(
-    width: Int = 0,
-    height: Int = 0,
-    modifier: Modifier = Modifier,
-  ): Widget<T>
+  abstract fun widget(): Spacer<T>
 
   abstract fun wrap(widget: Widget<T>, horizontal: Boolean): T
 
   abstract fun verifySnapshot(value: T)
+
+  private fun widget(width: Int, height: Int): Spacer<T> = widget().apply {
+    width(width.dp)
+    height(height.dp)
+  }
 
   @Test fun zeroSpacer() {
     val widget = widget(width = 0, height = 0)
