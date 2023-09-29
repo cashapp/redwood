@@ -74,8 +74,8 @@ jobs:
           path: build/dokka/htmlMultiModule/
           if-no-files-found: error
 
-  paparazzi:
-    runs-on: ubuntu-latest
+  screenshot-tests:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,6 +90,8 @@ jobs:
         continue-on-error: true
 
       - run: ./gradlew verifyPaparazziDebug
+
+      - run: xcodebuild -project redwood-layout-uiview/RedwoodLayoutUIViewTests.xcodeproj -scheme RedwoodLayoutUIViewTests -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest' test
 
   sample-counter:
     runs-on: macos-latest
@@ -161,9 +163,9 @@ jobs:
       - build
       - connected
       - dokka
-      - paparazzi
       - sample-counter
       - sample-emoji
+      - screenshot-tests
       - test-app
     steps:
       - uses: actions/checkout@v4
