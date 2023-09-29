@@ -18,9 +18,15 @@ package com.example.redwood.emojisearch.android.composeui
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration.Indefinite
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
@@ -41,13 +47,16 @@ import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 
 @NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
+  private val snackbarHostState = SnackbarHostState()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -68,13 +77,46 @@ class EmojiSearchActivity : ComponentActivity() {
       )
     }
 
-    val view = ComposeView(this)
-    view.setContent {
+    setContent {
       EmojiSearchTheme {
-        TreehouseContent(treehouseApp, widgetSystem, contentSource = treehouseContentSource)
+        Scaffold(
+          snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) { contentPadding ->
+          TreehouseContent(
+            treehouseApp = treehouseApp,
+            widgetSystem = widgetSystem,
+            contentSource = treehouseContentSource,
+            modifier = Modifier.padding(contentPadding),
+          )
+        }
       }
     }
-    setContentView(view)
+  }
+
+  val appEventListener: EventListener = object : EventListener() {
+    private var success = true
+    private var snackbarJob: Job? = null
+
+    override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+      Log.w("Treehouse", "codeLoadFailed", exception)
+      if (success) {
+        // Only show the Snackbar on the first transition from success.
+        success = false
+        snackbarJob = scope.launch {
+          snackbarHostState.showSnackbar(
+            message = "Unable to load guest code from server",
+            actionLabel = "Dismiss",
+            duration = Indefinite,
+          )
+        }
+      }
+    }
+
+    override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+      Log.i("Treehouse", "codeLoadSuccess")
+      success = true
+      snackbarJob?.cancel()
+    }
   }
 
   private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
@@ -107,15 +149,5 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onDestroy() {
     scope.cancel()
     super.onDestroy()
-  }
-}
-
-val appEventListener: EventListener = object : EventListener() {
-  override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
-    Log.w("Treehouse", "codeLoadFailed", exception)
-  }
-
-  override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
-    Log.i("Treehouse", "codeLoadSuccess")
   }
 }
