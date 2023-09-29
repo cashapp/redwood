@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.flowOf
 import platform.Foundation.NSLog
+import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSURLSession
 
 class EmojiSearchLauncher(
@@ -40,7 +41,7 @@ class EmojiSearchLauncher(
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
 
   @Suppress("unused") // Invoked in Swift.
-  fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
+  fun createTreehouseApp(listener: EmojiSearchEventListener): TreehouseApp<EmojiSearchPresenter> {
     val ziplineHttpClient = nsurlSession.asZiplineHttpClient()
 
     val treehouseAppFactory = TreehouseAppFactory(
@@ -49,10 +50,16 @@ class EmojiSearchLauncher(
       eventListener = object : EventListener() {
         override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
           NSLog("Treehouse: codeLoadFailed: $exception")
+          NSOperationQueue.mainQueue.addOperationWithBlock {
+            listener.codeLoadFailed()
+          }
         }
 
         override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
           NSLog("Treehouse: codeLoadSuccess")
+          NSOperationQueue.mainQueue.addOperationWithBlock {
+            listener.codeLoadSuccess()
+          }
         }
       },
     )
@@ -72,4 +79,9 @@ class EmojiSearchLauncher(
 
     return treehouseApp
   }
+}
+
+interface EmojiSearchEventListener {
+  fun codeLoadFailed()
+  fun codeLoadSuccess()
 }
