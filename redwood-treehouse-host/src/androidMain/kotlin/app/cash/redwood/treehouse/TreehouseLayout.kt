@@ -25,6 +25,7 @@ import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatch
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
+import app.cash.treehouse.host.R
 import java.util.UUID
 
 @Deprecated(
@@ -58,9 +59,8 @@ public class TreehouseLayout(
   override var saveCallback: TreehouseView.SaveCallback? = null
 
   init {
-    // The view needs to have an id for Android to populate saved data back
-    @SuppressLint("ResourceType")
-    id = 9000
+    // The view needs to have an ID to participate in instance state saving.
+    id = R.id.treehouse_layout
   }
 
   override fun onAttachedToWindow() {
