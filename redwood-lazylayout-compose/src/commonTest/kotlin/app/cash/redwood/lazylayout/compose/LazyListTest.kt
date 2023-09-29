@@ -22,6 +22,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyListValue
+import app.cash.redwood.lazylayout.widget.ListUpdateCallback
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.lazylayout.widget.WindowedLazyList
