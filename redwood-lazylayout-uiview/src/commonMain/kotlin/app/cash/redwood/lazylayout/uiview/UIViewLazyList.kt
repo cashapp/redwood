@@ -117,7 +117,10 @@ internal open class UIViewLazyList(
     override fun tableView(
       tableView: UITableView,
       numberOfRowsInSection: NSInteger,
-    ) = processor.size.toLong()
+    ): Long {
+      require(numberOfRowsInSection == 0L)
+      return processor.size.toLong()
+    }
 
     override fun tableView(
       tableView: UITableView,
@@ -146,7 +149,6 @@ internal open class UIViewLazyList(
       delegate = tableViewDelegate
       prefetchingEnabled = true
       rowHeight = UITableViewAutomaticDimension
-      estimatedRowHeight = 44.0
       separatorStyle = UITableViewCellSeparatorStyleNone
 
       registerClass(
