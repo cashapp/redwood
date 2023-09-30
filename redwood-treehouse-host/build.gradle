@@ -59,12 +59,7 @@ dependencies {
 
   // The kotlin.test library provides JVM variants for multiple testing frameworks. The Kotlin
   // plugin does not apply the capability to configurations created by the Android plugin.
-  androidTestImplementation(libs.kotlin.test) {
-    capabilities {
-      requireCapability(
-        "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
-    }
-  }
+  androidTestImplementation libs.kotlin.test.junit
 }
 
 android {

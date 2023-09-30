@@ -15,6 +15,7 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 kotlin-serializationPlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -27,7 +28,7 @@ xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.2'
 
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.22.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.0"
-spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.21.0"
+spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.22.0"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
 buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 

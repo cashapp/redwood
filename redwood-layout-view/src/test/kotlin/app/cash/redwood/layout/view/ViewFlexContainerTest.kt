@@ -51,16 +51,15 @@ class ViewFlexContainerTest(
     return ViewTestFlexContainer(paparazzi.context, direction)
   }
 
-  override fun widget(text: String, modifier: Modifier) = object : Text<View> {
+  override fun widget() = object : Text<View> {
     override val value = TextView(paparazzi.context).apply {
       background = ColorDrawable(Color.GREEN)
       textSize = 18f
       textDirection = View.TEXT_DIRECTION_LOCALE
       setTextColor(Color.BLACK)
-      this.text = text
     }
 
-    override var modifier = modifier
+    override var modifier: Modifier = Modifier
 
     override fun text(text: String) {
       value.text = text

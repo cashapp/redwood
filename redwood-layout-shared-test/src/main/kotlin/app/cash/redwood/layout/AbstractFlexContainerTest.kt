@@ -37,8 +37,13 @@ import org.junit.Test
 @Suppress("JUnitMalformedDeclaration")
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(text: String, modifier: Modifier = Modifier): Text<T>
+  abstract fun widget(): Text<T>
   abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
+
+  private fun widget(text: String, modifier: Modifier = Modifier): Text<T> = widget().apply {
+    text(text)
+    this.modifier = modifier
+  }
 
   @Test fun emptyLayout(
     @TestParameter flexDirectionEnum: FlexDirectionEnum,

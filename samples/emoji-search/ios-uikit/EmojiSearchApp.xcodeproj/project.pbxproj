@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC042528AC72AC00721342 /* RemoteImageLoader.swift */; };
 		C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */; };
 		C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */; };
+		CB5D6B092AC5326B004BF9CB /* SnackBar in Frameworks */ = {isa = PBXBuildFile; productRef = CB5D6B082AC5326B004BF9CB /* SnackBar */; };
 		CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */; };
 		CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F76552810A8A8008CF457 /* IosHostApi.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB5D6B092AC5326B004BF9CB /* SnackBar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,6 +103,9 @@
 			dependencies = (
 			);
 			name = EmojiSearchApp;
+			packageProductDependencies = (
+				CB5D6B082AC5326B004BF9CB /* SnackBar */,
+			);
 			productName = EmojiSearchApp;
 			productReference = 635661D121F12B7E00DD7240 /* EmojiSearchApp.app */;
 			productType = "com.apple.product-type.application";
@@ -130,6 +135,9 @@
 				Base,
 			);
 			mainGroup = 635661C821F12B7D00DD7240;
+			packageReferences = (
+				CB5D6B072AC5326B004BF9CB /* XCRemoteSwiftPackageReference "SnackBar" */,
+			);
 			productRefGroup = 635661D221F12B7E00DD7240 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -415,6 +423,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CB5D6B072AC5326B004BF9CB /* XCRemoteSwiftPackageReference "SnackBar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ahmedAlmasri/SnackBar.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CB5D6B082AC5326B004BF9CB /* SnackBar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB5D6B072AC5326B004BF9CB /* XCRemoteSwiftPackageReference "SnackBar" */;
+			productName = SnackBar;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 635661C921F12B7D00DD7240 /* Project object */;
 }

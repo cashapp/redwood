@@ -18,23 +18,20 @@ kotlin {
         api projects.redwoodWidget
       }
     }
-  }
-}
-
-dependencies {
-  // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
-  // as a test dependency this selection is transparent. But since we are publishing a library
-  // we need to select one ourselves at compilation time.
-  def configurationNames = [
-    "jvmMainImplementation",
-    "debugImplementation",
-    "releaseImplementation",
-  ]
-  for (configurationName in configurationNames) {
-    add(configurationName, libs.kotlin.test) {
-      capabilities {
-        requireCapability(
-          "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
+    androidMain {
+      dependencies {
+        // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+        // as a test dependency this selection is transparent. But since we are publishing a library
+        // we need to select one ourselves at compilation time.
+        api libs.kotlin.test.junit
+      }
+    }
+    jvmMain {
+      dependencies {
+        // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+        // as a test dependency this selection is transparent. But since we are publishing a library
+        // we need to select one ourselves at compilation time.
+        api libs.kotlin.test.junit
       }
     }
   }

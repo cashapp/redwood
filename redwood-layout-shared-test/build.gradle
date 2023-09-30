@@ -1,16 +1,12 @@
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
   api projects.redwoodLayoutApi
   api projects.redwoodLayoutModifiers
+  api projects.redwoodLayoutWidget
   api projects.redwoodRuntime
   api projects.redwoodWidget
   api projects.redwoodYoga
   api libs.junit
   api libs.testParameterInjector
-}
-
-android {
-  namespace 'app.cash.redwood.redwoodlayoutsharedtest'
 }
