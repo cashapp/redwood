@@ -21,6 +21,14 @@
     <property tag="1" name="width" type="app.cash.redwood.ui.Dp"/>
     <property tag="2" name="height" type="app.cash.redwood.ui.Dp"/>
   </widget>
+  <widget tag="4" type="app.cash.redwood.layout.Box">
+    <property tag="1" name="width" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="2" name="height" type="app.cash.redwood.layout.api.Constraint"/>
+    <property tag="3" name="margin" type="app.cash.redwood.ui.Margin"/>
+    <property tag="4" name="horizontalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <property tag="5" name="verticalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
+    <children tag="1" name="children"/>
+  </widget>
   <modifier tag="1" type="app.cash.redwood.layout.Grow">
     <property name="value" type="kotlin.Double"/>
   </modifier>

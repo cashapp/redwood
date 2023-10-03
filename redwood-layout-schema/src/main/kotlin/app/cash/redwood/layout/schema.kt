@@ -19,17 +19,23 @@ import app.cash.redwood.schema.Schema
 
 @Schema(
   [
-    Row::class,
+    // Widgets
+    Box::class,
     Column::class,
+    Row::class,
     Spacer::class,
+    // Next tag: 5
+
+    // Modifiers
     Grow::class,
-    Shrink::class,
-    Margin::class,
+    Height::class,
     HorizontalAlignment::class,
+    Margin::class,
+    Shrink::class,
+    Size::class,
     VerticalAlignment::class,
     Width::class,
-    Height::class,
-    Size::class,
+    // Next tag: 9
   ],
 )
 public interface RedwoodLayout

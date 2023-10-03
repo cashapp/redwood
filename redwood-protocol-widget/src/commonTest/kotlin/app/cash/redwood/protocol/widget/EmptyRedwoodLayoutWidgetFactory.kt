@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 
 class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Nothing> {
+  override fun Box() = TODO()
   override fun Column() = TODO()
   override fun Row() = TODO()
   override fun Spacer() = TODO()

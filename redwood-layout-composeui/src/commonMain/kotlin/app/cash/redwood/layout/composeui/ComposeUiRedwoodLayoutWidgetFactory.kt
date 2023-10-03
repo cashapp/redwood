@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
@@ -23,6 +24,10 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.yoga.FlexDirection
 
 public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
+  override fun Box(): Box<() -> Unit> {
+    TODO("Not yet implemented")
+  }
+
   override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
   override fun Row(): Row<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Row)
   override fun Spacer(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
