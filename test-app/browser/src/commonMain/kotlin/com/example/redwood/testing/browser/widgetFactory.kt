@@ -37,6 +37,9 @@ class HtmlWidgetFactory(
   }
 
   override fun TextInput() = TODO()
+
+  override fun Rectangle() = TODO()
+
   override fun Button2() = TODO()
 
   override fun ScopedTestRow() = throw UnsupportedOperationException()
