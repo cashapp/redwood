@@ -86,16 +86,13 @@ private class CombinedModifier(
     append('[')
 
     var first = true
-    outer.forEach { element ->
+    val appendElement: (Modifier.Element) -> Unit = { element ->
       if (!first) append(", ")
       first = false
       append(element)
     }
-    inner.forEach { element ->
-      if (!first) append(", ")
-      first = false
-      append(element)
-    }
+    outer.forEach(appendElement)
+    inner.forEach(appendElement)
 
     append(']')
   }
