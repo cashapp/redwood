@@ -41,7 +41,7 @@ public interface Modifier {
     } else if (other is CombinedModifier) {
       // Normalize the element chain to be left-associative when multiple are added on the right.
       var result: Modifier = this
-      other.forEach { element -> result = result then element }
+      other.forEach { element -> result = CombinedModifier(result, element) }
       result
     } else {
       CombinedModifier(this, other)
