@@ -18,7 +18,7 @@ package app.cash.redwood.layout
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
-import org.junit.Test
+import kotlin.test.Test
 
 abstract class AbstractSpacerTest<T : Any> {
 
@@ -33,22 +33,22 @@ abstract class AbstractSpacerTest<T : Any> {
     height(height.dp)
   }
 
-  @Test fun zeroSpacer() {
+  @Test fun testZeroSpacer() {
     val widget = widget(width = 0, height = 0)
     verifySnapshot(wrap(widget, horizontal = true))
   }
 
-  @Test fun widthOnlySpacer() {
+  @Test fun testWidthOnlySpacer() {
     val widget = widget(width = 100, height = 0)
     verifySnapshot(wrap(widget, horizontal = true))
   }
 
-  @Test fun heightOnlySpacer() {
+  @Test fun testHeightOnlySpacer() {
     val widget = widget(width = 0, height = 100)
     verifySnapshot(wrap(widget, horizontal = false))
   }
 
-  @Test fun bothSpacer() {
+  @Test fun testBothSpacer() {
     val widget = widget(width = 100, height = 100)
     verifySnapshot(wrap(widget, horizontal = false))
   }

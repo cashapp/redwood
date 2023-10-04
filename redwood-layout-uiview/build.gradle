@@ -8,9 +8,16 @@ redwoodBuild {
 }
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
+  [
+    iosArm64(),
+    iosX64(),
+    iosSimulatorArm64(),
+  ].each { iosTarget ->
+    iosTarget.binaries.framework {
+      compilation = iosTarget.compilations.test
+      baseName = 'RedwoodLayoutUIViewTestKt'
+    }
+  }
 
   sourceSets {
     commonMain {
@@ -22,17 +29,11 @@ kotlin {
         implementation projects.redwoodYoga
       }
     }
-
-    iosArm64Main {
-      dependsOn commonMain
-    }
-
-    iosX64Main {
-      dependsOn commonMain
-    }
-
-    iosSimulatorArm64Main {
-      dependsOn commonMain
+    commonTest {
+      dependencies {
+        api projects.redwoodLayoutSharedTest
+        api libs.kotlin.test
+      }
     }
   }
 }
