@@ -49,6 +49,8 @@ internal fun LazyList(
   val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
   val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
+  // TODO(jwilson): drop this down to 20 once this is fixed:
+  //     https://github.com/cashapp/redwood/issues/1551
   var placeholderPoolSize by remember { mutableStateOf(30) }
   LazyList(
     isVertical,
@@ -56,7 +58,7 @@ internal fun LazyList(
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
-      val proposedPlaceholderPoolSize = visibleItemCount * 2
+      val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
       // We only ever want to increase the pool size.
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
