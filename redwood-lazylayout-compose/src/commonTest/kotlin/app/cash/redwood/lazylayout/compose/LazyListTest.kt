@@ -55,7 +55,7 @@ class LazyListTest {
     assertThat(snapshot)
       .containsExactly(
         DefaultLazyListValue.copy(
-          placeholder = List(20) { TextValue(Modifier, "Placeholder") },
+          placeholder = List(30) { TextValue(Modifier, "Placeholder") },
         ),
       )
   }
@@ -91,7 +91,7 @@ class LazyListTest {
       .containsExactly(
         DefaultLazyListValue.copy(
           itemsAfter = expectedItemsAfter,
-          placeholder = List(20) { TextValue(Modifier, "Placeholder") },
+          placeholder = List(30) { TextValue(Modifier, "Placeholder") },
           items = List(expectedItemCount) { TextValue(Modifier, it.toString()) },
         ),
       )
@@ -124,7 +124,7 @@ class LazyListTest {
         DefaultLazyListValue.copy(
           itemsBefore = 35,
           itemsAfter = 25,
-          placeholder = List(20) { TextValue(Modifier, "Placeholder") },
+          placeholder = List(30) { TextValue(Modifier, "Placeholder") },
           items = List(40) { TextValue(Modifier, (it + 35).toString()) },
         ),
       )
