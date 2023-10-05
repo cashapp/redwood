@@ -52,6 +52,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import okio.Path.Companion.toPath
+import okio.assetfilesystem.asFileSystem
 
 @NoLiveLiterals
 class EmojiSearchActivity : ComponentActivity() {
@@ -128,6 +130,8 @@ class EmojiSearchActivity : ComponentActivity() {
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
       eventListener = appEventListener,
+      embeddedDir = "/".toPath(),
+      embeddedFileSystem = applicationContext.assets.asFileSystem(),
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")

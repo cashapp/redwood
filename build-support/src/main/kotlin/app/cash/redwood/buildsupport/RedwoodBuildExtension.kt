@@ -26,6 +26,16 @@ interface RedwoodBuildExtension {
    */
   fun publishing()
 
-  /** Bundle a zip with dependencies and startup scripts. */
-  fun application(name: String, mainClass: String)
+  /** Bundle a zip with dependencies and startup scripts for a CLI. */
+  fun cliApplication(name: String, mainClass: String)
+
+  /** Bundle a zip of a Zipline application's compiled `.zipline` files. */
+  fun ziplineApplication()
+
+  /**
+   * Consume a Zipline application in an Android application and embed it within assets.
+   *
+   * @name Name of the Treehouse application. Will be used to prefix the Zipline manifest file.
+   */
+  fun embedZiplineApplication(dependencyNotation: Any, name: String)
 }

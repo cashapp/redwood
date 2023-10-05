@@ -48,6 +48,8 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
+import okio.assetfilesystem.asFileSystem
 
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
@@ -119,6 +121,8 @@ class EmojiSearchActivity : ComponentActivity() {
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
       eventListener = appEventListener,
+      embeddedDir = "/".toPath(),
+      embeddedFileSystem = applicationContext.assets.asFileSystem(),
       stateStore = FileStateStore(
         json = Json,
         fileSystem = FileSystem.SYSTEM,

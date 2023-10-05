@@ -2,7 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 
 redwoodBuild {
   publishing()
-  application('redwood-codegen', 'app.cash.redwood.tooling.codegen.Main')
+  cliApplication('redwood-codegen', 'app.cash.redwood.tooling.codegen.Main')
 }
 
 dependencies {

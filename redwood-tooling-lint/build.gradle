@@ -6,7 +6,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 redwoodBuild {
   publishing()
-  application('redwood-lint', 'app.cash.redwood.tooling.lint.Main')
+  cliApplication('redwood-lint', 'app.cash.redwood.tooling.lint.Main')
 }
 
 dependencies {

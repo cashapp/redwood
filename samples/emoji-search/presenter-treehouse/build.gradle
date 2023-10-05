@@ -1,6 +1,10 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.zipline'
 
+redwoodBuild {
+  ziplineApplication()
+}
+
 kotlin {
   iosArm64()
   iosX64()
