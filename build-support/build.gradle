@@ -31,6 +31,7 @@ dependencies {
   implementation libs.spotlessPlugin
   implementation libs.androidGradlePlugin
   implementation libs.jetbrains.compose.gradlePlugin
+  implementation libs.zipline
 
   // Expose the generated version catalog API to the plugin.
   implementation(files(libs.class.superclass.protectionDomain.codeSource.location))

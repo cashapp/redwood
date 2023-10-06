@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
+redwoodBuild {
+  embedZiplineApplication(projects.samples.emojiSearch.presenterTreehouse, 'emoji-search')
+}
+
 android {
   namespace "com.example.redwood.emojisearch.android.views"
 }
@@ -18,4 +22,5 @@ dependencies {
   implementation projects.redwoodLazylayoutView
   implementation projects.redwoodTreehouse
   implementation projects.redwoodTreehouseHost
+  implementation libs.okio.assetfilesystem
 }

@@ -24,9 +24,11 @@ import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.attributes.Attribute
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
@@ -344,7 +346,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     }
   }
 
-  override fun application(name: String, mainClass: String) {
+  override fun cliApplication(name: String, mainClass: String) {
     project.plugins.apply("application")
 
     val application = project.extensions.getByName("application") as JavaApplication
@@ -374,4 +376,74 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       }
     }
   }
+
+  override fun ziplineApplication() {
+    var hasZipline = false
+    project.afterEvaluate {
+      check(hasZipline) {
+        "Project ${project.path} must have Zipline plugin to create Zipline application"
+      }
+    }
+    project.plugins.withId("app.cash.zipline") {
+      hasZipline = true
+
+      val ziplineConfiguration = project.configurations.create("zipline") {
+        it.isVisible = false
+        it.isCanBeResolved = false
+        it.isCanBeConsumed = true
+        it.attributes {
+          it.attribute(ziplineAttribute, ziplineAttributeValue)
+        }
+      }
+
+      // Only a single file can be used as an artifact so zip up the compiled contents.
+      val zipTask = project.tasks.register("zipProductionZiplineFiles", Zip::class.java) {
+        // Note: This makes assumptions about our setup having a JS target with the default name.
+        it.from(project.tasks.named("compileProductionExecutableKotlinJsZipline"))
+        it.destinationDirectory.set(project.layout.buildDirectory.dir("libs"))
+        it.archiveClassifier.set("zipline")
+      }
+
+      project.artifacts.add(ziplineConfiguration.name, zipTask)
+    }
+  }
+
+  override fun embedZiplineApplication(dependencyNotation: Any, name: String) {
+    var hasApplication = false
+    project.afterEvaluate {
+      check(hasApplication) {
+        "Project ${project.path} must have Android Application plugin to embed Zipline application"
+      }
+    }
+    project.plugins.withId("com.android.application") {
+      hasApplication = true
+
+      // Note: This will crash if you call it twice. We don't need this today, so it's not supported.
+      val ziplineConfiguration = project.configurations.create("zipline") {
+        it.isVisible = false
+        it.isCanBeResolved = true
+        it.isCanBeConsumed = false
+        it.attributes {
+          it.attribute(ziplineAttribute, ziplineAttributeValue)
+        }
+      }
+      project.dependencies.add(ziplineConfiguration.name, dependencyNotation)
+
+      val task = project.tasks.register("copyEmbeddedZiplineApplication", ZiplineAppAssetCopyTask::class.java) {
+        it.appName.set(name)
+        it.files.setFrom(ziplineConfiguration)
+      }
+
+      val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
+      androidComponents.onVariants {
+        val assets = checkNotNull(it.sources.assets) {
+          "Project ${project.path} assets must be enabled to embed Zipline application"
+        }
+        assets.addGeneratedSourceDirectory(task, ZiplineAppAssetCopyTask::outputDirectory)
+      }
+    }
+  }
 }
+
+private val ziplineAttribute = Attribute.of("zipline", String::class.java)
+private const val ziplineAttributeValue = "yep"
