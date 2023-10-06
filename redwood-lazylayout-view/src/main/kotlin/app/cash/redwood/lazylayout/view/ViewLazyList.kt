@@ -138,7 +138,12 @@ internal open class ViewLazyList private constructor(
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     this.crossAxisAlignment = crossAxisAlignment
-    adapter.notifyItemRangeChanged(0, processor.size)
+
+    // Layout params are invalid when crossAxisAlignment changes.
+    for (binding in processor.bindings) {
+      val view = binding.view ?: continue
+      view.content?.value?.layoutParams = createLayoutParams()
+    }
   }
 
   override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {

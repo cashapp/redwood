@@ -37,6 +37,9 @@ import app.cash.redwood.widget.Widget
  */
 public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
+  public val bindings: List<Binding<V, W>>
+    get() = itemsBefore.nonNullElements + loadedItems + itemsAfter.nonNullElements
+
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
@@ -339,9 +342,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     internal val processor: LazyListUpdateProcessor<V, W>,
     internal var isPlaceholder: Boolean = false,
   ) {
-    internal var view: V? = null
+    /** The currently-bound view. Null if this is not on-screen. */
+    public var view: V? = null
       private set
 
+    /**
+     * The currently-bound content. This should be `lateinit`, but it can't be because of the
+     * side-effect in set().
+     */
     internal var content: Widget<W>? = null
       set(value) {
         field = value
