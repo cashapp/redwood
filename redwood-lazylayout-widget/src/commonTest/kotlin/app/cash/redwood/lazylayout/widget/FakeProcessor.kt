@@ -78,7 +78,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
     }
   }
 
-  override fun setContent(view: StringCell, content: Widget<String>) {
+  override fun setContent(view: StringCell, content: Widget<String>?) {
     view.content = content
   }
 

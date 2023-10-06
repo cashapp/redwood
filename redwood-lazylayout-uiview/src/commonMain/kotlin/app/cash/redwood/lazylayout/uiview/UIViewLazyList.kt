@@ -90,7 +90,7 @@ internal open class UIViewLazyList(
       )
     }
 
-    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>) {
+    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>?) {
       view.content = content
     }
   }

@@ -321,7 +321,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   protected abstract fun deleteRows(index: Int, count: Int)
 
-  protected abstract fun setContent(view: V, content: Widget<W>)
+  protected abstract fun setContent(view: V, content: Widget<W>?)
 
   /**
    * Binds a UI-managed view to model-managed content.
@@ -347,14 +347,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       private set
 
     /**
-     * The currently-bound content. This should be `lateinit`, but it can't be because of the
-     * side-effect in set().
+     * The content of this binding; either a loaded widget or a placeholder. This should be
+     * `lateinit`, but it can't be because of the side-effect in set().
      */
     internal var content: Widget<W>? = null
       set(value) {
         field = value
         val view = this.view
-        if (view != null) processor.setContent(view, value!!)
+        if (view != null) processor.setContent(view, value)
       }
 
     public val isBound: Boolean
@@ -364,14 +364,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       require(this.view == null) { "already bound" }
 
       this.view = view
-      processor.setContent(view, content!!)
+      processor.setContent(view, content)
     }
 
     public fun unbind() {
       val view = this.view ?: return
 
       // Detach the view.
-      view.content = null
+      processor.setContent(view, null)
       this.view = null
 
       if (isPlaceholder) {

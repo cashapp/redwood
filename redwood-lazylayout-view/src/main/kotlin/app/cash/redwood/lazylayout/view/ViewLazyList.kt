@@ -38,7 +38,6 @@ import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding
-import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.BoundView
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
@@ -79,6 +78,10 @@ internal open class ViewLazyList private constructor(
 
     override fun deleteRows(index: Int, count: Int) {
       adapter.notifyItemRangeRemoved(index, count)
+    }
+
+    override fun setContent(view: ViewHolder, content: Widget<View>?) {
+      view.content = content
     }
   }
 
@@ -231,10 +234,10 @@ internal open class ViewLazyList private constructor(
 
   inner class ViewHolder(
     private val container: FrameLayout,
-  ) : RecyclerView.ViewHolder(container), BoundView<View> {
+  ) : RecyclerView.ViewHolder(container) {
     var binding: Binding<ViewHolder, View>? = null
 
-    override var content: Widget<View>? = null
+    var content: Widget<View>? = null
       set(value) {
         field = value
         container.removeAllViews()
