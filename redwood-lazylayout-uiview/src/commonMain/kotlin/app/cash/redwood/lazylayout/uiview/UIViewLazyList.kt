@@ -89,6 +89,10 @@ internal open class UIViewLazyList(
         UITableViewRowAnimationNone,
       )
     }
+
+    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>) {
+      view.content = content
+    }
   }
 
   override val placeholder: Widget.Children<UIView> = processor.placeholder
@@ -109,7 +113,7 @@ internal open class UIViewLazyList(
       cellForRowAtIndexPath: NSIndexPath,
     ): LazyListContainerCell {
       val index = cellForRowAtIndexPath.item.toInt()
-      return processor.getOrCreateBoundView(index) { binding ->
+      return processor.getOrCreateView(index) { binding ->
         createView(tableView, binding, index)
       }
     }
@@ -214,9 +218,9 @@ private const val reuseIdentifier = "LazyListContainerCell"
 internal class LazyListContainerCell(
   style: UITableViewCellStyle,
   reuseIdentifier: String?,
-) : UITableViewCell(style, reuseIdentifier), LazyListUpdateProcessor.BoundView<UIView> {
+) : UITableViewCell(style, reuseIdentifier) {
   internal var binding: Binding<LazyListContainerCell, UIView>? = null
-  override var content: Widget<UIView>? = null
+  internal var content: Widget<UIView>? = null
     set(value) {
       field = value
 

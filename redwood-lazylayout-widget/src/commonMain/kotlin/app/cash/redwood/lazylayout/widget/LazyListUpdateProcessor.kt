@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.BoundView
 import app.cash.redwood.widget.Widget
 
 /**
@@ -36,7 +35,7 @@ import app.cash.redwood.widget.Widget
  *
  * This class keeps track of the two windows, and of firing precise updates as the window changes.
  */
-public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
+public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
@@ -270,7 +269,7 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
     return loaded
   }
 
-  public fun getOrCreateBoundView(
+  public fun getOrCreateView(
     index: Int,
     createView: (binding: Binding<V, W>) -> V,
   ): V {
@@ -319,9 +318,7 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
 
   protected abstract fun deleteRows(index: Int, count: Int)
 
-  public interface BoundView<W : Any> {
-    public var content: Widget<W>?
-  }
+  protected abstract fun setContent(view: V, content: Widget<W>)
 
   /**
    * Binds a UI-managed view to model-managed content.
@@ -338,7 +335,7 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
    * (due to view recycling), or because it is discarded (due to the view discarding it). This class
    * assumes that a view that is discarded will never be bound again.
    */
-  public class Binding<V : BoundView<W>, W : Any> internal constructor(
+  public class Binding<V : Any, W : Any> internal constructor(
     internal val processor: LazyListUpdateProcessor<V, W>,
     internal var isPlaceholder: Boolean = false,
   ) {
@@ -348,7 +345,8 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
     internal var content: Widget<W>? = null
       set(value) {
         field = value
-        view?.content = value
+        val view = this.view
+        if (view != null) processor.setContent(view, value!!)
       }
 
     public val isBound: Boolean
@@ -358,7 +356,7 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
       require(this.view == null) { "already bound" }
 
       this.view = view
-      view.content = content!!
+      processor.setContent(view, content!!)
     }
 
     public fun unbind() {

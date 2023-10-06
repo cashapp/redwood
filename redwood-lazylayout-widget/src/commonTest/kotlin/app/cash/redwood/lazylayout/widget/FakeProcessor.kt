@@ -27,7 +27,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
   private val scrollWindowCells = mutableListOf<StringCell>()
 
   private fun getView(index: Int): StringCell {
-    return getOrCreateBoundView(index) { binding ->
+    return getOrCreateView(index) { binding ->
       StringCell(binding)
     }
   }
@@ -76,6 +76,10 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
     ) {
       scrollWindowCells.add(getView(scrollWindowOffset + scrollWindowCells.size))
     }
+  }
+
+  override fun setContent(view: StringCell, content: Widget<String>) {
+    view.content = content
   }
 
   fun scrollTo(offset: Int, count: Int) {
@@ -127,7 +131,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
 
   class StringCell(
     val binding: Binding<StringCell, String>,
-  ) : BoundView<String> {
-    override var content: Widget<String>? = null
+  ) {
+    var content: Widget<String>? = null
   }
 }
