@@ -44,7 +44,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   private var loadedItems = mutableListOf<Binding<V, W>>()
 
   private val itemsBefore = SparseList<Binding<V, W>?>()
-  private var itemsAfter = SparseList<Binding<V, W>?>()
+  private val itemsAfter = SparseList<Binding<V, W>?>()
 
   /** These updates will all be processed in batch in [onEndChanges]. */
   private var newItemsBefore = 0
@@ -102,6 +102,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   public val size: Int
     get() = itemsBefore.size + loadedItems.size + itemsAfter.size
+
+  public val itemsBeforeSize: Int
+    get() = itemsBefore.size
+
+  public val itemsAfterSize: Int
+    get() = itemsAfter.size
 
   public fun itemsBefore(itemsBefore: Int) {
     this.newItemsBefore = itemsBefore
@@ -360,10 +366,11 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     public fun unbind() {
-      if (view == null) return
+      val view = this.view ?: return
 
-      // Detach the display.
-      view = null
+      // Detach the view.
+      view.content = null
+      this.view = null
 
       if (isPlaceholder) {
         // This placeholder is no longer needed.
