@@ -1,12 +1,30 @@
-apply plugin: 'org.jetbrains.kotlin.jvm'
+import app.cash.redwood.buildsupport.KmpTargets
 
-dependencies {
-  api projects.redwoodLayoutApi
-  api projects.redwoodLayoutModifiers
-  api projects.redwoodLayoutWidget
-  api projects.redwoodRuntime
-  api projects.redwoodWidget
-  api projects.redwoodYoga
-  api libs.junit
-  api libs.testParameterInjector
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutApi
+        api projects.redwoodLayoutModifiers
+        api projects.redwoodLayoutWidget
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+        api projects.redwoodYoga
+        api libs.kotlin.test
+      }
+    }
+    jvmMain {
+      dependencies {
+        // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+        // as a test dependency this selection is transparent. But since we are publishing a library
+        // we need to select one ourselves at compilation time.
+        api libs.kotlin.test.junit
+        api libs.testParameterInjector
+      }
+    }
+  }
 }
