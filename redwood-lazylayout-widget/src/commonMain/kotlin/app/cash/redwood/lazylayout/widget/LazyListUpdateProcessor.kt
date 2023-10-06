@@ -103,12 +103,6 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   public val size: Int
     get() = itemsBefore.size + loadedItems.size + itemsAfter.size
 
-  public val itemsBeforeSize: Int
-    get() = itemsBefore.size
-
-  public val itemsAfterSize: Int
-    get() = itemsAfter.size
-
   public fun itemsBefore(itemsBefore: Int) {
     this.newItemsBefore = itemsBefore
   }
