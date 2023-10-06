@@ -27,6 +27,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor
+import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
@@ -73,23 +74,17 @@ internal open class UIViewLazyList(
   protected var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
 
   private val processor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
-    override fun createCell(
-      cell: Cell<LazyListContainerCell, UIView>,
-      widget: Widget<UIView>,
+    override fun createView(
+      binding: Binding<LazyListContainerCell, UIView>,
       index: Int,
     ): LazyListContainerCell {
       val result = tableView.dequeueReusableCellWithIdentifier(
         identifier = reuseIdentifier,
         forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
       ) as LazyListContainerCell
-      require(result.cell == null)
-      result.cell = cell
-      result.setWidget(widget.value)
+      require(result.binding == null)
+      result.binding = binding
       return result
-    }
-
-    override fun setWidget(cell: LazyListContainerCell, widget: Widget<UIView>) {
-      cell.setWidget(widget.value)
     }
 
     override fun insertRows(index: Int, count: Int) {
@@ -125,7 +120,7 @@ internal open class UIViewLazyList(
     override fun tableView(
       tableView: UITableView,
       cellForRowAtIndexPath: NSIndexPath,
-    ) = processor.getCell(cellForRowAtIndexPath.item.toInt())
+    ) = processor.getView(cellForRowAtIndexPath.item.toInt())
   }
 
   private val tableViewDelegate: UITableViewDelegateProtocol =
@@ -213,9 +208,19 @@ private const val reuseIdentifier = "LazyListContainerCell"
 internal class LazyListContainerCell(
   style: UITableViewCellStyle,
   reuseIdentifier: String?,
-) : UITableViewCell(style, reuseIdentifier) {
-  internal var cell: LazyListUpdateProcessor.Cell<LazyListContainerCell, UIView>? = null
-  internal var widgetView: UIView? = null
+) : UITableViewCell(style, reuseIdentifier), LazyListUpdateProcessor.BoundView<UIView> {
+  internal var binding: Binding<LazyListContainerCell, UIView>? = null
+  override var content: Widget<UIView>? = null
+    set(value) {
+      field = value
+
+      removeAllSubviews()
+      if (value != null) {
+        contentView.addSubview(value.value)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+      }
+      setNeedsLayout()
+    }
 
   override fun initWithStyle(
     style: UITableViewCellStyle,
@@ -234,43 +239,34 @@ internal class LazyListContainerCell(
 
     // Confirm the cell is bound when it's about to be displayed.
     if (superview == null && newSuperview != null) {
-      require(cell!!.isBound) { "about to display a cell that isn't bound!" }
+      require(binding!!.isBound) { "about to display a cell that isn't bound!" }
     }
 
     // Unbind the cell when its view is detached from the table.
     if (superview != null && newSuperview == null) {
       removeAllSubviews()
-      cell?.unbind()
-      cell = null
+      binding?.unbind()
+      binding = null
     }
   }
 
   override fun prepareForReuse() {
     super.prepareForReuse()
     removeAllSubviews()
-    cell?.unbind()
-    cell = null
-  }
-
-  fun setWidget(widgetView: UIView) {
-    this.widgetView = widgetView
-
-    removeAllSubviews()
-    contentView.addSubview(widgetView)
-    contentView.translatesAutoresizingMaskIntoConstraints = false
-    setNeedsLayout()
+    binding?.unbind()
+    binding = null
   }
 
   override fun layoutSubviews() {
     super.layoutSubviews()
 
-    val widgetView = this.widgetView ?: return
-    widgetView.setFrame(bounds)
+    val content = this.content ?: return
+    content.value.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return widgetView?.sizeThatFits(size) ?: return super.sizeThatFits(size)
+    return content?.value?.sizeThatFits(size) ?: return super.sizeThatFits(size)
   }
 
   private fun removeAllSubviews() {

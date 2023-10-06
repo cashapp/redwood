@@ -26,20 +26,10 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
   private var scrollWindowOffset = 0
   private val scrollWindowCells = mutableListOf<StringCell>()
 
-  override fun createCell(
-    cell: Cell<StringCell, String>,
-    widget: Widget<String>,
+  override fun createView(
+    binding: Binding<StringCell, String>,
     index: Int,
-  ): StringCell {
-    return StringCell(cell, widget)
-  }
-
-  override fun setWidget(
-    cell: StringCell,
-    widget: Widget<String>,
-  ) {
-    cell.widget = widget
-  }
+  ) = StringCell(binding)
 
   override fun insertRows(index: Int, count: Int) {
     require(index >= 0 && count >= 0 && index <= dataSize + 1)
@@ -54,8 +44,8 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
       } else if (i < scrollWindowLimit) {
         // Insert a new cell into the scroll window. We remove the last element to preserve the
         // scroll window's size.
-        scrollWindowCells.add(i - scrollWindowOffset, getCell(i))
-        scrollWindowCells.removeLast().cell.unbind()
+        scrollWindowCells.add(i - scrollWindowOffset, getView(i))
+        scrollWindowCells.removeLast().binding.unbind()
       }
     }
   }
@@ -73,7 +63,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
         scrollWindowOffset--
       } else if (index < scrollWindowLimit) {
         // Delete a cell from the scroll window. We'll replenish the window below.
-        scrollWindowCells.removeAt(index - scrollWindowOffset).cell.unbind()
+        scrollWindowCells.removeAt(index - scrollWindowOffset).binding.unbind()
       }
     }
 
@@ -83,7 +73,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
       scrollWindowCells.size < originalScrollWindowSize &&
       scrollWindowOffset + scrollWindowCells.size < dataSize
     ) {
-      scrollWindowCells.add(getCell(scrollWindowOffset + scrollWindowCells.size))
+      scrollWindowCells.add(getView(scrollWindowOffset + scrollWindowCells.size))
     }
   }
 
@@ -96,7 +86,7 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
 
     // Recycle old cells that precede the new window.
     while (oldWindowCellsOffset < offset) {
-      if (oldWindowCells.isNotEmpty()) oldWindowCells.removeFirst().cell.unbind()
+      if (oldWindowCells.isNotEmpty()) oldWindowCells.removeFirst().binding.unbind()
       oldWindowCellsOffset++
     }
 
@@ -106,13 +96,13 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
         scrollWindowCells += oldWindowCells.removeFirst()
         oldWindowCellsOffset++
       } else {
-        scrollWindowCells += getCell(i)
+        scrollWindowCells += getView(i)
       }
     }
 
     // Recycle old cells that are beyond the new window.
     while (oldWindowCells.isNotEmpty()) {
-      oldWindowCells.removeFirst().cell.unbind()
+      oldWindowCells.removeFirst().binding.unbind()
     }
   }
 
@@ -130,12 +120,13 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
       },
       separator = " ",
     ) {
-      it.widget.value
+      it.content!!.value
     }
   }
 
   class StringCell(
-    val cell: Cell<StringCell, String>,
-    var widget: Widget<String>,
-  )
+    val binding: Binding<StringCell, String>,
+  ) : BoundView<String> {
+    override var content: Widget<String>? = null
+  }
 }
