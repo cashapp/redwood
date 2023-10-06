@@ -47,19 +47,19 @@ class StateSnapshotTest {
     val storedStateSnapshot = storedStateSnapshot()
     val stateSnapshot = storedStateSnapshot.toStateSnapshot()
     assertThat(stateSnapshot.content).containsOnly(
-      "key1" to listOf(Saveable(true, JsonPrimitive(1))),
-      "key2" to listOf(Saveable(false, JsonPrimitive(1))),
-      "key3" to listOf(Saveable(true, JsonPrimitive("str"))),
-      "key4" to listOf(Saveable(false, JsonPrimitive("str"))),
+      "key1" to listOf(JsonMutableState(JsonPrimitive(1))),
+      "key2" to listOf(JsonPrimitive(1)),
+      "key3" to listOf(JsonMutableState(JsonPrimitive("str"))),
+      "key4" to listOf(JsonPrimitive("str")),
     )
   }
 
   private fun stateSnapshot() = StateSnapshot(
     mapOf(
-      "key1" to listOf(Saveable(true, JsonPrimitive(1))),
-      "key2" to listOf(Saveable(false, JsonPrimitive(1))),
-      "key3" to listOf(Saveable(true, JsonPrimitive("str"))),
-      "key4" to listOf(Saveable(false, JsonPrimitive("str"))),
+      "key1" to listOf(JsonMutableState(JsonPrimitive(1))),
+      "key2" to listOf(JsonPrimitive(1)),
+      "key3" to listOf(JsonMutableState(JsonPrimitive("str"))),
+      "key4" to listOf(JsonPrimitive("str")),
     ),
   )
 
