@@ -21,6 +21,7 @@ import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
@@ -62,13 +63,15 @@ private fun Any?.toJsonElement(): JsonElement {
     is Int -> JsonPrimitive(this)
     is List<*> -> JsonArray(map { it.toJsonElement() })
     is JsonElement -> this
+    null -> JsonNull
     else -> error("unexpected type: $this")
     // TODO: add support to Map<*, *>
   }
 }
 
-private fun JsonElement?.fromJsonElement(): Any {
+private fun JsonElement.fromJsonElement(): Any? {
   return when {
+    this is JsonNull -> null
     this is JsonPrimitive -> {
       if (this.isString) return content
       return booleanOrNull ?: doubleOrNull ?: intOrNull ?: error("unexpected type: $this")
