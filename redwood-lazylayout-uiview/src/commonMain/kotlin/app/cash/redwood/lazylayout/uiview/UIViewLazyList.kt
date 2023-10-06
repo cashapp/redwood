@@ -74,19 +74,6 @@ internal open class UIViewLazyList(
   protected var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
 
   private val processor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
-    override fun createView(
-      binding: Binding<LazyListContainerCell, UIView>,
-      index: Int,
-    ): LazyListContainerCell {
-      val result = tableView.dequeueReusableCellWithIdentifier(
-        identifier = reuseIdentifier,
-        forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
-      ) as LazyListContainerCell
-      require(result.binding == null)
-      result.binding = binding
-      return result
-    }
-
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.insertRowsAtIndexPaths(
@@ -120,7 +107,26 @@ internal open class UIViewLazyList(
     override fun tableView(
       tableView: UITableView,
       cellForRowAtIndexPath: NSIndexPath,
-    ) = processor.getView(cellForRowAtIndexPath.item.toInt())
+    ): LazyListContainerCell {
+      val index = cellForRowAtIndexPath.item.toInt()
+      return processor.getOrCreateBoundView(index) { binding ->
+        createView(tableView, binding, index)
+      }
+    }
+
+    private fun createView(
+      tableView: UITableView,
+      binding: Binding<LazyListContainerCell, UIView>,
+      index: Int,
+    ): LazyListContainerCell {
+      val result = tableView.dequeueReusableCellWithIdentifier(
+        identifier = reuseIdentifier,
+        forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
+      ) as LazyListContainerCell
+      require(result.binding == null)
+      result.binding = binding
+      return result
+    }
   }
 
   private val tableViewDelegate: UITableViewDelegateProtocol =

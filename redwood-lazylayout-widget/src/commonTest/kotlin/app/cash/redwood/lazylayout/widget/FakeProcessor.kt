@@ -26,10 +26,11 @@ class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>(
   private var scrollWindowOffset = 0
   private val scrollWindowCells = mutableListOf<StringCell>()
 
-  override fun createView(
-    binding: Binding<StringCell, String>,
-    index: Int,
-  ) = StringCell(binding)
+  private fun getView(index: Int): StringCell {
+    return getOrCreateBoundView(index) { binding ->
+      StringCell(binding)
+    }
+  }
 
   override fun insertRows(index: Int, count: Int) {
     require(index >= 0 && count >= 0 && index <= dataSize + 1)

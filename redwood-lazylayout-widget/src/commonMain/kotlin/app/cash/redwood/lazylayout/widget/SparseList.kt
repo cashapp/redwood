@@ -46,6 +46,16 @@ internal class SparseList<T> : AbstractList<T?>() {
     }
   }
 
+  inline fun getOrCreate(index: Int, create: () -> T & Any): T & Any {
+    var result = get(index)
+
+    if (result != null) return result
+
+    result = create()
+    set(index, result)
+    return result
+  }
+
   fun removeLast(): T? {
     return removeAt(size - 1)
   }

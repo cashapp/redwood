@@ -270,54 +270,50 @@ public abstract class LazyListUpdateProcessor<V : BoundView<W>, W : Any> {
     return loaded
   }
 
-  public fun getView(index: Int): V {
-    return when {
-      index < itemsBefore.size -> getOrCreatePlaceholder(itemsBefore, index, index)
-      index < itemsBefore.size + loadedItems.size -> getLoadedView(index)
-      else -> getOrCreatePlaceholder(itemsAfter, index - itemsBefore.size - loadedItems.size, index)
-    }
-  }
-
-  private fun getLoadedView(index: Int): V {
-    val binding = loadedItems[index - itemsBefore.size]
+  public fun getOrCreateBoundView(
+    index: Int,
+    createView: (binding: Binding<V, W>) -> V,
+  ): V {
+    val binding = requireBindingAtIndex(index)
 
     var view = binding.view
     if (view == null) {
-      view = createView(binding, index)
+      view = createView(binding)
       binding.bind(view)
     }
 
     return view
   }
 
-  private fun getOrCreatePlaceholder(
-    placeholders: SparseList<Binding<V, W>?>,
-    placeholderIndex: Int,
-    cellIndex: Int,
-  ): V {
-    var binding = placeholders[placeholderIndex]
+  public fun bind(index: Int, view: V): Binding<V, W> {
+    return requireBindingAtIndex(index).apply {
+      bind(view)
+    }
+  }
 
-    // Return an existing placeholder.
-    if (binding != null) return binding.view!!
-
-    // Create a new placeholder cell and bind it to the view.
-    binding = Binding(
-      processor = this,
+  /**
+   * Callers must immediately call [Binding.bind] on the result if it isn't already bound. Otherwise
+   * we could leak placeholder bindings.
+   */
+  private fun requireBindingAtIndex(index: Int): Binding<V, W> {
+    fun createBinding() = Binding(
+      processor = this@LazyListUpdateProcessor,
       isPlaceholder = true,
-    )
-    binding.content = takePlaceholder()
-    val view = createView(binding, cellIndex)
-    binding.bind(view)
-    placeholders.set(placeholderIndex, binding)
-    return view
+    ).apply {
+      content = takePlaceholder()
+    }
+
+    return when {
+      index < itemsBefore.size -> itemsBefore.getOrCreate(index, ::createBinding)
+      index < itemsBefore.size + loadedItems.size -> loadedItems[index - itemsBefore.size]
+      else -> itemsAfter.getOrCreate(index - itemsBefore.size - loadedItems.size, ::createBinding)
+    }
   }
 
   private fun takePlaceholder(): Widget<W> {
     return placeholdersQueue.removeFirstOrNull()
       ?: throw IllegalStateException("no more placeholders!")
   }
-
-  protected abstract fun createView(binding: Binding<V, W>, index: Int): V
 
   protected abstract fun insertRows(index: Int, count: Int)
 
