@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 redwoodBuild {
-  embedZiplineApplication(projects.samples.emojiSearch.presenterTreehouse, 'emoji-search')
+  embedZiplineApplication(projects.samples.emojiSearch.presenterTreehouse)
 }
 
 android {
