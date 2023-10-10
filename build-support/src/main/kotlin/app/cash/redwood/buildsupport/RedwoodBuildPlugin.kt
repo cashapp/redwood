@@ -377,7 +377,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     }
   }
 
-  override fun ziplineApplication() {
+  override fun ziplineApplication(name: String) {
     var hasZipline = false
     project.afterEvaluate {
       check(hasZipline) {
@@ -387,6 +387,20 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     project.plugins.withId("app.cash.zipline") {
       hasZipline = true
 
+      val prepareTask = project.tasks.register("prepareEmbeddedZiplineApp", ZiplineAppEmbedTask::class.java) {
+        // Note: This makes assumptions about our setup having a JS target with the default name.
+        it.files.from(project.tasks.named("compileProductionExecutableKotlinJsZipline"))
+        it.appName.set(name)
+        it.outputDirectory.set(project.layout.buildDirectory.dir("zipline"))
+      }
+
+      // Only a single file can be used as an artifact so zip up the compiled contents.
+      val zipTask = project.tasks.register("zipEmbeddedZiplineApp", Zip::class.java) {
+        it.from(prepareTask)
+        it.destinationDirectory.set(project.layout.buildDirectory.dir("libs"))
+        it.archiveClassifier.set("zipline")
+      }
+
       val ziplineConfiguration = project.configurations.create("zipline") {
         it.isVisible = false
         it.isCanBeResolved = false
@@ -395,20 +409,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           it.attribute(ziplineAttribute, ziplineAttributeValue)
         }
       }
-
-      // Only a single file can be used as an artifact so zip up the compiled contents.
-      val zipTask = project.tasks.register("zipProductionZiplineFiles", Zip::class.java) {
-        // Note: This makes assumptions about our setup having a JS target with the default name.
-        it.from(project.tasks.named("compileProductionExecutableKotlinJsZipline"))
-        it.destinationDirectory.set(project.layout.buildDirectory.dir("libs"))
-        it.archiveClassifier.set("zipline")
-      }
-
       project.artifacts.add(ziplineConfiguration.name, zipTask)
     }
   }
 
-  override fun embedZiplineApplication(dependencyNotation: Any, name: String) {
+  override fun embedZiplineApplication(dependencyNotation: Any) {
     var hasApplication = false
     project.afterEvaluate {
       check(hasApplication) {
@@ -429,9 +434,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       }
       project.dependencies.add(ziplineConfiguration.name, dependencyNotation)
 
-      val task = project.tasks.register("copyEmbeddedZiplineApplication", ZiplineAppAssetCopyTask::class.java) {
-        it.appName.set(name)
-        it.files.setFrom(ziplineConfiguration)
+      val extractTask = project.tasks.register("extractEmbeddedZiplineApplication", ZiplineAppExtractTask::class.java) {
+        it.inputFiles.from(ziplineConfiguration)
       }
 
       val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
@@ -439,7 +443,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         val assets = checkNotNull(it.sources.assets) {
           "Project ${project.path} assets must be enabled to embed Zipline application"
         }
-        assets.addGeneratedSourceDirectory(task, ZiplineAppAssetCopyTask::outputDirectory)
+        assets.addGeneratedSourceDirectory(extractTask, ZiplineAppExtractTask::outputDirectory)
       }
     }
   }

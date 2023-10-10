@@ -2,7 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.zipline'
 
 redwoodBuild {
-  ziplineApplication()
+  ziplineApplication('emoji-search')
 }
 
 kotlin {

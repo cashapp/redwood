@@ -16,9 +16,7 @@
 package app.cash.redwood.buildsupport
 
 import app.cash.zipline.ZiplineManifest
-import javax.inject.Inject
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.ArchiveOperations
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
@@ -29,10 +27,7 @@ import org.gradle.api.tasks.TaskAction
 
 private const val ZIPLINE_MANIFEST_JSON = "manifest.zipline.json"
 
-internal abstract class ZiplineAppAssetCopyTask
-@Inject constructor(
-  private val archiveOperations: ArchiveOperations,
-) : DefaultTask() {
+internal abstract class ZiplineAppEmbedTask : DefaultTask() {
   @get:InputFiles
   abstract val files: ConfigurableFileCollection
 
@@ -50,10 +45,8 @@ internal abstract class ZiplineAppAssetCopyTask
       mkdirs()
     }
 
-    val fileMap = archiveOperations.zipTree(files.singleFile)
-      .files
-      .associateBy { it.name }
-      .toMutableMap()
+    val fileMap = files.asFileTree.files
+      .associateByTo(mutableMapOf()) { it.name }
 
     val inputManifestFile = checkNotNull(fileMap.remove(ZIPLINE_MANIFEST_JSON)) {
       "No zipline.manifest.json file found in input files ${fileMap.keys}"
