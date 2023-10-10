@@ -16,22 +16,32 @@
 package com.example.redwood.testing.android.views
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.view.View
-import android.widget.Button as ButtonWidget
-import android.widget.TextView
-import com.example.redwood.testing.widget.Button
+import app.cash.redwood.Modifier
+import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Dp
 import com.example.redwood.testing.widget.Rectangle
-import com.example.redwood.testing.widget.TestSchemaWidgetFactory
-import com.example.redwood.testing.widget.Text
 
-class AndroidTestSchemaWidgetFactory(
-  private val context: Context,
-) : TestSchemaWidgetFactory<View> {
-  override fun Text(): Text<View> = ViewText(TextView(context))
-  override fun TestRow() = throw UnsupportedOperationException()
-  override fun ScopedTestRow() = throw UnsupportedOperationException()
-  override fun Button(): Button<View> = ViewButton(ButtonWidget(context))
-  override fun Button2() = TODO()
-  override fun TextInput() = TODO()
-  override fun Rectangle(): Rectangle<View> = ViewRectangle(context)
+internal class ViewRectangle(
+  context: Context,
+) : Rectangle<View> {
+
+  private val density = Density(context.resources)
+
+  val background = GradientDrawable()
+
+  override val value = View(context)
+
+  override var modifier: Modifier = Modifier
+  init {
+    value.background = background
+  }
+  override fun backgroundColor(backgroundColor: UInt) {
+    background.setColor(backgroundColor.toInt())
+  }
+
+  override fun cornerRadius(cornerRadius: Float) {
+    background.cornerRadius = with(density) { Dp(cornerRadius.toDouble()).toPx() }.toFloat()
+  }
 }

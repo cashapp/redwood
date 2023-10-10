@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.widget
 import app.cash.redwood.Modifier
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.Button2
+import com.example.redwood.testing.widget.Rectangle
 import com.example.redwood.testing.widget.ScopedTestRow
 import com.example.redwood.testing.widget.TestRow
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
@@ -39,4 +40,5 @@ open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
   }
   override fun Button2(): Button2<Nothing> = TODO()
   override fun TextInput(): TextInput<Nothing> = TODO()
+  override fun Rectangle(): Rectangle<Nothing> = TODO()
 }

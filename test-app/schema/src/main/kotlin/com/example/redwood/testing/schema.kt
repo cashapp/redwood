@@ -40,6 +40,7 @@ import kotlin.time.Duration
     Button::class,
     Button2::class,
     TextInput::class,
+    Rectangle::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -93,6 +94,15 @@ public data class TextInput(
   @Property(3) val onChange: (String) -> Unit,
   @Property(4) val onChangeCustomType: (Duration) -> Unit,
   @Property(5) val maxLength: Int,
+)
+
+@Widget(8)
+public data class Rectangle(
+  /** expects argb format: 0xAARRGGBBu*/
+  @Property(1) val backgroundColor: UInt,
+
+  @Default("0f")
+  @Property(2) val cornerRadius: Float,
 )
 
 public object TestScope

@@ -31,15 +31,19 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
     func Button() -> Button {
         return ButtonBinding()
     }
-    
+
     func Button2() -> Button2 {
         fatalError()
     }
-    
+
+    func Rectangle() -> Rectangle {
+        return RectangleBinding()
+    }
+
     func ScopedTestRow() -> ScopedTestRow {
         fatalError()
     }
-    
+
     func TestRow() -> TestRow {
         fatalError()
     }
