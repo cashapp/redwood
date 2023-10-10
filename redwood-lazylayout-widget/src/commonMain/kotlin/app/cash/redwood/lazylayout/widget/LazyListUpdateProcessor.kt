@@ -35,16 +35,16 @@ import app.cash.redwood.widget.Widget
  *
  * This class keeps track of the two windows, and of firing precise updates as the window changes.
  */
-public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
-
-  /** Loaded cells that may or may not have UI attached. */
-  private var loadedCells = mutableListOf<Cell<C, W>>()
+public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
-  private val itemsBefore = SparseList<Cell<C, W>?>()
-  private var itemsAfter = SparseList<Cell<C, W>?>()
+  /** Loaded items that may or may not have a view bound. */
+  private var loadedItems = mutableListOf<Binding<V, W>>()
+
+  private val itemsBefore = SparseList<Binding<V, W>?>()
+  private var itemsAfter = SparseList<Binding<V, W>?>()
 
   /** These updates will all be processed in batch in [onEndChanges]. */
   private var newItemsBefore = 0
@@ -101,7 +101,7 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
   }
 
   public val size: Int
-    get() = itemsBefore.size + loadedCells.size + itemsAfter.size
+    get() = itemsBefore.size + loadedItems.size + itemsAfter.size
 
   public fun itemsBefore(itemsBefore: Int) {
     this.newItemsBefore = itemsBefore
@@ -125,7 +125,7 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
         val toPromoteCount = minOf(edit.widgets.size, itemsBefore.size - newItemsBefore)
         for (i in edit.widgets.size - 1 downTo edit.widgets.size - toPromoteCount) {
           val placeholder = itemsBefore.removeLast()
-          loadedCells.add(0, placeholderToLoaded(placeholder, edit.widgets[i]))
+          loadedItems.add(0, placeholderToLoaded(placeholder, edit.widgets[i]))
           edit.widgets.removeAt(i)
         }
       } else if (
@@ -136,7 +136,7 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
         // The before window is growing. Demote loaded cells into placeholders.
         val toDemoteCount = minOf(edit.count, newItemsBefore - itemsBefore.size)
         for (i in 0 until toDemoteCount) {
-          val removed = loadedCells.removeAt(0)
+          val removed = loadedItems.removeAt(0)
           itemsBefore.add(loadedToPlaceholder(removed))
           edit.count--
         }
@@ -146,25 +146,25 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
       if (
         newItemsAfter < itemsAfter.size &&
         edit is Edit.Insert &&
-        edit.index == loadedCells.size
+        edit.index == loadedItems.size
       ) {
         // The after window is shrinking. Promote inserts into loads.
         val toPromoteCount = minOf(edit.widgets.size, itemsAfter.size - newItemsAfter)
         for (i in 0 until toPromoteCount) {
           val widget = edit.widgets.removeFirst()
           val placeholder = itemsAfter.removeAt(0)
-          loadedCells.add(placeholderToLoaded(placeholder, widget))
+          loadedItems.add(placeholderToLoaded(placeholder, widget))
           edit.index++
         }
       } else if (
         newItemsAfter > itemsAfter.size &&
         edit is Edit.Remove &&
-        edit.index + edit.count == loadedCells.size
+        edit.index + edit.count == loadedItems.size
       ) {
         // The after window is growing. Demote loaded cells into placeholders.
         val toDemoteCount = minOf(edit.count, newItemsAfter - itemsAfter.size)
         for (i in edit.count - 1 downTo edit.count - toDemoteCount) {
-          val removed = loadedCells.removeLast()
+          val removed = loadedItems.removeLast()
           itemsAfter.add(0, loadedToPlaceholder(removed))
           edit.count--
         }
@@ -175,7 +175,10 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
         is Edit.Insert -> {
           for (i in 0 until edit.widgets.size) {
             val index = itemsBefore.size + edit.index + i
-            loadedCells.add(edit.index + i, Cell(this, edit.widgets[i]))
+            val binding = Binding(this).apply {
+              content = edit.widgets[i]
+            }
+            loadedItems.add(edit.index + i, binding)
 
             // Publish a structural change.
             insertRows(index, 1)
@@ -190,7 +193,7 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
         is Edit.Remove -> {
           for (i in edit.index until edit.index + edit.count) {
             val index = itemsBefore.size + edit.index
-            loadedCells.removeAt(edit.index)
+            loadedItems.removeAt(edit.index)
 
             // Publish a structural change.
             deleteRows(index, 1)
@@ -218,14 +221,14 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
       newItemsAfter < itemsAfter.size -> {
         // Shrink the after window.
         val delta = itemsAfter.size - newItemsAfter
-        val index = itemsBefore.size + loadedCells.size + itemsAfter.size - delta
+        val index = itemsBefore.size + loadedItems.size + itemsAfter.size - delta
         itemsAfter.removeRange(itemsAfter.size - delta, itemsAfter.size)
         deleteRows(index, delta)
       }
       newItemsAfter > itemsAfter.size -> {
         // Grow the after window.
         val delta = newItemsAfter - itemsAfter.size
-        val index = itemsBefore.size + loadedCells.size + itemsAfter.size
+        val index = itemsBefore.size + loadedItems.size + itemsAfter.size
         itemsAfter.addNulls(itemsAfter.size, delta)
         insertRows(index, delta)
       }
@@ -235,78 +238,75 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
   }
 
   private fun placeholderToLoaded(
-    placeholder: Cell<C, W>?,
-    widget: Widget<W>,
-  ): Cell<C, W> {
-    // No placeholder for this index. Create a new cell.
+    placeholder: Binding<V, W>?,
+    loadedContent: Widget<W>,
+  ): Binding<V, W> {
+    // No binding for this index. Create one.
     if (placeholder == null) {
-      return Cell(this, widget)
+      return Binding(this).apply {
+        content = loadedContent
+      }
     }
 
-    // We have a placeholder. Promote it to a loaded cell.
+    // We have a binding. Give it loaded content.
     require(placeholder.isPlaceholder)
-    placeholdersQueue += placeholder.widget
+    placeholdersQueue += placeholder.content!!
     placeholder.isPlaceholder = false
-    placeholder.widget = widget
-    setWidget(placeholder.view!!, widget)
+    placeholder.content = loadedContent
     return placeholder
   }
 
-  private fun loadedToPlaceholder(loaded: Cell<C, W>): Cell<C, W>? {
+  private fun loadedToPlaceholder(loaded: Binding<V, W>): Binding<V, W>? {
     require(!loaded.isPlaceholder)
 
-    // If there's no UI for this cell, we're done.
-    val ui = loaded.view ?: return null
+    // If there's no view for this binding, we're done.
+    if (!loaded.isBound) return null
 
-    // Replace the loaded UI with a placeholder.
-    val widget = takePlaceholder()
-    setWidget(ui, widget)
-    loaded.widget = widget
+    // Show the placeholder in the bound view.
+    val placeholderContent = loaded.processor.takePlaceholder()
+    loaded.content = placeholderContent
     loaded.isPlaceholder = true
     return loaded
   }
 
-  public fun getCell(index: Int): C {
-    return when {
-      index < itemsBefore.size -> getOrCreatePlaceholder(itemsBefore, index, index)
-      index < itemsBefore.size + loadedCells.size -> getLoadedCell(index)
-      else -> getOrCreatePlaceholder(itemsAfter, index - itemsBefore.size - loadedCells.size, index)
-    }
-  }
+  public fun getOrCreateView(
+    index: Int,
+    createView: (binding: Binding<V, W>) -> V,
+  ): V {
+    val binding = requireBindingAtIndex(index)
 
-  private fun getLoadedCell(index: Int): C {
-    val result = loadedCells[index - itemsBefore.size]
-
-    var view = result.view
+    var view = binding.view
     if (view == null) {
-      // Bind the cell to this view.
-      view = createCell(result, result.widget, index)
-      result.bind(view)
+      view = createView(binding)
+      binding.bind(view)
     }
 
     return view
   }
 
-  private fun getOrCreatePlaceholder(
-    placeholders: SparseList<Cell<C, W>?>,
-    placeholderIndex: Int,
-    cellIndex: Int,
-  ): C {
-    var result = placeholders[placeholderIndex]
+  public fun bind(index: Int, view: V): Binding<V, W> {
+    return requireBindingAtIndex(index).apply {
+      bind(view)
+    }
+  }
 
-    // Return an existing placeholder.
-    if (result != null) return result.view!!
-
-    // Create a new placeholder cell and bind it to the view.
-    result = Cell(
-      processor = this,
-      widget = takePlaceholder(),
+  /**
+   * Callers must immediately call [Binding.bind] on the result if it isn't already bound. Otherwise
+   * we could leak placeholder bindings.
+   */
+  private fun requireBindingAtIndex(index: Int): Binding<V, W> {
+    fun createBinding() = Binding(
+      processor = this@LazyListUpdateProcessor,
       isPlaceholder = true,
-    )
-    val view = createCell(result, result.widget, cellIndex)
-    result.bind(view)
-    placeholders.set(placeholderIndex, result)
-    return view
+    ).apply {
+      content = takePlaceholder()
+    }
+
+    return when {
+      index < itemsBefore.size -> itemsBefore.getOrCreate(index, ::createBinding)
+      index < itemsBefore.size + loadedItems.size -> loadedItems[index - itemsBefore.size]
+      else -> itemsAfter.getOrCreate(index - itemsBefore.size - loadedItems.size, ::createBinding)
+    }
   }
 
   private fun takePlaceholder(): Widget<W> {
@@ -314,53 +314,53 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
       ?: throw IllegalStateException("no more placeholders!")
   }
 
-  protected abstract fun createCell(cell: Cell<C, W>, widget: Widget<W>, index: Int): C
-
-  protected abstract fun setWidget(cell: C, widget: Widget<W>)
-
   protected abstract fun insertRows(index: Int, count: Int)
 
   protected abstract fun deleteRows(index: Int, count: Int)
 
+  protected abstract fun setContent(view: V, content: Widget<W>)
+
   /**
-   * This class keeps track of whether a cell is bound to an on-screen UI.
+   * Binds a UI-managed view to model-managed content.
    *
-   * While it's bound to the UI, its contents can change:
+   * While view is bound to content, that content can change:
    *
-   *  - A placeholder can be swapped for a loaded widget, if the loaded window moves to include
-   *    this cell.
-   *  - Symmetrically, a loaded widget can be swapped for a placeholder, if the loaded window moves
-   *    to exclude this cell.
+   *  - A placeholder can be swapped for loaded content. This happens when the model's loaded window
+   *    moves to include the view.
+   *  - Symmetrically, loaded content can be swapped for placeholder content, if the loaded window
+   *    moves to exclude the view.
    *
-   * If it currently holds a placeholder, this placeholder must be released to the processor's
-   * placeholder queue when it is no longer needed. This will occur if cell is reused (due to view
-   * recycling), or because it is discarded (due to the table discarding it). This class assumes
-   * that a cell that is discarded will never be bound again.
+   * If it currently holds placeholder content, that placeholder content must be released to the
+   * processor's placeholder queue when it is no longer needed. This will occur if view is reused
+   * (due to view recycling), or because it is discarded (due to the view discarding it). This class
+   * assumes that a view that is discarded will never be bound again.
    */
-  public class Cell<C : Any, W : Any> internal constructor(
-    internal val processor: LazyListUpdateProcessor<C, W>,
-    internal var widget: Widget<W>,
+  public class Binding<V : Any, W : Any> internal constructor(
+    internal val processor: LazyListUpdateProcessor<V, W>,
     internal var isPlaceholder: Boolean = false,
   ) {
-    public var view: C? = null
+    internal var view: V? = null
       private set
 
-    private var bindCount = 0
-    private var unbindCount = 0
+    internal var content: Widget<W>? = null
+      set(value) {
+        field = value
+        val view = this.view
+        if (view != null) processor.setContent(view, value!!)
+      }
 
     public val isBound: Boolean
-      get() = bindCount > unbindCount
+      get() = view != null
 
-    public fun bind(view: C) {
-      require(bindCount == unbindCount) { "already bound" }
+    internal fun bind(view: V) {
+      require(this.view == null) { "already bound" }
 
-      bindCount++
       this.view = view
+      processor.setContent(view, content!!)
     }
 
     public fun unbind() {
-      if (bindCount == unbindCount) return
-      unbindCount++
+      if (view == null) return
 
       // Detach the display.
       view = null
@@ -374,7 +374,7 @@ public abstract class LazyListUpdateProcessor<C : Any, W : Any> {
         if (itemsAfterIndex != -1) processor.itemsAfter.set(itemsAfterIndex, null)
 
         // When a placeholder is reused, recycle its widget.
-        processor.placeholdersQueue += widget
+        processor.placeholdersQueue += content!!
       }
     }
   }
