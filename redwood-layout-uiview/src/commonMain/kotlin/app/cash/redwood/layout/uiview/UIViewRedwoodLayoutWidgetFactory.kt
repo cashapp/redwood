@@ -25,9 +25,7 @@ import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
-  override fun Box(): Box<UIView> {
-    TODO("Not yet implemented")
-  }
+  override fun Box(): Box<UIView> = UIViewBox()
   override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
   override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)
   override fun Spacer(): Spacer<UIView> = UIViewSpacer()
