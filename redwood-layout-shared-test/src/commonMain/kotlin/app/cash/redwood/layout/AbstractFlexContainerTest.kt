@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,8 @@ import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
-import com.google.testing.junit.testparameterinjector.TestParameter
-import org.junit.Assume.assumeTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 @Suppress("JUnitMalformedDeclaration")
 abstract class AbstractFlexContainerTest<T : Any> {
@@ -45,8 +44,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     this.modifier = modifier
   }
 
-  @Test fun emptyLayout(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  @Test fun emptyLayout_Column() {
+    emptyLayout(FlexDirectionEnum.Column)
+  }
+
+  @Test fun emptyLayout_Row() {
+    emptyLayout(FlexDirectionEnum.Row)
+  }
+
+  private fun emptyLayout(
+    flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -56,10 +63,42 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithConstraints(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
-    @TestParameter widthEnum: ConstraintEnum,
-    @TestParameter heightEnum: ConstraintEnum,
+  @Test fun layoutWithConstraints_Column_Wrap_Wrap() {
+    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
+  }
+
+  @Test fun layoutWithConstraints_Column_Wrap_Fill() {
+    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Fill)
+  }
+
+  @Test fun layoutWithConstraints_Column_Fill_Wrap() {
+    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Wrap)
+  }
+
+  @Test fun layoutWithConstraints_Column_Fill_Fill() {
+    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Fill)
+  }
+
+  @Test fun layoutWithConstraints_Row_Wrap_Wrap() {
+    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
+  }
+
+  @Test fun layoutWithConstraints_Row_Wrap_Fill() {
+    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Fill)
+  }
+
+  @Test fun layoutWithConstraints_Row_Fill_Wrap() {
+    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Wrap)
+  }
+
+  @Test fun layoutWithConstraints_Row_Fill_Fill() {
+    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Fill)
+  }
+
+  private fun layoutWithConstraints(
+    flexDirectionEnum: FlexDirectionEnum,
+    widthEnum: ConstraintEnum,
+    heightEnum: ConstraintEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -73,8 +112,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun shortLayout(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  @Test fun shortLayout_Column() {
+    shortLayout(FlexDirectionEnum.Column)
+  }
+
+  @Test fun shortLayout_Row() {
+    shortLayout(FlexDirectionEnum.Row)
+  }
+
+  private fun shortLayout(
+    flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -87,8 +134,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun longLayout(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  @Test fun longLayout_Column() {
+    longLayout(FlexDirectionEnum.Column)
+  }
+
+  @Test fun longLayout_Row() {
+    longLayout(FlexDirectionEnum.Row)
+  }
+
+  private fun longLayout(
+    flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -101,8 +156,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithMarginAndDifferentAlignments(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
+  @Test fun layoutWithMarginAndDifferentAlignments_Column() {
+    layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Column)
+  }
+
+  @Test fun layoutWithMarginAndDifferentAlignments_Row() {
+    layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Row)
+  }
+
+  private fun layoutWithMarginAndDifferentAlignments(
+    flexDirectionEnum: FlexDirectionEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -123,9 +186,41 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithCrossAxisAlignment(
-    @TestParameter flexDirectionEnum: FlexDirectionEnum,
-    @TestParameter crossAxisAlignmentEnum: CrossAxisAlignmentEnum,
+  @Test fun layoutWithCrossAxisAlignment_Column_Start() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Start)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Column_Center() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Center)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Column_End() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.End)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Column_Stretch() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Stretch)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Row_Start() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Start)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Row_Center() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Center)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Row_End() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.End)
+  }
+
+  @Test fun layoutWithCrossAxisAlignment_Row_Stretch() {
+    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Stretch)
+  }
+
+  private fun layoutWithCrossAxisAlignment(
+    flexDirectionEnum: FlexDirectionEnum,
+    crossAxisAlignmentEnum: CrossAxisAlignmentEnum,
   ) {
     assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
     val flexDirection = flexDirectionEnum.value
@@ -157,8 +252,20 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "FlexEnd")
   }
 
-  @Test fun columnWithMainAxisAlignment(
-    @TestParameter mainAxisAlignmentEnum: MainAxisAlignmentEnum,
+  @Test fun columnWithMainAxisAlignment_Center() {
+    columnWithMainAxisAlignment(MainAxisAlignmentEnum.Center)
+  }
+
+  @Test fun columnWithMainAxisAlignment_SpaceBetween() {
+    columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceBetween)
+  }
+
+  @Test fun columnWithMainAxisAlignment_SpaceAround() {
+    columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceAround)
+  }
+
+  private fun columnWithMainAxisAlignment(
+    mainAxisAlignmentEnum: MainAxisAlignmentEnum,
   ) {
     assumeTrue(mainAxisAlignmentEnum in listOf(MainAxisAlignmentEnum.Center, MainAxisAlignmentEnum.SpaceBetween, MainAxisAlignmentEnum.SpaceAround))
     val mainAxisAlignment = mainAxisAlignmentEnum.value
@@ -222,6 +329,11 @@ abstract class AbstractFlexContainerTest<T : Any> {
     widget.text(movies.first())
     container.onEndChanges()
     verifySnapshot(container, "updated")
+  }
+
+  /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
+  private fun assumeTrue(b: Boolean) {
+    assertTrue(b)
   }
 }
 
