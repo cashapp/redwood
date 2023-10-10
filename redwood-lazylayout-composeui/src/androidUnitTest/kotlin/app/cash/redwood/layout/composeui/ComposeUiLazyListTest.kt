@@ -88,7 +88,7 @@ class ComposeUiLazyListTest(
     constructor(direction: FlexDirection) : this(
       ComposeUiLazyList().apply {
         isVertical(direction == FlexDirection.Column)
-        testOnlyModifier = Modifier.background(Color.Blue)
+        testOnlyModifier = Modifier.background(Color(0, 0, 255, 51))
       },
     )
 

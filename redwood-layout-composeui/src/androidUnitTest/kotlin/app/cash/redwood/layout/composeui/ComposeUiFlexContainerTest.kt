@@ -85,7 +85,7 @@ class ComposeUiFlexContainerTest(
 
     constructor(direction: FlexDirection) : this(
       ComposeUiFlexContainer(direction).apply {
-        testOnlyModifier = Modifier.background(Color.Blue)
+        testOnlyModifier = Modifier.background(Color(0, 0, 255, 51))
       },
     )
 
