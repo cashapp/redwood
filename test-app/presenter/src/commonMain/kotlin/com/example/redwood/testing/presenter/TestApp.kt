@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import app.cash.redwood.Modifier
 import app.cash.redwood.compose.BackHandler
 import app.cash.redwood.layout.api.Constraint.Companion.Fill
@@ -44,7 +44,7 @@ class TestContext(
 
 @Composable
 fun TestApp(context: TestContext) {
-  val screenKeyState = remember { mutableStateOf<String?>(null) }
+  val screenKeyState = rememberSaveable { mutableStateOf<String?>(null) }
   val screenKey = screenKeyState.value
   if (screenKey == null) {
     ScreenList(screenKeyState)
