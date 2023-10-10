@@ -44,11 +44,11 @@ abstract class AbstractFlexContainerTest<T : Any> {
     this.modifier = modifier
   }
 
-  @Test fun emptyLayout_Column() {
+  @Test fun testEmptyLayout_Column() {
     emptyLayout(FlexDirectionEnum.Column)
   }
 
-  @Test fun emptyLayout_Row() {
+  @Test fun testEmptyLayout_Row() {
     emptyLayout(FlexDirectionEnum.Row)
   }
 
@@ -63,35 +63,35 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithConstraints_Column_Wrap_Wrap() {
+  @Test fun testLayoutWithConstraints_Column_Wrap_Wrap() {
     layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
   }
 
-  @Test fun layoutWithConstraints_Column_Wrap_Fill() {
+  @Test fun testLayoutWithConstraints_Column_Wrap_Fill() {
     layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Fill)
   }
 
-  @Test fun layoutWithConstraints_Column_Fill_Wrap() {
+  @Test fun testLayoutWithConstraints_Column_Fill_Wrap() {
     layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Wrap)
   }
 
-  @Test fun layoutWithConstraints_Column_Fill_Fill() {
+  @Test fun testLayoutWithConstraints_Column_Fill_Fill() {
     layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Fill)
   }
 
-  @Test fun layoutWithConstraints_Row_Wrap_Wrap() {
+  @Test fun testLayoutWithConstraints_Row_Wrap_Wrap() {
     layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
   }
 
-  @Test fun layoutWithConstraints_Row_Wrap_Fill() {
+  @Test fun testLayoutWithConstraints_Row_Wrap_Fill() {
     layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Fill)
   }
 
-  @Test fun layoutWithConstraints_Row_Fill_Wrap() {
+  @Test fun testLayoutWithConstraints_Row_Fill_Wrap() {
     layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Wrap)
   }
 
-  @Test fun layoutWithConstraints_Row_Fill_Fill() {
+  @Test fun testLayoutWithConstraints_Row_Fill_Fill() {
     layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Fill)
   }
 
@@ -112,11 +112,11 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun shortLayout_Column() {
+  @Test fun testShortLayout_Column() {
     shortLayout(FlexDirectionEnum.Column)
   }
 
-  @Test fun shortLayout_Row() {
+  @Test fun testShortLayout_Row() {
     shortLayout(FlexDirectionEnum.Row)
   }
 
@@ -134,11 +134,11 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun longLayout_Column() {
+  @Test fun testLongLayout_Column() {
     longLayout(FlexDirectionEnum.Column)
   }
 
-  @Test fun longLayout_Row() {
+  @Test fun testLongLayout_Row() {
     longLayout(FlexDirectionEnum.Row)
   }
 
@@ -156,11 +156,11 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithMarginAndDifferentAlignments_Column() {
+  @Test fun testLayoutWithMarginAndDifferentAlignments_Column() {
     layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Column)
   }
 
-  @Test fun layoutWithMarginAndDifferentAlignments_Row() {
+  @Test fun testLayoutWithMarginAndDifferentAlignments_Row() {
     layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Row)
   }
 
@@ -186,35 +186,35 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Column_Start() {
+  @Test fun testLayoutWithCrossAxisAlignment_Column_Start() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Start)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Column_Center() {
+  @Test fun testLayoutWithCrossAxisAlignment_Column_Center() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Center)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Column_End() {
+  @Test fun testLayoutWithCrossAxisAlignment_Column_End() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.End)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Column_Stretch() {
+  @Test fun testLayoutWithCrossAxisAlignment_Column_Stretch() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Stretch)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Row_Start() {
+  @Test fun testLayoutWithCrossAxisAlignment_Row_Start() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Start)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Row_Center() {
+  @Test fun testLayoutWithCrossAxisAlignment_Row_Center() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Center)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Row_End() {
+  @Test fun testLayoutWithCrossAxisAlignment_Row_End() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.End)
   }
 
-  @Test fun layoutWithCrossAxisAlignment_Row_Stretch() {
+  @Test fun testLayoutWithCrossAxisAlignment_Row_Stretch() {
     layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Stretch)
   }
 
@@ -252,15 +252,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "FlexEnd")
   }
 
-  @Test fun columnWithMainAxisAlignment_Center() {
+  @Test fun testColumnWithMainAxisAlignment_Center() {
     columnWithMainAxisAlignment(MainAxisAlignmentEnum.Center)
   }
 
-  @Test fun columnWithMainAxisAlignment_SpaceBetween() {
+  @Test fun testColumnWithMainAxisAlignment_SpaceBetween() {
     columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceBetween)
   }
 
-  @Test fun columnWithMainAxisAlignment_SpaceAround() {
+  @Test fun testColumnWithMainAxisAlignment_SpaceAround() {
     columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceAround)
   }
 
@@ -281,7 +281,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun containerWithFixedWidthItems() {
+  @Test fun testContainerWithFixedWidthItems() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -293,7 +293,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun containerWithFixedHeightItems() {
+  @Test fun testContainerWithFixedHeightItems() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -305,7 +305,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun containerWithFixedSizeItems() {
+  @Test fun testContainerWithFixedSizeItems() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -317,7 +317,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun childWithUpdatedProperty() {
+  @Test fun testChildWithUpdatedProperty() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)

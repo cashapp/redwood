@@ -71,7 +71,7 @@ class ViewLazyListTest(
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,
-  ) : TestFlexContainer<View>, LazyList<View> by delegate, ChangeListener {
+  ) : TestFlexContainer<View>, LazyList<View> by delegate, ChangeListener by delegate {
     private var childCount = 0
 
     constructor(context: Context, direction: FlexDirection) : this(
@@ -86,10 +86,6 @@ class ViewLazyListTest(
 
     override fun add(widget: Widget<View>) {
       delegate.items.insert(childCount++, widget)
-    }
-
-    override fun onEndChanges() {
-      delegate.onEndChanges()
     }
   }
 }

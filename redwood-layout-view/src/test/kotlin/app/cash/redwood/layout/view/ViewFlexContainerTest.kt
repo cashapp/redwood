@@ -27,6 +27,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -72,7 +73,7 @@ class ViewFlexContainerTest(
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewFlexContainer,
-  ) : TestFlexContainer<View>, FlexContainer<View> by delegate {
+  ) : TestFlexContainer<View>, FlexContainer<View> by delegate, ChangeListener by delegate {
     private var childCount = 0
 
     constructor(context: Context, direction: FlexDirection) : this(
@@ -83,10 +84,6 @@ class ViewFlexContainerTest(
 
     override fun add(widget: Widget<View>) {
       delegate.children.insert(childCount++, widget)
-    }
-
-    override fun onEndChanges() {
-      delegate.onEndChanges()
     }
   }
 }
