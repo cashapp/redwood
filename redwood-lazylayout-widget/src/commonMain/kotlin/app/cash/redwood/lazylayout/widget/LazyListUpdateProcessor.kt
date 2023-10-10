@@ -37,6 +37,9 @@ import app.cash.redwood.widget.Widget
  */
 public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
+  public val bindings: List<Binding<V, W>>
+    get() = itemsBefore.nonNullElements + loadedItems + itemsAfter.nonNullElements
+
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
@@ -44,7 +47,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   private var loadedItems = mutableListOf<Binding<V, W>>()
 
   private val itemsBefore = SparseList<Binding<V, W>?>()
-  private var itemsAfter = SparseList<Binding<V, W>?>()
+  private val itemsAfter = SparseList<Binding<V, W>?>()
 
   /** These updates will all be processed in batch in [onEndChanges]. */
   private var newItemsBefore = 0
@@ -318,7 +321,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   protected abstract fun deleteRows(index: Int, count: Int)
 
-  protected abstract fun setContent(view: V, content: Widget<W>)
+  protected abstract fun setContent(view: V, content: Widget<W>?)
 
   /**
    * Binds a UI-managed view to model-managed content.
@@ -339,14 +342,19 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     internal val processor: LazyListUpdateProcessor<V, W>,
     internal var isPlaceholder: Boolean = false,
   ) {
-    internal var view: V? = null
+    /** The currently-bound view. Null if this is not on-screen. */
+    public var view: V? = null
       private set
 
+    /**
+     * The content of this binding; either a loaded widget or a placeholder. This should be
+     * `lateinit`, but it can't be because of the side-effect in set().
+     */
     internal var content: Widget<W>? = null
       set(value) {
         field = value
         val view = this.view
-        if (view != null) processor.setContent(view, value!!)
+        if (view != null) processor.setContent(view, value)
       }
 
     public val isBound: Boolean
@@ -356,14 +364,15 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       require(this.view == null) { "already bound" }
 
       this.view = view
-      processor.setContent(view, content!!)
+      processor.setContent(view, content)
     }
 
     public fun unbind() {
-      if (view == null) return
+      val view = this.view ?: return
 
-      // Detach the display.
-      view = null
+      // Detach the view.
+      processor.setContent(view, null)
+      this.view = null
 
       if (isPlaceholder) {
         // This placeholder is no longer needed.

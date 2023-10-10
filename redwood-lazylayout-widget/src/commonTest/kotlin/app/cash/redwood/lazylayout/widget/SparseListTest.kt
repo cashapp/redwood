@@ -17,6 +17,7 @@ package app.cash.redwood.lazylayout.widget
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
@@ -290,5 +291,42 @@ class SparseListTest {
 
     assertThat(list.size).isEqualTo(2)
     assertThat(list.toList()).containsExactly(null, "C")
+  }
+
+  @Test
+  fun nonNullElements() {
+    val list = SparseList<String?>()
+    assertThat(list.nonNullElements).isEmpty()
+
+    list.add(null)
+    assertThat(list.nonNullElements).isEmpty()
+
+    list.add("A")
+    val a = list.nonNullElements
+    assertThat(a).containsExactly("A")
+
+    list.add(null)
+    assertThat(list.nonNullElements).containsExactly("A")
+
+    list.add("B")
+    assertThat(list.nonNullElements).containsExactly("A", "B")
+    assertThat(a).containsExactly("A") // Confirm each access returns a snapshot.
+  }
+
+  @Test
+  fun getOrCreateCreates() {
+    val list = SparseList<String?>()
+    list.addNulls(0, 10)
+
+    assertThat(list.getOrCreate(3) { "A" }).isEqualTo("A")
+    assertThat(list[3]).isEqualTo("A")
+  }
+
+  @Test
+  fun getOrCreateGets() {
+    val list = SparseList<String?>()
+    list.addNulls(0, 10)
+    list.set(3, "A")
+    assertThat(list.getOrCreate(3) { error("boom") }).isEqualTo("A")
   }
 }

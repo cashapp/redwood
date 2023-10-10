@@ -17,7 +17,7 @@ package app.cash.redwood.lazylayout.widget
 
 internal class SparseList<T> : AbstractList<T?>() {
   /** The non-null elements of this sparse list. */
-  private val elements = mutableListOf<T>()
+  private val elements = mutableListOf<T & Any>()
 
   /**
    * This contains the external indexes of the values in [elements]. The last element is the size of
@@ -36,6 +36,10 @@ internal class SparseList<T> : AbstractList<T?>() {
 
   override val size: Int
     get() = externalIndexes.last()
+
+  /** Returns a snapshot of the non-null elements in this list. */
+  val nonNullElements: List<T & Any>
+    get() = elements.toList()
 
   override fun get(index: Int): T? {
     require(index in 0 until size)

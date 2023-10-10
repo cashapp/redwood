@@ -90,7 +90,7 @@ internal open class UIViewLazyList(
       )
     }
 
-    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>) {
+    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>?) {
       view.content = content
     }
   }
@@ -254,7 +254,6 @@ internal class LazyListContainerCell(
 
     // Unbind the cell when its view is detached from the table.
     if (superview != null && newSuperview == null) {
-      removeAllSubviews()
       binding?.unbind()
       binding = null
     }
@@ -262,7 +261,6 @@ internal class LazyListContainerCell(
 
   override fun prepareForReuse() {
     super.prepareForReuse()
-    removeAllSubviews()
     binding?.unbind()
     binding = null
   }

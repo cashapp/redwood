@@ -52,6 +52,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val flexDirection = flexDirectionEnum.value
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -68,6 +69,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.width(width)
     container.height(height)
     container.add(widget(movies.first()))
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -81,6 +83,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     movies.take(5).forEach { movie ->
       container.add(widget(movie))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -94,6 +97,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     movies.forEach { movie ->
       container.add(widget(movie))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -115,6 +119,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
       container.add(widget(movie, modifier))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -132,6 +137,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     movies.forEach { movie ->
       container.add(widget(movie))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -144,6 +150,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     movies.forEach { movie ->
       container.add(widget(movie))
     }
+    container.onEndChanges()
     verifySnapshot(container, "Center")
     container.crossAxisAlignment(CrossAxisAlignment.End)
     container.onEndChanges()
@@ -163,6 +170,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     movies.forEach { movie ->
       container.add(widget(movie))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -174,6 +182,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     repeat(10) { index ->
       container.add(widget("$index", WidthImpl(50.dp)))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -185,6 +194,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     repeat(10) { index ->
       container.add(widget("$index", HeightImpl(50.dp)))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -196,6 +206,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     repeat(10) { index ->
       container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
     }
+    container.onEndChanges()
     verifySnapshot(container)
   }
 
@@ -206,8 +217,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     val widget = widget("")
     container.add(widget)
+    container.onEndChanges()
     verifySnapshot(container, "initial")
     widget.text(movies.first())
+    container.onEndChanges()
     verifySnapshot(container, "updated")
   }
 }

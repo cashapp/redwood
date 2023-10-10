@@ -28,6 +28,7 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -70,7 +71,7 @@ class ViewLazyListTest(
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,
-  ) : TestFlexContainer<View>, LazyList<View> by delegate {
+  ) : TestFlexContainer<View>, LazyList<View> by delegate, ChangeListener {
     private var childCount = 0
 
     constructor(context: Context, direction: FlexDirection) : this(
@@ -88,6 +89,7 @@ class ViewLazyListTest(
     }
 
     override fun onEndChanges() {
+      delegate.onEndChanges()
     }
   }
 }
