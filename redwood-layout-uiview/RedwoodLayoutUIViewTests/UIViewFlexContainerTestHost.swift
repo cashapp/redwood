@@ -20,6 +20,6 @@ private class Callback : UIViewFlexContainerTestCallback {
         if (name != nil) {
             snapshotName = "\(testName)-\(name!)"
         }
-        assertSnapshot(of: view, as: .image, named: snapshotName, record: true)
+        assertSnapshot(of: view, as: .image, named: snapshotName)
     }
 }
