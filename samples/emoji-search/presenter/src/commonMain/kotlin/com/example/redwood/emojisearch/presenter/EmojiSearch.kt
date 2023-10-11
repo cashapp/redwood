@@ -34,6 +34,7 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.layout.compose.flex
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
@@ -137,14 +138,13 @@ private fun LazyColumn(
       state = TextFieldState(searchTerm.text),
       hint = "Search",
       onChange = { searchTerm = it },
-      modifier = Modifier.shrink(0.0),
     )
     LazyColumn(
       refreshing = refreshing,
       onRefresh = { refreshSignal++ },
       state = lazyListState,
       width = Constraint.Fill,
-      modifier = Modifier.grow(1.0),
+      modifier = Modifier.flex(1.0),
       placeholder = {
         Item(
           emojiImage = loadingEmojiImage,
