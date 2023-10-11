@@ -388,7 +388,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
         add(widget("x ".repeat(100), GrowImpl(1.0)))
-      }
+      },
     )
 
     column.add(widget("1 element + shrink:"))
@@ -398,7 +398,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
         add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
-      }
+      },
     )
 
     column.add(widget("2 elements + no shrink:"))
@@ -409,7 +409,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         margin(Margin(end = 100.dp))
         add(widget("x ".repeat(100), GrowImpl(1.0)))
         add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
-      }
+      },
     )
 
     column.add(widget("2 elements + shrink:"))
@@ -420,7 +420,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         margin(Margin(end = 100.dp))
         add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
         add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
-      }
+      },
     )
 
     verifySnapshot(column)
@@ -479,17 +479,17 @@ private data class SizeImpl(
 ) : Size
 
 private data class MarginImpl(
-  override val margin: app.cash.redwood.ui.Margin
+  override val margin: app.cash.redwood.ui.Margin,
 ) : app.cash.redwood.layout.modifier.Margin {
   constructor(all: Dp = 0.dp) : this(Margin(all))
 }
 
 private data class GrowImpl(
-  override val `value`: Double
+  override val `value`: Double,
 ) : Grow
 
 private data class ShrinkImpl(
-  override val `value`: Double
+  override val `value`: Double,
 ) : Shrink
 
 enum class FlexDirectionEnum(val value: FlexDirection) {
