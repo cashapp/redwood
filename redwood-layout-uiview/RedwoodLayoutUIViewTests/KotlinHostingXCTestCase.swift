@@ -21,7 +21,6 @@ open class KotlinHostingXCTestCase<KotlinTest>: KotlinHostingXCTestCaseHelper wh
             let methodList = class_copyMethodList(targetClass, &methodCount)
             if let methodList = methodList {
                 defer { free(methodList) }
-                
                 for i in 0..<Int(methodCount) {
                     let selector = method_getName(methodList[i])
                     let selectorName = NSStringFromSelector(selector)
@@ -39,7 +38,7 @@ open class KotlinHostingXCTestCase<KotlinTest>: KotlinHostingXCTestCaseHelper wh
             targetClass = nextClass
         }
     }
-    
+
     private static func createTestMethod(target: KotlinTest, selector: Selector) {
         let block: @convention(block) () -> Void = {
             if target.responds(to: #selector(setUp)) {
