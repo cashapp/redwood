@@ -42,6 +42,7 @@ class UIViewFlexContainerTest(
   override fun widget(): Text<UIView> {
     return object : Text<UIView> {
       override val value = UILabel().apply {
+        numberOfLines = 0
         backgroundColor = UIColor.greenColor
         textColor = UIColor.blackColor
       }
@@ -60,7 +61,7 @@ class UIViewFlexContainerTest(
     private var childCount = 0
 
     init {
-      value.backgroundColor = UIColor.blueColor
+      value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 1.0, alpha = 0.2)
     }
 
     override fun add(widget: Widget<UIView>) {
@@ -71,7 +72,16 @@ class UIViewFlexContainerTest(
   override fun verifySnapshot(container: TestFlexContainer<UIView>, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
     container.value.setFrame(screenSize)
-    container.value.layoutIfNeeded()
-    callback.verifySnapshot(container.value, name)
+
+    // Snapshot the container on a white background.
+    val frame = UIView().apply {
+      backgroundColor = UIColor.whiteColor
+      setFrame(screenSize)
+      addSubview(container.value)
+      layoutIfNeeded()
+    }
+
+    callback.verifySnapshot(frame, name)
+    container.value.removeFromSuperview()
   }
 }

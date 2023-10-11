@@ -77,7 +77,7 @@ class ViewLazyListTest(
     constructor(context: Context, direction: FlexDirection) : this(
       ViewLazyList(context).apply {
         isVertical(direction == FlexDirection.Column)
-        value.background = ColorDrawable(Color.BLUE)
+        value.setBackgroundColor(Color.argb(51, 0, 0, 255))
       },
     )
 

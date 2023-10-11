@@ -78,7 +78,7 @@ class ViewFlexContainerTest(
 
     constructor(context: Context, direction: FlexDirection) : this(
       ViewFlexContainer(context, direction).apply {
-        value.setBackgroundColor(Color.BLUE)
+        value.setBackgroundColor(Color.argb(51, 0, 0, 255))
       },
     )
 

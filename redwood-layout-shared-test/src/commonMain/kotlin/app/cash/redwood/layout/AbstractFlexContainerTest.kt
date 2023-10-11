@@ -337,8 +337,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 }
 
-interface TestFlexContainer<T : Any> : ChangeListener {
-  val value: T
+interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
+  override val value: T
   fun width(width: Constraint)
   fun height(height: Constraint)
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)
