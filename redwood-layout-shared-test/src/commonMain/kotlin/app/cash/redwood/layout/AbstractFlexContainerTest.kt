@@ -364,8 +364,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 0.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 1.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(widget("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
