@@ -23,7 +23,6 @@ kotlin {
         // as a test dependency this selection is transparent. But since we are publishing a library
         // we need to select one ourselves at compilation time.
         api libs.kotlin.test.junit
-        api libs.testParameterInjector
       }
     }
   }
