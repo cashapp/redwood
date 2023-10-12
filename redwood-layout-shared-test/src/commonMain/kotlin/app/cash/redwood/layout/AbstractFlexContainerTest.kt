@@ -35,7 +35,6 @@ import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-@Suppress("JUnitMalformedDeclaration")
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
   abstract fun widget(): Text<T>
