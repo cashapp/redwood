@@ -123,9 +123,18 @@ private fun LazyColumn(
   }
 
   val lazyListState = rememberLazyListState()
+//
+//  LaunchedEffect(searchTerm) {
+//    println("**** all emojis size: ${allEmojis.size}")
+//    lazyListState.scrollToItem(lazyListState.firstVisibleItemIndex)
+//  }
 
-  LaunchedEffect(searchTerm) {
-    lazyListState.scrollToItem(0)
+  LaunchedEffect(allEmojis.size) {
+    if (allEmojis.size > lazyListState.firstVisibleItemIndex) {
+      println("**** all emojis size: ${allEmojis.size}")
+      println("**** first visible item index: ${lazyListState.firstVisibleItemIndex}")
+      lazyListState.scrollToItem(lazyListState.firstVisibleItemIndex)
+    }
   }
 
   Column(
