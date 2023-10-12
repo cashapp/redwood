@@ -18,11 +18,15 @@ package app.cash.redwood.layout.uiview
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
 import app.cash.redwood.layout.modifier.VerticalAlignment
+import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.toPlatformDp
 import app.cash.redwood.widget.UIViewChildren
+import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
@@ -89,12 +93,14 @@ internal class UIViewBox : Box<UIView> {
       children.widgets.forEach {
         val view = it.value
         view.sizeToFit()
-        var childWidth: CGFloat = view.frame.useContents { this.size.width }
-        var childHeight: CGFloat = view.frame.useContents { this.size.height }
 
-        // Check for modifier overrides in the children, otherwise default to the Box's alignment values
+        // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
         var itemHorizontalAlignment = horizontalAlignment
         var itemVerticalAlignment = verticalAlignment
+
+        var requestedWidth: CGFloat? = null
+        var requestedHeight: CGFloat? = null
+
         it.modifier.forEach { childModifier ->
           when (childModifier) {
             is HorizontalAlignment -> {
@@ -103,10 +109,20 @@ internal class UIViewBox : Box<UIView> {
             is VerticalAlignment -> {
               itemVerticalAlignment = childModifier.alignment
             }
+            is Width -> {
+              requestedWidth = childModifier.width.toPlatformDp()
+            }
+            is Height -> {
+              requestedHeight = childModifier.height.toPlatformDp()
+            }
           }
         }
 
-        // Compute origin and stretch if needed
+        // Use requested modifiers, otherwise use the size established from sizeToFit().
+        var childWidth: CGFloat = requestedWidth ?: view.frame.useContents { this.size.width }
+        var childHeight: CGFloat = requestedHeight ?: view.frame.useContents { this.size.height }
+
+        // Compute origin and stretch if needed.
         var x: CGFloat = 0.0
         var y: CGFloat = 0.0
         when (itemHorizontalAlignment) {
@@ -128,58 +144,76 @@ internal class UIViewBox : Box<UIView> {
           CrossAxisAlignment.End -> y = frame.useContents { this.size.height } - childHeight
         }
 
-        // Position the view
+        // Position the view.
         view.setFrame(CGRectMake(x, y, childWidth, childHeight))
       }
     }
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      var width: CGFloat = 0.0
-      var height: CGFloat = 0.0
+      var maxItemWidth: CGFloat = 0.0
+      var maxItemHeight: CGFloat = 0.0
 
-      // Calculate the size based on Constraint Values
+      var maxRequestedWidth: CGFloat = 0.0
+      var maxRequestedHeight: CGFloat = 0.0
+
+      // Get the largest sizes based on explicit widget modifiers.
+      children.widgets.forEach {
+        it.modifier.forEach { childModifier ->
+          when (childModifier) {
+            is Width -> {
+              if (childModifier.width.value > maxRequestedWidth) {
+                maxRequestedWidth = childModifier.width.value
+              }
+            }
+            is Height -> {
+              if (childModifier.height.value > maxRequestedHeight) {
+                maxRequestedHeight = childModifier.height.value
+              }
+            }
+          }
+        }
+      }
+
+      // Calculate the size based on Constraint values.
       when (widthConstraint) {
         Constraint.Fill -> {
           when (heightConstraint) {
-            Constraint.Fill -> {
-              width = size.useContents { this.width }
-              height = size.useContents { this.height }
+            Constraint.Fill -> { // Fill Fill
+              maxItemWidth = size.useContents { this.width }
+              maxItemHeight = size.useContents { this.height }
             }
-            Constraint.Wrap -> {
-              height = size.useContents { this.height }
-
-              width = typedSubviews
-                .map { it.sizeThatFits(size).useContents { this.width } }
+            Constraint.Wrap -> { // Fill Wrap
+              maxItemWidth = size.useContents { this.width }
+              maxItemHeight = typedSubviews
+                .map { it.sizeThatFits(size).useContents { this.height } }
                 .max()
             }
           }
         }
         Constraint.Wrap -> {
           when (heightConstraint) {
-            Constraint.Fill -> {
-              width = size.useContents { this.width }
-
-              // calculate the height of the biggest item
-              height = typedSubviews
-                .map { it.sizeThatFits(size).useContents { this.height } }
+            Constraint.Fill -> { // Wrap Fill
+              maxItemWidth = typedSubviews
+                .map { it.sizeThatFits(size).useContents { this.width } }
                 .max()
+              maxItemHeight = size.useContents { this.height }
             }
-            Constraint.Wrap -> {
+            Constraint.Wrap -> { // Wrap Wrap
               val unconstrainedSizes = typedSubviews
                 .map { it.sizeThatFits(size) }
 
-              width = unconstrainedSizes
+              maxItemWidth = unconstrainedSizes
                 .map { it.useContents { this.width } }
                 .max()
 
-              height = unconstrainedSizes
+              maxItemHeight = unconstrainedSizes
                 .map { it.useContents { this.height } }
                 .max()
             }
           }
         }
       }
-      return CGSizeMake(width, height)
+      return CGSizeMake(max(maxRequestedWidth, maxItemWidth), max(maxRequestedHeight, maxItemHeight))
     }
   }
 }
