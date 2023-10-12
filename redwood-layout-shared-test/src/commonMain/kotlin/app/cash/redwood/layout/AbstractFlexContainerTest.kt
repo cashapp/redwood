@@ -19,8 +19,10 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
@@ -331,6 +333,99 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "updated")
   }
 
+  @Test fun testColumnThenRow() {
+    val column = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(10.dp))
+        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+      },
+    )
+
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(10.dp))
+        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widget("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+      },
+    )
+
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(10.dp))
+        add(widget("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+      },
+    )
+
+    verifySnapshot(column)
+  }
+
+  /** This test demonstrates that margins are lost unless `shrink(1.0)` is added. */
+  @Test fun testRowMargins() {
+    val column = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    column.add(widget("All rows have a 100 px margin on the right!"))
+
+    column.add(widget("1 element + no shrink:"))
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(end = 100.dp))
+        add(widget("x ".repeat(100), GrowImpl(1.0)))
+      },
+    )
+
+    column.add(widget("1 element + shrink:"))
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(end = 100.dp))
+        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+      },
+    )
+
+    column.add(widget("2 elements + no shrink:"))
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(end = 100.dp))
+        add(widget("x ".repeat(100), GrowImpl(1.0)))
+        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+      },
+    )
+
+    column.add(widget("2 elements + shrink:"))
+    column.add(
+      flexContainer(FlexDirection.Row).apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(end = 100.dp))
+        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+      },
+    )
+
+    verifySnapshot(column)
+  }
+
   /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
   private fun assumeTrue(b: Boolean) {
     assertTrue(b)
@@ -382,6 +477,20 @@ private data class SizeImpl(
   override val width: Dp,
   override val height: Dp,
 ) : Size
+
+private data class MarginImpl(
+  override val margin: app.cash.redwood.ui.Margin,
+) : app.cash.redwood.layout.modifier.Margin {
+  constructor(all: Dp = 0.dp) : this(Margin(all))
+}
+
+private data class GrowImpl(
+  override val `value`: Double,
+) : Grow
+
+private data class ShrinkImpl(
+  override val `value`: Double,
+) : Shrink
 
 enum class FlexDirectionEnum(val value: FlexDirection) {
   Row(FlexDirection.Row),
