@@ -27,12 +27,8 @@ import platform.UIKit.UILayoutFittingCompressedSize
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
-interface UIViewSpacerTestCallback {
-  fun verifySnapshot(view: UIView)
-}
-
 class UIViewSpacerTest(
-  private val callback: UIViewSpacerTestCallback,
+  private val callback: UIViewSnapshotCallback,
 ) : AbstractSpacerTest<UIView>() {
   private val factory = UIViewRedwoodLayoutWidgetFactory()
 
@@ -56,6 +52,6 @@ class UIViewSpacerTest(
   }
 
   override fun verifySnapshot(value: UIView) {
-    callback.verifySnapshot(value)
+    callback.verifySnapshot(value, null)
   }
 }
