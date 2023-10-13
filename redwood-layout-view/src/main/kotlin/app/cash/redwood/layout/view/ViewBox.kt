@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.view
 
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import android.content.Context
 import android.view.Gravity
 import android.view.View
@@ -27,7 +28,6 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
@@ -38,27 +38,54 @@ import app.cash.redwood.widget.ViewGroupChildren
 internal class ViewBox(
   context: Context,
 ) : FrameLayout(context), Box<View> {
-  private val density = Density(context.resources)
-
   override var modifier: Modifier = Modifier
-
-  private var defaultHorizontalAlignment = CrossAxisAlignment.Start
-  private var defaultVerticalAlignment = CrossAxisAlignment.Start
 
   override val value = this
 
-  override val children: ViewGroupChildren = ViewGroupChildren(this)
+  override val children = ViewGroupChildren(this)
 
-  var width: Constraint = Constraint.Fill
-  var height: Constraint = Constraint.Fill
+  private val density = Density(context.resources)
+
+  private var defaultHorizontalAlignment = CrossAxisAlignment.Start
+  private var defaultVerticalAlignment = CrossAxisAlignment.Start
+  private var width = Constraint.Fill
+  private var height = Constraint.Fill
 
   init {
     layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
-
-    // TODO: Remove this.
-    setBackgroundColor(0xFFFFFF66.toInt())
   }
 
+  override fun width(width: Constraint) {
+    this.width = width
+  }
+
+  override fun height(height: Constraint) {
+    this.height = height
+  }
+
+  override fun margin(margin: Margin) {
+    updateLayoutParams {
+      val layoutParams = this as MarginLayoutParams
+      with(density) {
+        layoutParams.setMargins(
+          margin.start.toPxInt(),
+          margin.top.toPxInt(),
+          margin.end.toPxInt(),
+          margin.bottom.toPxInt(),
+        )
+      }
+    }
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    this.defaultHorizontalAlignment = horizontalAlignment
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    this.defaultVerticalAlignment = verticalAlignment
+  }
+
+  /** Flush Redwood's modifiers into FrameLayout's LayoutParams before it measures. */
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     var widthMode = MeasureSpec.getMode(widthMeasureSpec)
     val widthSize = MeasureSpec.getSize(widthMeasureSpec)
@@ -71,13 +98,10 @@ internal class ViewBox(
       child.value.layoutParams = layoutParams // To force layout.
     }
 
-    if (width == Constraint.Fill) {
-      widthMode = MeasureSpec.EXACTLY
-    }
-
-    if (height == Constraint.Fill) {
-      heightMode = MeasureSpec.EXACTLY
-    }
+    // If we're supposed to fill, never measure a size smaller than what's offered.
+    // (This will turn MeasureSpec.AT_MOST into MeasureSpec.EXACTLY.)
+    if (width == Constraint.Fill) widthMode = MeasureSpec.EXACTLY
+    if (height == Constraint.Fill) heightMode = MeasureSpec.EXACTLY
 
     super.onMeasure(
       MeasureSpec.makeMeasureSpec(widthSize, widthMode),
@@ -165,35 +189,5 @@ internal class ViewBox(
       CrossAxisAlignment.Stretch -> MATCH_PARENT
       else -> defaultValue
     }
-  }
-
-  override fun width(width: Constraint) {
-    this.width = width
-  }
-
-  override fun height(height: Constraint) {
-    this.height = height
-  }
-
-  override fun margin(margin: Margin) {
-    updateLayoutParams {
-      val layoutParams = this as MarginLayoutParams
-      with(density) {
-        layoutParams.setMargins(
-          margin.start.toPxInt(),
-          margin.top.toPxInt(),
-          margin.end.toPxInt(),
-          margin.bottom.toPxInt(),
-        )
-      }
-    }
-  }
-
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    this.defaultHorizontalAlignment = horizontalAlignment
-  }
-
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    this.defaultVerticalAlignment = verticalAlignment
   }
 }
