@@ -21,6 +21,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * An [Applier] for Redwood's tree of nodes.
@@ -45,11 +47,7 @@ import app.cash.redwood.widget.Widget
  * ```
  * The node tree produced by this applier is not actually a tree. We do not maintain a relationship
  * from each [WidgetNode] to their [ChildrenNode]s as they can never be individually moved/removed.
- * Similarly, no relationship is maintained from a [ChildrenNode] to their [WidgetNode]s. Instead,
- * the [WidgetNode.widget] is what's added to the parent [ChildrenNode.children].
- *
- * Compose maintains the tree structure internally. All non-insert operations are performed
- * using indexes and counts rather than references which are forwarded to [ChildrenNode.children].
+ * Compose maintains that relationship internally to support positioning the applier.
  */
 @OptIn(RedwoodCodegenApi::class)
 internal class NodeApplier<W : Any>(
@@ -97,11 +95,8 @@ internal class NodeApplier<W : Any>(
     if (instance is WidgetNode<*, *>) {
       val widgetNode = instance as WidgetNode<Widget<W>, W>
       val current = current as ChildrenNode<W>
-      val children = current.children
 
-      widgetNode.container = children
-      children.insert(index, widgetNode.widget)
-
+      current.insert(index, widgetNode)
       current.parent?.let(::recordChanged)
     }
   }
@@ -110,7 +105,7 @@ internal class NodeApplier<W : Any>(
     check(!closed)
 
     val current = current as ChildrenNode
-    current.children.remove(index, count)
+    current.remove(index, count)
     current.parent?.let(::recordChanged)
   }
 
@@ -118,7 +113,7 @@ internal class NodeApplier<W : Any>(
     check(!closed)
 
     val current = current as ChildrenNode
-    current.children.move(from, to, count)
+    current.move(from, to, count)
     current.parent?.let(::recordChanged)
   }
 
@@ -148,6 +143,9 @@ public class WidgetNode<out W : Widget<V>, V : Any>(
   }
 
   public var container: Widget.Children<V>? = null
+
+  /** The index of [widget] within its parent [container] when attached. */
+  public var index: Int = -1
 
   public companion object {
     public val SetModifiers: WidgetNode<*, *>.(Modifier) -> Unit = {
@@ -186,6 +184,54 @@ internal class ChildrenNode<W : Any> private constructor(
   constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null, null)
   constructor(children: Widget.Children<W>) : this(null, null, children)
 
+  private val nodes = mutableListOf<WidgetNode<Widget<W>, W>>()
+
+  fun insert(index: Int, node: WidgetNode<Widget<W>, W>) {
+    nodes.let { nodes ->
+      // Bump the index of any nodes which will be shifted.
+      for (i in index until nodes.size) {
+        nodes[i].index++
+      }
+
+      node.index = index
+      nodes.add(index, node)
+    }
+
+    children.let { children ->
+      node.container = children
+      children.insert(index, node.widget)
+    }
+  }
+
+  fun remove(index: Int, count: Int) {
+    nodes.let { nodes ->
+      nodes.remove(index, count)
+
+      // Drop the index of any nodes shifted after the removal.
+      for (i in index until nodes.size) {
+        nodes[i].index -= count
+      }
+    }
+
+    children.remove(index, count)
+  }
+
+  fun move(from: Int, to: Int, count: Int) {
+    nodes.let { nodes ->
+      nodes.move(from, to, count)
+
+      // If moving up, lower bound is from. If moving down, lower bound is to.
+      val lowerBound = min(from, to)
+      // If moving up, upper bound is to, If moving down, upper bound is from + count.
+      val upperBound = max(to, from + count)
+      for (i in lowerBound until upperBound) {
+        nodes[i].index = i
+      }
+    }
+
+    children.move(from, to, count)
+  }
+
   /** The parent of this children group. Null when the root children instance. */
   var parent: Widget<W>? = parent
     get() {
@@ -194,7 +240,7 @@ internal class ChildrenNode<W : Any> private constructor(
     }
     private set
 
-  val children: Widget.Children<W> get() = checkNotNull(_children) { "Not attached" }
+  private val children: Widget.Children<W> get() = checkNotNull(_children) { "Not attached" }
 
   fun attachTo(parent: Widget<W>) {
     _children = checkNotNull(accessor).invoke(parent)
