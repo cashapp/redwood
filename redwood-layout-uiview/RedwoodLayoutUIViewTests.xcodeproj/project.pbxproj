@@ -12,6 +12,7 @@
 		CB408CED2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */; };
 		CB408CF72AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */; };
 		CB8A21EF2AC6647F00C104C2 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CB8A21EE2AC6647F00C104C2 /* SnapshotTesting */; };
+		CB9729D32AD82D0C00804E94 /* SnapshotTestingCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		CB408CF52AC657EF00E1BA00 /* RedwoodLayoutUIViewTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedwoodLayoutUIViewTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KotlinHostingXCTestCaseHelper.m; sourceTree = "<group>"; };
 		CB408CF82AC6581100E1BA00 /* KotlinHostingXCTestCaseHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KotlinHostingXCTestCaseHelper.h; sourceTree = "<group>"; };
+		CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingCallback.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			children = (
 				102FEEF12AD5D09F00246158 /* UIViewFlexContainerTestHost.swift */,
 				CB408CE72AC64CEF00E1BA00 /* UIViewSpacerTestHost.swift */,
+				CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */,
 				CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */,
 				CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */,
 				CB408CF52AC657EF00E1BA00 /* RedwoodLayoutUIViewTests-Bridging-Header.h */,
@@ -174,6 +177,7 @@
 				CB408CED2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift in Sources */,
 				CB408CF72AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m in Sources */,
 				CB408CE82AC64CEF00E1BA00 /* UIViewSpacerTestHost.swift in Sources */,
+				CB9729D32AD82D0C00804E94 /* SnapshotTestingCallback.swift in Sources */,
 				102FEEF22AD5D09F00246158 /* UIViewFlexContainerTestHost.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

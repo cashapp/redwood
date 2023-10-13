@@ -28,12 +28,8 @@ import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
-interface UIViewFlexContainerTestCallback {
-  fun verifySnapshot(view: UIView, name: String?)
-}
-
 class UIViewFlexContainerTest(
-  private val callback: UIViewFlexContainerTestCallback,
+  private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
   override fun flexContainer(direction: FlexDirection): TestFlexContainer<UIView> {
     return UIViewTestFlexContainer(UIViewFlexContainer(direction))
