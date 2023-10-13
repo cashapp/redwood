@@ -60,7 +60,7 @@ androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.14.2" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.2.1" }
 junit = { module = "junit:junit", version = "4.13.2" }
-testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.12" }
+testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.13" }
 assertk = "com.willowtreeapps.assertk:assertk:0.27.0"
 robolectric = { module = "org.robolectric:robolectric", version = "4.10.3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
