@@ -84,7 +84,6 @@ internal class NodeApplier<W : Any>(
     // traversing down the tree. This ensures we can add widget nodes to children nodes in
     // bottom-up order.
     if (instance is ChildrenNode) {
-      @Suppress("UNCHECKED_CAST") // Guaranteed by generated code.
       val widgetNode = current as WidgetNode<Widget<W>, W>
       instance.attachTo(widgetNode.widget)
     }
@@ -96,7 +95,6 @@ internal class NodeApplier<W : Any>(
     // We only attach widgets to their parent node's children when traversing back up the tree.
     // This ensures that the initial properties of the widget have been set before it is attached.
     if (instance is WidgetNode<*, *>) {
-      @Suppress("UNCHECKED_CAST") // Guaranteed by generated code.
       val widgetNode = instance as WidgetNode<Widget<W>, W>
       val current = current as ChildrenNode<W>
       val children = current.children
@@ -141,10 +139,10 @@ public sealed interface Node<W : Any>
  * @suppress For generated code usage only.
  */
 @RedwoodCodegenApi
-public class WidgetNode<W : Widget<V>, V : Any>(
+public class WidgetNode<out W : Widget<V>, V : Any>(
   private val applier: RedwoodApplier<V>,
   public val widget: W,
-) : Node<W> {
+) : Node<V> {
   public fun recordChanged() {
     applier.recordChanged(widget)
   }
