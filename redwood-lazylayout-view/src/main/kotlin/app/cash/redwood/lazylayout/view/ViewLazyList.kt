@@ -131,10 +131,10 @@ internal open class ViewLazyList private constructor(
   override fun margin(margin: Margin) {
     with(density) {
       recyclerView.updatePaddingRelative(
-        start = margin.start.toPx().toInt(),
-        top = margin.top.toPx().toInt(),
-        end = margin.end.toPx().toInt(),
-        bottom = margin.bottom.toPx().toInt(),
+        start = margin.start.toPxInt(),
+        top = margin.top.toPxInt(),
+        end = margin.end.toPxInt(),
+        bottom = margin.bottom.toPxInt(),
       )
     }
   }

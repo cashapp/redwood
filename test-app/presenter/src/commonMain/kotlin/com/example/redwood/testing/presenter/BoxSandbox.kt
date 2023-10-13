@@ -203,17 +203,23 @@ private fun ColumnScope.BoxRow(
           Rectangle(
             backgroundColor = backColor,
             cornerRadius = 12f,
-            modifier = Modifier.width((rowHeight.value * 1.4).dp).height((rowHeight.value * 0.8).dp),
+            modifier = Modifier.width((rowHeight.value * 1.4).dp)
+              .height((rowHeight.value * 0.8).dp)
+              .margin(Margin(5.dp)),
           )
           Rectangle(
             backgroundColor = middleColor,
             cornerRadius = 12f,
-            modifier = Modifier.width((rowHeight.value * 1.2).dp).height((rowHeight.value * 0.6).dp),
+            modifier = Modifier.width((rowHeight.value * 1.2).dp)
+              .height((rowHeight.value * 0.6).dp)
+              .margin(Margin(10.dp)),
           )
           Rectangle(
             backgroundColor = frontColor,
             cornerRadius = 12f,
-            modifier = Modifier.width((rowHeight.value).dp).height((rowHeight.value * 0.4).dp),
+            modifier = Modifier.width((rowHeight.value).dp)
+              .height((rowHeight.value * 0.4).dp)
+              .margin(Margin(15.dp)),
           )
         }
       }
