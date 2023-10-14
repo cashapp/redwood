@@ -17,6 +17,7 @@ package app.cash.redwood.ui
 
 import androidx.compose.runtime.Immutable
 import kotlin.jvm.JvmInline
+import kotlin.math.roundToInt
 import kotlinx.serialization.Serializable
 
 /**
@@ -38,6 +39,11 @@ public value class Density(
   /** Convert a [Dp] into a pixel value. */
   public fun Dp.toPx(): Double {
     return value * DensityMultiplier * rawDensity
+  }
+
+  /** Convert a [Dp] into the nearest integer pixel value. */
+  public fun Dp.toPxInt(): Int {
+    return toPx().roundToInt()
   }
 
   /** Convert a pixel value into a [Dp]. */

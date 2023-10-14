@@ -22,7 +22,6 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
-import kotlin.math.roundToInt
 
 internal class ViewSpacer(
   context: Context,
@@ -34,12 +33,12 @@ internal class ViewSpacer(
   override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
-    value.minimumWidth = with(density) { width.toPx() }.roundToInt()
+    value.minimumWidth = with(density) { width.toPxInt() }
     invalidate()
   }
 
   override fun height(height: Dp) {
-    value.minimumHeight = with(density) { height.toPx() }.roundToInt()
+    value.minimumHeight = with(density) { height.toPxInt() }
     invalidate()
   }
 

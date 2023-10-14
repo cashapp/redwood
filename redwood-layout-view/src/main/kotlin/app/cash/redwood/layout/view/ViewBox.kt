@@ -18,75 +18,98 @@ package app.cash.redwood.layout.view
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.FrameLayout
-import androidx.core.view.children
 import androidx.core.view.updateLayoutParams
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
-import kotlin.math.roundToInt
 
 internal class ViewBox(
   context: Context,
-) : Box<View> {
+) : FrameLayout(context), Box<View> {
+  override var modifier: Modifier = Modifier
+
+  override val value = this
+
+  override val children = ViewGroupChildren(this)
 
   private val density = Density(context.resources)
 
-  override var modifier: Modifier = Modifier
-
   private var defaultHorizontalAlignment = CrossAxisAlignment.Start
   private var defaultVerticalAlignment = CrossAxisAlignment.Start
+  private var width = Constraint.Fill
+  private var height = Constraint.Fill
 
-  override val value = object : FrameLayout(context) {
-    init {
-      layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+  init {
+    layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+  }
 
-      // TODO: Remove this.
-      setBackgroundColor(0xFFFFFF66.toInt())
-    }
+  override fun width(width: Constraint) {
+    this.width = width
+  }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-      val widgetChildren = this@ViewBox.children.widgets
+  override fun height(height: Constraint) {
+    this.height = height
+  }
 
-      for (child in widgetChildren) {
-        child.value.layoutParams = toLayoutParams(child.modifier)
-        child.value.requestLayout()
+  override fun margin(margin: Margin) {
+    updateLayoutParams {
+      val layoutParams = this as MarginLayoutParams
+      with(density) {
+        layoutParams.setMargins(
+          margin.start.toPxInt(),
+          margin.top.toPxInt(),
+          margin.end.toPxInt(),
+          margin.bottom.toPxInt(),
+        )
       }
-
-      // Get width and height values from layout parameters
-      val width = when (layoutParams.width) {
-        LayoutParams.MATCH_PARENT -> widthMeasureSpec
-        LayoutParams.WRAP_CONTENT -> widgetChildren.maxOfOrNull { it.value.measuredWidth } ?: 0
-        else -> layoutParams.width
-      }
-
-      val height = when (layoutParams.height) {
-        LayoutParams.MATCH_PARENT -> heightMeasureSpec
-        LayoutParams.WRAP_CONTENT -> widgetChildren.maxOfOrNull { it.value.measuredHeight } ?: 0
-        else -> layoutParams.height
-      }
-
-      // Call to super here triggers a layout pass on the children.
-      super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-      setMeasuredDimension(width, height)
     }
   }
 
-  override val children: ViewGroupChildren = ViewGroupChildren(value)
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    this.defaultHorizontalAlignment = horizontalAlignment
+  }
 
-  private fun toLayoutParams(modifier: Modifier): ViewGroup.LayoutParams? {
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    this.defaultVerticalAlignment = verticalAlignment
+  }
+
+  /** Flush Redwood's modifiers into FrameLayout's LayoutParams before it measures. */
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    var widthMode = MeasureSpec.getMode(widthMeasureSpec)
+    val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+    var heightMode = MeasureSpec.getMode(heightMeasureSpec)
+    val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+    for (child in children.widgets) {
+      val layoutParams = child.value.layoutParams as LayoutParams
+      layoutParams.setFrom(child.modifier)
+      child.value.layoutParams = layoutParams // To force layout.
+    }
+
+    // If we're supposed to fill, never measure a size smaller than what's offered.
+    // (This will turn MeasureSpec.AT_MOST into MeasureSpec.EXACTLY.)
+    if (width == Constraint.Fill) widthMode = MeasureSpec.EXACTLY
+    if (height == Constraint.Fill) heightMode = MeasureSpec.EXACTLY
+
+    super.onMeasure(
+      MeasureSpec.makeMeasureSpec(widthSize, widthMode),
+      MeasureSpec.makeMeasureSpec(heightSize, heightMode),
+    )
+  }
+
+  private fun LayoutParams.setFrom(modifier: Modifier) {
     var horizontalAlignment = defaultHorizontalAlignment
     var verticalAlignment = defaultVerticalAlignment
 
@@ -94,8 +117,8 @@ internal class ViewBox(
     var requestedHeight: Int? = null
 
     modifier.forEach { childModifier ->
-      // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
-
+      // Check for modifier overrides in the children, otherwise default to the Box's alignment
+      // values.
       when (childModifier) {
         is HorizontalAlignment -> {
           horizontalAlignment = childModifier.alignment
@@ -106,11 +129,20 @@ internal class ViewBox(
         }
 
         is Width -> {
-          requestedWidth = with(density) { childModifier.width.toPx() }.roundToInt()
+          requestedWidth = with(density) { childModifier.width.toPxInt() }
         }
 
         is Height -> {
-          requestedHeight = with(density) { childModifier.height.toPx() }.roundToInt()
+          requestedHeight = with(density) { childModifier.height.toPxInt() }
+        }
+
+        is MarginModifier -> {
+          with(density) {
+            marginStart = childModifier.margin.start.toPxInt()
+            marginEnd = childModifier.margin.end.toPxInt()
+            topMargin = childModifier.margin.top.toPxInt()
+            bottomMargin = childModifier.margin.bottom.toPxInt()
+          }
         }
       }
     }
@@ -123,11 +155,9 @@ internal class ViewBox(
       requestedHeight = MATCH_PARENT
     }
 
-    return FrameLayout.LayoutParams(
-      requestedWidth ?: horizontalAlignment.toWidth(),
-      requestedHeight ?: verticalAlignment.toWidth(),
-      toGravity(horizontalAlignment, verticalAlignment),
-    )
+    width = requestedWidth ?: horizontalAlignment.toWidth()
+    height = requestedHeight ?: verticalAlignment.toWidth()
+    gravity = toGravity(horizontalAlignment, verticalAlignment)
   }
 
   private fun toGravity(
@@ -159,39 +189,5 @@ internal class ViewBox(
       CrossAxisAlignment.Stretch -> MATCH_PARENT
       else -> defaultValue
     }
-  }
-
-  override fun width(width: Constraint) {
-    value.updateLayoutParams {
-      this.width = if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
-    }
-  }
-
-  override fun height(height: Constraint) {
-    value.updateLayoutParams {
-      this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
-    }
-  }
-
-  override fun margin(margin: Margin) {
-    value.updateLayoutParams {
-      val layoutParams = this as MarginLayoutParams
-      with(density) {
-        layoutParams.setMargins(
-          margin.start.toPx().toInt(),
-          margin.top.toPx().toInt(),
-          margin.end.toPx().toInt(),
-          margin.bottom.toPx().toInt(),
-        )
-      }
-    }
-  }
-
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    this.defaultHorizontalAlignment = horizontalAlignment
-  }
-
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    this.defaultVerticalAlignment = verticalAlignment
   }
 }
