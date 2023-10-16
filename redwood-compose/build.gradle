@@ -1,3 +1,4 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
 import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
@@ -13,6 +14,7 @@ kotlin {
 
   sourceSets {
     commonMain {
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.compose'))
       dependencies {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
