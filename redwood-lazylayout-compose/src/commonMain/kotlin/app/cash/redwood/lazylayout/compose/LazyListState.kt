@@ -43,8 +43,8 @@ public class LazyListState {
   public var scrollItemIndex: Int by mutableStateOf(0)
     internal set
 
-  private var firstVisibleItemIndex: Int = 0
-  private var lastVisibleItemIndex: Int = 0
+  public var firstVisibleItemIndex: Int = 0
+    private set
 
   public fun restoreIndex(index: Int) {
     require(index >= 0)
@@ -68,9 +68,8 @@ public class LazyListState {
     }
   }
 
-  public fun onScrolled(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+  public fun onScrolled(firstVisibleItemIndex: Int) {
     this.firstVisibleItemIndex = firstVisibleItemIndex
-    this.lastVisibleItemIndex = lastVisibleItemIndex
   }
 
   public companion object {

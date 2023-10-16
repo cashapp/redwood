@@ -172,6 +172,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
           edit.count--
         }
       }
+
       // Process regular edits.
       when (edit) {
         is Edit.Insert -> {
