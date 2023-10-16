@@ -18,32 +18,72 @@ package app.cash.redwood.lazylayout.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 @Composable
-public fun rememberLazyListState(
-  initialFirstVisibleItemIndex: Int = 0,
-): LazyListState {
-  return remember {
-    LazyListState(
-      initialFirstVisibleItemIndex,
-    )
+public fun rememberLazyListState(): LazyListState {
+  return rememberSaveable(saver = LazyListState.Saver) {
+    LazyListState()
   }
 }
 
-public class LazyListState(
-  firstVisibleItemIndex: Int = 0,
-) {
-  public var firstVisibleItemIndex: Int by mutableStateOf(firstVisibleItemIndex)
+public class LazyListState {
+  /** We only restore the scroll position once. */
+  private var hasRestoredScrollPosition = false
+
+  /** The scroll position to restore. */
+  private var restoredIndex: Int = -1
+
+  /**
+   * The value published to the host platform. This starts as 0 and changes exactly once to
+   * trigger exactly one scroll.
+   */
+  public var scrollItemIndex: Int by mutableStateOf(0)
     internal set
 
-  internal var scrollToItemTriggeredId by mutableStateOf(0)
+  private var firstVisibleItemIndex: Int = 0
+  private var lastVisibleItemIndex: Int = 0
 
-  public fun scrollToItem(
-    index: Int,
-  ) {
-    firstVisibleItemIndex = index
-    scrollToItemTriggeredId++
+  public fun restoreIndex(index: Int) {
+    require(index >= 0)
+
+    if (this.restoredIndex != -1) return
+    this.restoredIndex = index
+
+    // Scroll to the target item.
+    if (hasRestoredScrollPosition) {
+      scrollItemIndex = restoredIndex
+    }
+  }
+
+  public fun maybeRestoreScrollPosition() {
+    if (this.hasRestoredScrollPosition) return
+    this.hasRestoredScrollPosition = true
+
+    // Scroll to the target item.
+    if (restoredIndex != -1) {
+      scrollItemIndex = restoredIndex
+    }
+  }
+
+  public fun onScrolled(firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    this.firstVisibleItemIndex = firstVisibleItemIndex
+    this.lastVisibleItemIndex = lastVisibleItemIndex
+  }
+
+  public companion object {
+    /**
+     * The default [Saver] implementation for [LazyListState].
+     */
+    public val Saver: Saver<LazyListState, *> = Saver(
+      save = { it.firstVisibleItemIndex },
+      restore = {
+        LazyListState().apply {
+          restoreIndex(it)
+        }
+      },
+    )
   }
 }

@@ -46,9 +46,8 @@ internal fun LazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsBefore = remember(state.scrollItemIndex) { (state.scrollItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
-  val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   // TODO(jwilson): drop this down to 20 once this is fixed:
   //     https://github.com/cashapp/redwood/issues/1551
   var placeholderPoolSize by remember { mutableStateOf(30) }
@@ -57,13 +56,15 @@ internal fun LazyList(
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      // Update LazyListState.
+      state.onScrolled(localFirstVisibleItemIndex, localLastVisibleItemIndex)
+
       val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
       // We only ever want to increase the pool size.
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      state.firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     width = width,
@@ -71,7 +72,7 @@ internal fun LazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = scrollItemIndex,
+    scrollItemIndex = ScrollItemIndex(0, state.scrollItemIndex),
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
@@ -100,22 +101,23 @@ internal fun RefreshableLazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
+  val itemsBefore = remember(state.scrollItemIndex) { (state.scrollItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
   val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
-  val scrollItemIndex = remember(state.scrollToItemTriggeredId) { ScrollItemIndex(state.scrollToItemTriggeredId, state.firstVisibleItemIndex) }
   var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
+      // Update LazyListState.
+      state.onScrolled(localFirstVisibleItemIndex, localLastVisibleItemIndex)
+
       val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
       // We only ever want to increase the pool size.
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      state.firstVisibleItemIndex = localFirstVisibleItemIndex
       lastVisibleItemIndex = localLastVisibleItemIndex
     },
     refreshing = refreshing,
@@ -125,7 +127,7 @@ internal fun RefreshableLazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = scrollItemIndex,
+    scrollItemIndex = ScrollItemIndex(0, state.scrollItemIndex),
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     pullRefreshContentColor = pullRefreshContentColor,
     items = {

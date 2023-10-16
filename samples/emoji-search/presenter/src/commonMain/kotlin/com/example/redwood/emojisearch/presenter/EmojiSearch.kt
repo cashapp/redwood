@@ -98,6 +98,12 @@ private fun LazyColumn(
 
   var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
 
+  val lazyListState = rememberLazyListState()
+
+  LaunchedEffect(searchTerm) {
+    lazyListState.restoreIndex(0)
+  }
+
   LaunchedEffect(refreshSignal) {
     try {
       refreshing = true
@@ -108,7 +114,9 @@ private fun LazyColumn(
       val labelToUrl = Json.decodeFromString<Map<String, String>>(emojisJson)
 
       allEmojis.clear()
-      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage(key, value) })
+      var index = 0
+      allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage("${index++}. $key", value) })
+      lazyListState.maybeRestoreScrollPosition()
     } finally {
       refreshing = false
     }
@@ -119,12 +127,6 @@ private fun LazyColumn(
     allEmojis.filter { image ->
       searchTerms.all { image.label.contains(it, ignoreCase = true) }
     }
-  }
-
-  val lazyListState = rememberLazyListState()
-
-  LaunchedEffect(searchTerm) {
-    lazyListState.scrollToItem(0)
   }
 
   Column(
