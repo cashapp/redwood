@@ -40,6 +40,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
 
 class TestAppActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
@@ -81,6 +83,11 @@ class TestAppActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
+      stateStore = FileStateStore(
+        json = Json,
+        fileSystem = FileSystem.SYSTEM,
+        directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
+      ),
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
