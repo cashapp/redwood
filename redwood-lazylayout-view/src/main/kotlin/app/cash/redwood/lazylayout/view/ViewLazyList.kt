@@ -25,6 +25,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
+import androidx.core.view.children
 import androidx.core.view.doOnDetach
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
@@ -57,6 +58,8 @@ internal open class ViewLazyList private constructor(
   override var modifier: Modifier = Modifier
 
   private var crossAxisAlignment = CrossAxisAlignment.Start
+
+  private var userHasScrolled = false
 
   private val density = Density(recyclerView.context.resources)
   private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
@@ -101,9 +104,11 @@ internal open class ViewLazyList private constructor(
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val viewsOnScreen = recyclerView.children.map { recyclerView.getChildViewHolder(it).bindingAdapterPosition }
+            userHasScrolled = true // Prevent guest code from hijacking the scrollbar.
             onViewportChanged?.invoke(
-              linearLayoutManager.findFirstVisibleItemPosition(),
-              linearLayoutManager.findLastVisibleItemPosition(),
+              viewsOnScreen.min(),
+              viewsOnScreen.max(),
             )
           }
         },
@@ -154,6 +159,7 @@ internal open class ViewLazyList private constructor(
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+    if (userHasScrolled) return
     recyclerView.scrollToPosition(scrollItemIndex.index)
   }
 
