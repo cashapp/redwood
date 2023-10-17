@@ -18,75 +18,69 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlin.jvm.JvmInline
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.intOrNull
-
-private const val MutableStateKey = "androidx.compose.runtime.MutableState"
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 @Serializable
 public class StateSnapshot(
-  public val content: Map<String, List<JsonElement>>,
+  public val content: Map<String, List<@Polymorphic Any?>>,
 ) {
-  public fun toValuesMap(): Map<String, List<Any?>> {
-    return content.mapValues { entry ->
-      entry.value.map {
-        it.fromJsonElement()
-      }
-    }
-  }
 
   @JvmInline
   @Serializable
   public value class Id(public val value: String?)
 }
 
-/**
- * Supported types:
- * String, Boolean, Int, List (of supported primitive types), Map (of supported primitive types)
- */
-public fun Map<String, List<Any?>>.toStateSnapshot(): StateSnapshot = StateSnapshot(
-  mapValues { entry -> entry.value.map { element -> element.toJsonElement() } },
-)
-
-private fun Any?.toJsonElement(): JsonElement {
-  return when (this) {
-    is MutableState<*> -> JsonMutableState(value.toJsonElement())
-    is String -> JsonPrimitive(this)
-    is Int -> JsonPrimitive(this)
-    is List<*> -> JsonArray(map { it.toJsonElement() })
-    is JsonElement -> this
-    null -> JsonNull
-    else -> error("unexpected type: $this")
-    // TODO: add support to Map<*, *>
+// TODO Add support for rest of built-ins serializers.
+public val SaveableStateSerializersModule: SerializersModule = SerializersModule {
+  polymorphic(Any::class) {
+    subclass(Boolean::class)
+    subclass(Double::class)
+    subclass(Float::class)
+    subclass(Int::class)
+    subclass(String::class)
   }
-}
-
-private fun JsonElement.fromJsonElement(): Any? {
-  return when {
-    this is JsonNull -> null
-    this is JsonPrimitive -> {
-      if (this.isString) return content
-      return booleanOrNull ?: doubleOrNull ?: intOrNull ?: error("unexpected type: $this")
-      // TODO add other primitive types (float, long) when needed
+  polymorphicDefaultSerializer(Any::class) { value ->
+    @Suppress("UNCHECKED_CAST")
+    when (value) {
+      is List<*> -> ListSerializer(PolymorphicSerializer(Any::class)) as SerializationStrategy<Any>
+      is MutableState<*> -> MutableStateSerializer as SerializationStrategy<Any>
+      else -> null
     }
-
-    this is JsonArray -> listOf({ this.forEach { it.toJsonElement() } })
-    this is JsonObject && containsKey(MutableStateKey) ->
-      mutableStateOf(getValue(MutableStateKey).fromJsonElement())
-    // TODO: map, numbers
-    // is Map<*, *> -> JsonElement
-    else -> error("unexpected type: $this")
+  }
+  polymorphicDefaultDeserializer(Any::class) { className ->
+    when (className) {
+      "kotlin.collections.ArrayList" -> ListSerializer(PolymorphicSerializer(Any::class))
+      "MutableState" -> MutableStateSerializer
+      else -> null
+    }
   }
 }
 
-internal fun JsonMutableState(element: JsonElement): JsonObject = buildJsonObject {
-  put(MutableStateKey, element)
+@Serializable
+@SerialName("MutableState")
+private class MutableStateSurrogate(val value: @Polymorphic Any?)
+
+private object MutableStateSerializer : KSerializer<MutableState<Any?>> {
+  override val descriptor = MutableStateSurrogate.serializer().descriptor
+
+  override fun serialize(encoder: Encoder, value: MutableState<Any?>) {
+    val surrogate = MutableStateSurrogate(value.value)
+    encoder.encodeSerializableValue(MutableStateSurrogate.serializer(), surrogate)
+  }
+
+  override fun deserialize(decoder: Decoder): MutableState<Any?> {
+    val surrogate = decoder.decodeSerializableValue(MutableStateSurrogate.serializer())
+    return mutableStateOf(surrogate.value)
+  }
 }

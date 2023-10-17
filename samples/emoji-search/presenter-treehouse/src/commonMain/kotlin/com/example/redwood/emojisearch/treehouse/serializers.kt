@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,6 @@
  */
 package com.example.redwood.emojisearch.treehouse
 
-import app.cash.zipline.Zipline
+import app.cash.redwood.treehouse.SaveableStateSerializersModule
 
-private val zipline by lazy { Zipline.get(emojiSearchSerializersModule) }
-
-@OptIn(ExperimentalJsExport::class)
-@JsExport
-fun preparePresenters() {
-  val hostApi = zipline.take<HostApi>(
-    name = "HostApi",
-  )
-
-  zipline.bind<EmojiSearchPresenter>(
-    name = "EmojiSearchPresenter",
-    instance = RealEmojiSearchPresenter(hostApi, zipline.json),
-  )
-}
+val emojiSearchSerializersModule = SaveableStateSerializersModule
