@@ -107,7 +107,7 @@ internal open class ViewLazyList private constructor(
             val viewsOnScreen = recyclerView.children.map { recyclerView.getChildViewHolder(it).bindingAdapterPosition }
             userHasScrolled = true // Prevent guest code from hijacking the scrollbar.
             onViewportChanged?.invoke(
-              viewsOnScreen.min(),
+              viewsOnScreen.min().coerceAtLeast(0),
               viewsOnScreen.max(),
             )
           }
