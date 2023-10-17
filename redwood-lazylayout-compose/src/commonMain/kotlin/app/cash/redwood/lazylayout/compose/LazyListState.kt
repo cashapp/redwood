@@ -24,12 +24,23 @@ import androidx.compose.runtime.setValue
 
 @Composable
 public fun rememberLazyListState(): LazyListState {
-  return rememberSaveable(saver = LazyListState.Saver) {
+  return rememberSaveable(saver = saver) {
     LazyListState()
   }
 }
 
+/** The default [Saver] implementation for [LazyListState]. */
+private val saver: Saver<LazyListState, *> = Saver(
+  save = { it.firstVisibleItemIndex },
+  restore = {
+    LazyListState().apply {
+      restoreIndex(it)
+    }
+  },
+)
+
 public class LazyListState {
+
   /** We only restore the scroll position once. */
   private var hasRestoredScrollPosition = false
 
@@ -70,19 +81,5 @@ public class LazyListState {
 
   public fun onScrolled(firstVisibleItemIndex: Int) {
     this.firstVisibleItemIndex = firstVisibleItemIndex
-  }
-
-  public companion object {
-    /**
-     * The default [Saver] implementation for [LazyListState].
-     */
-    public val Saver: Saver<LazyListState, *> = Saver(
-      save = { it.firstVisibleItemIndex },
-      restore = {
-        LazyListState().apply {
-          restoreIndex(it)
-        }
-      },
-    )
   }
 }
