@@ -95,7 +95,7 @@ private class RedwoodZiplineTreehouseUi(
     this.composition = composition
 
     this.saveableStateRegistry = SaveableStateRegistry(
-      restoredValues = stateSnapshot?.toValuesMap(),
+      restoredValues = stateSnapshot?.content,
       // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
       // With current serialization mechanism of stateSnapshot, this field is always true, an update
       // to lambda of this field might be needed when serialization mechanism of stateSnapshot
@@ -111,7 +111,7 @@ private class RedwoodZiplineTreehouseUi(
 
   override fun snapshotState(): StateSnapshot {
     val savedState = saveableStateRegistry.performSave()
-    return savedState.toStateSnapshot()
+    return StateSnapshot(savedState)
   }
 
   override fun close() {

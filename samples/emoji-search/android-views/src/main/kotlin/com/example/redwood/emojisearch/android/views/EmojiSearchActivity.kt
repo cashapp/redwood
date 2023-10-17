@@ -37,6 +37,7 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
+import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.google.android.material.snackbar.Snackbar
@@ -124,7 +125,10 @@ class EmojiSearchActivity : ComponentActivity() {
       embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
       stateStore = FileStateStore(
-        json = Json,
+        json = Json {
+          useArrayPolymorphism = true
+          serializersModule = emojiSearchSerializersModule
+        },
         fileSystem = FileSystem.SYSTEM,
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),

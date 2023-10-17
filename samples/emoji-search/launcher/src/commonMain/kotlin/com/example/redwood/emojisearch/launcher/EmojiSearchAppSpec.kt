@@ -19,6 +19,7 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.zipline.Zipline
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.HostApi
+import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
 import kotlinx.coroutines.flow.Flow
 
 class EmojiSearchAppSpec(
@@ -26,6 +27,7 @@ class EmojiSearchAppSpec(
   private val hostApi: HostApi,
 ) : TreehouseApp.Spec<EmojiSearchPresenter>() {
   override val name = "emoji-search"
+  override val serializersModule = emojiSearchSerializersModule
 
   override fun bindServices(zipline: Zipline) {
     zipline.bind<HostApi>("HostApi", hostApi)
