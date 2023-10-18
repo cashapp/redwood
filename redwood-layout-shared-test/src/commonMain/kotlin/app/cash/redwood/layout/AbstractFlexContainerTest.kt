@@ -46,18 +46,17 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testEmptyLayout_Column() {
-    emptyLayout(FlexDirectionEnum.Column)
+    emptyLayout(FlexDirection.Column)
   }
 
   @Test fun testEmptyLayout_Row() {
-    emptyLayout(FlexDirectionEnum.Row)
+    emptyLayout(FlexDirection.Row)
   }
 
   private fun emptyLayout(
-    flexDirectionEnum: FlexDirectionEnum,
+    flexDirection: FlexDirection,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.onEndChanges()
@@ -65,46 +64,43 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLayoutWithConstraints_Column_Wrap_Wrap() {
-    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
+    layoutWithConstraints(FlexDirection.Column, Constraint.Wrap, Constraint.Wrap)
   }
 
   @Test fun testLayoutWithConstraints_Column_Wrap_Fill() {
-    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Wrap, ConstraintEnum.Fill)
+    layoutWithConstraints(FlexDirection.Column, Constraint.Wrap, Constraint.Fill)
   }
 
   @Test fun testLayoutWithConstraints_Column_Fill_Wrap() {
-    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Wrap)
+    layoutWithConstraints(FlexDirection.Column, Constraint.Fill, Constraint.Wrap)
   }
 
   @Test fun testLayoutWithConstraints_Column_Fill_Fill() {
-    layoutWithConstraints(FlexDirectionEnum.Column, ConstraintEnum.Fill, ConstraintEnum.Fill)
+    layoutWithConstraints(FlexDirection.Column, Constraint.Fill, Constraint.Fill)
   }
 
   @Test fun testLayoutWithConstraints_Row_Wrap_Wrap() {
-    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Wrap)
+    layoutWithConstraints(FlexDirection.Row, Constraint.Wrap, Constraint.Wrap)
   }
 
   @Test fun testLayoutWithConstraints_Row_Wrap_Fill() {
-    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Wrap, ConstraintEnum.Fill)
+    layoutWithConstraints(FlexDirection.Row, Constraint.Wrap, Constraint.Fill)
   }
 
   @Test fun testLayoutWithConstraints_Row_Fill_Wrap() {
-    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Wrap)
+    layoutWithConstraints(FlexDirection.Row, Constraint.Fill, Constraint.Wrap)
   }
 
   @Test fun testLayoutWithConstraints_Row_Fill_Fill() {
-    layoutWithConstraints(FlexDirectionEnum.Row, ConstraintEnum.Fill, ConstraintEnum.Fill)
+    layoutWithConstraints(FlexDirection.Row, Constraint.Fill, Constraint.Fill)
   }
 
   private fun layoutWithConstraints(
-    flexDirectionEnum: FlexDirectionEnum,
-    widthEnum: ConstraintEnum,
-    heightEnum: ConstraintEnum,
+    flexDirection: FlexDirection,
+    width: Constraint,
+    height: Constraint,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
-    val width = widthEnum.value
-    val height = heightEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
@@ -114,18 +110,17 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testShortLayout_Column() {
-    shortLayout(FlexDirectionEnum.Column)
+    shortLayout(FlexDirection.Column)
   }
 
   @Test fun testShortLayout_Row() {
-    shortLayout(FlexDirectionEnum.Row)
+    shortLayout(FlexDirection.Row)
   }
 
   private fun shortLayout(
-    flexDirectionEnum: FlexDirectionEnum,
+    flexDirection: FlexDirection,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
@@ -136,18 +131,17 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLongLayout_Column() {
-    longLayout(FlexDirectionEnum.Column)
+    longLayout(FlexDirection.Column)
   }
 
   @Test fun testLongLayout_Row() {
-    longLayout(FlexDirectionEnum.Row)
+    longLayout(FlexDirection.Row)
   }
 
   private fun longLayout(
-    flexDirectionEnum: FlexDirectionEnum,
+    flexDirection: FlexDirection,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
@@ -158,18 +152,17 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLayoutWithMarginAndDifferentAlignments_Column() {
-    layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Column)
+    layoutWithMarginAndDifferentAlignments(FlexDirection.Column)
   }
 
   @Test fun testLayoutWithMarginAndDifferentAlignments_Row() {
-    layoutWithMarginAndDifferentAlignments(FlexDirectionEnum.Row)
+    layoutWithMarginAndDifferentAlignments(FlexDirection.Row)
   }
 
   private fun layoutWithMarginAndDifferentAlignments(
-    flexDirectionEnum: FlexDirectionEnum,
+    flexDirection: FlexDirection,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -188,44 +181,42 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Column_Start() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Start)
+    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Start)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Column_Center() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Center)
+    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Center)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Column_End() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.End)
+    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.End)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Column_Stretch() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Column, CrossAxisAlignmentEnum.Stretch)
+    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Stretch)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Row_Start() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Start)
+    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Start)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Row_Center() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Center)
+    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Center)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Row_End() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.End)
+    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.End)
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Row_Stretch() {
-    layoutWithCrossAxisAlignment(FlexDirectionEnum.Row, CrossAxisAlignmentEnum.Stretch)
+    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Stretch)
   }
 
   private fun layoutWithCrossAxisAlignment(
-    flexDirectionEnum: FlexDirectionEnum,
-    crossAxisAlignmentEnum: CrossAxisAlignmentEnum,
+    flexDirection: FlexDirection,
+    crossAxisAlignment: CrossAxisAlignment,
   ) {
-    assumeTrue(flexDirectionEnum in listOf(FlexDirectionEnum.Row, FlexDirectionEnum.Column))
-    val flexDirection = flexDirectionEnum.value
-    val crossAxisAlignment = crossAxisAlignmentEnum.value
+    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -254,22 +245,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testColumnWithMainAxisAlignment_Center() {
-    columnWithMainAxisAlignment(MainAxisAlignmentEnum.Center)
+    columnWithMainAxisAlignment(MainAxisAlignment.Center)
   }
 
   @Test fun testColumnWithMainAxisAlignment_SpaceBetween() {
-    columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceBetween)
+    columnWithMainAxisAlignment(MainAxisAlignment.SpaceBetween)
   }
 
   @Test fun testColumnWithMainAxisAlignment_SpaceAround() {
-    columnWithMainAxisAlignment(MainAxisAlignmentEnum.SpaceAround)
+    columnWithMainAxisAlignment(MainAxisAlignment.SpaceAround)
   }
 
   private fun columnWithMainAxisAlignment(
-    mainAxisAlignmentEnum: MainAxisAlignmentEnum,
+    mainAxisAlignment: MainAxisAlignment,
   ) {
-    assumeTrue(mainAxisAlignmentEnum in listOf(MainAxisAlignmentEnum.Center, MainAxisAlignmentEnum.SpaceBetween, MainAxisAlignmentEnum.SpaceAround))
-    val mainAxisAlignment = mainAxisAlignmentEnum.value
+    assumeTrue(mainAxisAlignment in listOf(MainAxisAlignment.Center, MainAxisAlignment.SpaceBetween, MainAxisAlignment.SpaceAround))
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -490,31 +480,3 @@ private data class GrowImpl(
 private data class ShrinkImpl(
   override val `value`: Double,
 ) : Shrink
-
-enum class FlexDirectionEnum(val value: FlexDirection) {
-  Row(FlexDirection.Row),
-  RowReverse(FlexDirection.RowReverse),
-  Column(FlexDirection.Column),
-  ColumnReverse(FlexDirection.ColumnReverse),
-}
-
-enum class ConstraintEnum(val value: Constraint) {
-  Wrap(Constraint.Wrap),
-  Fill(Constraint.Fill),
-}
-
-enum class CrossAxisAlignmentEnum(val value: CrossAxisAlignment) {
-  Start(CrossAxisAlignment.Start),
-  Center(CrossAxisAlignment.Center),
-  End(CrossAxisAlignment.End),
-  Stretch(CrossAxisAlignment.Stretch),
-}
-
-enum class MainAxisAlignmentEnum(val value: MainAxisAlignment) {
-  Start(MainAxisAlignment.Start),
-  Center(MainAxisAlignment.Center),
-  End(MainAxisAlignment.End),
-  SpaceBetween(MainAxisAlignment.SpaceBetween),
-  SpaceAround(MainAxisAlignment.SpaceAround),
-  SpaceEvenly(MainAxisAlignment.SpaceEvenly),
-}
