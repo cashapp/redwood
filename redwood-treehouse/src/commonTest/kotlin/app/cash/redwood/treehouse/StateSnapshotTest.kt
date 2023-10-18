@@ -23,6 +23,8 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import assertk.assertions.key
+import assertk.assertions.single
 import kotlin.test.Test
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -101,20 +103,24 @@ class StateSnapshotTest {
       """.trimIndent(),
     )
     assertThat(deserialized.content).hasSize(stateSnapshot.content.size)
-    assertThat(deserialized.content["key1"]!![0])
+    assertThat(deserialized.content)
+      .key("key1")
+      .single()
       .isNotNull()
       .isInstanceOf<MutableState<*>>()
       .corresponds(mutableStateOf(1), ::mutableStateCorrespondence)
-    assertThat(deserialized.content["key2"]).isEqualTo(listOf(1))
-    assertThat(deserialized.content["key3"]!![0])
+    assertThat(deserialized.content).key("key2").isEqualTo(listOf(1))
+    assertThat(deserialized.content)
+      .key("key3")
+      .single()
       .isNotNull()
       .isInstanceOf<MutableState<*>>()
       .corresponds(mutableStateOf("str"), ::mutableStateCorrespondence)
-    assertThat(deserialized.content["key4"]).isEqualTo(listOf("str"))
-    assertThat(deserialized.content["key5"]).isEqualTo(listOf(null))
-    assertThat(deserialized.content["key6"]).isEqualTo(listOf(true))
-    assertThat(deserialized.content["key7"]).isEqualTo(listOf(1.5))
-    assertThat(deserialized.content["key8"]).isEqualTo(listOf(listOf(1, "str")))
+    assertThat(deserialized.content).key("key4").isEqualTo(listOf("str"))
+    assertThat(deserialized.content).key("key5").isEqualTo(listOf(null))
+    assertThat(deserialized.content).key("key6").isEqualTo(listOf(true))
+    assertThat(deserialized.content).key("key7").isEqualTo(listOf(1.5))
+    assertThat(deserialized.content).key("key8").isEqualTo(listOf(listOf(1, "str")))
   }
 }
 
