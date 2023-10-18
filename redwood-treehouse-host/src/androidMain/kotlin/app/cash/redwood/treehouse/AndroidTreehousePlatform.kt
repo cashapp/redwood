@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
@@ -32,10 +33,19 @@ internal class AndroidTreehousePlatform(
     Log.w("Zipline", message, throwable)
   }
 
+  /**
+   * Note that we don't put the ZiplineCache in Android's cacheDir.
+   *
+   * We don't have any control over when files are evicted from that directory, and we've observed
+   * crashes because the cache's SQLite database file was evicted ('SQLITE_READONLY_DBMOVED') while
+   * the app was running.
+   *
+   * This is safe because ZiplineCache automatically prunes itself to [maxSizeInBytes].
+   */
   override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
     context = context,
     fileSystem = FileSystem.SYSTEM,
-    directory = context.cacheDir.toOkioPath() / name,
+    directory = context.getDir(name, MODE_PRIVATE).toOkioPath(),
     maxSizeInBytes = maxSizeInBytes,
   )
 }
