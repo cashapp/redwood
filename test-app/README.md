@@ -1,7 +1,8 @@
 Test App
 ============
 
-This is an app to aid in redwood development. The app itself is a list of smaller apps that can be expanded upon to develop particular use cases.
+This is an app to aid in Redwood development. The app itself is a list of screens that can be
+expanded upon to develop particular use cases or demonstrate bugs and performance problems.
 
 
 Prerequisites
