@@ -25,8 +25,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
-import androidx.core.view.children
 import androidx.core.view.doOnDetach
+import androidx.core.view.get
+import androidx.core.view.indices
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -104,11 +105,21 @@ internal open class ViewLazyList private constructor(
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val viewsOnScreen = recyclerView.children.map { recyclerView.getChildViewHolder(it).bindingAdapterPosition }
             userHasScrolled = true // Prevent guest code from hijacking the scrollbar.
+
+            var min = Int.MAX_VALUE
+            var max = Int.MIN_VALUE
+            for (i in recyclerView.indices) {
+              val position = recyclerView.getChildAdapterPosition(recyclerView[i])
+              min = minOf(min, position)
+              max = maxOf(max, position)
+            }
+            if (min == Int.MAX_VALUE || max == Int.MIN_VALUE) {
+              throw NoSuchElementException()
+            }
             onViewportChanged?.invoke(
-              viewsOnScreen.min().coerceAtLeast(0),
-              viewsOnScreen.max(),
+              min.coerceAtLeast(0),
+              max,
             )
           }
         },
