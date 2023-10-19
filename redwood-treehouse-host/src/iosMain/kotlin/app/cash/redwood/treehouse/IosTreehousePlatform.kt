@@ -18,8 +18,8 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSLog
-import platform.Foundation.NSTemporaryDirectory
 
 internal class IosTreehousePlatform : TreehousePlatform {
   override fun logInfo(message: String, throwable: Throwable?) {
@@ -40,7 +40,7 @@ internal class IosTreehousePlatform : TreehousePlatform {
 
   override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
     fileSystem = FileSystem.SYSTEM,
-    directory = NSTemporaryDirectory().toPath() / name,
+    directory = NSHomeDirectory().toPath() / name,
     maxSizeInBytes = maxSizeInBytes,
   )
 }
