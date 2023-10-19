@@ -19,7 +19,6 @@ kotlin {
         implementation projects.testApp.schema.compose
         implementation projects.redwoodLazylayoutCompose
         implementation projects.redwoodProtocolCompose
-        implementation libs.jetbrains.compose.runtime.saveable
         implementation libs.paging.compose.common
         implementation libs.kotlinx.coroutines.core
       }

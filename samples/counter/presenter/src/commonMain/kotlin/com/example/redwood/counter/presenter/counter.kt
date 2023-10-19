@@ -18,7 +18,7 @@ package com.example.redwood.counter.presenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -29,7 +29,7 @@ import com.example.redwood.counter.compose.Text
 
 @Composable
 fun Counter(value: Int = 0) {
-  var count by remember { mutableStateOf(value) }
+  var count by rememberSaveable { mutableStateOf(value) }
 
   Column(
     width = Constraint.Fill,

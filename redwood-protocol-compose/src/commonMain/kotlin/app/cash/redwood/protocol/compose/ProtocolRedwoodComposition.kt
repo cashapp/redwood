@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.ChangesSink
@@ -36,9 +37,17 @@ public fun ProtocolRedwoodComposition(
   changesSink: ChangesSink,
   widgetVersion: UInt,
   onBackPressedDispatcher: OnBackPressedDispatcher,
+  saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
 ): RedwoodComposition {
-  val composition = RedwoodComposition(scope, bridge.root, onBackPressedDispatcher, uiConfigurations, bridge.provider) {
+  val composition = RedwoodComposition(
+    scope = scope,
+    container = bridge.root,
+    onBackPressedDispatcher = onBackPressedDispatcher,
+    saveableStateRegistry = saveableStateRegistry,
+    uiConfigurations = uiConfigurations,
+    provider = bridge.provider,
+  ) {
     bridge.getChangesOrNull()?.let(changesSink::sendChanges)
   }
   return ProtocolRedwoodComposition(composition, widgetVersion)

@@ -68,6 +68,7 @@ class ProtocolTest {
           }
         }
       },
+      saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
 

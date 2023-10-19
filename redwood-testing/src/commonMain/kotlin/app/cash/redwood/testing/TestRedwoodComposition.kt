@@ -17,6 +17,7 @@ package app.cash.redwood.testing
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.current
 import app.cash.redwood.ui.Cancellable
@@ -43,10 +44,18 @@ public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  savedState: TestSavedState? = null,
   initialUiConfiguration: UiConfiguration = UiConfiguration(),
   createSnapshot: () -> S,
 ): TestRedwoodComposition<S> {
-  return RealTestRedwoodComposition(scope, provider, container, initialUiConfiguration, createSnapshot)
+  return RealTestRedwoodComposition(
+    scope,
+    provider,
+    container,
+    savedState,
+    initialUiConfiguration,
+    createSnapshot,
+  )
 }
 
 public interface TestRedwoodComposition<S> : RedwoodComposition {
@@ -62,13 +71,23 @@ public interface TestRedwoodComposition<S> : RedwoodComposition {
    * inside the composition.
    */
   public val uiConfigurations: MutableStateFlow<UiConfiguration>
+
+  public fun saveState(): TestSavedState
 }
+
+/** An opaque type representing the saved state of a test composition. */
+public sealed class TestSavedState
+
+private class MapBasedTestSavedState(
+  val values: Map<String, List<Any?>>,
+) : TestSavedState()
 
 /** Performs Redwood composition strictly for testing. */
 private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  savedState: TestSavedState?,
   initialUiConfiguration: UiConfiguration,
   createSnapshot: () -> S,
 ) : TestRedwoodComposition<S> {
@@ -76,11 +95,22 @@ private class RealTestRedwoodComposition<W : Any, S>(
   private val clock = BroadcastFrameClock()
   private var timeNanos = 0L
   private val frameDelay = 1.seconds / 60
+  private var contentSet = false
 
   /** Channel with the most recent snapshot, if any. */
   private val snapshots = Channel<S>(Channel.CONFLATED)
 
   override val uiConfigurations = MutableStateFlow(initialUiConfiguration)
+
+  private val savedStateRegistry = SaveableStateRegistry(
+    restoredValues = savedState?.let {
+      when (it) {
+        is MapBasedTestSavedState -> it.values
+      }
+    },
+    canBeSaved = { true },
+  )
+  override fun saveState() = MapBasedTestSavedState(savedStateRegistry.performSave())
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
@@ -92,6 +122,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
         }
       }
     },
+    saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
     provider = provider,
     onEndChanges = {
@@ -103,10 +134,13 @@ private class RealTestRedwoodComposition<W : Any, S>(
   )
 
   override fun setContent(content: @Composable () -> Unit) {
+    contentSet = true
     composition.setContent(content)
   }
 
   override suspend fun awaitSnapshot(timeout: Duration): S {
+    check(contentSet) { "setContent must be called first!" }
+
     // Await at least one change, sending frames while we wait.
     return withTimeout(timeout) {
       val sendFramesJob = sendFrames()

@@ -27,7 +27,13 @@ import androidx.compose.runtime.Updater
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.neverEqualPolicy
+import androidx.compose.runtime.referentialEqualityPolicy
+import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.runtime.snapshots.SnapshotMutableState
+import androidx.compose.runtime.structuralEqualityPolicy
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
@@ -37,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 public interface RedwoodComposition {
@@ -56,10 +63,37 @@ public fun <W : Any> RedwoodComposition(
 ): RedwoodComposition {
   view.reset()
 
+  val saveableStateRegistry = view.savedStateRegistry?.let { viewRegistry ->
+    val state = viewRegistry.consumeRestoredState()
+    val composeRegistry = SaveableStateRegistry(state) { value ->
+      if (value is SnapshotMutableState<*>) {
+        if (value.policy === neverEqualPolicy<Any?>() ||
+          value.policy === structuralEqualityPolicy<Any?>() ||
+          value.policy === referentialEqualityPolicy<Any?>()
+        ) {
+          val stateValue = value.value
+          if (stateValue == null) true else viewRegistry.canBeSaved(stateValue)
+        } else {
+          false
+        }
+      } else {
+        viewRegistry.canBeSaved(value)
+      }
+    }
+
+    viewRegistry.registerSavedStateProvider(composeRegistry::performSave)
+    scope.coroutineContext.job.invokeOnCompletion {
+      viewRegistry.unregisterSavedStateProvider()
+    }
+
+    composeRegistry
+  }
+
   return RedwoodComposition(
     scope,
     view.children,
     view.onBackPressedDispatcher,
+    saveableStateRegistry,
     view.uiConfiguration,
     provider,
     onEndChanges,
@@ -74,6 +108,7 @@ public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
   onBackPressedDispatcher: OnBackPressedDispatcher,
+  saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
   provider: Widget.Provider<W>,
   onEndChanges: () -> Unit = {},
@@ -81,6 +116,7 @@ public fun <W : Any> RedwoodComposition(
   return WidgetRedwoodComposition(
     scope,
     onBackPressedDispatcher,
+    saveableStateRegistry,
     uiConfigurations,
     NodeApplier(provider, container, onEndChanges),
   )
@@ -89,6 +125,7 @@ public fun <W : Any> RedwoodComposition(
 private class WidgetRedwoodComposition<W : Any>(
   private val scope: CoroutineScope,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
+  private val savedStateRegistry: SaveableStateRegistry?,
   private val uiConfigurations: StateFlow<UiConfiguration>,
   applier: NodeApplier<W>,
 ) : RedwoodComposition {
@@ -117,6 +154,7 @@ private class WidgetRedwoodComposition<W : Any>(
       val uiConfiguration by uiConfigurations.collectAsState()
       CompositionLocalProvider(
         LocalOnBackPressedDispatcher provides onBackPressedDispatcher,
+        LocalSaveableStateRegistry provides savedStateRegistry,
         LocalUiConfiguration provides uiConfiguration,
       ) {
         content()

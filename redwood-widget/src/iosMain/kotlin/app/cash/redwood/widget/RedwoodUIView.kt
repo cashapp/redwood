@@ -53,6 +53,9 @@ public open class RedwoodUIView(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
+  override val savedStateRegistry: SavedStateRegistry?
+    get() = null
+
   override fun reset() {
     _children.remove(0, _children.widgets.size)
 

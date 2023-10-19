@@ -42,4 +42,18 @@ kotlin {
 
 android {
   namespace 'app.cash.redwood.widget'
+
+  buildFeatures {
+    // Has default ID for RedwoodLayout.
+    androidResources = true
+  }
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/androidMain/kotlin/app/cash/redwood/widget/SavedStateRegistry.kt",
+    )
+  }
 }

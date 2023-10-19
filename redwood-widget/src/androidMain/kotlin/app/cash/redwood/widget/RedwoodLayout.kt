@@ -23,6 +23,7 @@ import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import androidx.core.graphics.Insets
+import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
@@ -37,6 +38,11 @@ public open class RedwoodLayout(
   context: Context,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
 ) : FrameLayout(context), RedwoodView<View> {
+  init {
+    // The view needs to have an ID to participate in instance state saving.
+    id = R.id.redwood_layout
+  }
+
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 
@@ -54,6 +60,13 @@ public open class RedwoodLayout(
         }
       }
     }
+
+  override val savedStateRegistry: SavedStateRegistry? get() {
+    // Resolve this lazily so that the view has a chance to get attached first.
+    val owner = findViewTreeSavedStateRegistryOwner() ?: return null
+    val key = "${SavedStateRegistry::class.java.simpleName}:$id"
+    return AndroidSavedStateRegistry(key, owner.savedStateRegistry)
+  }
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration

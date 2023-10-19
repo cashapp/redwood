@@ -42,6 +42,7 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
+import app.cash.redwood.widget.SavedStateRegistry
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -69,6 +70,10 @@ public fun <A : AppService> TreehouseContent(
       override val children = ComposeWidgetChildren()
       override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
+
+      // TODO TreehouseView is a weird type and shouldn't extend from RedwoodView. The concept
+      //  of this registry shouldn't exist for Treehouse / should be auto-wired via RedwoodContent.
+      override val savedStateRegistry: SavedStateRegistry? get() = null
       override val widgetSystem = widgetSystem
       override val readyForContent = true
       override var readyForContentChangeListener: ReadyForContentChangeListener<@Composable () -> Unit>? = null

@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.widget
 
-import app.cash.redwood.compose.RedwoodComposition
-
-// Inline at callsite once https://github.com/Kotlin/kotlinx.serialization/issues/1454 is fixed.
-public fun RedwoodComposition.bind(treehouseUi: TreehouseUi) {
-  setContent {
-    treehouseUi.Show()
-  }
+public interface SavedStateRegistry {
+  public fun canBeSaved(value: Any): Boolean
+  public fun consumeRestoredState(): Map<String, List<Any?>>?
+  public fun registerSavedStateProvider(provider: () -> Map<String, List<Any?>>)
+  public fun unregisterSavedStateProvider()
 }
