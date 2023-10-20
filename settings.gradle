@@ -1,5 +1,5 @@
 pluginManagement {
-  includeBuild('build-support/settings')
+  includeBuild('build-support/redwood-settings')
 
   repositories {
     mavenCentral()
