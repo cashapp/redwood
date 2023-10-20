@@ -31,21 +31,40 @@ public fun rememberLazyListState(): LazyListState {
 
 /** The default [Saver] implementation for [LazyListState]. */
 private val saver: Saver<LazyListState, *> = Saver(
-  save = { it.firstVisibleItemIndex },
+  save = {
+    println("**** saving index: ${it.indexToSave}")
+    it.indexToSave
+  },
   restore = {
     LazyListState().apply {
+      println("**** from saver: restore index: $it")
       restoreIndex(it)
     }
   },
 )
 
-public class LazyListState {
+open public class LazyListState {
 
-  /** We only restore the scroll position once. */
-  private var hasRestoredScrollPosition = false
+  /**
+   * Every lazy list has a lifecycle approximately like this:
+   *  - loading data (usually 0, or 1 rows)
+   *  - loaded data (usually many rows)
+   *
+   * We only save and restore scroll positions when we have loaded data. That means we won't restore
+   * at index 100 until there's 100 rows to scroll through, and we also won't save index 0 when
+   * there isn't actually data loaded yet.
+   *
+   * This prevents us from clobbering the user's scroll position if the list recomposes while it's
+   * still loading.
+   */
+  private var hasLoadedData = false
 
   /** The scroll position to restore. */
   private var restoredIndex: Int = -1
+
+  /** If we haven't loaded data yet, save what was restored. */
+  public var indexToSave: Int = -1
+    private set
 
   /**
    * The value published to the host platform. This starts as 0 and changes exactly once to
@@ -58,28 +77,37 @@ public class LazyListState {
     private set
 
   public fun restoreIndex(index: Int) {
+    println("**** restoreIndex: $index, this.restoredIndex: $restoredIndex, hasRestoredScrollPosition: $hasLoadedData")
     require(index >= 0)
 
-    if (this.restoredIndex != -1) return
+    if (this.restoredIndex != -1) return // Idempotent.
     this.restoredIndex = index
+    this.indexToSave = index
 
     // Scroll to the target item.
-    if (hasRestoredScrollPosition) {
+    if (hasLoadedData) {
+      println("**** restoreIndex did scroll")
       scrollItemIndex = restoredIndex
     }
   }
 
   public fun maybeRestoreScrollPosition() {
-    if (this.hasRestoredScrollPosition) return
-    this.hasRestoredScrollPosition = true
+    println("***** maybeRestoreScrollPosition: $hasLoadedData, $restoredIndex")
+    //if (this.hasLoadedData) return // Idempotent.
+    this.hasLoadedData = true
 
     // Scroll to the target item.
     if (restoredIndex != -1) {
+      println("**** maybeRestoreScrollPosition did scroll")
       scrollItemIndex = restoredIndex
     }
   }
 
   public fun onScrolled(firstVisibleItemIndex: Int) {
     this.firstVisibleItemIndex = firstVisibleItemIndex
+
+    if (hasLoadedData) {
+      indexToSave = firstVisibleItemIndex
+    }
   }
 }

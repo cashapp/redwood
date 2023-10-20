@@ -56,6 +56,8 @@ internal open class ViewLazyList private constructor(
   private val adapter = LazyContentItemListAdapter()
   private val scope = MainScope()
 
+  var scrollItemIndexToRestore: Int = -1
+
   override var modifier: Modifier = Modifier
 
   private var crossAxisAlignment = CrossAxisAlignment.Start
@@ -171,7 +173,9 @@ internal open class ViewLazyList private constructor(
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
     if (userHasScrolled) return
-    recyclerView.scrollToPosition(scrollItemIndex.index)
+
+    // Defer until we have data in onEndChanges().
+    scrollItemIndexToRestore = scrollItemIndex.index
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -188,6 +192,12 @@ internal open class ViewLazyList private constructor(
 
   override fun onEndChanges() {
     processor.onEndChanges()
+
+    // Handle a deferred scroll item index.
+    if (scrollItemIndexToRestore != -1) {
+      recyclerView.scrollToPosition(scrollItemIndexToRestore)
+      scrollItemIndexToRestore = -1
+    }
   }
 
   private fun createLayoutParams(): FrameLayout.LayoutParams {
