@@ -31,83 +31,43 @@ public fun rememberLazyListState(): LazyListState {
 
 /** The default [Saver] implementation for [LazyListState]. */
 private val saver: Saver<LazyListState, *> = Saver(
-  save = {
-    println("**** saving index: ${it.indexToSave}")
-    it.indexToSave
-  },
+  save = { it.firstIndex },
   restore = {
     LazyListState().apply {
-      println("**** from saver: restore index: $it")
-      restoreIndex(it)
+      programmaticScroll(it)
     }
   },
 )
 
-open public class LazyListState {
-
+public open class LazyListState {
   /**
-   * Every lazy list has a lifecycle approximately like this:
-   *  - loading data (usually 0, or 1 rows)
-   *  - loaded data (usually many rows)
-   *
-   * We only save and restore scroll positions when we have loaded data. That means we won't restore
-   * at index 100 until there's 100 rows to scroll through, and we also won't save index 0 when
-   * there isn't actually data loaded yet.
-   *
-   * This prevents us from clobbering the user's scroll position if the list recomposes while it's
-   * still loading.
+   * Update this to trigger a programmatic scroll. Typically this is updated exactly once, when the
+   * previous scroll state is restored.
    */
-  private var hasLoadedData = false
-
-  /** The scroll position to restore. */
-  private var restoredIndex: Int = -1
-
-  /** If we haven't loaded data yet, save what was restored. */
-  public var indexToSave: Int = -1
+  public var programmaticScrollIndex: Int by mutableStateOf(0)
     private set
 
-  /**
-   * The value published to the host platform. This starts as 0 and changes exactly once to
-   * trigger exactly one scroll.
-   */
-  public var scrollItemIndex: Int by mutableStateOf(0)
-    internal set
-
-  public var firstVisibleItemIndex: Int = 0
+  /** Bounds of what the user is looking at. Everything else is placeholders! */
+  public var firstIndex: Int by mutableStateOf(0)
+    private set
+  public var lastIndex: Int by mutableStateOf(0)
     private set
 
-  public fun restoreIndex(index: Int) {
-    println("**** restoreIndex: $index, this.restoredIndex: $restoredIndex, hasRestoredScrollPosition: $hasLoadedData")
+  /** Perform a programmatic scroll. */
+  public fun programmaticScroll(index: Int) {
     require(index >= 0)
+    require(programmaticScrollIndex == 0) { "unexpected double restoreIndex()" }
 
-    if (this.restoredIndex != -1) return // Idempotent.
-    this.restoredIndex = index
-    this.indexToSave = index
+    this.programmaticScrollIndex = index
 
-    // Scroll to the target item.
-    if (hasLoadedData) {
-      println("**** restoreIndex did scroll")
-      scrollItemIndex = restoredIndex
-    }
+    val delta = (lastIndex - firstIndex)
+    this.firstIndex = index
+    this.lastIndex = index + delta
   }
 
-  public fun maybeRestoreScrollPosition() {
-    println("***** maybeRestoreScrollPosition: $hasLoadedData, $restoredIndex")
-    //if (this.hasLoadedData) return // Idempotent.
-    this.hasLoadedData = true
-
-    // Scroll to the target item.
-    if (restoredIndex != -1) {
-      println("**** maybeRestoreScrollPosition did scroll")
-      scrollItemIndex = restoredIndex
-    }
-  }
-
-  public fun onScrolled(firstVisibleItemIndex: Int) {
-    this.firstVisibleItemIndex = firstVisibleItemIndex
-
-    if (hasLoadedData) {
-      indexToSave = firstVisibleItemIndex
-    }
+  /** React to a user-initiated scroll. */
+  public fun onUserScroll(firstIndex: Int, lastIndex: Int) {
+    this.firstIndex = firstIndex
+    this.lastIndex = lastIndex
   }
 }
