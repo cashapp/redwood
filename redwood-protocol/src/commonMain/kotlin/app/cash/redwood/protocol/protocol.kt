@@ -15,14 +15,21 @@
  */
 package app.cash.redwood.protocol
 
+import dev.drewhamilton.poko.ArrayContentBased
+import dev.drewhamilton.poko.ArrayContentSupport
 import dev.drewhamilton.poko.Poko
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ArraySerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonEncoder
@@ -32,15 +39,68 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
-@Serializable
+@OptIn(ArrayContentSupport::class)
+@Serializable(EventSerializer::class)
 @Poko
 public class Event(
   /** Identifier for the widget from which this event originated. */
   public val id: Id,
   /** Identifies which event occurred on the widget with [id]. */
   public val tag: EventTag,
-  public val args: List<JsonElement> = emptyList(),
+  @ArrayContentBased public val args: Array<JsonElement> = emptyArray(),
 )
+
+private object EventSerializer : KSerializer<Event> {
+  private val argsSerializer: KSerializer<Array<JsonElement>> =
+    @OptIn(ExperimentalSerializationApi::class)
+    ArraySerializer(JsonElement.serializer())
+
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor(
+    serialName = "app.cash.redwood.protocol.Event",
+  ) {
+      element<Id>("id")
+      element<EventTag>("tag")
+      element(
+        elementName = "args",
+        descriptor = argsSerializer.descriptor,
+        isOptional = true,
+      )
+    }
+
+  override fun deserialize(decoder: Decoder): Event {
+    return decoder.decodeStructure(descriptor) {
+      var id: Id? = null
+      var tag: EventTag? = null
+      var args: Array<JsonElement> = emptyArray()
+
+      var nextIndex = decodeElementIndex(descriptor)
+      while (nextIndex >= 0) {
+        when (nextIndex) {
+          0 -> id = decodeSerializableElement(descriptor, 0, Id.serializer())
+          1 -> tag = decodeSerializableElement(descriptor, 1, EventTag.serializer())
+          2 -> args = decodeSerializableElement(descriptor, 2, argsSerializer)
+          else -> throw IllegalStateException("Invalid index $nextIndex")
+        }
+        nextIndex = decodeElementIndex(descriptor)
+      }
+      Event(
+        id = checkNotNull(id),
+        tag = checkNotNull(tag),
+        args = args,
+      )
+    }
+  }
+
+  override fun serialize(encoder: Encoder, value: Event) {
+    encoder.encodeStructure(descriptor) {
+      encodeSerializableElement(descriptor, 0, Id.serializer(), value.id)
+      encodeSerializableElement(descriptor, 1, EventTag.serializer(), value.tag)
+      if (value.args.isNotEmpty()) {
+        encodeSerializableElement(descriptor, 2, argsSerializer, value.args)
+      }
+    }
+  }
+}
 
 @Serializable
 public sealed interface Change {
@@ -68,12 +128,13 @@ public class PropertyChange(
   public val value: JsonElement = JsonNull,
 ) : ValueChange
 
+@OptIn(ArrayContentSupport::class)
 @Serializable
 @SerialName("modifier")
 @Poko
 public class ModifierChange(
   override val id: Id,
-  public val elements: List<ModifierElement> = emptyList(),
+  @ArrayContentBased public val elements: Array<ModifierElement> = emptyArray(),
 ) : ValueChange
 
 @Serializable(with = ModifierElementSerializer::class)
@@ -143,6 +204,7 @@ public sealed interface ChildrenChange : Change {
     public val count: Int,
   ) : ChildrenChange
 
+  @OptIn(ArrayContentSupport::class)
   @Serializable
   @SerialName("remove")
   @Poko
@@ -151,7 +213,7 @@ public sealed interface ChildrenChange : Change {
     override val tag: ChildrenTag,
     public val index: Int,
     public val count: Int,
-    public val removedIds: List<Id>,
+    @ArrayContentBased public val removedIds: Array<Id>,
   ) : ChildrenChange {
     init {
       require(count == removedIds.size) {

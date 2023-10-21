@@ -118,7 +118,7 @@ class ProtocolBridgeTest {
           tag = ChildrenTag.Root,
           index = 0,
           count = 1,
-          removedIds = listOf(Id(1)),
+          removedIds = arrayOf(Id(1)),
         ),
       ),
     )

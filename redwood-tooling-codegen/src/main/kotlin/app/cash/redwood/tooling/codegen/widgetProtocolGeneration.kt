@@ -21,6 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import com.squareup.kotlinpoet.ARRAY
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -29,7 +30,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -281,7 +281,7 @@ internal fun generateProtocolNode(
                         beginControlFlow("{ %L ->", trait.parameterTypes.indices.map { CodeBlock.of("arg$it") }.joinToCode())
                       }
                       addStatement(
-                        "eventSink.sendEvent(%T(change.id, %T(%L), listOf(%L)))",
+                        "eventSink.sendEvent(%T(change.id, %T(%L), arrayOf(%L)))",
                         Protocol.Event,
                         Protocol.EventTag,
                         trait.tag,
@@ -360,7 +360,7 @@ internal fun generateProtocolNode(
         .addFunction(
           FunSpec.builder("updateModifier")
             .addModifiers(OVERRIDE)
-            .addParameter("elements", LIST.parameterizedBy(Protocol.ModifierElement))
+            .addParameter("elements", ARRAY.parameterizedBy(Protocol.ModifierElement))
             .addStatement("widget.modifier = elements.%M(json, mismatchHandler)", host.toModifier)
             .addStatement("container?.onModifierUpdated()")
             .build(),
@@ -444,7 +444,7 @@ internal fun generateProtocolModifierImpls(
 private fun generateJsonArrayToModifier(schema: ProtocolSchema): FunSpec {
   return FunSpec.builder("toModifier")
     .addModifiers(INTERNAL)
-    .receiver(LIST.parameterizedBy(Protocol.ModifierElement))
+    .receiver(ARRAY.parameterizedBy(Protocol.ModifierElement))
     .addParameter("json", KotlinxSerialization.Json)
     .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
     .addStatement(

@@ -21,6 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import com.squareup.kotlinpoet.ARRAY
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.BYTE
@@ -704,7 +705,7 @@ internal fun generateComposeProtocolModifierSerialization(
         .addModifiers(INTERNAL)
         .receiver(Redwood.Modifier)
         .addParameter("json", KotlinxSerialization.Json)
-        .returns(LIST.parameterizedBy(Protocol.ModifierElement))
+        .returns(ARRAY.parameterizedBy(Protocol.ModifierElement))
         .beginControlFlow("return %M", Stdlib.buildList)
         .addStatement(
           "this@%L.forEach { element -> add(element.%M(json)) }",
@@ -712,6 +713,7 @@ internal fun generateComposeProtocolModifierSerialization(
           schema.modifierToProtocol,
         )
         .endControlFlow()
+        .addCode("⇥.toTypedArray()⇤")
         .build(),
     )
     .addFunction(

@@ -97,7 +97,7 @@ class ProtocolNodeFactoryTest {
     val textInput = factory.create(WidgetTag(5))!!
 
     textInput.updateModifier(
-      listOf(
+      arrayOf(
         ModifierElement(
           tag = ModifierTag(3),
           value = buildJsonObject {
@@ -132,7 +132,7 @@ class ProtocolNodeFactoryTest {
     val textInput = factory.create(WidgetTag(5))!!
 
     textInput.updateModifier(
-      listOf(
+      arrayOf(
         ModifierElement(
           tag = ModifierTag(5),
           value = buildJsonObject {
@@ -164,7 +164,7 @@ class ProtocolNodeFactoryTest {
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.updateModifier(
-        listOf(
+        arrayOf(
           ModifierElement(
             tag = ModifierTag(345432),
             value = JsonObject(mapOf()),
@@ -197,7 +197,7 @@ class ProtocolNodeFactoryTest {
 
     val textInput = factory.create(WidgetTag(5))!!
     textInput.updateModifier(
-      listOf(
+      arrayOf(
         ModifierElement(
           tag = ModifierTag(345432),
           value = buildJsonArray {
@@ -342,7 +342,7 @@ class ProtocolNodeFactoryTest {
     recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
 
     assertThat(eventSink.events.single())
-      .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
+      .isEqualTo(Event(Id(1), EventTag(4), arrayOf(JsonPrimitive("PT10S"))))
   }
 
   class RecordingTextInput : TextInput<Nothing> {

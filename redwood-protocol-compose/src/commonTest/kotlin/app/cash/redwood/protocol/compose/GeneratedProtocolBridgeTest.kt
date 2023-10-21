@@ -76,7 +76,7 @@ class GeneratedProtocolBridgeTest {
       Create(Id(1), WidgetTag(4)),
       ModifierChange(
         Id(1),
-        listOf(
+        arrayOf(
           ModifierElement(
             ModifierTag(3),
             buildJsonObject {
@@ -106,7 +106,7 @@ class GeneratedProtocolBridgeTest {
       Create(Id(1), WidgetTag(4)),
       ModifierChange(
         Id(1),
-        listOf(
+        arrayOf(
           ModifierElement(
             ModifierTag(5),
             buildJsonObject {
@@ -135,7 +135,7 @@ class GeneratedProtocolBridgeTest {
       argument = it
     }
 
-    protocolWidget.sendEvent(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
+    protocolWidget.sendEvent(Event(Id(1), EventTag(4), arrayOf(JsonPrimitive("PT10S"))))
 
     assertThat(argument).isEqualTo(10.seconds)
   }
