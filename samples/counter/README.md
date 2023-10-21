@@ -56,7 +56,7 @@ To simply view the sample app, open: https://cashapp.github.io/redwood/latest/co
 
 To build and modify the app locally, run this:
 ```
-./gradlew samples:counter:browser:browserRun
+./gradlew samples:counter:browser:jsBrowserRun
 ```
 
 If successful, the command will load the app at http://localhost:8080/ in your default web browser.

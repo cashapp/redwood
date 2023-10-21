@@ -72,7 +72,7 @@ To simply view the sample app, open: https://cashapp.github.io/redwood/latest/em
 
 To build and modify the app locally, run this:
 ```
-./gradlew samples:emoji-search:browser:browserRun
+./gradlew samples:emoji-search:browser:jsBrowserRun
 ```
 
 If successful, the command will load the app at http://localhost:8080/ in your default web browser.
