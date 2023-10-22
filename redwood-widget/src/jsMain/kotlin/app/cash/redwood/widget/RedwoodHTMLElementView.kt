@@ -40,6 +40,8 @@ private class RedwoodHTMLElementView(
   private val element: HTMLElement,
 ) : RedwoodView<HTMLElement> {
   private val _children = HTMLElementChildren(element)
+  private var pixelRatioListenerRemover: (() -> Unit)? = null
+
   override val children: Children<HTMLElement> get() = _children
 
   override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
@@ -70,11 +72,39 @@ private class RedwoodHTMLElementView(
       }
     })
 
-    // TODO Watch density change
-    //  https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2
+    observePixelRatioChange()
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+  }
+
+  private fun observePixelRatioChange() {
+    // from https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2
+
+    // Remove the previous listener if it exists
+    pixelRatioListenerRemover?.invoke()
+
+    // Create a new media query based on the current device pixel ratio
+    val mqString = "(resolution: ${window.devicePixelRatio}dppx)"
+    val media = window.matchMedia(mqString)
+
+    // Add a listener to observe changes in pixel ratio
+    media.addListener { observePixelRatioChange() }
+
+    // Store a remover function to remove the listener when needed
+    pixelRatioListenerRemover = {
+      media.removeListener { observePixelRatioChange() }
+    }
+
+    // Update the UI configuration with the new pixel ratio
+    uiConfiguration.update { old ->
+      UiConfiguration(
+        darkMode = old.darkMode,
+        safeAreaInsets = old.safeAreaInsets,
+        viewportSize = old.viewportSize,
+        density = window.devicePixelRatio,
+      )
+    }
   }
 
   override fun reset() {
