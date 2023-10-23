@@ -34,7 +34,9 @@ class LazyListScrollProcessorTest {
     assertThat(processor.takeEvents()).isEmpty()
 
     processor.onEndChanges()
-    assertThat(processor.takeEvents()).containsExactly("programmaticScroll(10)")
+    assertThat(processor.takeEvents()).containsExactly(
+      "programmaticScroll(firstIndex = 10, animated = false)",
+    )
   }
 
   @Test
@@ -47,34 +49,41 @@ class LazyListScrollProcessorTest {
     // Once we have enough rows we can apply the scroll.
     processor.size = 30
     processor.onEndChanges()
-    assertThat(processor.takeEvents()).containsExactly("programmaticScroll(10)")
+    assertThat(processor.takeEvents()).containsExactly(
+      "programmaticScroll(firstIndex = 10, animated = false)",
+    )
   }
 
   @Test
-  fun programmaticScrollDiscardedAfterUserScroll() {
-    processor.size = 30
-
-    // Do a user scroll.
-    processor.onUserScroll(5, 14)
-    assertThat(processor.takeEvents()).containsExactly("userScroll(5, 14)")
-
-    // Don't apply the programmatic scroll. That fights the user.
-    processor.scrollItemIndex(ScrollItemIndex(0, 10))
-    processor.onEndChanges()
-    assertThat(processor.takeEvents()).isEmpty()
-  }
-
-  @Test
-  fun programmaticScrollOnlyTriggeredOnce() {
+  fun eachProgrammaticScrollOnlyTriggeredOnce() {
     processor.size = 30
 
     processor.scrollItemIndex(ScrollItemIndex(0, 10))
     processor.onEndChanges()
-    assertThat(processor.takeEvents()).containsExactly("programmaticScroll(10)")
+    assertThat(processor.takeEvents()).containsExactly(
+      "programmaticScroll(firstIndex = 10, animated = false)",
+    )
 
     // Confirm onEndIndex() only applies its change once.
     processor.onEndChanges()
     assertThat(processor.takeEvents()).isEmpty()
+  }
+
+  @Test
+  fun multipleProgrammaticScrolls() {
+    processor.size = 30
+
+    processor.scrollItemIndex(ScrollItemIndex(0, 10))
+    processor.onEndChanges()
+    assertThat(processor.takeEvents()).containsExactly(
+      "programmaticScroll(firstIndex = 10, animated = false)",
+    )
+
+    processor.scrollItemIndex(ScrollItemIndex(1, 20))
+    processor.onEndChanges()
+    assertThat(processor.takeEvents()).containsExactly(
+      "programmaticScroll(firstIndex = 20, animated = false)",
+    )
   }
 
   @Test

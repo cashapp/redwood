@@ -26,6 +26,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.lazylayout.widget.LazyListScrollProcessor
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
@@ -71,9 +72,7 @@ internal open class UIViewLazyList(
   override val value: UIView
     get() = tableView
 
-  protected var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? = null
-
-  private val processor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+  private val updateProcessor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.insertRowsAtIndexPaths(
@@ -95,9 +94,24 @@ internal open class UIViewLazyList(
     }
   }
 
-  override val placeholder: Widget.Children<UIView> = processor.placeholder
+  private var isDoingProgrammaticScroll = false
 
-  override val items: Widget.Children<UIView> = processor.items
+  private val scrollProcessor = object : LazyListScrollProcessor() {
+    override fun contentSize() = updateProcessor.size
+
+    override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
+      isDoingProgrammaticScroll = animated // Don't forward scroll updates to scrollProcessor.
+      tableView.scrollToRowAtIndexPath(
+        NSIndexPath.indexPathForItem(firstIndex.toLong(), 0),
+        UITableViewScrollPosition.UITableViewScrollPositionTop,
+        animated = animated,
+      )
+    }
+  }
+
+  override val placeholder: Widget.Children<UIView> = updateProcessor.placeholder
+
+  override val items: Widget.Children<UIView> = updateProcessor.items
 
   private val dataSource = object : NSObject(), UITableViewDataSourceProtocol {
     override fun tableView(
@@ -105,7 +119,7 @@ internal open class UIViewLazyList(
       numberOfRowsInSection: NSInteger,
     ): Long {
       require(numberOfRowsInSection == 0L)
-      return processor.size.toLong()
+      return updateProcessor.size.toLong()
     }
 
     override fun tableView(
@@ -113,7 +127,7 @@ internal open class UIViewLazyList(
       cellForRowAtIndexPath: NSIndexPath,
     ): LazyListContainerCell {
       val index = cellForRowAtIndexPath.item.toInt()
-      return processor.getOrCreateView(index) { binding ->
+      return updateProcessor.getOrCreateView(index) { binding ->
         createView(tableView, binding, index)
       }
     }
@@ -136,15 +150,18 @@ internal open class UIViewLazyList(
   private val tableViewDelegate: UITableViewDelegateProtocol =
     object : NSObject(), UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
-        val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
+        if (isDoingProgrammaticScroll) return // Only notify of user scrolls.
 
-        if (visibleIndexPaths.isNotEmpty()) {
-          // TODO: Optimize this for less operations
-          onViewportChanged?.invoke(
-            visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() },
-            visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() },
-          )
-        }
+        val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
+        if (visibleIndexPaths.isEmpty()) return
+
+        val firstIndex = visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() }
+        val lastIndex = visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() }
+        scrollProcessor.onUserScroll(firstIndex, lastIndex)
+      }
+
+      override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        isDoingProgrammaticScroll = false
       }
     }
 
@@ -165,7 +182,7 @@ internal open class UIViewLazyList(
   }
 
   final override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {
-    this.onViewportChanged = onViewportChanged
+    scrollProcessor.onViewportChanged(onViewportChanged)
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -191,25 +208,20 @@ internal open class UIViewLazyList(
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
-    if (scrollItemIndex.index < processor.size) {
-      tableView.scrollToRowAtIndexPath(
-        NSIndexPath.indexPathForItem(scrollItemIndex.index.toLong(), 0),
-        UITableViewScrollPosition.UITableViewScrollPositionTop,
-        animated = false,
-      )
-    }
+    scrollProcessor.scrollItemIndex(scrollItemIndex)
   }
 
   override fun itemsBefore(itemsBefore: Int) {
-    processor.itemsBefore(itemsBefore)
+    updateProcessor.itemsBefore(itemsBefore)
   }
 
   override fun itemsAfter(itemsAfter: Int) {
-    processor.itemsAfter(itemsAfter)
+    updateProcessor.itemsAfter(itemsAfter)
   }
 
   override fun onEndChanges() {
-    processor.onEndChanges()
+    updateProcessor.onEndChanges()
+    scrollProcessor.onEndChanges()
   }
 }
 

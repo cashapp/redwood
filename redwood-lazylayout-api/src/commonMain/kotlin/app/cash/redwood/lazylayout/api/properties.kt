@@ -25,6 +25,8 @@ import kotlinx.serialization.Serializable
 @[Immutable Serializable]
 @Poko
 public class ScrollItemIndex(
-  @Suppress("unused") private val id: Int,
+  public val id: Int,
   public val index: Int,
+  /** True to smoothly scroll to the new position. */
+  public val animated: Boolean = false,
 )

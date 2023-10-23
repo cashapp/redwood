@@ -29,6 +29,7 @@ import androidx.core.view.doOnDetach
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.cash.redwood.Modifier
@@ -84,11 +85,22 @@ internal open class ViewLazyList private constructor(
     }
   }
 
+  private var isDoingProgrammaticScroll = false
+
   private val scrollProcessor = object : LazyListScrollProcessor() {
     override fun contentSize(): Int = processor.size
 
-    override fun programmaticScroll(firstIndex: Int) {
-      linearLayoutManager.scrollToPositionWithOffset(firstIndex, 0)
+    override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
+      isDoingProgrammaticScroll = animated
+      if (animated) {
+        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+          override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+        }
+        smoothScroller.targetPosition = firstIndex
+        linearLayoutManager.startSmoothScroll(smoothScroller)
+      } else {
+        linearLayoutManager.scrollToPositionWithOffset(firstIndex, 0)
+      }
     }
   }
 
@@ -108,7 +120,7 @@ internal open class ViewLazyList private constructor(
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (scrollState == RecyclerView.SCROLL_STATE_IDLE) return
+            if (isDoingProgrammaticScroll) return // Only notify of user scrolls.
 
             val firstIndex = linearLayoutManager.findFirstVisibleItemPosition()
             if (firstIndex == RecyclerView.NO_POSITION) return
@@ -116,6 +128,12 @@ internal open class ViewLazyList private constructor(
             if (lastIndex == RecyclerView.NO_POSITION) return
 
             scrollProcessor.onUserScroll(firstIndex, lastIndex)
+          }
+
+          override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+              isDoingProgrammaticScroll = false
+            }
           }
         },
       )

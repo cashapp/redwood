@@ -101,7 +101,7 @@ private fun LazyColumn(
   val lazyListState = rememberLazyListState()
 
   LaunchedEffect(searchTerm) {
-    lazyListState.programmaticScroll(0)
+    lazyListState.programmaticScroll(0, animated = true)
   }
 
   LaunchedEffect(refreshSignal) {

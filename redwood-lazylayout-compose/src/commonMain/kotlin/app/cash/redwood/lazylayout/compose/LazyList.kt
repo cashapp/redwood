@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
@@ -70,7 +69,7 @@ internal fun LazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = ScrollItemIndex(0, state.programmaticScrollIndex),
+    scrollItemIndex = state.programmaticScrollIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
       for (index in itemsBefore until itemCount - itemsAfter) {
@@ -123,7 +122,7 @@ internal fun RefreshableLazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = ScrollItemIndex(0, state.programmaticScrollIndex),
+    scrollItemIndex = state.programmaticScrollIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     pullRefreshContentColor = pullRefreshContentColor,
     items = {
