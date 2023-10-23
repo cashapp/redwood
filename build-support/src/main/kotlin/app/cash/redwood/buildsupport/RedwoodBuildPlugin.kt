@@ -84,7 +84,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       // target its sources rather than duplicating the Spotless setup in multiple places.
       if (path == ":") {
         java {
-          it.target("build-support/settings/src/**/*.java")
+          it.target("build-support/redwood-settings/src/**/*.java")
           it.googleJavaFormat(libs.googleJavaFormat.get().version)
           it.licenseHeaderFile(licenseHeaderFile)
         }
