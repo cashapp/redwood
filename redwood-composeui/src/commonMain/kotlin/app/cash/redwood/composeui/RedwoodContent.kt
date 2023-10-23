@@ -18,6 +18,7 @@ package app.cash.redwood.composeui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +45,9 @@ public fun RedwoodContent(
   provider: Widget.Provider<@Composable () -> Unit>,
   content: @Composable () -> Unit,
 ) {
-  var viewportSize by remember { mutableStateOf(Size.Zero) }
+  // If the provider or content change, reset any assumption about the rendered size.
+  var viewportSize by remember(provider, content) { mutableStateOf(Size.Zero) }
+
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
     darkMode = isSystemInDarkTheme(),
@@ -60,8 +63,10 @@ public fun RedwoodContent(
   val scope = rememberCoroutineScope()
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
   val saveableStateRegistry = LocalSaveableStateRegistry.current
-  val children = remember(content) { ComposeWidgetChildren() }
-  LaunchedEffect(provider, content) {
+
+  // For simplicity, a new provider or content lambda gets an entirely new composition and children.
+  val children = remember(provider, content) { ComposeWidgetChildren() }
+  DisposableEffect(provider, content) {
     val composition = RedwoodComposition(
       scope = scope,
       provider = provider,
@@ -71,6 +76,10 @@ public fun RedwoodContent(
       uiConfigurations = uiConfigurations,
     )
     composition.setContent(content)
+
+    onDispose {
+      composition.cancel()
+    }
   }
 
   Box(
