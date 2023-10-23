@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -33,7 +34,6 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
-import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,10 +44,6 @@ public fun RedwoodContent(
   provider: Widget.Provider<@Composable () -> Unit>,
   content: @Composable () -> Unit,
 ) {
-  val scope = rememberCoroutineScope()
-
-  val onBackPressedDispatcher = platformOnBackPressedDispatcher()
-
   var viewportSize by remember { mutableStateOf(Size.Zero) }
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
@@ -56,25 +52,23 @@ public fun RedwoodContent(
     viewportSize = viewportSize,
     density = density.density.toDouble(),
   )
+  val uiConfigurations = remember { MutableStateFlow(uiConfiguration) }
+  LaunchedEffect(uiConfiguration) {
+    uiConfigurations.value = uiConfiguration
+  }
 
-  val redwoodView = remember {
-    object : RedwoodView<@Composable () -> Unit> {
-      override val children = ComposeWidgetChildren()
-      override val onBackPressedDispatcher = onBackPressedDispatcher
-      override val uiConfiguration = MutableStateFlow(uiConfiguration)
-      override fun reset() {
-        children.remove(0, children.widgets.size)
-      }
-    }
-  }
-  LaunchedEffect(redwoodView, uiConfiguration) {
-    redwoodView.uiConfiguration.value = uiConfiguration
-  }
-  LaunchedEffect(redwoodView, provider, content) {
+  val scope = rememberCoroutineScope()
+  val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+  val saveableStateRegistry = LocalSaveableStateRegistry.current
+  val children = remember(content) { ComposeWidgetChildren() }
+  LaunchedEffect(provider, content) {
     val composition = RedwoodComposition(
       scope = scope,
-      view = redwoodView,
       provider = provider,
+      container = children,
+      onBackPressedDispatcher = onBackPressedDispatcher,
+      saveableStateRegistry = saveableStateRegistry,
+      uiConfigurations = uiConfigurations,
     )
     composition.setContent(content)
   }
@@ -86,7 +80,7 @@ public fun RedwoodContent(
       }
     },
   ) {
-    redwoodView.children.render()
+    children.render()
   }
 }
 

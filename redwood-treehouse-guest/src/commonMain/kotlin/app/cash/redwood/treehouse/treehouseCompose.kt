@@ -84,16 +84,6 @@ private class RedwoodZiplineTreehouseUi(
     uiConfigurations: StateFlow<UiConfiguration>,
     stateSnapshot: StateSnapshot?,
   ) {
-    val composition = ProtocolRedwoodComposition(
-      scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
-      bridge = bridge,
-      widgetVersion = appLifecycle.widgetVersion,
-      changesSink = changesSink,
-      onBackPressedDispatcher = onBackPressedDispatcher.asNonService(),
-      uiConfigurations = uiConfigurations,
-    )
-    this.composition = composition
-
     this.saveableStateRegistry = SaveableStateRegistry(
       restoredValues = stateSnapshot?.content,
       // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
@@ -103,10 +93,18 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
-    composition.bind(
-      treehouseUi = treehouseUi,
+    val composition = ProtocolRedwoodComposition(
+      scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
+      bridge = bridge,
+      widgetVersion = appLifecycle.widgetVersion,
+      changesSink = changesSink,
+      onBackPressedDispatcher = onBackPressedDispatcher.asNonService(),
       saveableStateRegistry = saveableStateRegistry,
+      uiConfigurations = uiConfigurations,
     )
+    this.composition = composition
+
+    composition.bind(treehouseUi)
   }
 
   override fun snapshotState(): StateSnapshot {

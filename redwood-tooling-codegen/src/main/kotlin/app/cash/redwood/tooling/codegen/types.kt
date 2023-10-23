@@ -62,6 +62,7 @@ internal object Redwood {
   val ModifierElement = Modifier.nestedClass("Element")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
+  val UiConfiguration = ClassName("app.cash.redwood.ui", "UiConfiguration")
   val OptInToRedwoodCodegenApi = AnnotationSpec.builder(Stdlib.OptIn)
     .addMember("%T::class", RedwoodCodegenApi)
     .build()
@@ -69,6 +70,7 @@ internal object Redwood {
 
 internal object RedwoodTesting {
   val TestRedwoodComposition = ClassName("app.cash.redwood.testing", "TestRedwoodComposition")
+  val TestSavedState = ClassName("app.cash.redwood.testing", "TestSavedState")
   val WidgetValue = ClassName("app.cash.redwood.testing", "WidgetValue")
 }
 

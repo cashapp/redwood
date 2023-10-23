@@ -123,6 +123,7 @@ class ViewTreesTest {
           }
         }
       },
+      saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
     composition.setContent(content)

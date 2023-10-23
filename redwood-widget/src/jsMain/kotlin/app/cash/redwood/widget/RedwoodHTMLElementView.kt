@@ -57,6 +57,8 @@ private class RedwoodHTMLElementView(
       viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
     ),
   )
+  override val savedStateRegistry: SavedStateRegistry?
+    get() = null
 
   init {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", { event ->

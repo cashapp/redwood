@@ -20,6 +20,7 @@ kotlin {
         api projects.redwoodRuntime
         api projects.redwoodWidget
         api libs.jetbrains.compose.runtime
+        api libs.jetbrains.compose.runtime.saveable
       }
     }
     commonTest {

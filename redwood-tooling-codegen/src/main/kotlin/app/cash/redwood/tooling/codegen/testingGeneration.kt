@@ -43,6 +43,8 @@ import com.squareup.kotlinpoet.joinToCode
 
 /*
 suspend fun <R> ExampleTester(
+  savedState: TestSavedState? = null,
+  uiConfiguration: UiConfiguration = UiConfiguration(),
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
   val factories = ExampleWidgetFactories(
@@ -50,7 +52,7 @@ suspend fun <R> ExampleTester(
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
-  val tester = TestRedwoodComposition(this, factories, container) {
+  val tester = TestRedwoodComposition(this, factories, container, savedState, uiConfiguration) {
     container.map { it.value }
   }
   try {
@@ -74,6 +76,16 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
       FunSpec.builder(testerFunction)
         .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
         .addModifiers(SUSPEND)
+        .addParameter(
+          ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))
+            .defaultValue("null")
+            .build(),
+        )
+        .addParameter(
+          ParameterSpec.builder("uiConfiguration", Redwood.UiConfiguration)
+            .defaultValue("%T()", Redwood.UiConfiguration)
+            .build(),
+        )
         .addParameter("body", bodyType)
         .addTypeVariable(typeVarR)
         .returns(typeVarR)
@@ -86,7 +98,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("val tester = %T(this, factories, container)", RedwoodTesting.TestRedwoodComposition)
+        .beginControlFlow("val tester = %T(this, factories, container, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
         .beginControlFlow("try")

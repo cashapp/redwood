@@ -25,6 +25,7 @@ public interface RedwoodView<W : Any> {
   public val children: Widget.Children<W>
   public val onBackPressedDispatcher: OnBackPressedDispatcher
   public val uiConfiguration: StateFlow<UiConfiguration>
+  public val savedStateRegistry: SavedStateRegistry?
 
   /**
    * This should at minimum clear all [children].

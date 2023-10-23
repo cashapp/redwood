@@ -16,7 +16,6 @@ kotlin {
     commonMain {
       dependencies {
         api libs.jetbrains.compose.runtime
-        api libs.jetbrains.compose.runtime.saveable
         api libs.kotlinx.coroutines.core
         api libs.okio
         api libs.zipline

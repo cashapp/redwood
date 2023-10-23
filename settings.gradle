@@ -109,6 +109,7 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:counter:presenter'
   include ':samples:counter:schema'
   include ':samples:counter:schema:compose'
+  include ':samples:counter:schema:testing'
   include ':samples:counter:schema:widget'
   include ':samples:counter:shared-composeui'
 
