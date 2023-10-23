@@ -27,6 +27,10 @@ public abstract class LazyListScrollProcessor {
   /** Once we receive a user scroll, we stop forwarding programmatic scrolls. */
   private var userHasScrolled = false
 
+  /** De-duplicate calls to [onViewportChanged]. */
+  private var mostRecentFirstIndex = -1
+  private var mostRecentLastIndex = -1
+
   public fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {
     this.onViewportChanged = onViewportChanged
   }
@@ -57,6 +61,12 @@ public abstract class LazyListScrollProcessor {
    */
   public fun onUserScroll(firstIndex: Int, lastIndex: Int) {
     if (firstIndex > 0) userHasScrolled = true
+
+    if (firstIndex == mostRecentFirstIndex && lastIndex == mostRecentLastIndex) return
+
+    this.mostRecentFirstIndex = firstIndex
+    this.mostRecentLastIndex = lastIndex
+
     onViewportChanged?.invoke(firstIndex, lastIndex)
   }
 

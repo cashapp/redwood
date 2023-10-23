@@ -22,7 +22,7 @@ import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
 class LazyListUpdateProcessorTest {
-  private val processor = FakeProcessor()
+  private val processor = FakeUpdateProcessor()
     .apply {
       for (i in 0 until 10) {
         placeholder.insert(i, StringWidget("."))
