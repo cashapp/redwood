@@ -23,9 +23,7 @@ public abstract class LazyListScrollProcessor {
 
   /** We can't scroll to this index until we have enough data for it to display! */
   private var deferredProgrammaticScrollIndex: Int = -1
-
-  /** Once we receive a user scroll, we stop forwarding programmatic scrolls. */
-  private var userHasScrolled = false
+  private var deferredProgrammaticScrollAnimated: Boolean = false
 
   /** De-duplicate calls to [onViewportChanged]. */
   private var mostRecentFirstIndex = -1
@@ -38,21 +36,20 @@ public abstract class LazyListScrollProcessor {
   public fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
     // Defer until we have data in onEndChanges().
     deferredProgrammaticScrollIndex = scrollItemIndex.index
+    deferredProgrammaticScrollAnimated = scrollItemIndex.animated
   }
 
   public fun onEndChanges() {
     // Do nothing: we don't have deferred scrolls.
     if (deferredProgrammaticScrollIndex == -1) return
 
-    // Do nothing: we don't do programmatic scrolls if the user has already scrolled manually.
-    if (userHasScrolled) return
-
     // Do nothing: we can't scroll to this item because it hasn't loaded yet!
     if (contentSize() <= deferredProgrammaticScrollIndex) return
 
     // Do a programmatic scroll!
-    programmaticScroll(deferredProgrammaticScrollIndex)
+    programmaticScroll(deferredProgrammaticScrollIndex, deferredProgrammaticScrollAnimated)
     deferredProgrammaticScrollIndex = -1
+    deferredProgrammaticScrollAnimated = false
   }
 
   /**
@@ -60,8 +57,6 @@ public abstract class LazyListScrollProcessor {
    * scrolls.
    */
   public fun onUserScroll(firstIndex: Int, lastIndex: Int) {
-    if (firstIndex > 0) userHasScrolled = true
-
     if (firstIndex == mostRecentFirstIndex && lastIndex == mostRecentLastIndex) return
 
     this.mostRecentFirstIndex = firstIndex
@@ -74,5 +69,5 @@ public abstract class LazyListScrollProcessor {
   public abstract fun contentSize(): Int
 
   /** Perform a programmatic scroll. */
-  public abstract fun programmaticScroll(firstIndex: Int)
+  public abstract fun programmaticScroll(firstIndex: Int, animated: Boolean)
 }

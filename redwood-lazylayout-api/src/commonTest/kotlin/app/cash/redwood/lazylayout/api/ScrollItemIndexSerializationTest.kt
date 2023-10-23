@@ -32,6 +32,10 @@ class ScrollItemIndexSerializationTest {
       ScrollItemIndex(3, 7),
       """{"id":3,"index":7}""",
     )
+    assertRoundTrip(
+      ScrollItemIndex(3, 7, animated = true),
+      """{"id":3,"index":7,"animated":true}""",
+    )
   }
 
   private fun assertRoundTrip(value: ScrollItemIndex, encoded: String) {

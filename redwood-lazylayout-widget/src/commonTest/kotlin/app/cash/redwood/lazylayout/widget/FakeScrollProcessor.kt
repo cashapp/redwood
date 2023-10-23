@@ -29,9 +29,9 @@ class FakeScrollProcessor : LazyListScrollProcessor() {
 
   override fun contentSize(): Int = size
 
-  override fun programmaticScroll(firstIndex: Int) {
+  override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
     require(firstIndex < size)
-    events += "programmaticScroll($firstIndex)"
+    events += "programmaticScroll(firstIndex = $firstIndex, animated = $animated)"
   }
 
   fun takeEvents(): List<String> {

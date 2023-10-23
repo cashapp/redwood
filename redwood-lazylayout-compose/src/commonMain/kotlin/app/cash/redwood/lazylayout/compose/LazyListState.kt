@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
 @Composable
 public fun rememberLazyListState(): LazyListState {
@@ -34,18 +35,23 @@ private val saver: Saver<LazyListState, *> = Saver(
   save = { it.firstIndex },
   restore = {
     LazyListState().apply {
-      programmaticScroll(it)
+      programmaticScroll(firstIndex = it, animated = false, clobberUserScroll = false)
     }
   },
 )
 
 public open class LazyListState {
   /**
-   * Update this to trigger a programmatic scroll. Typically this is updated exactly once, when the
-   * previous scroll state is restored.
+   * Update this to trigger a programmatic scroll. This may be updated multiple times, including
+   * when the previous scroll state is restored.
    */
-  public var programmaticScrollIndex: Int by mutableStateOf(0)
+  public var programmaticScrollIndex: ScrollItemIndex by mutableStateOf(
+    ScrollItemIndex(id = 0, index = 0, animated = false),
+  )
     private set
+
+  /** Once we receive a user scroll, we limit which programmatic scrolls we apply. */
+  private var userScrolled = false
 
   /** Bounds of what the user is looking at. Everything else is placeholders! */
   public var firstIndex: Int by mutableStateOf(0)
@@ -54,19 +60,32 @@ public open class LazyListState {
     private set
 
   /** Perform a programmatic scroll. */
-  public fun programmaticScroll(index: Int) {
-    require(index >= 0)
-    require(programmaticScrollIndex == 0) { "unexpected double restoreIndex()" }
+  public fun programmaticScroll(
+    firstIndex: Int,
+    animated: Boolean,
+    clobberUserScroll: Boolean = true,
+  ) {
+    require(firstIndex >= 0)
+    if (!clobberUserScroll && userScrolled) return
 
-    this.programmaticScrollIndex = index
+    val previous = programmaticScrollIndex
+    this.programmaticScrollIndex = ScrollItemIndex(
+      id = previous.id + 1,
+      index = firstIndex,
+      animated = animated,
+    )
 
-    val delta = (lastIndex - firstIndex)
-    this.firstIndex = index
-    this.lastIndex = index + delta
+    val delta = (lastIndex - this.firstIndex)
+    this.firstIndex = firstIndex
+    this.lastIndex = firstIndex + delta
   }
 
   /** React to a user-initiated scroll. */
   public fun onUserScroll(firstIndex: Int, lastIndex: Int) {
+    if (firstIndex > 0) {
+      userScrolled = true
+    }
+
     this.firstIndex = firstIndex
     this.lastIndex = lastIndex
   }
