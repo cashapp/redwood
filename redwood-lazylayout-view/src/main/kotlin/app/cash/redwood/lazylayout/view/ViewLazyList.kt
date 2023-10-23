@@ -26,8 +26,6 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.core.view.doOnDetach
-import androidx.core.view.get
-import androidx.core.view.indices
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +36,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.lazylayout.widget.LazyListScrollProcessor
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor
 import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
@@ -60,8 +59,6 @@ internal open class ViewLazyList private constructor(
 
   private var crossAxisAlignment = CrossAxisAlignment.Start
 
-  private var userHasScrolled = false
-
   private val density = Density(recyclerView.context.resources)
   private val linearLayoutManager = object : LinearLayoutManager(recyclerView.context) {
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams? = when (orientation) {
@@ -72,8 +69,6 @@ internal open class ViewLazyList private constructor(
   }
 
   override val value: View get() = recyclerView
-
-  private var onViewportChanged: ((Int, Int) -> Unit)? = null
 
   private val processor = object : LazyListUpdateProcessor<ViewHolder, View>() {
     override fun insertRows(index: Int, count: Int) {
@@ -86,6 +81,14 @@ internal open class ViewLazyList private constructor(
 
     override fun setContent(view: ViewHolder, content: Widget<View>?) {
       view.content = content
+    }
+  }
+
+  private val scrollProcessor = object : LazyListScrollProcessor() {
+    override fun contentSize(): Int = processor.size
+
+    override fun programmaticScroll(firstIndex: Int) {
+      linearLayoutManager.scrollToPositionWithOffset(firstIndex, 0)
     }
   }
 
@@ -105,22 +108,14 @@ internal open class ViewLazyList private constructor(
       addOnScrollListener(
         object : RecyclerView.OnScrollListener() {
           override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            userHasScrolled = true // Prevent guest code from hijacking the scrollbar.
+            if (scrollState == RecyclerView.SCROLL_STATE_IDLE) return
 
-            var min = Int.MAX_VALUE
-            var max = Int.MIN_VALUE
-            for (i in recyclerView.indices) {
-              val position = recyclerView.getChildAdapterPosition(recyclerView[i])
-              min = minOf(min, position)
-              max = maxOf(max, position)
-            }
-            if (min == Int.MAX_VALUE || max == Int.MIN_VALUE) {
-              throw NoSuchElementException()
-            }
-            onViewportChanged?.invoke(
-              min.coerceAtLeast(0),
-              max,
-            )
+            val firstIndex = linearLayoutManager.findFirstVisibleItemPosition()
+            if (firstIndex == RecyclerView.NO_POSITION) return
+            val lastIndex = linearLayoutManager.findLastVisibleItemPosition()
+            if (lastIndex == RecyclerView.NO_POSITION) return
+
+            scrollProcessor.onUserScroll(firstIndex, lastIndex)
           }
         },
       )
@@ -166,12 +161,11 @@ internal open class ViewLazyList private constructor(
   }
 
   override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {
-    this.onViewportChanged = onViewportChanged
+    scrollProcessor.onViewportChanged(onViewportChanged)
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
-    if (userHasScrolled) return
-    recyclerView.scrollToPosition(scrollItemIndex.index)
+    scrollProcessor.scrollItemIndex(scrollItemIndex)
   }
 
   override fun isVertical(isVertical: Boolean) {
@@ -188,6 +182,7 @@ internal open class ViewLazyList private constructor(
 
   override fun onEndChanges() {
     processor.onEndChanges()
+    scrollProcessor.onEndChanges()
   }
 
   private fun createLayoutParams(): FrameLayout.LayoutParams {

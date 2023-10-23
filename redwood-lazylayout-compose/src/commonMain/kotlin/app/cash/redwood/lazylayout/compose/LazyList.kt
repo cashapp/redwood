@@ -45,9 +45,9 @@ internal fun LazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
-  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val itemCount = itemProvider.itemCount
+  val itemsBefore = (state.firstIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
   // TODO(jwilson): drop this down to 20 once this is fixed:
   //     https://github.com/cashapp/redwood/issues/1551
   var placeholderPoolSize by remember { mutableStateOf(30) }
@@ -56,7 +56,7 @@ internal fun LazyList(
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
-      state.onScrolled(localFirstVisibleItemIndex)
+      state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
 
       val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
@@ -64,17 +64,16 @@ internal fun LazyList(
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      lastVisibleItemIndex = localLastVisibleItemIndex
     },
     width = width,
     height = height,
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = ScrollItemIndex(0, state.scrollItemIndex),
+    scrollItemIndex = ScrollItemIndex(0, state.programmaticScrollIndex),
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
-      for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
+      for (index in itemsBefore until itemCount - itemsAfter) {
         key(index) {
           itemProvider.Item(index)
         }
@@ -99,16 +98,16 @@ internal fun RefreshableLazyList(
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
-  var lastVisibleItemIndex by remember { mutableStateOf(0) }
-  val itemsBefore = remember(state.firstVisibleItemIndex) { (state.firstVisibleItemIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0) }
-  val itemsAfter = remember(lastVisibleItemIndex, itemProvider.itemCount) { (itemProvider.itemCount - (lastVisibleItemIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemProvider.itemCount)).coerceAtLeast(0) }
+  val itemCount = itemProvider.itemCount
+  val itemsBefore = (state.firstIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
   var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
-      state.onScrolled(localFirstVisibleItemIndex)
+      state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
 
       val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
       val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
@@ -116,7 +115,6 @@ internal fun RefreshableLazyList(
       if (placeholderPoolSize < proposedPlaceholderPoolSize) {
         placeholderPoolSize = proposedPlaceholderPoolSize
       }
-      lastVisibleItemIndex = localLastVisibleItemIndex
     },
     refreshing = refreshing,
     onRefresh = onRefresh,
@@ -125,11 +123,11 @@ internal fun RefreshableLazyList(
     margin = margin,
     crossAxisAlignment = crossAxisAlignment,
     modifier = modifier,
-    scrollItemIndex = ScrollItemIndex(0, state.scrollItemIndex),
+    scrollItemIndex = ScrollItemIndex(0, state.programmaticScrollIndex),
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     pullRefreshContentColor = pullRefreshContentColor,
     items = {
-      for (index in itemsBefore until itemProvider.itemCount - itemsAfter) {
+      for (index in itemsBefore until itemCount - itemsAfter) {
         key(index) {
           itemProvider.Item(index)
         }

@@ -31,55 +31,43 @@ public fun rememberLazyListState(): LazyListState {
 
 /** The default [Saver] implementation for [LazyListState]. */
 private val saver: Saver<LazyListState, *> = Saver(
-  save = { it.firstVisibleItemIndex },
+  save = { it.firstIndex },
   restore = {
     LazyListState().apply {
-      restoreIndex(it)
+      programmaticScroll(it)
     }
   },
 )
 
-public class LazyListState {
-
-  /** We only restore the scroll position once. */
-  private var hasRestoredScrollPosition = false
-
-  /** The scroll position to restore. */
-  private var restoredIndex: Int = -1
-
+public open class LazyListState {
   /**
-   * The value published to the host platform. This starts as 0 and changes exactly once to
-   * trigger exactly one scroll.
+   * Update this to trigger a programmatic scroll. Typically this is updated exactly once, when the
+   * previous scroll state is restored.
    */
-  public var scrollItemIndex: Int by mutableStateOf(0)
-    internal set
-
-  public var firstVisibleItemIndex: Int = 0
+  public var programmaticScrollIndex: Int by mutableStateOf(0)
     private set
 
-  public fun restoreIndex(index: Int) {
+  /** Bounds of what the user is looking at. Everything else is placeholders! */
+  public var firstIndex: Int by mutableStateOf(0)
+    private set
+  public var lastIndex: Int by mutableStateOf(0)
+    private set
+
+  /** Perform a programmatic scroll. */
+  public fun programmaticScroll(index: Int) {
     require(index >= 0)
+    require(programmaticScrollIndex == 0) { "unexpected double restoreIndex()" }
 
-    if (this.restoredIndex != -1) return
-    this.restoredIndex = index
+    this.programmaticScrollIndex = index
 
-    // Scroll to the target item.
-    if (hasRestoredScrollPosition) {
-      scrollItemIndex = restoredIndex
-    }
+    val delta = (lastIndex - firstIndex)
+    this.firstIndex = index
+    this.lastIndex = index + delta
   }
 
-  public fun maybeRestoreScrollPosition() {
-    if (this.hasRestoredScrollPosition) return
-    this.hasRestoredScrollPosition = true
-
-    // Scroll to the target item.
-    if (restoredIndex != -1) {
-      scrollItemIndex = restoredIndex
-    }
-  }
-
-  public fun onScrolled(firstVisibleItemIndex: Int) {
-    this.firstVisibleItemIndex = firstVisibleItemIndex
+  /** React to a user-initiated scroll. */
+  public fun onUserScroll(firstIndex: Int, lastIndex: Int) {
+    this.firstIndex = firstIndex
+    this.lastIndex = lastIndex
   }
 }

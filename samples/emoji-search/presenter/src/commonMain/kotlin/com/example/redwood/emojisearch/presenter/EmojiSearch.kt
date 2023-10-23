@@ -101,7 +101,7 @@ private fun LazyColumn(
   val lazyListState = rememberLazyListState()
 
   LaunchedEffect(searchTerm) {
-    lazyListState.restoreIndex(0)
+    lazyListState.programmaticScroll(0)
   }
 
   LaunchedEffect(refreshSignal) {
@@ -116,7 +116,6 @@ private fun LazyColumn(
       allEmojis.clear()
       var index = 0
       allEmojis.addAll(labelToUrl.map { (key, value) -> EmojiImage("${index++}. $key", value) })
-      lazyListState.maybeRestoreScrollPosition()
     } finally {
       refreshing = false
     }
