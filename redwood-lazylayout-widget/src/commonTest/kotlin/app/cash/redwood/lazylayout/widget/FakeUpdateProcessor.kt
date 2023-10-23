@@ -21,7 +21,7 @@ import app.cash.redwood.widget.Widget
  * This fake simulates a real scroll window, which is completely independent of the window of loaded
  * items. Tests should call [scrollTo] to move the scroll window.
  */
-class FakeProcessor : LazyListUpdateProcessor<FakeProcessor.StringCell, String>() {
+class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCell, String>() {
   private var dataSize = 0
   private var scrollWindowOffset = 0
   private val scrollWindowCells = mutableListOf<StringCell>()
