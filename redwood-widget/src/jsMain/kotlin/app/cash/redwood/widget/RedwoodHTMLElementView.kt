@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
+import org.w3c.dom.events.Event
 
 public fun HTMLElement.asRedwoodView(): RedwoodView<HTMLElement> {
   checkNotNull(parentNode) {
@@ -40,9 +41,9 @@ private class RedwoodHTMLElementView(
   private val element: HTMLElement,
 ) : RedwoodView<HTMLElement> {
   private val _children = HTMLElementChildren(element)
-  private var pixelRatioListenerRemover: (() -> Unit)? = null
-
   override val children: Children<HTMLElement> get() = _children
+
+  private var pixelRatioQueryRemover: (() -> Unit)? = null
 
   override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
     override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -79,24 +80,20 @@ private class RedwoodHTMLElementView(
   }
 
   private fun observePixelRatioChange() {
-    // from https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2
+    // From https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2.
 
-    // Remove the previous listener if it exists
-    pixelRatioListenerRemover?.invoke()
+    // Remove the listener based on the old pixel ratio, if it exists.
+    pixelRatioQueryRemover?.invoke()
 
-    // Create a new media query based on the current device pixel ratio
-    val mqString = "(resolution: ${window.devicePixelRatio}dppx)"
-    val media = window.matchMedia(mqString)
+    // Create a media query based on the current pixel ratio value.
+    val pixelRatioQuery = window.matchMedia("(resolution: ${window.devicePixelRatio}dppx)")
 
-    // Add a listener to observe changes in pixel ratio
-    media.addListener { observePixelRatioChange() }
-
-    // Store a remover function to remove the listener when needed
-    pixelRatioListenerRemover = {
-      media.removeListener { observePixelRatioChange() }
+    val listener: (Event) -> Unit = { observePixelRatioChange() }
+    pixelRatioQuery.addEventListener("change", listener)
+    pixelRatioQueryRemover = {
+      pixelRatioQuery.removeEventListener("change", listener)
     }
 
-    // Update the UI configuration with the new pixel ratio
     uiConfiguration.update { old ->
       UiConfiguration(
         darkMode = old.darkMode,
