@@ -24,7 +24,7 @@ import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget.Children
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
@@ -54,18 +54,24 @@ private class RedwoodHTMLElementView(
     }
   }
 
-  override val uiConfiguration = MutableStateFlow(
-    UiConfiguration(
-      darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches,
-      viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
-    ),
-  )
+  private val _uiConfiguration: MutableStateFlow<UiConfiguration>
+  override val uiConfiguration: StateFlow<UiConfiguration> get() = _uiConfiguration
+
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
   init {
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", { event ->
-      uiConfiguration.update { old ->
+    val colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)")
+
+    _uiConfiguration = MutableStateFlow(
+      UiConfiguration(
+        darkMode = colorSchemeQuery.matches,
+        viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
+      ),
+    )
+
+    colorSchemeQuery.addEventListener("change", { event ->
+      updateUiConfiguration { old ->
         UiConfiguration(
           darkMode = event.unsafeCast<MediaQueryList>().matches,
           safeAreaInsets = old.safeAreaInsets,
@@ -96,7 +102,7 @@ private class RedwoodHTMLElementView(
       pixelRatioQuery.removeEventListener("change", listener)
     }
 
-    uiConfiguration.update { old ->
+    updateUiConfiguration { old ->
       UiConfiguration(
         darkMode = old.darkMode,
         safeAreaInsets = old.safeAreaInsets,
@@ -111,5 +117,10 @@ private class RedwoodHTMLElementView(
 
     // Ensure any out-of-band nodes are also removed.
     element.clear()
+  }
+
+  private fun updateUiConfiguration(updater: (UiConfiguration) -> UiConfiguration) {
+    // We skip MutableStateFlow.update because it uses verbose CAS loop and JS only has one thread.
+    _uiConfiguration.value = updater(_uiConfiguration.value)
   }
 }
