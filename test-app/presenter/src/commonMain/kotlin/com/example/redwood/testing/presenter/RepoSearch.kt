@@ -19,14 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
 import app.cash.paging.PagingSource
 import app.cash.paging.PagingSourceLoadParams
 import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
 import app.cash.paging.compose.collectAsLazyPagingItems
+import app.cash.paging.createPager
+import app.cash.paging.createPagingConfig
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.lazylayout.compose.LazyColumn
@@ -37,7 +37,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-private val pagingConfig = PagingConfig(pageSize = 20, initialLoadSize = 20).apply {
+private val pagingConfig = createPagingConfig(pageSize = 20, initialLoadSize = 20).apply {
   check(pageSize == initialLoadSize) {
     "As GitHub uses offset based pagination, an elegant PagingSource implementation requires each page to be of equal size."
   }
@@ -49,7 +49,7 @@ fun RepoSearch(httpClient: HttpClient) {
   val latestSearchTerm by remember { mutableStateOf("android") }
 
   val pager = remember(httpClient, latestSearchTerm) {
-    Pager(pagingConfig) {
+    createPager(pagingConfig) {
       RepositoryPagingSource(httpClient, latestSearchTerm)
     }
   }
