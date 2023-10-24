@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
+import org.w3c.dom.events.Event
 
 public fun HTMLElement.asRedwoodView(): RedwoodView<HTMLElement> {
   checkNotNull(parentNode) {
@@ -41,6 +42,8 @@ private class RedwoodHTMLElementView(
 ) : RedwoodView<HTMLElement> {
   private val _children = HTMLElementChildren(element)
   override val children: Children<HTMLElement> get() = _children
+
+  private var pixelRatioQueryRemover: (() -> Unit)? = null
 
   override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
     override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -72,11 +75,35 @@ private class RedwoodHTMLElementView(
       }
     })
 
-    // TODO Watch density change
-    //  https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2
+    observePixelRatioChange()
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+  }
+
+  private fun observePixelRatioChange() {
+    // From https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2.
+
+    // Remove the listener based on the old pixel ratio, if it exists.
+    pixelRatioQueryRemover?.invoke()
+
+    // Create a media query based on the current pixel ratio value.
+    val pixelRatioQuery = window.matchMedia("(resolution: ${window.devicePixelRatio}dppx)")
+
+    val listener: (Event) -> Unit = { observePixelRatioChange() }
+    pixelRatioQuery.addEventListener("change", listener)
+    pixelRatioQueryRemover = {
+      pixelRatioQuery.removeEventListener("change", listener)
+    }
+
+    uiConfiguration.update { old ->
+      UiConfiguration(
+        darkMode = old.darkMode,
+        safeAreaInsets = old.safeAreaInsets,
+        viewportSize = old.viewportSize,
+        density = window.devicePixelRatio,
+      )
+    }
   }
 
   override fun reset() {
