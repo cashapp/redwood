@@ -16,7 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.widget.ProtocolNodeFactory
 import app.cash.redwood.widget.RedwoodView
 import kotlin.native.ObjCName
 import kotlinx.serialization.json.Json
@@ -47,6 +47,6 @@ public interface TreehouseView<W : Any> : RedwoodView<W> {
     public fun widgetFactory(
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
-    ): ProtocolNode.Factory<W>
+    ): ProtocolNodeFactory<W>
   }
 }

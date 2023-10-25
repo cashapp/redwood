@@ -19,7 +19,7 @@ import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.widget.ProtocolBridge
-import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.widget.ProtocolNodeFactory
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
@@ -319,7 +319,7 @@ private class ViewContentCodeBinding<A : AppService>(
       factory = view.widgetSystem.widgetFactory(
         json = json,
         protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler(app),
-      ) as ProtocolNode.Factory<Any>,
+      ) as ProtocolNodeFactory<Any>,
       eventSink = this,
     )
 

@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenChange
@@ -40,10 +41,11 @@ import kotlin.native.ObjCName
  * [PropertyChange]s and [ModifierChange]s are forwarded to their respective widgets.
  * Events from widgets are forwarded to [eventSink].
  */
+@OptIn(RedwoodCodegenApi::class)
 @ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
   container: Widget.Children<W>,
-  private val factory: ProtocolNode.Factory<W>,
+  private val factory: ProtocolNodeFactory<W>,
   private val eventSink: EventSink,
 ) : ChangesSink {
   private val nodes = mutableMapOf<Id, ProtocolNode<W>>(
@@ -120,6 +122,7 @@ public class ProtocolBridge<W : Any>(
   }
 }
 
+@OptIn(RedwoodCodegenApi::class)
 private class RootProtocolNode<W : Any>(
   private val children: Widget.Children<W>,
 ) : ProtocolNode<W>, Widget<W> {

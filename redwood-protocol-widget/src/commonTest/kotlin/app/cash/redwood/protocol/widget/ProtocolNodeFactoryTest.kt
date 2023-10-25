@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -45,6 +46,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
+@OptIn(RedwoodCodegenApi::class)
 class ProtocolNodeFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
     val factory = TestSchemaProtocolNodeFactory(
