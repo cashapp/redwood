@@ -112,6 +112,7 @@ internal fun generateProtocolNodeFactory(
           FunSpec.builder("create")
             .addModifiers(OVERRIDE)
             .addParameter("tag", Protocol.WidgetTag)
+            .addAnnotation(Redwood.RedwoodCodegenApi)
             .returns(
               WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
                 .copy(nullable = true),
@@ -197,6 +198,7 @@ internal fun generateProtocolNode(
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(protocolType)
+        .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("widget", widgetType)

@@ -25,7 +25,8 @@ import androidx.compose.runtime.StableMarker
 public annotation class LayoutScopeMarker
 
 /**
- * Denote an API which should only be used by Redwood's generated code.
+ * Denote an API which should only be used by Redwood's generated code and is not considered
+ * stable across any version.
  *
  * @suppress
  */
