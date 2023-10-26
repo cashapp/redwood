@@ -145,25 +145,28 @@ internal fun generateProtocolNodeFactory(
 
 /*
 internal class ProtocolButton<W : Any>(
-  override val widget: Button<W>,
+  widget: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : ProtocolNode<W> {
+  private var _widget: Button<W> = widget
+  override val widget: Widget<W> get() = _widget
+
   private var container: Widget.Children<W>? = null
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   public override fun apply(change: PropertyChange, eventSink: EventSink): Unit {
     when (change.tag.value) {
-      1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
-      2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
+      1 -> _widget.text(json.decodeFromJsonElement(serializer_0, change.value))
+      2 -> _widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
         val onClick: (() -> Unit)? = if (change.value.jsonPrimitive.boolean) {
           { eventSink.sendEvent(Event(change.id, EventTag(3))) }
         } else {
           null
         }
-        widget.onClick(onClick)
+        _widget.onClick(onClick)
       }
       else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.tag)
     }
@@ -174,7 +177,7 @@ internal class ProtocolButton<W : Any>(
   }
 
   public override fun updateModifiers() {
-    widget.modifier = elements.toModifiers(json, mismatchHandler)
+    _widget.modifier = elements.toModifiers(json, mismatchHandler)
     container?.onModifierUpdated()
   }
 
@@ -207,8 +210,17 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("widget", widgetType, OVERRIDE)
+          PropertySpec.builder("_widget", widgetType, PRIVATE)
             .initializer("widget")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("widget", RedwoodWidget.Widget.parameterizedBy(typeVariableW), OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return _widget")
+                .build(),
+            )
             .build(),
         )
         .addProperty(
@@ -249,7 +261,7 @@ internal fun generateProtocolNode(
                       }
 
                       addStatement(
-                        "%L -> widget.%N(json.decodeFromJsonElement(serializer_%L, change.value))",
+                        "%L -> _widget.%N(json.decodeFromJsonElement(serializer_%L, change.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -298,7 +310,7 @@ internal fun generateProtocolNode(
                         addStatement("throw %T()", Stdlib.AssertionError)
                       }
                       endControlFlow()
-                      addStatement("widget.%1N(%1N)", trait.name)
+                      addStatement("_widget.%1N(%1N)", trait.name)
                       endControlFlow()
                     }
 
@@ -336,7 +348,7 @@ internal fun generateProtocolNode(
                 if (childrens.isNotEmpty()) {
                   beginControlFlow("return when (tag.value)")
                   for (children in childrens) {
-                    addStatement("%L -> widget.%N", children.tag, children.name)
+                    addStatement("%L -> _widget.%N", children.tag, children.name)
                   }
                   beginControlFlow("else ->")
                   addStatement(
@@ -363,7 +375,7 @@ internal fun generateProtocolNode(
           FunSpec.builder("updateModifier")
             .addModifiers(OVERRIDE)
             .addParameter("elements", LIST.parameterizedBy(Protocol.ModifierElement))
-            .addStatement("widget.modifier = elements.%M(json, mismatchHandler)", host.toModifier)
+            .addStatement("_widget.modifier = elements.%M(json, mismatchHandler)", host.toModifier)
             .addStatement("container?.onModifierUpdated()")
             .build(),
         )
