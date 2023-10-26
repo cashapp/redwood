@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,15 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.EventTag
-import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.zipline.EventListener as ZiplineEventListener
+import kotlinx.serialization.json.Json
 
-internal interface EventPublisher {
-  val ziplineEventListener: ZiplineEventListener
+/** The host state for a single code load. We get a new session each time we get new code. */
+internal interface CodeSession<A : AppService> {
+  val appService: A
 
-  val widgetProtocolMismatchHandler: ProtocolMismatchHandler
+  val json: Json
 
-  fun appStart()
+  fun start()
 
-  fun appCanceled()
-
-  fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
-
-  fun onUnknownEventNode(id: Id, tag: EventTag)
+  fun cancel()
 }

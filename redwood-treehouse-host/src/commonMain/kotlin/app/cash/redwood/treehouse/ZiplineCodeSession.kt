@@ -24,29 +24,33 @@ import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
-/** The host state for a single code load. We get a new session each time we get new code. */
-internal class ZiplineSession<A : AppService>(
-  val app: TreehouseApp<A>,
-  val appScope: CoroutineScope,
-  val sessionScope: CoroutineScope,
-  val appService: A,
-  val zipline: Zipline,
+internal class ZiplineCodeSession<A : AppService>(
+  private val dispatchers: TreehouseDispatchers,
+  private val eventPublisher: EventPublisher,
+  private val appScope: CoroutineScope,
   private val frameClock: FrameClock,
-) {
+  private val sessionScope: CoroutineScope,
+  override val appService: A,
+  val zipline: Zipline,
+) : CodeSession<A> {
   private val ziplineScope = ZiplineScope()
 
-  fun start() {
-    frameClock.start(sessionScope, app.dispatchers)
-    sessionScope.launch(app.dispatchers.zipline) {
+  override val json: Json
+    get() = zipline.json
+
+  override fun start() {
+    frameClock.start(sessionScope, dispatchers)
+    sessionScope.launch(dispatchers.zipline) {
       val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(appLifecycle, app, frameClock)
+      val host = RealAppLifecycleHost(appLifecycle, eventPublisher, frameClock)
       appLifecycle.start(host)
     }
   }
 
-  fun cancel() {
-    appScope.launch(app.dispatchers.zipline) {
+  override fun cancel() {
+    appScope.launch(dispatchers.zipline) {
       sessionScope.cancel()
       ziplineScope.close()
       zipline.close()
@@ -57,7 +61,7 @@ internal class ZiplineSession<A : AppService>(
 /** Platform features to the guest application. */
 private class RealAppLifecycleHost(
   val appLifecycle: AppLifecycle,
-  val app: TreehouseApp<*>,
+  val eventPublisher: EventPublisher,
   val frameClock: FrameClock,
 ) : AppLifecycle.Host {
   override fun requestFrame() {
@@ -68,13 +72,13 @@ private class RealAppLifecycleHost(
     widgetTag: WidgetTag,
     tag: EventTag,
   ) {
-    app.eventPublisher.onUnknownEvent(app, widgetTag, tag)
+    eventPublisher.onUnknownEvent(widgetTag, tag)
   }
 
   override fun onUnknownEventNode(
     id: Id,
     tag: EventTag,
   ) {
-    app.eventPublisher.onUnknownEventNode(app, id, tag)
+    eventPublisher.onUnknownEventNode(id, tag)
   }
 }

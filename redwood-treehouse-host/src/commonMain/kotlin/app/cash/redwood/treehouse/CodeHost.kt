@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,17 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.EventTag
-import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.zipline.EventListener as ZiplineEventListener
+/** Manages loading and hot-reloading a series of code sessions. */
+internal interface CodeHost<A : AppService> {
+  val stateStore: StateStore
 
-internal interface EventPublisher {
-  val ziplineEventListener: ZiplineEventListener
+  /** Only accessed on [TreehouseDispatchers.ui]. */
+  val codeSession: CodeSession<A>?
 
-  val widgetProtocolMismatchHandler: ProtocolMismatchHandler
-
-  fun appStart()
-
-  fun appCanceled()
-
-  fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
-
-  fun onUnknownEventNode(id: Id, tag: EventTag)
+  /**
+   * Contents that this app is currently responsible for.
+   *
+   * Only accessed on [TreehouseDispatchers.ui].
+   */
+  val boundContents: MutableList<TreehouseAppContent<A>>
 }
