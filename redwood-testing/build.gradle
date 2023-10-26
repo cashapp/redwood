@@ -17,7 +17,7 @@ kotlin {
       dependencies {
         api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
-        api projects.redwoodProtocolCompose
+        api projects.redwoodProtocolGuest
       }
     }
     commonTest {

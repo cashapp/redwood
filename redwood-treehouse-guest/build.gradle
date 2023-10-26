@@ -20,7 +20,7 @@ kotlin {
         api libs.okio
         api libs.zipline
         api projects.redwoodProtocol
-        api projects.redwoodProtocolCompose
+        api projects.redwoodProtocolGuest
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose
       }
