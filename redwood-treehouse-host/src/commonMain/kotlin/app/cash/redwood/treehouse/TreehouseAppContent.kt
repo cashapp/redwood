@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 private class State<A : AppService>(
   val viewState: ViewState,
@@ -69,19 +70,20 @@ private sealed interface CodeState<A : AppService> {
 }
 
 internal class TreehouseAppContent<A : AppService>(
-  private val treehouseApp: TreehouseApp<A>,
+  private val codeHost: CodeHost<A>,
+  private val dispatchers: TreehouseDispatchers,
+  private val appScope: CoroutineScope,
+  private val eventPublisher: EventPublisher,
   private val source: TreehouseContentSource<A>,
   private val codeListener: CodeListener,
 ) : Content {
-  private val dispatchers = treehouseApp.dispatchers
-
   private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
 
   override fun preload(
     onBackPressedDispatcher: OnBackPressedDispatcher,
     uiConfiguration: UiConfiguration,
   ) {
-    treehouseApp.dispatchers.checkUi()
+    dispatchers.checkUi()
     val previousState = stateFlow.value
 
     check(previousState.viewState is ViewState.None)
@@ -89,12 +91,12 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
 
     // Start the code if necessary.
-    val ziplineSession = treehouseApp.ziplineSession
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
-      previousState.codeState is CodeState.Idle && ziplineSession != null -> {
+      previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
           startViewCodeContentBinding(
-            ziplineSession = ziplineSession,
+            codeSession = codeSession,
             isInitialLaunch = true,
             onBackPressedDispatcher = onBackPressedDispatcher,
             firstUiConfiguration = MutableStateFlow(nextViewState.uiConfiguration),
@@ -105,13 +107,13 @@ internal class TreehouseAppContent<A : AppService>(
     }
 
     // Ask to get notified when code is ready.
-    treehouseApp.boundContents += this
+    codeHost.boundContents += this
 
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
   override fun bind(view: TreehouseView<*>) {
-    treehouseApp.dispatchers.checkUi()
+    dispatchers.checkUi()
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
 
@@ -121,12 +123,12 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Bound(view)
 
     // Start the code if necessary.
-    val ziplineSession = treehouseApp.ziplineSession
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
-      previousState.codeState is CodeState.Idle && ziplineSession != null -> {
+      previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
           startViewCodeContentBinding(
-            ziplineSession = ziplineSession,
+            codeSession = codeSession,
             isInitialLaunch = true,
             onBackPressedDispatcher = nextViewState.view.onBackPressedDispatcher,
             firstUiConfiguration = nextViewState.view.uiConfiguration,
@@ -138,7 +140,7 @@ internal class TreehouseAppContent<A : AppService>(
 
     // Ask to get notified when code is ready.
     if (previousViewState is ViewState.None) {
-      treehouseApp.boundContents += this
+      codeHost.boundContents += this
     }
 
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
@@ -162,7 +164,7 @@ internal class TreehouseAppContent<A : AppService>(
   }
 
   override fun unbind() {
-    treehouseApp.dispatchers.checkUi()
+    dispatchers.checkUi()
 
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
@@ -173,7 +175,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = CodeState.Idle<A>()
 
     // Cancel the code if necessary.
-    treehouseApp.boundContents.remove(this)
+    codeHost.boundContents.remove(this)
     if (previousState.codeState is CodeState.Running) {
       previousState.codeState.viewContentCodeBinding.cancel()
     }
@@ -181,8 +183,8 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
-  internal fun receiveZiplineSession(next: ZiplineSession<A>) {
-    treehouseApp.dispatchers.checkUi()
+  internal fun receiveCodeSession(next: CodeSession<A>) {
+    dispatchers.checkUi()
 
     val previousState = stateFlow.value
     val viewState = previousState.viewState
@@ -191,18 +193,18 @@ internal class TreehouseAppContent<A : AppService>(
     val onBackPressedDispatcher = when (viewState) {
       is ViewState.Preloading -> viewState.onBackPressedDispatcher
       is ViewState.Bound -> viewState.view.onBackPressedDispatcher
-      else -> error("unexpected receiveZiplineSession with no view bound and no preload")
+      else -> error("unexpected receiveCodeSession with no view bound and no preload")
     }
 
     val uiConfiguration = when (viewState) {
       is ViewState.Preloading -> MutableStateFlow(viewState.uiConfiguration)
       is ViewState.Bound -> viewState.view.uiConfiguration
-      else -> error("unexpected receiveZiplineSession with no view bound and no preload")
+      else -> error("unexpected receiveCodeSession with no view bound and no preload")
     }
 
     val nextCodeState = CodeState.Running(
       startViewCodeContentBinding(
-        ziplineSession = next,
+        codeSession = next,
         isInitialLaunch = previousCodeState is CodeState.Idle,
         onBackPressedDispatcher = onBackPressedDispatcher,
         firstUiConfiguration = uiConfiguration,
@@ -224,7 +226,7 @@ internal class TreehouseAppContent<A : AppService>(
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   private fun startViewCodeContentBinding(
-    ziplineSession: ZiplineSession<A>,
+    codeSession: CodeSession<A>,
     isInitialLaunch: Boolean,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     firstUiConfiguration: StateFlow<UiConfiguration>,
@@ -232,24 +234,25 @@ internal class TreehouseAppContent<A : AppService>(
     dispatchers.checkUi()
 
     return ViewContentCodeBinding(
-      app = treehouseApp,
-      appScope = treehouseApp.appScope,
-      eventPublisher = treehouseApp.eventPublisher,
+      app = codeHost,
+      dispatchers = dispatchers,
+      appScope = appScope,
+      eventPublisher = eventPublisher,
       contentSource = source,
       codeListener = codeListener,
       stateFlow = stateFlow,
       isInitialLaunch = isInitialLaunch,
-      session = ziplineSession,
+      json = codeSession.json,
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
     ).apply {
-      start(ziplineSession)
+      start(codeSession)
     }
   }
 }
 
 /**
- * Connects a [TreehouseView], a [TreehouseContentSource], and a [ZiplineSession].
+ * Connects a [TreehouseView], a [TreehouseContentSource], and a [CodeSession].
  *
  * The TreehouseView may not be known immediately, as in [Content.preload].
  *
@@ -261,20 +264,19 @@ internal class TreehouseAppContent<A : AppService>(
  * binding.
  */
 private class ViewContentCodeBinding<A : AppService>(
-  val app: TreehouseApp<A>,
+  val app: CodeHost<A>,
+  val dispatchers: TreehouseDispatchers,
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
   val codeListener: CodeListener,
   val stateFlow: MutableStateFlow<State<A>>,
   private val isInitialLaunch: Boolean,
-  session: ZiplineSession<A>,
+  private val json: Json,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
 ) : EventSink, ChangesSinkService, TreehouseView.SaveCallback {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
-
-  private val json = session.zipline.json
 
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
@@ -302,7 +304,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private var initViewCalled: Boolean = false
 
   fun initView(view: TreehouseView<*>) {
-    app.dispatchers.checkUi()
+    dispatchers.checkUi()
 
     require(!initViewCalled)
     initViewCalled = true
@@ -318,7 +320,7 @@ private class ViewContentCodeBinding<A : AppService>(
       container = view.children as Widget.Children<Any>,
       factory = view.widgetSystem.widgetFactory(
         json = json,
-        protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler(app),
+        protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
       ) as ProtocolNodeFactory<Any>,
       eventSink = this,
     )
@@ -333,7 +335,7 @@ private class ViewContentCodeBinding<A : AppService>(
   /** Send an event from the UI to Zipline. */
   override fun sendEvent(event: Event) {
     // Send UI events on the zipline dispatcher.
-    bindingScope.launch(app.dispatchers.zipline) {
+    bindingScope.launch(dispatchers.zipline) {
       val treehouseUi = treehouseUiOrNull ?: return@launch
       treehouseUi.sendEvent(event)
     }
@@ -342,7 +344,7 @@ private class ViewContentCodeBinding<A : AppService>(
   /** Send changes from Zipline to the UI. */
   override fun sendChanges(changes: List<Change>) {
     // Receive UI updates on the UI dispatcher.
-    bindingScope.launch(app.dispatchers.ui) {
+    bindingScope.launch(dispatchers.ui) {
       receiveChangesOnUiDispatcher(changes)
     }
   }
@@ -382,8 +384,8 @@ private class ViewContentCodeBinding<A : AppService>(
     bridge.sendChanges(changes)
   }
 
-  fun start(session: ZiplineSession<A>) {
-    bindingScope.launch(app.dispatchers.zipline) {
+  fun start(session: CodeSession<A>) {
+    bindingScope.launch(dispatchers.zipline) {
       val scopedAppService = session.appService.withScope(ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
@@ -411,11 +413,11 @@ private class ViewContentCodeBinding<A : AppService>(
     override fun addCallback(
       onBackPressedCallback: OnBackPressedCallbackService,
     ): CancellableService {
-      app.dispatchers.checkZipline()
+      dispatchers.checkZipline()
       val cancellable = onBackPressedDispatcher.addCallback(
         object : OnBackPressedCallback(onBackPressedCallback.isEnabled) {
           override fun handleOnBackPressed() {
-            bindingScope.launch(app.dispatchers.zipline) {
+            bindingScope.launch(dispatchers.zipline) {
               onBackPressedCallback.handleOnBackPressed()
             }
           }
@@ -424,7 +426,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
       return object : CancellableService {
         override fun cancel() {
-          app.dispatchers.checkZipline()
+          dispatchers.checkZipline()
           cancellable.cancel()
         }
 
@@ -436,19 +438,19 @@ private class ViewContentCodeBinding<A : AppService>(
   }
 
   override fun performSave(id: String) {
-    appScope.launch(app.dispatchers.zipline) {
+    appScope.launch(dispatchers.zipline) {
       val state = treehouseUiOrNull?.snapshotState() ?: return@launch
       app.stateStore.put(id, state)
     }
   }
 
   fun cancel() {
-    app.dispatchers.checkUi()
+    dispatchers.checkUi()
     canceled = true
     viewOrNull?.saveCallback = null
     viewOrNull = null
     bridgeOrNull = null
-    appScope.launch(app.dispatchers.zipline) {
+    appScope.launch(dispatchers.zipline) {
       treehouseUiOrNull = null
       bindingScope.cancel()
       ziplineScope.close()

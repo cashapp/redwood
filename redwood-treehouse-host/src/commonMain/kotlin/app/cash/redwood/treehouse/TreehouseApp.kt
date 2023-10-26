@@ -41,28 +41,24 @@ import okio.Path
 @ObjCName("TreehouseApp", exact = true)
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
-  internal val appScope: CoroutineScope,
+  private val appScope: CoroutineScope,
   public val spec: Spec<A>,
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
-  internal val eventPublisher: EventPublisher = factory.eventPublisher
+  private val eventPublisher = RealEventPublisher(factory.eventListener, this)
 
   private var started = false
 
   /** Only accessed on [TreehouseDispatchers.zipline]. */
   private var closed = false
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  internal var ziplineSession: ZiplineSession<A>? = null
-
-  /**
-   * Contents that this app is currently responsible for.
-   *
-   * Only accessed on [TreehouseDispatchers.ui].
-   */
-  internal val boundContents = mutableListOf<TreehouseAppContent<A>>()
-
-  internal val stateStore: StateStore = factory.stateStore
+  private val codeHost = ZiplineCodeHost<A>(
+    appScope = appScope,
+    dispatchers = dispatchers,
+    eventPublisher = eventPublisher,
+    frameClock = factory.frameClock,
+    stateStore = factory.stateStore,
+  )
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -72,7 +68,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * instance may be replaced if new code is loaded.
    */
   public val zipline: Zipline?
-    get() = ziplineSession?.zipline
+    get() = codeHost.codeSession?.zipline
 
   /**
    * Create content for [source].
@@ -85,7 +81,14 @@ public class TreehouseApp<A : AppService> private constructor(
   ): Content {
     start()
 
-    return TreehouseAppContent(this, source, codeListener)
+    return TreehouseAppContent(
+      codeHost = codeHost,
+      dispatchers = dispatchers,
+      appScope = appScope,
+      eventPublisher = eventPublisher,
+      source = source,
+      codeListener = codeListener,
+    )
   }
 
   /**
@@ -98,7 +101,7 @@ public class TreehouseApp<A : AppService> private constructor(
     if (started) return
     started = true
 
-    eventPublisher.appStart(this)
+    eventPublisher.appStart()
 
     appScope.launch(dispatchers.zipline) {
       val ziplineFileFlow = ziplineFlow()
@@ -126,7 +129,7 @@ public class TreehouseApp<A : AppService> private constructor(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
-      eventListener = eventPublisher.ziplineEventListener(this),
+      eventListener = eventPublisher.ziplineEventListener,
     )
 
     loader.concurrentDownloads = factory.concurrentDownloads
@@ -163,33 +166,7 @@ public class TreehouseApp<A : AppService> private constructor(
     dispatchers.checkZipline()
     check(!closed)
 
-    val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
-    sessionScope.launch(dispatchers.ui) {
-      val previous = ziplineSession
-
-      val next = ZiplineSession(
-        app = this@TreehouseApp,
-        appScope = appScope,
-        sessionScope = sessionScope,
-        appService = appService,
-        zipline = zipline,
-        frameClock = factory.frameClock,
-      )
-
-      next.start()
-
-      for (content in boundContents) {
-        content.receiveZiplineSession(next)
-      }
-
-      if (previous != null) {
-        sessionScope.launch(dispatchers.zipline) {
-          previous.cancel()
-        }
-      }
-
-      ziplineSession = next
-    }
+    codeHost.onCodeChanged(zipline, appService)
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
@@ -197,11 +174,54 @@ public class TreehouseApp<A : AppService> private constructor(
     dispatchers.checkZipline()
     closed = true
     appScope.launch(dispatchers.ui) {
-      val session = ziplineSession ?: return@launch
+      val session = codeHost.codeSession ?: return@launch
       session.cancel()
-      ziplineSession = null
+      codeHost.codeSession = null
     }
-    eventPublisher.appCanceled(this)
+    eventPublisher.appCanceled()
+  }
+
+  private class ZiplineCodeHost<A : AppService>(
+    private val appScope: CoroutineScope,
+    private val dispatchers: TreehouseDispatchers,
+    private val eventPublisher: EventPublisher,
+    private val frameClock: FrameClock,
+    override val stateStore: StateStore,
+  ) : CodeHost<A> {
+    override var codeSession: ZiplineCodeSession<A>? = null
+
+    override val boundContents = mutableListOf<TreehouseAppContent<A>>()
+
+    fun onCodeChanged(zipline: Zipline, appService: A) {
+      val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
+      sessionScope.launch(dispatchers.ui) {
+        val previous = codeSession
+
+        val next = ZiplineCodeSession(
+          dispatchers = dispatchers,
+          eventPublisher = eventPublisher,
+          appScope = appScope,
+          frameClock = frameClock,
+          sessionScope = sessionScope,
+          appService = appService,
+          zipline = zipline,
+        )
+
+        next.start()
+
+        for (content in boundContents) {
+          content.receiveCodeSession(next)
+        }
+
+        if (previous != null) {
+          sessionScope.launch(dispatchers.zipline) {
+            previous.cancel()
+          }
+        }
+
+        codeSession = next
+      }
+    }
   }
 
   /**
@@ -214,7 +234,7 @@ public class TreehouseApp<A : AppService> private constructor(
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,
-    eventListener: EventListener,
+    internal val eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
     internal val frameClock: FrameClock,
     internal val manifestVerifier: ManifestVerifier,
@@ -225,8 +245,6 @@ public class TreehouseApp<A : AppService> private constructor(
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
   ) : Closeable {
-    internal val eventPublisher = EventPublisher(eventListener)
-
     /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
     internal val cache: ZiplineCache by lazy {
       platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
