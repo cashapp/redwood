@@ -72,6 +72,7 @@ public class ProtocolBridge<W : Any>(
             is Add -> {
               val child = node(change.childId)
               children.insert(change.index, child.widget)
+              child.attachTo(children)
             }
             is Move -> {
               children.move(change.fromIndex, change.toIndex, change.count)
