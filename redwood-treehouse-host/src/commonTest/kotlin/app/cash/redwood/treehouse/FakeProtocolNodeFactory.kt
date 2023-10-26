@@ -15,12 +15,15 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.widget.GeneratedProtocolFactory
 import app.cash.redwood.protocol.widget.ProtocolNode
-import app.cash.redwood.protocol.widget.ProtocolNodeFactory
 
-internal class FakeProtocolNodeFactory : ProtocolNodeFactory<FakeWidget> {
-  @RedwoodCodegenApi
-  override fun create(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
+@OptIn(RedwoodCodegenApi::class)
+internal class FakeProtocolNodeFactory : GeneratedProtocolFactory<FakeWidget> {
+  override fun createNode(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
+  override fun createModifier(element: ModifierElement): Modifier = Modifier
 }

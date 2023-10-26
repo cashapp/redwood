@@ -27,6 +27,7 @@ import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.Annotatable
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -79,8 +80,8 @@ internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName 
   return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
 }
 
-internal fun Schema.protocolNodeFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}ProtocolNodeFactory")
+internal fun Schema.protocolFactoryType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}ProtocolFactory")
 }
 
 internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
@@ -140,9 +141,6 @@ internal fun Schema.modifierImpl(modifier: Modifier): ClassName {
 internal fun Schema.getTesterFunction(): MemberName {
   return MemberName(widgetPackage(), "${type.flatName}Tester")
 }
-
-internal val Schema.toModifier: MemberName get() =
-  MemberName(widgetPackage(), "toModifier")
 
 internal val Schema.modifierToProtocol: MemberName get() =
   MemberName(composePackage(), "toProtocol")
@@ -222,5 +220,17 @@ private fun Deprecation.Level.toMemberName(): MemberName {
       WARNING -> DeprecationLevel.WARNING.name
       ERROR -> DeprecationLevel.ERROR.name
     },
+  )
+}
+
+internal fun <T : Annotatable.Builder<T>> T.optIn(vararg names: ClassName): T = apply {
+  addAnnotation(
+    AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+      .apply {
+        for (name in names) {
+          addMember("%T::class", name)
+        }
+      }
+      .build(),
   )
 }

@@ -51,11 +51,7 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
       TypeSpec.classBuilder(widgetFactoriesType)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .optIn(Stdlib.ExperimentalObjCName)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", widgetFactoriesType.simpleName)
@@ -109,11 +105,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .optIn(Stdlib.ExperimentalObjCName)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", widgetFactoryType.simpleName)
@@ -169,11 +161,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
       TypeSpec.interfaceBuilder(flatName)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .optIn(Stdlib.ExperimentalObjCName)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", flatName)

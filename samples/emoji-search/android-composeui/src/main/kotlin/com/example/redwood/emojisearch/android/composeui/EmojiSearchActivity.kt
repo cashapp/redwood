@@ -44,7 +44,7 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -68,7 +68,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolNodeFactory<@Composable () -> Unit>(
+      EmojiSearchProtocolFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),

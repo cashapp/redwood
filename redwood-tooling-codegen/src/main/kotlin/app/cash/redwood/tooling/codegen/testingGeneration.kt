@@ -74,7 +74,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
     .addFunction(
       FunSpec.builder(testerFunction)
-        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
+        .optIn(Redwood.RedwoodCodegenApi)
         .addModifiers(SUSPEND)
         .addParameter(
           ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))

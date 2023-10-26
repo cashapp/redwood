@@ -33,7 +33,7 @@ import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.testing.launcher.TestAppSpec
 import com.example.redwood.testing.treehouse.TestAppPresenter
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -57,7 +57,7 @@ class TestAppActivity : ComponentActivity() {
       override fun widgetFactory(
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = TestSchemaProtocolNodeFactory(
+      ) = TestSchemaProtocolFactory(
         provider = TestSchemaWidgetFactories(
           TestSchema = AndroidTestSchemaWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),

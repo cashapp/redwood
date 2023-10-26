@@ -71,7 +71,7 @@ internal fun generateComposable(
     .addFunction(
       FunSpec.builder(flatName)
         .addAnnotation(ComposeRuntime.Composable)
-        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
+        .optIn(Redwood.RedwoodCodegenApi)
         .apply {
           widget.documentation?.let { documentation ->
             addKdoc(documentation)

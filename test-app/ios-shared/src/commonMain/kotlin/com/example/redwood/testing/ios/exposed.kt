@@ -27,7 +27,7 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import com.example.redwood.testing.treehouse.TestAppPresenter
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import okio.ByteString
@@ -40,7 +40,7 @@ fun exposedTypes(
   testAppPresenter: TestAppPresenter,
   testAppLauncher: TestAppLauncher,
   testSchemaWidgetFactory: TestSchemaWidgetFactory<*>,
-  protocolNodeFactory: TestSchemaProtocolNodeFactory<*>,
+  protocolFactory: TestSchemaProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,

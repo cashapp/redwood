@@ -15,10 +15,10 @@
  */
 package app.cash.redwood.protocol.widget
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.widget.Widget
 
@@ -28,19 +28,27 @@ import app.cash.redwood.widget.Widget
  * @suppress
  */
 @RedwoodCodegenApi
-public interface ProtocolNode<W : Any> {
-  public val widget: Widget<W>
+public abstract class ProtocolNode<W : Any> {
+  public abstract val widget: Widget<W>
+
+  private var container: Widget.Children<W>? = null
 
   /**
    * Record that this node's [widget] has been inserted into [container].
    * Updates to this node's layout modifier will notify [container].
    * This function may only be invoked once on each instance.
    */
-  public fun attachTo(container: Widget.Children<W>)
+  public fun attachTo(container: Widget.Children<W>) {
+    check(this.container == null)
+    this.container = container
+  }
 
-  public fun apply(change: PropertyChange, eventSink: EventSink)
+  public abstract fun apply(change: PropertyChange, eventSink: EventSink)
 
-  public fun updateModifier(elements: List<ModifierElement>)
+  public fun updateModifier(modifier: Modifier) {
+    widget.modifier = modifier
+    container?.onModifierUpdated()
+  }
 
   /**
    * Return one of this node's children groups by its [tag].
@@ -49,5 +57,5 @@ public interface ProtocolNode<W : Any> {
    * If `null` is returned, the caller should make every effort to ignore these children and
    * continue executing.
    */
-  public fun children(tag: ChildrenTag): Widget.Children<W>?
+  public abstract fun children(tag: ChildrenTag): Widget.Children<W>?
 }
