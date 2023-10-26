@@ -31,9 +31,7 @@ open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
   override fun Text(): Text<Nothing> = TODO()
   override fun Button() = object : Button<Nothing> {
     override val value get() = TODO()
-    override var modifier: Modifier
-      get() = TODO()
-      set(_) { TODO() }
+    override var modifier: Modifier = Modifier
 
     override fun text(text: String?) = TODO()
     override fun onClick(onClick: (() -> Unit)?) = TODO()

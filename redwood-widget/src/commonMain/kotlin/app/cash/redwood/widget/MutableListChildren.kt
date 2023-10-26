@@ -25,6 +25,7 @@ import kotlin.native.ObjCName
 @ObjCName("MutableListChildren", exact = true)
 public class MutableListChildren<W : Any>(
   private val list: MutableList<Widget<W>> = mutableListOf(),
+  private val modifierUpdated: () -> Unit = {},
 ) : Widget.Children<W>, MutableList<Widget<W>> by list {
   override fun insert(index: Int, widget: Widget<W>) {
     list.add(index, widget)
@@ -38,5 +39,7 @@ public class MutableListChildren<W : Any>(
     list.remove(index, count)
   }
 
-  override fun onModifierUpdated() {}
+  override fun onModifierUpdated() {
+    modifierUpdated()
+  }
 }

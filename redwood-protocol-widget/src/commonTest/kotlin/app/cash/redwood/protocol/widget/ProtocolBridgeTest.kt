@@ -15,16 +15,19 @@
  */
 package app.cash.redwood.protocol.widget
 
-import app.cash.redwood.protocol.ChildrenChange
+import app.cash.redwood.protocol.ChildrenChange.Add
+import app.cash.redwood.protocol.ChildrenChange.Remove
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.hasMessage
+import assertk.assertions.isEqualTo
 import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
@@ -101,7 +104,7 @@ class ProtocolBridgeTest {
           id = Id(1),
           tag = WidgetTag(4), // Button
         ),
-        ChildrenChange.Add(
+        Add(
           id = Id.Root,
           tag = ChildrenTag.Root,
           childId = Id(1),
@@ -113,7 +116,7 @@ class ProtocolBridgeTest {
     // Remove the button.
     bridge.sendChanges(
       listOf(
-        ChildrenChange.Remove(
+        Remove(
           id = Id.Root,
           tag = ChildrenTag.Root,
           index = 0,
@@ -135,5 +138,38 @@ class ProtocolBridgeTest {
       bridge.sendChanges(updateButtonText)
     }
     assertThat(t).hasMessage("Unknown widget ID 1")
+  }
+
+  @Test fun modifierChangeNotifiesContainer() {
+    var modifierUpdateCount = 0
+    val bridge = ProtocolBridge(
+      container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
+      factory = TestSchemaProtocolNodeFactory(
+        provider = TestSchemaWidgetFactories(
+          TestSchema = EmptyTestSchemaWidgetFactory(),
+          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
+          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        ),
+      ),
+      eventSink = ::error,
+    )
+
+    // Initial Button add does not trigger update callback (it's implicit because of insert).
+    bridge.sendChanges(
+      listOf(
+        Create(Id(1), WidgetTag(4)), // Button
+        ModifierChange(Id(1)),
+        Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      ),
+    )
+    assertThat(modifierUpdateCount).isEqualTo(0)
+
+    // Future modifier changes trigger the callback.
+    bridge.sendChanges(
+      listOf(
+        ModifierChange(Id(1)),
+      ),
+    )
+    assertThat(modifierUpdateCount).isEqualTo(1)
   }
 }
