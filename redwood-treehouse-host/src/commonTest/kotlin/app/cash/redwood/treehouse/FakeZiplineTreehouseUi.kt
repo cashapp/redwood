@@ -27,6 +27,10 @@ import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.JsonPrimitive
 
+/**
+ * This class pretends to be guest UI. We publish UI changes here with [addWidget], and the
+ * Treehouse content propagates them to a bound [TreehouseView].
+ */
 class FakeZiplineTreehouseUi(
   private val name: String,
   private val eventLog: EventLog,

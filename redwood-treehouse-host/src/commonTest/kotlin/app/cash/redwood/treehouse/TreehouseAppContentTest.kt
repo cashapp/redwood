@@ -72,6 +72,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
+    // Guest code can add widgets before a TreehouseView is bound!
     codeHost.session!!.appService.uis.single().addWidget("hello")
     eventLog.assertNoEvents()
 
