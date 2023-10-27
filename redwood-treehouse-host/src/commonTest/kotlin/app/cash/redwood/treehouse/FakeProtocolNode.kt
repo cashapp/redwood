@@ -19,8 +19,8 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.widget.ProtocolChildren
 import app.cash.redwood.protocol.widget.ProtocolNode
-import app.cash.redwood.widget.Widget
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
@@ -34,7 +34,7 @@ internal class FakeProtocolNode : ProtocolNode<FakeWidget>() {
     widget.label = (change.value as JsonPrimitive).content
   }
 
-  override fun children(tag: ChildrenTag): Widget.Children<FakeWidget>? {
+  override fun children(tag: ChildrenTag): ProtocolChildren<FakeWidget>? {
     error("unexpected call")
   }
 }
