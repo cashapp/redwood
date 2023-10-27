@@ -31,7 +31,7 @@ class TreehouseAppContentTest {
   private val eventLog = EventLog()
 
   private val dispatcher = UnconfinedTestDispatcher()
-  private val codeHost = FakeCodeHost<FakeAppService>()
+  private val codeHost = FakeCodeHost()
   private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
   private val eventPublisher = FakeEventPublisher()
   private val codeListener = FakeCodeListener(eventLog)
@@ -59,6 +59,7 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single().value.label).isEqualTo("hello")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
   @Test
@@ -81,6 +82,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
   @Test
@@ -102,6 +104,7 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single().value.label).isEqualTo("hello")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
   @Test
@@ -120,6 +123,7 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single().value.label).isEqualTo("hello")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
   /** This exercises hot reloading. The view sees new code. */
@@ -131,26 +135,30 @@ class TreehouseAppContentTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
-    codeHost.session!!.appService.uis.single().addWidget("helloA")
+    val codeSessionA = FakeCodeSession("codeSessionA", eventLog)
+    codeHost.session = codeSessionA
+    codeSessionA.appService.uis.single().addWidget("helloA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
 
-    codeHost.session = FakeCodeSession("codeSessionB", eventLog)
+    val codeSessionB = FakeCodeSession("codeSessionB", eventLog)
+    codeHost.session = codeSessionB
     eventLog.takeEvent("codeSessionA.cancel()")
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
 
-    // No onCodeLoaded() and no reset() until the new code's first widget is added!
+    // This still shows UI from codeSessionA. There's no onCodeLoaded() and no reset() until the new
+    // code's first widget is added!
     assertThat(view1.children.single().value.label).isEqualTo("helloA")
-    assertThat(eventLog.assertNoEvents())
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
 
-    codeHost.session!!.appService.uis.single().addWidget("helloB")
+    codeSessionB.appService.uis.single().addWidget("helloB")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = false)")
     assertThat(view1.children.single().value.label).isEqualTo("helloB")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
   @Test
@@ -204,6 +212,8 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single().value.label).isEqualTo("helloA")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[1].start()")
 
@@ -212,6 +222,7 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single().value.label).isEqualTo("helloB")
 
     content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[1].close()")
   }
 
   private fun TestScope.treehouseAppContent(): TreehouseAppContent<FakeAppService> {

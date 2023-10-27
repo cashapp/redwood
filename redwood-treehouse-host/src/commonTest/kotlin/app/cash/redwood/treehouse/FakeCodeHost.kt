@@ -15,12 +15,10 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
-
-internal class FakeCodeHost<A : AppService> : CodeHost<A> {
+internal class FakeCodeHost : CodeHost<FakeAppService> {
   override val stateStore = MemoryStateStore()
 
-  override var session: CodeSession<A>? = null
+  override var session: CodeSession<FakeAppService>? = null
     set(value) {
       require(value != null)
 
@@ -34,15 +32,33 @@ internal class FakeCodeHost<A : AppService> : CodeHost<A> {
       field = value
     }
 
-  private val listeners = mutableListOf<CodeHost.Listener<A>>()
+  private val listeners = mutableListOf<CodeHost.Listener<FakeAppService>>()
 
-  override fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope) = appService
+  override fun newServiceScope(): CodeHost.ServiceScope<FakeAppService> {
+    return object : CodeHost.ServiceScope<FakeAppService> {
+      val uisToClose = mutableListOf<ZiplineTreehouseUi>()
 
-  override fun addListener(listener: CodeHost.Listener<A>) {
+      override fun apply(appService: FakeAppService): FakeAppService {
+        return appService.withListener(object : FakeAppService.Listener {
+          override fun onNewUi(ui: ZiplineTreehouseUi) {
+            uisToClose += ui
+          }
+        })
+      }
+
+      override fun close() {
+        for (ui in uisToClose) {
+          ui.close()
+        }
+      }
+    }
+  }
+
+  override fun addListener(listener: CodeHost.Listener<FakeAppService>) {
     listeners += listener
   }
 
-  override fun removeListener(listener: CodeHost.Listener<A>) {
+  override fun removeListener(listener: CodeHost.Listener<FakeAppService>) {
     listeners -= listener
   }
 }

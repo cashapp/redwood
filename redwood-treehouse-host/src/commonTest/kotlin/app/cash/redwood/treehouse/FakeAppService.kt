@@ -15,17 +15,15 @@
  */
 package app.cash.redwood.treehouse
 
-internal class FakeAppService(
+internal class FakeAppService private constructor(
   private val name: String,
   private val eventLog: EventLog,
+  private val listeners: List<Listener>,
+  private val mutableUis: MutableList<FakeZiplineTreehouseUi>,
 ) : AppService {
-  val uis = mutableListOf<FakeZiplineTreehouseUi>()
 
-  fun newUi(): ZiplineTreehouseUi {
-    val result = FakeZiplineTreehouseUi("$name.uis[${uis.size}]", eventLog)
-    uis += result
-    return result
-  }
+  val uis: List<FakeZiplineTreehouseUi>
+    get() = mutableUis.toList()
 
   override val appLifecycle = object : AppLifecycle {
     override fun start(host: AppLifecycle.Host) {
@@ -34,5 +32,35 @@ internal class FakeAppService(
 
     override fun sendFrame(timeNanos: Long) {
     }
+  }
+
+  constructor(
+    name: String,
+    eventLog: EventLog,
+  ) : this(name, eventLog, listOf(), mutableListOf())
+
+  /**
+   * Return a FakeAppService that shares all state with this, but that notifies [listeners] of
+   * events triggered through it.
+   *
+   * Note that this does not add [listener] to receive events triggered directly on this.
+   *
+   * This awkward pattern emulates `ZiplineScope`, which also only tracks objects on the scoped
+   * wrapper.
+   */
+  fun withListener(listener: Listener) =
+    FakeAppService(name, eventLog, listeners + listener, mutableUis)
+
+  fun newUi(): ZiplineTreehouseUi {
+    val result = FakeZiplineTreehouseUi("$name.uis[${mutableUis.size}]", eventLog)
+    for (listener in listeners) {
+      listener.onNewUi(result)
+    }
+    mutableUis += result
+    return result
+  }
+
+  interface Listener {
+    fun onNewUi(ui: ZiplineTreehouseUi)
   }
 }
