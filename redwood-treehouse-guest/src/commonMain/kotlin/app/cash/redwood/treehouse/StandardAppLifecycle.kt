@@ -20,8 +20,8 @@ import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.compose.ProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi

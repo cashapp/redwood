@@ -16,7 +16,7 @@
 package app.cash.redwood.testing
 
 import app.cash.redwood.protocol.SnapshotChangeList
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolBridge
 import kotlinx.serialization.json.Json
 
 /**

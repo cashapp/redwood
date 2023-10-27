@@ -88,22 +88,22 @@ internal fun generateProtocolBridge(
   return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
-        .addSuperinterface(ComposeProtocol.ProtocolBridge)
+        .addSuperinterface(ProtocolGuest.ProtocolBridge)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("state", ComposeProtocol.ProtocolState)
-            .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
+            .addParameter("state", ProtocolGuest.ProtocolState)
+            .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
             .addParameter("provider", providerType)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("state", ComposeProtocol.ProtocolState, PRIVATE)
+          PropertySpec.builder("state", ProtocolGuest.ProtocolState, PRIVATE)
             .initializer("state")
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -139,14 +139,14 @@ internal fun generateProtocolBridge(
         )
         .addType(
           TypeSpec.companionObjectBuilder()
-            .addSuperinterface(ComposeProtocol.ProtocolBridgeFactory)
+            .addSuperinterface(ProtocolGuest.ProtocolBridgeFactory)
             .addFunction(
               FunSpec.builder("create")
                 .addModifiers(OVERRIDE)
                 .addParameter("json", KotlinxSerialization.Json)
-                .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
+                .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
                 .returns(type)
-                .addStatement("val state = %T()", ComposeProtocol.ProtocolState)
+                .addStatement("val state = %T()", ProtocolGuest.ProtocolState)
                 .addStatement("val root = state.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
@@ -201,13 +201,13 @@ internal fun generateProtocolWidgetFactory(
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("state", ComposeProtocol.ProtocolState)
+            .addParameter("state", ProtocolGuest.ProtocolState)
             .addParameter("json", KotlinxSerialization.Json)
-            .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
+            .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("state", ComposeProtocol.ProtocolState, PRIVATE)
+          PropertySpec.builder("state", ProtocolGuest.ProtocolState, PRIVATE)
             .initializer("state")
             .build(),
         )
@@ -217,7 +217,7 @@ internal fun generateProtocolWidgetFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -296,17 +296,17 @@ internal fun generateProtocolWidget(
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .addSuperinterface(ComposeProtocol.ProtocolWidget)
+        .addSuperinterface(ProtocolGuest.ProtocolWidget)
         .addSuperinterface(widgetName.parameterizedBy(NOTHING))
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("state", ComposeProtocol.ProtocolState)
+            .addParameter("state", ProtocolGuest.ProtocolState)
             .addParameter("json", KotlinxSerialization.Json)
-            .addParameter("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler)
+            .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("state", ComposeProtocol.ProtocolState, PRIVATE)
+          PropertySpec.builder("state", ProtocolGuest.ProtocolState, PRIVATE)
             .initializer("state")
             .build(),
         )
@@ -316,7 +316,7 @@ internal fun generateProtocolWidget(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ComposeProtocol.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )

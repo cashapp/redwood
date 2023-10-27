@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.protocol.guest
 
-@Suppress(
-  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS", // ArrayList itself aliases to j.u.ArrayList on JVM.
-  "ACTUAL_WITHOUT_EXPECT", // https://youtrack.jetbrains.com/issue/KT-37316
-)
-internal actual typealias PlatformList<E> = ArrayList<E>
-
-@Suppress(
-  "NOTHING_TO_INLINE", // Explicitly trying to be zero-overhead.
-  "KotlinRedundantDiagnosticSuppress", // Inline warning only happens on JVM source set.
-)
-internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
-  return this
+internal expect class PlatformList<E>() {
+  val size: Int
+  fun add(element: E)
 }
+
+internal expect fun <E> PlatformList<E>.asList(): List<E>
