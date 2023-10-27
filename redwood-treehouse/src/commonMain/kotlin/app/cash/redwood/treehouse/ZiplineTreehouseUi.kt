@@ -28,6 +28,9 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @ObjCName("ZiplineTreehouseUi", exact = true)
 public interface ZiplineTreehouseUi : ZiplineService, EventSink {
+  public fun start(host: Host)
+
+  @Deprecated("Use `start` method that takes in a Host")
   public fun start(
     changesSink: ChangesSinkService,
     onBackPressedDispatcher: OnBackPressedDispatcherService,
@@ -46,4 +49,12 @@ public interface ZiplineTreehouseUi : ZiplineService, EventSink {
   )
 
   public fun snapshotState(): StateSnapshot? = null
+
+  /** Access to the host that presents this UI. */
+  public interface Host : ZiplineService, ChangesSinkService {
+    public val uiConfigurations: StateFlow<UiConfiguration>
+    public val stateSnapshot: StateSnapshot?
+
+    public fun addOnBackPressedCallback(callback: OnBackPressedCallbackService): CancellableService
+  }
 }

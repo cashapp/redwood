@@ -37,21 +37,16 @@ class FakeZiplineTreehouseUi(
 ) : ZiplineTreehouseUi {
   private var nextWidgetId = 1
 
-  private lateinit var changesSink: ChangesSinkService
+  private lateinit var host: ZiplineTreehouseUi.Host
 
-  override fun start(
-    changesSink: ChangesSinkService,
-    onBackPressedDispatcher: OnBackPressedDispatcherService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  ) {
+  override fun start(host: ZiplineTreehouseUi.Host) {
     eventLog += "$name.start()"
-    this.changesSink = changesSink
+    this.host = host
   }
 
   fun addWidget(label: String) {
     val widgetId = Id(nextWidgetId++)
-    changesSink.sendChanges(
+    host.sendChanges(
       listOf(
         Create(widgetId, WidgetTag(1)),
         PropertyChange(widgetId, PropertyTag(1), JsonPrimitive(label)),
@@ -62,6 +57,16 @@ class FakeZiplineTreehouseUi(
 
   override fun sendEvent(event: Event) {
     eventLog += "$name.sendEvent($event)"
+  }
+
+  @Suppress("OVERRIDE_DEPRECATION")
+  override fun start(
+    changesSink: ChangesSinkService,
+    onBackPressedDispatcher: OnBackPressedDispatcherService,
+    uiConfigurations: StateFlow<UiConfiguration>,
+    stateSnapshot: StateSnapshot?,
+  ) {
+    error("unexpected call")
   }
 
   @Suppress("OVERRIDE_DEPRECATION")
