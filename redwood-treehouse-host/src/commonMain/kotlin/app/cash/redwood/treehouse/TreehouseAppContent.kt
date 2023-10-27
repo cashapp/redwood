@@ -286,7 +286,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private var bridgeOrNull: ProtocolBridge<*>? = null
 
   /** Only accessed on [TreehouseDispatchers.zipline]. */
-  private val ziplineScope = ZiplineScope()
+  private val serviceScope = codeHost.newServiceScope()
 
   /** Only accessed on [TreehouseDispatchers.zipline]. Null after [cancel]. */
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
@@ -385,7 +385,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
   fun start(session: CodeSession<A>) {
     bindingScope.launch(dispatchers.zipline) {
-      val scopedAppService = codeHost.applyZiplineScope(session.appService, ziplineScope)
+      val scopedAppService = serviceScope.apply(session.appService)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
       val restoredId = viewOrNull?.stateSnapshotId
@@ -452,7 +452,7 @@ private class ViewContentCodeBinding<A : AppService>(
     appScope.launch(dispatchers.zipline) {
       treehouseUiOrNull = null
       bindingScope.cancel()
-      ziplineScope.close()
+      serviceScope.close()
     }
   }
 }

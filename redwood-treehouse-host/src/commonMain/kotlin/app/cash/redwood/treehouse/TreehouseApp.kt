@@ -199,8 +199,18 @@ public class TreehouseApp<A : AppService> private constructor(
      */
     private val listeners = mutableListOf<CodeHost.Listener<A>>()
 
-    override fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A {
-      return appService.withScope(ziplineScope)
+    override fun newServiceScope(): CodeHost.ServiceScope<A> {
+      val ziplineScope = ZiplineScope()
+
+      return object : CodeHost.ServiceScope<A> {
+        override fun apply(appService: A): A {
+          return appService.withScope(ziplineScope)
+        }
+
+        override fun close() {
+          ziplineScope.close()
+        }
+      }
     }
 
     override fun addListener(listener: CodeHost.Listener<A>) {

@@ -15,8 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
-
 /** Manages loading and hot-reloading a series of code sessions. */
 internal interface CodeHost<A : AppService> {
   val stateStore: StateStore
@@ -24,7 +22,7 @@ internal interface CodeHost<A : AppService> {
   /** Only accessed on [TreehouseDispatchers.ui]. */
   val session: CodeSession<A>?
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
+  fun newServiceScope(): ServiceScope<A>
 
   fun addListener(listener: Listener<A>)
 
@@ -32,5 +30,18 @@ internal interface CodeHost<A : AppService> {
 
   interface Listener<A : AppService> {
     fun codeSessionChanged(next: CodeSession<A>)
+  }
+
+  /**
+   * Tracks all of the services created to produce a UI, and offers a single mechanism to close
+   * them all. Note that closing this does not close the app services it was applied to.
+   */
+  interface ServiceScope<A : AppService> {
+    /**
+     * Returns a new instance that forwards calls to [appService] and keeps track of returned
+     * instances so they may be closed.
+     */
+    fun apply(appService: A): A
+    fun close()
   }
 }

@@ -72,4 +72,8 @@ class FakeZiplineTreehouseUi(
   ) {
     error("unexpected call")
   }
+
+  override fun close() {
+    eventLog += "$name.close()"
+  }
 }
