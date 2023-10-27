@@ -54,7 +54,7 @@ internal object WidgetProtocol {
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
-  val ProtocolNodeFactory = ClassName("app.cash.redwood.protocol.widget", "ProtocolNodeFactory")
+  val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.widget", "GeneratedProtocolFactory")
 }
 
 internal object Redwood {
@@ -63,9 +63,6 @@ internal object Redwood {
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
   val UiConfiguration = ClassName("app.cash.redwood.ui", "UiConfiguration")
-  val OptInToRedwoodCodegenApi = AnnotationSpec.builder(Stdlib.OptIn)
-    .addMember("%T::class", RedwoodCodegenApi)
-    .build()
 }
 
 internal object RedwoodTesting {
@@ -110,7 +107,6 @@ internal object Stdlib {
   val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
   val ObjCName = ClassName("kotlin.native", "ObjCName")
-  val OptIn = ClassName("kotlin", "OptIn")
   val buildList = MemberName("kotlin.collections", "buildList")
   val listOf = MemberName("kotlin.collections", "listOf")
 }

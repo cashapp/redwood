@@ -43,7 +43,7 @@ import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
@@ -137,7 +137,7 @@ class ViewTreesTest {
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val protocolNodes = TestSchemaProtocolNodeFactory(mutableFactories)
+    val protocolNodes = TestSchemaProtocolFactory(mutableFactories)
     val widgetContainer = MutableListChildren<WidgetValue>()
     val widgetBridge = ProtocolBridge(widgetContainer, protocolNodes) {
       throw AssertionError()

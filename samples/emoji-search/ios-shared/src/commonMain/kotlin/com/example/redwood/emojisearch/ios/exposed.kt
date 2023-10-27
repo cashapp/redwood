@@ -26,7 +26,7 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import okio.ByteString
@@ -38,7 +38,7 @@ import platform.Foundation.NSData
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  protocolNodeFactory: EmojiSearchProtocolNodeFactory<*>,
+  protocolFactory: EmojiSearchProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,

@@ -38,7 +38,7 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
@@ -66,7 +66,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolNodeFactory(
+      EmojiSearchProtocolFactory(
         provider = EmojiSearchWidgetFactories(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),

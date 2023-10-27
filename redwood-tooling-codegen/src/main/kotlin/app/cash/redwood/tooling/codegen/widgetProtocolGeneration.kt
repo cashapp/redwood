@@ -29,7 +29,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -38,13 +37,13 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 /*
-@ObjCName("ExampleProtocolNodeFactory", exact = true)
-public class ExampleProtocolNodeFactory<W : Any>(
+@ObjCName("ExampleProtocolFactory", exact = true)
+public class ExampleProtocolFactory<W : Any>(
   private val provider: ExampleWidgetFactoryProvider<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : ProtocolNode.Factory<W> {
-  override fun create(tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
+) : GeneratedProtocolFactory<W> {
+  override fun createNode(tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
     1 -> TextProtocolNode(delegate.Sunspot.Text(), json, mismatchHandler)
     2 -> ButtonProtocolNode(delegate.Sunspot.Button(), json, mismatchHandler)
     1_000_001 -> RedwoodLayoutRowProtocolNode(delegate.RedwoodLayout.Row(), json, mismatchHandler)
@@ -54,24 +53,31 @@ public class ExampleProtocolNodeFactory<W : Any>(
       null
     }
   }
+
+  override fun createModifier(element: ModifierElement): Modifier {
+    val serializer = when (element.tag) {
+      1 -> AlignmentImpl.serializer()
+      else -> {
+        mismatchHandler.onUnknownModifier(element.tag)
+        return Modifier
+      }
+    }
+    return json.decodeFromJsonElement(serializer, element.value)
+  }
 }
 */
-internal fun generateProtocolNodeFactory(
+internal fun generateProtocolFactory(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
   val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
-  val type = schema.protocolNodeFactoryType()
+  val type = schema.protocolFactoryType()
   return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(WidgetProtocol.ProtocolNodeFactory.parameterizedBy(typeVariableW))
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .addSuperinterface(WidgetProtocol.GeneratedProtocolFactory.parameterizedBy(typeVariableW))
+        .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", type.simpleName)
@@ -109,7 +115,7 @@ internal fun generateProtocolNodeFactory(
             .build(),
         )
         .addFunction(
-          FunSpec.builder("create")
+          FunSpec.builder("createNode")
             .addModifiers(OVERRIDE)
             .addParameter("tag", Protocol.WidgetTag)
             .addAnnotation(Redwood.RedwoodCodegenApi)
@@ -138,6 +144,38 @@ internal fun generateProtocolNodeFactory(
             .endControlFlow()
             .build(),
         )
+        .addFunction(
+          FunSpec.builder("createModifier")
+            .addModifiers(OVERRIDE)
+            .addParameter("element", Protocol.ModifierElement)
+            .returns(Redwood.Modifier)
+            .apply {
+              val modifiers = schemaSet.allModifiers()
+              if (modifiers.isNotEmpty()) {
+                beginControlFlow("val serializer = when (element.tag.value)")
+                val host = schemaSet.schema
+                for ((localSchema, modifier) in modifiers) {
+                  val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
+                  if (modifier.properties.isEmpty()) {
+                    addStatement("%L -> return %T", modifier.tag, typeName)
+                  } else {
+                    addStatement("%L -> %T.serializer()", modifier.tag, typeName)
+                  }
+                }
+                beginControlFlow("else ->")
+              }
+
+              addStatement("mismatchHandler.onUnknownModifier(element.tag)")
+              addStatement("return %T", Redwood.Modifier)
+
+              if (modifiers.isNotEmpty()) {
+                endControlFlow()
+                endControlFlow()
+                addStatement("return json.decodeFromJsonElement(serializer, element.value)")
+              }
+            }
+            .build(),
+        )
         .build(),
     )
     .build()
@@ -148,11 +186,10 @@ internal class ProtocolButton<W : Any>(
   widget: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolNode<W> {
+) : ProtocolNode<W>() {
   private var _widget: Button<W> = widget
   override val widget: Widget<W> get() = _widget
 
-  private var container: Widget.Children<W>? = null
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
@@ -172,18 +209,9 @@ internal class ProtocolButton<W : Any>(
     }
   }
 
-  public override fun children(tag: ChildrenTag): Widget.Children<W> {
+  public override fun children(tag: ChildrenTag): Widget.Children<W>? {
     mismatchHandler.onUnknownChildren(WidgetTag(2), tag)
-  }
-
-  public override fun updateModifiers() {
-    _widget.modifier = elements.toModifiers(json, mismatchHandler)
-    container?.onModifierUpdated()
-  }
-
-  public override fun attachTo(container: Widget.Children<W>) {
-    check(this.container == null)
-    this.container = container
+    return null
   }
 }
 */
@@ -200,7 +228,7 @@ internal fun generateProtocolNode(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(protocolType)
+        .superclass(protocolType)
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -231,13 +259,6 @@ internal fun generateProtocolNode(
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("container", RedwoodWidget.WidgetChildrenOfW.copy(nullable = true))
-            .addModifiers(PRIVATE)
-            .mutable()
-            .initializer("null")
             .build(),
         )
         .apply {
@@ -371,33 +392,8 @@ internal fun generateProtocolNode(
               .build(),
           )
         }
-        .addFunction(
-          FunSpec.builder("updateModifier")
-            .addModifiers(OVERRIDE)
-            .addParameter("elements", LIST.parameterizedBy(Protocol.ModifierElement))
-            .addStatement("_widget.modifier = elements.%M(json, mismatchHandler)", host.toModifier)
-            .addStatement("container?.onModifierUpdated()")
-            .build(),
-        )
-        .addFunction(
-          FunSpec.builder("attachTo")
-            .addModifiers(OVERRIDE)
-            .addParameter("container", RedwoodWidget.WidgetChildrenOfW)
-            .addStatement("check(this.container == null)")
-            .addStatement("this.container = container")
-            .build(),
-        )
         .build(),
     )
-    .build()
-}
-
-internal fun generateWidgetProtocolModifierSerialization(
-  schemaSet: ProtocolSchemaSet,
-): FileSpec {
-  return FileSpec.builder(schemaSet.schema.widgetPackage(), "modifierSerialization")
-    .addFunction(generateJsonArrayToModifier(schemaSet.schema))
-    .addFunction(generateJsonElementToModifier(schemaSet))
     .build()
 }
 
@@ -452,62 +448,5 @@ internal fun generateProtocolModifierImpls(
         )
       }
     }
-    .build()
-}
-
-private fun generateJsonArrayToModifier(schema: ProtocolSchema): FunSpec {
-  return FunSpec.builder("toModifier")
-    .addModifiers(INTERNAL)
-    .receiver(LIST.parameterizedBy(Protocol.ModifierElement))
-    .addParameter("json", KotlinxSerialization.Json)
-    .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
-    .addStatement(
-      """
-      |return fold<%1T, %2T>(%2T) { modifier, element ->
-      |  modifier then element.%3M(json, mismatchHandler)
-      |}
-      """.trimMargin(),
-      Protocol.ModifierElement,
-      Redwood.Modifier,
-      schema.toModifier,
-    )
-    .returns(Redwood.Modifier)
-    .build()
-}
-
-private fun generateJsonElementToModifier(schemaSet: ProtocolSchemaSet): FunSpec {
-  return FunSpec.builder("toModifier")
-    .addModifiers(PRIVATE)
-    .receiver(Protocol.ModifierElement)
-    .addParameter("json", KotlinxSerialization.Json)
-    .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
-    .returns(Redwood.Modifier)
-    .beginControlFlow("val serializer = when (tag.value)")
-    .apply {
-      val modifiers = schemaSet.allModifiers()
-      if (modifiers.isEmpty()) {
-        addAnnotation(
-          AnnotationSpec.builder(Suppress::class)
-            .addMember("%S, %S, %S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNUSED_VARIABLE", "UNREACHABLE_CODE")
-            .build(),
-        )
-      } else {
-        val host = schemaSet.schema
-        for ((localSchema, modifier) in modifiers) {
-          val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
-          if (modifier.properties.isEmpty()) {
-            addStatement("%L -> return %T", modifier.tag, typeName)
-          } else {
-            addStatement("%L -> %T.serializer()", modifier.tag, typeName)
-          }
-        }
-      }
-    }
-    .beginControlFlow("else ->")
-    .addStatement("mismatchHandler.onUnknownModifier(tag)")
-    .addStatement("return %T", Redwood.Modifier)
-    .endControlFlow()
-    .endControlFlow()
-    .addStatement("return json.decodeFromJsonElement(serializer, value)")
     .build()
 }

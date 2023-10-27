@@ -39,8 +39,7 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
       }
     }
     Widget -> {
-      generateProtocolNodeFactory(this).writeTo(destination)
-      generateWidgetProtocolModifierSerialization(this).writeTo(destination)
+      generateProtocolFactory(this).writeTo(destination)
       for (dependency in all) {
         generateProtocolModifierImpls(dependency, host = schema)?.writeTo(destination)
         for (widget in dependency.widgets) {

@@ -53,7 +53,7 @@ class WidgetProtocolGenerationTest {
   @Test fun `names are sorted by their node tags`() {
     val schema = ProtocolSchemaSet.parse(SortedByTagSchema::class)
 
-    val fileSpec = generateProtocolNodeFactory(schema)
+    val fileSpec = generateProtocolFactory(schema)
     assertThat(fileSpec.toString())
       .containsMatch(Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE))
   }
@@ -61,7 +61,7 @@ class WidgetProtocolGenerationTest {
   @Test fun `dependency layout modifier are included in serialization`() {
     val schema = ProtocolSchemaSet.parse(TestSchema::class)
 
-    val fileSpec = generateWidgetProtocolModifierSerialization(schema)
+    val fileSpec = generateProtocolFactory(schema)
     assertThat(fileSpec.toString()).all {
       contains("1 -> TestRowVerticalAlignmentImpl.serializer()")
       contains("1_000_001 -> GrowImpl.serializer()")

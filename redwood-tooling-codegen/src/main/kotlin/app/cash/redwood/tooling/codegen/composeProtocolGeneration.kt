@@ -626,11 +626,7 @@ internal fun generateProtocolModifierSerializers(
                 val typeSerializer = KotlinxSerialization.KSerializer.parameterizedBy(typeName)
                 addProperty(
                   PropertySpec.builder("serializer_$id", typeSerializer)
-                    .addAnnotation(
-                      AnnotationSpec.builder(Stdlib.OptIn)
-                        .addMember("%T::class", KotlinxSerialization.ExperimentalSerializationApi)
-                        .build(),
-                    )
+                    .optIn(KotlinxSerialization.ExperimentalSerializationApi)
                     .addModifiers(PRIVATE)
                     .apply {
                       val parameters = mutableListOf(CodeBlock.of("%T::class", typeName))
@@ -652,11 +648,7 @@ internal fun generateProtocolModifierSerializers(
                 .addParameter("value", modifierType)
                 .apply {
                   if (modifier.properties.any { it.defaultExpression != null }) {
-                    addAnnotation(
-                      AnnotationSpec.builder(Stdlib.OptIn)
-                        .addMember("%T::class", KotlinxSerialization.ExperimentalSerializationApi)
-                        .build(),
-                    )
+                    optIn(KotlinxSerialization.ExperimentalSerializationApi)
                   }
                 }
                 .addStatement("val composite = encoder.beginStructure(descriptor)")

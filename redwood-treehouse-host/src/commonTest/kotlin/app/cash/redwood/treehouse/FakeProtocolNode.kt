@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.widget.ProtocolNode
 import app.cash.redwood.widget.Widget
@@ -28,18 +27,11 @@ import kotlinx.serialization.json.JsonPrimitive
  * This supports [FakeWidget] and its [FakeWidget.label] property.
  */
 @RedwoodCodegenApi
-internal class FakeProtocolNode : ProtocolNode<FakeWidget> {
+internal class FakeProtocolNode : ProtocolNode<FakeWidget>() {
   override val widget = FakeWidget()
-
-  override fun attachTo(container: Widget.Children<FakeWidget>) {
-  }
 
   override fun apply(change: PropertyChange, eventSink: EventSink) {
     widget.label = (change.value as JsonPrimitive).content
-  }
-
-  override fun updateModifier(elements: List<ModifierElement>) {
-    error("unexpected call")
   }
 
   override fun children(tag: ChildrenTag): Widget.Children<FakeWidget>? {

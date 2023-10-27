@@ -28,7 +28,7 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -38,7 +38,7 @@ class ProtocolBridgeTest {
   @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = TestSchemaProtocolNodeFactory(
+      factory = TestSchemaProtocolFactory(
         provider = TestSchemaWidgetFactories(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -62,7 +62,7 @@ class ProtocolBridgeTest {
   @Test fun duplicateIdThrows() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = TestSchemaProtocolNodeFactory(
+      factory = TestSchemaProtocolFactory(
         provider = TestSchemaWidgetFactories(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -87,7 +87,7 @@ class ProtocolBridgeTest {
   @Test fun removeRemoves() {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
-      factory = TestSchemaProtocolNodeFactory(
+      factory = TestSchemaProtocolFactory(
         provider = TestSchemaWidgetFactories(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
@@ -144,7 +144,7 @@ class ProtocolBridgeTest {
     var modifierUpdateCount = 0
     val bridge = ProtocolBridge(
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
-      factory = TestSchemaProtocolNodeFactory(
+      factory = TestSchemaProtocolFactory(
         provider = TestSchemaWidgetFactories(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),

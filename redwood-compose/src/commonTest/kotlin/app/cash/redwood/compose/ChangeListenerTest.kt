@@ -35,7 +35,7 @@ import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
+import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
@@ -56,7 +56,7 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
     val composeBridge = TestSchemaProtocolBridge.create()
-    val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolNodeFactory(factories)) {
+    val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolFactory(factories)) {
       throw AssertionError()
     }
     return TestRedwoodComposition(this, composeBridge.provider, composeBridge.root) {

@@ -63,8 +63,8 @@ class TestSchemaWidgetSystem : TreehouseViewWidgetSystem {
     func widgetFactory(
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
-    ) -> ProtocolNodeFactory {
-        return TestSchemaProtocolNodeFactory<UIView>(
+    ) -> ProtocolFactory {
+        return TestSchemaProtocolFactory<UIView>(
             provider: TestSchemaWidgetFactories<UIView>(
                 TestSchema: IosTestSchemaWidgetFactory(),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
