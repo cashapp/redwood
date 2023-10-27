@@ -1,0 +1,48 @@
+/*
+ * Copyright (C) 2023 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package app.cash.redwood.treehouse
+
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.ModifierElement
+import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.widget.Widget
+import kotlinx.serialization.json.JsonPrimitive
+
+/**
+ * This supports [FakeWidget] and its [FakeWidget.label] property.
+ */
+@RedwoodCodegenApi
+internal class FakeProtocolNode : ProtocolNode<FakeWidget> {
+  override val widget = FakeWidget()
+
+  override fun attachTo(container: Widget.Children<FakeWidget>) {
+  }
+
+  override fun apply(change: PropertyChange, eventSink: EventSink) {
+    widget.label = (change.value as JsonPrimitive).content
+  }
+
+  override fun updateModifier(elements: List<ModifierElement>) {
+    error("unexpected call")
+  }
+
+  override fun children(tag: ChildrenTag): Widget.Children<FakeWidget>? {
+    error("unexpected call")
+  }
+}

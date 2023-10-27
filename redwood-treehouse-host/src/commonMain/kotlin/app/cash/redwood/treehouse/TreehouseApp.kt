@@ -16,11 +16,13 @@
 package app.cash.redwood.treehouse
 
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineScope
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
+import app.cash.zipline.withScope
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -68,7 +70,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * instance may be replaced if new code is loaded.
    */
   public val zipline: Zipline?
-    get() = codeHost.codeSession?.zipline
+    get() = codeHost.session?.zipline
 
   /**
    * Create content for [source].
@@ -86,8 +88,8 @@ public class TreehouseApp<A : AppService> private constructor(
       dispatchers = dispatchers,
       appScope = appScope,
       eventPublisher = eventPublisher,
-      source = source,
       codeListener = codeListener,
+      source = source,
     )
   }
 
@@ -174,9 +176,9 @@ public class TreehouseApp<A : AppService> private constructor(
     dispatchers.checkZipline()
     closed = true
     appScope.launch(dispatchers.ui) {
-      val session = codeHost.codeSession ?: return@launch
+      val session = codeHost.session ?: return@launch
       session.cancel()
-      codeHost.codeSession = null
+      codeHost.session = null
     }
     eventPublisher.appCanceled()
   }
@@ -188,14 +190,33 @@ public class TreehouseApp<A : AppService> private constructor(
     private val frameClock: FrameClock,
     override val stateStore: StateStore,
   ) : CodeHost<A> {
-    override var codeSession: ZiplineCodeSession<A>? = null
+    override var session: ZiplineCodeSession<A>? = null
 
-    override val boundContents = mutableListOf<TreehouseAppContent<A>>()
+    /**
+     * Contents that this app is currently responsible for.
+     *
+     * Only accessed on [TreehouseDispatchers.ui].
+     */
+    private val listeners = mutableListOf<CodeHost.Listener<A>>()
+
+    override fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A {
+      return appService.withScope(ziplineScope)
+    }
+
+    override fun addListener(listener: CodeHost.Listener<A>) {
+      dispatchers.checkUi()
+      listeners += listener
+    }
+
+    override fun removeListener(listener: CodeHost.Listener<A>) {
+      dispatchers.checkUi()
+      listeners -= listener
+    }
 
     fun onCodeChanged(zipline: Zipline, appService: A) {
       val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
       sessionScope.launch(dispatchers.ui) {
-        val previous = codeSession
+        val previous = session
 
         val next = ZiplineCodeSession(
           dispatchers = dispatchers,
@@ -209,8 +230,8 @@ public class TreehouseApp<A : AppService> private constructor(
 
         next.start()
 
-        for (content in boundContents) {
-          content.receiveCodeSession(next)
+        for (listener in listeners) {
+          listener.codeSessionChanged(next)
         }
 
         if (previous != null) {
@@ -219,7 +240,7 @@ public class TreehouseApp<A : AppService> private constructor(
           }
         }
 
-        codeSession = next
+        session = next
       }
     }
   }

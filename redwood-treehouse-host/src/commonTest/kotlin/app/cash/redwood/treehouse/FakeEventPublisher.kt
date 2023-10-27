@@ -15,22 +15,26 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.zipline.EventListener
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+class FakeEventPublisher : EventPublisher {
+  override val ziplineEventListener = EventListener.NONE
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  override val widgetProtocolMismatchHandler = ProtocolMismatchHandler.Throwing
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
+  override fun appStart() {
+  }
 
-  fun addListener(listener: Listener<A>)
+  override fun appCanceled() {
+  }
 
-  fun removeListener(listener: Listener<A>)
+  override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
+  }
 
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+  override fun onUnknownEventNode(id: Id, tag: EventTag) {
   }
 }

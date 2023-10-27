@@ -15,22 +15,24 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+internal class FakeAppService(
+  private val name: String,
+  private val eventLog: EventLog,
+) : AppService {
+  val uis = mutableListOf<FakeZiplineTreehouseUi>()
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+  fun newUi(): ZiplineTreehouseUi {
+    val result = FakeZiplineTreehouseUi("$name.uis[${uis.size}]", eventLog)
+    uis += result
+    return result
+  }
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  override val appLifecycle = object : AppLifecycle {
+    override fun start(host: AppLifecycle.Host) {
+      eventLog += "$name.appLifecycle.start()"
+    }
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
-
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+    override fun sendFrame(timeNanos: Long) {
+    }
   }
 }

@@ -15,22 +15,15 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
-
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
-
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
-
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+internal class FakeOnBackPressedDispatcher : OnBackPressedDispatcher {
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    return object : Cancellable {
+      override fun cancel() {
+      }
+    }
   }
 }

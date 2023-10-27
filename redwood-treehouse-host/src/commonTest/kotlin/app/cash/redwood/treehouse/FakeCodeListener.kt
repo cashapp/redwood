@@ -15,22 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+class FakeCodeListener(
+  private val eventLog: EventLog,
+) : CodeListener() {
+  override fun onInitialCodeLoading(view: TreehouseView<*>) {
+    eventLog += "codeListener.onInitialCodeLoading($view)"
+  }
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
-
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
-
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
-
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+  override fun onCodeLoaded(view: TreehouseView<*>, initial: Boolean) {
+    eventLog += "codeListener.onCodeLoaded($view, initial = $initial)"
   }
 }

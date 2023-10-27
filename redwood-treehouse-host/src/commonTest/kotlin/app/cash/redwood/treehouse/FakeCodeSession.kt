@@ -15,22 +15,21 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import kotlinx.serialization.json.Json
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+internal class FakeCodeSession(
+  private val name: String,
+  private val eventLog: EventLog,
+) : CodeSession<FakeAppService> {
+  override val json = Json
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  override val appService = FakeAppService("$name.app", eventLog)
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
+  override fun start() {
+    eventLog += "$name.start()"
+  }
 
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+  override fun cancel() {
+    eventLog += "$name.cancel()"
   }
 }

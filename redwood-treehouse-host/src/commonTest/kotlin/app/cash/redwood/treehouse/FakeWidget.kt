@@ -15,22 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import app.cash.redwood.Modifier
+import app.cash.redwood.widget.Widget
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+class FakeWidget : Widget<FakeWidget> {
+  override val value: FakeWidget
+    get() = this
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  override var modifier: Modifier = Modifier
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
-
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
-  }
+  var label: String? = null
 }

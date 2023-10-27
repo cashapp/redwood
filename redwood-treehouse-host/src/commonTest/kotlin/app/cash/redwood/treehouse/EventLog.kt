@@ -15,22 +15,30 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlinx.coroutines.channels.Channel
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+/** Track side-effects for testing. */
+class EventLog {
+  private val events = Channel<String>(capacity = Int.MAX_VALUE)
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  operator fun plusAssign(event: String) {
+    events.trySend(event)
+  }
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
+  suspend fun takeEvent(): String {
+    return events.receive()
+  }
 
-  fun addListener(listener: Listener<A>)
+  suspend fun takeEvent(event: String) {
+    assertThat(takeEvent()).isEqualTo(event)
+  }
 
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+  fun assertNoEvents() {
+    val received = events.tryReceive()
+    check(received.isFailure) {
+      "expected no events but was ${received.getOrNull()}"
+    }
   }
 }
