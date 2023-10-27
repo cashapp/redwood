@@ -74,8 +74,7 @@ public class ProtocolBridge<W : Any>(
           when (change) {
             is Add -> {
               val child = node(change.childId)
-              children.insert(change.index, child.widget)
-              child.attachTo(children)
+              children.insert(change.index, child)
             }
             is Move -> {
               children.move(change.fromIndex, change.toIndex, change.count)
@@ -131,8 +130,10 @@ public class ProtocolBridge<W : Any>(
 
 @OptIn(RedwoodCodegenApi::class)
 private class RootProtocolNode<W : Any>(
-  private val children: Widget.Children<W>,
+  children: Widget.Children<W>,
 ) : ProtocolNode<W>(), Widget<W> {
+  private val children = ProtocolChildren(children)
+
   override fun apply(change: PropertyChange, eventSink: EventSink) {
     throw AssertionError("unexpected: $change")
   }

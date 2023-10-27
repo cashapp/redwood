@@ -223,6 +223,7 @@ internal fun generateProtocolNode(
   val type = schema.protocolNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
+  val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
   return FileSpec.builder(type)
     .addType(
       TypeSpec.classBuilder(type)
@@ -262,7 +263,6 @@ internal fun generateProtocolNode(
             .build(),
         )
         .apply {
-          val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
           var nextSerializerId = 0
           val serializerIds = mutableMapOf<TypeName, Int>()
 
@@ -360,38 +360,46 @@ internal fun generateProtocolNode(
               .build(),
           )
 
-          addFunction(
-            FunSpec.builder("children")
-              .addModifiers(OVERRIDE)
-              .addParameter("tag", Protocol.ChildrenTag)
-              .returns(RedwoodWidget.WidgetChildrenOfW.copy(nullable = true))
-              .apply {
-                if (childrens.isNotEmpty()) {
-                  beginControlFlow("return when (tag.value)")
-                  for (children in childrens) {
-                    addStatement("%L -> _widget.%N", children.tag, children.name)
-                  }
-                  beginControlFlow("else ->")
-                  addStatement(
-                    "mismatchHandler.onUnknownChildren(%T(%L), tag)",
-                    Protocol.WidgetTag,
-                    widget.tag,
-                  )
-                  addStatement("null")
-                  endControlFlow()
-                  endControlFlow()
-                } else {
-                  addStatement(
-                    "mismatchHandler.onUnknownChildren(%T(%L), tag)",
-                    Protocol.WidgetTag,
-                    widget.tag,
-                  )
-                  addStatement("return null")
-                }
-              }
-              .build(),
-          )
+          for (children in childrens) {
+            addProperty(
+              PropertySpec.builder(children.name, WidgetProtocol.ProtocolChildren.parameterizedBy(typeVariableW))
+                .addModifiers(PRIVATE)
+                .initializer("%T(widget.%N)", WidgetProtocol.ProtocolChildren, children.name)
+                .build(),
+            )
+          }
         }
+        .addFunction(
+          FunSpec.builder("children")
+            .addModifiers(OVERRIDE)
+            .addParameter("tag", Protocol.ChildrenTag)
+            .returns(WidgetProtocol.ProtocolChildren.parameterizedBy(typeVariableW).copy(nullable = true))
+            .apply {
+              if (childrens.isNotEmpty()) {
+                beginControlFlow("return when (tag.value)")
+                for (children in childrens) {
+                  addStatement("%L -> %N", children.tag, children.name)
+                }
+                beginControlFlow("else ->")
+                addStatement(
+                  "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                  Protocol.WidgetTag,
+                  widget.tag,
+                )
+                addStatement("null")
+                endControlFlow()
+                endControlFlow()
+              } else {
+                addStatement(
+                  "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                  Protocol.WidgetTag,
+                  widget.tag,
+                )
+                addStatement("return null")
+              }
+            }
+            .build(),
+        )
         .build(),
     )
     .build()

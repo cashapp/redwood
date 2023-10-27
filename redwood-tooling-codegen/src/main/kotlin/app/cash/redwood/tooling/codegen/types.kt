@@ -54,6 +54,7 @@ internal object WidgetProtocol {
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
+  val ProtocolChildren = ClassName("app.cash.redwood.protocol.widget", "ProtocolChildren")
   val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.widget", "GeneratedProtocolFactory")
 }
 
