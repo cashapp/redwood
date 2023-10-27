@@ -53,11 +53,11 @@ public abstract class RedwoodGeneratorPlugin(
     internal val dependencyArtifactId: String,
   ) {
     Compose("--compose", "redwood-compose"),
-    ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
+    ComposeProtocol("--compose-protocol", "redwood-protocol-guest"),
     Modifiers("--modifier", "redwood-runtime"),
     Testing("--testing", "redwood-testing"),
     Widget("--widget", "redwood-widget"),
-    WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),
+    WidgetProtocol("--widget-protocol", "redwood-protocol-host"),
   }
 
   override fun apply(project: Project) {
