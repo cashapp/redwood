@@ -15,22 +15,19 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import kotlinx.coroutines.CoroutineDispatcher
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
+class FakeDispatchers(
+  override val ui: CoroutineDispatcher,
+  override val zipline: CoroutineDispatcher,
+) : TreehouseDispatchers {
 
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
+  override fun checkUi() {
+  }
 
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
+  override fun checkZipline() {
+  }
 
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
+  override fun close() {
   }
 }

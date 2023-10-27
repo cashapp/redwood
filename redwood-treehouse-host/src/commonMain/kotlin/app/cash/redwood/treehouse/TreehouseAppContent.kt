@@ -26,7 +26,6 @@ import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
-import app.cash.zipline.withScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -74,9 +73,9 @@ internal class TreehouseAppContent<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val appScope: CoroutineScope,
   private val eventPublisher: EventPublisher,
-  private val source: TreehouseContentSource<A>,
   private val codeListener: CodeListener,
-) : Content {
+  private val source: TreehouseContentSource<A>,
+) : Content, CodeHost.Listener<A> {
   private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
 
   override fun preload(
@@ -91,7 +90,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
 
     // Start the code if necessary.
-    val codeSession = codeHost.codeSession
+    val codeSession = codeHost.session
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
@@ -107,7 +106,7 @@ internal class TreehouseAppContent<A : AppService>(
     }
 
     // Ask to get notified when code is ready.
-    codeHost.boundContents += this
+    codeHost.addListener(this)
 
     stateFlow.value = State(nextViewState, nextCodeState)
   }
@@ -123,7 +122,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Bound(view)
 
     // Start the code if necessary.
-    val codeSession = codeHost.codeSession
+    val codeSession = codeHost.session
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
@@ -140,7 +139,7 @@ internal class TreehouseAppContent<A : AppService>(
 
     // Ask to get notified when code is ready.
     if (previousViewState is ViewState.None) {
-      codeHost.boundContents += this
+      codeHost.addListener(this)
     }
 
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
@@ -175,7 +174,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = CodeState.Idle<A>()
 
     // Cancel the code if necessary.
-    codeHost.boundContents.remove(this)
+    codeHost.removeListener(this)
     if (previousState.codeState is CodeState.Running) {
       previousState.codeState.viewContentCodeBinding.cancel()
     }
@@ -183,7 +182,7 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
-  internal fun receiveCodeSession(next: CodeSession<A>) {
+  override fun codeSessionChanged(next: CodeSession<A>) {
     dispatchers.checkUi()
 
     val previousState = stateFlow.value
@@ -234,7 +233,7 @@ internal class TreehouseAppContent<A : AppService>(
     dispatchers.checkUi()
 
     return ViewContentCodeBinding(
-      app = codeHost,
+      codeHost = codeHost,
       dispatchers = dispatchers,
       appScope = appScope,
       eventPublisher = eventPublisher,
@@ -264,7 +263,7 @@ internal class TreehouseAppContent<A : AppService>(
  * binding.
  */
 private class ViewContentCodeBinding<A : AppService>(
-  val app: CodeHost<A>,
+  val codeHost: CodeHost<A>,
   val dispatchers: TreehouseDispatchers,
   val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
@@ -386,11 +385,11 @@ private class ViewContentCodeBinding<A : AppService>(
 
   fun start(session: CodeSession<A>) {
     bindingScope.launch(dispatchers.zipline) {
-      val scopedAppService = session.appService.withScope(ziplineScope)
+      val scopedAppService = codeHost.applyZiplineScope(session.appService, ziplineScope)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
       val restoredId = viewOrNull?.stateSnapshotId
-      val restoredState = if (restoredId != null) app.stateStore.get(restoredId.value.orEmpty()) else null
+      val restoredState = if (restoredId != null) codeHost.stateStore.get(restoredId.value.orEmpty()) else null
       try {
         treehouseUi.start(
           changesSink = this@ViewContentCodeBinding,
@@ -440,7 +439,7 @@ private class ViewContentCodeBinding<A : AppService>(
   override fun performSave(id: String) {
     appScope.launch(dispatchers.zipline) {
       val state = treehouseUiOrNull?.snapshotState() ?: return@launch
-      app.stateStore.put(id, state)
+      codeHost.stateStore.put(id, state)
     }
   }
 

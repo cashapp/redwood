@@ -15,22 +15,12 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.ZiplineScope
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.widget.ProtocolNodeFactory
 
-/** Manages loading and hot-reloading a series of code sessions. */
-internal interface CodeHost<A : AppService> {
-  val stateStore: StateStore
-
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  val session: CodeSession<A>?
-
-  fun applyZiplineScope(appService: A, ziplineScope: ZiplineScope): A
-
-  fun addListener(listener: Listener<A>)
-
-  fun removeListener(listener: Listener<A>)
-
-  interface Listener<A : AppService> {
-    fun codeSessionChanged(next: CodeSession<A>)
-  }
+internal class FakeProtocolNodeFactory : ProtocolNodeFactory<FakeWidget> {
+  @RedwoodCodegenApi
+  override fun create(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
 }
