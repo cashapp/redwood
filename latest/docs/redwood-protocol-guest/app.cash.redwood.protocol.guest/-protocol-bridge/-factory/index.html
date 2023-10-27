@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>Companion</title>
+    <title>Factory</title>
 <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -58,28 +58,28 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-protocol-guest::app.cash.redwood.protocol.compose/ProtocolMismatchHandler.Companion///PointingToDeclaration//1634211329">
-  <div class="breadcrumbs"><a href="../../../index.html">redwood-protocol-guest</a><span class="delimiter">/</span><a href="../../index.html">app.cash.redwood.protocol.compose</a><span class="delimiter">/</span><a href="../index.html">ProtocolMismatchHandler</a><span class="delimiter">/</span><span class="current">Companion</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-protocol-guest::app.cash.redwood.protocol.guest/ProtocolBridge.Factory///PointingToDeclaration//1634211329">
+  <div class="breadcrumbs"><a href="../../../index.html">redwood-protocol-guest</a><span class="delimiter">/</span><a href="../../index.html">app.cash.redwood.protocol.guest</a><span class="delimiter">/</span><a href="../index.html">ProtocolBridge</a><span class="delimiter">/</span><span class="current">Factory</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Companion</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
+    <h1 class="cover"><span><span>Factory</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Factory</a></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-626860161%2FProperties%2F1634211329" anchor-label="Throwing" id="-626860161%2FProperties%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="232790712%2FFunctions%2F1634211329" anchor-label="create" id="232790712%2FFunctions%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-protocol-guest:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-throwing.html"><span><span>Throwing</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-626860161%2FProperties%2F1634211329"></span>
+                  <div><a href="create.html"><span><span>create</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="232790712%2FFunctions%2F1634211329"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-throwing.html">Throwing</a><span class="token operator">: </span><a href="../index.html">ProtocolMismatchHandler</a></div><div class="brief "><p class="paragraph">A <a href="../index.html">ProtocolMismatchHandler</a> which throws <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">IllegalArgumentException</a> for all callbacks.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="create.html"><span class="token function">create</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">json<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/Json///PointingToDeclaration/">Json</span><span class="token operator"> = </span>Json.Default<span class="token punctuation">, </span></span><span class="parameter ">mismatchHandler<span class="token operator">: </span><a href="../../-protocol-mismatch-handler/index.html">ProtocolMismatchHandler</a><span class="token operator"> = </span>ProtocolMismatchHandler.Throwing</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">ProtocolBridge</a></div><div class="brief "><p class="paragraph">Create a new <a href="../index.html">ProtocolBridge</a> with its own protocol state and set of tracked widgets.</p></div></div></div>
                 </div>
               </div>
             </div>
