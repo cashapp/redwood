@@ -43,7 +43,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `bind session addWidget unbind`() = runTest {
+  fun bind_session_addWidget_unbind() = runTest {
     val content = treehouseAppContent()
 
     val view1 = FakeTreehouseView("view1")
@@ -62,7 +62,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `preload session addWidget bind unbind`() = runTest {
+  fun preload_session_addWidget_bind_unbind() = runTest {
     val content = treehouseAppContent()
 
     content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
@@ -84,7 +84,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `session preload bind addWidget unbind`() = runTest {
+  fun session_preload_bind_addWidget_unbind() = runTest {
     val content = treehouseAppContent()
 
     codeHost.session = FakeCodeSession("codeSessionA", eventLog)
@@ -105,7 +105,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `session bind addWidget unbind`() = runTest {
+  fun session_bind_addWidget_unbind() = runTest {
     val content = treehouseAppContent()
 
     codeHost.session = FakeCodeSession("codeSessionA", eventLog)
@@ -124,7 +124,7 @@ class TreehouseAppContentTest {
 
   /** This exercises hot reloading. The view sees new code. */
   @Test
-  fun `bind sessionA sessionB unbind`() = runTest {
+  fun bind_sessionA_sessionB_unbind() = runTest {
     val content = treehouseAppContent()
 
     val view1 = FakeTreehouseView("view1")
@@ -154,7 +154,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `preload unbind session`() = runTest {
+  fun preload_unbind_session() = runTest {
     val content = treehouseAppContent()
 
     content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
@@ -169,7 +169,7 @@ class TreehouseAppContentTest {
   }
 
   @Test
-  fun `bind unbind session`() = runTest {
+  fun bind_unbind_session() = runTest {
     val content = treehouseAppContent()
 
     val view1 = FakeTreehouseView("view1")
@@ -189,7 +189,7 @@ class TreehouseAppContentTest {
    * ZiplineTreehouseUi because unbind() tears the predecessor down.
    */
   @Test
-  fun `session bind addWidget unbind bind unbind`() = runTest {
+  fun session_bind_addWidget_unbind_bind_unbind() = runTest {
     val content = treehouseAppContent()
 
     codeHost.session = FakeCodeSession("codeSessionA", eventLog)
