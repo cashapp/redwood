@@ -25,7 +25,7 @@ import assertk.assertions.contains
 import com.example.redwood.testing.TestSchema
 import org.junit.Test
 
-class ComposeProtocolGenerationTest {
+class ProtocolGuestGenerationTest {
   @Schema(
     [
       IdPropertyNameCollisionNode::class,

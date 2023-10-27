@@ -41,13 +41,13 @@ internal object Protocol {
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
-internal object ComposeProtocol {
-  val ProtocolBridge = ClassName("app.cash.redwood.protocol.compose", "ProtocolBridge")
+internal object ProtocolGuest {
+  val ProtocolBridge = ClassName("app.cash.redwood.protocol.guest", "ProtocolBridge")
   val ProtocolBridgeFactory = ProtocolBridge.nestedClass("Factory")
-  val ProtocolState = ClassName("app.cash.redwood.protocol.compose", "ProtocolState")
+  val ProtocolState = ClassName("app.cash.redwood.protocol.guest", "ProtocolState")
   val ProtocolMismatchHandler =
-    ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
-  val ProtocolWidget = ClassName("app.cash.redwood.protocol.compose", "ProtocolWidget")
+    ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
+  val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")
 }
 
 internal object WidgetProtocol {

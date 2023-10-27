@@ -14,7 +14,7 @@ kotlin {
 
   sourceSets {
     commonMain {
-      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.compose'))
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.guest'))
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodCompose

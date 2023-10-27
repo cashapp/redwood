@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.protocol.guest
 
-@Suppress(
-  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS", // LinkedHashMap itself aliases to j.u.LinkedHashMap on JVM.
-  "ACTUAL_WITHOUT_EXPECT", // https://youtrack.jetbrains.com/issue/KT-37316
-)
-internal actual typealias PlatformMap<K, V> = LinkedHashMap<K, V>
+internal expect class PlatformMap<K, V>() {
+  operator fun get(key: K): V?
+  operator fun set(key: K, value: V)
+  operator fun contains(key: K): Boolean
+  fun remove(key: K)
+}

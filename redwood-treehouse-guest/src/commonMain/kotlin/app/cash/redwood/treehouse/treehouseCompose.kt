@@ -18,8 +18,8 @@ package app.cash.redwood.treehouse
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.compose.ProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher

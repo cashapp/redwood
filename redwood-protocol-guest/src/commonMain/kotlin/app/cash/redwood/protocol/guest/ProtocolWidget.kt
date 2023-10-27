@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2021 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.compose
+package app.cash.redwood.protocol.guest
 
-import app.cash.redwood.protocol.EventTag
+import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.widget.Widget
 
-class RecordingProtocolMismatchHandler : ProtocolMismatchHandler {
-  val events = mutableListOf<String>()
+/**
+ * A [Widget] with no platform-specific representation which instead produces protocol changes
+ * based on its properties.
+ *
+ * @suppress For generated code use only.
+ */
+public interface ProtocolWidget : Widget<Nothing> {
+  public val id: Id
+  public val tag: WidgetTag
 
-  override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    events += "Unknown event ${tag.value} for ${widgetTag.value}"
-  }
+  override val value: Nothing
+    get() = throw AssertionError()
 
-  override fun onUnknownEventNode(id: Id, tag: EventTag) {
-    events += "Unknown ID ${id.value} for event tag ${tag.value}"
-  }
+  public fun sendEvent(event: Event)
 }
