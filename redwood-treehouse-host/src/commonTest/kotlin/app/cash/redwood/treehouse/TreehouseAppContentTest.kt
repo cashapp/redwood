@@ -17,7 +17,9 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
@@ -223,6 +225,72 @@ class TreehouseAppContentTest {
 
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[1].close()")
+  }
+
+  @Test
+  fun addBackHandler_receives_back_presses_until_canceled() = runTest {
+    val content = treehouseAppContent()
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.clear()
+
+    val backCancelable = codeHost.session!!.appService.uis.single().addBackHandler(true)
+    view1.onBackPressedDispatcher.onBack()
+    eventLog.takeEvent("codeSessionA.app.uis[0].onBackPressed()")
+
+    view1.onBackPressedDispatcher.onBack()
+    eventLog.takeEvent("codeSessionA.app.uis[0].onBackPressed()")
+
+    backCancelable.cancel()
+    view1.onBackPressedDispatcher.onBack()
+    eventLog.assertNoEvents()
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+  }
+
+  @Test
+  fun addBackHandler_receives_no_back_presses_if_disabled() = runTest {
+    val content = treehouseAppContent()
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.clear()
+
+    val backCancelable = codeHost.session!!.appService.uis.single().addBackHandler(false)
+    view1.onBackPressedDispatcher.onBack()
+    eventLog.assertNoEvents()
+
+    backCancelable.cancel()
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+  }
+
+  @Test
+  fun backHandlers_cleared_when_session_changes() = runTest {
+    val content = treehouseAppContent()
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    val codeSessionA = FakeCodeSession("codeSessionA", eventLog)
+    codeHost.session = codeSessionA
+
+    codeSessionA.appService.uis.single().addBackHandler(true)
+    assertThat(view1.onBackPressedDispatcher.callbacks).isNotEmpty()
+
+    val codeSessionB = FakeCodeSession("codeSessionB", eventLog)
+    codeHost.session = codeSessionB
+
+    // When we close codeSessionA, its back handlers are released with it.
+    assertThat(view1.onBackPressedDispatcher.callbacks).isEmpty()
+    eventLog.clear()
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
   private fun TestScope.treehouseAppContent(): TreehouseAppContent<FakeAppService> {

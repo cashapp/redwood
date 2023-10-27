@@ -20,10 +20,26 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 
 internal class FakeOnBackPressedDispatcher : OnBackPressedDispatcher {
+  private val mutableCallbacks = mutableListOf<OnBackPressedCallback>()
+
+  val callbacks: List<OnBackPressedCallback>
+    get() = mutableCallbacks.toList()
+
   override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    mutableCallbacks += onBackPressedCallback
+
     return object : Cancellable {
       override fun cancel() {
+        mutableCallbacks -= onBackPressedCallback
       }
     }
+  }
+
+  fun onBack() {
+    // Only one callback should handle each back press.
+    val callbackToNotify = mutableCallbacks.lastOrNull {
+      it.isEnabled
+    }
+    callbackToNotify?.handleOnBackPressed()
   }
 }
