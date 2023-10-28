@@ -169,10 +169,27 @@ class RedwoodBuildPlugin : Plugin<Project> {
       }
     }
 
-    // Disable the release build type because we never need it for sample applications.
+    plugins.withId("com.android.library") {
+      val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
+      androidComponents.beforeVariants {
+        // Disable the debug build type for libraries because we only publish release.
+        if (it.buildType == "debug") {
+          it.enable = false
+        }
+      }
+    }
+
     plugins.withId("com.android.application") {
-      val android = extensions.getByType(AndroidComponentsExtension::class.java)
-      android.beforeVariants {
+      val android = extensions.getByName("android") as BaseExtension
+      android.buildTypes.apply {
+        // Libraries don't build debug so fall back to release.
+        getByName("debug") {
+          it.matchingFallbacks += "release"
+        }
+      }
+      val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
+      androidComponents.beforeVariants {
+        // Disable the release build type for sample applications because we never need it.
         if (it.buildType == "release") {
           it.enable = false
         }
