@@ -18,11 +18,14 @@ package com.example.redwood.emojisearch.android.views
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -78,9 +81,20 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
-      treehouseContentSource.bindWhenReady(this, treehouseApp)
+      treehouseContentSource.bindWhenReady(this, treehouseApp, codeListener)
     }
     setContentView(treehouseLayout)
+  }
+
+  private val codeListener: CodeListener = object : CodeListener() {
+    override fun onUncaughtException(view: TreehouseView<*>, e: Throwable) {
+      val treehouseLayout = view as TreehouseLayout
+      treehouseLayout.reset()
+      treehouseLayout.addView(
+        ExceptionView(treehouseLayout, e),
+        LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT),
+      )
+    }
   }
 
   private val appEventListener: EventListener = object : EventListener() {

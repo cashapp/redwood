@@ -30,6 +30,7 @@ internal interface CodeHost<A : AppService> {
 
   interface Listener<A : AppService> {
     fun codeSessionChanged(next: CodeSession<A>)
+    fun uncaughtException(exception: Throwable)
   }
 
   /**

@@ -293,6 +293,100 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
+  @Test
+  fun session_bind_triggerException() = runTest {
+    val content = treehouseAppContent()
+
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.takeEvent("codeSessionA.start()")
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    codeHost.triggerException(Exception("boom!"))
+    eventLog.takeEventsInAnyOrder(
+      "codeSessionA.app.uis[0].close()",
+      "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
+      "codeSessionA.cancel()",
+    )
+
+    content.unbind()
+  }
+
+  @Test
+  fun triggerException_bind_session() = runTest {
+    val content = treehouseAppContent()
+
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.takeEvent("codeSessionA.start()")
+
+    codeHost.triggerException(Exception("boom!"))
+    eventLog.takeEvent("codeSessionA.cancel()")
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    codeHost.session = FakeCodeSession("codeSessionB", eventLog)
+    eventLog.takeEvent("codeSessionB.start()")
+    eventLog.takeEvent("codeSessionB.app.uis[0].start()")
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionB.app.uis[0].close()")
+  }
+
+  @Test
+  fun sessionA_bind_triggerException_sessionB() = runTest {
+    val content = treehouseAppContent()
+
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.takeEvent("codeSessionA.start()")
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    codeHost.triggerException(Exception("boom!"))
+    eventLog.takeEventsInAnyOrder(
+      "codeSessionA.app.uis[0].close()",
+      "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
+      "codeSessionA.cancel()",
+    )
+
+    codeHost.session = FakeCodeSession("codeSessionB", eventLog)
+    eventLog.takeEvent("codeSessionB.start()")
+    eventLog.takeEvent("codeSessionB.app.uis[0].start()")
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionB.app.uis[0].close()")
+  }
+
+  /**
+   * Exceptions don't notify codeListeners for preloads because there's no view to show an error on.
+   * But they do end the current code session.
+   */
+  @Test
+  fun sessionA_preload_triggerException_bind() = runTest {
+    val content = treehouseAppContent()
+
+    codeHost.session = FakeCodeSession("codeSessionA", eventLog)
+    eventLog.takeEvent("codeSessionA.start()")
+
+    content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    codeHost.triggerException(Exception("boom!"))
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    eventLog.takeEvent("codeSessionA.cancel()")
+
+    val view1 = FakeTreehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    content.unbind()
+  }
+
   private fun TestScope.treehouseAppContent(): TreehouseAppContent<FakeAppService> {
     return TreehouseAppContent(
       codeHost = codeHost,

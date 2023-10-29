@@ -137,7 +137,13 @@ private fun LazyColumn(
     TextInput(
       state = TextFieldState(searchTerm.text),
       hint = "Search",
-      onChange = { searchTerm = it },
+      onChange = { textFieldState ->
+        // Make it easy to trigger a crash to manually test exception handling!
+        if (textFieldState.text == "crash") {
+          throw RuntimeException("boom!")
+        }
+        searchTerm = textFieldState
+      },
     )
     LazyColumn(
       refreshing = refreshing,
