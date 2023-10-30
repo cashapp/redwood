@@ -22,18 +22,11 @@ import kotlinx.coroutines.launch
 /**
  * A [FrameClock] that sends frames using [Choreographer].
  */
-internal class AndroidChoreographerFrameClock : FrameClock {
-  private val choreographer = Choreographer.getInstance()
-  private lateinit var scope: CoroutineScope
-  private lateinit var dispatchers: TreehouseDispatchers
-
-  override fun start(
-    scope: CoroutineScope,
-    dispatchers: TreehouseDispatchers,
-  ) {
-    this.scope = scope
-    this.dispatchers = dispatchers
-  }
+internal class AndroidChoreographerFrameClock private constructor(
+  private val choreographer: Choreographer,
+  private val scope: CoroutineScope,
+  private val dispatchers: TreehouseDispatchers,
+) : FrameClock {
 
   override fun requestFrame(appLifecycle: AppLifecycle) {
     choreographer.postFrameCallback { frameTimeNanos ->
@@ -41,5 +34,13 @@ internal class AndroidChoreographerFrameClock : FrameClock {
         appLifecycle.sendFrame(frameTimeNanos)
       }
     }
+  }
+
+  class Factory : FrameClock.Factory {
+    private val choreographer = Choreographer.getInstance()
+    override fun create(
+      scope: CoroutineScope,
+      dispatchers: TreehouseDispatchers,
+    ) = AndroidChoreographerFrameClock(choreographer, scope, dispatchers)
   }
 }

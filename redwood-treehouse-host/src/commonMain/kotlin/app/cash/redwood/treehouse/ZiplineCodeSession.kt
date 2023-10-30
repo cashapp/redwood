@@ -31,7 +31,6 @@ internal class ZiplineCodeSession<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val eventPublisher: EventPublisher,
   private val appScope: CoroutineScope,
-  private val frameClock: FrameClock,
   override val appService: A,
   val zipline: Zipline,
 ) : CodeSession<A>, AppLifecycle.Host {
@@ -41,20 +40,19 @@ internal class ZiplineCodeSession<A : AppService>(
   override val json: Json
     get() = zipline.json
 
-  /** Only accessed on [TreehouseDispatchers.zipline]. */
+  // These vars only accessed on TreehouseDispatchers.zipline.
   private lateinit var sessionScope: CoroutineScope
-
-  /** Only accessed on [TreehouseDispatchers.zipline]. */
+  private lateinit var frameClock: FrameClock
   private lateinit var appLifecycle: AppLifecycle
 
   private var canceled = false
 
-  override fun start(sessionScope: CoroutineScope) {
+  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
     dispatchers.checkUi()
+
     sessionScope.launch(dispatchers.zipline) {
       this@ZiplineCodeSession.sessionScope = sessionScope
-
-      frameClock.start(sessionScope, dispatchers)
+      this@ZiplineCodeSession.frameClock = frameClock
 
       val service = appService.withScope(ziplineScope).appLifecycle
       appLifecycle = service
@@ -73,10 +71,10 @@ internal class ZiplineCodeSession<A : AppService>(
   }
 
   override fun cancel() {
+    dispatchers.checkUi()
+
     if (canceled) return
     canceled = true
-
-    dispatchers.checkUi()
 
     val listenersArray = listeners.toTypedArray() // onCancel mutates.
     for (listener in listenersArray) {

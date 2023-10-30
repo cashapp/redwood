@@ -38,7 +38,7 @@ public fun TreehouseAppFactory(
   dispatchers = AndroidTreehouseDispatchers(),
   eventListener = eventListener,
   httpClient = httpClient.asZiplineHttpClient(),
-  frameClock = AndroidChoreographerFrameClock(),
+  frameClockFactory = AndroidChoreographerFrameClock.Factory(),
   manifestVerifier = manifestVerifier,
   embeddedDir = embeddedDir,
   embeddedFileSystem = embeddedFileSystem,

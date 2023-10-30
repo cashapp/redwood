@@ -18,12 +18,6 @@ package app.cash.redwood.treehouse
 import kotlinx.coroutines.CoroutineScope
 
 internal interface FrameClock {
-  /** Run this clock until [scope] is canceled. */
-  fun start(
-    scope: CoroutineScope,
-    dispatchers: TreehouseDispatchers,
-  )
-
   /**
    * Request a call to [AppLifecycle.sendFrame]. It is an error to call [requestFrame] again before
    * that call is made.
@@ -31,4 +25,9 @@ internal interface FrameClock {
    * It is an error to call this before [start].
    */
   fun requestFrame(appLifecycle: AppLifecycle)
+
+  interface Factory {
+    /** Creates a new FrameClock that sends frames on [dispatchers] in [scope]. */
+    fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers): FrameClock
+  }
 }

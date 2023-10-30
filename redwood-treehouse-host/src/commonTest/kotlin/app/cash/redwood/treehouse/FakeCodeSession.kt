@@ -32,7 +32,7 @@ internal class FakeCodeSession(
 
   private var canceled = false
 
-  override fun start(sessionScope: CoroutineScope) {
+  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
     eventLog += "$name.start()"
   }
 

@@ -26,7 +26,7 @@ internal interface CodeSession<A : AppService> {
 
   val json: Json
 
-  fun start(sessionScope: CoroutineScope)
+  fun start(sessionScope: CoroutineScope, frameClock: FrameClock)
 
   fun addListener(listener: Listener<A>)
 

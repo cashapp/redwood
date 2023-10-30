@@ -46,7 +46,7 @@ internal class FakeCodeHost(
       previous?.cancel()
 
       if (value != null) {
-        value.start(CoroutineScope(EmptyCoroutineContext))
+        value.start(CoroutineScope(EmptyCoroutineContext), FakeFrameClock())
         for (listener in listeners) {
           listener.codeSessionChanged(value)
         }
