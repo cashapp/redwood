@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
-import kotlin.coroutines.CoroutineContext
 import kotlin.native.ObjCName
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * One of the trickiest things Treehouse needs to do is balance its two dispatchers:
@@ -28,11 +28,9 @@ import kotlin.native.ObjCName
  */
 @ObjCName("TreehouseDispatchers", exact = true)
 public interface TreehouseDispatchers {
-  /** Must contain a non-null [kotlinx.coroutines.CoroutineDispatcher]. */
-  public val ui: CoroutineContext
+  public val ui: CoroutineDispatcher
 
-  /** Must contain a non-null [kotlinx.coroutines.CoroutineDispatcher]. */
-  public val zipline: CoroutineContext
+  public val zipline: CoroutineDispatcher
 
   /**
    * Confirm that this is being called on the UI thread.

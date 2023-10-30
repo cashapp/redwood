@@ -16,16 +16,12 @@
 package app.cash.redwood.treehouse
 
 import app.cash.zipline.Zipline
-import app.cash.zipline.ZiplineScope
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
-import app.cash.zipline.withScope
 import kotlin.native.ObjCName
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
@@ -50,8 +46,7 @@ public class TreehouseApp<A : AppService> private constructor(
 ) {
   private val codeHost = ZiplineCodeHost<A>()
 
-  public val dispatchers: TreehouseDispatchers =
-    TreehouseDispatchersWithExceptionHandler(factory.dispatchers, codeHost.asExceptionHandler())
+  public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
   private val eventPublisher = RealEventPublisher(factory.eventListener, this)
 
@@ -123,14 +118,10 @@ public class TreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  @OptIn(ExperimentalStdlibApi::class)
   private fun ziplineFlow(): Flow<LoadResult> {
-    val dispatcher = dispatchers.zipline[CoroutineDispatcher.Key]
-      ?: error("expected TreehouseDispatchers.zipline to include a CoroutineDispatcher")
-
     // Loads applications from the network only. The cache is neither read nor written.
     var loader = ZiplineLoader(
-      dispatcher = dispatcher,
+      dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
       eventListener = eventPublisher.ziplineEventListener,
@@ -179,20 +170,14 @@ public class TreehouseApp<A : AppService> private constructor(
     closed = true
     appScope.launch(dispatchers.ui) {
       val session = codeHost.session ?: return@launch
+      session.removeListener(codeHost)
       session.cancel()
       codeHost.session = null
     }
     eventPublisher.appCanceled()
   }
 
-  private class TreehouseDispatchersWithExceptionHandler(
-    val delegate: TreehouseDispatchers,
-    exceptionHandler: CoroutineExceptionHandler,
-  ) : TreehouseDispatchers by delegate {
-    override val zipline = delegate.zipline + exceptionHandler
-  }
-
-  private inner class ZiplineCodeHost<A : AppService> : CodeHost<A> {
+  private inner class ZiplineCodeHost<A : AppService> : CodeHost<A>, CodeSession.Listener<A> {
     /**
      * Contents that this app is currently responsible for.
      *
@@ -204,20 +189,6 @@ public class TreehouseApp<A : AppService> private constructor(
 
     override var session: ZiplineCodeSession<A>? = null
 
-    override fun newServiceScope(): CodeHost.ServiceScope<A> {
-      val ziplineScope = ZiplineScope()
-
-      return object : CodeHost.ServiceScope<A> {
-        override fun apply(appService: A): A {
-          return appService.withScope(ziplineScope)
-        }
-
-        override fun close() {
-          ziplineScope.close()
-        }
-      }
-    }
-
     override fun addListener(listener: CodeHost.Listener<A>) {
       dispatchers.checkUi()
       listeners += listener
@@ -228,47 +199,40 @@ public class TreehouseApp<A : AppService> private constructor(
       listeners -= listener
     }
 
-    override fun handleUncaughtException(exception: Throwable) {
-      appScope.launch(dispatchers.ui) {
-        for (listener in listeners) {
-          listener.uncaughtException(exception)
-        }
-        codeHost.session?.cancel()
-        codeHost.session = null
-      }
+    override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
+    }
 
-      eventPublisher.onUncaughtException(exception)
+    override fun onCancel(codeSession: CodeSession<A>) {
+      check(codeSession == this.session)
+      this.session = null
     }
 
     fun onCodeChanged(zipline: Zipline, appService: A) {
-      val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
+      val next = ZiplineCodeSession(
+        dispatchers = dispatchers,
+        eventPublisher = eventPublisher,
+        appScope = appScope,
+        frameClock = factory.frameClock,
+        appService = appService,
+        zipline = zipline,
+      )
+
+      val sessionScope = CoroutineScope(
+        SupervisorJob(appScope.coroutineContext.job) + next.coroutineExceptionHandler,
+      )
+
       sessionScope.launch(dispatchers.ui) {
         val previous = session
+        previous?.removeListener(this@ZiplineCodeHost)
+        previous?.cancel()
 
-        val next = ZiplineCodeSession(
-          codeHost = this@ZiplineCodeHost,
-          dispatchers = dispatchers,
-          eventPublisher = eventPublisher,
-          appScope = appScope,
-          frameClock = factory.frameClock,
-          sessionScope = sessionScope,
-          appService = appService,
-          zipline = zipline,
-        )
-
-        next.start()
+        session = next
+        next.addListener(this@ZiplineCodeHost)
+        next.start(sessionScope)
 
         for (listener in listeners) {
           listener.codeSessionChanged(next)
         }
-
-        if (previous != null) {
-          sessionScope.launch(dispatchers.zipline) {
-            previous.cancel()
-          }
-        }
-
-        session = next
       }
     }
   }

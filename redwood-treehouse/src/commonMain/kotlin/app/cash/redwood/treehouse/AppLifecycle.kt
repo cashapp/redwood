@@ -27,6 +27,7 @@ public interface AppLifecycle : ZiplineService {
 
   public fun sendFrame(timeNanos: Long)
 
+  /** Platform features to the guest application. */
   public interface Host : ZiplineService {
     public fun requestFrame()
 
