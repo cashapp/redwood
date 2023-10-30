@@ -304,7 +304,7 @@ class TreehouseAppContentTest {
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    codeHost.triggerException(Exception("boom!"))
+    codeHost.handleUncaughtException(Exception("boom!"))
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
       "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
@@ -321,7 +321,7 @@ class TreehouseAppContentTest {
     codeHost.session = FakeCodeSession("codeSessionA", eventLog)
     eventLog.takeEvent("codeSessionA.start()")
 
-    codeHost.triggerException(Exception("boom!"))
+    codeHost.handleUncaughtException(Exception("boom!"))
     eventLog.takeEvent("codeSessionA.cancel()")
 
     val view1 = FakeTreehouseView("view1")
@@ -347,7 +347,7 @@ class TreehouseAppContentTest {
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    codeHost.triggerException(Exception("boom!"))
+    codeHost.handleUncaughtException(Exception("boom!"))
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
       "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
@@ -376,7 +376,7 @@ class TreehouseAppContentTest {
     content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    codeHost.triggerException(Exception("boom!"))
+    codeHost.handleUncaughtException(Exception("boom!"))
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 

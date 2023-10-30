@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,6 +45,7 @@ import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
 import example.values.TextFieldState
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 data class EmojiImage(
@@ -85,6 +87,7 @@ private fun LazyColumn(
   httpClient: HttpClient,
   navigator: Navigator,
 ) {
+  val scope = rememberCoroutineScope()
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
   // Simple counter that allows us to trigger refreshes by simple incrementing the value
@@ -139,9 +142,15 @@ private fun LazyColumn(
       hint = "Search",
       onChange = { textFieldState ->
         // Make it easy to trigger a crash to manually test exception handling!
-        if (textFieldState.text == "crash") {
-          throw RuntimeException("boom!")
+        when (textFieldState.text) {
+          "crash" -> throw RuntimeException("boom!")
+          "async" -> {
+            scope.launch {
+              throw RuntimeException("boom!")
+            }
+          }
         }
+
         searchTerm = textFieldState
       },
     )

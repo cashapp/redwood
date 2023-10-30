@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
+  private val codeHost: CodeHost<*>,
   private val dispatchers: TreehouseDispatchers,
   private val eventPublisher: EventPublisher,
   private val appScope: CoroutineScope,
@@ -44,7 +45,7 @@ internal class ZiplineCodeSession<A : AppService>(
     frameClock.start(sessionScope, dispatchers)
     sessionScope.launch(dispatchers.zipline) {
       val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(appLifecycle, eventPublisher, frameClock)
+      val host = RealAppLifecycleHost(codeHost, appLifecycle, eventPublisher, frameClock)
       appLifecycle.start(host)
     }
   }
@@ -60,6 +61,7 @@ internal class ZiplineCodeSession<A : AppService>(
 
 /** Platform features to the guest application. */
 private class RealAppLifecycleHost(
+  val codeHost: CodeHost<*>,
   val appLifecycle: AppLifecycle,
   val eventPublisher: EventPublisher,
   val frameClock: FrameClock,
@@ -80,5 +82,9 @@ private class RealAppLifecycleHost(
     tag: EventTag,
   ) {
     eventPublisher.onUnknownEventNode(id, tag)
+  }
+
+  override fun handleUncaughtException(exception: Throwable) {
+    codeHost.handleUncaughtException(exception)
   }
 }

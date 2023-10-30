@@ -370,4 +370,20 @@ public open class EventListener {
     name: String,
   ) {
   }
+
+  /**
+   * Invoked when [app] has thrown an uncaught exception.
+   *
+   * This indicates an unrecoverable software bug. Development implementations should report the
+   * exception to the developer. Production implementations should post the exception to a bug
+   * tracking service.
+   *
+   * When a Treehouse app fails its current [Zipline] instance is canceled so no further code will
+   * execute. A new [Zipline] will start when new code available, or when the app is restarted.
+   */
+  public open fun uncaughtException(
+    app: TreehouseApp<*>,
+    exception: Throwable,
+  ) {
+  }
 }

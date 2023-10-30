@@ -37,4 +37,7 @@ class FakeEventPublisher : EventPublisher {
 
   override fun onUnknownEventNode(id: Id, tag: EventTag) {
   }
+
+  override fun onUncaughtException(exception: Throwable) {
+  }
 }
