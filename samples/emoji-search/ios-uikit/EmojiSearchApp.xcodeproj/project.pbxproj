@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1069C9E12AF0AECC007D6F07 /* ExceptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */; };
 		10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */; };
 		10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4D28C0EA40006F125E /* TextBinding.swift */; };
 		635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635661D421F12B7E00DD7240 /* AppDelegate.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExceptionView.swift; sourceTree = "<group>"; };
 		10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosEmojiSearchWidgetFactory.swift; sourceTree = "<group>"; };
 		10AA3D4D28C0EA40006F125E /* TextBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBinding.swift; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +84,7 @@
 				CB9F76552810A8A8008CF457 /* IosHostApi.swift */,
 				10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */,
 				10AA3D4D28C0EA40006F125E /* TextBinding.swift */,
+				1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */,
 			);
 			path = EmojiSearchApp;
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 			files = (
 				10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */,
 				CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */,
+				1069C9E12AF0AECC007D6F07 /* ExceptionView.swift in Sources */,
 				C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */,
 				10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */,
 				635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */,

@@ -48,7 +48,7 @@ public open class CodeListener {
    */
   public open fun onUncaughtException(
     view: TreehouseView<*>,
-    e: Throwable,
+    exception: Throwable,
   ) {
   }
 }

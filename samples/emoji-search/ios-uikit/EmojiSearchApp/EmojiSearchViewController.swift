@@ -41,7 +41,7 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: EmojiSearchContent(),
-            codeListener: CodeListener()
+            codeListener: EmojiSearchCodeListener()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
         view = treehouseView.view
@@ -68,6 +68,23 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
             snackBar.dismiss()
             self.snackBar = nil
         }
+    }
+}
+
+class EmojiSearchCodeListener : CodeListener {
+    override func onUncaughtException(view: TreehouseView, exception: KotlinThrowable) {
+        let treehouseLayout = view as! TreehouseUIView
+        treehouseLayout.reset()
+
+        let exceptionView = ExceptionView(exception)
+        exceptionView.translatesAutoresizingMaskIntoConstraints = false
+        treehouseLayout.view.addSubview(exceptionView)
+        NSLayoutConstraint.activate([
+            exceptionView.topAnchor.constraint(equalTo: treehouseLayout.view.topAnchor),
+            exceptionView.leftAnchor.constraint(equalTo: treehouseLayout.view.leftAnchor),
+            exceptionView.rightAnchor.constraint(equalTo: treehouseLayout.view.rightAnchor),
+            exceptionView.bottomAnchor.constraint(equalTo: treehouseLayout.view.bottomAnchor),
+        ])
     }
 }
 
