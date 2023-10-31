@@ -160,6 +160,14 @@ internal open class UIViewLazyList(
         scrollProcessor.onUserScroll(firstIndex, lastIndex)
       }
 
+      /**
+       * If the user begins a drag while we’re programmatically scrolling, well then we're not
+       * programmatically scrolling anymore.
+       */
+      override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        isDoingProgrammaticScroll = false
+      }
+
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         isDoingProgrammaticScroll = false
       }
@@ -169,7 +177,6 @@ internal open class UIViewLazyList(
     tableView.apply {
       dataSource = this@UIViewLazyList.dataSource
       delegate = tableViewDelegate
-      prefetchingEnabled = true
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
 
