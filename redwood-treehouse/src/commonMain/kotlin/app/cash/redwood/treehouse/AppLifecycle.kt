@@ -34,8 +34,8 @@ public interface AppLifecycle : ZiplineService {
     public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
     /**
-     * Notify the host that an event was received for a node that either never existed or that no
-     * longer exists. That event will be ignored.
+     * Notify the host that an event was received for a node that no longer exists.
+     * That event will be ignored.
      */
     public fun onUnknownEventNode(id: Id, tag: EventTag)
 
