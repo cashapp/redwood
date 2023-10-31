@@ -89,7 +89,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
 
-      - run: ./gradlew verifyPaparazziDebug
+      - run: ./gradlew verifyPaparazzi
 
       - run: xcodebuild -project redwood-layout-uiview/RedwoodLayoutUIViewTests.xcodeproj -scheme RedwoodLayoutUIViewTests -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest' test
 
