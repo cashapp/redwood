@@ -38,6 +38,7 @@ class FakeZiplineTreehouseUi(
   private var nextWidgetId = 1
 
   private lateinit var host: ZiplineTreehouseUi.Host
+  private val extraServicesToClose = mutableListOf<CancellableService>()
 
   override fun start(host: ZiplineTreehouseUi.Host) {
     eventLog += "$name.start()"
@@ -57,6 +58,22 @@ class FakeZiplineTreehouseUi(
 
   override fun sendEvent(event: Event) {
     eventLog += "$name.sendEvent($event)"
+  }
+
+  fun addBackHandler(isEnabled: Boolean): CancellableService {
+    val result = host.addOnBackPressedCallback(object : OnBackPressedCallbackService {
+      override var isEnabled = isEnabled
+
+      override fun handleOnBackPressed() {
+        eventLog += "$name.onBackPressed()"
+      }
+    })
+
+    // Keep track of services produced by this ZiplineTreehouseUi so we can close them when this
+    // service is itself closed. In production code the ZiplineScope does this automatically.
+    extraServicesToClose += result
+
+    return result
   }
 
   @Suppress("OVERRIDE_DEPRECATION")
@@ -79,6 +96,9 @@ class FakeZiplineTreehouseUi(
   }
 
   override fun close() {
+    for (cancellableService in extraServicesToClose) {
+      cancellableService.close()
+    }
     eventLog += "$name.close()"
   }
 }

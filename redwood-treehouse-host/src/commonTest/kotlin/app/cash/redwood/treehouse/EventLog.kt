@@ -41,4 +41,11 @@ class EventLog {
       "expected no events but was ${received.getOrNull()}"
     }
   }
+
+  /** Discard all events. */
+  fun clear() {
+    while (true) {
+      if (!events.tryReceive().isSuccess) break
+    }
+  }
 }
