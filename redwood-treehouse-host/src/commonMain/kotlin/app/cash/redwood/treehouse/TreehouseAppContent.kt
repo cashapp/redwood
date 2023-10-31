@@ -274,7 +274,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val json: Json,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
-) : EventSink, ChangesSinkService, TreehouseView.SaveCallback {
+) : EventSink, ChangesSinkService, TreehouseView.SaveCallback, ZiplineTreehouseUi.Host {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
@@ -301,6 +301,12 @@ private class ViewContentCodeBinding<A : AppService>(
   private var canceled = false
 
   private var initViewCalled: Boolean = false
+
+  /** The state to restore. Initialized in [start]. */
+  override var stateSnapshot: StateSnapshot? = null
+
+  override val uiConfigurations: StateFlow<UiConfiguration>
+    get() = uiConfigurationFlow
 
   fun initView(view: TreehouseView<*>) {
     dispatchers.checkUi()
@@ -388,50 +394,44 @@ private class ViewContentCodeBinding<A : AppService>(
       val scopedAppService = serviceScope.apply(session.appService)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
-      val restoredId = viewOrNull?.stateSnapshotId
-      val restoredState = if (restoredId != null) codeHost.stateStore.get(restoredId.value.orEmpty()) else null
+      stateSnapshot = viewOrNull?.stateSnapshotId?.let {
+        codeHost.stateStore.get(it.value.orEmpty())
+      }
       try {
-        treehouseUi.start(
-          changesSink = this@ViewContentCodeBinding,
-          onBackPressedDispatcher = onBackPressedDispatcherService,
-          uiConfigurations = uiConfigurationFlow,
-          stateSnapshot = restoredState,
-        )
+        treehouseUi.start(this@ViewContentCodeBinding)
       } catch (e: ZiplineApiMismatchException) {
         // Fall back to calling the function that doesn't have a back pressed dispatcher.
         treehouseUi.start(
           changesSink = this@ViewContentCodeBinding,
           uiConfigurations = uiConfigurationFlow,
-          stateSnapshot = restoredState,
+          stateSnapshot = stateSnapshot,
         )
       }
     }
   }
 
-  private val onBackPressedDispatcherService = object : OnBackPressedDispatcherService {
-    override fun addCallback(
-      onBackPressedCallback: OnBackPressedCallbackService,
-    ): CancellableService {
-      dispatchers.checkZipline()
-      val cancellable = onBackPressedDispatcher.addCallback(
-        object : OnBackPressedCallback(onBackPressedCallback.isEnabled) {
-          override fun handleOnBackPressed() {
-            bindingScope.launch(dispatchers.zipline) {
-              onBackPressedCallback.handleOnBackPressed()
-            }
+  override fun addOnBackPressedCallback(
+    callback: OnBackPressedCallbackService,
+  ): CancellableService {
+    dispatchers.checkZipline()
+    val cancellable = onBackPressedDispatcher.addCallback(
+      object : OnBackPressedCallback(callback.isEnabled) {
+        override fun handleOnBackPressed() {
+          bindingScope.launch(dispatchers.zipline) {
+            callback.handleOnBackPressed()
           }
-        },
-      )
-
-      return object : CancellableService {
-        override fun cancel() {
-          dispatchers.checkZipline()
-          cancellable.cancel()
         }
+      },
+    )
 
-        override fun close() {
-          cancel()
-        }
+    return object : CancellableService {
+      override fun cancel() {
+        dispatchers.checkZipline()
+        cancellable.cancel()
+      }
+
+      override fun close() {
+        cancel()
       }
     }
   }

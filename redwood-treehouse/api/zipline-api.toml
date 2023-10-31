@@ -97,4 +97,26 @@ functions = [
 
   # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
   "FiVQXMQW",
+
+  # fun start(app.cash.redwood.treehouse.ZiplineTreehouseUi.Host): kotlin.Unit
+  "h9yZr91W",
+]
+
+[app.cash.redwood.treehouse.ZiplineTreehouseUi.Host]
+
+functions = [
+  # fun addOnBackPressedCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService): app.cash.redwood.treehouse.CancellableService
+  "2nRsPBzK",
+
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun sendChanges(kotlin.collections.List): kotlin.Unit
+  "W8qOuU0t",
+
+  # val stateSnapshot: app.cash.redwood.treehouse.StateSnapshot
+  "hIDyr4lf",
+
+  # val uiConfigurations: kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>
+  "iAkCX7gg",
 ]
