@@ -143,7 +143,8 @@ private fun OnBackPressedCallback.asService() = object : OnBackPressedCallbackSe
 }
 
 private object NullOnBackPressedDispatcherService : OnBackPressedDispatcherService {
-  override fun addCallback(callback: OnBackPressedCallbackService) = object : CancellableService {
-    override fun cancel() = Unit
-  }
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallbackService) =
+    object : CancellableService {
+      override fun cancel() = Unit
+    }
 }

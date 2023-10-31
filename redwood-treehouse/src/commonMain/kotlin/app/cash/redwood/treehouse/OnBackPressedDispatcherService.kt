@@ -22,5 +22,5 @@ import kotlin.native.ObjCName
 /** Redwood's [OnBackPressedDispatcher] but implementing [ZiplineService]. */
 @ObjCName("OnBackPressedDispatcherService", exact = true)
 public interface OnBackPressedDispatcherService : ZiplineService {
-  public fun addCallback(callback: OnBackPressedCallbackService): CancellableService
+  public fun addCallback(onBackPressedCallback: OnBackPressedCallbackService): CancellableService
 }
