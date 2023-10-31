@@ -239,7 +239,6 @@ internal class LazyListContainerCell(
       removeAllSubviews()
       if (value != null) {
         contentView.addSubview(value.value)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
       }
       setNeedsLayout()
     }
@@ -273,6 +272,7 @@ internal class LazyListContainerCell(
 
   override fun prepareForReuse() {
     super.prepareForReuse()
+    removeAllSubviews()
     binding?.unbind()
     binding = null
   }
