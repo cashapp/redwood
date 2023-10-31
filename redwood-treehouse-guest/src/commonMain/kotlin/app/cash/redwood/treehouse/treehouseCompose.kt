@@ -137,7 +137,9 @@ private fun ZiplineTreehouseUi.Host.asOnBackPressedDispatcher() = object : OnBac
 private fun OnBackPressedCallback.asService() = object : OnBackPressedCallbackService {
   override var isEnabled: Boolean
     get() = this@asService.isEnabled
-    set(value) = this@asService.isEnabled = value
+    set(value) {
+      this@asService.isEnabled = value
+    }
 
   override fun handleOnBackPressed() {
     this@asService.handleOnBackPressed()
