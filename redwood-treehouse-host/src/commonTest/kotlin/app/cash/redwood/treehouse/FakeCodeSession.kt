@@ -23,6 +23,7 @@ import kotlinx.serialization.json.Json
 internal class FakeCodeSession(
   private val eventLog: EventLog,
   private val name: String,
+  override val eventPublisher: EventPublisher,
 ) : CodeSession<FakeAppService> {
   private val listeners = mutableListOf<Listener<FakeAppService>>()
 

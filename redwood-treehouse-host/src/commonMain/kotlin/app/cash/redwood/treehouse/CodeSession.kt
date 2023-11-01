@@ -22,6 +22,8 @@ import kotlinx.serialization.json.Json
 
 /** The host state for a single code load. We get a new session each time we get new code. */
 internal interface CodeSession<A : AppService> {
+  val eventPublisher: EventPublisher
+
   val appService: A
 
   val json: Json

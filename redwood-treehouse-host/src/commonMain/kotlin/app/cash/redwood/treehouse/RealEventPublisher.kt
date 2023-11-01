@@ -31,14 +31,18 @@ import app.cash.zipline.ZiplineService
 
 internal class RealEventPublisher(
   private val listener: EventListener,
-  private val app: TreehouseApp<*>,
+  private val ziplineToPublisherHack: MutableMap<Zipline, RealEventPublisher>,
 ) : EventPublisher {
   override val ziplineEventListener = object : ZiplineEventListener() {
+    override fun ziplineCreated(zipline: Zipline) {
+      ziplineToPublisherHack[zipline] = this@RealEventPublisher
+    }
+
     override fun applicationLoadStart(
       applicationName: String,
       manifestUrl: String?,
     ): Any? {
-      return listener.codeLoadStart(app, manifestUrl)
+      return listener.codeLoadStart()
     }
 
     override fun applicationLoadSuccess(
@@ -48,7 +52,7 @@ internal class RealEventPublisher(
       zipline: Zipline,
       startValue: Any?,
     ) {
-      listener.codeLoadSuccess(app, manifestUrl, manifest, zipline, startValue)
+      listener.codeLoadSuccess(manifest, zipline, startValue)
     }
 
     override fun applicationLoadSkipped(
@@ -56,7 +60,7 @@ internal class RealEventPublisher(
       manifestUrl: String,
       startValue: Any?,
     ) {
-      listener.codeLoadSkipped(app, manifestUrl, startValue)
+      listener.codeLoadSkipped(startValue)
     }
 
     override fun applicationLoadFailed(
@@ -65,7 +69,7 @@ internal class RealEventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      listener.codeLoadFailed(app, manifestUrl, exception, startValue)
+      listener.codeLoadFailed(exception, startValue)
     }
 
     override fun bindService(
@@ -73,26 +77,26 @@ internal class RealEventPublisher(
       name: String,
       service: ZiplineService,
     ) {
-      listener.bindService(app, name, service)
+      listener.bindService(name, service)
     }
 
     override fun callStart(
       zipline: Zipline,
       call: Call,
     ): Any? {
-      return listener.callStart(app, call)
+      return listener.callStart(call)
     }
 
     override fun callEnd(zipline: Zipline, call: Call, result: CallResult, startValue: Any?) {
-      listener.callEnd(app, call, result, startValue)
+      listener.callEnd(call, result, startValue)
     }
 
     override fun downloadStart(applicationName: String, url: String): Any? {
-      return listener.downloadStart(app, url)
+      return listener.downloadStart(url)
     }
 
     override fun downloadEnd(applicationName: String, url: String, startValue: Any?) {
-      listener.downloadSuccess(app, url, startValue)
+      listener.downloadSuccess(url, startValue)
     }
 
     override fun downloadFailed(
@@ -101,7 +105,7 @@ internal class RealEventPublisher(
       exception: Exception,
       startValue: Any?,
     ) {
-      listener.downloadFailed(app, url, exception, startValue)
+      listener.downloadFailed(url, exception, startValue)
     }
 
     override fun manifestVerified(
@@ -110,85 +114,77 @@ internal class RealEventPublisher(
       manifest: ZiplineManifest,
       verifiedKey: String,
     ) {
-      listener.manifestVerified(app, manifestUrl, manifest, verifiedKey)
+      listener.manifestVerified(manifest, verifiedKey)
     }
 
     override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
-      return listener.moduleLoadStart(app, zipline, moduleId)
+      return listener.moduleLoadStart(moduleId)
     }
 
     override fun moduleLoadEnd(zipline: Zipline, moduleId: String, startValue: Any?) {
-      listener.moduleLoadEnd(app, zipline, moduleId, startValue)
+      listener.moduleLoadEnd(moduleId, startValue)
     }
 
     override fun initializerStart(zipline: Zipline, applicationName: String): Any? {
-      return listener.initializerStart(app, zipline, applicationName)
+      return listener.initializerStart(applicationName)
     }
 
     override fun initializerEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
-      listener.initializerEnd(app, zipline, applicationName, startValue)
+      listener.initializerEnd(applicationName, startValue)
     }
 
     override fun mainFunctionStart(zipline: Zipline, applicationName: String): Any? {
-      return listener.mainFunctionStart(app, zipline, applicationName)
+      return listener.mainFunctionStart(applicationName)
     }
 
     override fun mainFunctionEnd(zipline: Zipline, applicationName: String, startValue: Any?) {
-      listener.mainFunctionEnd(app, zipline, applicationName, startValue)
+      listener.mainFunctionEnd(applicationName, startValue)
     }
 
     override fun manifestParseFailed(applicationName: String, url: String?, exception: Exception) {
-      listener.manifestParseFailed(app, url, exception)
+      listener.manifestParseFailed(exception)
     }
 
     override fun takeService(zipline: Zipline, name: String, service: ZiplineService) {
-      listener.takeService(app, name, service)
+      listener.takeService(name, service)
     }
 
     override fun serviceLeaked(zipline: Zipline, name: String) {
-      listener.serviceLeaked(app, name)
+      listener.serviceLeaked(name)
     }
 
     override fun ziplineClosed(zipline: Zipline) {
-      listener.codeUnloaded(app, zipline)
+      listener.codeUnloaded()
     }
   }
 
   override val widgetProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownWidget(tag: WidgetTag) {
-      listener.onUnknownWidget(app, tag)
+      listener.onUnknownWidget(tag)
     }
 
     override fun onUnknownModifier(tag: ModifierTag) {
-      listener.onUnknownModifier(app, tag)
+      listener.onUnknownModifier(tag)
     }
 
     override fun onUnknownChildren(widgetTag: WidgetTag, tag: ChildrenTag) {
-      listener.onUnknownChildren(app, widgetTag, tag)
+      listener.onUnknownChildren(widgetTag, tag)
     }
 
     override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
-      listener.onUnknownProperty(app, widgetTag, tag)
+      listener.onUnknownProperty(widgetTag, tag)
     }
   }
 
-  override fun appStart() {
-    listener.appStart(app)
-  }
-
-  override fun appCanceled() {
-    listener.appCanceled(app)
-  }
-
   override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    listener.onUnknownEvent(app, widgetTag, tag)
+    listener.onUnknownEvent(widgetTag, tag)
   }
 
   override fun onUnknownEventNode(id: Id, tag: EventTag) {
-    listener.onUnknownEventNode(app, id, tag)
+    listener.onUnknownEventNode(id, tag)
   }
 
   override fun onUncaughtException(exception: Throwable) {
-    listener.uncaughtException(app, exception)
+    listener.uncaughtException(exception)
   }
 }

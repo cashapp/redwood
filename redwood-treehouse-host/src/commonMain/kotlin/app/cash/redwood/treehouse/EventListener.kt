@@ -21,6 +21,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.treehouse.EventListener.Factory
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline
@@ -31,36 +32,13 @@ import kotlin.native.ObjCName
 @ObjCName("EventListener", exact = true)
 public open class EventListener {
   /**
-   * Invoked each time a [TreehouseApp] is created. When this is triggered the app may not yet have
-   * any code loaded; but it will always attempt to load code.
-   */
-  public open fun appStart(
-    app: TreehouseApp<*>,
-  ) {
-  }
-
-  /**
-   * Invoked with [TreehouseApp.cancel] when the application is shut down.
-   *
-   * This is different from [codeUnloaded] which occurs during hot reloads; this only occurs if the
-   * app itself is explicitly closed.
-   */
-  public open fun appCanceled(
-    app: TreehouseApp<*>,
-  ) {
-  }
-
-  /**
    * Invoked for each attempt at loading code. This will be followed by a [codeLoadSuccess],
    * [codeLoadFailed], or [codeLoadSkipped] if the code is unchanged.
    *
    * @return any object. This value will be passed back to one of the above functions. The base
    *     function always returns null.
    */
-  public open fun codeLoadStart(
-    app: TreehouseApp<*>,
-    manifestUrl: String?,
-  ): Any? = null
+  public open fun codeLoadStart(): Any? = null
 
   /**
    * Invoked when code is successfully downloaded and initialized.
@@ -69,8 +47,6 @@ public open class EventListener {
    *   is null unless [codeLoadStart] is overridden to return something else.
    */
   public open fun codeLoadSuccess(
-    app: TreehouseApp<*>,
-    manifestUrl: String?,
     manifest: ZiplineManifest,
     zipline: Zipline,
     startValue: Any?,
@@ -84,8 +60,6 @@ public open class EventListener {
    *   is null unless [codeLoadStart] is overridden to return something else.
    */
   public open fun codeLoadSkipped(
-    app: TreehouseApp<*>,
-    manifestUrl: String?,
     startValue: Any?,
   ) {
   }
@@ -97,8 +71,6 @@ public open class EventListener {
    *   is null unless [codeLoadStart] is overridden to return something else.
    */
   public open fun codeLoadFailed(
-    app: TreehouseApp<*>,
-    manifestUrl: String?,
     exception: Exception,
     startValue: Any?,
   ) {
@@ -108,17 +80,13 @@ public open class EventListener {
    * Invoked when code is unloaded because it is no longer needed. Typically this occurs when a hot
    * code update is applied.
    */
-  public open fun codeUnloaded(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
-  ) {
+  public open fun codeUnloaded() {
   }
 
   /**
    * Invoked on a request to create an unknown widget [kind].
    */
   public open fun onUnknownWidget(
-    app: TreehouseApp<*>,
     tag: WidgetTag,
   ) {
   }
@@ -127,7 +95,6 @@ public open class EventListener {
    * Invoked on a request to create an unknown modifier [tag].
    */
   public open fun onUnknownModifier(
-    app: TreehouseApp<*>,
     tag: ModifierTag,
   ) {
   }
@@ -136,7 +103,6 @@ public open class EventListener {
    * Invoked on a request to manipulate unknown children [tag] for the specified widget [kind].
    */
   public open fun onUnknownChildren(
-    app: TreehouseApp<*>,
     widgetTag: WidgetTag,
     tag: ChildrenTag,
   ) {
@@ -146,7 +112,6 @@ public open class EventListener {
    * Invoked on a request to set an unknown property [tag] for the specified widget [kind].
    */
   public open fun onUnknownProperty(
-    app: TreehouseApp<*>,
     widgetTag: WidgetTag,
     tag: PropertyTag,
   ) {
@@ -154,7 +119,6 @@ public open class EventListener {
 
   /** Invoked on a request to process an unknown event [tag] for the specified widget [widgetTag]. */
   public open fun onUnknownEvent(
-    app: TreehouseApp<*>,
     widgetTag: WidgetTag,
     tag: EventTag,
   ) {
@@ -162,7 +126,6 @@ public open class EventListener {
 
   /** Invoked for an event whose node [id] is unknown. */
   public open fun onUnknownEventNode(
-    app: TreehouseApp<*>,
     id: Id,
     tag: EventTag,
   ) {
@@ -176,7 +139,6 @@ public open class EventListener {
    *     function always returns null.
    */
   public open fun downloadStart(
-    app: TreehouseApp<*>,
     url: String,
   ): Any? = null
 
@@ -187,7 +149,6 @@ public open class EventListener {
    *   is null unless [downloadStart] is overridden to return something else.
    */
   public open fun downloadSuccess(
-    app: TreehouseApp<*>,
     url: String,
     startValue: Any?,
   ) {
@@ -200,7 +161,6 @@ public open class EventListener {
    *   is null unless [downloadStart] is overridden to return something else.
    */
   public open fun downloadFailed(
-    app: TreehouseApp<*>,
     url: String,
     exception: Exception,
     startValue: Any?,
@@ -212,8 +172,6 @@ public open class EventListener {
    * failures are signaled with [codeLoadFailed].
    */
   public open fun manifestVerified(
-    app: TreehouseApp<*>,
-    manifestUrl: String?,
     manifest: ZiplineManifest,
     verifiedKey: String,
   ) {
@@ -226,8 +184,6 @@ public open class EventListener {
    *   completed. The base function always returns null.
    */
   public open fun moduleLoadStart(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     moduleId: String,
   ): Any? {
     return null
@@ -240,8 +196,6 @@ public open class EventListener {
    *   null unless [moduleLoadStart] is overridden to return something else.
    */
   public open fun moduleLoadEnd(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     moduleId: String,
     startValue: Any?,
   ) {
@@ -254,8 +208,6 @@ public open class EventListener {
    *   completed. The base function always returns null.
    */
   public open fun initializerStart(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     applicationName: String,
   ): Any? {
     return null
@@ -268,8 +220,6 @@ public open class EventListener {
    *   null unless [initializerStart] is overridden to return something else.
    */
   public open fun initializerEnd(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     applicationName: String,
     startValue: Any?,
   ) {
@@ -282,8 +232,6 @@ public open class EventListener {
    *   completed. The base function always returns null.
    */
   public open fun mainFunctionStart(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     applicationName: String,
   ): Any? {
     return null
@@ -296,8 +244,6 @@ public open class EventListener {
    *   null unless [mainFunctionStart] is overridden to return something else.
    */
   public open fun mainFunctionEnd(
-    app: TreehouseApp<*>,
-    zipline: Zipline,
     applicationName: String,
     startValue: Any?,
   ) {
@@ -308,8 +254,6 @@ public open class EventListener {
    * a captive portal on the network.
    */
   public open fun manifestParseFailed(
-    app: TreehouseApp<*>,
-    url: String?,
     exception: Exception,
   ) {
   }
@@ -318,7 +262,6 @@ public open class EventListener {
    * Invoked when something calls [Zipline.bind], or a service is sent via an API.
    */
   public open fun bindService(
-    app: TreehouseApp<*>,
     name: String,
     service: ZiplineService,
   ) {
@@ -328,7 +271,6 @@ public open class EventListener {
    * Invoked when something calls [Zipline.take], or a service is received via an API.
    */
   public open fun takeService(
-    app: TreehouseApp<*>,
     name: String,
     service: ZiplineService,
   ) {
@@ -342,7 +284,6 @@ public open class EventListener {
    *   base function always returns null.
    */
   public open fun callStart(
-    app: TreehouseApp<*>,
     call: Call,
   ): Any? = null
 
@@ -353,7 +294,6 @@ public open class EventListener {
    *   unless [callStart] is overridden to return something else.
    */
   public open fun callEnd(
-    app: TreehouseApp<*>,
     call: Call,
     result: CallResult,
     startValue: Any?,
@@ -366,7 +306,6 @@ public open class EventListener {
    * Note that this method may be invoked after [codeUnloaded].
    */
   public open fun serviceLeaked(
-    app: TreehouseApp<*>,
     name: String,
   ) {
   }
@@ -382,8 +321,25 @@ public open class EventListener {
    * execute. A new [Zipline] will start when new code available, or when the app is restarted.
    */
   public open fun uncaughtException(
-    app: TreehouseApp<*>,
     exception: Throwable,
   ) {
+  }
+
+  public fun interface Factory {
+    /**
+     * Returns an event listener that receives the events of a specific code session. Each code
+     * session includes a single [Zipline] instance, unless code loading fails, in which case there
+     * will be no [Zipline] instance.
+     */
+    public fun create(
+      app: TreehouseApp<*>,
+      manifestUrl: String?,
+    ): EventListener
+  }
+
+  public companion object {
+    public val NONE: Factory = Factory { app, manifestUrl ->
+      EventListener()
+    }
   }
 }

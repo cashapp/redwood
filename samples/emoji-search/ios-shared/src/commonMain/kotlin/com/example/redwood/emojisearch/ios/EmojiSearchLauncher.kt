@@ -44,24 +44,26 @@ class EmojiSearchLauncher(
   fun createTreehouseApp(listener: EmojiSearchEventListener): TreehouseApp<EmojiSearchPresenter> {
     val ziplineHttpClient = nsurlSession.asZiplineHttpClient()
 
+    val eventListener = object : EventListener() {
+      override fun codeLoadFailed(exception: Exception, startValue: Any?) {
+        NSLog("Treehouse: codeLoadFailed: $exception")
+        NSOperationQueue.mainQueue.addOperationWithBlock {
+          listener.codeLoadFailed()
+        }
+      }
+
+      override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+        NSLog("Treehouse: codeLoadSuccess")
+        NSOperationQueue.mainQueue.addOperationWithBlock {
+          listener.codeLoadSuccess()
+        }
+      }
+    }
+
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
-      eventListener = object : EventListener() {
-        override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
-          NSLog("Treehouse: codeLoadFailed: $exception")
-          NSOperationQueue.mainQueue.addOperationWithBlock {
-            listener.codeLoadFailed()
-          }
-        }
-
-        override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
-          NSLog("Treehouse: codeLoadSuccess")
-          NSOperationQueue.mainQueue.addOperationWithBlock {
-            listener.codeLoadSuccess()
-          }
-        }
-      },
+      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)

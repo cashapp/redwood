@@ -33,9 +33,9 @@ class TreehouseAppContentTest {
   private val eventLog = EventLog()
 
   private val dispatcher = UnconfinedTestDispatcher()
-  private val codeHost = FakeCodeHost(eventLog)
-  private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
   private val eventPublisher = FakeEventPublisher()
+  private val codeHost = FakeCodeHost(eventLog, eventPublisher)
+  private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
   private val codeListener = FakeCodeListener(eventLog)
   private val uiConfiguration = UiConfiguration()
 
@@ -388,7 +388,6 @@ class TreehouseAppContentTest {
       codeHost = codeHost,
       dispatchers = dispatchers,
       appScope = CoroutineScope(coroutineContext),
-      eventPublisher = eventPublisher,
       codeListener = codeListener,
       source = { app -> app.newUi() },
     )

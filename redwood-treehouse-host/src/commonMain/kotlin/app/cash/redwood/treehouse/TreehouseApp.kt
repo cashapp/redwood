@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
@@ -46,9 +47,10 @@ public class TreehouseApp<A : AppService> private constructor(
 ) {
   private val codeHost = ZiplineCodeHost<A>()
 
-  public val dispatchers: TreehouseDispatchers = factory.dispatchers
+  // TODO: remove after https://github.com/cashapp/zipline/pull/1159
+  private val ziplineToPublisherHack = mutableMapOf<Zipline, RealEventPublisher>()
 
-  private val eventPublisher = RealEventPublisher(factory.eventListener, this)
+  public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
   private var started = false
 
@@ -80,7 +82,6 @@ public class TreehouseApp<A : AppService> private constructor(
       codeHost = codeHost,
       dispatchers = dispatchers,
       appScope = appScope,
-      eventPublisher = eventPublisher,
       codeListener = codeListener,
       source = source,
     )
@@ -95,8 +96,6 @@ public class TreehouseApp<A : AppService> private constructor(
   public fun start() {
     if (started) return
     started = true
-
-    eventPublisher.appStart()
 
     appScope.launch(dispatchers.zipline) {
       val ziplineFileFlow = ziplineFlow()
@@ -124,10 +123,16 @@ public class TreehouseApp<A : AppService> private constructor(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
-      eventListener = eventPublisher.ziplineEventListener,
     )
 
     loader.concurrentDownloads = factory.concurrentDownloads
+
+    // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
+    val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
+      val eventListener = factory.eventListenerFactory.create(this@TreehouseApp, manifestUrl)
+      RealEventPublisher(eventListener, ziplineToPublisherHack).ziplineEventListener
+    }
+    loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
 
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
@@ -174,7 +179,6 @@ public class TreehouseApp<A : AppService> private constructor(
       session.cancel()
       codeHost.session = null
     }
-    eventPublisher.appCanceled()
   }
 
   private inner class ZiplineCodeHost<A : AppService> : CodeHost<A>, CodeSession.Listener<A> {
@@ -208,10 +212,13 @@ public class TreehouseApp<A : AppService> private constructor(
     }
 
     fun onCodeChanged(zipline: Zipline, appService: A) {
+      // TODO: replace with a downcast on Zipline.eventListener once that's public.
+      val eventPublisher = ziplineToPublisherHack.remove(zipline)!!
+
       val next = ZiplineCodeSession(
         dispatchers = dispatchers,
-        eventPublisher = eventPublisher,
         appScope = appScope,
+        eventPublisher = eventPublisher,
         appService = appService,
         zipline = zipline,
       )
@@ -249,7 +256,7 @@ public class TreehouseApp<A : AppService> private constructor(
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,
-    internal val eventListener: EventListener,
+    internal val eventListenerFactory: EventListener.Factory,
     internal val httpClient: ZiplineHttpClient,
     internal val frameClockFactory: FrameClock.Factory,
     internal val manifestVerifier: ManifestVerifier,

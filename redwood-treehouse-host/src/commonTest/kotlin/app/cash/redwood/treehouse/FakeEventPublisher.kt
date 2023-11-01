@@ -26,12 +26,6 @@ class FakeEventPublisher : EventPublisher {
 
   override val widgetProtocolMismatchHandler = ProtocolMismatchHandler.Throwing
 
-  override fun appStart() {
-  }
-
-  override fun appCanceled() {
-  }
-
   override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
   }
 
