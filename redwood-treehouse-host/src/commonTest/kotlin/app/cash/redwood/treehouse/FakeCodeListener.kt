@@ -33,10 +33,10 @@ class FakeCodeListener(
 
   override fun onUncaughtException(
     view: TreehouseView<*>,
-    e: Throwable,
+    exception: Throwable,
   ) {
     // Canonicalize "java.lang.Exception(boom!)" to "kotlin.Exception(boom!)".
-    val exceptionString = e.toString().replace("java.lang.", "kotlin.")
+    val exceptionString = exception.toString().replace("java.lang.", "kotlin.")
     eventLog += "codeListener.onUncaughtException($view, $exceptionString)"
   }
 }
