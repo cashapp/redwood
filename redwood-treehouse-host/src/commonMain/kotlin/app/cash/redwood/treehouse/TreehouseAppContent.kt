@@ -223,6 +223,33 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(viewState, nextCodeState)
   }
 
+  /**
+   * If the code crashes, show an error on the UI and cancel the UI binding. This sets the code
+   * state back to idle.
+   */
+  override fun uncaughtException(exception: Throwable) {
+    dispatchers.checkUi()
+
+    val previousState = stateFlow.value
+    val viewState = previousState.viewState
+    val previousCodeState = previousState.codeState
+
+    // If there wasn't code running, there's nothing to do.
+    if (previousCodeState !is CodeState.Running) return
+
+    // Cancel the UI binding to the crashed code.
+    previousCodeState.viewContentCodeBinding.cancel()
+
+    // If there's a UI, give it the error to display.
+    val view = (viewState as? ViewState.Bound)?.view
+    if (view != null) {
+      codeListener.onUncaughtException(view, exception)
+    }
+
+    val nextCodeState = CodeState.Idle<A>()
+    stateFlow.value = State(viewState, nextCodeState)
+  }
+
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   private fun startViewCodeContentBinding(
     codeSession: CodeSession<A>,

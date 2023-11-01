@@ -32,4 +32,23 @@ public open class CodeListener {
    * @param initial true if this is the first code loaded for this view's current content.
    */
   public open fun onCodeLoaded(view: TreehouseView<*>, initial: Boolean) {}
+
+  /**
+   * Invoked when the application powering [view] fails with an uncaught exception. This function
+   * should display an error UI.
+   *
+   * Typical implementations call [TreehouseView.reset] and display an error placeholder.
+   * Development builds may show more diagnostic information than production builds.
+   *
+   * When a Treehouse app fails, its current Zipline instance is canceled so no further code will
+   * execute. A new Zipline will start when new code available.
+   *
+   * This condition is not permanent! If new code is loaded after an error, [onCodeLoaded] will be
+   * called.
+   */
+  public open fun onUncaughtException(
+    view: TreehouseView<*>,
+    e: Throwable,
+  ) {
+  }
 }

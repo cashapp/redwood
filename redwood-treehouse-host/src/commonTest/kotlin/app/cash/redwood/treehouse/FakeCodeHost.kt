@@ -20,15 +20,16 @@ internal class FakeCodeHost : CodeHost<FakeAppService> {
 
   override var session: CodeSession<FakeAppService>? = null
     set(value) {
-      require(value != null)
-
       val previous = field
       previous?.cancel()
 
-      value.start()
-      for (listener in listeners) {
-        listener.codeSessionChanged(value)
+      if (value != null) {
+        value.start()
+        for (listener in listeners) {
+          listener.codeSessionChanged(value)
+        }
       }
+
       field = value
     }
 
@@ -52,6 +53,13 @@ internal class FakeCodeHost : CodeHost<FakeAppService> {
         }
       }
     }
+  }
+
+  fun triggerException(exception: Throwable) {
+    for (listener in listeners) {
+      listener.uncaughtException(exception)
+    }
+    session = null
   }
 
   override fun addListener(listener: CodeHost.Listener<FakeAppService>) {

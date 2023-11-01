@@ -18,11 +18,25 @@ package app.cash.redwood.treehouse
 class FakeCodeListener(
   private val eventLog: EventLog,
 ) : CodeListener() {
-  override fun onInitialCodeLoading(view: TreehouseView<*>) {
+  override fun onInitialCodeLoading(
+    view: TreehouseView<*>,
+  ) {
     eventLog += "codeListener.onInitialCodeLoading($view)"
   }
 
-  override fun onCodeLoaded(view: TreehouseView<*>, initial: Boolean) {
+  override fun onCodeLoaded(
+    view: TreehouseView<*>,
+    initial: Boolean,
+  ) {
     eventLog += "codeListener.onCodeLoaded($view, initial = $initial)"
+  }
+
+  override fun onUncaughtException(
+    view: TreehouseView<*>,
+    e: Throwable,
+  ) {
+    // Canonicalize "java.lang.Exception(boom!)" to "kotlin.Exception(boom!)".
+    val exceptionString = e.toString().replace("java.lang.", "kotlin.")
+    eventLog += "codeListener.onUncaughtException($view, $exceptionString)"
   }
 }

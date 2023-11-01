@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEqualTo
 import kotlinx.coroutines.channels.Channel
 
@@ -33,6 +34,18 @@ class EventLog {
 
   suspend fun takeEvent(event: String) {
     assertThat(takeEvent()).isEqualTo(event)
+  }
+
+  /**
+   * Take all the events in [events], in any order. Use this when events published are dependent on
+   * dispatch order.
+   */
+  suspend fun takeEventsInAnyOrder(vararg events: String) {
+    val actual = mutableListOf<String>()
+    while (actual.size < events.size) {
+      actual += takeEvent()
+    }
+    assertThat(actual).containsExactlyInAnyOrder(*events)
   }
 
   fun assertNoEvents() {

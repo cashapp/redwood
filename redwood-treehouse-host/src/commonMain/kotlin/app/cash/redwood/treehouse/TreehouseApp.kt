@@ -23,7 +23,10 @@ import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import app.cash.zipline.withScope
+import kotlin.coroutines.CoroutineContext
 import kotlin.native.ObjCName
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
@@ -46,21 +49,17 @@ public class TreehouseApp<A : AppService> private constructor(
   private val appScope: CoroutineScope,
   public val spec: Spec<A>,
 ) {
-  public val dispatchers: TreehouseDispatchers = factory.dispatchers
+  private val codeHost = ZiplineCodeHost<A>()
+
+  public val dispatchers: TreehouseDispatchers =
+    TreehouseDispatchersWithExceptionHandler(factory.dispatchers, codeHost.exceptionHandler)
+
   private val eventPublisher = RealEventPublisher(factory.eventListener, this)
 
   private var started = false
 
   /** Only accessed on [TreehouseDispatchers.zipline]. */
   private var closed = false
-
-  private val codeHost = ZiplineCodeHost<A>(
-    appScope = appScope,
-    dispatchers = dispatchers,
-    eventPublisher = eventPublisher,
-    frameClock = factory.frameClock,
-    stateStore = factory.stateStore,
-  )
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -125,10 +124,14 @@ public class TreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
+  @OptIn(ExperimentalStdlibApi::class)
   private fun ziplineFlow(): Flow<LoadResult> {
+    val dispatcher = dispatchers.zipline[CoroutineDispatcher.Key]
+      ?: error("expected TreehouseDispatchers.zipline to include a CoroutineDispatcher")
+
     // Loads applications from the network only. The cache is neither read nor written.
     var loader = ZiplineLoader(
-      dispatcher = dispatchers.zipline,
+      dispatcher = dispatcher,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
       eventListener = eventPublisher.ziplineEventListener,
@@ -183,21 +186,40 @@ public class TreehouseApp<A : AppService> private constructor(
     eventPublisher.appCanceled()
   }
 
-  private class ZiplineCodeHost<A : AppService>(
-    private val appScope: CoroutineScope,
-    private val dispatchers: TreehouseDispatchers,
-    private val eventPublisher: EventPublisher,
-    private val frameClock: FrameClock,
-    override val stateStore: StateStore,
-  ) : CodeHost<A> {
-    override var session: ZiplineCodeSession<A>? = null
+  private class TreehouseDispatchersWithExceptionHandler(
+    val delegate: TreehouseDispatchers,
+    exceptionHandler: CoroutineExceptionHandler,
+  ) : TreehouseDispatchers by delegate {
+    override val zipline = delegate.zipline + exceptionHandler
+  }
 
+  private inner class ZiplineCodeHost<A : AppService> : CodeHost<A> {
     /**
      * Contents that this app is currently responsible for.
      *
      * Only accessed on [TreehouseDispatchers.ui].
      */
     private val listeners = mutableListOf<CodeHost.Listener<A>>()
+
+    override val stateStore: StateStore = factory.stateStore
+
+    override var session: ZiplineCodeSession<A>? = null
+
+    /** Propagates exceptions on the Zipline dispatcher to the listeners. */
+    val exceptionHandler = object : CoroutineExceptionHandler {
+      override val key: CoroutineContext.Key<*>
+        get() = CoroutineExceptionHandler.Key
+
+      override fun handleException(context: CoroutineContext, exception: Throwable) {
+        appScope.launch(dispatchers.ui) {
+          for (listener in listeners) {
+            listener.uncaughtException(exception)
+          }
+          codeHost.session?.cancel()
+          codeHost.session = null
+        }
+      }
+    }
 
     override fun newServiceScope(): CodeHost.ServiceScope<A> {
       val ziplineScope = ZiplineScope()
@@ -232,7 +254,7 @@ public class TreehouseApp<A : AppService> private constructor(
           dispatchers = dispatchers,
           eventPublisher = eventPublisher,
           appScope = appScope,
-          frameClock = frameClock,
+          frameClock = factory.frameClock,
           sessionScope = sessionScope,
           appService = appService,
           zipline = zipline,
