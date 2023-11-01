@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.treehouse.CodeSession.Listener
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
@@ -27,45 +28,66 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
-  private val codeHost: CodeHost<*>,
   private val dispatchers: TreehouseDispatchers,
   private val eventPublisher: EventPublisher,
   private val appScope: CoroutineScope,
-  private val frameClock: FrameClock,
-  private val sessionScope: CoroutineScope,
   override val appService: A,
   val zipline: Zipline,
-) : CodeSession<A> {
+) : CodeSession<A>, AppLifecycle.Host {
+  private val listeners = mutableListOf<Listener<A>>()
   private val ziplineScope = ZiplineScope()
 
   override val json: Json
     get() = zipline.json
 
-  override fun start() {
-    frameClock.start(sessionScope, dispatchers)
+  // These vars only accessed on TreehouseDispatchers.zipline.
+  private lateinit var sessionScope: CoroutineScope
+  private lateinit var frameClock: FrameClock
+  private lateinit var appLifecycle: AppLifecycle
+
+  private var canceled = false
+
+  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
+    dispatchers.checkUi()
+
     sessionScope.launch(dispatchers.zipline) {
-      val appLifecycle = appService.withScope(ziplineScope).appLifecycle
-      val host = RealAppLifecycleHost(codeHost, appLifecycle, eventPublisher, frameClock)
-      appLifecycle.start(host)
+      this@ZiplineCodeSession.sessionScope = sessionScope
+      this@ZiplineCodeSession.frameClock = frameClock
+
+      val service = appService.withScope(ziplineScope).appLifecycle
+      appLifecycle = service
+      service.start(this@ZiplineCodeSession)
     }
   }
 
+  override fun addListener(listener: Listener<A>) {
+    dispatchers.checkUi()
+    listeners += listener
+  }
+
+  override fun removeListener(listener: Listener<A>) {
+    dispatchers.checkUi()
+    listeners -= listener
+  }
+
   override fun cancel() {
+    dispatchers.checkUi()
+
+    if (canceled) return
+    canceled = true
+
+    val listenersArray = listeners.toTypedArray() // onCancel mutates.
+    for (listener in listenersArray) {
+      listener.onCancel(this)
+    }
+
     appScope.launch(dispatchers.zipline) {
       sessionScope.cancel()
       ziplineScope.close()
       zipline.close()
     }
   }
-}
 
-/** Platform features to the guest application. */
-private class RealAppLifecycleHost(
-  val codeHost: CodeHost<*>,
-  val appLifecycle: AppLifecycle,
-  val eventPublisher: EventPublisher,
-  val frameClock: FrameClock,
-) : AppLifecycle.Host {
   override fun requestFrame() {
     frameClock.requestFrame(appLifecycle)
   }
@@ -85,6 +107,28 @@ private class RealAppLifecycleHost(
   }
 
   override fun handleUncaughtException(exception: Throwable) {
-    codeHost.handleUncaughtException(exception)
+    appScope.launch(dispatchers.ui) {
+      val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
+      for (listener in listenersArray) {
+        listener.onUncaughtException(this@ZiplineCodeSession, exception)
+      }
+      this@ZiplineCodeSession.cancel()
+    }
+
+    eventPublisher.onUncaughtException(exception)
+  }
+
+  override fun newServiceScope(): CodeSession.ServiceScope<A> {
+    val ziplineScope = ZiplineScope()
+
+    return object : CodeSession.ServiceScope<A> {
+      override fun apply(appService: A): A {
+        return appService.withScope(ziplineScope)
+      }
+
+      override fun close() {
+        ziplineScope.close()
+      }
+    }
   }
 }

@@ -15,21 +15,72 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.treehouse.CodeSession.Listener
+import app.cash.redwood.treehouse.CodeSession.ServiceScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
 internal class FakeCodeSession(
-  private val name: String,
   private val eventLog: EventLog,
+  private val name: String,
 ) : CodeSession<FakeAppService> {
+  private val listeners = mutableListOf<Listener<FakeAppService>>()
+
   override val json = Json
 
   override val appService = FakeAppService("$name.app", eventLog)
 
-  override fun start() {
+  private var canceled = false
+
+  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
     eventLog += "$name.start()"
   }
 
+  override fun addListener(listener: Listener<FakeAppService>) {
+    listeners += listener
+  }
+
+  override fun removeListener(listener: Listener<FakeAppService>) {
+    listeners -= listener
+  }
+
+  override fun handleUncaughtException(exception: Throwable) {
+    val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
+    for (listener in listenersArray) {
+      listener.onUncaughtException(this, exception)
+    }
+    cancel()
+  }
+
+  override fun newServiceScope(): ServiceScope<FakeAppService> {
+    return object : ServiceScope<FakeAppService> {
+      val uisToClose = mutableListOf<ZiplineTreehouseUi>()
+
+      override fun apply(appService: FakeAppService): FakeAppService {
+        return appService.withListener(object : FakeAppService.Listener {
+          override fun onNewUi(ui: ZiplineTreehouseUi) {
+            uisToClose += ui
+          }
+        })
+      }
+
+      override fun close() {
+        for (ui in uisToClose) {
+          ui.close()
+        }
+      }
+    }
+  }
+
   override fun cancel() {
+    if (canceled) return
+    canceled = true
+
+    val listenersArray = listeners.toTypedArray() // onCancel mutates.
+    for (listener in listenersArray) {
+      listener.onCancel(this)
+    }
+
     eventLog += "$name.cancel()"
   }
 }

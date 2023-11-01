@@ -15,58 +15,60 @@
  */
 package app.cash.redwood.treehouse
 
-internal class FakeCodeHost : CodeHost<FakeAppService> {
+import app.cash.redwood.treehouse.CodeHost.Listener
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineScope
+
+internal class FakeCodeHost(
+  private val eventLog: EventLog,
+) : CodeHost<FakeAppService> {
   override val stateStore = MemoryStateStore()
+
+  private val codeSessionListener = object : CodeSession.Listener<FakeAppService> {
+    override fun onUncaughtException(
+      codeSession: CodeSession<FakeAppService>,
+      exception: Throwable,
+    ) {
+    }
+
+    override fun onCancel(
+      codeSession: CodeSession<FakeAppService>,
+    ) {
+      check(codeSession == this@FakeCodeHost.session)
+      this@FakeCodeHost.session = null
+    }
+  }
 
   override var session: CodeSession<FakeAppService>? = null
     set(value) {
       val previous = field
+      previous?.removeListener(codeSessionListener)
       previous?.cancel()
 
       if (value != null) {
-        value.start()
+        value.start(CoroutineScope(EmptyCoroutineContext), FakeFrameClock())
         for (listener in listeners) {
           listener.codeSessionChanged(value)
         }
       }
 
+      value?.addListener(codeSessionListener)
       field = value
     }
 
-  private val listeners = mutableListOf<CodeHost.Listener<FakeAppService>>()
+  private val listeners = mutableListOf<Listener<FakeAppService>>()
 
-  override fun newServiceScope(): CodeHost.ServiceScope<FakeAppService> {
-    return object : CodeHost.ServiceScope<FakeAppService> {
-      val uisToClose = mutableListOf<ZiplineTreehouseUi>()
-
-      override fun apply(appService: FakeAppService): FakeAppService {
-        return appService.withListener(object : FakeAppService.Listener {
-          override fun onNewUi(ui: ZiplineTreehouseUi) {
-            uisToClose += ui
-          }
-        })
-      }
-
-      override fun close() {
-        for (ui in uisToClose) {
-          ui.close()
-        }
-      }
-    }
+  fun startCodeSession(name: String): CodeSession<FakeAppService> {
+    val result = FakeCodeSession(eventLog, name)
+    session = result
+    return result
   }
 
-  override fun handleUncaughtException(exception: Throwable) {
-    for (listener in listeners) {
-      listener.uncaughtException(exception)
-    }
-    session = null
-  }
-
-  override fun addListener(listener: CodeHost.Listener<FakeAppService>) {
+  override fun addListener(listener: Listener<FakeAppService>) {
     listeners += listener
   }
 
-  override fun removeListener(listener: CodeHost.Listener<FakeAppService>) {
+  override fun removeListener(listener: Listener<FakeAppService>) {
     listeners -= listener
   }
 }
