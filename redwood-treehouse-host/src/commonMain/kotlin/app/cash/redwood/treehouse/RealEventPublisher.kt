@@ -187,4 +187,8 @@ internal class RealEventPublisher(
   override fun onUnknownEventNode(id: Id, tag: EventTag) {
     listener.onUnknownEventNode(app, id, tag)
   }
+
+  override fun onUncaughtException(exception: Throwable) {
+    listener.uncaughtException(app, exception)
+  }
 }

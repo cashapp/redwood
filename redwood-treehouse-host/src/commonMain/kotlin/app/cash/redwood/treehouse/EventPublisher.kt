@@ -33,4 +33,6 @@ internal interface EventPublisher {
   fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
   fun onUnknownEventNode(id: Id, tag: EventTag)
+
+  fun onUncaughtException(exception: Throwable)
 }

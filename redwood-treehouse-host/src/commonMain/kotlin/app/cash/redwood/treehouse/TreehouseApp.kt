@@ -23,7 +23,6 @@ import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import app.cash.zipline.withScope
-import kotlin.coroutines.CoroutineContext
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -52,7 +51,7 @@ public class TreehouseApp<A : AppService> private constructor(
   private val codeHost = ZiplineCodeHost<A>()
 
   public val dispatchers: TreehouseDispatchers =
-    TreehouseDispatchersWithExceptionHandler(factory.dispatchers, codeHost.exceptionHandler)
+    TreehouseDispatchersWithExceptionHandler(factory.dispatchers, codeHost.asExceptionHandler())
 
   private val eventPublisher = RealEventPublisher(factory.eventListener, this)
 
@@ -205,22 +204,6 @@ public class TreehouseApp<A : AppService> private constructor(
 
     override var session: ZiplineCodeSession<A>? = null
 
-    /** Propagates exceptions on the Zipline dispatcher to the listeners. */
-    val exceptionHandler = object : CoroutineExceptionHandler {
-      override val key: CoroutineContext.Key<*>
-        get() = CoroutineExceptionHandler.Key
-
-      override fun handleException(context: CoroutineContext, exception: Throwable) {
-        appScope.launch(dispatchers.ui) {
-          for (listener in listeners) {
-            listener.uncaughtException(exception)
-          }
-          codeHost.session?.cancel()
-          codeHost.session = null
-        }
-      }
-    }
-
     override fun newServiceScope(): CodeHost.ServiceScope<A> {
       val ziplineScope = ZiplineScope()
 
@@ -245,12 +228,25 @@ public class TreehouseApp<A : AppService> private constructor(
       listeners -= listener
     }
 
+    override fun handleUncaughtException(exception: Throwable) {
+      appScope.launch(dispatchers.ui) {
+        for (listener in listeners) {
+          listener.uncaughtException(exception)
+        }
+        codeHost.session?.cancel()
+        codeHost.session = null
+      }
+
+      eventPublisher.onUncaughtException(exception)
+    }
+
     fun onCodeChanged(zipline: Zipline, appService: A) {
       val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
       sessionScope.launch(dispatchers.ui) {
         val previous = session
 
         val next = ZiplineCodeSession(
+          codeHost = this@ZiplineCodeHost,
           dispatchers = dispatchers,
           eventPublisher = eventPublisher,
           appScope = appScope,

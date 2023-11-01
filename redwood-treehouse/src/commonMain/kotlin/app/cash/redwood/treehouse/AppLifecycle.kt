@@ -30,8 +30,16 @@ public interface AppLifecycle : ZiplineService {
   public interface Host : ZiplineService {
     public fun requestFrame()
 
+    /** Notify the host that an event was unrecognized and will be ignored. */
     public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
+    /**
+     * Notify the host that an event was received for a node that no longer exists.
+     * That event will be ignored.
+     */
     public fun onUnknownEventNode(id: Id, tag: EventTag)
+
+    /** Handle an uncaught exception. The app is now in an undefined state and must be stopped. */
+    public fun handleUncaughtException(exception: Throwable)
   }
 }

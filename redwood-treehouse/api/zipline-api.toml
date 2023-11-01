@@ -17,6 +17,9 @@ functions = [
   # fun close(): kotlin.Unit
   "moYx+T3e",
 
+  # fun handleUncaughtException(kotlin.Throwable): kotlin.Unit
+  "Hls+uhG7",
+
   # fun onUnknownEvent(app.cash.redwood.protocol.WidgetTag, app.cash.redwood.protocol.EventTag): kotlin.Unit
   "jmKreoSS",
 

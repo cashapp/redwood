@@ -55,7 +55,7 @@ internal class FakeCodeHost : CodeHost<FakeAppService> {
     }
   }
 
-  fun triggerException(exception: Throwable) {
+  override fun handleUncaughtException(exception: Throwable) {
     for (listener in listeners) {
       listener.uncaughtException(exception)
     }

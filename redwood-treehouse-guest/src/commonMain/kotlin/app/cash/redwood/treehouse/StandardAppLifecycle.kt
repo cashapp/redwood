@@ -23,19 +23,17 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.AppLifecycle.Host
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.serialization.json.Json
 
-@OptIn(DelicateCoroutinesApi::class)
 public class StandardAppLifecycle(
   internal val protocolBridgeFactory: ProtocolBridge.Factory,
   internal val json: Json,
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
   private lateinit var host: Host
-  internal val coroutineScope: CoroutineScope = GlobalScope
 
   private lateinit var broadcastFrameClock: BroadcastFrameClock
   internal lateinit var frameClock: MonotonicFrameClock
@@ -49,6 +47,17 @@ public class StandardAppLifecycle(
       host.onUnknownEventNode(id, tag)
     }
   }
+
+  private val coroutineExceptionHandler = object : CoroutineExceptionHandler {
+    override val key: CoroutineContext.Key<*>
+      get() = CoroutineExceptionHandler.Key
+
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+      host.handleUncaughtException(exception)
+    }
+  }
+
+  internal val coroutineScope = CoroutineScope(coroutineExceptionHandler)
 
   override fun start(host: Host) {
     this.host = host
