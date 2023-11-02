@@ -99,6 +99,7 @@ public open class RedwoodLayout(
     config: Configuration = context.resources.configuration,
     insets: Insets = rootWindowInsetsCompat.safeDrawing,
   ): UiConfiguration {
+    // TODO: Implement UIConfiguration.isVisible updates.
     val viewportSize: Size
     val density: Double
     with(Density(resources)) {

@@ -65,6 +65,7 @@ public open class RedwoodUIView(
   }
 
   protected fun updateUiConfiguration() {
+    // TODO: Implement UIConfiguration.isVisible updates.
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,
       bounds = view.bounds,

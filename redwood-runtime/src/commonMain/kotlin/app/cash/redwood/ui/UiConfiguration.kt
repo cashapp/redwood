@@ -37,6 +37,19 @@ public class UiConfiguration(
    * raw pixels, if needed.
    */
   public val density: Double = 1.0,
+
+  /**
+   * TODO: The visibility of the root view on the screen.
+   * The use case for this is so that a treehouse app can react
+   * to their view going on and off the screen. This means
+   * slightly different things on every platform, but the goal is 
+   * to find common ground.
+   * Some ideas:
+   * iOS - view.window != nil or viewDidAppear vs viewDidDisappear
+   * Android - onWindowVisibilityChanged() or onResume() vs onPause()
+   * Web - window.load vs window.unload
+   * public val isVisible: Bool = false,
+   */
 ) {
   public companion object
 }
