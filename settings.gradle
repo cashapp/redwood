@@ -17,6 +17,13 @@ dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
+    // TODO Remove this once Google releases a 1.9.20-compatible Compose compiler.
+    maven {
+      url 'https://androidx.dev/storage/compose-compiler/repository'
+      content {
+        includeGroup('androidx.compose.compiler')
+      }
+    }
   }
 }
 
