@@ -88,7 +88,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
 
     // Start the code if necessary.
-    val codeSession = codeHost.session
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
@@ -120,7 +120,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Bound(view)
 
     // Start the code if necessary.
-    val codeSession = codeHost.session
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(

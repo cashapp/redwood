@@ -20,10 +20,13 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -31,17 +34,30 @@ import kotlinx.coroutines.test.runTest
 @OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseAppContentTest {
   private val eventLog = EventLog()
+  private val appScope = CoroutineScope(EmptyCoroutineContext)
 
   private val dispatcher = UnconfinedTestDispatcher()
   private val eventPublisher = FakeEventPublisher()
-  private val codeHost = FakeCodeHost(eventLog, eventPublisher)
   private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
+  private val codeHost = FakeCodeHost(
+    eventLog = eventLog,
+    eventPublisher = eventPublisher,
+    dispatchers = dispatchers,
+    appScope = appScope,
+    frameClockFactory = FakeFrameClock.Factory,
+  )
   private val codeListener = FakeCodeListener(eventLog)
   private val uiConfiguration = UiConfiguration()
+
+  @BeforeTest
+  fun setUp() {
+    codeHost.start()
+  }
 
   @AfterTest
   fun tearDown() {
     eventLog.assertNoEvents()
+    appScope.cancel()
   }
 
   @Test

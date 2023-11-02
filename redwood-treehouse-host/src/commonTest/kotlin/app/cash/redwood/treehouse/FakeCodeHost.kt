@@ -15,61 +15,32 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.CodeHost.Listener
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 
 internal class FakeCodeHost(
   private val eventLog: EventLog,
   private val eventPublisher: EventPublisher,
-) : CodeHost<FakeAppService> {
-  override val stateStore = MemoryStateStore()
+  dispatchers: TreehouseDispatchers,
+  appScope: CoroutineScope,
+  frameClockFactory: FrameClock.Factory,
+) : CodeHost<FakeAppService>(
+  dispatchers = dispatchers,
+  appScope = appScope,
+  frameClockFactory = frameClockFactory,
+  stateStore = MemoryStateStore(),
+) {
+  private val codeSessions = MutableStateFlow<CodeSession<FakeAppService>?>(null)
 
-  private val codeSessionListener = object : CodeSession.Listener<FakeAppService> {
-    override fun onUncaughtException(
-      codeSession: CodeSession<FakeAppService>,
-      exception: Throwable,
-    ) {
-    }
-
-    override fun onCancel(
-      codeSession: CodeSession<FakeAppService>,
-    ) {
-      check(codeSession == this@FakeCodeHost.session)
-      this@FakeCodeHost.session = null
-    }
+  override fun codeUpdatesFlow(): Flow<CodeSession<FakeAppService>> {
+    return codeSessions.filterNotNull()
   }
-
-  override var session: CodeSession<FakeAppService>? = null
-    set(value) {
-      val previous = field
-      previous?.removeListener(codeSessionListener)
-      previous?.cancel()
-
-      if (value != null) {
-        value.start(CoroutineScope(EmptyCoroutineContext), FakeFrameClock())
-        for (listener in listeners) {
-          listener.codeSessionChanged(value)
-        }
-      }
-
-      value?.addListener(codeSessionListener)
-      field = value
-    }
-
-  private val listeners = mutableListOf<Listener<FakeAppService>>()
 
   fun startCodeSession(name: String): CodeSession<FakeAppService> {
     val result = FakeCodeSession(eventLog, name, eventPublisher)
-    session = result
+    codeSessions.value = result
     return result
-  }
-
-  override fun addListener(listener: Listener<FakeAppService>) {
-    listeners += listener
-  }
-
-  override fun removeListener(listener: Listener<FakeAppService>) {
-    listeners -= listener
   }
 }

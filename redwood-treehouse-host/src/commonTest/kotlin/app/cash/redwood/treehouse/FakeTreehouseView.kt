@@ -36,8 +36,7 @@ internal class FakeTreehouseView(
 
   override var saveCallback: TreehouseView.SaveCallback? = null
 
-  override val stateSnapshotId: StateSnapshot.Id
-    get() = error("unexpected call")
+  override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
   override val children = MutableListChildren<FakeWidget>()
 
