@@ -19,17 +19,27 @@ import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 
-internal class FakeOnBackPressedDispatcher : OnBackPressedDispatcher {
+internal class FakeOnBackPressedDispatcher(
+  val eventLog: EventLog,
+) : OnBackPressedDispatcher {
   private val mutableCallbacks = mutableListOf<OnBackPressedCallback>()
+  private var nextCallbackId = 0
 
   val callbacks: List<OnBackPressedCallback>
     get() = mutableCallbacks.toList()
 
   override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    val id = nextCallbackId++
     mutableCallbacks += onBackPressedCallback
 
     return object : Cancellable {
+      var canceled = false
+
       override fun cancel() {
+        if (canceled) return
+        canceled = true
+
+        eventLog += "onBackPressedDispatcher.callbacks[$id].cancel()"
         mutableCallbacks -= onBackPressedCallback
       }
     }

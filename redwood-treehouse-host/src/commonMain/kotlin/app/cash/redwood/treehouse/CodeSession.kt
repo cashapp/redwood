@@ -22,13 +22,15 @@ import kotlinx.serialization.json.Json
 
 /** The host state for a single code load. We get a new session each time we get new code. */
 internal interface CodeSession<A : AppService> {
+  val scope: CoroutineScope
+
   val eventPublisher: EventPublisher
 
   val appService: A
 
   val json: Json
 
-  fun start(sessionScope: CoroutineScope, frameClock: FrameClock)
+  fun start()
 
   fun addListener(listener: Listener<A>)
 

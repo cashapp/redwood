@@ -15,61 +15,44 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.CodeHost.Listener
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 
 internal class FakeCodeHost(
   private val eventLog: EventLog,
   private val eventPublisher: EventPublisher,
-) : CodeHost<FakeAppService> {
-  override val stateStore = MemoryStateStore()
+  private val dispatchers: TreehouseDispatchers,
+  private val appScope: CoroutineScope,
+  frameClockFactory: FrameClock.Factory,
+) : CodeHost<FakeAppService>(
+  dispatchers = dispatchers,
+  appScope = appScope,
+  frameClockFactory = frameClockFactory,
+  stateStore = MemoryStateStore(),
+) {
+  private var codeSessions: Channel<CodeSession<FakeAppService>>? = null
+  private var nextCollectId = 1
 
-  private val codeSessionListener = object : CodeSession.Listener<FakeAppService> {
-    override fun onUncaughtException(
-      codeSession: CodeSession<FakeAppService>,
-      exception: Throwable,
-    ) {
+  /**
+   * Create a new channel every time we subscribe to code updates. The channel will be closed when
+   * the superclass is done consuming the flow.
+   */
+  override fun codeUpdatesFlow(): Flow<CodeSession<FakeAppService>> {
+    val collectId = nextCollectId++
+    eventLog += "codeHostUpdates$collectId.collect()"
+    val channel = Channel<CodeSession<FakeAppService>>(Int.MAX_VALUE)
+    channel.invokeOnClose {
+      eventLog += "codeHostUpdates$collectId.close()"
     }
-
-    override fun onCancel(
-      codeSession: CodeSession<FakeAppService>,
-    ) {
-      check(codeSession == this@FakeCodeHost.session)
-      this@FakeCodeHost.session = null
-    }
+    codeSessions = channel
+    return channel.consumeAsFlow()
   }
 
-  override var session: CodeSession<FakeAppService>? = null
-    set(value) {
-      val previous = field
-      previous?.removeListener(codeSessionListener)
-      previous?.cancel()
-
-      if (value != null) {
-        value.start(CoroutineScope(EmptyCoroutineContext), FakeFrameClock())
-        for (listener in listeners) {
-          listener.codeSessionChanged(value)
-        }
-      }
-
-      value?.addListener(codeSessionListener)
-      field = value
-    }
-
-  private val listeners = mutableListOf<Listener<FakeAppService>>()
-
-  fun startCodeSession(name: String): CodeSession<FakeAppService> {
-    val result = FakeCodeSession(eventLog, name, eventPublisher)
-    session = result
+  suspend fun startCodeSession(name: String): CodeSession<FakeAppService> {
+    val result = FakeCodeSession(dispatchers, eventPublisher, eventLog, name, appScope)
+    codeSessions!!.send(result)
     return result
-  }
-
-  override fun addListener(listener: Listener<FakeAppService>) {
-    listeners += listener
-  }
-
-  override fun removeListener(listener: Listener<FakeAppService>) {
-    listeners -= listener
   }
 }

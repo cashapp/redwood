@@ -24,10 +24,8 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import okio.Closeable
@@ -36,8 +34,6 @@ import okio.Path
 
 /**
  * This class binds downloaded code to on-screen views.
- *
- * It updates the content when new code is available in [onCodeChanged].
  */
 @ObjCName("TreehouseApp", exact = true)
 public class TreehouseApp<A : AppService> private constructor(
@@ -45,14 +41,27 @@ public class TreehouseApp<A : AppService> private constructor(
   private val appScope: CoroutineScope,
   public val spec: Spec<A>,
 ) {
-  private val codeHost = ZiplineCodeHost<A>()
-
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
-  private var started = false
-
-  /** Only accessed on [TreehouseDispatchers.zipline]. */
-  private var closed = false
+  private val codeHost = object : CodeHost<A>(
+    dispatchers = dispatchers,
+    appScope = appScope,
+    frameClockFactory = factory.frameClockFactory,
+    stateStore = factory.stateStore,
+  ) {
+    override fun codeUpdatesFlow(): Flow<CodeSession<A>> {
+      return ziplineFlow().mapNotNull { loadResult ->
+        when (loadResult) {
+          is LoadResult.Failure -> {
+            null // EventListener already notified.
+          }
+          is LoadResult.Success -> {
+            createCodeSession(loadResult.zipline)
+          }
+        }
+      }
+    }
+  }
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -62,7 +71,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * instance may be replaced if new code is loaded.
    */
   public val zipline: Zipline?
-    get() = codeHost.session?.zipline
+    get() = (codeHost.codeSession as? ZiplineCodeSession)?.zipline
 
   /**
    * Create content for [source].
@@ -78,7 +87,6 @@ public class TreehouseApp<A : AppService> private constructor(
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      appScope = appScope,
       codeListener = codeListener,
       source = source,
     )
@@ -89,25 +97,29 @@ public class TreehouseApp<A : AppService> private constructor(
    * this app.
    *
    * This function returns immediately if this app is already started.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun start() {
-    if (started) return
-    started = true
+    codeHost.start()
+  }
 
-    appScope.launch(dispatchers.zipline) {
-      val ziplineFileFlow = ziplineFlow()
-      ziplineFileFlow.collect {
-        when (it) {
-          is LoadResult.Success -> {
-            val app = spec.create(it.zipline)
-            onCodeChanged(it.zipline, app)
-          }
-          is LoadResult.Failure -> {
-            // EventListener already notified.
-          }
-        }
-      }
-    }
+  /**
+   * Stop any currently-running code and stop receiving new code.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
+   */
+  public fun stop() {
+    codeHost.stop()
+  }
+
+  /**
+   * Stop the currently-running application (if any) and start it again.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
+   */
+  public fun restart() {
+    codeHost.restart()
   }
 
   /**
@@ -153,95 +165,21 @@ public class TreehouseApp<A : AppService> private constructor(
     }
   }
 
-  /**
-   * Refresh the code. Even if no views are currently showing we refresh the code, so we're ready
-   * when a view is added.
-   *
-   * This function may only be invoked on [TreehouseDispatchers.zipline].
-   */
-  private fun onCodeChanged(zipline: Zipline, appService: A) {
-    dispatchers.checkZipline()
-    check(!closed)
+  private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
+    val appService = spec.create(zipline)
 
-    codeHost.onCodeChanged(zipline, appService)
-  }
+    // Extract the RealEventPublisher() created in ziplineFlow().
+    val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
+    val eventPublisher = eventListener.eventPublisher
 
-  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  public fun cancel() {
-    dispatchers.checkZipline()
-    closed = true
-    appScope.launch(dispatchers.ui) {
-      val session = codeHost.session ?: return@launch
-      session.removeListener(codeHost)
-      session.cancel()
-      codeHost.session = null
-    }
-  }
-
-  private inner class ZiplineCodeHost<A : AppService> : CodeHost<A>, CodeSession.Listener<A> {
-    /**
-     * Contents that this app is currently responsible for.
-     *
-     * Only accessed on [TreehouseDispatchers.ui].
-     */
-    private val listeners = mutableListOf<CodeHost.Listener<A>>()
-
-    override val stateStore: StateStore = factory.stateStore
-
-    override var session: ZiplineCodeSession<A>? = null
-
-    override fun addListener(listener: CodeHost.Listener<A>) {
-      dispatchers.checkUi()
-      listeners += listener
-    }
-
-    override fun removeListener(listener: CodeHost.Listener<A>) {
-      dispatchers.checkUi()
-      listeners -= listener
-    }
-
-    override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
-    }
-
-    override fun onCancel(codeSession: CodeSession<A>) {
-      check(codeSession == this.session)
-      this.session = null
-    }
-
-    fun onCodeChanged(zipline: Zipline, appService: A) {
-      // Extract the RealEventPublisher() created in ziplineFlow().
-      val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
-      val eventPublisher = eventListener.eventPublisher
-
-      val next = ZiplineCodeSession(
-        dispatchers = dispatchers,
-        appScope = appScope,
-        eventPublisher = eventPublisher,
-        appService = appService,
-        zipline = zipline,
-      )
-
-      val sessionScope = CoroutineScope(
-        SupervisorJob(appScope.coroutineContext.job) + next.coroutineExceptionHandler,
-      )
-
-      sessionScope.launch(dispatchers.ui) {
-        val previous = session
-        previous?.removeListener(this@ZiplineCodeHost)
-        previous?.cancel()
-
-        session = next
-        next.addListener(this@ZiplineCodeHost)
-        next.start(
-          sessionScope = sessionScope,
-          frameClock = factory.frameClockFactory.create(sessionScope, dispatchers),
-        )
-
-        for (listener in listeners) {
-          listener.codeSessionChanged(next)
-        }
-      }
-    }
+    return ZiplineCodeSession(
+      dispatchers = dispatchers,
+      eventPublisher = eventPublisher,
+      frameClockFactory = factory.frameClockFactory,
+      appService = appService,
+      zipline = zipline,
+      appScope = appScope,
+    )
   }
 
   /**

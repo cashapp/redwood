@@ -59,7 +59,9 @@ private sealed interface ViewState {
 }
 
 private sealed interface CodeState<A : AppService> {
-  class Idle<A : AppService> : CodeState<A>
+  class Idle<A : AppService>(
+    val isInitialLaunch: Boolean,
+  ) : CodeState<A>
 
   class Running<A : AppService>(
     val viewContentCodeBinding: ViewContentCodeBinding<A>,
@@ -70,11 +72,12 @@ private sealed interface CodeState<A : AppService> {
 internal class TreehouseAppContent<A : AppService>(
   private val codeHost: CodeHost<A>,
   private val dispatchers: TreehouseDispatchers,
-  private val appScope: CoroutineScope,
   private val codeListener: CodeListener,
   private val source: TreehouseContentSource<A>,
 ) : Content, CodeHost.Listener<A>, CodeSession.Listener<A> {
-  private val stateFlow = MutableStateFlow<State<A>>(State(ViewState.None, CodeState.Idle()))
+  private val stateFlow = MutableStateFlow<State<A>>(
+    State(ViewState.None, CodeState.Idle(isInitialLaunch = true)),
+  )
 
   override fun preload(
     onBackPressedDispatcher: OnBackPressedDispatcher,
@@ -88,7 +91,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
 
     // Start the code if necessary.
-    val codeSession = codeHost.session
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
@@ -120,7 +123,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextViewState = ViewState.Bound(view)
 
     // Start the code if necessary.
-    val codeSession = codeHost.session
+    val codeSession = codeHost.codeSession
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
         CodeState.Running(
@@ -169,7 +172,7 @@ internal class TreehouseAppContent<A : AppService>(
     if (previousViewState is ViewState.None) return // Idempotent.
 
     val nextViewState = ViewState.None
-    val nextCodeState = CodeState.Idle<A>()
+    val nextCodeState = CodeState.Idle<A>(isInitialLaunch = true)
 
     // Cancel the code if necessary.
     codeHost.removeListener(this)
@@ -204,7 +207,7 @@ internal class TreehouseAppContent<A : AppService>(
     val nextCodeState = CodeState.Running(
       startViewCodeContentBinding(
         codeSession = next,
-        isInitialLaunch = previousCodeState is CodeState.Idle,
+        isInitialLaunch = (previousCodeState as? CodeState.Idle)?.isInitialLaunch == true,
         onBackPressedDispatcher = onBackPressedDispatcher,
         firstUiConfiguration = uiConfiguration,
       ),
@@ -225,11 +228,19 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(viewState, nextCodeState)
   }
 
-  /**
-   * If the code crashes, show an error on the UI and cancel the UI binding. This sets the code
-   * state back to idle.
-   */
   override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
+    codeSessionCanceled(exception = exception)
+  }
+
+  override fun onCancel(codeSession: CodeSession<A>) {
+    codeSessionCanceled(exception = null)
+  }
+
+  /**
+   * If the code crashes or is unloaded, show an error on the UI and cancel the UI binding. This
+   * sets the code state back to idle.
+   */
+  private fun codeSessionCanceled(exception: Throwable?) {
     dispatchers.checkUi()
 
     val previousState = stateFlow.value
@@ -239,22 +250,19 @@ internal class TreehouseAppContent<A : AppService>(
     // This listener should only fire if we're actively running code.
     require(previousCodeState is CodeState.Running)
 
-    // Cancel the UI binding to the crashed code.
+    // Cancel the UI binding to the canceled code.
     val binding = previousCodeState.viewContentCodeBinding
     binding.cancel()
     binding.codeSession.removeListener(this)
 
-    // If there's a UI, give it the error to display.
+    // If there's an error and a UI, show it.
     val view = (viewState as? ViewState.Bound)?.view
-    if (view != null) {
+    if (exception != null && view != null) {
       codeListener.onUncaughtException(view, exception)
     }
 
-    val nextCodeState = CodeState.Idle<A>()
+    val nextCodeState = CodeState.Idle<A>(isInitialLaunch = false)
     stateFlow.value = State(viewState, nextCodeState)
-  }
-
-  override fun onCancel(codeSession: CodeSession<A>) {
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
@@ -270,7 +278,6 @@ internal class TreehouseAppContent<A : AppService>(
     return ViewContentCodeBinding(
       stateStore = codeHost.stateStore,
       dispatchers = dispatchers,
-      appScope = appScope,
       eventPublisher = codeSession.eventPublisher,
       contentSource = source,
       codeListener = codeListener,
@@ -300,7 +307,6 @@ internal class TreehouseAppContent<A : AppService>(
 private class ViewContentCodeBinding<A : AppService>(
   val stateStore: StateStore,
   val dispatchers: TreehouseDispatchers,
-  val appScope: CoroutineScope,
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
   val codeListener: CodeListener,
@@ -313,7 +319,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(
-    SupervisorJob(appScope.coroutineContext.job) + codeSession.coroutineExceptionHandler,
+    SupervisorJob(codeSession.scope.coroutineContext.job),
   )
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
@@ -486,10 +492,10 @@ private class ViewContentCodeBinding<A : AppService>(
     viewOrNull?.saveCallback = null
     viewOrNull = null
     bridgeOrNull = null
-    appScope.launch(dispatchers.zipline) {
+    bindingScope.launch(dispatchers.zipline) {
       treehouseUiOrNull = null
-      bindingScope.cancel()
       serviceScope.close()
+      bindingScope.cancel()
     }
   }
 }

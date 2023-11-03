@@ -23,37 +23,39 @@ import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
-  private val appScope: CoroutineScope,
   override val eventPublisher: EventPublisher,
+  frameClockFactory: FrameClock.Factory,
   override val appService: A,
   val zipline: Zipline,
+  val appScope: CoroutineScope,
 ) : CodeSession<A>, AppLifecycle.Host {
   private val listeners = mutableListOf<Listener<A>>()
   private val ziplineScope = ZiplineScope()
 
+  override val scope = CoroutineScope(
+    SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
+  )
+
   override val json: Json
     get() = zipline.json
 
-  // These vars only accessed on TreehouseDispatchers.zipline.
-  private lateinit var sessionScope: CoroutineScope
-  private lateinit var frameClock: FrameClock
+  private val frameClock = frameClockFactory.create(scope, dispatchers)
   private lateinit var appLifecycle: AppLifecycle
 
   private var canceled = false
 
-  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
+  override fun start() {
     dispatchers.checkUi()
 
-    sessionScope.launch(dispatchers.zipline) {
-      this@ZiplineCodeSession.sessionScope = sessionScope
-      this@ZiplineCodeSession.frameClock = frameClock
-
+    scope.launch(dispatchers.zipline) {
       val service = appService.withScope(ziplineScope).appLifecycle
       appLifecycle = service
       service.start(this@ZiplineCodeSession)
@@ -81,10 +83,10 @@ internal class ZiplineCodeSession<A : AppService>(
       listener.onCancel(this)
     }
 
-    appScope.launch(dispatchers.zipline) {
-      sessionScope.cancel()
+    scope.launch(dispatchers.zipline) {
       ziplineScope.close()
       zipline.close()
+      scope.cancel()
     }
   }
 
@@ -107,7 +109,7 @@ internal class ZiplineCodeSession<A : AppService>(
   }
 
   override fun handleUncaughtException(exception: Throwable) {
-    appScope.launch(dispatchers.ui) {
+    scope.launch(dispatchers.ui) {
       val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
       for (listener in listenersArray) {
         listener.onUncaughtException(this@ZiplineCodeSession, exception)

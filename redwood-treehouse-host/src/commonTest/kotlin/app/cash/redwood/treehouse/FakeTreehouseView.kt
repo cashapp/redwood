@@ -22,6 +22,7 @@ import app.cash.redwood.widget.SavedStateRegistry
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class FakeTreehouseView(
+  override val onBackPressedDispatcher: FakeOnBackPressedDispatcher,
   private val name: String,
 ) : TreehouseView<FakeWidget> {
   override val widgetSystem = FakeWidgetSystem()
@@ -36,12 +37,9 @@ internal class FakeTreehouseView(
 
   override var saveCallback: TreehouseView.SaveCallback? = null
 
-  override val stateSnapshotId: StateSnapshot.Id
-    get() = error("unexpected call")
+  override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
   override val children = MutableListChildren<FakeWidget>()
-
-  override val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
 
   override val uiConfiguration = MutableStateFlow(UiConfiguration())
 

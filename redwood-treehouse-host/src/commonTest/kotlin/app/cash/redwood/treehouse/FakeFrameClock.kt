@@ -15,7 +15,18 @@
  */
 package app.cash.redwood.treehouse
 
-class FakeFrameClock : FrameClock {
+import kotlinx.coroutines.CoroutineScope
+
+internal class FakeFrameClock : FrameClock {
   override fun requestFrame(appLifecycle: AppLifecycle) {
+  }
+
+  object Factory : FrameClock.Factory {
+    override fun create(
+      scope: CoroutineScope,
+      dispatchers: TreehouseDispatchers,
+    ): FrameClock {
+      return FakeFrameClock()
+    }
   }
 }

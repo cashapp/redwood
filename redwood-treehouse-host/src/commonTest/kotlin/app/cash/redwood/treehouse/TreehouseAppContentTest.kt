@@ -20,35 +20,59 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 
+/**
+ * This test focuses on how [TreehouseAppContent] behaves in response to lifecycle events from the
+ * code ([CodeSession]), the UI ([TreehouseView]), and the content ([ZiplineTreehouseUi]).
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseAppContentTest {
   private val eventLog = EventLog()
+  private val appScope = CoroutineScope(EmptyCoroutineContext)
 
   private val dispatcher = UnconfinedTestDispatcher()
   private val eventPublisher = FakeEventPublisher()
-  private val codeHost = FakeCodeHost(eventLog, eventPublisher)
   private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
+  private val onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog)
+  private val codeHost = FakeCodeHost(
+    eventLog = eventLog,
+    eventPublisher = eventPublisher,
+    dispatchers = dispatchers,
+    appScope = appScope,
+    frameClockFactory = FakeFrameClock.Factory,
+  )
   private val codeListener = FakeCodeListener(eventLog)
   private val uiConfiguration = UiConfiguration()
+
+  @BeforeTest
+  fun setUp() {
+    runBlocking {
+      codeHost.start()
+      eventLog.takeEvent("codeHostUpdates1.collect()")
+    }
+  }
 
   @AfterTest
   fun tearDown() {
     eventLog.assertNoEvents()
+    appScope.cancel()
   }
 
   @Test
   fun bind_session_addWidget_unbind() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
@@ -68,7 +92,7 @@ class TreehouseAppContentTest {
   fun preload_session_addWidget_bind_unbind() = runTest {
     val content = treehouseAppContent()
 
-    content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
+    content.preload(onBackPressedDispatcher, uiConfiguration)
     eventLog.assertNoEvents()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
@@ -79,7 +103,7 @@ class TreehouseAppContentTest {
     codeSessionA.appService.uis.single().addWidget("hello")
     eventLog.assertNoEvents()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
 
@@ -94,10 +118,10 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
+    content.preload(onBackPressedDispatcher, uiConfiguration)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.assertNoEvents()
 
@@ -116,7 +140,7 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
@@ -133,7 +157,7 @@ class TreehouseAppContentTest {
   fun bind_sessionA_sessionB_unbind() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
@@ -144,15 +168,16 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
 
     val codeSessionB = codeHost.startCodeSession("codeSessionB")
-    eventLog.takeEvent("codeSessionA.cancel()")
-    eventLog.takeEvent("codeSessionB.start()")
-    eventLog.takeEvent("codeSessionB.app.uis[0].start()")
+    eventLog.takeEventsInAnyOrder(
+      "codeSessionA.app.uis[0].close()",
+      "codeSessionA.cancel()",
+      "codeSessionB.start()",
+      "codeSessionB.app.uis[0].start()",
+    )
 
     // This still shows UI from codeSessionA. There's no onCodeLoaded() and no reset() until the new
     // code's first widget is added!
     assertThat(view1.children.single().value.label).isEqualTo("helloA")
-    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
-
     codeSessionB.appService.uis.single().addWidget("helloB")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = false)")
     assertThat(view1.children.single().value.label).isEqualTo("helloB")
@@ -165,7 +190,7 @@ class TreehouseAppContentTest {
   fun preload_unbind_session() = runTest {
     val content = treehouseAppContent()
 
-    content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
+    content.preload(onBackPressedDispatcher, uiConfiguration)
     eventLog.assertNoEvents()
 
     content.unbind()
@@ -180,7 +205,7 @@ class TreehouseAppContentTest {
   fun bind_unbind_session() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
@@ -203,7 +228,7 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
@@ -229,7 +254,7 @@ class TreehouseAppContentTest {
   fun addBackHandler_receives_back_presses_until_canceled() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.clear()
@@ -242,6 +267,8 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].onBackPressed()")
 
     backCancelable.cancel()
+    eventLog.takeEvent("onBackPressedDispatcher.callbacks[0].cancel()")
+
     view1.onBackPressedDispatcher.onBack()
     eventLog.assertNoEvents()
 
@@ -253,7 +280,7 @@ class TreehouseAppContentTest {
   fun addBackHandler_receives_no_back_presses_if_disabled() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.clear()
@@ -265,6 +292,7 @@ class TreehouseAppContentTest {
     backCancelable.cancel()
 
     content.unbind()
+    eventLog.takeEvent("onBackPressedDispatcher.callbacks[0].cancel()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -272,18 +300,25 @@ class TreehouseAppContentTest {
   fun backHandlers_cleared_when_session_changes() = runTest {
     val content = treehouseAppContent()
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
 
     codeSessionA.appService.uis.single().addBackHandler(true)
     assertThat(view1.onBackPressedDispatcher.callbacks).isNotEmpty()
 
+    eventLog.clear()
     codeHost.startCodeSession("codeSessionB")
 
     // When we close codeSessionA, its back handlers are released with it.
+    eventLog.takeEventsInAnyOrder(
+      "codeSessionA.app.uis[0].close()",
+      "onBackPressedDispatcher.callbacks[0].cancel()",
+      "codeSessionA.cancel()",
+      "codeSessionB.start()",
+      "codeSessionB.app.uis[0].start()",
+    )
     assertThat(view1.onBackPressedDispatcher.callbacks).isEmpty()
-    eventLog.clear()
 
     content.unbind()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
@@ -296,7 +331,7 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
@@ -320,7 +355,7 @@ class TreehouseAppContentTest {
     codeSessionA.handleUncaughtException(Exception("boom!"))
     eventLog.takeEvent("codeSessionA.cancel()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
@@ -339,7 +374,7 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
@@ -369,27 +404,30 @@ class TreehouseAppContentTest {
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
 
-    content.preload(FakeOnBackPressedDispatcher(), uiConfiguration)
+    content.preload(onBackPressedDispatcher, uiConfiguration)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
-    val view1 = FakeTreehouseView("view1")
+    val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     content.unbind()
   }
 
-  private fun TestScope.treehouseAppContent(): TreehouseAppContent<FakeAppService> {
+  private fun treehouseAppContent(): TreehouseAppContent<FakeAppService> {
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      appScope = CoroutineScope(coroutineContext),
       codeListener = codeListener,
       source = { app -> app.newUi() },
     )
+  }
+
+  private fun treehouseView(name: String): FakeTreehouseView {
+    return FakeTreehouseView(onBackPressedDispatcher, name)
   }
 }

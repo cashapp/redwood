@@ -18,14 +18,24 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.treehouse.CodeSession.Listener
 import app.cash.redwood.treehouse.CodeSession.ServiceScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class FakeCodeSession(
+  private val dispatchers: TreehouseDispatchers,
+  override val eventPublisher: EventPublisher,
   private val eventLog: EventLog,
   private val name: String,
-  override val eventPublisher: EventPublisher,
+  appScope: CoroutineScope,
 ) : CodeSession<FakeAppService> {
   private val listeners = mutableListOf<Listener<FakeAppService>>()
+
+  override val scope = CoroutineScope(
+    SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
+  )
 
   override val json = Json
 
@@ -33,7 +43,7 @@ internal class FakeCodeSession(
 
   private var canceled = false
 
-  override fun start(sessionScope: CoroutineScope, frameClock: FrameClock) {
+  override fun start() {
     eventLog += "$name.start()"
   }
 
@@ -83,5 +93,11 @@ internal class FakeCodeSession(
     }
 
     eventLog += "$name.cancel()"
+
+    // Cancel the scope asynchronously for consistency with ZiplineCodeSession. This is important
+    // because Listener.onCancel() enqueues work on this scope, and we need that to run.
+    scope.launch(dispatchers.zipline) {
+      scope.cancel()
+    }
   }
 }
