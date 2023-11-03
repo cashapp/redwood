@@ -33,14 +33,19 @@ internal class FakeCodeHost(
   stateStore = MemoryStateStore(),
 ) {
   private var codeSessions: Channel<CodeSession<FakeAppService>>? = null
+  private var nextCollectId = 1
 
   /**
    * Create a new channel every time we subscribe to code updates. The channel will be closed when
    * the superclass is done consuming the flow.
    */
   override fun codeUpdatesFlow(): Flow<CodeSession<FakeAppService>> {
-    eventLog += "codeHost.collectCodeUpdates()"
+    val collectId = nextCollectId++
+    eventLog += "codeHostUpdates$collectId.collect()"
     val channel = Channel<CodeSession<FakeAppService>>(Int.MAX_VALUE)
+    channel.invokeOnClose {
+      eventLog += "codeHostUpdates$collectId.close()"
+    }
     codeSessions = channel
     return channel.consumeAsFlow()
   }

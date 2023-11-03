@@ -58,7 +58,7 @@ class TreehouseAppContentTest {
   fun setUp() {
     runBlocking {
       codeHost.start()
-      eventLog.takeEvent("codeHost.collectCodeUpdates()")
+      eventLog.takeEvent("codeHostUpdates1.collect()")
     }
   }
 

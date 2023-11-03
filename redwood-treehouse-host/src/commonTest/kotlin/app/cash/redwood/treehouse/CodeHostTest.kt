@@ -58,12 +58,35 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    eventLog.takeEvent("codeSessionA.cancel()")
+
+    content.unbind()
+  }
+
+  /** Calling CodeHost.restart() from idle starts it up. */
+  @Test
+  fun bind_restart_session_stop() = runTest {
+    val content = treehouseAppContent()
+    val view1 = treehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    codeHost.restart()
+    eventLog.takeEvent("codeHostUpdates1.collect()")
+    codeHost.startCodeSession("codeSessionA")
+    eventLog.takeEvent("codeSessionA.start()")
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
@@ -79,20 +102,22 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates2.close()")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.cancel()")
 
@@ -108,7 +133,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
@@ -118,18 +143,20 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.cancel()")
 
     codeHost.restart()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates2.close()")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.cancel()")
 
     content.unbind()
   }
 
-  /** Fresh code will also restart after a failure. */
+  /** New code will also trigger a restart after a failure. */
   @Test
   fun bind_start_session_crash_session_stop() = runTest {
     val content = treehouseAppContent()
@@ -138,7 +165,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
@@ -151,8 +178,33 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.cancel()")
+
+    content.unbind()
+  }
+
+  /** We can stop after a failure. */
+  @Test
+  fun bind_start_session_crash_stop() = runTest {
+    val content = treehouseAppContent()
+    val view1 = treehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    codeHost.start()
+    eventLog.takeEvent("codeHostUpdates1.collect()")
+    val codeSessionA = codeHost.startCodeSession("codeSessionA")
+    eventLog.takeEvent("codeSessionA.start()")
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+    codeSessionA.handleUncaughtException(Exception("boom!"))
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeSessionA.cancel()")
+
+    codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
 
     content.unbind()
   }
@@ -166,7 +218,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     eventLog.assertNoEvents()
 
     codeHost.start()
@@ -176,6 +228,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
@@ -191,7 +244,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
@@ -200,6 +253,7 @@ class CodeHostTest {
     eventLog.assertNoEvents()
 
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
@@ -215,12 +269,13 @@ class CodeHostTest {
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
     codeHost.start()
-    eventLog.takeEvent("codeHost.collectCodeUpdates()")
+    eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeHost.stop()
+    eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.cancel()")
 
