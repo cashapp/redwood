@@ -24,19 +24,17 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
-import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.ZiplineService
 
 internal class RealEventPublisher(
   private val listener: EventListener,
-  private val ziplineToPublisherHack: MutableMap<Zipline, RealEventPublisher>,
 ) : EventPublisher {
-  override val ziplineEventListener = object : ZiplineEventListener() {
-    override fun ziplineCreated(zipline: Zipline) {
-      ziplineToPublisherHack[zipline] = this@RealEventPublisher
-    }
+  override val ziplineEventListener: app.cash.zipline.EventListener = ZiplineEventListener()
+
+  inner class ZiplineEventListener : app.cash.zipline.EventListener() {
+    val eventPublisher = this@RealEventPublisher
 
     override fun applicationLoadStart(
       applicationName: String,
