@@ -16,15 +16,15 @@
 package app.cash.redwood.treehouse
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.consumeAsFlow
 
 internal class FakeCodeHost(
   private val eventLog: EventLog,
   private val eventPublisher: EventPublisher,
-  dispatchers: TreehouseDispatchers,
-  appScope: CoroutineScope,
+  private val dispatchers: TreehouseDispatchers,
+  private val appScope: CoroutineScope,
   frameClockFactory: FrameClock.Factory,
 ) : CodeHost<FakeAppService>(
   dispatchers = dispatchers,
@@ -32,15 +32,22 @@ internal class FakeCodeHost(
   frameClockFactory = frameClockFactory,
   stateStore = MemoryStateStore(),
 ) {
-  private val codeSessions = MutableStateFlow<CodeSession<FakeAppService>?>(null)
+  private var codeSessions: Channel<CodeSession<FakeAppService>>? = null
 
+  /**
+   * Create a new channel every time we subscribe to code updates. The channel will be closed when
+   * the superclass is done consuming the flow.
+   */
   override fun codeUpdatesFlow(): Flow<CodeSession<FakeAppService>> {
-    return codeSessions.filterNotNull()
+    eventLog += "codeHost.collectCodeUpdates()"
+    val channel = Channel<CodeSession<FakeAppService>>(Int.MAX_VALUE)
+    codeSessions = channel
+    return channel.consumeAsFlow()
   }
 
-  fun startCodeSession(name: String): CodeSession<FakeAppService> {
-    val result = FakeCodeSession(eventLog, name, eventPublisher)
-    codeSessions.value = result
+  suspend fun startCodeSession(name: String): CodeSession<FakeAppService> {
+    val result = FakeCodeSession(dispatchers, eventPublisher, eventLog, name, appScope)
+    codeSessions!!.send(result)
     return result
   }
 }

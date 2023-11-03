@@ -87,7 +87,6 @@ public class TreehouseApp<A : AppService> private constructor(
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      appScope = appScope,
       codeListener = codeListener,
       source = source,
     )
@@ -175,10 +174,11 @@ public class TreehouseApp<A : AppService> private constructor(
 
     return ZiplineCodeSession(
       dispatchers = dispatchers,
-      appScope = appScope,
       eventPublisher = eventPublisher,
+      frameClockFactory = factory.frameClockFactory,
       appService = appService,
       zipline = zipline,
+      appScope = appScope,
     )
   }
 

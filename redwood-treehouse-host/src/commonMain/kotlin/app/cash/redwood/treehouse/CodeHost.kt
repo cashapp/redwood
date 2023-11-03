@@ -77,7 +77,7 @@ internal abstract class CodeHost<A : AppService>(
     get() = state.codeSession
 
   /** Returns a flow that emits a new [CodeSession] each time we should load fresh code. */
-  abstract fun codeUpdatesFlow() : Flow<CodeSession<A>>
+  abstract fun codeUpdatesFlow(): Flow<CodeSession<A>>
 
   fun start() {
     dispatchers.checkUi()
@@ -88,9 +88,10 @@ internal abstract class CodeHost<A : AppService>(
 
     // Force a restart if we're crashed.
     previous.codeUpdatesScope?.cancel()
-    val codeUpdatesScope = startReceivingCodeUpdates()
 
+    val codeUpdatesScope = codeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
+    codeUpdatesScope.collectCodeUpdates()
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
@@ -114,9 +115,10 @@ internal abstract class CodeHost<A : AppService>(
     previous.codeUpdatesScope?.cancel()
     previous.codeSession?.removeListener(codeSessionListener)
     previous.codeSession?.cancel()
-    val codeUpdatesScope = startReceivingCodeUpdates()
 
+    val codeUpdatesScope = codeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
+    codeUpdatesScope.collectCodeUpdates()
   }
 
   fun addListener(listener: Listener<A>) {
@@ -129,43 +131,37 @@ internal abstract class CodeHost<A : AppService>(
     listeners -= listener
   }
 
-  private fun startReceivingCodeUpdates(): CoroutineScope {
-    val codeUpdatesScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
-    codeUpdatesScope.launch(dispatchers.zipline) {
+  private fun codeUpdatesScope() =
+    CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
+
+  private fun CoroutineScope.collectCodeUpdates() {
+    launch(dispatchers.zipline) {
       codeUpdatesFlow().collect {
         codeSessionLoaded(it)
       }
     }
-    return codeUpdatesScope
   }
 
   private fun codeSessionLoaded(next: CodeSession<A>) {
     dispatchers.checkZipline()
 
-    val codeSessionScope = CoroutineScope(
-      SupervisorJob(appScope.coroutineContext.job) + next.coroutineExceptionHandler,
-    )
-
-    codeSessionScope.launch(dispatchers.ui) {
+    next.scope.launch(dispatchers.ui) {
       // Clean up the previous session.
       val previous = state
       previous.codeSession?.removeListener(codeSessionListener)
       previous.codeSession?.cancel()
 
       // If the codeUpdatesScope is null, we're stopped. Discard the newly-loaded code.
-      val scope = state.codeUpdatesScope
-      if (scope == null) {
+      val codeUpdatesScope = state.codeUpdatesScope
+      if (codeUpdatesScope == null) {
         next.cancel()
         return@launch
       }
 
       // Boot up the new code.
-      state = State.Running(scope, next)
+      state = State.Running(codeUpdatesScope, next)
       next.addListener(codeSessionListener)
-      next.start(
-        sessionScope = codeSessionScope,
-        frameClock = frameClockFactory.create(codeSessionScope, dispatchers),
-      )
+      next.start()
 
       for (listener in listeners) {
         listener.codeSessionChanged(next)
