@@ -43,18 +43,20 @@ class TestAppLauncher(
   fun createTreehouseApp(): TreehouseApp<TestAppPresenter> {
     val ziplineHttpClient = nsurlSession.asZiplineHttpClient()
 
+    val eventListener = object : EventListener() {
+      override fun codeLoadFailed(exception: Exception, startValue: Any?) {
+        NSLog("Treehouse: codeLoadFailed: $exception")
+      }
+
+      override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+        NSLog("Treehouse: codeLoadSuccess")
+      }
+    }
+
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = NO_SIGNATURE_CHECKS,
-      eventListener = object : EventListener() {
-        override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
-          NSLog("Treehouse: codeLoadFailed: $exception")
-        }
-
-        override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
-          NSLog("Treehouse: codeLoadSuccess")
-        }
-      },
+      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)

@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 
 internal class FakeCodeHost(
   private val eventLog: EventLog,
+  private val eventPublisher: EventPublisher,
 ) : CodeHost<FakeAppService> {
   override val stateStore = MemoryStateStore()
 
@@ -59,7 +60,7 @@ internal class FakeCodeHost(
   private val listeners = mutableListOf<Listener<FakeAppService>>()
 
   fun startCodeSession(name: String): CodeSession<FakeAppService> {
-    val result = FakeCodeSession(eventLog, name)
+    val result = FakeCodeSession(eventLog, name, eventPublisher)
     session = result
     return result
   }

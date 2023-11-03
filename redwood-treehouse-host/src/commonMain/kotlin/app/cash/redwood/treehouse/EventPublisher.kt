@@ -26,10 +26,6 @@ internal interface EventPublisher {
 
   val widgetProtocolMismatchHandler: ProtocolMismatchHandler
 
-  fun appStart()
-
-  fun appCanceled()
-
   fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
   fun onUnknownEventNode(id: Id, tag: EventTag)

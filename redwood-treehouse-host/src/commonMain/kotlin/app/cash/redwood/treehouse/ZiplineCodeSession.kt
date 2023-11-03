@@ -29,8 +29,8 @@ import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
-  private val eventPublisher: EventPublisher,
   private val appScope: CoroutineScope,
+  override val eventPublisher: EventPublisher,
   override val appService: A,
   val zipline: Zipline,
 ) : CodeSession<A>, AppLifecycle.Host {

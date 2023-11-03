@@ -71,7 +71,6 @@ internal class TreehouseAppContent<A : AppService>(
   private val codeHost: CodeHost<A>,
   private val dispatchers: TreehouseDispatchers,
   private val appScope: CoroutineScope,
-  private val eventPublisher: EventPublisher,
   private val codeListener: CodeListener,
   private val source: TreehouseContentSource<A>,
 ) : Content, CodeHost.Listener<A>, CodeSession.Listener<A> {
@@ -272,7 +271,7 @@ internal class TreehouseAppContent<A : AppService>(
       stateStore = codeHost.stateStore,
       dispatchers = dispatchers,
       appScope = appScope,
-      eventPublisher = eventPublisher,
+      eventPublisher = codeSession.eventPublisher,
       contentSource = source,
       codeListener = codeListener,
       stateFlow = stateFlow,

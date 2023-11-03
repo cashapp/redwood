@@ -100,7 +100,7 @@ class EmojiSearchActivity : ComponentActivity() {
     private var success = true
     private var snackbar: Snackbar? = null
 
-    override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+    override fun codeLoadFailed(exception: Exception, startValue: Any?) {
       Log.w("Treehouse", "codeLoadFailed", exception)
       if (success) {
         // Only show the Snackbar on the first transition from success.
@@ -112,7 +112,7 @@ class EmojiSearchActivity : ComponentActivity() {
       }
     }
 
-    override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+    override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
       Log.i("Treehouse", "codeLoadSuccess")
       success = true
       maybeDismissSnackbar()
@@ -134,7 +134,7 @@ class EmojiSearchActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
-      eventListener = appEventListener,
+      eventListenerFactory = { app, manifestUrl -> appEventListener },
       embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
       stateStore = FileStateStore(
