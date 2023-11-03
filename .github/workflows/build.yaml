@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
@@ -100,7 +100,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -125,7 +125,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -144,7 +144,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
@@ -178,7 +178,7 @@ jobs:
       - uses: actions/setup-java@v3.13.0
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v2
 
