@@ -60,12 +60,12 @@ internal abstract class CodeHost<A : AppService>(
     override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
     }
 
-    override fun onCancel(codeSession: CodeSession<A>) {
+    override fun onStop(codeSession: CodeSession<A>) {
       dispatchers.checkUi()
 
       codeSession.removeListener(this)
 
-      // If a code session is canceled while we're still listening to it, it must have crashed.
+      // If a code session stops while we're still listening to it, it must have crashed.
       val previous = state
       if (previous is State.Running) {
         state = State.Crashed(previous.codeUpdatesScope)
@@ -89,7 +89,7 @@ internal abstract class CodeHost<A : AppService>(
     // Force a restart if we're crashed.
     previous.codeUpdatesScope?.cancel()
 
-    val codeUpdatesScope = codeUpdatesScope()
+    val codeUpdatesScope = newCodeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
     codeUpdatesScope.collectCodeUpdates()
   }
@@ -101,7 +101,7 @@ internal abstract class CodeHost<A : AppService>(
     val previous = state
     previous.codeUpdatesScope?.cancel()
     previous.codeSession?.removeListener(codeSessionListener)
-    previous.codeSession?.cancel()
+    previous.codeSession?.stop()
 
     state = State.Idle()
   }
@@ -114,9 +114,9 @@ internal abstract class CodeHost<A : AppService>(
 
     previous.codeUpdatesScope?.cancel()
     previous.codeSession?.removeListener(codeSessionListener)
-    previous.codeSession?.cancel()
+    previous.codeSession?.stop()
 
-    val codeUpdatesScope = codeUpdatesScope()
+    val codeUpdatesScope = newCodeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
     codeUpdatesScope.collectCodeUpdates()
   }
@@ -131,7 +131,7 @@ internal abstract class CodeHost<A : AppService>(
     listeners -= listener
   }
 
-  private fun codeUpdatesScope() =
+  private fun newCodeUpdatesScope() =
     CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
   private fun CoroutineScope.collectCodeUpdates() {
@@ -149,12 +149,12 @@ internal abstract class CodeHost<A : AppService>(
       // Clean up the previous session.
       val previous = state
       previous.codeSession?.removeListener(codeSessionListener)
-      previous.codeSession?.cancel()
+      previous.codeSession?.stop()
 
       // If the codeUpdatesScope is null, we're stopped. Discard the newly-loaded code.
       val codeUpdatesScope = state.codeUpdatesScope
       if (codeUpdatesScope == null) {
-        next.cancel()
+        next.stop()
         return@launch
       }
 

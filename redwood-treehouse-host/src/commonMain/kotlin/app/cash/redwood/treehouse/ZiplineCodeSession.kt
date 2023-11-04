@@ -15,115 +15,52 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.EventTag
-import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.treehouse.CodeSession.Listener
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
-  private val dispatchers: TreehouseDispatchers,
-  override val eventPublisher: EventPublisher,
-  frameClockFactory: FrameClock.Factory,
-  override val appService: A,
+  dispatchers: TreehouseDispatchers,
+  eventPublisher: EventPublisher,
+  appScope: CoroutineScope,
+  appService: A,
+  private val frameClockFactory: FrameClock.Factory,
   val zipline: Zipline,
-  val appScope: CoroutineScope,
-) : CodeSession<A>, AppLifecycle.Host {
-  private val listeners = mutableListOf<Listener<A>>()
+) : CodeSession<A>(
+  dispatchers = dispatchers,
+  eventPublisher = eventPublisher,
+  appScope = appScope,
+  appService = appService,
+) {
   private val ziplineScope = ZiplineScope()
-
-  override val scope = CoroutineScope(
-    SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
-  )
 
   override val json: Json
     get() = zipline.json
 
-  private val frameClock = frameClockFactory.create(scope, dispatchers)
-  private lateinit var appLifecycle: AppLifecycle
+  override fun ziplineStart() {
+    val appLifecycle = appService.withScope(ziplineScope).appLifecycle
 
-  private var canceled = false
+    val host = RealAppLifecycleHost(
+      appLifecycle = appLifecycle,
+      frameClock = frameClockFactory.create(scope, dispatchers),
+      eventPublisher = eventPublisher,
+      codeSession = this,
+    )
 
-  override fun start() {
-    dispatchers.checkUi()
-
-    scope.launch(dispatchers.zipline) {
-      val service = appService.withScope(ziplineScope).appLifecycle
-      appLifecycle = service
-      service.start(this@ZiplineCodeSession)
-    }
+    appLifecycle.start(host)
   }
 
-  override fun addListener(listener: Listener<A>) {
-    dispatchers.checkUi()
-    listeners += listener
+  override fun ziplineStop() {
+    ziplineScope.close()
+    zipline.close()
   }
 
-  override fun removeListener(listener: Listener<A>) {
-    dispatchers.checkUi()
-    listeners -= listener
-  }
-
-  override fun cancel() {
-    dispatchers.checkUi()
-
-    if (canceled) return
-    canceled = true
-
-    val listenersArray = listeners.toTypedArray() // onCancel mutates.
-    for (listener in listenersArray) {
-      listener.onCancel(this)
-    }
-
-    scope.launch(dispatchers.zipline) {
-      ziplineScope.close()
-      zipline.close()
-      scope.cancel()
-    }
-  }
-
-  override fun requestFrame() {
-    frameClock.requestFrame(appLifecycle)
-  }
-
-  override fun onUnknownEvent(
-    widgetTag: WidgetTag,
-    tag: EventTag,
-  ) {
-    eventPublisher.onUnknownEvent(widgetTag, tag)
-  }
-
-  override fun onUnknownEventNode(
-    id: Id,
-    tag: EventTag,
-  ) {
-    eventPublisher.onUnknownEventNode(id, tag)
-  }
-
-  override fun handleUncaughtException(exception: Throwable) {
-    scope.launch(dispatchers.ui) {
-      val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
-      for (listener in listenersArray) {
-        listener.onUncaughtException(this@ZiplineCodeSession, exception)
-      }
-      this@ZiplineCodeSession.cancel()
-    }
-
-    eventPublisher.onUncaughtException(exception)
-  }
-
-  override fun newServiceScope(): CodeSession.ServiceScope<A> {
+  override fun newServiceScope(): ServiceScope<A> {
     val ziplineScope = ZiplineScope()
 
-    return object : CodeSession.ServiceScope<A> {
+    return object : ServiceScope<A> {
       override fun apply(appService: A): A {
         return appService.withScope(ziplineScope)
       }
