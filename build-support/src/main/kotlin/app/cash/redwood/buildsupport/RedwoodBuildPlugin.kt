@@ -201,6 +201,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     tasks.withType(KotlinCompile::class.java).configureEach {
       it.kotlinOptions.freeCompilerArgs += listOf(
         "-progressive", // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+        "-Xexpect-actual-classes",
       )
     }
 
