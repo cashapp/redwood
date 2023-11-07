@@ -44,6 +44,7 @@ public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  onBackPressedDispatcher: OnBackPressedDispatcher = NoOpOnBackPressedDispatcher,
   savedState: TestSavedState? = null,
   initialUiConfiguration: UiConfiguration = UiConfiguration(),
   createSnapshot: () -> S,
@@ -52,6 +53,7 @@ public fun <W : Any, S> TestRedwoodComposition(
     scope,
     provider,
     container,
+    onBackPressedDispatcher,
     savedState,
     initialUiConfiguration,
     createSnapshot,
@@ -87,6 +89,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,
   container: Widget.Children<W>,
+  onBackPressedDispatcher: OnBackPressedDispatcher,
   savedState: TestSavedState?,
   initialUiConfiguration: UiConfiguration,
   createSnapshot: () -> S,
@@ -110,18 +113,13 @@ private class RealTestRedwoodComposition<W : Any, S>(
     },
     canBeSaved = { true },
   )
+
   override fun saveState() = MapBasedTestSavedState(savedStateRegistry.performSave())
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
     container = container,
-    onBackPressedDispatcher = object : OnBackPressedDispatcher {
-      override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
-        return object : Cancellable {
-          override fun cancel() = Unit
-        }
-      }
-    },
+    onBackPressedDispatcher = onBackPressedDispatcher,
     saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
     provider = provider,
@@ -165,5 +163,13 @@ private class RealTestRedwoodComposition<W : Any, S>(
 
   override fun cancel() {
     composition.cancel()
+  }
+}
+
+public object NoOpOnBackPressedDispatcher : OnBackPressedDispatcher {
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    return object : Cancellable {
+      override fun cancel() = Unit
+    }
   }
 }

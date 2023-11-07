@@ -63,10 +63,12 @@ internal object Redwood {
   val ModifierElement = Modifier.nestedClass("Element")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
+  val OnBackPressedDispatcher = ClassName("app.cash.redwood.ui", "OnBackPressedDispatcher")
   val UiConfiguration = ClassName("app.cash.redwood.ui", "UiConfiguration")
 }
 
 internal object RedwoodTesting {
+  val NoOpOnBackPressedDispatcher = ClassName("app.cash.redwood.testing", "NoOpOnBackPressedDispatcher")
   val TestRedwoodComposition = ClassName("app.cash.redwood.testing", "TestRedwoodComposition")
   val TestSavedState = ClassName("app.cash.redwood.testing", "TestSavedState")
   val WidgetValue = ClassName("app.cash.redwood.testing", "WidgetValue")

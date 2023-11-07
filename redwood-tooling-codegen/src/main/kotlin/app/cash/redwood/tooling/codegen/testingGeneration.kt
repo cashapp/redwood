@@ -77,6 +77,11 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .optIn(Redwood.RedwoodCodegenApi)
         .addModifiers(SUSPEND)
         .addParameter(
+          ParameterSpec.builder("onBackPressedDispatcher", Redwood.OnBackPressedDispatcher)
+            .defaultValue("%T", RedwoodTesting.NoOpOnBackPressedDispatcher)
+            .build(),
+        )
+        .addParameter(
           ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))
             .defaultValue("null")
             .build(),
@@ -98,7 +103,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("val tester = %T(this, factories, container, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
+        .beginControlFlow("val tester = %T(this, factories, container, onBackPressedDispatcher, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
         .beginControlFlow("try")
