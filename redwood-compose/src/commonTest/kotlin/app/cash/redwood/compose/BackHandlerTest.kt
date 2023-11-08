@@ -28,6 +28,8 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.containsExactly
+import assertk.assertions.extracting
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.single
@@ -54,7 +56,7 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      onBackPressedDispatcher.onBackPressedCallbacks.single { it.isEnabled }.handleOnBackPressed()
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "1"))
     }
   }
@@ -70,7 +72,7 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(false)
       assertNoSnapshot()
     }
   }
@@ -89,11 +91,11 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(false)
       assertNoSnapshot()
       enabled = true
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      onBackPressedDispatcher.onBackPressedCallbacks.single { it.isEnabled }.handleOnBackPressed()
       assertThat(awaitSnapshot()).single().isEqualTo(TextValue(text = "1"))
     }
   }
@@ -114,7 +116,8 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).contains(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(false, true)
+      onBackPressedDispatcher.onBackPressedCallbacks.last().handleOnBackPressed()
       assertThat(awaitSnapshot()).contains(TextValue(text = "1"))
     }
   }
@@ -135,7 +138,8 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).contains(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(true, false)
+      onBackPressedDispatcher.onBackPressedCallbacks.first().handleOnBackPressed()
       assertThat(awaitSnapshot()).contains(TextValue(text = "1"))
     }
   }
@@ -156,7 +160,8 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).contains(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(false, true)
+      onBackPressedDispatcher.onBackPressedCallbacks.last().handleOnBackPressed()
       assertThat(awaitSnapshot()).contains(TextValue(text = "1"))
     }
   }
@@ -175,7 +180,7 @@ class BackHandlerTest {
       }
 
       assertThat(awaitSnapshot()).contains(TextValue(text = "0"))
-      onBackPressedDispatcher.onBackPressed()
+      assertThat(onBackPressedDispatcher.onBackPressedCallbacks).extracting { it.isEnabled }.containsExactly(false, false)
       assertNoSnapshot()
     }
   }
@@ -186,19 +191,15 @@ private suspend fun TestRedwoodComposition<List<WidgetValue>>.assertNoSnapshot()
 }
 
 private class FakeOnBackPressedDispatcher : OnBackPressedDispatcher {
-  private val onBackPressedCallbacks = ArrayDeque<OnBackPressedCallback>()
+  private val _onBackPressedCallbacks = ArrayDeque<OnBackPressedCallback>()
+  val onBackPressedCallbacks: List<OnBackPressedCallback> = _onBackPressedCallbacks
 
   override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
-    onBackPressedCallbacks += onBackPressedCallback
+    _onBackPressedCallbacks += onBackPressedCallback
     return object : Cancellable {
       override fun cancel() {
-        onBackPressedCallbacks -= onBackPressedCallback
+        _onBackPressedCallbacks -= onBackPressedCallback
       }
     }
-  }
-
-  fun onBackPressed() {
-    val callbackToNotify = onBackPressedCallbacks.lastOrNull { it.isEnabled }
-    callbackToNotify?.handleOnBackPressed()
   }
 }
