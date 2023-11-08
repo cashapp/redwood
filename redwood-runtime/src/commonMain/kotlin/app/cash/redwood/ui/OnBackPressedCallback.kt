@@ -17,6 +17,12 @@ package app.cash.redwood.ui
 
 public abstract class OnBackPressedCallback(enabled: Boolean) {
   public var isEnabled: Boolean = enabled
+    set(value) {
+      field = value
+      enabledChangedCallback?.invoke()
+    }
+
+  public var enabledChangedCallback: (() -> Unit)? = null
 
   public abstract fun handleOnBackPressed()
 }
