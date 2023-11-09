@@ -24,6 +24,7 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.ui.UiConfiguration
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -62,7 +63,7 @@ class FakeZiplineTreehouseUi(
 
   fun addBackHandler(isEnabled: Boolean): CancellableService {
     val result = host.addOnBackPressedCallback(object : OnBackPressedCallbackService {
-      override var isEnabled = isEnabled
+      override var isEnabled = MutableStateFlow(isEnabled)
 
       override fun handleOnBackPressed() {
         eventLog += "$name.onBackPressed()"

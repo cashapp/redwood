@@ -27,6 +27,7 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.plus
 
@@ -135,14 +136,20 @@ private fun ZiplineTreehouseUi.Host.asOnBackPressedDispatcher() = object : OnBac
 }
 
 private fun OnBackPressedCallback.asService() = object : OnBackPressedCallbackService {
-  override var isEnabled: Boolean
-    get() = this@asService.isEnabled
-    set(value) {
-      this@asService.isEnabled = value
+  override val isEnabled = MutableStateFlow(this@asService.isEnabled)
+
+  init {
+    enabledChangedCallback = {
+      isEnabled.value = this@asService.isEnabled
     }
+  }
 
   override fun handleOnBackPressed() {
     this@asService.handleOnBackPressed()
+  }
+
+  override fun close() {
+    enabledChangedCallback = null
   }
 }
 

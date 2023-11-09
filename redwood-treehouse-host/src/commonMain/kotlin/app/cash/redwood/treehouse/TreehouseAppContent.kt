@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 private class State<A : AppService>(
   val viewState: ViewState,
@@ -457,20 +458,29 @@ private class ViewContentCodeBinding<A : AppService>(
     onBackPressedCallbackService: OnBackPressedCallbackService,
   ): CancellableService {
     dispatchers.checkZipline()
-    val cancellable = onBackPressedDispatcher.addCallback(
-      object : OnBackPressedCallback(onBackPressedCallbackService.isEnabled) {
+    val cancellableJob = bindingScope.launch(dispatchers.zipline) {
+      val onBackPressedCallback = object : OnBackPressedCallback(onBackPressedCallbackService.isEnabled.value) {
         override fun handleOnBackPressed() {
           bindingScope.launch(dispatchers.zipline) {
             onBackPressedCallbackService.handleOnBackPressed()
           }
         }
-      },
-    )
+      }
+      val cancellable = onBackPressedDispatcher.addCallback(onBackPressedCallback)
+      launch {
+        onBackPressedCallbackService.isEnabled.collect {
+          onBackPressedCallback.isEnabled = it
+        }
+      }
+      suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation { cancellable.cancel() }
+      }
+    }
 
     return object : CancellableService {
       override fun cancel() {
         dispatchers.checkZipline()
-        cancellable.cancel()
+        cancellableJob.cancel()
       }
 
       override fun close() {
