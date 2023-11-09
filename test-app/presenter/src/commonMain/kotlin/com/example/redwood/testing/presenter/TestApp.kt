@@ -16,10 +16,11 @@
 package com.example.redwood.testing.presenter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.compose.BackHandler
 import app.cash.redwood.layout.api.Constraint.Companion.Fill
@@ -44,12 +45,11 @@ class TestContext(
 
 @Composable
 fun TestApp(context: TestContext) {
-  val screenKeyState = rememberSaveable { mutableStateOf<String?>(null) }
-  val screenKey = screenKeyState.value
+  var screenKey by rememberSaveable { mutableStateOf<String?>(null) }
   if (screenKey == null) {
-    ScreenList(screenKeyState)
+    ScreenList(onScreenChange = { screenKey = it })
   } else {
-    val onBack = { screenKeyState.value = null }
+    val onBack = { screenKey = null }
     BackHandler(onBack = onBack)
 
     Column(width = Fill, height = Fill) {
@@ -75,7 +75,7 @@ fun TestApp(context: TestContext) {
 }
 
 @Composable
-private fun ScreenList(screen: MutableState<String?>) {
+private fun ScreenList(onScreenChange: (screenKey: String) -> Unit) {
   Column(
     width = Fill,
     height = Fill,
@@ -85,7 +85,7 @@ private fun ScreenList(screen: MutableState<String?>) {
     Text("Test App Screens:", modifier = Modifier.margin(Margin(8.dp)))
     for (key in screens.keys) {
       Button(key, onClick = {
-        screen.value = key
+        onScreenChange(key)
       })
     }
   }
