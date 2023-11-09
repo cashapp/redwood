@@ -83,8 +83,8 @@ private class RedwoodZiplineTreehouseUi(
       }
 
       override fun addOnBackPressedCallback(
-        callback: OnBackPressedCallbackService,
-      ): CancellableService = onBackPressedDispatcher.addCallback(callback)
+        onBackPressedCallbackService: OnBackPressedCallbackService,
+      ): CancellableService = onBackPressedDispatcher.addCallback(onBackPressedCallbackService)
     }
 
     start(host)

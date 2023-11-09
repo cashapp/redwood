@@ -454,14 +454,14 @@ private class ViewContentCodeBinding<A : AppService>(
   }
 
   override fun addOnBackPressedCallback(
-    callback: OnBackPressedCallbackService,
+    onBackPressedCallbackService: OnBackPressedCallbackService,
   ): CancellableService {
     dispatchers.checkZipline()
     val cancellable = onBackPressedDispatcher.addCallback(
-      object : OnBackPressedCallback(callback.isEnabled) {
+      object : OnBackPressedCallback(onBackPressedCallbackService.isEnabled) {
         override fun handleOnBackPressed() {
           bindingScope.launch(dispatchers.zipline) {
-            callback.handleOnBackPressed()
+            onBackPressedCallbackService.handleOnBackPressed()
           }
         }
       },
