@@ -55,6 +55,6 @@ public interface ZiplineTreehouseUi : ZiplineService, EventSink {
     public val uiConfigurations: StateFlow<UiConfiguration>
     public val stateSnapshot: StateSnapshot?
 
-    public fun addOnBackPressedCallback(callback: OnBackPressedCallbackService): CancellableService
+    public fun addOnBackPressedCallback(onBackPressedCallbackService: OnBackPressedCallbackService): CancellableService
   }
 }

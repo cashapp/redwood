@@ -34,16 +34,6 @@ kotlin {
         implementation projects.samples.emojiSearch.schema.compose.protocol
       }
     }
-
-    iosMain {
-      dependsOn(commonMain)
-    }
-    targets.all { target ->
-      // Some Kotlin targets do not have this property, but native ones always will.
-      if (target.hasProperty('platformType') && target.platformType.name == "native") {
-        target.compilations.main.defaultSourceSet.dependsOn(sourceSets.iosMain)
-      }
-    }
   }
 }
 

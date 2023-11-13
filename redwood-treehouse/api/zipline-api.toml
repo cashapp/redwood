@@ -69,8 +69,8 @@ functions = [
   # fun handleOnBackPressed(): kotlin.Unit
   "NjIN59uX",
 
-  # var isEnabled: kotlin.Boolean
-  "yKh+yo1c",
+  # val isEnabled: kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>
+  "TAJYS/cz",
 ]
 
 [app.cash.redwood.treehouse.OnBackPressedDispatcherService]
