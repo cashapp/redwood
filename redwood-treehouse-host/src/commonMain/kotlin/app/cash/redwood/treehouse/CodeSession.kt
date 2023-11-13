@@ -24,7 +24,6 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-
 /** The host state for a single code load. We get a new session each time we get new code. */
 internal abstract class CodeSession<A : AppService>(
   val dispatchers: TreehouseDispatchers,
@@ -48,7 +47,7 @@ internal abstract class CodeSession<A : AppService>(
     }
 
     return@run CoroutineScope(
-      SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler
+      SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
     )
   }
 
