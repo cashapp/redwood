@@ -230,18 +230,18 @@ internal class TreehouseAppContent<A : AppService>(
   }
 
   override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
-    codeSessionCanceled(exception = exception)
+    codeSessionStopped(exception = exception)
   }
 
-  override fun onCancel(codeSession: CodeSession<A>) {
-    codeSessionCanceled(exception = null)
+  override fun onStop(codeSession: CodeSession<A>) {
+    codeSessionStopped(exception = null)
   }
 
   /**
    * If the code crashes or is unloaded, show an error on the UI and cancel the UI binding. This
    * sets the code state back to idle.
    */
-  private fun codeSessionCanceled(exception: Throwable?) {
+  private fun codeSessionStopped(exception: Throwable?) {
     dispatchers.checkUi()
 
     val previousState = stateFlow.value

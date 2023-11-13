@@ -15,52 +15,30 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.CodeSession.Listener
-import app.cash.redwood.treehouse.CodeSession.ServiceScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class FakeCodeSession(
-  private val dispatchers: TreehouseDispatchers,
-  override val eventPublisher: EventPublisher,
+  dispatchers: TreehouseDispatchers,
+  eventPublisher: EventPublisher,
+  appScope: CoroutineScope,
   private val eventLog: EventLog,
   private val name: String,
-  appScope: CoroutineScope,
-) : CodeSession<FakeAppService> {
-  private val listeners = mutableListOf<Listener<FakeAppService>>()
+) : CodeSession<FakeAppService>(
+  dispatchers = dispatchers,
+  eventPublisher = eventPublisher,
+  appScope = appScope,
+  appService = FakeAppService("$name.app", eventLog),
+) {
+  override val json: Json
+    get() = Json
 
-  override val scope = CoroutineScope(
-    SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
-  )
-
-  override val json = Json
-
-  override val appService = FakeAppService("$name.app", eventLog)
-
-  private var canceled = false
-
-  override fun start() {
+  override fun ziplineStart() {
     eventLog += "$name.start()"
   }
 
-  override fun addListener(listener: Listener<FakeAppService>) {
-    listeners += listener
-  }
-
-  override fun removeListener(listener: Listener<FakeAppService>) {
-    listeners -= listener
-  }
-
-  override fun handleUncaughtException(exception: Throwable) {
-    val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
-    for (listener in listenersArray) {
-      listener.onUncaughtException(this, exception)
-    }
-    cancel()
+  override fun ziplineStop() {
+    eventLog += "$name.stop()"
   }
 
   override fun newServiceScope(): ServiceScope<FakeAppService> {
@@ -68,11 +46,13 @@ internal class FakeCodeSession(
       val uisToClose = mutableListOf<ZiplineTreehouseUi>()
 
       override fun apply(appService: FakeAppService): FakeAppService {
-        return appService.withListener(object : FakeAppService.Listener {
-          override fun onNewUi(ui: ZiplineTreehouseUi) {
-            uisToClose += ui
-          }
-        })
+        return appService.withListener(
+          object : FakeAppService.Listener {
+            override fun onNewUi(ui: ZiplineTreehouseUi) {
+              uisToClose += ui
+            }
+          },
+        )
       }
 
       override fun close() {
@@ -80,24 +60,6 @@ internal class FakeCodeSession(
           ui.close()
         }
       }
-    }
-  }
-
-  override fun cancel() {
-    if (canceled) return
-    canceled = true
-
-    val listenersArray = listeners.toTypedArray() // onCancel mutates.
-    for (listener in listenersArray) {
-      listener.onCancel(this)
-    }
-
-    eventLog += "$name.cancel()"
-
-    // Cancel the scope asynchronously for consistency with ZiplineCodeSession. This is important
-    // because Listener.onCancel() enqueues work on this scope, and we need that to run.
-    scope.launch(dispatchers.zipline) {
-      scope.cancel()
     }
   }
 }

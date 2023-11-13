@@ -170,7 +170,7 @@ class TreehouseAppContentTest {
     val codeSessionB = codeHost.startCodeSession("codeSessionB")
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
-      "codeSessionA.cancel()",
+      "codeSessionA.stop()",
       "codeSessionB.start()",
       "codeSessionB.app.uis[0].start()",
     )
@@ -314,7 +314,7 @@ class TreehouseAppContentTest {
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
       "onBackPressedDispatcher.callbacks[0].cancel()",
-      "codeSessionA.cancel()",
+      "codeSessionA.stop()",
       "codeSessionB.start()",
       "codeSessionB.app.uis[0].start()",
     )
@@ -339,7 +339,7 @@ class TreehouseAppContentTest {
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
       "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
-      "codeSessionA.cancel()",
+      "codeSessionA.stop()",
     )
 
     content.unbind()
@@ -353,7 +353,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.start()")
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeSessionA.cancel()")
+    eventLog.takeEvent("codeSessionA.stop()")
 
     val view1 = treehouseView("view1")
     content.bind(view1)
@@ -382,7 +382,7 @@ class TreehouseAppContentTest {
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
       "codeListener.onUncaughtException(view1, kotlin.Exception: boom!)",
-      "codeSessionA.cancel()",
+      "codeSessionA.stop()",
     )
 
     codeHost.startCodeSession("codeSessionB")
@@ -409,7 +409,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
-    eventLog.takeEvent("codeSessionA.cancel()")
+    eventLog.takeEvent("codeSessionA.stop()")
 
     val view1 = treehouseView("view1")
     content.bind(view1)

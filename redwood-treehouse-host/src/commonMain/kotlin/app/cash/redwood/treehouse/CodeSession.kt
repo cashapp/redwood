@@ -18,30 +18,95 @@ package app.cash.redwood.treehouse
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 /** The host state for a single code load. We get a new session each time we get new code. */
-internal interface CodeSession<A : AppService> {
-  val scope: CoroutineScope
+internal abstract class CodeSession<A : AppService>(
+  val dispatchers: TreehouseDispatchers,
+  val eventPublisher: EventPublisher,
+  val appScope: CoroutineScope,
+  val appService: A,
+) {
+  private val listeners = mutableListOf<Listener<A>>()
 
-  val eventPublisher: EventPublisher
+  private var stopped = false
 
-  val appService: A
+  /** This scope is canceled when this session stops. */
+  val scope: CoroutineScope = run {
+    val coroutineExceptionHandler = object : CoroutineExceptionHandler {
+      override val key: CoroutineContext.Key<*>
+        get() = CoroutineExceptionHandler.Key
 
-  val json: Json
+      override fun handleException(context: CoroutineContext, exception: Throwable) {
+        handleUncaughtException(exception)
+      }
+    }
 
-  fun start()
+    return@run CoroutineScope(
+      SupervisorJob(appScope.coroutineContext.job) + coroutineExceptionHandler,
+    )
+  }
 
-  fun addListener(listener: Listener<A>)
+  abstract val json: Json
 
-  fun removeListener(listener: Listener<A>)
+  fun start() {
+    dispatchers.checkUi()
+    scope.launch(dispatchers.zipline) {
+      ziplineStart()
+    }
+  }
 
-  fun newServiceScope(): ServiceScope<A>
+  /** Invoked on [TreehouseDispatchers.zipline]. */
+  protected abstract fun ziplineStart()
+
+  fun stop() {
+    dispatchers.checkUi()
+
+    if (stopped) return
+    stopped = true
+
+    val listenersArray = listeners.toTypedArray() // onStop mutates.
+    for (listener in listenersArray) {
+      listener.onStop(this)
+    }
+
+    scope.launch(dispatchers.zipline) {
+      ziplineStop()
+      scope.cancel()
+    }
+  }
+
+  /** Invoked on [TreehouseDispatchers.zipline]. */
+  protected abstract fun ziplineStop()
 
   /** Propagates [exception] to all listeners and cancels this session. */
-  fun handleUncaughtException(exception: Throwable)
+  fun handleUncaughtException(exception: Throwable) {
+    scope.launch(dispatchers.ui) {
+      val listenersArray = listeners.toTypedArray() // onUncaughtException mutates.
+      for (listener in listenersArray) {
+        listener.onUncaughtException(this@CodeSession, exception)
+      }
+      stop()
+    }
 
-  fun cancel()
+    eventPublisher.onUncaughtException(exception)
+  }
+
+  abstract fun newServiceScope(): ServiceScope<A>
+
+  fun addListener(listener: Listener<A>) {
+    dispatchers.checkUi()
+    listeners += listener
+  }
+
+  fun removeListener(listener: Listener<A>) {
+    dispatchers.checkUi()
+    listeners -= listener
+  }
 
   /**
    * Tracks all of the services created to produce a UI, and offers a single mechanism to close
@@ -57,17 +122,10 @@ internal interface CodeSession<A : AppService> {
   }
 
   interface Listener<A : AppService> {
+    /** Called when a code session crashed with [exception].*/
     fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable)
-    fun onCancel(codeSession: CodeSession<A>)
+
+    /** Called when a code session will stop.*/
+    fun onStop(codeSession: CodeSession<A>)
   }
 }
-
-internal val CodeSession<*>.coroutineExceptionHandler: CoroutineExceptionHandler
-  get() = object : CoroutineExceptionHandler {
-    override val key: CoroutineContext.Key<*>
-      get() = CoroutineExceptionHandler.Key
-
-    override fun handleException(context: CoroutineContext, exception: Throwable) {
-      handleUncaughtException(exception)
-    }
-  }

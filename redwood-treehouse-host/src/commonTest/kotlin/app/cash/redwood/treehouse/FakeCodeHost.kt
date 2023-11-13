@@ -51,7 +51,7 @@ internal class FakeCodeHost(
   }
 
   suspend fun startCodeSession(name: String): CodeSession<FakeAppService> {
-    val result = FakeCodeSession(dispatchers, eventPublisher, eventLog, name, appScope)
+    val result = FakeCodeSession(dispatchers, eventPublisher, appScope, eventLog, name)
     codeSessions!!.send(result)
     return result
   }
