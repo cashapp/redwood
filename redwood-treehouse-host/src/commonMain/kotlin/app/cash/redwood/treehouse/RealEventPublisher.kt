@@ -158,28 +158,28 @@ internal class RealEventPublisher(
 
   override val widgetProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownWidget(tag: WidgetTag) {
-      listener.onUnknownWidget(tag)
+      listener.unknownWidget(tag)
     }
 
     override fun onUnknownModifier(tag: ModifierTag) {
-      listener.onUnknownModifier(tag)
+      listener.unknownModifier(tag)
     }
 
     override fun onUnknownChildren(widgetTag: WidgetTag, tag: ChildrenTag) {
-      listener.onUnknownChildren(widgetTag, tag)
+      listener.unknownChildren(widgetTag, tag)
     }
 
     override fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag) {
-      listener.onUnknownProperty(widgetTag, tag)
+      listener.unknownProperty(widgetTag, tag)
     }
   }
 
   override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    listener.onUnknownEvent(widgetTag, tag)
+    listener.unknownEvent(widgetTag, tag)
   }
 
   override fun onUnknownEventNode(id: Id, tag: EventTag) {
-    listener.onUnknownEventNode(id, tag)
+    listener.unknownEventNode(id, tag)
   }
 
   override fun onUncaughtException(exception: Throwable) {

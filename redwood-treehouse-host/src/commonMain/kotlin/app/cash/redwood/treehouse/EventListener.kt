@@ -84,48 +84,61 @@ public open class EventListener {
   }
 
   /**
-   * Invoked on a request to create an unknown widget [kind].
+   * Invoked on a request to create an unknown widget with [tag]. This is a schema mismatch and the
+   * widget is ignored.
    */
-  public open fun onUnknownWidget(
+  public open fun unknownWidget(
     tag: WidgetTag,
   ) {
   }
 
   /**
-   * Invoked on a request to create an unknown modifier [tag].
+   * Invoked on a request to create an unknown modifier with [tag]. This is a schema mismatch and
+   * the modifier is ignored.
    */
-  public open fun onUnknownModifier(
+  public open fun unknownModifier(
     tag: ModifierTag,
   ) {
   }
 
   /**
-   * Invoked on a request to manipulate unknown children [tag] for the specified widget [kind].
+   * Invoked on a request to manipulate unknown children with [tag] for a widget with [widgetTag].
+   * This is a schema mismatch and the child nodes are ignored.
    */
-  public open fun onUnknownChildren(
+  public open fun unknownChildren(
     widgetTag: WidgetTag,
     tag: ChildrenTag,
   ) {
   }
 
   /**
-   * Invoked on a request to set an unknown property [tag] for the specified widget [kind].
+   * Invoked on a request to set an unknown property with [tag] for a widget with [widgetTag]. This
+   * is a schema mismatch and the property is ignored.
    */
-  public open fun onUnknownProperty(
+  public open fun unknownProperty(
     widgetTag: WidgetTag,
     tag: PropertyTag,
   ) {
   }
 
-  /** Invoked on a request to process an unknown event [tag] for the specified widget [widgetTag]. */
-  public open fun onUnknownEvent(
+  /**
+   * Invoked on a request to process an unknown event with [tag] for a widget with [widgetTag]. This
+   * is a schema mismatch and the event is dropped.
+   */
+  public open fun unknownEvent(
     widgetTag: WidgetTag,
     tag: EventTag,
   ) {
   }
 
-  /** Invoked for an event whose node [id] is unknown. */
-  public open fun onUnknownEventNode(
+  /**
+   * Invoked when an event is received on a widget that no longer exists.
+   *
+   * This is a normal artifact of the asynchronous event processing used by Treehouse. For example,
+   * it will occur if a user is still scrolling a `LazyColumn` when it is removed from a layout. The
+   * scroll event is discarded and that's fine.
+   */
+  public open fun unknownEventNode(
     id: Id,
     tag: EventTag,
   ) {
@@ -338,7 +351,7 @@ public open class EventListener {
   }
 
   public companion object {
-    public val NONE: Factory = Factory { app, manifestUrl ->
+    public val NONE: Factory = Factory { _, _ ->
       EventListener()
     }
   }
