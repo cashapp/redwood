@@ -271,7 +271,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       repositories {
         it.maven {
           it.name = "LocalMaven"
-          it.url = project.rootProject.buildDir.resolve("localMaven").toURI()
+          it.url = project.rootProject.layout.buildDirectory.asFile.get().resolve("localMaven").toURI()
         }
 
         // Want to push to an internal repository for testing?
