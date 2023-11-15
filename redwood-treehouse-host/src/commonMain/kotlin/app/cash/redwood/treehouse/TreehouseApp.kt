@@ -127,7 +127,6 @@ public class TreehouseApp<A : AppService> private constructor(
    * found.
    */
   private fun ziplineFlow(): Flow<LoadResult> {
-    // Loads applications from the network only. The cache is neither read nor written.
     var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
