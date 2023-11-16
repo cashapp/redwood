@@ -320,7 +320,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(
-    SupervisorJob(codeSession.scope.coroutineContext.job),
+    codeSession.scope.coroutineContext + SupervisorJob(codeSession.scope.coroutineContext.job),
   )
 
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */

@@ -37,6 +37,7 @@ class FakeZiplineTreehouseUi(
   private val eventLog: EventLog,
 ) : ZiplineTreehouseUi {
   private var nextWidgetId = 1
+  private var messageToThrowOnNextEvent: String? = null
 
   private lateinit var host: ZiplineTreehouseUi.Host
   private val extraServicesToClose = mutableListOf<CancellableService>()
@@ -57,8 +58,18 @@ class FakeZiplineTreehouseUi(
     )
   }
 
+  fun throwOnNextEvent(message: String) {
+    messageToThrowOnNextEvent = message
+  }
+
   override fun sendEvent(event: Event) {
-    eventLog += "$name.sendEvent($event)"
+    eventLog += "$name.sendEvent()"
+
+    val toThrow = messageToThrowOnNextEvent
+    if (toThrow != null) {
+      messageToThrowOnNextEvent = null
+      throw Exception(toThrow)
+    }
   }
 
   fun addBackHandler(isEnabled: Boolean): CancellableService {
