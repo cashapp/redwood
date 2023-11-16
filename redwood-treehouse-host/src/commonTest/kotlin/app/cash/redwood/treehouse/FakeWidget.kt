@@ -25,4 +25,5 @@ class FakeWidget : Widget<FakeWidget> {
   override var modifier: Modifier = Modifier
 
   var label: String? = null
+  var onClick: (() -> Unit)? = null
 }

@@ -84,6 +84,9 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
     assertThat(view1.children.single().value.label).isEqualTo("hello")
 
+    view1.children.single().value.onClick!!.invoke()
+    eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
+
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
@@ -414,6 +417,31 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    content.unbind()
+  }
+
+  @Test
+  fun bind_session_addWidget_eventException_unbind() = runTest {
+    val content = treehouseAppContent()
+
+    val view1 = treehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    val codeSessionA = codeHost.startCodeSession("codeSessionA")
+    eventLog.takeEvent("codeSessionA.start()")
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    codeSessionA.appService.uis.single().addWidget("hello")
+    eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
+
+    codeSessionA.appService.uis.single().throwOnNextEvent("boom!")
+    view1.children.single().value.onClick!!.invoke()
+    eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
+    eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    eventLog.takeEvent("codeSessionA.stop()")
 
     content.unbind()
   }
