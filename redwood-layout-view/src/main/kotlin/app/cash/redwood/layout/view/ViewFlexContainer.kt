@@ -168,8 +168,7 @@ internal class ViewFlexContainer(
 }
 
 private fun View.asNode(): Node {
-  val childNode = Node()
-  childNode.measureCallback = ViewMeasureCallback(this)
-  applyLayoutParams(childNode, layoutParams)
-  return childNode
+  return Node().apply {
+    measureCallback = ViewMeasureCallback(this@asNode)
+  }
 }
