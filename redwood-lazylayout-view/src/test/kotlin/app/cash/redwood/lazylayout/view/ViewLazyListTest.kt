@@ -85,7 +85,17 @@ class ViewLazyListTest(
     }
 
     override fun add(widget: Widget<View>) {
-      delegate.items.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<View>) {
+      delegate.items.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.items.remove(index = index, count = 1)
+      childCount--
     }
   }
 }

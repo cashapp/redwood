@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
@@ -96,7 +96,17 @@ class ComposeUiLazyListTest(
     }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
-      delegate.items.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<() -> Unit>) {
+      delegate.items.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.items.remove(index = index, count = 1)
+      childCount--
     }
 
     override fun onEndChanges() {
