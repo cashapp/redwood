@@ -83,7 +83,17 @@ class ViewFlexContainerTest(
     )
 
     override fun add(widget: Widget<View>) {
-      delegate.children.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<View>) {
+      delegate.children.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.children.remove(index = index, count = 1)
+      childCount--
     }
   }
 }

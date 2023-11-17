@@ -415,6 +415,28 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(column)
   }
 
+  @Test
+  fun testDynamicElementUpdates() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(widget("A"))
+    container.add(widget("B"))
+    container.add(widget("D"))
+    container.add(widget("E"))
+
+    container.onEndChanges()
+    verifySnapshot(container, "ABDE")
+
+    container.addAt(index = 2, widget = widget("C"))
+    container.onEndChanges()
+    verifySnapshot(container, "ABCDE")
+
+    container.removeAt(index = 0)
+    container.onEndChanges()
+    verifySnapshot(container, "BCDE")
+  }
+
   /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
   private fun assumeTrue(b: Boolean) {
     assertTrue(b)
@@ -429,6 +451,8 @@ interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun add(widget: Widget<T>)
+  fun addAt(index: Int, widget: Widget<T>)
+  fun removeAt(index: Int)
 }
 
 interface Text<T : Any> : Widget<T> {
