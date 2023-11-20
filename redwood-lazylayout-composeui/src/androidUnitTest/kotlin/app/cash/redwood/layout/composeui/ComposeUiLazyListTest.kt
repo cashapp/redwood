@@ -32,6 +32,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
@@ -74,7 +75,10 @@ class ComposeUiLazyListTest(
     }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
+  override fun column(): Column<@Composable () -> Unit> =
+    ComposeUiRedwoodLayoutWidgetFactory().Column()
+
+  override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {
       container.value()
     }

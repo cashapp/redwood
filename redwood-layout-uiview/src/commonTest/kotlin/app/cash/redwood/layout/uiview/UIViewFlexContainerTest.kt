@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -51,6 +52,8 @@ class UIViewFlexContainerTest(
     }
   }
 
+  override fun column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
+
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>, FlexContainer<UIView> by delegate, ChangeListener by delegate {
@@ -75,7 +78,7 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<UIView>, name: String?) {
+  override fun verifySnapshot(container: Widget<UIView>, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
     container.value.setFrame(screenSize)
 

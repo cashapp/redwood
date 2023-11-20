@@ -26,6 +26,7 @@ import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
+import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
@@ -38,7 +39,8 @@ import kotlin.test.assertTrue
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
   abstract fun widget(): Text<T>
-  abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
+  abstract fun column(): Column<T>
+  abstract fun verifySnapshot(container: Widget<T>, name: String? = null)
 
   private fun widget(text: String, modifier: Modifier = Modifier): Text<T> = widget().apply {
     text(text)
@@ -439,12 +441,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test
   fun testDynamicContainerSize() {
-    val parent = flexContainer(FlexDirection.Column).apply {
+    val parent = column().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
 
-    parent.add(
+    parent.children.insert(
+      0,
       flexContainer(FlexDirection.Column).apply {
         modifier = GrowImpl(1.0)
         width(Constraint.Fill)
@@ -464,7 +467,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
       },
     )
 
-    parent.add(
+    parent.children.insert(
+      1,
       flexContainer(FlexDirection.Column).apply {
         modifier = GrowImpl(1.0)
         width(Constraint.Fill)
@@ -487,7 +491,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     verifySnapshot(parent, "both")
 
-    parent.removeAt(1)
+    parent.children.remove(index = 1, count = 1)
     verifySnapshot(parent, "single")
   }
 
