@@ -21,10 +21,6 @@ internal class YogaLayout(
 ) : ViewGroup(context) {
   val rootNode = Node()
 
-  init {
-    applyLayoutParams(rootNode, layoutParams)
-  }
-
   private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
     val view = node.view
     if (view != null && view !== this) {
@@ -71,6 +67,11 @@ internal class YogaLayout(
   }
 
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
+    rootNode.requestedWidth = Size.Undefined
+    rootNode.requestedMaxWidth = Size.Undefined
+    rootNode.requestedHeight = Size.Undefined
+    rootNode.requestedMaxHeight = Size.Undefined
+
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
       MeasureSpec.EXACTLY -> rootNode.requestedWidth = widthSize
@@ -95,16 +96,3 @@ internal class YogaLayout(
 
 private val Node.view: View?
   get() = (measureCallback as ViewMeasureCallback?)?.view
-
-internal fun applyLayoutParams(node: Node, layoutParams: ViewGroup.LayoutParams?) {
-  if (layoutParams != null) {
-    val width = layoutParams.width
-    if (width >= 0) {
-      node.requestedWidth = width.toFloat()
-    }
-    val height = layoutParams.height
-    if (height >= 0) {
-      node.requestedHeight = height.toFloat()
-    }
-  }
-}

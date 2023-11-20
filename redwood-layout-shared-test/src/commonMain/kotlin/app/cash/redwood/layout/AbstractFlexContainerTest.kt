@@ -437,6 +437,60 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "BCDE")
   }
 
+  @Test
+  fun testDynamicContainerSize() {
+    val parent = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    parent.add(
+      flexContainer(FlexDirection.Column).apply {
+        modifier = GrowImpl(1.0)
+        width(Constraint.Fill)
+        mainAxisAlignment(MainAxisAlignment.SpaceBetween)
+        add(
+          widget(
+            "A",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
+          ),
+        )
+        add(
+          widget(
+            "B",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
+          ),
+        )
+      },
+    )
+
+    parent.add(
+      flexContainer(FlexDirection.Column).apply {
+        modifier = GrowImpl(1.0)
+        width(Constraint.Fill)
+        mainAxisAlignment(MainAxisAlignment.SpaceBetween)
+        add(
+          widget(
+            "C",
+            GrowImpl(1.0)
+              .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
+          ),
+        )
+        add(
+          widget(
+            "D",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
+          ),
+        )
+      },
+    )
+
+    verifySnapshot(parent, "both")
+
+    parent.removeAt(1)
+    verifySnapshot(parent, "single")
+  }
+
   /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
   private fun assumeTrue(b: Boolean) {
     assertTrue(b)
