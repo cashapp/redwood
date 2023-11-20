@@ -31,6 +31,7 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
@@ -72,7 +73,10 @@ class ComposeUiFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
+  override fun column(): Column<@Composable () -> Unit> =
+    ComposeUiFlexContainer(FlexDirection.Column)
+
+  override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {
       container.value()
     }

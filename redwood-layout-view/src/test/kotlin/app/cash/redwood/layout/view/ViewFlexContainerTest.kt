@@ -26,6 +26,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -67,7 +68,9 @@ class ViewFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<View>, name: String?) {
+  override fun column(): Column<View> = ViewFlexContainer(paparazzi.context, FlexDirection.Column)
+
+  override fun verifySnapshot(container: Widget<View>, name: String?) {
     paparazzi.snapshot(container.value, name)
   }
 
