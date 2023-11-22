@@ -29,16 +29,42 @@ import kotlin.native.ObjCName
  */
 @ObjCName("ProtocolMismatchHandler", exact = true)
 public interface ProtocolMismatchHandler {
-  /** Handle a request to create an unknown widget [tag]. */
+  /**
+   * Handle a request to create an unknown widget [tag].
+   *
+   * This function will be invoked every time a widget with an unknown tag is created. For example,
+   * a row containing three unknown widgets will see this function invoked three times.
+   * Use the [tag] to de-duplicate the callbacks if desired.
+   */
   public fun onUnknownWidget(tag: WidgetTag)
 
-  /** Handle a request to create an unknown layout modifier [tag]. */
+  /**
+   * Handle a request to create an unknown layout modifier [tag].
+   *
+   * This function will be invoked every time a modifier with an unknown tag is used. For example,
+   * three widgets each using the unknown modifier will see this function invoked three times.
+   * Modifiers are serialized as a chain, so updating an unrelated modifier in a chain which also
+   * contains an unknown modifier will cause this function to be invoked again.
+   * Use the [tag] to de-duplicate the callbacks if desired.
+   */
   public fun onUnknownModifier(tag: ModifierTag)
 
-  /** Handle a request to manipulate unknown children [tag] for the specified [widgetTag]. */
+  /**
+   * Handle a request to manipulate unknown children [tag] for the specified [widgetTag].
+   *
+   * This function will be invoked every time an operation occurs on unknown children. For example,
+   * three buttons inside an unknown children container will see this function invoked three times.
+   * Use the [widgetTag] and [tag] combination to de-duplicate the callbacks if desired.
+   */
   public fun onUnknownChildren(widgetTag: WidgetTag, tag: ChildrenTag)
 
-  /** Handle a request to set an unknown property [tag] for the specified [widgetTag]. */
+  /**
+   * Handle a request to set an unknown property [tag] for the specified [widgetTag].
+   *
+   * This function will be invoked every time an operation occurs on the property. For example,
+   * a timer updating the unknown property every second will see this function invoked every second.
+   * Use the [widgetTag] and [tag] combination to de-duplicate the callbacks if desired.
+   */
   public fun onUnknownProperty(widgetTag: WidgetTag, tag: PropertyTag)
 
   public companion object {
