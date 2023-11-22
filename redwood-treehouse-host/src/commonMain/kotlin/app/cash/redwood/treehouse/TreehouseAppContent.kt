@@ -73,7 +73,7 @@ private sealed interface CodeState<A : AppService> {
 internal class TreehouseAppContent<A : AppService>(
   private val codeHost: CodeHost<A>,
   private val dispatchers: TreehouseDispatchers,
-  private val codeListener: CodeListener,
+  private val codeEventPublisher: CodeEventPublisher,
   private val source: TreehouseContentSource<A>,
 ) : Content, CodeHost.Listener<A>, CodeSession.Listener<A> {
   private val stateFlow = MutableStateFlow<State<A>>(
@@ -147,7 +147,7 @@ internal class TreehouseAppContent<A : AppService>(
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
     // code is coming.
     when (nextCodeState) {
-      is CodeState.Idle -> codeListener.onInitialCodeLoading(view)
+      is CodeState.Idle -> codeEventPublisher.onInitialCodeLoading(view)
       is CodeState.Running -> nextCodeState.viewContentCodeBinding.initView(view)
     }
 
@@ -259,7 +259,7 @@ internal class TreehouseAppContent<A : AppService>(
     // If there's an error and a UI, show it.
     val view = (viewState as? ViewState.Bound)?.view
     if (exception != null && view != null) {
-      codeListener.onUncaughtException(view, exception)
+      codeEventPublisher.onUncaughtException(view, exception)
     }
 
     val nextCodeState = CodeState.Idle<A>(isInitialLaunch = false)
@@ -281,7 +281,7 @@ internal class TreehouseAppContent<A : AppService>(
       dispatchers = dispatchers,
       eventPublisher = codeSession.eventPublisher,
       contentSource = source,
-      codeListener = codeListener,
+      codeEventPublisher = codeEventPublisher,
       stateFlow = stateFlow,
       codeSession = codeSession,
       isInitialLaunch = isInitialLaunch,
@@ -310,7 +310,7 @@ private class ViewContentCodeBinding<A : AppService>(
   val dispatchers: TreehouseDispatchers,
   val eventPublisher: EventPublisher,
   val contentSource: TreehouseContentSource<A>,
-  val codeListener: CodeListener,
+  val codeEventPublisher: CodeEventPublisher,
   val stateFlow: MutableStateFlow<State<A>>,
   val codeSession: CodeSession<A>,
   private val isInitialLaunch: Boolean,
@@ -427,7 +427,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
     if (changesCount++ == 0) {
       view.reset()
-      codeListener.onCodeLoaded(view, isInitialLaunch)
+      codeEventPublisher.onCodeLoaded(view, isInitialLaunch)
     }
 
     bridge.sendChanges(changes)

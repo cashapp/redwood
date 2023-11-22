@@ -23,7 +23,11 @@ public open class CodeListener {
    * Invoked when the initial code is still loading. This can be used to signal a loading state
    * in the UI before there is anything to display.
    */
-  public open fun onInitialCodeLoading(view: TreehouseView<*>) {}
+  public open fun onInitialCodeLoading(
+    app: TreehouseApp<*>,
+    view: TreehouseView<*>,
+  ) {
+  }
 
   /**
    * Invoked each time new code is loaded. This is called after the view's old children have
@@ -31,7 +35,12 @@ public open class CodeListener {
    *
    * @param initial true if this is the first code loaded for this view's current content.
    */
-  public open fun onCodeLoaded(view: TreehouseView<*>, initial: Boolean) {}
+  public open fun onCodeLoaded(
+    app: TreehouseApp<*>,
+    view: TreehouseView<*>,
+    initial: Boolean,
+  ) {
+  }
 
   /**
    * Invoked when the application powering [view] fails with an uncaught exception. This function
@@ -47,6 +56,7 @@ public open class CodeListener {
    * called.
    */
   public open fun onUncaughtException(
+    app: TreehouseApp<*>,
     view: TreehouseView<*>,
     exception: Throwable,
   ) {
