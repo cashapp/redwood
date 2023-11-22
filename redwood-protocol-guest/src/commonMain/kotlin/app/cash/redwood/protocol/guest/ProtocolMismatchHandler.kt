@@ -26,10 +26,23 @@ import kotlin.jvm.JvmField
  * a newer schema than the other, or if their schemas were changed in an incompatible way.
  */
 public interface ProtocolMismatchHandler {
-  /** Handle a request to process an unknown event [tag] for the specified widget [widgetTag]. */
+  /**
+   * Handle a request to process an unknown event [tag] for the specified widget [widgetTag].
+   *
+   * This function will be invoked every time an unknown event is sent to a widget. For example,
+   * three click events on a widget with no click event will see this function invoked three times.
+   * Use the [widgetTag] and [tag] combination to de-duplicate the callbacks if desired.
+   */
   public fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag)
 
-  /** Handle an event whose node [id] is unknown. */
+  /**
+   * Handle an event whose node [id] is unknown.
+   *
+   * This function will be invoked every time an event is sent to an unknown widget. For example,
+   * clicking three times on a button that has no corresponding instance will see this function
+   * invoked three times. Use the [id] and [tag] combination to de-duplicate the callbacks
+   * if desired.
+   */
   public fun onUnknownEventNode(id: Id, tag: EventTag)
 
   public companion object {
