@@ -48,7 +48,7 @@ jobs:
         with:
           api-level: 29
           emulator-boot-timeout: 20000
-          script: ./gradlew connectedCheck -PredwoodNoSamples
+          script: ./gradlew connectedCheck -PredwoodNoApps
 
   dokka:
     runs-on: ubuntu-latest
