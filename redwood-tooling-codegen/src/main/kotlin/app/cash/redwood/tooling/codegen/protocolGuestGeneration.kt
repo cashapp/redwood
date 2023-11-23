@@ -86,6 +86,7 @@ internal fun generateProtocolBridge(
   val type = schema.protocolBridgeType()
   val providerType = schema.getWidgetFactoryProviderType().parameterizedBy(NOTHING)
   return FileSpec.builder(type)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(type)
         .addSuperinterface(ProtocolGuest.ProtocolBridge)
@@ -195,6 +196,7 @@ internal fun generateProtocolWidgetFactory(
 ): FileSpec {
   val type = schema.protocolWidgetFactoryType(host)
   return FileSpec.builder(type)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
@@ -293,6 +295,7 @@ internal fun generateProtocolWidget(
   val type = schema.protocolWidgetType(widget, host)
   val widgetName = schema.widgetType(widget)
   return FileSpec.builder(type)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
@@ -512,6 +515,7 @@ internal fun generateProtocolModifierSerializers(
     return null
   }
   return FileSpec.builder(schema.composePackage(host), "modifierSerializers")
+    .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in serializableModifiers) {
         val serializerType = schema.modifierSerializer(modifier, host)
@@ -691,6 +695,7 @@ internal fun generateComposeProtocolModifierSerialization(
   val schema = schemaSet.schema
   val name = schema.modifierToProtocol.simpleName
   return FileSpec.builder(schema.composePackage(), "modifierSerialization")
+    .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(name)
         .addModifiers(INTERNAL)

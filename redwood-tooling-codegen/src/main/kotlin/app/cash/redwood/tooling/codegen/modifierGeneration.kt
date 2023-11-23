@@ -24,6 +24,7 @@ import com.squareup.kotlinpoet.TypeSpec
 internal fun generateModifierInterface(schema: Schema, modifier: Modifier): FileSpec {
   val type = schema.modifierType(modifier)
   return FileSpec.builder(type.packageName, type.simpleName)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.interfaceBuilder(type)
         .addSuperinterface(Redwood.ModifierElement)

@@ -18,6 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
 import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import com.squareup.kotlinpoet.FileSpec
 import java.nio.file.Path
 
 public enum class ProtocolCodegenType {
@@ -26,24 +27,32 @@ public enum class ProtocolCodegenType {
 }
 
 public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Path) {
-  when (type) {
-    Compose -> {
-      generateProtocolBridge(this).writeTo(destination)
-      generateComposeProtocolModifierSerialization(this).writeTo(destination)
-      for (dependency in all) {
-        generateProtocolWidgetFactory(dependency, host = schema).writeTo(destination)
-        generateProtocolModifierSerializers(dependency, host = schema)?.writeTo(destination)
-        for (widget in dependency.widgets) {
-          generateProtocolWidget(dependency, widget, host = schema).writeTo(destination)
+  for (fileSpec in generateFileSpecs(type)) {
+    fileSpec.writeTo(destination)
+  }
+}
+
+internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): List<FileSpec> {
+  return buildList {
+    when (type) {
+      Compose -> {
+        add(generateProtocolBridge(this@generateFileSpecs))
+        add(generateComposeProtocolModifierSerialization(this@generateFileSpecs))
+        for (dependency in all) {
+          add(generateProtocolWidgetFactory(dependency, host = schema))
+          generateProtocolModifierSerializers(dependency, host = schema)?.let { add(it) }
+          for (widget in dependency.widgets) {
+            add(generateProtocolWidget(dependency, widget, host = schema))
+          }
         }
       }
-    }
-    Widget -> {
-      generateProtocolFactory(this).writeTo(destination)
-      for (dependency in all) {
-        generateProtocolModifierImpls(dependency, host = schema)?.writeTo(destination)
-        for (widget in dependency.widgets) {
-          generateProtocolNode(dependency, widget, host = schema).writeTo(destination)
+      Widget -> {
+        add(generateProtocolFactory(this@generateFileSpecs))
+        for (dependency in all) {
+          generateProtocolModifierImpls(dependency, host = schema)?.let { add(it) }
+          for (widget in dependency.widgets) {
+            add(generateProtocolNode(dependency, widget, host = schema))
+          }
         }
       }
     }

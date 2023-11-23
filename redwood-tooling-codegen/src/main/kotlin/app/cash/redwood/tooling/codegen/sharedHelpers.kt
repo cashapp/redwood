@@ -213,6 +213,11 @@ internal fun Deprecation.toAnnotationSpec(): AnnotationSpec {
     .build()
 }
 
+internal val suppressDeprecations = AnnotationSpec.builder(Suppress::class)
+  .useSiteTarget(AnnotationSpec.UseSiteTarget.FILE)
+  .addMember("%S", "DEPRECATION")
+  .build()
+
 private fun Deprecation.Level.toMemberName(): MemberName {
   return MemberName(
     DeprecationLevel::class.asClassName(),

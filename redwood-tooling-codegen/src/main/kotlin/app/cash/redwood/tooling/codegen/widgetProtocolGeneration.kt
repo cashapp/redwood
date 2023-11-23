@@ -73,6 +73,7 @@ internal fun generateProtocolFactory(
   val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
   val type = schema.protocolFactoryType()
   return FileSpec.builder(type)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
@@ -225,6 +226,7 @@ internal fun generateProtocolNode(
   val protocolType = WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
   val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
   return FileSpec.builder(type)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
@@ -413,6 +415,7 @@ internal fun generateProtocolModifierImpls(
     return null
   }
   return FileSpec.builder(schema.widgetPackage(host), "modifierImpls")
+    .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in schema.modifiers) {
         val typeName = ClassName(schema.widgetPackage(host), modifier.type.flatName + "Impl")

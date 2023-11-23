@@ -20,6 +20,7 @@ import app.cash.redwood.tooling.codegen.CodegenType.Modifiers
 import app.cash.redwood.tooling.codegen.CodegenType.Testing
 import app.cash.redwood.tooling.codegen.CodegenType.Widget
 import app.cash.redwood.tooling.schema.SchemaSet
+import com.squareup.kotlinpoet.FileSpec
 import java.nio.file.Path
 
 public enum class CodegenType {
@@ -30,34 +31,42 @@ public enum class CodegenType {
 }
 
 public fun SchemaSet.generate(type: CodegenType, destination: Path) {
-  when (type) {
-    Compose -> {
-      generateModifierImpls(schema)?.writeTo(destination)
-      for (scope in schema.scopes) {
-        generateScope(schema, scope).writeTo(destination)
+  for (fileSpec in generateFileSpecs(type)) {
+    fileSpec.writeTo(destination)
+  }
+}
+
+internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
+  return buildList {
+    when (type) {
+      Compose -> {
+        generateModifierImpls(schema)?.let { add(it) }
+        for (scope in schema.scopes) {
+          add(generateScope(schema, scope))
+        }
+        for (widget in schema.widgets) {
+          add(generateComposable(schema, widget))
+        }
       }
-      for (widget in schema.widgets) {
-        generateComposable(schema, widget).writeTo(destination)
+      Modifiers -> {
+        for (modifier in schema.modifiers) {
+          add(generateModifierInterface(schema, modifier))
+        }
       }
-    }
-    Modifiers -> {
-      for (modifier in schema.modifiers) {
-        generateModifierInterface(schema, modifier).writeTo(destination)
+      Testing -> {
+        add(generateTester(this@generateFileSpecs))
+        add(generateMutableWidgetFactory(schema))
+        for (widget in schema.widgets) {
+          add(generateMutableWidget(schema, widget))
+          add(generateWidgetValue(schema, widget))
+        }
       }
-    }
-    Testing -> {
-      generateTester(this).writeTo(destination)
-      generateMutableWidgetFactory(schema).writeTo(destination)
-      for (widget in schema.widgets) {
-        generateMutableWidget(schema, widget).writeTo(destination)
-        generateWidgetValue(schema, widget).writeTo(destination)
-      }
-    }
-    Widget -> {
-      generateWidgetFactories(this).writeTo(destination)
-      generateWidgetFactory(schema).writeTo(destination)
-      for (widget in schema.widgets) {
-        generateWidget(schema, widget).writeTo(destination)
+      Widget -> {
+        add(generateWidgetFactories(this@generateFileSpecs))
+        add(generateWidgetFactory(schema))
+        for (widget in schema.widgets) {
+          add(generateWidget(schema, widget))
+        }
       }
     }
   }
