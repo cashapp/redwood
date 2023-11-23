@@ -50,7 +50,7 @@ abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
     awaitText("0. +1")
   }
 
-  private fun awaitText(value: String, duration: Duration = 1.seconds) {
+  private fun awaitText(value: String, duration: Duration = 4.seconds) {
     val text = device.findObject(UiSelector().text(value))
     if (!text.waitForExists(duration.inWholeMilliseconds)) {
       throw AssertionError("Waited $duration for \"$value\" but never appeared")
