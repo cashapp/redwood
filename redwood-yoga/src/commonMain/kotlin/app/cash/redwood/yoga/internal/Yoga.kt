@@ -800,7 +800,7 @@ internal object Yoga {
     return if (node.style.flexBasis.isPercent()) {
       node.style.flexBasis.convertToYgValue().value
     } else {
-      -1.0f // This is a stand-in for any non-point value.
+      -1.0f // This is a stand-in for any non-percent value.
     }
   }
 
