@@ -18,6 +18,7 @@ package com.example
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.modifier.Flex as FlexModifier
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
 import app.cash.redwood.layout.modifier.Height as HeightModifier
 import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
@@ -96,6 +97,12 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
         val height = childModifier.height.toPx().toFloat()
         requestedMinHeight = height
         requestedMaxHeight = height
+      }
+      is FlexModifier -> {
+        val flex = childModifier.value.coerceAtLeast(0.0).toFloat()
+        flexGrow = flex
+        flexShrink = 1.0f
+        flexBasis = if (flex > 0) 0.0f else -1.0f
       }
     }
   }
