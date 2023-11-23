@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout
 
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -24,6 +23,7 @@ import app.cash.redwood.layout.modifier.Flex
 import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
