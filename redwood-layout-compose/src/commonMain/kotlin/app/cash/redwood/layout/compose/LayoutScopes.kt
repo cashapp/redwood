@@ -28,6 +28,7 @@ import app.cash.redwood.Modifier
   message = "This extension function is obselete now that RowScope and " +
     "ColumnScope support flex directly. Remove the import for this function.",
   replaceWith = ReplaceWith("flex(value)"),
+  level = DeprecationLevel.ERROR,
 )
 public fun Modifier.flex(`value`: Double): Modifier =
   then(GrowImpl(`value`)).then(ShrinkImpl(`value`))
