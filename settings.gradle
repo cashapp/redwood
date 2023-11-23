@@ -114,6 +114,7 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:counter:shared-composeui'
 
   include ':samples:emoji-search:android-composeui'
+  include ':samples:emoji-search:android-tests'
   include ':samples:emoji-search:android-views'
   include ':samples:emoji-search:browser'
   include ':samples:emoji-search:ios-shared'

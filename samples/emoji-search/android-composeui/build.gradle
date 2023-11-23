@@ -8,8 +8,14 @@ redwoodBuild {
 android {
   namespace 'com.example.redwood.emojisearch.android.composeui'
 
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
   buildFeatures {
     compose = true
+    // Needed to pass application ID to UIAutomator tests.
+    buildConfig = true
   }
 }
 
@@ -33,4 +39,7 @@ dependencies {
   implementation projects.redwoodTreehouseHostComposeui
   implementation projects.redwoodWidgetCompose
   implementation libs.okio.assetfilesystem
+
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation projects.samples.emojiSearch.androidTests
 }
