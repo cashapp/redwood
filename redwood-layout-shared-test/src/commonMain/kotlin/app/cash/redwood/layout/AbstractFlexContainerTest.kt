@@ -498,11 +498,23 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test
-  fun testFlexCreatesEquivalentSizedWidgets() {
+  fun testFlexDistributesWeightEqually() {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.add(widget("REALLY LONG TEXT", FlexImpl(1.0)))
+    container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(widget("A", FlexImpl(1.0)))
+    container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    verifySnapshot(container)
+  }
+
+  @Test
+  fun testFlexDistributesWeightUnequally() {
+    val container = flexContainer(FlexDirection.Row)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(widget("REALLY LONG TEXT", FlexImpl(3.0)))
     container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
     container.add(widget("A", FlexImpl(1.0)))
     container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
