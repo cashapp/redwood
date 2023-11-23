@@ -134,6 +134,12 @@ jobs:
 
       - run: ./gradlew -p samples/emoji-search build
 
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          emulator-boot-timeout: 20000
+          script: ./gradlew -p samples/emoji-search connectedCheck
+
       - name: Build Emoji Search iOS (UIKit)
         run: xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
