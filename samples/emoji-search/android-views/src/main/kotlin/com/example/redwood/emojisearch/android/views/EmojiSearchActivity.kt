@@ -87,7 +87,11 @@ class EmojiSearchActivity : ComponentActivity() {
   }
 
   private val codeListener: CodeListener = object : CodeListener() {
-    override fun onUncaughtException(view: TreehouseView<*>, exception: Throwable) {
+    override fun onUncaughtException(
+      app: TreehouseApp<*>,
+      view: TreehouseView<*>,
+      exception: Throwable,
+    ) {
       treehouseLayout.reset()
       treehouseLayout.addView(
         ExceptionView(treehouseLayout, exception),

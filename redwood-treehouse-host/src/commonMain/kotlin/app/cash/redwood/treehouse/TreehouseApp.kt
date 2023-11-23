@@ -87,7 +87,7 @@ public class TreehouseApp<A : AppService> private constructor(
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      codeListener = codeListener,
+      codeEventPublisher = RealCodeEventPublisher(codeListener, this),
       source = source,
     )
   }

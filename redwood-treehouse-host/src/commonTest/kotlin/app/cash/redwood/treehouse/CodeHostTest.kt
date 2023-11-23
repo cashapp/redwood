@@ -40,7 +40,7 @@ class CodeHostTest {
     appScope = appScope,
     frameClockFactory = FakeFrameClock.Factory,
   )
-  private val codeListener = FakeCodeListener(eventLog)
+  private val codeEventPublisher = FakeCodeEventPublisher(eventLog)
   private val onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog)
 
   @AfterTest
@@ -288,7 +288,7 @@ class CodeHostTest {
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      codeListener = codeListener,
+      codeEventPublisher = codeEventPublisher,
       source = { app -> app.newUi() },
     )
   }

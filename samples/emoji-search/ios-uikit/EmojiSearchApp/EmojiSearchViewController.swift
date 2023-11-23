@@ -78,7 +78,7 @@ class EmojiSearchCodeListener : CodeListener {
         self.treehouseView = treehouseView
     }
 
-    override func onUncaughtException(view: TreehouseView, exception: KotlinThrowable) {
+    override func onUncaughtException(app: TreehouseApp<AnyObject>, view: TreehouseView, exception: KotlinThrowable) {
         treehouseView.reset()
 
         let exceptionView = ExceptionView(exception)
