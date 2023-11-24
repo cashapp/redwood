@@ -72,6 +72,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
     returnType = typeVarR,
   ).copy(suspending = true)
   return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
+    .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(testerFunction)
         .optIn(Redwood.RedwoodCodegenApi)
@@ -127,6 +128,7 @@ public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetVa
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
   val mutableWidgetFactoryType = schema.getTestingWidgetFactoryType()
   return FileSpec.builder(mutableWidgetFactoryType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.WidgetValue))
@@ -171,6 +173,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
   val mutableWidgetType = schema.mutableWidgetType(widget)
   val widgetValueType = schema.widgetValueType(widget)
   return FileSpec.builder(mutableWidgetType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
@@ -360,6 +363,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   }
 
   return FileSpec.builder(widgetValueType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       classBuilder
         .primaryConstructor(constructorBuilder.build())

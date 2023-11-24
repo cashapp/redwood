@@ -68,6 +68,7 @@ internal fun generateComposable(
   val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.composePackage(), flatName)
+    .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(flatName)
         .addAnnotation(ComposeRuntime.Composable)
@@ -209,6 +210,7 @@ internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
   val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
   return FileSpec.builder(scopeType)
+    .addAnnotation(suppressDeprecations)
     .apply {
       val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
         .addAnnotation(Redwood.LayoutScopeMarker)
@@ -243,6 +245,7 @@ internal fun generateModifierImpls(schema: Schema): FileSpec? {
   if (schema.modifiers.isEmpty()) return null
 
   return FileSpec.builder(schema.composePackage(), "modifier")
+    .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in schema.modifiers) {
         addType(generateModifierImpl(schema, modifier))

@@ -47,6 +47,7 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
   val widgetFactoriesType = schema.getWidgetFactoriesType()
   return FileSpec.builder(widgetFactoriesType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(widgetFactoriesType)
         .addTypeVariable(typeVariableW)
@@ -102,6 +103,7 @@ interface ExampleWidgetFactory<W : Any> : Widget.Factory<W> {
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
   val widgetFactoryType = schema.getWidgetFactoryType()
   return FileSpec.builder(widgetFactoryType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
@@ -157,6 +159,7 @@ interface Button<W: Any> : Widget<W> {
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.widgetPackage(), flatName)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.interfaceBuilder(flatName)
         .addTypeVariable(typeVariableW)

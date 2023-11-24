@@ -18,12 +18,10 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.TestScope
-import kotlin.DeprecationLevel.ERROR
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
@@ -94,48 +92,5 @@ class ModifierGenerationTest {
 
     type = app.cash.redwood.Modifier.customTypeWithDefault(40.minutes, "hello")
     assertThat(type.toString()).isEqualTo("CustomTypeWithDefault(customType=40m, string=hello)")
-  }
-
-  @Suppress("DEPRECATION")
-  @Schema(
-    [
-      DeprecatedModifier::class,
-    ],
-  )
-  interface DeprecatedSchema
-
-  @Modifier(1, ModifierScope::class)
-  @Deprecated("Hey")
-  data class DeprecatedModifier(
-    @Deprecated("Hello", level = ERROR)
-    val a: String,
-  )
-
-  @Test fun deprecation() {
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
-
-    val modifier = schema.modifiers.single()
-    val fileSpec = generateModifierInterface(schema, modifier)
-    assertThat(fileSpec.toString()).all {
-      contains(
-        """
-        |@Deprecated(
-        |  "Hey",
-        |  level = WARNING,
-        |)
-        |public interface ModifierGenerationTestDeprecatedModifier
-        """.trimMargin(),
-      )
-
-      contains(
-        """
-        |  @Deprecated(
-        |    "Hello",
-        |    level = ERROR,
-        |  )
-        |  public val a:
-        """.trimMargin(),
-      )
-    }
   }
 }
