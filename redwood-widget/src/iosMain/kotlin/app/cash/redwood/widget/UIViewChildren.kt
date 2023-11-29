@@ -28,8 +28,13 @@ public class UIViewChildren(
     else -> { view, index -> parent.insertSubview(view, index.convert<NSInteger>()) }
   },
   private val remove: (index: Int, count: Int) -> Array<UIView> = { index, count ->
-    Array(count) {
-      parent.typedSubviews[index].also(UIView::removeFromSuperview)
+    // Per the docs, these properties are read-only copies we can use stable indexing into.
+    val subviews = when (parent) {
+      is UIStackView -> parent.typedArrangedSubviews
+      else -> parent.typedSubviews
+    }
+    Array(count) { offset ->
+      subviews[index + offset].also(UIView::removeFromSuperview)
     }
   },
 ) : Widget.Children<UIView> {
