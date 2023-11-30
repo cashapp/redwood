@@ -37,7 +37,7 @@ buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx.activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
-androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.4"
+androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.5"
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-ui" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
