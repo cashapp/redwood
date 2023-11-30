@@ -27,6 +27,7 @@ import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -52,7 +53,7 @@ class TreehouseAppContentTest {
     frameClockFactory = FakeFrameClock.Factory,
   )
   private val codeEventPublisher = FakeCodeEventPublisher(eventLog)
-  private val uiConfiguration = UiConfiguration()
+  private val uiConfiguration = MutableStateFlow(UiConfiguration())
 
   @BeforeTest
   fun setUp() {
@@ -487,6 +488,6 @@ class TreehouseAppContentTest {
   }
 
   private fun treehouseView(name: String): FakeTreehouseView {
-    return FakeTreehouseView(onBackPressedDispatcher, name)
+    return FakeTreehouseView(name, onBackPressedDispatcher, uiConfiguration)
   }
 }

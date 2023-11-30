@@ -51,10 +51,10 @@ private sealed interface ViewState {
 
   data class Preloading(
     val onBackPressedDispatcher: OnBackPressedDispatcher,
-    val uiConfiguration: UiConfiguration,
+    val uiConfiguration: StateFlow<UiConfiguration>,
   ) : ViewState
 
-  class Bound(
+  data class Bound(
     val view: TreehouseView<*>,
   ) : ViewState
 }
@@ -82,7 +82,7 @@ internal class TreehouseAppContent<A : AppService>(
 
   override fun preload(
     onBackPressedDispatcher: OnBackPressedDispatcher,
-    uiConfiguration: UiConfiguration,
+    uiConfiguration: StateFlow<UiConfiguration>,
   ) {
     dispatchers.checkUi()
     val previousState = stateFlow.value
@@ -101,7 +101,7 @@ internal class TreehouseAppContent<A : AppService>(
             codeSession = codeSession,
             isInitialLaunch = true,
             onBackPressedDispatcher = onBackPressedDispatcher,
-            firstUiConfiguration = MutableStateFlow(nextViewState.uiConfiguration),
+            firstUiConfiguration = uiConfiguration,
           ),
         )
       }
@@ -116,34 +116,18 @@ internal class TreehouseAppContent<A : AppService>(
 
   override fun bind(view: TreehouseView<*>) {
     dispatchers.checkUi()
+
+    if (stateFlow.value.viewState == ViewState.Bound(view)) return // Idempotent.
+
+    preload(view.onBackPressedDispatcher, view.uiConfiguration)
+
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
 
-    if (previousViewState is ViewState.Bound && previousViewState.view == view) return // Idempotent.
-    check(previousViewState is ViewState.None || previousViewState is ViewState.Preloading)
+    check(previousViewState is ViewState.Preloading)
 
     val nextViewState = ViewState.Bound(view)
-
-    // Start the code if necessary.
-    val codeSession = codeHost.codeSession
-    val nextCodeState = when {
-      previousState.codeState is CodeState.Idle && codeSession != null -> {
-        CodeState.Running(
-          startViewCodeContentBinding(
-            codeSession = codeSession,
-            isInitialLaunch = true,
-            onBackPressedDispatcher = nextViewState.view.onBackPressedDispatcher,
-            firstUiConfiguration = nextViewState.view.uiConfiguration,
-          ),
-        )
-      }
-      else -> previousState.codeState
-    }
-
-    // Ask to get notified when code is ready.
-    if (previousViewState is ViewState.None) {
-      codeHost.addListener(this)
-    }
+    val nextCodeState = previousState.codeState
 
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
     // code is coming.
@@ -201,7 +185,7 @@ internal class TreehouseAppContent<A : AppService>(
     }
 
     val uiConfiguration = when (viewState) {
-      is ViewState.Preloading -> MutableStateFlow(viewState.uiConfiguration)
+      is ViewState.Preloading -> viewState.uiConfiguration
       is ViewState.Bound -> viewState.view.uiConfiguration
       else -> error("unexpected receiveCodeSession with no view bound and no preload")
     }
