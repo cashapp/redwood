@@ -447,6 +447,23 @@ class TreehouseAppContentTest {
   }
 
   @Test
+  fun preload_idempotent() = runTest {
+    val content = treehouseAppContent()
+
+    codeHost.startCodeSession("codeSessionA")
+    eventLog.takeEvent("codeSessionA.start()")
+
+    content.preload(onBackPressedDispatcher, uiConfiguration)
+    eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+
+    content.preload(onBackPressedDispatcher, uiConfiguration)
+    eventLog.assertNoEvents()
+
+    content.unbind()
+    eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+  }
+
+  @Test
   fun bind_idempotent() = runTest {
     val content = treehouseAppContent()
 

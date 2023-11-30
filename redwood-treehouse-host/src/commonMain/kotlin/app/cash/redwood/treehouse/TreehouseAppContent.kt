@@ -87,6 +87,13 @@ internal class TreehouseAppContent<A : AppService>(
     dispatchers.checkUi()
     val previousState = stateFlow.value
 
+    if (
+      previousState.viewState is ViewState.Preloading &&
+      previousState.viewState.uiConfiguration == uiConfiguration &&
+      previousState.viewState.onBackPressedDispatcher == onBackPressedDispatcher
+    ) {
+      return // Idempotent.
+    }
     check(previousState.viewState is ViewState.None)
 
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
