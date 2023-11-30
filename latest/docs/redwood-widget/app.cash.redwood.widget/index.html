@@ -198,8 +198,13 @@
     is UIStackView -&gt; { view, index -&gt; parent.insertArrangedSubview(view, index.convert()) }
     else -&gt; { view, index -&gt; parent.insertSubview(view, index.convert&lt;NSInteger&gt;()) }
   }<span class="token punctuation">, </span></span><span class="parameter ">remove<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span>count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>{ index, count -&gt;
-    Array(count) {
-      parent.typedSubviews[index].also(UIView::removeFromSuperview)
+    // Per the docs, these properties are read-only copies we can use stable indexing into.
+    val subviews = when (parent) {
+      is UIStackView -&gt; parent.typedArrangedSubviews
+      else -&gt; parent.typedSubviews
+    }
+    Array(count) { offset -&gt;
+      subviews[index + offset].also(UIView::removeFromSuperview)
     }
   }</span></span><span class="token punctuation">)</span></div></div>                  </div>
                 </div>
