@@ -294,6 +294,6 @@ class CodeHostTest {
   }
 
   private fun treehouseView(name: String): FakeTreehouseView {
-    return FakeTreehouseView(onBackPressedDispatcher, name)
+    return FakeTreehouseView(name, onBackPressedDispatcher)
   }
 }
