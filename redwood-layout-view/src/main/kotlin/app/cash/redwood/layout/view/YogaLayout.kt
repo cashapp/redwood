@@ -67,10 +67,10 @@ internal class YogaLayout(
   }
 
   private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
-    rootNode.requestedWidth = Size.Undefined
-    rootNode.requestedMaxWidth = Size.Undefined
-    rootNode.requestedHeight = Size.Undefined
-    rootNode.requestedMaxHeight = Size.Undefined
+    rootNode.requestedWidth = Size.UNDEFINED
+    rootNode.requestedMaxWidth = Size.UNDEFINED
+    rootNode.requestedHeight = Size.UNDEFINED
+    rootNode.requestedMaxHeight = Size.UNDEFINED
 
     val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
     when (MeasureSpec.getMode(widthSpec)) {
@@ -90,7 +90,7 @@ internal class YogaLayout(
       applyModifier(node, index)
     }
 
-    rootNode.measure(Size.Undefined, Size.Undefined)
+    rootNode.measure(Size.UNDEFINED, Size.UNDEFINED)
   }
 }
 

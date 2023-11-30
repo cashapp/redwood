@@ -60,8 +60,8 @@ internal val Event.lambdaType: TypeName
 
 internal fun Schema.composePackage(host: Schema? = null): String {
   return if (host == null) {
-    val `package` = type.names[0]
-    "$`package`.compose"
+    val packageName = type.names[0]
+    "$packageName.compose"
   } else {
     val hostPackage = host.type.names[0]
     "$hostPackage.compose.${type.flatName.lowercase()}"
@@ -118,8 +118,8 @@ internal fun Schema.getWidgetFactoriesType(): ClassName {
 
 internal fun Schema.widgetPackage(host: Schema? = null): String {
   return if (host == null) {
-    val `package` = type.names[0]
-    "$`package`.widget"
+    val packageName = type.names[0]
+    "$packageName.widget"
   } else {
     val hostPackage = host.type.names[0]
     "$hostPackage.widget.${type.flatName.lowercase()}"

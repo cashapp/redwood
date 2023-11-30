@@ -29,22 +29,22 @@ import platform.Foundation.NSThread
 internal class IosTreehouseDispatchers : TreehouseDispatchers {
   override val ui: CoroutineDispatcher get() = Dispatchers.Main
 
-  private val zipline_ = SingleThreadCoroutineDispatcher().also {
+  private val _zipline = SingleThreadCoroutineDispatcher().also {
     it.thread.start()
   }
 
-  override val zipline: CoroutineDispatcher get() = zipline_
+  override val zipline: CoroutineDispatcher get() = _zipline
 
   override fun checkUi() {
     check(NSThread.isMainThread)
   }
 
   override fun checkZipline() {
-    check(NSThread.currentThread == zipline_.thread)
+    check(NSThread.currentThread == _zipline.thread)
   }
 
   override fun close() {
-    zipline_.close()
+    _zipline.close()
   }
 }
 

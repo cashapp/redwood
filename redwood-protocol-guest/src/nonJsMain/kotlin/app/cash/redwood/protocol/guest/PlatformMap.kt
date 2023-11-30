@@ -16,7 +16,9 @@
 package app.cash.redwood.protocol.guest
 
 @Suppress(
-  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS", // LinkedHashMap itself aliases to j.u.LinkedHashMap on JVM.
-  "ACTUAL_WITHOUT_EXPECT", // https://youtrack.jetbrains.com/issue/KT-37316
+  // LinkedHashMap itself aliases to j.u.LinkedHashMap on JVM.
+  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS",
+  // https://youtrack.jetbrains.com/issue/KT-37316
+  "ACTUAL_WITHOUT_EXPECT",
 )
 internal actual typealias PlatformMap<K, V> = LinkedHashMap<K, V>

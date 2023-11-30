@@ -162,12 +162,12 @@ internal class ComposeUiFlexContainer(
     val constrainedWidth = if (constraints.hasFixedWidth) {
       constraints.maxWidth.toFloat()
     } else {
-      Size.Undefined
+      Size.UNDEFINED
     }
     val constrainedHeight = if (constraints.hasFixedHeight) {
       constraints.maxHeight.toFloat()
     } else {
-      Size.Undefined
+      Size.UNDEFINED
     }
     rootNode.measure(constrainedWidth, constrainedHeight)
 

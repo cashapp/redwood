@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
+@Suppress("FunctionName")
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
   bridge: ProtocolBridge,

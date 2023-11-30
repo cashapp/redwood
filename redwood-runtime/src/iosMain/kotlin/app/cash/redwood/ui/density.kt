@@ -20,4 +20,4 @@ public val Density.Companion.Default: Density get() = DefaultDensity
 
 private val DefaultDensity = Density(1.0)
 
-internal actual const val DensityMultiplier = 1.0
+internal actual const val DENSITY_MULTIPLIER = 1.0
