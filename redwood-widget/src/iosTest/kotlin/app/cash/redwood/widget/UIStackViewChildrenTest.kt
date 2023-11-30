@@ -15,14 +15,24 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
+import platform.UIKit.UILabel
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
-import platform.UIKit.subviews
 
-@Suppress("UNCHECKED_CAST")
-internal val UIView.typedSubviews: List<UIView>
-  get() = subviews as List<UIView>
+/**
+ * [UIViewChildren] has special support for [UIStackView] containers which (somewhat annoyingly)
+ * use a different collection for managing the children.
+ */
+class UIStackViewChildrenTest : AbstractWidgetChildrenTest<UIView>() {
+  private val parent = UIStackView()
+  override val children = UIViewChildren(parent)
 
-@Suppress("UNCHECKED_CAST")
-internal val UIStackView.typedArrangedSubviews: List<UIView>
-  get() = arrangedSubviews as List<UIView>
+  override fun widget(name: String): UIView {
+    return UILabel().apply { text = name }
+  }
+
+  override fun names(): List<String> {
+    return parent.arrangedSubviews.map { (it as UILabel).text!! }
+  }
+}

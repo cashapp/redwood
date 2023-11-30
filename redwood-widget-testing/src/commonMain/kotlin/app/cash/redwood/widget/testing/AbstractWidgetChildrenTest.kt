@@ -140,6 +140,16 @@ public abstract class AbstractWidgetChildrenTest<W : Any> {
     assertThat(names()).containsExactly("one", "two", "three")
   }
 
+  @Test public fun replace() {
+    // Models what happens when a conditional flips from the second branch to the first.
+    // The new item will be added and then the old item will be removed.
+    // From https://github.com/cashapp/redwood/pull/1706.
+    children.insert(0, widget("one"))
+    children.insert(0, widget("new one"))
+    children.remove(1, 1)
+    assertThat(names()).containsExactly("new one")
+  }
+
   private fun <W : Any> Widget.Children<W>.insert(index: Int, widget: W) {
     insert(
       index = index,
