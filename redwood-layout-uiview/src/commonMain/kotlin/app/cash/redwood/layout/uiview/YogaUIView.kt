@@ -38,7 +38,7 @@ internal class YogaUIView(
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(CGSizeMake(Size.Undefined.toDouble(), Size.Undefined.toDouble()))
+    return calculateLayoutWithSize(CGSizeMake(Size.UNDEFINED.toDouble(), Size.UNDEFINED.toDouble()))
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
@@ -62,9 +62,9 @@ internal class YogaUIView(
       // combined into one call.
       val scrollSize = bounds.useContents {
         if (rootNode.flexDirection == FlexDirection.Column) {
-          CGSizeMake(width, Size.Undefined.toDouble())
+          CGSizeMake(width, Size.UNDEFINED.toDouble())
         } else {
-          CGSizeMake(Size.Undefined.toDouble(), height)
+          CGSizeMake(Size.UNDEFINED.toDouble(), height)
         }
       }
       val contentSize = calculateLayoutWithSize(scrollSize)
@@ -113,7 +113,7 @@ internal class YogaUIView(
 
   private fun sizeForConstraintsDimension(constraint: Constraint, dimension: Double): Double {
     if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
-      return Size.Undefined.toDouble()
+      return Size.UNDEFINED.toDouble()
     } else {
       return dimension
     }

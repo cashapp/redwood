@@ -29,8 +29,8 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-private const val extensionName = "redwood"
-private const val redwoodComposeArtifactId = "redwood-compose"
+private const val EXTENSION_NAME = "redwood"
+private const val REDWOOD_COMPOSE_ARTIFACT_ID = "redwood-compose"
 
 public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   private lateinit var extension: RedwoodComposeExtension
@@ -38,7 +38,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun apply(target: Project) {
     super.apply(target)
 
-    extension = target.extensions.create(extensionName, RedwoodComposeExtension::class.java)
+    extension = target.extensions.create(EXTENSION_NAME, RedwoodComposeExtension::class.java)
 
     target.plugins.withId("org.jetbrains.compose") {
       throw IllegalStateException(
@@ -52,7 +52,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
         |      sourceSets {
         |        commonMain {
         |          dependencies {
-        |            implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+        |            implementation("${target.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID)}")
         |          }
         |        }
         |      }
@@ -71,7 +71,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
           |within an Android Compose-based project you only need to add the runtime dependency:
           |
           |    dependencies {
-          |      implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+          |      implementation("${target.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID)}")
           |    }
           """.trimMargin()
         }
@@ -94,7 +94,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
       3 -> SubpluginArtifact(parts[0], parts[1], parts[2])
       else -> error(
         """
-        |Illegal format of '$extensionName.${RedwoodComposeExtension::kotlinCompilerPlugin.name}' property.
+        |Illegal format of '$EXTENSION_NAME.${RedwoodComposeExtension::kotlinCompilerPlugin.name}' property.
         |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
         |Actual value: '$plugin'
         """.trimMargin(),
@@ -104,7 +104,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      api(project.redwoodDependency(redwoodComposeArtifactId))
+      api(project.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID))
     }
 
     when (kotlinCompilation.platformType) {

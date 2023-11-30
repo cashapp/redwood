@@ -128,7 +128,7 @@ private abstract class RedwoodSchemaApiWorker @Inject constructor(
         "--file",
         parameters.apiFile.get().asFile.absolutePath,
         "--fix-with",
-        RedwoodApiGenerateTaskName,
+        REDWOOD_API_GENERATE_TASK_NAME,
         "--class-path",
         parameters.classpath.files.joinToString(File.pathSeparator),
         parameters.schemaType.get(),

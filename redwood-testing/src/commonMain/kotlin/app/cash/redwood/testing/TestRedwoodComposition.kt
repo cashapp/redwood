@@ -40,6 +40,8 @@ import kotlinx.coroutines.withTimeout
 /**
  * Performs Redwood composition strictly for testing.
  */
+
+@Suppress("FunctionName") // ktlint bug
 public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
   provider: Widget.Provider<W>,

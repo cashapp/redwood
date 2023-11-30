@@ -20,6 +20,7 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import okio.FileSystem
 import okio.Path
 
+@Suppress("FunctionName")
 public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,

@@ -369,8 +369,8 @@ private fun FirContext.parseWidget(
   annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Widget $memberType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Widget $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
   val traits = if (firClass.isData) {
@@ -494,8 +494,8 @@ private fun FirContext.parseModifier(
   annotation: ModifierAnnotation,
 ): ParsedProtocolModifier {
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Modifier $memberType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Modifier $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@Modifier $memberType must have at least one scope."
@@ -515,7 +515,8 @@ private fun FirContext.parseModifier(
         name = name,
         documentation = documentation,
         type = parameterType,
-        isSerializable = false, // TODO Parse @Serializable on parameter type.
+        // TODO Parse @Serializable on parameter type.
+        isSerializable = false,
         defaultExpression = defaultAnnotation?.expression,
         deprecation = deprecation,
       )

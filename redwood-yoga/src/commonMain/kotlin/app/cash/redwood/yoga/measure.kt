@@ -34,7 +34,7 @@ public fun interface MeasureCallback {
   public val height: Float,
 ) {
   public companion object {
-    public const val Undefined: Float = Yoga.YGUndefined
+    public const val UNDEFINED: Float = Yoga.YGUndefined
   }
 }
 

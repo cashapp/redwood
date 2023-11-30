@@ -50,7 +50,8 @@ class ProtocolBridgeTest {
     val changes = listOf(
       Create(
         id = Id.Root,
-        tag = WidgetTag(4), // Button
+        // Button
+        tag = WidgetTag(4),
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
@@ -74,7 +75,8 @@ class ProtocolBridgeTest {
     val changes = listOf(
       Create(
         id = Id(1),
-        tag = WidgetTag(4), // Button
+        // Button
+        tag = WidgetTag(4),
       ),
     )
     bridge.sendChanges(changes)
@@ -102,7 +104,8 @@ class ProtocolBridgeTest {
       listOf(
         Create(
           id = Id(1),
-          tag = WidgetTag(4), // Button
+          // Button
+          tag = WidgetTag(4),
         ),
         Add(
           id = Id.Root,
@@ -130,7 +133,8 @@ class ProtocolBridgeTest {
     val updateButtonText = listOf(
       PropertyChange(
         id = Id(1),
-        tag = PropertyTag(1), // text
+        // text
+        tag = PropertyTag(1),
         value = JsonPrimitive("hello"),
       ),
     )
@@ -157,7 +161,8 @@ class ProtocolBridgeTest {
     // Initial Button add does not trigger update callback (it's implicit because of insert).
     bridge.sendChanges(
       listOf(
-        Create(Id(1), WidgetTag(4)), // Button
+        // Button
+        Create(Id(1), WidgetTag(4)),
         ModifierChange(Id(1)),
         Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),

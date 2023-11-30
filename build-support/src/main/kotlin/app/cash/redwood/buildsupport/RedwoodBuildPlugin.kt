@@ -47,18 +47,18 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-private const val redwoodGroupId = "app.cash.redwood"
+private const val REDWOOD_GROUP_ID = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val redwoodVersion = "0.8.0-SNAPSHOT"
+private const val REDWOOD_VERSION = "0.8.0-SNAPSHOT"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
   private lateinit var libs: LibrariesForLibs
 
   override fun apply(target: Project) {
-    target.group = redwoodGroupId
-    target.version = redwoodVersion
+    target.group = REDWOOD_GROUP_ID
+    target.version = REDWOOD_VERSION
 
     libs = target.extensions.getByName("libs") as LibrariesForLibs
 
@@ -101,7 +101,10 @@ class RedwoodBuildPlugin : Plugin<Project> {
           it.targetExclude("src/test/fixture/**/build/**")
         }
         it.ktlint(libs.ktlint.get().version).editorConfigOverride(
-          mapOf("ktlint_standard_filename" to "disabled"),
+          mapOf(
+            "ktlint_standard_filename" to "disabled",
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+          ),
         )
         it.licenseHeaderFile(licenseHeaderFile)
       }
@@ -200,7 +203,8 @@ class RedwoodBuildPlugin : Plugin<Project> {
   private fun Project.configureCommonKotlin() {
     tasks.withType(KotlinCompile::class.java).configureEach {
       it.kotlinOptions.freeCompilerArgs += listOf(
-        "-progressive", // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+        // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+        "-progressive",
         "-Xexpect-actual-classes",
       )
     }
@@ -307,7 +311,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         signAllPublications()
       }
 
-      coordinates(redwoodGroupId, project.name, redwoodVersion)
+      coordinates(REDWOOD_GROUP_ID, project.name, REDWOOD_VERSION)
 
       pom { pom ->
         pom.name.set(project.name)
@@ -424,7 +428,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         it.isCanBeResolved = false
         it.isCanBeConsumed = true
         it.attributes {
-          it.attribute(ziplineAttribute, ziplineAttributeValue)
+          it.attribute(ziplineAttribute, ZIPLINE_ATTRIBUTE_VALUE)
         }
       }
       project.artifacts.add(ziplineConfiguration.name, zipTask)
@@ -447,7 +451,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         it.isCanBeResolved = true
         it.isCanBeConsumed = false
         it.attributes {
-          it.attribute(ziplineAttribute, ziplineAttributeValue)
+          it.attribute(ziplineAttribute, ZIPLINE_ATTRIBUTE_VALUE)
         }
       }
       project.dependencies.add(ziplineConfiguration.name, dependencyNotation)
@@ -468,4 +472,4 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 }
 
 private val ziplineAttribute = Attribute.of("zipline", String::class.java)
-private const val ziplineAttributeValue = "yep"
+private const val ZIPLINE_ATTRIBUTE_VALUE = "yep"

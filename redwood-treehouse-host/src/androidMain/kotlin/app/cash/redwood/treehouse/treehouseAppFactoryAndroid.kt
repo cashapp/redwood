@@ -22,6 +22,7 @@ import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
 
+@Suppress("FunctionName")
 public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,

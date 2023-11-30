@@ -41,8 +41,8 @@ private val childrenType = Function::class.starProjectedType
 private val eventType = Function::class.starProjectedType
 private val optionalEventType = eventType.withNullability(true)
 
-private const val maxSchemaTag = 2_000
-internal const val maxMemberTag = 1_000_000
+private const val MAX_SCHEMA_TAG = 2_000
+internal const val MAX_MEMBER_TAG = 1_000_000
 
 private val KClass<*>.schemaAnnotation: SchemaAnnotation get() {
   return requireNotNull(findAnnotation()) { "Schema $qualifiedName missing @Schema annotation" }
@@ -67,10 +67,10 @@ internal fun loadProtocolSchema(
   classLoader: ClassLoader,
   tag: Int = 0,
 ): ProtocolSchema {
-  require(tag in 0..maxSchemaTag) {
-    "$type tag must be 0 for the root or in range (0, $maxSchemaTag] as a dependency: $tag"
+  require(tag in 0..MAX_SCHEMA_TAG) {
+    "$type tag must be 0 for the root or in range (0, $MAX_SCHEMA_TAG] as a dependency: $tag"
   }
-  val tagOffset = tag * maxMemberTag
+  val tagOffset = tag * MAX_MEMBER_TAG
 
   val path = ParsedProtocolSchema.toEmbeddedPath(type)
   val schema = classLoader
@@ -244,8 +244,8 @@ private fun parseWidget(
 ): ParsedProtocolWidget {
   val memberFqType = memberType.toFqType()
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Widget $memberFqType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Widget $memberFqType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
   val traits = if (memberType.isData) {
@@ -360,8 +360,8 @@ private fun parseModifier(
 ): ParsedProtocolModifier {
   val memberFqType = memberType.toFqType()
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Modifier $memberFqType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Modifier $memberFqType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@Modifier $memberFqType must have at least one scope."

@@ -75,7 +75,7 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       if (extension.apiTracking.get()) {
         val apiFile = project.layout.projectDirectory.file("redwood-api.xml")
 
-        project.tasks.register(RedwoodApiGenerateTaskName, RedwoodSchemaApiGenerateTask::class.java) {
+        project.tasks.register(REDWOOD_API_GENERATE_TASK_NAME, RedwoodSchemaApiGenerateTask::class.java) {
           it.group = BUILD_GROUP
           it.description = "Write an updated API tracking file for the current schema"
 
@@ -110,4 +110,4 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
   }
 }
 
-internal const val RedwoodApiGenerateTaskName = "redwoodApiGenerate"
+internal const val REDWOOD_API_GENERATE_TASK_NAME = "redwoodApiGenerate"

@@ -16,14 +16,18 @@
 package app.cash.redwood.protocol.guest
 
 @Suppress(
-  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS", // ArrayList itself aliases to j.u.ArrayList on JVM.
-  "ACTUAL_WITHOUT_EXPECT", // https://youtrack.jetbrains.com/issue/KT-37316
+  // ArrayList itself aliases to j.u.ArrayList on JVM.
+  "ACTUAL_TYPE_ALIAS_NOT_TO_CLASS",
+  // https://youtrack.jetbrains.com/issue/KT-37316
+  "ACTUAL_WITHOUT_EXPECT",
 )
 internal actual typealias PlatformList<E> = ArrayList<E>
 
 @Suppress(
-  "NOTHING_TO_INLINE", // Explicitly trying to be zero-overhead.
-  "KotlinRedundantDiagnosticSuppress", // Inline warning only happens on JVM source set.
+  // Explicitly trying to be zero-overhead.
+  "NOTHING_TO_INLINE",
+  // Inline warning only happens on JVM source set.
+  "KotlinRedundantDiagnosticSuppress",
 )
 internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
   return this

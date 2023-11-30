@@ -65,7 +65,9 @@ interface Navigator {
 }
 
 enum class Variant {
-  LAZY_COLUMN, SCROLLABLE_FLEXBOX, BUGGY_COLUMNS
+  LAZY_COLUMN,
+  SCROLLABLE_FLEXBOX,
+  BUGGY_COLUMNS,
 }
 
 @Composable

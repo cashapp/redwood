@@ -95,17 +95,23 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        Create(Id(1), WidgetTag(1)), // Row
+        // Row
+        Create(Id(1), WidgetTag(1)),
         ModifierChange(Id(1)),
-        Create(Id(2), WidgetTag(3)), // Text
+        // Text
+        Create(Id(2), WidgetTag(3)),
         ModifierChange(Id(2)),
-        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hey")), // text
+        // text
+        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hey")),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
-        Create(Id(3), WidgetTag(1)), // Row
+        // Row
+        Create(Id(3), WidgetTag(1)),
         ModifierChange(Id(3)),
-        Create(Id(4), WidgetTag(3)), // Text
+        // Text
+        Create(Id(4), WidgetTag(3)),
         ModifierChange(Id(4)),
-        PropertyChange(Id(4), PropertyTag(1), JsonPrimitive("hello")), // text
+        // text
+        PropertyChange(Id(4), PropertyTag(1), JsonPrimitive("hello")),
         ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
@@ -123,20 +129,29 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        Create(Id(1), WidgetTag(4)), // Button
+        // Button
+        Create(Id(1), WidgetTag(4)),
         ModifierChange(Id(1)),
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")), // text
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)), // onClick
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")),
+        // onClick
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
-        Create(Id(2), WidgetTag(4)), // Button
+        // Button
+        Create(Id(2), WidgetTag(4)),
         ModifierChange(Id(2)),
-        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")), // text
-        PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)), // onClick
+        // text
+        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")),
+        // onClick
+        PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
-        Create(Id(3), WidgetTag(7)), // Button2
+        // Button2
+        Create(Id(3), WidgetTag(7)),
         ModifierChange(Id(3)),
-        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hi")), // text
-        PropertyChange(Id(3), PropertyTag(2), JsonPrimitive(true)), // onClick
+        // text
+        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hi")),
+        // onClick
+        PropertyChange(Id(3), PropertyTag(2), JsonPrimitive(true)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
       ),
     )
@@ -150,10 +165,18 @@ class ProtocolTest {
       Button(
         "state: $state",
         onClick = when (state) {
-          0 -> { { state = 1 } }
-          1 -> { { state = 2 } }
-          2 -> { null }
-          3 -> { null }
+          0 -> {
+            { state = 1 }
+          }
+          1 -> {
+            { state = 2 }
+          }
+          2 -> {
+            null
+          }
+          3 -> {
+            null
+          }
           else -> fail()
         },
       )
@@ -161,10 +184,13 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        Create(Id(1), WidgetTag(4)), // Button
+        // Button
+        Create(Id(1), WidgetTag(4)),
         ModifierChange(Id(1)),
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")), // text
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)), // onClick
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
+        // onClick
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
@@ -174,7 +200,8 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")), // text
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
 
@@ -183,8 +210,10 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 2")), // text
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)), // text
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 2")),
+        // text
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
       ),
     )
 
@@ -193,7 +222,8 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 3")), // text
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 3")),
       ),
     )
   }
@@ -206,8 +236,12 @@ class ProtocolTest {
       Button2(
         "state: $state",
         onClick = when (state) {
-          0 -> { { state = 1 } }
-          1 -> { { state = 2 } }
+          0 -> {
+            { state = 1 }
+          }
+          1 -> {
+            { state = 2 }
+          }
           else -> fail()
         },
       )
@@ -215,10 +249,13 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        Create(Id(1), WidgetTag(7)), // Button2
+        // Button2
+        Create(Id(1), WidgetTag(7)),
         ModifierChange(Id(1)),
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")), // text
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)), // onClick
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
+        // onClick
+        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
@@ -228,7 +265,8 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")), // text
+        // text
+        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
   }

@@ -138,7 +138,7 @@ internal open class UIViewLazyList(
       index: Int,
     ): LazyListContainerCell {
       val result = tableView.dequeueReusableCellWithIdentifier(
-        identifier = reuseIdentifier,
+        identifier = REUSE_IDENTIFIER,
         forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
       ) as LazyListContainerCell
       require(result.binding == null)
@@ -181,9 +181,9 @@ internal open class UIViewLazyList(
       separatorStyle = UITableViewCellSeparatorStyleNone
 
       registerClass(
-        cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, reuseIdentifier)
+        cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, REUSE_IDENTIFIER)
           .initWithFrame(CGRectZero.readValue()).classForCoder() as ObjCClass?,
-        forCellReuseIdentifier = reuseIdentifier,
+        forCellReuseIdentifier = REUSE_IDENTIFIER,
       )
     }
   }
@@ -232,7 +232,7 @@ internal open class UIViewLazyList(
   }
 }
 
-private const val reuseIdentifier = "LazyListContainerCell"
+private const val REUSE_IDENTIFIER = "LazyListContainerCell"
 
 internal class LazyListContainerCell(
   style: UITableViewCellStyle,
