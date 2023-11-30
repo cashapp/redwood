@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.20"
 kotlinx-coroutines = "1.7.3"
-kotlinx-serialization = "1.6.1"
+kotlinx-serialization = "1.6.2"
 androidx-activity = "1.8.1"
 androidx-compose-ui = "1.5.4"
 jbCompose = "1.5.11"
