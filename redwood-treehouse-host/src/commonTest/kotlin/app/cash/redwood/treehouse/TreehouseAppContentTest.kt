@@ -446,6 +446,20 @@ class TreehouseAppContentTest {
     content.unbind()
   }
 
+  @Test
+  fun bind_idempotent() = runTest {
+    val content = treehouseAppContent()
+
+    val view1 = treehouseView("view1")
+    content.bind(view1)
+    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+
+    content.bind(view1)
+    eventLog.assertNoEvents()
+
+    content.unbind()
+  }
+
   private fun treehouseAppContent(): TreehouseAppContent<FakeAppService> {
     return TreehouseAppContent(
       codeHost = codeHost,
