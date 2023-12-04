@@ -5,7 +5,7 @@ kotlinx-serialization = "1.6.2"
 androidx-activity = "1.8.1"
 androidx-compose-ui = "1.5.4"
 jbCompose = "1.5.11"
-lint = "31.1.1"
+lint = "31.2.0"
 zipline = "1.7.0"
 coil = "2.5.0"
 okio = "3.6.0"
@@ -30,7 +30,7 @@ xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.2'
 
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.22.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.10"
-spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.23.2"
+spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.23.3"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
 buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 
@@ -59,8 +59,8 @@ jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jbCompose" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.1.1" }
-kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.15.2" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.2.0" }
+kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.15.3" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.2.1" }
 junit = { module = "junit:junit", version = "4.13.2" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.14" }
