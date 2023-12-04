@@ -91,3 +91,15 @@ public data class Size(
   val width: Dp,
   val height: Dp,
 )
+
+/**
+ * This value acts as a weight for the width/height of a widget along the main axis.
+ *
+ * For instance, setting `flex(1.0)` on each widget in a layout will create equally sized widgets.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/flex
+ */
+@Modifier(9, RowScope::class, ColumnScope::class)
+public data class Flex(
+  val value: Double,
+)

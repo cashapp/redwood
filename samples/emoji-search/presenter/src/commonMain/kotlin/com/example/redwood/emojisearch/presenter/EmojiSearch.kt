@@ -34,7 +34,6 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
-import app.cash.redwood.layout.compose.flex
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items

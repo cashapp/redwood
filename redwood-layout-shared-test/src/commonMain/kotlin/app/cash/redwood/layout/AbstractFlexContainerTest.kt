@@ -19,9 +19,11 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.modifier.Flex
 import app.cash.redwood.layout.modifier.Grow
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
@@ -495,6 +497,30 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(parent, "single")
   }
 
+  @Test
+  fun testFlexDistributesWeightEqually() {
+    val container = flexContainer(FlexDirection.Row)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(widget("REALLY LONG TEXT", FlexImpl(1.0)))
+    container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(widget("A", FlexImpl(1.0)))
+    container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    verifySnapshot(container)
+  }
+
+  @Test
+  fun testFlexDistributesWeightUnequally() {
+    val container = flexContainer(FlexDirection.Row)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(widget("REALLY LONG TEXT", FlexImpl(3.0)))
+    container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(widget("A", FlexImpl(1.0)))
+    container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    verifySnapshot(container)
+  }
+
   /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
   private fun assumeTrue(b: Boolean) {
     assertTrue(b)
@@ -550,15 +576,19 @@ private data class SizeImpl(
 ) : Size
 
 private data class MarginImpl(
-  override val margin: app.cash.redwood.ui.Margin,
-) : app.cash.redwood.layout.modifier.Margin {
+  override val margin: Margin,
+) : MarginModifier {
   constructor(all: Dp = 0.dp) : this(Margin(all))
 }
 
 private data class GrowImpl(
-  override val `value`: Double,
+  override val value: Double,
 ) : Grow
 
 private data class ShrinkImpl(
-  override val `value`: Double,
+  override val value: Double,
 ) : Shrink
+
+private data class FlexImpl(
+  override val value: Double,
+) : Flex
