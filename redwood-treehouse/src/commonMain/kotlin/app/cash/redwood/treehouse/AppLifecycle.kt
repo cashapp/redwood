@@ -20,12 +20,13 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
+import kotlinx.serialization.Contextual
 
 @ObjCName("AppLifecycle", exact = true)
 public interface AppLifecycle : ZiplineService {
   public fun start(host: Host)
 
-  public fun sendFrame(timeNanos: Long)
+  public fun sendFrame(timeNanos: @Contextual Long)
 
   /** Platform features to the guest application. */
   public interface Host : ZiplineService {
