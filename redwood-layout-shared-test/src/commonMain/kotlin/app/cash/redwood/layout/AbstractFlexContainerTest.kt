@@ -501,7 +501,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   fun testFlexDistributesWeightEqually() {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
-    container.height(Constraint.Wrap)
+    container.height(Constraint.Fill)
     container.add(widget("REALLY LONG TEXT", FlexImpl(1.0)))
     container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
     container.add(widget("A", FlexImpl(1.0)))
@@ -513,7 +513,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   fun testFlexDistributesWeightUnequally() {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
-    container.height(Constraint.Wrap)
+    container.height(Constraint.Fill)
     container.add(widget("REALLY LONG TEXT", FlexImpl(3.0)))
     container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
     container.add(widget("A", FlexImpl(1.0)))
