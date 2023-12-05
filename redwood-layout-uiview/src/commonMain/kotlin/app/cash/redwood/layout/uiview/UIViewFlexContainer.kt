@@ -33,7 +33,7 @@ import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
-  private val direction: FlexDirection,
+  direction: FlexDirection,
 ) : FlexContainer<UIView>, ChangeListener {
   private val yogaView: YogaUIView = YogaUIView(
     applyModifier = { node, index ->
@@ -42,7 +42,7 @@ internal class UIViewFlexContainer(
   )
   override val value: UIView get() = yogaView
   override val children = UIViewChildren(
-    value,
+    parent = value,
     insert = { view, index ->
       yogaView.rootNode.children.add(index, view.asNode())
       value.insertSubview(view, index.convert<NSInteger>())
