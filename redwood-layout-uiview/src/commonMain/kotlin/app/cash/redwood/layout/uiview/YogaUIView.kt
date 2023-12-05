@@ -32,7 +32,7 @@ internal class YogaUIView(
 
   init {
     // TODO: Support scroll indicators.
-//    scrollEnabled = false
+    scrollEnabled = false
     showsVerticalScrollIndicator = false
     showsHorizontalScrollIndicator = false
     contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
