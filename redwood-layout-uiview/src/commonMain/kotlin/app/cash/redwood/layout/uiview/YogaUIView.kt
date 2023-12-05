@@ -18,7 +18,7 @@ import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
-import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior
+import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
@@ -31,10 +31,11 @@ internal class YogaUIView(
   var height = Constraint.Wrap
 
   init {
-    // TODO: Support Scroll Indicators
+    // TODO: Support scroll indicators.
+    scrollEnabled = false
     showsVerticalScrollIndicator = false
     showsHorizontalScrollIndicator = false
-    contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
+    contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
