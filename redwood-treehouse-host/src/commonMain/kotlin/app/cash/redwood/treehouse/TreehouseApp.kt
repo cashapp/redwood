@@ -47,7 +47,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  private fun ziplineFlow(): Flow<LoadResult> {
+  private val ziplineFlow: Flow<LoadResult> = run {
     var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
@@ -76,7 +76,7 @@ public class TreehouseApp<A : AppService> private constructor(
       }
     }
 
-    return loader.load(
+    loader.load(
       applicationName = spec.name,
       manifestUrlFlow = spec.manifestUrl,
       serializersModule = spec.serializersModule,
@@ -92,7 +92,7 @@ public class TreehouseApp<A : AppService> private constructor(
     stateStore = factory.stateStore,
   ) {
     override fun codeUpdatesFlow(): Flow<CodeSession<A>> {
-      return ziplineFlow().mapNotNull { loadResult ->
+      return ziplineFlow.mapNotNull { loadResult ->
         when (loadResult) {
           is LoadResult.Failure -> {
             null // EventListener already notified.
@@ -167,7 +167,7 @@ public class TreehouseApp<A : AppService> private constructor(
   private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
     val appService = spec.create(zipline)
 
-    // Extract the RealEventPublisher() created in ziplineFlow().
+    // Extract the RealEventPublisher() created in ziplineFlow.
     val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
     val eventPublisher = eventListener.eventPublisher
 
