@@ -43,6 +43,48 @@ public class TreehouseApp<A : AppService> private constructor(
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
+  /**
+   * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
+   * found.
+   */
+  private fun ziplineFlow(): Flow<LoadResult> {
+    var loader = ZiplineLoader(
+      dispatcher = dispatchers.zipline,
+      manifestVerifier = factory.manifestVerifier,
+      httpClient = factory.httpClient,
+    )
+
+    loader.concurrentDownloads = factory.concurrentDownloads
+
+    // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
+    val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
+      val eventListener = factory.eventListenerFactory.create(this@TreehouseApp, manifestUrl)
+      RealEventPublisher(eventListener).ziplineEventListener
+    }
+    loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
+
+    if (!spec.loadCodeFromNetworkOnly) {
+      loader = loader.withCache(
+        cache = factory.cache,
+      )
+
+      if (factory.embeddedDir != null && factory.embeddedFileSystem != null) {
+        loader = loader.withEmbedded(
+          embeddedDir = factory.embeddedDir,
+          embeddedFileSystem = factory.embeddedFileSystem,
+        )
+      }
+    }
+
+    return loader.load(
+      applicationName = spec.name,
+      manifestUrlFlow = spec.manifestUrl,
+      serializersModule = spec.serializersModule,
+    ) { zipline ->
+      spec.bindServices(zipline)
+    }
+  }
+
   private val codeHost = object : CodeHost<A>(
     dispatchers = dispatchers,
     appScope = appScope,
@@ -120,48 +162,6 @@ public class TreehouseApp<A : AppService> private constructor(
    */
   public fun restart() {
     codeHost.restart()
-  }
-
-  /**
-   * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
-   * found.
-   */
-  private fun ziplineFlow(): Flow<LoadResult> {
-    var loader = ZiplineLoader(
-      dispatcher = dispatchers.zipline,
-      manifestVerifier = factory.manifestVerifier,
-      httpClient = factory.httpClient,
-    )
-
-    loader.concurrentDownloads = factory.concurrentDownloads
-
-    // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
-    val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
-      val eventListener = factory.eventListenerFactory.create(this@TreehouseApp, manifestUrl)
-      RealEventPublisher(eventListener).ziplineEventListener
-    }
-    loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
-
-    if (!spec.loadCodeFromNetworkOnly) {
-      loader = loader.withCache(
-        cache = factory.cache,
-      )
-
-      if (factory.embeddedDir != null && factory.embeddedFileSystem != null) {
-        loader = loader.withEmbedded(
-          embeddedDir = factory.embeddedDir,
-          embeddedFileSystem = factory.embeddedFileSystem,
-        )
-      }
-    }
-
-    return loader.load(
-      applicationName = spec.name,
-      manifestUrlFlow = spec.manifestUrl,
-      serializersModule = spec.serializersModule,
-    ) { zipline ->
-      spec.bindServices(zipline)
-    }
   }
 
   private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
