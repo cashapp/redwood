@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:property-naming")
+@file:Suppress("ktlint:standard:function-naming", "ktlint:standard:property-naming")
 
 /*
  * Copyright (C) 2023 Square, Inc.
