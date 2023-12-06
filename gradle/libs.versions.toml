@@ -64,7 +64,7 @@ kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.15.3" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.2.1" }
 junit = { module = "junit:junit", version = "4.13.2" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.14" }
-assertk = "com.willowtreeapps.assertk:assertk:0.27.0"
+assertk = "com.willowtreeapps.assertk:assertk:0.28.0"
 robolectric = { module = "org.robolectric:robolectric", version = "4.11.1" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-assetfilesystem = { module = "com.squareup.okio:okio-assetfilesystem", version.ref = "okio" }
