@@ -25,9 +25,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
-import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
-import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
