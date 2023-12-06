@@ -23,6 +23,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
+private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
+
 @Composable
 public fun rememberLazyListState(): LazyListState {
   return rememberSaveable(saver = saver) {
@@ -58,6 +60,12 @@ public open class LazyListState {
     private set
   public var lastIndex: Int by mutableStateOf(0)
     private set
+
+  /** How many items to load in anticipation of scrolling up. */
+  public var preloadBeforeItemCount: Int by mutableStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+
+  /** How many items to load in anticipation of scrolling down. */
+  public var preloadAfterItemCount: Int by mutableStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
