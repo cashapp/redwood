@@ -251,8 +251,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test
-  fun columnWithUpdatedCrossAxisAlignment() {
+  @Test fun columnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -438,8 +437,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(column)
   }
 
-  @Test
-  fun testDynamicElementUpdates() {
+  @Test fun testDynamicElementUpdates() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -460,8 +458,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container, "BCDE")
   }
 
-  @Test
-  fun testDynamicContainerSize() {
+  @Test fun testDynamicContainerSize() {
     val parent = column().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -516,8 +513,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(parent, "single")
   }
 
-  @Test
-  fun testFlexDistributesWeightEqually() {
+  @Test fun testFlexDistributesWeightEqually() {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -528,8 +524,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test
-  fun testFlexDistributesWeightUnequally() {
+  @Test fun testFlexDistributesWeightUnequally() {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
