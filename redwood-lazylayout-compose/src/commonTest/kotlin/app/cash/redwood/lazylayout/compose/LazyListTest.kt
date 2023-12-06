@@ -122,7 +122,7 @@ class LazyListTest {
         }
         LazyColumn(
           state = lazyListState,
-          placeholder = { Text("Placeholder") }
+          placeholder = { Text("Placeholder") },
         ) {
           items(100) {
             if (it == 5) index5ComposeCount++
