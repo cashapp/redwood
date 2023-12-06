@@ -19,7 +19,7 @@ import app.cash.redwood.Modifier
 import assertk.assertThat
 import assertk.assertions.hashCodeFun
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import assertk.assertions.toStringFun
 import kotlin.test.Test
 import kotlin.test.fail
@@ -35,7 +35,7 @@ class ModifierTest {
     val a = NamedModifier("A")
     var called = 0
     a.forEach { element ->
-      assertThat(element).isSameAs(a)
+      assertThat(element).isSameInstanceAs(a)
       called++
     }
     assertThat(called).isEqualTo(1)
@@ -48,18 +48,18 @@ class ModifierTest {
     val expected = listOf(a, b, c)
     var called = 0
     (a then b then c).forEach { element ->
-      assertThat(element).isSameAs(expected[called])
+      assertThat(element).isSameInstanceAs(expected[called])
       called++
     }
     assertThat(called).isEqualTo(3)
   }
 
   @Test fun thenIgnoresUnitModifier() {
-    assertThat(Modifier then Modifier).isSameAs(Modifier)
+    assertThat(Modifier then Modifier).isSameInstanceAs(Modifier)
 
     val a = NamedModifier("A")
-    assertThat(a then Modifier).isSameAs(a)
-    assertThat(Modifier then a).isSameAs(a)
+    assertThat(a then Modifier).isSameInstanceAs(a)
+    assertThat(Modifier then a).isSameInstanceAs(a)
   }
 
   @Test fun thenElementsToElements() {
@@ -70,7 +70,7 @@ class ModifierTest {
     val expected = listOf(a, b, c, d)
     var called = 0
     ((a then b) then (c then d)).forEach { element ->
-      assertThat(element).isSameAs(expected[called])
+      assertThat(element).isSameInstanceAs(expected[called])
       called++
     }
     assertThat(called).isEqualTo(4)
