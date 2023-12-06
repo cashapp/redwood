@@ -110,4 +110,55 @@ class LazyListTest {
       }
     }
   }
+
+  @Test
+  fun scrollDoesNotTriggerRecompose() = runTest {
+    TestSchemaTester {
+      var index5ComposeCount = 0
+      setContent {
+        val lazyListState = rememberLazyListState().apply {
+          preloadBeforeItemCount = 0
+          preloadAfterItemCount = 0
+        }
+        LazyColumn(
+          state = lazyListState,
+          placeholder = { Text("Placeholder") }
+        ) {
+          items(100) {
+            if (it == 5) index5ComposeCount++
+            Text(it.toString())
+          }
+        }
+      }
+
+      // Initially, the item at index 5 is never composed.
+      val lazyList = awaitSnapshot().filterIsInstance<LazyListValue>().single()
+      assertThat(index5ComposeCount).isEqualTo(0)
+
+      // Growing the scroll window to include the preceding item doesn't change that.
+      lazyList.onViewportChanged(0, 4)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(0)
+
+      // But scrolling to include it causes the first composition.
+      lazyList.onViewportChanged(2, 6)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // Further scrolling doesn't cause it to be recomposed.
+      lazyList.onViewportChanged(4, 8)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // Even when it's scrolled off-screen.
+      lazyList.onViewportChanged(6, 10)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // But it's recomposed again when scrolled back on screen.
+      lazyList.onViewportChanged(4, 8)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(2)
+    }
+  }
 }

@@ -29,8 +29,6 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
 
-private const val OFFSCREEN_ITEMS_BUFFER_COUNT = 30
-
 @Composable
 internal fun LazyList(
   isVertical: Boolean,
@@ -45,8 +43,8 @@ internal fun LazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val itemsBefore = (state.firstIndex - OFFSCREEN_ITEMS_BUFFER_COUNT / 2).coerceAtLeast(0)
-  val itemsAfter = (itemCount - (state.lastIndex + OFFSCREEN_ITEMS_BUFFER_COUNT / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
   // TODO(jwilson): drop this down to 20 once this is fixed:
   //     https://github.com/cashapp/redwood/issues/1551
   var placeholderPoolSize by remember { mutableStateOf(30) }
@@ -98,8 +96,8 @@ internal fun RefreshableLazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val itemsBefore = (state.firstIndex - OFFSCREEN_ITEMS_BUFFER_COUNT / 2).coerceAtLeast(0)
-  val itemsAfter = (itemCount - (state.lastIndex + OFFSCREEN_ITEMS_BUFFER_COUNT / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
   var placeholderPoolSize by remember { mutableStateOf(20) }
   RefreshableLazyList(
     isVertical,
