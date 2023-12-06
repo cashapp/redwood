@@ -19,9 +19,9 @@ import platform.UIKit.UIColor
 
 fun Int.toUIColor(): UIColor {
   return UIColor(
-    ((this shr 16) and 0xff) / 255.0,
-    ((this shr 8) and 0xff) / 255.0,
-    (this and 0xff) / 255.0,
-    ((this shr 24) and 0xff) / 255.0,
+    red = ((this shr 16) and 0xff) / 255.0,
+    green = ((this shr 8) and 0xff) / 255.0,
+    blue = (this and 0xff) / 255.0,
+    alpha = ((this shr 24) and 0xff) / 255.0,
   )
 }
