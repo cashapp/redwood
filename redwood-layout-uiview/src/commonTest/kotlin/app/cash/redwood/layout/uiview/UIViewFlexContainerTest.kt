@@ -19,8 +19,10 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
@@ -32,16 +34,25 @@ import platform.UIKit.UIView
 class UIViewFlexContainerTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
-  override fun flexContainer(direction: FlexDirection): TestFlexContainer<UIView> {
-    return UIViewTestFlexContainer(UIViewFlexContainer(direction))
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): UIViewTestFlexContainer {
+    val container = UIViewTestFlexContainer(UIViewFlexContainer(direction))
+    container.value.backgroundColor = backgroundColor.toUIColor()
+    return container
   }
 
-  override fun widget(): Text<UIView> {
+  override fun row() = flexContainer(FlexDirection.Row)
+
+  override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun widget(backgroundColor: Int): Text<UIView> {
     return object : Text<UIView> {
       override val value = UILabel().apply {
-        numberOfLines = 0
-        backgroundColor = UIColor.greenColor
-        textColor = UIColor.blackColor
+        this.numberOfLines = 0
+        this.backgroundColor = backgroundColor.toUIColor()
+        this.textColor = UIColor.blackColor
       }
 
       override var modifier: Modifier = Modifier
@@ -51,8 +62,6 @@ class UIViewFlexContainerTest(
       }
     }
   }
-
-  override fun column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,

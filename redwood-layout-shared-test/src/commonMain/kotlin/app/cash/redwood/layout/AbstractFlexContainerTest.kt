@@ -29,6 +29,7 @@ import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
@@ -36,18 +37,36 @@ import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
-import kotlin.test.assertTrue
 
 abstract class AbstractFlexContainerTest<T : Any> {
-  abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(): Text<T>
-  abstract fun column(): Column<T>
-  abstract fun verifySnapshot(container: Widget<T>, name: String? = null)
+  abstract fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int = Color(51, 0, 0, 255),
+  ): TestFlexContainer<T>
 
-  private fun widget(text: String, modifier: Modifier = Modifier): Text<T> = widget().apply {
-    text(text)
-    this.modifier = modifier
+  abstract fun row(): Row<T>
+
+  abstract fun column(): Column<T>
+
+  abstract fun widget(
+    backgroundColor: Int = Green,
+  ): Text<T>
+
+  fun widget(
+    text: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Int = Green,
+  ): Text<T> {
+    val widget = widget(backgroundColor)
+    widget.text(text)
+    widget.modifier = modifier
+    return widget
   }
+
+  abstract fun verifySnapshot(
+    container: Widget<T>,
+    name: String? = null,
+  )
 
   @Test fun testEmptyLayout_Column() {
     emptyLayout(FlexDirection.Column)
@@ -519,11 +538,6 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(widget("A", FlexImpl(1.0)))
     container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     verifySnapshot(container)
-  }
-
-  /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
-  private fun assumeTrue(b: Boolean) {
-    assertTrue(b)
   }
 }
 
