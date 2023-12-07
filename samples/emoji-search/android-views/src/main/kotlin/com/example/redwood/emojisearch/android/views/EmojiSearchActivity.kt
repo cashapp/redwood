@@ -104,6 +104,10 @@ class EmojiSearchActivity : ComponentActivity() {
     private var success = true
     private var snackbar: Snackbar? = null
 
+    override fun uncaughtException(exception: Throwable) {
+      Log.e("Treehouse", "uncaughtException", exception)
+    }
+
     override fun codeLoadFailed(exception: Exception, startValue: Any?) {
       Log.w("Treehouse", "codeLoadFailed", exception)
       if (success) {

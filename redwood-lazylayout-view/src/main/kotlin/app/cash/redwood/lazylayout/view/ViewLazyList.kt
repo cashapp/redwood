@@ -72,6 +72,14 @@ internal open class ViewLazyList private constructor(
   override val value: View get() = recyclerView
 
   private val processor = object : LazyListUpdateProcessor<ViewHolder, View>() {
+    override fun createPlaceholder(original: View): View {
+      return object : View(value.context) {
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+          setMeasuredDimension(original.width, original.height)
+        }
+      }
+    }
+
     override fun insertRows(index: Int, count: Int) {
       adapter.notifyItemRangeInserted(index, count)
     }
