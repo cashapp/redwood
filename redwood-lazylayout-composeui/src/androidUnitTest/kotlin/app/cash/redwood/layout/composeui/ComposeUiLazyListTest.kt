@@ -33,6 +33,7 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
@@ -55,16 +56,29 @@ class ComposeUiLazyListTest(
     supportsRtl = true,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): ComposeTestFlexContainer {
+    return ComposeTestFlexContainer(direction, backgroundColor)
+  }
 
-  override fun widget() = object : Text<@Composable () -> Unit> {
+  override fun row(): Row<@Composable () -> Unit> {
+    return ComposeUiRedwoodLayoutWidgetFactory().Row()
+  }
+
+  override fun column(): Column<@Composable () -> Unit> {
+    return ComposeUiRedwoodLayoutWidgetFactory().Column()
+  }
+
+  override fun widget(backgroundColor: Int) = object : Text<@Composable () -> Unit> {
     private var text by mutableStateOf("")
 
     override val value = @Composable {
       BasicText(
         text = this.text,
         style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color.Green),
+        modifier = Modifier.background(Color(backgroundColor)),
       )
     }
 
@@ -74,9 +88,6 @@ class ComposeUiLazyListTest(
       this.text = text
     }
   }
-
-  override fun column(): Column<@Composable () -> Unit> =
-    ComposeUiRedwoodLayoutWidgetFactory().Column()
 
   override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {
@@ -89,10 +100,10 @@ class ComposeUiLazyListTest(
   ) : TestFlexContainer<@Composable () -> Unit>, LazyList<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
-    constructor(direction: FlexDirection) : this(
+    constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiLazyList().apply {
         isVertical(direction == FlexDirection.Column)
-        testOnlyModifier = Modifier.background(Color(0, 0, 255, 51))
+        testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
     )
 
