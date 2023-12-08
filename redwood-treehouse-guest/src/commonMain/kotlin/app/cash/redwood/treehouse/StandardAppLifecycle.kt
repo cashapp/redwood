@@ -63,6 +63,7 @@ public class StandardAppLifecycle(
   override fun start(host: Host) {
     check(!started) { "already started" }
     this.started = true
+
     this.host = host
     this.broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
     this.frameClock = broadcastFrameClock

@@ -26,7 +26,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
  *
  * This assumes we're the [StandardAppLifecycle] owns the entire JS runtime.
  */
-@Suppress("INVISIBLE_MEMBER")
+@Suppress("INVISIBLE_MEMBER") // https://github.com/Kotlin/kotlinx.coroutines/issues/3978
 internal actual fun prepareEnvironment(
   coroutineExceptionHandler: CoroutineExceptionHandler,
 ) {
