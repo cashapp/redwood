@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.lazylayout.widget
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
 
 /**
@@ -43,6 +44,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
+  /**
+   * The first placeholder ever returned. We use it to choose measured dimensions for created
+   * placeholders if the pool ever runs out.
+   */
+  private var firstPlaceholder: Widget<W>? = null
+
   /** Loaded items that may or may not have a view bound. */
   private var loadedItems = mutableListOf<Binding<V, W>>()
 
@@ -57,6 +64,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   /** We expect placeholders to be added early and to never change. */
   public val placeholder: Widget.Children<W> = object : Widget.Children<W> {
     override fun insert(index: Int, widget: Widget<W>) {
+      if (firstPlaceholder == null) firstPlaceholder = widget
       placeholdersQueue += widget
     }
 
@@ -253,7 +261,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     // We have a binding. Give it loaded content.
     require(placeholder.isPlaceholder)
-    placeholdersQueue += placeholder.content!!
+    recyclePlaceholder(placeholder.content!!)
     placeholder.isPlaceholder = false
     placeholder.content = loadedContent
     return placeholder
@@ -313,9 +321,34 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   }
 
   private fun takePlaceholder(): Widget<W> {
-    return placeholdersQueue.removeFirstOrNull()
+    val result = placeholdersQueue.removeFirstOrNull()
+    if (result != null) return result
+
+    val created = createPlaceholder(firstPlaceholder!!.value)
       ?: throw IllegalStateException("no more placeholders!")
+
+    return SizeOnlyPlaceholder(created)
   }
+
+  private fun recyclePlaceholder(placeholder: Widget<W>) {
+    if (placeholder !is SizeOnlyPlaceholder) {
+      placeholdersQueue += placeholder
+    }
+  }
+
+  private class SizeOnlyPlaceholder<W : Any>(
+    override val value: W,
+  ) : Widget<W> {
+    override var modifier: Modifier = Modifier
+  }
+
+  /**
+   * Returns an empty widget with the same dimensions as [original].
+   *
+   * @param original a placeholder provided by the guest code. It is a live view that is currently
+   *     in a layout.
+   */
+  protected open fun createPlaceholder(original: W): W? = null
 
   protected abstract fun insertRows(index: Int, count: Int)
 
@@ -383,7 +416,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         if (itemsAfterIndex != -1) processor.itemsAfter.set(itemsAfterIndex, null)
 
         // When a placeholder is reused, recycle its widget.
-        processor.placeholdersQueue += content!!
+        processor.recyclePlaceholder(content!!)
       }
     }
   }
