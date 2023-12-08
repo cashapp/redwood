@@ -25,6 +25,18 @@ kotlin {
         api projects.redwoodTreehouseGuestCompose
       }
     }
+    nonJsMain {
+      dependsOn(commonMain)
+    }
+    androidMain {
+      dependsOn(nonJsMain)
+    }
+    jvmMain {
+      dependsOn(nonJsMain)
+    }
+    nativeMain {
+      dependsOn(nonJsMain)
+    }
   }
 }
 

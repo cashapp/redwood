@@ -33,6 +33,7 @@ public class StandardAppLifecycle(
   internal val json: Json,
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
+  private var started = false
   private lateinit var host: Host
 
   private lateinit var broadcastFrameClock: BroadcastFrameClock
@@ -60,9 +61,13 @@ public class StandardAppLifecycle(
   internal val coroutineScope = CoroutineScope(coroutineExceptionHandler)
 
   override fun start(host: Host) {
+    check(!started) { "already started" }
+    this.started = true
     this.host = host
     this.broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
     this.frameClock = broadcastFrameClock
+
+    prepareEnvironment(coroutineExceptionHandler)
   }
 
   override fun sendFrame(timeNanos: Long) {
