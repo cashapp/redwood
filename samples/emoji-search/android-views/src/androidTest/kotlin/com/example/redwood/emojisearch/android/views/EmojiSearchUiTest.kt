@@ -17,7 +17,5 @@ package com.example.redwood.emojisearch.android.views
 
 import com.example.redwood.emojisearch.android.tests.AbstractEmojiSearchUiTest
 import com.example.redwood.emojisearch.android.views.BuildConfig.APPLICATION_ID
-import org.junit.Ignore
 
-@Ignore("https://github.com/cashapp/redwood/issues/1696")
 class EmojiSearchUiTest : AbstractEmojiSearchUiTest(APPLICATION_ID)
