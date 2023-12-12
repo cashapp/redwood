@@ -13,7 +13,7 @@ Internally the layout system uses a common layout engine written in Kotlin Multi
 
 ### Row
 
-Lays widgets out along the X axis (horizontally). 
+Lays widgets out along the X axis (horizontally).
 
 ```kotlin
 Row {
@@ -29,7 +29,7 @@ Row {
 
 ### Column
 
-Lays widgets out along the Y axis (vertically). 
+Lays widgets out along the Y axis (vertically).
 
 ```kotlin
 Column {
@@ -65,7 +65,7 @@ Box {
 ```
 
 <p style="text-align: center;">
-    <img src="docs_images/box1.png">
+    <img src="docs_images/box1.png" width="250" height="250">
 </p>
 
 ### Spacer
