@@ -24,7 +24,7 @@ Row {
 ```
 
 <p style="text-align: center;">
-    <img src="../docs_images/row1.png">
+    <img src="docs_images/row1.png">
 </p>
 
 ### Column
@@ -40,7 +40,7 @@ Column {
 ```
 
 <p style="text-align: center;">
-    <img src="../docs_images/column1.png">
+    <img src="docs_images/column1.png">
 </p>
 
 ### Box
@@ -65,7 +65,7 @@ Box {
 ```
 
 <p style="text-align: center;">
-    <img src="../docs_images/box1.png">
+    <img src="docs_images/box1.png">
 </p>
 
 ### Spacer
@@ -81,5 +81,5 @@ Column {
 ```
 
 <p style="text-align: center;">
-    <img src="../docs_images/spacer1.png">
+    <img src="docs_images/spacer1.png">
 </p>
