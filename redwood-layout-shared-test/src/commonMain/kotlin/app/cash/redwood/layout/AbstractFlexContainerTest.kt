@@ -534,6 +534,32 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     verifySnapshot(container)
   }
+
+  @Test fun nestedColumnsWithFlex() {
+    val outerContainer = flexContainer(FlexDirection.Column)
+    outerContainer.width(Constraint.Fill)
+    outerContainer.height(Constraint.Fill)
+    outerContainer.crossAxisAlignment(CrossAxisAlignment.Center)
+
+    val innerContainer1 = flexContainer(FlexDirection.Column)
+    innerContainer1.width(Constraint.Fill)
+    innerContainer1.crossAxisAlignment(CrossAxisAlignment.Center)
+    innerContainer1.add(widget("INNER CONTAINER 1 TEXT 1"))
+    innerContainer1.add(widget("INNER CONTAINER 1 TEXT 2"))
+
+    val innerContainer2 = flexContainer(FlexDirection.Column)
+    innerContainer2.width(Constraint.Fill)
+    innerContainer2.crossAxisAlignment(CrossAxisAlignment.Center)
+    innerContainer2.mainAxisAlignment(MainAxisAlignment.Center)
+    innerContainer2.margin(Margin(bottom = 24.dp))
+    innerContainer1.add(widget("INNER CONTAINER 2 TEXT 1"))
+    innerContainer1.add(widget("INNER CONTAINER 2 TEXT 2"))
+
+    outerContainer.add(innerContainer1)
+    outerContainer.add(innerContainer2)
+    innerContainer2.modifier = Modifier.then(FlexImpl(1.0))
+    verifySnapshot(outerContainer)
+  }
 }
 
 interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
@@ -598,6 +624,6 @@ private data class ShrinkImpl(
   override val value: Double,
 ) : Shrink
 
-private data class FlexImpl(
+data class FlexImpl(
   override val value: Double,
 ) : Flex
