@@ -624,6 +624,6 @@ private data class ShrinkImpl(
   override val value: Double,
 ) : Shrink
 
-data class FlexImpl(
+private data class FlexImpl(
   override val value: Double,
 ) : Flex
