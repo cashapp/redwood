@@ -8,10 +8,12 @@ widgets. It provides widgets for:
 - `Box`: Lays widgets out along the Z axis (on top of eachother).
 - `Spacer`: Adds space between widgets.
 
-Internally the layout system uses a common layout engine written in Kotlin Multiplatform to support
-consistent rendering across platforms. The system provides widget bindings for for Android
-Views (`redwood-layout-view`), iOS UiKit (`redwood-layout-uiview`), and Compose
-UI (`redwood-layout-composeui`).
+Internally the layout system uses a common layout engine written in Kotlin Multiplatform. The
+layout engine operates on a virtual DOM (document object model) composed of simple nodes
+where each node is mapped to a widget in the real DOM. This lets the layout engine perform
+operations on the DOM with consistent rendering across platforms. The system provides widget
+bindings for for Android Views (`redwood-layout-view`), iOS UiKit (`redwood-layout-uiview`), and
+Compose UI (`redwood-layout-composeui`).
 
 ## Widgets
 
@@ -49,7 +51,8 @@ Column {
 
 ### Box
 
-Lays widgets out along the Z axis (on top of eachother).
+Lays widgets out along the Z axis (on top of eachother). Widgets are laid from lowest Z index
+(first) to highest Z index (last).
 
 ```kotlin
 Box {
