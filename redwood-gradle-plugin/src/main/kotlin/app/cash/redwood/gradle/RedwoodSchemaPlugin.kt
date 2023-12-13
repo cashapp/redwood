@@ -62,7 +62,7 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.description = "Generate parsed schema JSON"
 
       it.toolClasspath.from(toolingConfiguration)
-      it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
+      it.outputDir.set(project.redwoodGeneratedDir("schema-json"))
       it.schemaType.set(extension.type)
       it.classpath.from(classpath, compilation.output.classesDirs)
     }
