@@ -66,7 +66,6 @@ interface Navigator {
 enum class Variant {
   LAZY_COLUMN,
   SCROLLABLE_FLEXBOX,
-  BUGGY_COLUMNS,
 }
 
 @Composable
@@ -78,7 +77,6 @@ fun EmojiSearch(
   when (variant) {
     Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
     Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient)
-    Variant.BUGGY_COLUMNS -> BuggyNestedColumns()
   }
 }
 
