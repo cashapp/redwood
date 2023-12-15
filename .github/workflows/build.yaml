@@ -67,7 +67,7 @@ jobs:
       - run: ./gradlew dokkaHtmlMultiModule
 
       # If we're on the integration branch, save the site to deploy from the publish job.
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
         with:
           name: site
