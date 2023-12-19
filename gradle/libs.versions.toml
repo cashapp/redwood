@@ -31,7 +31,7 @@ xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.3'
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.23.1"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.10"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.23.3"
-gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
+gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.26.0"
 buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx.activity" }
