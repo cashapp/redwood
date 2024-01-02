@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.example.redwood.emojisearch.widget.Image
 
 internal class ComposeUiImage : Image<@Composable () -> Unit> {

@@ -22,6 +22,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
   <application
+    android:name=".EmojiSearchApplication"
     android:allowBackup="false"
     android:exported="true"
     android:icon="@mipmap/ic_launcher"

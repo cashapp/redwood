@@ -20,7 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import app.cash.redwood.Modifier
-import coil.load
+import coil3.load
 import com.example.redwood.emojisearch.widget.Image
 
 internal class ViewImage(
