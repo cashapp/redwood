@@ -27,7 +27,6 @@ import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
-import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -42,7 +41,10 @@ import example.values.TextFieldState
 import kotlinx.serialization.json.Json
 
 @Composable
-fun NestedFlexBoxContainers(httpClient: HttpClient) {
+fun NestedFlexBoxContainers(
+  httpClient: HttpClient,
+  safeAreaInsets: Margin,
+) {
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
   val searchTermSaver = object : Saver<TextFieldState, String> {
@@ -79,7 +81,7 @@ fun NestedFlexBoxContainers(httpClient: HttpClient) {
     height = Constraint.Fill,
     overflow = Overflow.Clip,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = LocalUiConfiguration.current.safeAreaInsets,
+    margin = safeAreaInsets,
     verticalAlignment = MainAxisAlignment.Start,
   ) {
     TextInput(
@@ -89,7 +91,7 @@ fun NestedFlexBoxContainers(httpClient: HttpClient) {
       modifier = Modifier.shrink(0.0),
     )
 
-    if (filteredEmojis.count() > 0) {
+    if (filteredEmojis.isNotEmpty()) {
       Text(
         text = "Scroll Column - Nested Scroll Row + B Emojis",
         modifier = Modifier.margin(Margin(12.dp)),

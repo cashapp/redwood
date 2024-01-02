@@ -73,10 +73,11 @@ fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
   variant: Variant = Variant.LAZY_COLUMN,
+  safeAreaInsets: Margin = LocalUiConfiguration.current.safeAreaInsets,
 ) {
   when (variant) {
-    Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
-    Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient)
+    Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator, safeAreaInsets)
+    Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient, safeAreaInsets)
   }
 }
 
@@ -85,6 +86,7 @@ fun EmojiSearch(
 private fun LazyColumn(
   httpClient: HttpClient,
   navigator: Navigator,
+  safeAreaInsets: Margin,
 ) {
   val scope = rememberCoroutineScope()
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
@@ -134,7 +136,7 @@ private fun LazyColumn(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = LocalUiConfiguration.current.safeAreaInsets,
+    margin = safeAreaInsets,
   ) {
     TextInput(
       state = TextFieldState(searchTerm.text),

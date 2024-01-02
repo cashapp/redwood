@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.emojisearch.android.composeui
+package com.example.redwood.emojisearch.composeui
 
 import androidx.compose.runtime.Composable
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
@@ -21,7 +21,7 @@ import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 
-class AndroidEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<@Composable () -> Unit> {
+class ComposeUiEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<@Composable () -> Unit> {
   override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage()

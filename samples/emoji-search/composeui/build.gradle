@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.compose'
+
+redwoodBuild {
+  embedZiplineApplication(projects.samples.emojiSearch.presenterTreehouse)
+}
+
+android {
+  namespace 'com.example.redwood.emojisearch.android.composeui'
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  buildFeatures {
+    // Needed to pass application ID to UIAutomator tests.
+    buildConfig = true
+  }
+}
+
+compose {
+  desktop {
+    application {
+      mainClass = "com.example.redwood.emojisearch.composeui.Main"
+    }
+  }
+}
+
+kotlin {
+  androidTarget()
+  jvm("desktop")
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation projects.samples.emojiSearch.launcher
+        implementation projects.samples.emojiSearch.presenterTreehouse
+        implementation projects.samples.emojiSearch.schema.widget.protocol
+        implementation projects.redwoodLayoutComposeui
+        implementation projects.redwoodLazylayoutComposeui
+        implementation projects.redwoodTreehouseHost
+        implementation projects.redwoodTreehouseHostComposeui
+        implementation projects.redwoodWidgetCompose
+        implementation libs.coil.compose
+        implementation libs.coil.network
+        implementation libs.ktor.engine.okhttp
+        implementation libs.jetbrains.compose.material
+        implementation libs.jetbrains.compose.ui
+        implementation libs.jetbrains.compose.ui.tooling.preview
+        implementation libs.zipline.loader
+      }
+    }
+    androidMain {
+      dependencies {
+        implementation libs.androidx.activity.compose
+        implementation libs.androidx.appCompat
+        implementation libs.androidx.core
+        implementation libs.google.material
+        implementation libs.kotlinx.coroutines.android
+        implementation libs.okio.assetfilesystem
+      }
+    }
+    desktopMain {
+      dependencies {
+        implementation projects.samples.emojiSearch.presenter
+        implementation projects.redwoodComposeui
+        implementation compose.desktop.currentOs
+        implementation libs.kotlinx.coroutines.swing
+      }
+    }
+    androidInstrumentedTest {
+      dependencies {
+        implementation libs.androidx.test.runner
+        implementation projects.samples.emojiSearch.androidTests
+      }
+    }
+  }
+}

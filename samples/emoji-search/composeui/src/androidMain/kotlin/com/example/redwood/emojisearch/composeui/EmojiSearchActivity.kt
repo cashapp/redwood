@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.emojisearch.android.composeui
+package com.example.redwood.emojisearch.composeui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -63,6 +65,7 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
+    applySingletonImageLoader()
 
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
@@ -70,7 +73,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(),
+          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -141,7 +144,14 @@ class EmojiSearchActivity : ComponentActivity() {
       appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrl = manifestUrlFlow,
-        hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
+        hostApi = RealHostApi(
+          client = httpClient,
+          openUrl = { url ->
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setData(Uri.parse(url))
+            startActivity(intent)
+          },
+        ),
       ),
     )
 

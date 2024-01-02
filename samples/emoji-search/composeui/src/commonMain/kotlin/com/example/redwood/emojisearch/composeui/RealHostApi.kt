@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.emojisearch.android.composeui
+package com.example.redwood.emojisearch.composeui
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
 import com.example.redwood.emojisearch.treehouse.HostApi
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -36,8 +32,8 @@ class HttpException(response: Response) :
   RuntimeException("HTTP ${response.code} ${response.message}")
 
 class RealHostApi(
-  private val context: Context,
   private val client: OkHttpClient,
+  private val openUrl: (url: String) -> Unit,
 ) : HostApi {
   override suspend fun httpCall(url: String, headers: Map<String, String>): String {
     return suspendCancellableCoroutine { continuation ->
@@ -67,8 +63,6 @@ class RealHostApi(
   }
 
   override fun openUrl(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.setData(Uri.parse(url))
-    startActivity(context, intent, null)
+    openUrl.invoke(url)
   }
 }
