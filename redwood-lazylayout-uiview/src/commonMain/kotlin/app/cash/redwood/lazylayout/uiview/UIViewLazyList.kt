@@ -300,6 +300,7 @@ internal class LazyListContainerCell(
     contentView.subviews.forEach {
       (it as UIView).removeFromSuperview()
     }
+    selectedBackgroundView = null
   }
 }
 
