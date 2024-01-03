@@ -17,10 +17,8 @@ package com.example.redwood.emojisearch.composeui
 
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import coil3.annotation.ExperimentalCoilApi
 import coil3.fetch.NetworkFetcher
 
-@OptIn(ExperimentalCoilApi::class)
 fun applySingletonImageLoader() {
   SingletonImageLoader.setSafe { context ->
     ImageLoader.Builder(context)
