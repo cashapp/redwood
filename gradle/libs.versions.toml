@@ -83,6 +83,6 @@ ktor-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 turbine = "app.cash.turbine:turbine:1.0.0"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.1.0"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.19.2"
-poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.1"
+poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.2"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
