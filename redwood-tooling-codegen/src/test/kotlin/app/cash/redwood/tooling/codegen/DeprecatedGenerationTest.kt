@@ -146,7 +146,8 @@ class DeprecatedGenerationTest {
     val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {
-        assertThat(fileSpec.toString()).contains("""@file:Suppress("DEPRECATION")""")
+        assertThat(fileSpec.toString())
+          .contains("""@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")""")
       }
     }
   }
@@ -157,7 +158,8 @@ class DeprecatedGenerationTest {
     val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {
-        assertThat(fileSpec.toString()).contains("""@file:Suppress("DEPRECATION")""")
+        assertThat(fileSpec.toString())
+          .contains("""@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")""")
       }
     }
   }
