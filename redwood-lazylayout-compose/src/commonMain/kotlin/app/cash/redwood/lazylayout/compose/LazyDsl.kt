@@ -22,18 +22,38 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
 
+/**
+ * Receiver scope which is used by [LazyColumn] and [LazyRow].
+ */
 @LayoutScopeMarker
 public interface LazyListScope {
+  /**
+   * Adds a single item.
+   *
+   * @param content the content of the item
+   */
   public fun item(
     content: @Composable () -> Unit,
   )
 
+  /**
+   * Adds a [count] of items.
+   *
+   * @param count the items count
+   * @param itemContent the content displayed by a single item
+   */
   public fun items(
     count: Int,
     itemContent: @Composable (index: Int) -> Unit,
   )
 }
 
+/**
+ * Adds a list of items.
+ *
+ * @param items the data list
+ * @param itemContent the content displayed by a single item
+ */
 public inline fun <T> LazyListScope.items(
   items: List<T>,
   crossinline itemContent: @Composable (item: T) -> Unit,
@@ -41,6 +61,12 @@ public inline fun <T> LazyListScope.items(
   itemContent(items[it])
 }
 
+/**
+ * Adds a list of items where the content of an item is aware of its index.
+ *
+ * @param items the data list
+ * @param itemContent the content displayed by a single item
+ */
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
@@ -50,6 +76,12 @@ public inline fun <T> LazyListScope.itemsIndexed(
   itemContent(it, items[it])
 }
 
+/**
+ * Adds an array of items.
+ *
+ * @param items the data array
+ * @param itemContent the content displayed by a single item
+ */
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
   crossinline itemContent: @Composable (item: T) -> Unit,
@@ -59,6 +91,12 @@ public inline fun <T> LazyListScope.items(
   itemContent(items[it])
 }
 
+/**
+ * Adds an array of items where the content of an item is aware of its index.
+ *
+ * @param items the data array
+ * @param itemContent the content displayed by a single item
+ */
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
   crossinline itemContent: @Composable (index: Int, item: T) -> Unit,
@@ -71,6 +109,22 @@ public inline fun <T> LazyListScope.itemsIndexed(
 @RequiresOptIn("This Redwood LazyLayout API is experimental and may change in the future.")
 public annotation class ExperimentalRedwoodLazyLayoutApi
 
+/**
+ * The horizontally scrolling list that only composes and lays out the currently visible items.
+ * The [content] block defines a DSL which allows you to emit items of different types. For
+ * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
+ * a list of items.
+ *
+ * @param state the state object to be used to control or observe the list's state
+ * @param width TODO
+ * @param height TODO
+ * @param margin TODO
+ * @param verticalAlignment the vertical alignment applied to the items
+ * @param modifier the modifier to apply to this layout
+ * @param placeholder TODO
+ * @param content a block which describes the content. Inside this block you can use methods like
+ * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
+ */
 @Composable
 public fun LazyRow(
   state: LazyListState = rememberLazyListState(),
@@ -95,6 +149,22 @@ public fun LazyRow(
   )
 }
 
+/**
+ * TODO
+ *
+ * @param refreshing TODO
+ * @param onRefresh TODO
+ * @param state the state object to be used to control or observe the list's state
+ * @param width TODO
+ * @param height TODO
+ * @param margin TODO
+ * @param verticalAlignment the vertical alignment applied to the items
+ * @param pullRefreshContentColor TODO
+ * @param modifier the modifier to apply to this layout
+ * @param placeholder TODO
+ * @param content a block which describes the content. Inside this block you can use methods like
+ * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
+ */
 @ExperimentalRedwoodLazyLayoutApi
 @Composable
 public fun LazyRow(
@@ -126,6 +196,22 @@ public fun LazyRow(
   )
 }
 
+/**
+ * The vertically scrolling list that only composes and lays out the currently visible items.
+ * The [content] block defines a DSL which allows you to emit items of different types. For
+ * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
+ * a list of items.
+ *
+ * @param state the state object to be used to control or observe the list's state.
+ * @param width TODO
+ * @param height TODO
+ * @param margin TODO
+ * @param horizontalAlignment the horizontal alignment applied to the items.
+ * @param modifier the modifier to apply to this layout.
+ * @param placeholder TODO
+ * @param content a block which describes the content. Inside this block you can use methods like
+ * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
+ */
 @Composable
 public fun LazyColumn(
   state: LazyListState = rememberLazyListState(),
@@ -150,6 +236,22 @@ public fun LazyColumn(
   )
 }
 
+/**
+ * TODO
+ *
+ * @param refreshing TODO
+ * @param onRefresh TODO
+ * @param state the state object to be used to control or observe the list's state.
+ * @param width TODO
+ * @param height TODO
+ * @param margin TODO
+ * @param horizontalAlignment the horizontal alignment applied to the items.
+ * @param pullRefreshContentColor TODO
+ * @param modifier the modifier to apply to this layout.
+ * @param placeholder TODO
+ * @param content a block which describes the content. Inside this block you can use methods like
+ * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
+ */
 @ExperimentalRedwoodLazyLayoutApi
 @Composable
 public fun LazyColumn(
