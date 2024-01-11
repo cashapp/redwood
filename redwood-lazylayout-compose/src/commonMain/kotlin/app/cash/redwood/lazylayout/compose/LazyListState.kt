@@ -25,6 +25,9 @@ import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
 private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
 
+/**
+ * Creates a [LazyListState] that is remembered across compositions.
+ */
 @Composable
 public fun rememberLazyListState(): LazyListState {
   return rememberSaveable(saver = saver) {
@@ -42,6 +45,11 @@ private val saver: Saver<LazyListState, *> = Saver(
   },
 )
 
+/**
+ * A state object that can be hoisted to control and observe scrolling.
+ *
+ * In most cases, this will be created via [rememberLazyListState].
+ */
 public open class LazyListState {
   /**
    * Update this to trigger a programmatic scroll. This may be updated multiple times, including

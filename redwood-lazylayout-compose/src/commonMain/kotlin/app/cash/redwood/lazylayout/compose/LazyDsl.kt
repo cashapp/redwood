@@ -30,7 +30,7 @@ public interface LazyListScope {
   /**
    * Adds a single item.
    *
-   * @param content the content of the item
+   * @param content The content of the item.
    */
   public fun item(
     content: @Composable () -> Unit,
@@ -39,8 +39,8 @@ public interface LazyListScope {
   /**
    * Adds a [count] of items.
    *
-   * @param count the items count
-   * @param itemContent the content displayed by a single item
+   * @param count The items count.
+   * @param itemContent The content displayed by a single item.
    */
   public fun items(
     count: Int,
@@ -51,8 +51,8 @@ public interface LazyListScope {
 /**
  * Adds a list of items.
  *
- * @param items the data list
- * @param itemContent the content displayed by a single item
+ * @param items The data list.
+ * @param itemContent The content displayed by a single item.
  */
 public inline fun <T> LazyListScope.items(
   items: List<T>,
@@ -64,8 +64,8 @@ public inline fun <T> LazyListScope.items(
 /**
  * Adds a list of items where the content of an item is aware of its index.
  *
- * @param items the data list
- * @param itemContent the content displayed by a single item
+ * @param items The data list.
+ * @param itemContent The content displayed by a single item.
  */
 public inline fun <T> LazyListScope.itemsIndexed(
   items: List<T>,
@@ -79,8 +79,8 @@ public inline fun <T> LazyListScope.itemsIndexed(
 /**
  * Adds an array of items.
  *
- * @param items the data array
- * @param itemContent the content displayed by a single item
+ * @param items The data array.
+ * @param itemContent The content displayed by a single item.
  */
 public inline fun <T> LazyListScope.items(
   items: Array<T>,
@@ -94,8 +94,8 @@ public inline fun <T> LazyListScope.items(
 /**
  * Adds an array of items where the content of an item is aware of its index.
  *
- * @param items the data array
- * @param itemContent the content displayed by a single item
+ * @param items The data array.
+ * @param itemContent The content displayed by a single item.
  */
 public inline fun <T> LazyListScope.itemsIndexed(
   items: Array<T>,
@@ -115,14 +115,20 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
  * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
  * a list of items.
  *
- * @param state the state object to be used to control or observe the list's state
- * @param width TODO
- * @param height TODO
- * @param margin TODO
- * @param verticalAlignment the vertical alignment applied to the items
- * @param modifier the modifier to apply to this layout
- * @param placeholder TODO
- * @param content a block which describes the content. Inside this block you can use methods like
+ * The purpose of [placeholder] is to define the temporary content of an on-screen item while the
+ * content of that item (as described by the [content] block) is being retrieved. When the content
+ * of that item has been retrieved, the [placeholder] is replaced with that of the content.
+ *
+ * @param state The state object to be used to control or observe the list's state.
+ * @param width The width of the list.
+ * @param height The height of the list.
+ * @param margin The margin of the list.
+ * @param verticalAlignment the vertical alignment applied to the items.
+ * @param modifier The modifier to apply to this layout.
+ * @param placeholder A block which describes the content of each placeholder item. Note that the
+ * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
+ * each invocation is identical to one another.
+ * @param content A block which describes the content. Inside this block you can use methods like
  * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
  */
 @Composable
@@ -150,19 +156,32 @@ public fun LazyRow(
 }
 
 /**
- * TODO
+ * The horizontally scrolling list that only composes and lays out the currently visible items.
+ * The [content] block defines a DSL which allows you to emit items of different types. For
+ * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
+ * a list of items.
  *
- * @param refreshing TODO
- * @param onRefresh TODO
- * @param state the state object to be used to control or observe the list's state
- * @param width TODO
- * @param height TODO
- * @param margin TODO
- * @param verticalAlignment the vertical alignment applied to the items
- * @param pullRefreshContentColor TODO
- * @param modifier the modifier to apply to this layout
- * @param placeholder TODO
- * @param content a block which describes the content. Inside this block you can use methods like
+ * This function differs from the other [LazyRow] function, in that a refresh indicator is
+ * conditionally displayed via a vertical swipe gesture when at the beginning of the list. The
+ * appropriate response to this gesture can be supplied via the [onRefresh] callback.
+ *
+ * The purpose of [placeholder] is to define the temporary content of an on-screen item while the
+ * content of that item (as described by the [content] block) is being retrieved. When the content
+ * of that item has been retrieved, the [placeholder] is replaced with that of the content.
+ *
+ * @param refreshing Whether or not the list should show the pull-to-refresh indicator.
+ * @param onRefresh Called when a swipe gesture triggers a pull-to-refresh.
+ * @param state The state object to be used to control or observe the list's state.
+ * @param width The width of the list.
+ * @param height The height of the list.
+ * @param margin The margin of the list.
+ * @param verticalAlignment the vertical alignment applied to the items.
+ * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
+ * @param modifier The modifier to apply to this layout.
+ * @param placeholder A block which describes the content of each placeholder item. Note that the
+ * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
+ * each invocation is identical to one another.
+ * @param content A block which describes the content. Inside this block you can use methods like
  * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
  */
 @ExperimentalRedwoodLazyLayoutApi
@@ -202,14 +221,20 @@ public fun LazyRow(
  * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
  * a list of items.
  *
- * @param state the state object to be used to control or observe the list's state.
- * @param width TODO
- * @param height TODO
- * @param margin TODO
- * @param horizontalAlignment the horizontal alignment applied to the items.
- * @param modifier the modifier to apply to this layout.
- * @param placeholder TODO
- * @param content a block which describes the content. Inside this block you can use methods like
+ * The purpose of [placeholder] is to define the temporary content of an on-screen item while the
+ * content of that item (as described by the [content] block) is being retrieved. When the content
+ * of that item has been retrieved, the [placeholder] is replaced with that of the content.
+ *
+ * @param state The state object to be used to control or observe the list's state.
+ * @param width The width of the list.
+ * @param height The height of the list.
+ * @param margin The margin of the list.
+ * @param horizontalAlignment The horizontal alignment applied to the items.
+ * @param modifier The modifier to apply to this layout.
+ * @param placeholder A block which describes the content of each placeholder item. Note that the
+ * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
+ * each invocation is identical to one another.
+ * @param content A block which describes the content. Inside this block you can use methods like
  * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
  */
 @Composable
@@ -237,19 +262,32 @@ public fun LazyColumn(
 }
 
 /**
- * TODO
+ * The vertically scrolling list that only composes and lays out the currently visible items.
+ * The [content] block defines a DSL which allows you to emit items of different types. For
+ * example you can use [LazyListScope.item] to add a single item and [LazyListScope.items] to add
+ * a list of items.
  *
- * @param refreshing TODO
- * @param onRefresh TODO
- * @param state the state object to be used to control or observe the list's state.
- * @param width TODO
- * @param height TODO
- * @param margin TODO
- * @param horizontalAlignment the horizontal alignment applied to the items.
- * @param pullRefreshContentColor TODO
- * @param modifier the modifier to apply to this layout.
- * @param placeholder TODO
- * @param content a block which describes the content. Inside this block you can use methods like
+ * This function differs from the other [LazyColumn] function, in that a refresh indicator is
+ * conditionally displayed via a vertical swipe gesture when at the beginning of the list. The
+ * appropriate response to this gesture can be supplied via the [onRefresh] callback.
+ *
+ * The purpose of [placeholder] is to define the temporary content of an on-screen item while the
+ * content of that item (as described by the [content] block) is being retrieved. When the content
+ * of that item has been retrieved, the [placeholder] is replaced with that of the content.
+ *
+ * @param refreshing Whether or not the list should show the pull-to-refresh indicator.
+ * @param onRefresh Called when a swipe gesture triggers a pull-to-refresh.
+ * @param state The state object to be used to control or observe the list's state.
+ * @param width The width of the list.
+ * @param height The height of the list.
+ * @param margin The margin of the list.
+ * @param horizontalAlignment The horizontal alignment applied to the items.
+ * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
+ * @param modifier The modifier to apply to this layout.
+ * @param placeholder A block which describes the content of each placeholder item. Note that the
+ * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
+ * each invocation is identical to one another.
+ * @param content A block which describes the content. Inside this block you can use methods like
  * [LazyListScope.item] to add a single item or [LazyListScope.items] to add a list of items.
  */
 @ExperimentalRedwoodLazyLayoutApi
