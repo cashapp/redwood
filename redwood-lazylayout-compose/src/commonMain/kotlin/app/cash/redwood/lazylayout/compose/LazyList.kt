@@ -43,7 +43,7 @@ internal fun LazyList(
   val itemCount = itemProvider.itemCount
   val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
   val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
-  val placeholderPoolSize = 30
+  val placeholderPoolSize = 20
   LazyList(
     isVertical = isVertical,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
@@ -87,7 +87,7 @@ internal fun RefreshableLazyList(
   val itemCount = itemProvider.itemCount
   val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
   val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
-  val placeholderPoolSize = 30
+  val placeholderPoolSize = 20
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,

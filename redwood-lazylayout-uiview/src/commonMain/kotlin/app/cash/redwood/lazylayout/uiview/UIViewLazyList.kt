@@ -73,6 +73,12 @@ internal open class UIViewLazyList(
     get() = tableView
 
   private val updateProcessor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+    override fun createPlaceholder(original: UIView): UIView? {
+      return object : UIView(CGRectZero.readValue()) {
+        override fun sizeThatFits(size: CValue<CGSize>) = original.sizeThatFits(size)
+      }
+    }
+
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.insertRowsAtIndexPaths(
