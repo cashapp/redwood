@@ -120,9 +120,12 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
  * of that item has been retrieved, the [placeholder] is replaced with that of the content.
  *
  * @param state The state object to be used to control or observe the list's state.
- * @param width The width of the list.
- * @param height The height of the list.
- * @param margin The margin of the list.
+ * @param width Sets whether the row's width will wrap its contents ([Constraint.Wrap]) or match the
+ * width of its parent ([Constraint.Fill]).
+ * @param height Sets whether the row's height will wrap its contents ([Constraint.Wrap]) or match
+ * the height of its parent ([Constraint.Fill]).
+ * @param margin Applies margin (space) around the list. This can also be applied to an individual
+ * item using `Modifier.margin`.
  * @param verticalAlignment the vertical alignment applied to the items.
  * @param modifier The modifier to apply to this layout.
  * @param placeholder A block which describes the content of each placeholder item. Note that the
@@ -172,9 +175,12 @@ public fun LazyRow(
  * @param refreshing Whether or not the list should show the pull-to-refresh indicator.
  * @param onRefresh Called when a swipe gesture triggers a pull-to-refresh.
  * @param state The state object to be used to control or observe the list's state.
- * @param width The width of the list.
- * @param height The height of the list.
- * @param margin The margin of the list.
+ * @param width Sets whether the row's width will wrap its contents ([Constraint.Wrap]) or match the
+ * width of its parent ([Constraint.Fill]).
+ * @param height Sets whether the row's height will wrap its contents ([Constraint.Wrap]) or match
+ * the height of its parent ([Constraint.Fill]).
+ * @param margin Applies margin (space) around the list. This can also be applied to an individual
+ * item using `Modifier.margin`.
  * @param verticalAlignment the vertical alignment applied to the items.
  * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
  * @param modifier The modifier to apply to this layout.
@@ -226,9 +232,12 @@ public fun LazyRow(
  * of that item has been retrieved, the [placeholder] is replaced with that of the content.
  *
  * @param state The state object to be used to control or observe the list's state.
- * @param width The width of the list.
- * @param height The height of the list.
- * @param margin The margin of the list.
+ * @param width Sets whether the row's width will wrap its contents ([Constraint.Wrap]) or match the
+ * width of its parent ([Constraint.Fill]).
+ * @param height Sets whether the row's height will wrap its contents ([Constraint.Wrap]) or match
+ * the height of its parent ([Constraint.Fill]).
+ * @param margin Applies margin (space) around the list. This can also be applied to an individual
+ * item using `Modifier.margin`.
  * @param horizontalAlignment The horizontal alignment applied to the items.
  * @param modifier The modifier to apply to this layout.
  * @param placeholder A block which describes the content of each placeholder item. Note that the
@@ -278,9 +287,12 @@ public fun LazyColumn(
  * @param refreshing Whether or not the list should show the pull-to-refresh indicator.
  * @param onRefresh Called when a swipe gesture triggers a pull-to-refresh.
  * @param state The state object to be used to control or observe the list's state.
- * @param width The width of the list.
- * @param height The height of the list.
- * @param margin The margin of the list.
+ * @param width Sets whether the row's width will wrap its contents ([Constraint.Wrap]) or match the
+ * width of its parent ([Constraint.Fill]).
+ * @param height Sets whether the row's height will wrap its contents ([Constraint.Wrap]) or match
+ * the height of its parent ([Constraint.Fill]).
+ * @param margin Applies margin (space) around the list. This can also be applied to an individual
+ * item using `Modifier.margin`.
  * @param horizontalAlignment The horizontal alignment applied to the items.
  * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
  * @param modifier The modifier to apply to this layout.
