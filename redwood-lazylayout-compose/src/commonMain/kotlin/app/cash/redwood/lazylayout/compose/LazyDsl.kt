@@ -182,7 +182,8 @@ public fun LazyRow(
  * @param margin Applies margin (space) around the list. This can also be applied to an individual
  * item using `Modifier.margin`.
  * @param verticalAlignment the vertical alignment applied to the items.
- * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
+ * @param pullRefreshContentColor The color of the pull-to-refresh indicator as an ARGB color int.
+ * For example, the color `0xFF00AA00` would be a dark green with 100% opacity.
  * @param modifier The modifier to apply to this layout.
  * @param placeholder A block which describes the content of each placeholder item. Note that the
  * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
@@ -294,7 +295,8 @@ public fun LazyColumn(
  * @param margin Applies margin (space) around the list. This can also be applied to an individual
  * item using `Modifier.margin`.
  * @param horizontalAlignment The horizontal alignment applied to the items.
- * @param pullRefreshContentColor The color of the pull-to-refresh indicator.
+ * @param pullRefreshContentColor The color of the pull-to-refresh indicator as an ARGB color int.
+ * For example, the color `0xFF00AA00` would be a dark green with 100% opacity.
  * @param modifier The modifier to apply to this layout.
  * @param placeholder A block which describes the content of each placeholder item. Note that the
  * placeholder block will be invoked multiple times, and assumes that the content and its sizing on
