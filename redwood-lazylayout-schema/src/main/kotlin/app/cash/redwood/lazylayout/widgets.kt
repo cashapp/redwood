@@ -49,7 +49,7 @@ public data class LazyList(
 @Widget(2)
 public data class RefreshableLazyList(
   /**
-   * The layout orientation of the list.
+   * Whether the list should be vertically oriented.
    */
   @Property(1) val isVertical: Boolean,
 
