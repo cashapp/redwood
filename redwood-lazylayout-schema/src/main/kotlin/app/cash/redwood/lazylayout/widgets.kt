@@ -123,6 +123,8 @@ public data class RefreshableLazyList(
 
   /**
    * A block which describes the content of each placeholder item.
+   *
+   * @see app.cash.redwood.lazylayout.compose.LazyRow
    */
   @Children(1) val placeholder: () -> Unit,
 
