@@ -131,8 +131,12 @@ public data class RefreshableLazyList(
   @Children(1) val placeholder: () -> Unit,
 
   /**
-   * The window of items to be inflated by the native lazy list widget implementation. The window
-   * should be offset by [itemsAfter], and should have a size of
+   * The window of items to be inflated by the native lazy list widget implementation. The window is
+   * defined as a sequential subset of the composables emitted in [items]. These composables are
+   * created by incrementally passing a range of indices to the user-defined `item` factories, as
+   * specified in the `LazyListScope` functions.
+   *
+   * The window should be offset by [itemsAfter], and should have a size of
    * `count - [itemsBefore] - [itemsAfter]`, where `count` is the total number of items that
    * theoretically exists in the list.
    *
