@@ -23,83 +23,26 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.ui.Margin
 
+/**
+ * The documentation for [LazyList] is a subset of the documentation for [RefreshableLazyList]. In
+ * order to avoid documentation duplication, see [LazyList]. The documentation should be unified
+ * once https://github.com/cashapp/redwood/issues/1084 is implemented and [RefreshableLazyList] is
+ * deprecated and removed.
+ *
+ * @see LazyList
+ */
 @Widget(1)
 public data class LazyList(
-  /**
-   * The layout orientation of the list.
-   */
   @Property(1) val isVertical: Boolean,
-
-  /**
-   * Invoked when the user has scrolled the list, such that the `firstVisibleItemIndex` or the
-   * `lastVisibleItemIndex` has changed. When the user performs a fling, [onViewportChanged] will be
-   * invoked multiple times.
-   *
-   * The `firstVisibleItemIndex` is the index of the first partially visible item within the
-   * viewport. The `lastVisibleItemIndex` is the index of the last partially visible item within the
-   * viewport.
-   */
   @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
-
-  /**
-   * The number of un-emitted items before the [items] window.
-   *
-   * @see [items]
-   */
   @Property(3) val itemsBefore: Int,
-
-  /**
-   * The number of un-emitted items after the [items] window.
-   *
-   * @see [items]
-   */
   @Property(4) val itemsAfter: Int,
-
-  /**
-   * Sets whether the list's width will wrap its contents ([Constraint.Wrap]) or match the width of
-   * its parent ([Constraint.Fill]).
-   */
   @Property(5) val width: Constraint,
-
-  /**
-   * Sets whether the list's height will wrap its contents ([Constraint.Wrap]) or match the height
-   * of its parent ([Constraint.Fill]).
-   */
   @Property(6) val height: Constraint,
-
-  /**
-   * Applies margin (space) around the list.
-   */
   @Property(7) val margin: Margin,
-
-  /**
-   * If [isVertical], sets the default horizontal alignment for items in this list. Else, sets the
-   * default vertical alignment for items in this list.
-   */
   @Property(8) val crossAxisAlignment: CrossAxisAlignment,
-
-  /**
-   * The last [ScrollItemIndex] programmatically requested by the user.
-   */
   @Property(9) val scrollItemIndex: ScrollItemIndex,
-
-  /**
-   * A block which describes the content of each placeholder item.
-   */
   @Children(1) val placeholder: () -> Unit,
-
-  /**
-   * The window of items to be inflated by the native lazy list widget implementation. The window
-   * should be offset by [itemsAfter], and should have a size of
-   * `count - [itemsBefore] - [itemsAfter]`, where `count` is the total number of items that
-   * theoretically exists in the list.
-   *
-   * This field should not be confused with `LazyListScope.items` (et al.) The functions in
-   * `LazyListScope` specify what the list theoretically consists of. This property specifies what
-   * the list practically consists of, as a function of the current view port. This difference is
-   * what distinguishes the `LazyRow` and `LazyColumn` widgets from their non-lazy counterparts
-   * (`Row` and `Column`).
-   */
   @Children(2) val items: () -> Unit,
 )
 
