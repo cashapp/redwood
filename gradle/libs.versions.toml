@@ -1,12 +1,12 @@
 [versions]
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization = "1.6.2"
 androidx-activity = "1.8.2"
 androidx-compose-ui = "1.5.4"
 jbCompose = "1.5.11"
 lint = "31.2.1"
-zipline = "1.7.0"
+zipline = "1.8.0"
 coil = "3.0.0-alpha02"
 okio = "3.7.0"
 ktor = "2.3.7"
@@ -38,7 +38,7 @@ buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx.activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
-androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.7"
+androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.8"
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-ui" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
@@ -50,7 +50,7 @@ androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 
 google-material = { module = "com.google.android.material:material", version = "1.11.0" }
 
-jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.4"
+jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.7.1"
 jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jbCompose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }
@@ -83,6 +83,6 @@ ktor-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 turbine = "app.cash.turbine:turbine:1.0.0"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.1.1"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.19.2"
-poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.1"
+poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.2"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
