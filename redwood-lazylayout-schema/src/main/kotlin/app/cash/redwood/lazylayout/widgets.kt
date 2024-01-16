@@ -112,7 +112,9 @@ public data class RefreshableLazyList(
   @Property(10) val crossAxisAlignment: CrossAxisAlignment,
 
   /**
-   * The last [ScrollItemIndex] programmatically requested by the user.
+   * The last [ScrollItemIndex] programmatically requested by the user. The native lazy list widget
+   * implementation will scroll itself such that the item index will be at the start of the
+   * viewport.
    */
   @Property(11) val scrollItemIndex: ScrollItemIndex,
 
