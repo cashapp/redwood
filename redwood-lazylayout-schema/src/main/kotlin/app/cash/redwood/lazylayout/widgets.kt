@@ -26,8 +26,8 @@ import app.cash.redwood.ui.Margin
 /**
  * The documentation for [LazyList] is a subset of the documentation for [RefreshableLazyList]. In
  * order to avoid documentation duplication, see [LazyList]. The documentation should be unified
- * once https://github.com/cashapp/redwood/issues/1084 is implemented and [RefreshableLazyList] is
- * deprecated and removed.
+ * once https://github.com/cashapp/redwood/issues/1084 is implemented and [RefreshableLazyList] has
+ * been deprecated and removed.
  *
  * @see LazyList
  */
