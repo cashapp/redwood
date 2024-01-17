@@ -17,6 +17,8 @@ package app.cash.redwood.treehouse
 
 import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
+import app.cash.zipline.loader.DefaultFreshnessCheckerNotFresh
+import app.cash.zipline.loader.FreshnessChecker
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
@@ -159,6 +161,7 @@ public class TreehouseApp<A : AppService> private constructor(
       applicationName = spec.name,
       manifestUrlFlow = spec.manifestUrl,
       serializersModule = spec.serializersModule,
+      freshnessChecker = spec.freshnessChecker,
     ) { zipline ->
       spec.bindServices(zipline)
     }
@@ -238,6 +241,9 @@ public class TreehouseApp<A : AppService> private constructor(
 
     public open val serializersModule: SerializersModule
       get() = EmptySerializersModule()
+
+    public open val freshnessChecker: FreshnessChecker
+      get() = DefaultFreshnessCheckerNotFresh
 
     /**
      * Returns true to only load code from the network. Otherwise, this will recover from
