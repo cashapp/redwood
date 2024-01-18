@@ -17,6 +17,8 @@ package com.example.redwood.emojisearch.launcher
 
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
+import app.cash.zipline.loader.FreshnessChecker
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.HostApi
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
@@ -28,6 +30,11 @@ class EmojiSearchAppSpec(
 ) : TreehouseApp.Spec<EmojiSearchPresenter>() {
   override val name = "emoji-search"
   override val serializersModule = emojiSearchSerializersModule
+
+  override val freshnessChecker: FreshnessChecker
+    get() = object : FreshnessChecker {
+      override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
+    }
 
   override fun bindServices(zipline: Zipline) {
     zipline.bind<HostApi>("HostApi", hostApi)
