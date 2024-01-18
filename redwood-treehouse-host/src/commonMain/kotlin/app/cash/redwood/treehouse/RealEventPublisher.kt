@@ -61,6 +61,14 @@ internal class RealEventPublisher(
       listener.codeLoadSkipped(startValue)
     }
 
+    override fun applicationLoadSkippedNotFresh(
+      applicationName: String,
+      manifestUrl: String?,
+      startValue: Any?,
+    ) {
+      listener.codeLoadSkippedNotFresh(startValue)
+    }
+
     override fun applicationLoadFailed(
       applicationName: String,
       manifestUrl: String?,
@@ -113,6 +121,14 @@ internal class RealEventPublisher(
       verifiedKey: String,
     ) {
       listener.manifestVerified(manifest, verifiedKey)
+    }
+
+    override fun manifestReady(
+      applicationName: String,
+      manifestUrl: String?,
+      manifest: ZiplineManifest,
+    ) {
+      listener.manifestReady(manifest)
     }
 
     override fun moduleLoadStart(zipline: Zipline, moduleId: String): Any? {
