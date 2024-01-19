@@ -41,6 +41,15 @@ public open class EventListener {
   public open fun codeLoadStart(): Any? = null
 
   /**
+   * Invoked when a Zipline is created, after [codeLoadStart] and before any application code is
+   * loaded.
+   */
+  public open fun ziplineCreated(
+    zipline: Zipline,
+  ) {
+  }
+
+  /**
    * Invoked when code is successfully downloaded and initialized.
    *
    * @param startValue the value returned by [codeLoadStart] for the start of this call. This
@@ -60,6 +69,17 @@ public open class EventListener {
    *   is null unless [codeLoadStart] is overridden to return something else.
    */
   public open fun codeLoadSkipped(
+    startValue: Any?,
+  ) {
+  }
+
+  /**
+   * Invoked when a code load is skipped because the cached code isn't up-to-date.
+   *
+   * @param startValue the value returned by [codeLoadStart] for the start of this call. This
+   *   is null unless [codeLoadStart] is overridden to return something else.
+   */
+  public open fun codeLoadSkippedNotFresh(
     startValue: Any?,
   ) {
   }
@@ -187,6 +207,15 @@ public open class EventListener {
   public open fun manifestVerified(
     manifest: ZiplineManifest,
     verifiedKey: String,
+  ) {
+  }
+
+  /**
+   * Invoked when the loader has successfully fetched a manifest, verified it (if necessary), and
+   * will proceed to download and load each of its modules.
+   */
+  public open fun manifestReady(
+    manifest: ZiplineManifest,
   ) {
   }
 
