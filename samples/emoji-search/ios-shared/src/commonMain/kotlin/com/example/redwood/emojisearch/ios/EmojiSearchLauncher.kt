@@ -63,7 +63,6 @@ class EmojiSearchLauncher(
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
-      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)
@@ -75,6 +74,7 @@ class EmojiSearchLauncher(
         manifestUrl = manifestUrlFlow,
         hostApi = hostApi,
       ),
+      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     treehouseApp.start()
