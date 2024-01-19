@@ -43,6 +43,12 @@ internal class RealEventPublisher(
       return listener.codeLoadStart()
     }
 
+    override fun ziplineCreated(
+      zipline: Zipline,
+    ) {
+      listener.ziplineCreated(zipline)
+    }
+
     override fun applicationLoadSuccess(
       applicationName: String,
       manifestUrl: String?,

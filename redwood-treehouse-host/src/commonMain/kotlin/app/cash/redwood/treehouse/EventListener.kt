@@ -41,6 +41,15 @@ public open class EventListener {
   public open fun codeLoadStart(): Any? = null
 
   /**
+   * Invoked when a Zipline is created, after [codeLoadStart] and before any application code is
+   * loaded.
+   */
+  public open fun ziplineCreated(
+    zipline: Zipline,
+  ) {
+  }
+
+  /**
    * Invoked when code is successfully downloaded and initialized.
    *
    * @param startValue the value returned by [codeLoadStart] for the start of this call. This
