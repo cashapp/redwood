@@ -142,7 +142,6 @@ class EmojiSearchActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
-      eventListenerFactory = { app, manifestUrl -> appEventListener },
       embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
       stateStore = FileStateStore(
@@ -164,6 +163,7 @@ class EmojiSearchActivity : ComponentActivity() {
         manifestUrl = manifestUrlFlow,
         hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
       ),
+      eventListenerFactory = { app, manifestUrl -> appEventListener },
     )
 
     treehouseApp.start()

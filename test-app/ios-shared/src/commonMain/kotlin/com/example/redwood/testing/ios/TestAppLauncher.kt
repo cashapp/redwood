@@ -56,7 +56,6 @@ class TestAppLauncher(
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = NO_SIGNATURE_CHECKS,
-      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)
@@ -68,6 +67,7 @@ class TestAppLauncher(
         manifestUrl = manifestUrlFlow,
         hostApi = hostApi,
       ),
+      eventListenerFactory = { app, manifestUrl -> eventListener },
     )
 
     treehouseApp.start()

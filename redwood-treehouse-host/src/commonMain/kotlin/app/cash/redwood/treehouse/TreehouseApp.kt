@@ -42,6 +42,7 @@ public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   private val appScope: CoroutineScope,
   public val spec: Spec<A>,
+  private val eventListenerFactory: EventListener.Factory,
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
@@ -139,7 +140,7 @@ public class TreehouseApp<A : AppService> private constructor(
 
     // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
     val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
-      val eventListener = factory.eventListenerFactory.create(this@TreehouseApp, manifestUrl)
+      val eventListener = eventListenerFactory.create(this@TreehouseApp, manifestUrl)
       RealEventPublisher(eventListener).ziplineEventListener
     }
     loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
@@ -194,7 +195,6 @@ public class TreehouseApp<A : AppService> private constructor(
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,
-    internal val eventListenerFactory: EventListener.Factory,
     internal val httpClient: ZiplineHttpClient,
     internal val frameClockFactory: FrameClock.Factory,
     internal val manifestVerifier: ManifestVerifier,
@@ -213,7 +213,8 @@ public class TreehouseApp<A : AppService> private constructor(
     public fun <A : AppService> create(
       appScope: CoroutineScope,
       spec: Spec<A>,
-    ): TreehouseApp<A> = TreehouseApp(this, appScope, spec)
+      eventListenerFactory: EventListener.Factory = EventListener.NONE,
+    ): TreehouseApp<A> = TreehouseApp(this, appScope, spec, eventListenerFactory)
 
     override fun close() {
       cache.close()
