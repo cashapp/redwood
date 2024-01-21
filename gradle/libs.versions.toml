@@ -7,9 +7,8 @@ androidx-compose-ui = "1.5.4"
 jbCompose = "1.5.11"
 lint = "31.2.1"
 zipline = "1.8.0"
-coil = "3.0.0-alpha02"
+coil = "3.0.0-alpha03"
 okio = "3.7.0"
-ktor = "2.3.7"
 
 [libraries]
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
@@ -78,8 +77,7 @@ paparazzi-gradlePlugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin"
 jimfs = "com.google.jimfs:jimfs:1.3.0"
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
-coil-network = { module = "io.coil-kt.coil3:coil-network", version.ref = "coil" }
-ktor-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 turbine = "app.cash.turbine:turbine:1.0.0"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.1.1"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.19.2"

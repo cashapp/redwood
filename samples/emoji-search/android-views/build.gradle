@@ -20,8 +20,7 @@ android {
 
 dependencies {
   implementation libs.coil.core
-  implementation libs.coil.network
-  implementation libs.ktor.engine.okhttp
+  implementation libs.coil.network.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
