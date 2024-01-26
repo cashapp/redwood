@@ -367,7 +367,9 @@ private fun parseModifier(
     "@Modifier $memberFqType must have at least one scope."
   }
 
-  val properties = if (memberType.isData) {
+  val properties = if (memberType.objectInstance != null) {
+    emptyList()
+  } else if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->
       val kProperty = memberType.memberProperties.single { it.name == parameter.name }
       val name = kProperty.name
@@ -390,8 +392,6 @@ private fun parseModifier(
         deprecation = deprecation,
       )
     }
-  } else if (memberType.objectInstance != null) {
-    emptyList()
   } else {
     throw IllegalArgumentException(
       "@Modifier ${memberType.qualifiedName} must be 'data' class or 'object'",
