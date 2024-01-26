@@ -36,6 +36,7 @@ import kotlin.time.Duration
     CustomTypeStateless::class,
     CustomTypeWithDefault::class,
     CustomTypeWithMultipleScopes::class,
+    CustomTypeDataObject::class,
     Text::class,
     Button::class,
     Button2::class,
@@ -136,3 +137,6 @@ public data class CustomTypeWithDefault(
 
 @Modifier(6, TestScope::class, SecondaryTestScope::class)
 public object CustomTypeWithMultipleScopes
+
+@Modifier(7, TestScope::class)
+public data object CustomTypeDataObject
