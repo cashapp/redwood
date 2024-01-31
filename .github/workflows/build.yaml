@@ -96,6 +96,8 @@ jobs:
 
       - run: ./gradlew -p samples/counter build
 
+      - run: ./scripts/write_entitlements.sh
+
       - name: Build Counter iOS (UIKit)
         run: xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
@@ -133,6 +135,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew -p samples/emoji-search build
+
+      - run: ./scripts/write_entitlements.sh
 
       - name: Build Emoji Search iOS (UIKit)
         run: xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
