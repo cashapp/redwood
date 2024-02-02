@@ -7,7 +7,7 @@ androidx-compose-ui = "1.6.0"
 jbCompose = "1.5.12"
 lint = "31.2.2"
 zipline = "1.8.0"
-coil = "3.0.0-alpha03"
+coil = "3.0.0-alpha04"
 okio = "3.7.0"
 
 [libraries]
