@@ -36,8 +36,12 @@ public class StandardAppLifecycle(
   private var started = false
   private lateinit var host: Host
 
-  private lateinit var broadcastFrameClock: BroadcastFrameClock
-  internal lateinit var frameClock: MonotonicFrameClock
+  private val broadcastFrameClock: BroadcastFrameClock = BroadcastFrameClock {
+    if (started) {
+      host.requestFrame()
+    }
+  }
+  public val frameClock: MonotonicFrameClock = broadcastFrameClock
 
   internal val mismatchHandler: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
@@ -63,10 +67,7 @@ public class StandardAppLifecycle(
   override fun start(host: Host) {
     check(!started) { "already started" }
     this.started = true
-
     this.host = host
-    this.broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
-    this.frameClock = broadcastFrameClock
 
     prepareEnvironment(coroutineExceptionHandler)
   }
