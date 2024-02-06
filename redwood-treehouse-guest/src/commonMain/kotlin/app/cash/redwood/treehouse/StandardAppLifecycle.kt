@@ -41,7 +41,7 @@ public class StandardAppLifecycle(
       host.requestFrame()
     }
   }
-  public val frameClock: MonotonicFrameClock = broadcastFrameClock
+  public val frameClock: MonotonicFrameClock get() = broadcastFrameClock
 
   internal val mismatchHandler: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
