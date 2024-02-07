@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.MatchParentSize
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
@@ -114,6 +115,9 @@ internal class UIViewBox : Box<UIView> {
             }
             is Height -> {
               requestedHeight = childModifier.height.toPlatformDp()
+            }
+            is MatchParentSize -> {
+
             }
           }
         }

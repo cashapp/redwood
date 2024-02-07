@@ -32,11 +32,12 @@ import app.cash.redwood.schema.Schema
     Height::class,
     HorizontalAlignment::class,
     Margin::class,
+    MatchParentSize::class,
     Shrink::class,
     Size::class,
     VerticalAlignment::class,
     Width::class,
-    // Next tag: 10
+    // Next tag: 11
   ],
 )
 public interface RedwoodLayout

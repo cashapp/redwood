@@ -28,6 +28,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
+import app.cash.redwood.layout.modifier.MatchParentSize
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
@@ -143,6 +144,10 @@ internal class ViewBox(
             topMargin = childModifier.margin.top.toPxInt()
             bottomMargin = childModifier.margin.bottom.toPxInt()
           }
+        }
+
+        is MatchParentSize -> {
+
         }
       }
     }

@@ -103,3 +103,11 @@ public data class Size(
 public data class Flex(
   val value: Double,
 )
+
+/**
+ * Size the widget to match the size of the [Box] after all other sibling widgets have been
+ * measured. The widget this modifier is applied to does not take part in defining the size of the
+ * [Box].
+ */
+@Modifier(10, BoxScope::class)
+public data object MatchParentSize
