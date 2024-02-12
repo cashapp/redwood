@@ -30,7 +30,7 @@ jobs:
 
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
 
-  connected:
+  emulator-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Enable KVM group perms
@@ -115,14 +115,34 @@ jobs:
 
       - run: ./gradlew -p samples/counter build
 
+      - name: Build Counter iOS (UIKit)
+        run: xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+
+  sample-counter-emulator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4.0.0
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
+
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           emulator-boot-timeout: 20000
           script: ./gradlew -p samples/counter connectedCheck
-
-      - name: Build Counter iOS (UIKit)
-        run: xcodebuild -project samples/counter/ios-uikit/CounterApp.xcodeproj -scheme CounterApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   sample-emoji:
     runs-on: macos-latest
@@ -140,14 +160,34 @@ jobs:
 
       - run: ./gradlew -p samples/emoji-search build
 
+      - name: Build Emoji Search iOS (UIKit)
+        run: xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+
+  sample-emoji-emulator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4.0.0
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - uses: gradle/gradle-build-action@v2
+        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
+        timeout-minutes: 5
+        continue-on-error: true
+
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           emulator-boot-timeout: 20000
           script: ./gradlew -p samples/emoji-search connectedCheck
-
-      - name: Build Emoji Search iOS (UIKit)
-        run: xcodebuild -project samples/emoji-search/ios-uikit/EmojiSearchApp.xcodeproj -scheme EmojiSearchApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest'
 
   test-app:
     runs-on: macos-latest
@@ -173,11 +213,13 @@ jobs:
     if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
     needs:
       - build
-      - connected
       - dokka
-      - sample-counter
-      - sample-emoji
+      - emulator-tests
       - screenshot-tests
+      - sample-counter
+      - sample-counter-emulator
+      - sample-emoji
+      - sample-emoji-emulator
       - test-app
     steps:
       - uses: actions/checkout@v4
