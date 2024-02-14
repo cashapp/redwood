@@ -34,6 +34,7 @@ import assertk.assertions.contains
 import assertk.assertions.containsExactly
 import assertk.assertions.containsMatch
 import assertk.assertions.hasMessage
+import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -622,6 +623,100 @@ class SchemaParserTest(
 
     val modifier = schema.modifiers.single()
     assertThat(modifier.tag).isEqualTo(1)
+  }
+
+  @Schema(
+    members = [],
+    reservedWidgets = [1, 2, 3, 1, 3, 1],
+  )
+  interface SchemaDuplicateReservedWidgets
+
+  @Test fun schemaDuplicateReservedWidgetsFails() {
+    assertFailure {
+      parser.parse(SchemaDuplicateReservedWidgets::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Schema reserved widgets contains duplicates [1, 3]")
+  }
+
+  @Schema(
+    members = [],
+    reservedModifiers = [1, 2, 3, 1, 3, 1],
+  )
+  interface SchemaDuplicateReservedModifiers
+
+  @Test fun schemaDuplicateReservedModifiersFails() {
+    assertFailure {
+      parser.parse(SchemaDuplicateReservedModifiers::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Schema reserved modifiers contains duplicates [1, 3]")
+  }
+
+  @Schema(
+    members = [ReservedWidget::class],
+    reservedWidgets = [1, 2, 3],
+  )
+  interface SchemaReservedWidgetCollision
+
+  @Widget(2)
+  object ReservedWidget
+
+  @Test fun schemaReservedWidgetCollision() {
+    assertFailure {
+      parser.parse(SchemaReservedWidgetCollision::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage(
+        """
+        |Schema @Widget tags must not be included in reserved set [1, 2, 3]
+        |
+        |- @Widget(2) app.cash.redwood.tooling.schema.SchemaParserTest.ReservedWidget
+        """.trimMargin(),
+      )
+  }
+
+  @Schema(
+    members = [ReservedModifier::class],
+    reservedModifiers = [1, 2, 3],
+  )
+  interface SchemaReservedModifierCollision
+
+  @Modifier(2, TestScope::class)
+  object ReservedModifier
+
+  @Test fun schemaReservedModifierCollision() {
+    assertFailure {
+      parser.parse(SchemaReservedModifierCollision::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage(
+        """
+        |Schema @Modifier tags must not be included in reserved set [1, 2, 3]
+        |
+        |- @Modifier(2, …) app.cash.redwood.tooling.schema.SchemaParserTest.ReservedModifier
+        """.trimMargin(),
+      )
+  }
+
+  @Schema(
+    members = [ReservedModifier::class],
+    reservedWidgets = [1, 2, 3],
+  )
+  interface SchemaReservedWidgetDoesNotApplyToModifier
+
+  @Test fun schemaReservedWidgetDoesNotApplyToModifier() {
+    val schema = parser.parse(SchemaReservedWidgetDoesNotApplyToModifier::class).schema
+    assertThat(schema.widgets).hasSize(0)
+    assertThat(schema.modifiers).hasSize(1)
+  }
+
+  @Schema(
+    members = [ReservedWidget::class],
+    reservedModifiers = [1, 2, 3],
+  )
+  interface SchemaReservedModifierDoesNotApplyToWidget
+
+  @Test fun schemaReservedModifierDoesNotApplyToWidget() {
+    val schema = parser.parse(SchemaReservedModifierDoesNotApplyToWidget::class).schema
+    assertThat(schema.widgets).hasSize(1)
+    assertThat(schema.modifiers).hasSize(0)
   }
 
   @Schema(

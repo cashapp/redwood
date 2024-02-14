@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  * Annotates an otherwise unused type with a set of [Widget]-annotated or [Modifier]-annotated
  * classes which are all part of this schema.
  *
- * ```
+ * ```kotlin
  * @Schema([
  *   Row::class,
  *   RowAlignment::class,
@@ -42,6 +42,44 @@ import kotlin.reflect.KClass
 public annotation class Schema(
   val members: Array<KClass<*>>,
   val dependencies: Array<Dependency> = [],
+  /**
+   * Widget tags which are reserved. These cannot be used by a widget in [members].
+   * This is useful for ensuring tags from old, retired widgets are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedWidgets = [
+   *     4, // Retired Column widget.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedWidgets: IntArray = [],
+  /**
+   * Modifier tags which are reserved. These cannot be used by a modifier in [members].
+   * This is useful for ensuring tags from old, retired modifiers are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedModifiers = [
+   *     3, // Retired RowAlignment modifier.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedModifiers: IntArray = [],
 ) {
   @Retention(RUNTIME)
   @Target // None, use only within @Schema.
