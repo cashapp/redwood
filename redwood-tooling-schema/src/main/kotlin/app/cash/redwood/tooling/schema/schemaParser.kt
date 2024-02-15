@@ -106,7 +106,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val modifier = mutableListOf<ParsedProtocolModifier>()
+  val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
     val modifierAnnotation = memberType.findAnnotation<ModifierAnnotation>()
@@ -118,7 +118,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, widgetAnnotation)
     } else if (modifierAnnotation != null) {
-      modifier += parseModifier(memberType, modifierAnnotation)
+      modifiers += parseModifier(memberType, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -137,7 +137,26 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
-  val badModifiers = modifier.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  val badReservedWidgets = schemaAnnotation.reservedWidgets
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedWidgets.isEmpty()) {
+    "Schema reserved widgets contains duplicates $badReservedWidgets"
+  }
+
+  val reservedWidgets = widgets.filter { it.tag in schemaAnnotation.reservedWidgets }
+  if (reservedWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Widget tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedWidgets.contentToString())
+        for (widget in reservedWidgets) {
+          append("\n- @Widget(${widget.tag}) ${widget.type}")
+        }
+      },
+    )
+  }
+
+  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
   if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -150,11 +169,30 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
+  val badReservedModifiers = schemaAnnotation.reservedModifiers
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedModifiers.isEmpty()) {
+    "Schema reserved modifiers contains duplicates $badReservedModifiers"
+  }
+
+  val reservedModifiers = modifiers.filter { it.tag in schemaAnnotation.reservedModifiers }
+  if (reservedModifiers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Modifier tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedModifiers.contentToString())
+        for (widget in reservedModifiers) {
+          append("\n- @Modifier(${widget.tag}, …) ${widget.type}")
+        }
+      },
+    )
+  }
+
   val widgetScopes = widgets
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val modifierScopes = modifier
+  val modifierScopes = modifiers
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
@@ -210,7 +248,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
-    modifiers = modifier,
+    modifiers = modifiers,
     taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
