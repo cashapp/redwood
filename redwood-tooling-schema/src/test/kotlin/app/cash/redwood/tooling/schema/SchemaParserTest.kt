@@ -720,6 +720,126 @@ class SchemaParserTest(
   }
 
   @Schema(
+    [
+      WidgetDuplicateReservedProperties::class,
+    ],
+  )
+  interface SchemaDuplicateReservedProperties
+
+  @Widget(1, reservedProperties = [1, 2, 3, 1, 3, 1])
+  object WidgetDuplicateReservedProperties
+
+  @Test fun widgetDuplicateReservedProperties() {
+    assertFailure {
+      parser.parse(SchemaDuplicateReservedProperties::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateReservedProperties reserved properties contains duplicates [1, 3]")
+  }
+
+  @Schema(
+    [
+      WidgetDuplicateReservedChildren::class,
+    ],
+  )
+  interface SchemaDuplicateReservedChildren
+
+  @Widget(1, reservedChildren = [1, 2, 3, 1, 3, 1])
+  object WidgetDuplicateReservedChildren
+
+  @Test fun widgetDuplicateReservedChildren() {
+    assertFailure {
+      parser.parse(SchemaDuplicateReservedChildren::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateReservedChildren reserved children contains duplicates [1, 3]")
+  }
+
+  @Schema(
+    [
+      WidgetReservedPropertyCollision::class,
+    ],
+  )
+  interface SchemaReservedPropertyCollision
+
+  @Widget(1, reservedProperties = [2])
+  data class WidgetReservedPropertyCollision(
+    @Property(1) val text: String,
+    @Property(2) val color: Int,
+  )
+
+  @Test fun widgetReservedPropertyCollision() {
+    assertFailure {
+      parser.parse(SchemaReservedPropertyCollision::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage(
+        """
+        |Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetReservedPropertyCollision @Property tags must not be included in reserved set [2]
+        |
+        |- @Property(2) color
+        """.trimMargin(),
+      )
+  }
+
+  @Schema(
+    [
+      WidgetReservedChildrenCollision::class,
+    ],
+  )
+  interface SchemaReservedChildrenCollision
+
+  @Widget(1, reservedChildren = [2])
+  data class WidgetReservedChildrenCollision(
+    @Children(1) val left: () -> Unit,
+    @Children(2) val right: () -> Unit,
+  )
+
+  @Test fun widgetReservedChildrenCollision() {
+    assertFailure {
+      parser.parse(SchemaReservedChildrenCollision::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage(
+        """
+        |Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetReservedChildrenCollision @Children tags must not be included in reserved set [2]
+        |
+        |- @Children(2) right
+        """.trimMargin(),
+      )
+  }
+
+  @Schema(
+    [
+      WidgetReservedPropertyDoesNotApplyToChildren::class,
+    ],
+  )
+  interface SchemaReservedPropertyDoesNotApplyToChildren
+
+  @Widget(1, reservedProperties = [1])
+  data class WidgetReservedPropertyDoesNotApplyToChildren(
+    @Children(1) val content: () -> Unit,
+  )
+
+  @Test fun widgetReservedPropertyDoesNotApplyToChildren() {
+    val schema = parser.parse(SchemaReservedPropertyDoesNotApplyToChildren::class).schema
+    assertThat(schema.widgets.single().traits).hasSize(1)
+  }
+
+  @Schema(
+    [
+      WidgetReservedChildrenDoesNotApplyToProperty::class,
+    ],
+  )
+  interface SchemaReservedChildrenDoesNotApplyToProperty
+
+  @Widget(1, reservedChildren = [1])
+  data class WidgetReservedChildrenDoesNotApplyToProperty(
+    @Property(1) val text: String,
+  )
+
+  @Test fun widgetReservedChildrenDoesNotApplyToProperty() {
+    val schema = parser.parse(SchemaReservedChildrenDoesNotApplyToProperty::class).schema
+    assertThat(schema.widgets.single().traits).hasSize(1)
+  }
+
+  @Schema(
     members = [],
     dependencies = [
       Dependency(4, RedwoodLayout::class),
