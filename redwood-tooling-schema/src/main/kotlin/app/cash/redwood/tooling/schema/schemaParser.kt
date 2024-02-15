@@ -369,6 +369,26 @@ private fun parseWidget(
     )
   }
 
+  val badReservedChildren = annotation.reservedChildren
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedChildren.isEmpty()) {
+    "Widget ${memberType.qualifiedName} reserved children contains duplicates $badReservedChildren"
+  }
+
+  val reservedChildren = traits.filterIsInstance<ProtocolChildren>()
+    .filter { it.tag in annotation.reservedChildren }
+  if (reservedChildren.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget ${memberType.qualifiedName} @Children tags must not be included in reserved set ")
+        appendLine(annotation.reservedChildren.contentToString())
+        for (children in reservedChildren) {
+          append("\n- @Children(${children.tag}) ${children.name}")
+        }
+      },
+    )
+  }
+
   val badProperties = traits.filterIsInstance<ProtocolProperty>()
     .groupBy(ProtocolProperty::tag)
     .filterValues { it.size > 1 }
@@ -379,6 +399,26 @@ private fun parseWidget(
         for ((propertyTag, group) in badProperties) {
           append("\n- @Property($propertyTag): ")
           group.joinTo(this) { it.name }
+        }
+      },
+    )
+  }
+
+  val badReservedProperties = annotation.reservedProperties
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedProperties.isEmpty()) {
+    "Widget ${memberType.qualifiedName} reserved properties contains duplicates $badReservedProperties"
+  }
+
+  val reservedProperties = traits.filterIsInstance<ProtocolProperty>()
+    .filter { it.tag in annotation.reservedProperties }
+  if (reservedProperties.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget ${memberType.qualifiedName} @Property tags must not be included in reserved set ")
+        appendLine(annotation.reservedProperties.contentToString())
+        for (children in reservedProperties) {
+          append("\n- @Property(${children.tag}) ${children.name}")
         }
       },
     )
