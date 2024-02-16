@@ -49,7 +49,7 @@ androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 
 google-material = { module = "com.google.android.material:material", version = "1.11.0" }
 
-jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.8"
+jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.8.1"
 jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jbCompose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }
