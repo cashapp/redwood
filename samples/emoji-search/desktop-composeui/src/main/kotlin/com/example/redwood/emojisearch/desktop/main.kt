@@ -27,9 +27,6 @@ import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.Margin
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
-import coil3.fetch.NetworkFetcher
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.composeui.JvmHttpClient
@@ -37,14 +34,6 @@ import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 
 fun main() {
-  SingletonImageLoader.setSafe { context ->
-    ImageLoader.Builder(context)
-      .components {
-        add(NetworkFetcher.Factory())
-      }
-      .build()
-  }
-
   val httpClient = JvmHttpClient()
   val navigator = DesktopNavigator
   val factories = EmojiSearchWidgetFactories(

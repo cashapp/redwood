@@ -20,7 +20,6 @@ android {
 }
 
 dependencies {
-  implementation libs.coil.compose
   implementation libs.coil.network.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android

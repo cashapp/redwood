@@ -44,9 +44,6 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
-import coil3.fetch.NetworkFetcher
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
@@ -70,14 +67,6 @@ class EmojiSearchActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
-
-    SingletonImageLoader.setSafe { context ->
-      ImageLoader.Builder(context)
-        .components {
-          add(NetworkFetcher.Factory())
-        }
-        .build()
-    }
 
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
