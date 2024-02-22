@@ -45,9 +45,9 @@ module:redwood-lazylayout-widget
 app.cash.redwood.lazylayout.widget
 module:redwood-protocol
 app.cash.redwood.protocol
-module:redwood-protocol-compose
-app.cash.redwood.protocol.compose
-module:redwood-protocol-widget
+module:redwood-protocol-guest
+app.cash.redwood.protocol.guest
+module:redwood-protocol-host
 app.cash.redwood.protocol.widget
 module:redwood-runtime
 app.cash.redwood
