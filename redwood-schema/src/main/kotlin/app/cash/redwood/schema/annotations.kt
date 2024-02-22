@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  * Annotates an otherwise unused type with a set of [Widget]-annotated or [Modifier]-annotated
  * classes which are all part of this schema.
  *
- * ```
+ * ```kotlin
  * @Schema([
  *   Row::class,
  *   RowAlignment::class,
@@ -42,6 +42,44 @@ import kotlin.reflect.KClass
 public annotation class Schema(
   val members: Array<KClass<*>>,
   val dependencies: Array<Dependency> = [],
+  /**
+   * Widget tags which are reserved. These cannot be used by a widget in [members].
+   * This is useful for ensuring tags from old, retired widgets are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedWidgets = [
+   *     4, // Retired Column widget.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedWidgets: IntArray = [],
+  /**
+   * Modifier tags which are reserved. These cannot be used by a modifier in [members].
+   * This is useful for ensuring tags from old, retired modifiers are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedModifiers = [
+   *     3, // Retired RowAlignment modifier.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedModifiers: IntArray = [],
 ) {
   @Retention(RUNTIME)
   @Target // None, use only within @Schema.
@@ -67,7 +105,39 @@ public annotation class Schema(
  */
 @Retention(RUNTIME)
 @Target(CLASS)
-public annotation class Widget(val tag: Int)
+public annotation class Widget(
+  val tag: Int,
+  /**
+   * Property tags which are reserved. These cannot be used by a [@Property][Property] annotation.
+   * This is useful for ensuring tags from old, retired properties are not accidentally reused.
+   *
+   * ```kotlin
+   * @Widget(
+   *   tag = 12,
+   *   reservedProperties = [
+   *     3, // Retired double-click event.
+   *   ],
+   * )
+   * data class MyButton(…)
+   * ```
+   */
+  val reservedProperties: IntArray = [],
+  /**
+   * Children tags which are reserved. These cannot be used by a [@Children][Children] annotation.
+   * This is useful for ensuring tags from old, retired children are not accidentally reused.
+   *
+   * ```kotlin
+   * @Widget(
+   *   tag = 12,
+   *   reservedChildren = [
+   *     2, // Retired action item slot.
+   *   ],
+   * )
+   * data class Toolbar(…)
+   * ```
+   */
+  val reservedChildren: IntArray = [],
+)
 
 /**
  * Annotates a [Widget] property which represents a property on the associated UI widget. Properties

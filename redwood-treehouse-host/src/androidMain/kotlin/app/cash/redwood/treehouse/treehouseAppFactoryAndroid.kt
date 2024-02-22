@@ -27,7 +27,6 @@ public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
   manifestVerifier: ManifestVerifier,
-  eventListenerFactory: EventListener.Factory = EventListener.NONE,
   embeddedDir: Path? = null,
   embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",
@@ -37,7 +36,6 @@ public fun TreehouseAppFactory(
 ): TreehouseApp.Factory = TreehouseApp.Factory(
   platform = AndroidTreehousePlatform(context),
   dispatchers = AndroidTreehouseDispatchers(),
-  eventListenerFactory = eventListenerFactory,
   httpClient = httpClient.asZiplineHttpClient(),
   frameClockFactory = AndroidChoreographerFrameClock.Factory(),
   manifestVerifier = manifestVerifier,

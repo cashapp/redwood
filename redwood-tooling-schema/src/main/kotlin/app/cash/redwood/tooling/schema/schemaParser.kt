@@ -106,7 +106,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val modifier = mutableListOf<ParsedProtocolModifier>()
+  val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in memberTypes) {
     val widgetAnnotation = memberType.findAnnotation<WidgetAnnotation>()
     val modifierAnnotation = memberType.findAnnotation<ModifierAnnotation>()
@@ -118,7 +118,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, widgetAnnotation)
     } else if (modifierAnnotation != null) {
-      modifier += parseModifier(memberType, modifierAnnotation)
+      modifiers += parseModifier(memberType, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -137,7 +137,26 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
-  val badModifiers = modifier.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  val badReservedWidgets = schemaAnnotation.reservedWidgets
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedWidgets.isEmpty()) {
+    "Schema reserved widgets contains duplicates $badReservedWidgets"
+  }
+
+  val reservedWidgets = widgets.filter { it.tag in schemaAnnotation.reservedWidgets }
+  if (reservedWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Widget tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedWidgets.contentToString())
+        for (widget in reservedWidgets) {
+          append("\n- @Widget(${widget.tag}) ${widget.type}")
+        }
+      },
+    )
+  }
+
+  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
   if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -150,11 +169,30 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
+  val badReservedModifiers = schemaAnnotation.reservedModifiers
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedModifiers.isEmpty()) {
+    "Schema reserved modifiers contains duplicates $badReservedModifiers"
+  }
+
+  val reservedModifiers = modifiers.filter { it.tag in schemaAnnotation.reservedModifiers }
+  if (reservedModifiers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Modifier tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedModifiers.contentToString())
+        for (widget in reservedModifiers) {
+          append("\n- @Modifier(${widget.tag}, …) ${widget.type}")
+        }
+      },
+    )
+  }
+
   val widgetScopes = widgets
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val modifierScopes = modifier
+  val modifierScopes = modifiers
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
@@ -210,7 +248,7 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
-    modifiers = modifier,
+    modifiers = modifiers,
     taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
   )
   val schemaSet = ParsedProtocolSchemaSet(
@@ -331,6 +369,26 @@ private fun parseWidget(
     )
   }
 
+  val badReservedChildren = annotation.reservedChildren
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedChildren.isEmpty()) {
+    "Widget ${memberType.qualifiedName} reserved children contains duplicates $badReservedChildren"
+  }
+
+  val reservedChildren = traits.filterIsInstance<ProtocolChildren>()
+    .filter { it.tag in annotation.reservedChildren }
+  if (reservedChildren.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget ${memberType.qualifiedName} @Children tags must not be included in reserved set ")
+        appendLine(annotation.reservedChildren.contentToString())
+        for (children in reservedChildren) {
+          append("\n- @Children(${children.tag}) ${children.name}")
+        }
+      },
+    )
+  }
+
   val badProperties = traits.filterIsInstance<ProtocolProperty>()
     .groupBy(ProtocolProperty::tag)
     .filterValues { it.size > 1 }
@@ -341,6 +399,26 @@ private fun parseWidget(
         for ((propertyTag, group) in badProperties) {
           append("\n- @Property($propertyTag): ")
           group.joinTo(this) { it.name }
+        }
+      },
+    )
+  }
+
+  val badReservedProperties = annotation.reservedProperties
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedProperties.isEmpty()) {
+    "Widget ${memberType.qualifiedName} reserved properties contains duplicates $badReservedProperties"
+  }
+
+  val reservedProperties = traits.filterIsInstance<ProtocolProperty>()
+    .filter { it.tag in annotation.reservedProperties }
+  if (reservedProperties.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget ${memberType.qualifiedName} @Property tags must not be included in reserved set ")
+        appendLine(annotation.reservedProperties.contentToString())
+        for (children in reservedProperties) {
+          append("\n- @Property(${children.tag}) ${children.name}")
         }
       },
     )
@@ -367,7 +445,9 @@ private fun parseModifier(
     "@Modifier $memberFqType must have at least one scope."
   }
 
-  val properties = if (memberType.isData) {
+  val properties = if (memberType.objectInstance != null) {
+    emptyList()
+  } else if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->
       val kProperty = memberType.memberProperties.single { it.name == parameter.name }
       val name = kProperty.name
@@ -390,8 +470,6 @@ private fun parseModifier(
         deprecation = deprecation,
       )
     }
-  } else if (memberType.objectInstance != null) {
-    emptyList()
   } else {
     throw IllegalArgumentException(
       "@Modifier ${memberType.qualifiedName} must be 'data' class or 'object'",

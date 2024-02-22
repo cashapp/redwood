@@ -41,7 +41,7 @@ class LazyListTest {
         assertThat(lazyList.itemsAfter).isEqualTo(0)
         assertThat(lazyList.items).isEmpty()
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
       }
     }
   }
@@ -76,7 +76,7 @@ class LazyListTest {
         assertThat(lazyList.itemsBefore).isEqualTo(0)
         assertThat(lazyList.itemsAfter).isEqualTo(expectedItemsAfter)
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
           .isEqualTo(List(expectedItemCount) { TextValue(Modifier, it.toString()) })
       }
@@ -104,7 +104,7 @@ class LazyListTest {
         assertThat(lazyList.itemsBefore).isEqualTo(35)
         assertThat(lazyList.itemsAfter).isEqualTo(25)
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
           .isEqualTo(List(40) { TextValue(Modifier, (it + 35).toString()) })
       }

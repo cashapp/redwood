@@ -27,12 +27,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.ui.Density
-import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.yoga.Direction
@@ -43,14 +39,15 @@ import app.cash.redwood.yoga.isHorizontal
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
-) : FlexContainer<View>, ChangeListener {
+) : YogaFlexContainer<View>, ChangeListener {
   private val yogaLayout: YogaLayout = YogaLayout(
     context,
     applyModifier = { node, index ->
       node.applyModifier(children.widgets[index].modifier, density)
     },
   )
-  private val density = Density(context.resources)
+  override val rootNode: Node get() = yogaLayout.rootNode
+  override val density = Density(context.resources)
 
   private val hostView = HostView()
   override val value: View get() = hostView
@@ -90,31 +87,12 @@ internal class ViewFlexContainer(
     }
   }
 
-  override fun margin(margin: Margin) {
-    with(yogaLayout.rootNode) {
-      with(density) {
-        marginStart = margin.start.toPx().toFloat()
-        marginEnd = margin.end.toPx().toFloat()
-        marginTop = margin.top.toPx().toFloat()
-        marginBottom = margin.bottom.toPx().toFloat()
-      }
-    }
-  }
-
   override fun overflow(overflow: Overflow) {
     hostView.scrollEnabled = when (overflow) {
       Overflow.Clip -> false
       Overflow.Scroll -> true
       else -> throw AssertionError()
     }
-  }
-
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-    yogaLayout.rootNode.alignItems = crossAxisAlignment.toAlignItems()
-  }
-
-  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
-    yogaLayout.rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
   }
 
   override fun onEndChanges() {

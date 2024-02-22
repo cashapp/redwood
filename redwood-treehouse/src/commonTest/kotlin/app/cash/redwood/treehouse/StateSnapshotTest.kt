@@ -58,43 +58,35 @@ class StateSnapshotTest {
           "content": {
               "key1": [
                   ["MutableState", {
-                          "value": ["kotlin.Int", 1
-                          ]
+                          "value": ["kotlin.Int", 1]
                       }
                   ]
               ],
               "key2": [
-                  ["kotlin.Int", 1
-                  ]
+                  ["kotlin.Int", 1]
               ],
               "key3": [
                   ["MutableState", {
-                          "value": ["kotlin.String", "str"
-                          ]
+                          "value": ["kotlin.String", "str"]
                       }
                   ]
               ],
               "key4": [
-                  ["kotlin.String", "str"
-                  ]
+                  ["kotlin.String", "str"]
               ],
               "key5": [
                   null
               ],
               "key6": [
-                  ["kotlin.Boolean", true
-                  ]
+                  ["kotlin.Boolean", true]
               ],
               "key7": [
-                  ["kotlin.Double", 1.5
-                  ]
+                  ["kotlin.Double", 1.5]
               ],
               "key8": [
                   ["kotlin.collections.ArrayList", [
-                          ["kotlin.Int", 1
-                          ],
-                          ["kotlin.String", "str"
-                          ]
+                          ["kotlin.Int", 1],
+                          ["kotlin.String", "str"]
                       ]
                   ]
               ]

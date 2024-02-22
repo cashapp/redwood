@@ -41,7 +41,6 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -53,8 +52,8 @@ import app.cash.redwood.yoga.isHorizontal
 
 internal class ComposeUiFlexContainer(
   private val flexDirection: FlexDirection,
-) : FlexContainer<@Composable () -> Unit> {
-  private val rootNode = Node().apply {
+) : YogaFlexContainer<@Composable () -> Unit> {
+  override val rootNode = Node().apply {
     flexDirection = this@ComposeUiFlexContainer.flexDirection
   }
   override val children = ComposeWidgetChildren()
@@ -65,7 +64,7 @@ internal class ComposeUiFlexContainer(
   private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
-  private var density = Density(1.0)
+  override var density = Density(1.0)
 
   internal var testOnlyModifier: Modifier? = null
 
@@ -86,12 +85,12 @@ internal class ComposeUiFlexContainer(
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-    rootNode.alignItems = crossAxisAlignment.toAlignItems()
+    super.crossAxisAlignment(crossAxisAlignment)
     invalidate()
   }
 
   override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
-    rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
+    super.mainAxisAlignment(mainAxisAlignment)
     invalidate()
   }
 
@@ -112,14 +111,8 @@ internal class ComposeUiFlexContainer(
             LayoutDirection.Ltr -> Direction.LTR
             LayoutDirection.Rtl -> Direction.RTL
           }
-
-          with(density) {
-            marginStart = margin.start.toPx().toFloat()
-            marginEnd = margin.end.toPx().toFloat()
-            marginTop = margin.top.toPx().toFloat()
-            marginBottom = margin.bottom.toPx().toFloat()
-          }
         }
+        super.margin(margin)
 
         children.render()
       },
