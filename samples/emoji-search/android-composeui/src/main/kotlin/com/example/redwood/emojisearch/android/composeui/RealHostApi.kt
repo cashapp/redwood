@@ -15,10 +15,6 @@
  */
 package com.example.redwood.emojisearch.android.composeui
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
 import com.example.redwood.emojisearch.treehouse.HostApi
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -36,8 +32,8 @@ class HttpException(response: Response) :
   RuntimeException("HTTP ${response.code} ${response.message}")
 
 class RealHostApi(
-  private val context: Context,
   private val client: OkHttpClient,
+  private val openUrl: (url: String) -> Unit,
 ) : HostApi {
   override suspend fun httpCall(url: String, headers: Map<String, String>): String {
     return suspendCancellableCoroutine { continuation ->
@@ -67,8 +63,6 @@ class RealHostApi(
   }
 
   override fun openUrl(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.setData(Uri.parse(url))
-    startActivity(context, intent, null)
+    openUrl.invoke(url)
   }
 }

@@ -20,19 +20,18 @@ android {
 }
 
 dependencies {
-  implementation libs.coil.compose
   implementation libs.coil.network.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
   implementation projects.samples.emojiSearch.schema.widget.protocol
+  implementation projects.samples.emojiSearch.sharedComposeui
   implementation libs.androidx.activity.compose
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation libs.jetbrains.compose.material
   implementation libs.jetbrains.compose.ui
-  implementation libs.jetbrains.compose.ui.tooling.preview
   debugImplementation libs.jetbrains.compose.ui.tooling
   implementation projects.redwoodLayoutComposeui
   implementation projects.redwoodLazylayoutComposeui

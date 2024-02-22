@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.example.redwood.emojisearch.android.composeui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -42,6 +44,8 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
+import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
+import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
@@ -70,7 +74,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(),
+          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -140,7 +144,14 @@ class EmojiSearchActivity : ComponentActivity() {
       appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrl = manifestUrlFlow,
-        hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
+        hostApi = RealHostApi(
+          client = httpClient,
+          openUrl = { url ->
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setData(Uri.parse(url))
+            startActivity(intent)
+          },
+        ),
       ),
       eventListenerFactory = { app, manifestUrl -> appEventListener },
     )

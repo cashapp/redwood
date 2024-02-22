@@ -28,7 +28,7 @@ kotlin {
 
     androidMain {
       dependencies {
-        api libs.okHttp
+        api libs.okhttp
         implementation libs.androidx.activity
       }
     }

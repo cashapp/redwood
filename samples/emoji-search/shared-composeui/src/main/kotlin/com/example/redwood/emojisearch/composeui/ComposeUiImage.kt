@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.emojisearch.android.composeui
+package com.example.redwood.emojisearch.composeui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
