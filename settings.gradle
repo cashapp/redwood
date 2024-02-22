@@ -113,10 +113,11 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:counter:schema:widget'
   include ':samples:counter:shared-composeui'
 
+  include ':samples:emoji-search:android-composeui'
   include ':samples:emoji-search:android-tests'
   include ':samples:emoji-search:android-views'
   include ':samples:emoji-search:browser'
-  include ':samples:emoji-search:composeui'
+  include ':samples:emoji-search:desktop-composeui'
   include ':samples:emoji-search:ios-shared'
   include ':samples:emoji-search:launcher'
   include ':samples:emoji-search:presenter'
@@ -127,5 +128,6 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:emoji-search:schema:testing'
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'
+  include ':samples:emoji-search:shared-composeui'
   include ':samples:emoji-search:values'
 }

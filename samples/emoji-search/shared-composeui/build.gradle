@@ -1,0 +1,11 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.redwood'
+
+dependencies {
+  api projects.samples.emojiSearch.schema.widget
+  implementation projects.redwoodWidgetCompose
+  implementation libs.jetbrains.compose.material
+  implementation libs.jetbrains.compose.ui
+  implementation libs.jetbrains.compose.ui.tooling.preview
+  implementation libs.coil.compose
+}
