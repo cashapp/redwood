@@ -23,8 +23,7 @@ dependencies {
   implementation projects.redwoodTreehouseHostComposeui
   implementation projects.redwoodWidgetCompose
   implementation libs.coil.compose
-  implementation libs.coil.network
-  implementation libs.ktor.engine.okhttp
+  implementation libs.coil.network.okhttp
   implementation libs.zipline.loader
   implementation libs.kotlinx.coroutines.swing
 }
