@@ -23,7 +23,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -45,7 +45,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -65,7 +65,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -90,7 +90,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -108,7 +108,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -133,7 +133,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -153,7 +153,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -178,7 +178,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -198,7 +198,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
         # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
         timeout-minutes: 5
         continue-on-error: true
@@ -234,7 +234,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v3
 
       - run: ./gradlew publish
         env:
