@@ -3,6 +3,12 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.8.0...HEAD
 
+New:
+
+Changed:
+- Added `Modifier` parameter to `RedwoodContent` which is applied to the root `Box` into which content is rendered.
+
+Fixed:
 
 
 
