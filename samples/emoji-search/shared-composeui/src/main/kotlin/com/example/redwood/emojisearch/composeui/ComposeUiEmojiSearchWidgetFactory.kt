@@ -16,13 +16,16 @@
 package com.example.redwood.emojisearch.composeui
 
 import androidx.compose.runtime.Composable
+import coil3.ImageLoader
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
 import com.example.redwood.emojisearch.widget.TextInput
 
-class ComposeUiEmojiSearchWidgetFactory : EmojiSearchWidgetFactory<@Composable () -> Unit> {
+class ComposeUiEmojiSearchWidgetFactory(
+  private val imageLoader: ImageLoader,
+) : EmojiSearchWidgetFactory<@Composable () -> Unit> {
   override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
-  override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage()
+  override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage(imageLoader)
 }

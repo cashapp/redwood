@@ -44,6 +44,9 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
@@ -68,13 +71,21 @@ class EmojiSearchActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    val treehouseApp = createTreehouseApp()
+    val client = OkHttpClient()
+    val treehouseApp = createTreehouseApp(client)
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
+
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory(client))
+      }
+      .build()
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory<@Composable () -> Unit>(
         provider = EmojiSearchWidgetFactories(
-          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(),
+          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -125,10 +136,7 @@ class EmojiSearchActivity : ComponentActivity() {
     }
   }
 
-  private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
-    val httpClient = OkHttpClient()
-    val ziplineHttpClient = httpClient.asZiplineHttpClient()
-
+  private fun createTreehouseApp(httpClient: OkHttpClient): TreehouseApp<EmojiSearchPresenter> {
     val treehouseAppFactory = TreehouseAppFactory(
       context = applicationContext,
       httpClient = httpClient,
@@ -138,7 +146,7 @@ class EmojiSearchActivity : ComponentActivity() {
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
-      .withDevelopmentServerPush(ziplineHttpClient)
+      .withDevelopmentServerPush(httpClient.asZiplineHttpClient())
 
     val treehouseApp = treehouseAppFactory.create(
       appScope = scope,
@@ -153,7 +161,7 @@ class EmojiSearchActivity : ComponentActivity() {
           },
         ),
       ),
-      eventListenerFactory = { app, manifestUrl -> appEventListener },
+      eventListenerFactory = { _, _ -> appEventListener },
     )
 
     treehouseApp.start()
