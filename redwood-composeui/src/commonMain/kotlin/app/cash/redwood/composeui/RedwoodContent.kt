@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 public fun RedwoodContent(
   provider: Widget.Provider<@Composable () -> Unit>,
+  modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
 ) {
   // If the provider or content change, reset any assumption about the rendered size.
@@ -83,7 +84,7 @@ public fun RedwoodContent(
   }
 
   Box(
-    modifier = Modifier.onSizeChanged { size ->
+    modifier = modifier.onSizeChanged { size ->
       viewportSize = with(Density(density.density.toDouble())) {
         Size(size.width.toDp().value.redwoodDp, size.height.toDp().value.redwoodDp)
       }

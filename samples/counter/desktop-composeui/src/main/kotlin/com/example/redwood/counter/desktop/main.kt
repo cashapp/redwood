@@ -17,7 +17,6 @@
 
 package com.example.redwood.counter.desktop
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -44,10 +43,8 @@ fun main() {
       state = rememberWindowState(width = 300.dp, height = 300.dp),
     ) {
       CounterTheme {
-        Box(Modifier.padding(16.dp)) {
-          RedwoodContent(factories) {
-            Counter()
-          }
+        RedwoodContent(factories, modifier = Modifier.padding(16.dp)) {
+          Counter()
         }
       }
     }

@@ -17,7 +17,6 @@
 
 package com.example.redwood.emojisearch.desktop
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
@@ -49,16 +48,12 @@ fun main() {
     ) {
       EmojiSearchTheme {
         Scaffold { contentPadding ->
-          Box(
-            modifier = Modifier.padding(contentPadding),
-          ) {
-            RedwoodContent(factories) {
-              EmojiSearch(
-                httpClient = httpClient,
-                navigator = navigator,
-                safeAreaInsets = Margin.Zero,
-              )
-            }
+          RedwoodContent(factories, modifier = Modifier.padding(contentPadding)) {
+            EmojiSearch(
+              httpClient = httpClient,
+              navigator = navigator,
+              safeAreaInsets = Margin.Zero,
+            )
           }
         }
       }
