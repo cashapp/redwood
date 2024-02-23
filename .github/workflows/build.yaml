@@ -22,11 +22,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
 
@@ -44,11 +40,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -64,11 +56,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew dokkaHtmlMultiModule
 
@@ -90,10 +78,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew verifyPaparazzi
 
@@ -107,11 +92,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew -p samples/counter build
 
@@ -132,11 +113,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -152,11 +129,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew -p samples/emoji-search build
 
@@ -177,11 +150,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -197,11 +166,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
-        # Don't spend more than 5m rehydrating the cache. Otherwise just move on.
-        timeout-minutes: 5
-        continue-on-error: true
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew -p test-app build
 
@@ -233,8 +198,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/actions/setup-gradle@v3
 
       - run: ./gradlew publish
         env:
