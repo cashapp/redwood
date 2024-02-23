@@ -24,10 +24,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.redwood.Modifier as RedwoodModifier
+import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import com.example.redwood.emojisearch.widget.Image
 
-internal class ComposeUiImage : Image<@Composable () -> Unit> {
+internal class ComposeUiImage(
+  private val imageLoader: ImageLoader,
+) : Image<@Composable () -> Unit> {
   private var url by mutableStateOf("")
   private var onClick by mutableStateOf({})
 
@@ -36,6 +39,7 @@ internal class ComposeUiImage : Image<@Composable () -> Unit> {
   override val value = @Composable {
     AsyncImage(
       model = url,
+      imageLoader = imageLoader,
       contentDescription = null,
       modifier = Modifier
         .size(48.dp)

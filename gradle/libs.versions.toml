@@ -76,7 +76,7 @@ zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", vers
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "zipline" }
 paparazzi-gradlePlugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version = "1.3.1" }
 jimfs = "com.google.jimfs:jimfs:1.3.0"
-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 turbine = "app.cash.turbine:turbine:1.0.0"

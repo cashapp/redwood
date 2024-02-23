@@ -26,17 +26,27 @@ import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.Margin
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
-import com.example.redwood.emojisearch.composeui.JvmHttpClient
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import okhttp3.OkHttpClient
 
 fun main() {
-  val httpClient = JvmHttpClient()
-  val navigator = DesktopNavigator
+  val client = OkHttpClient()
+  val httpClient = JvmHttpClient(client)
+  val imageLoader = ImageLoader.Builder(PlatformContext.INSTANCE)
+    .serviceLoaderEnabled(false)
+    .components {
+      add(OkHttpNetworkFetcherFactory(client))
+    }
+    .build()
   val factories = EmojiSearchWidgetFactories(
-    EmojiSearch = ComposeUiEmojiSearchWidgetFactory(),
+    EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
   )
@@ -51,7 +61,7 @@ fun main() {
           RedwoodContent(factories, modifier = Modifier.padding(contentPadding)) {
             EmojiSearch(
               httpClient = httpClient,
-              navigator = navigator,
+              navigator = DesktopNavigator,
               safeAreaInsets = Margin.Zero,
             )
           }

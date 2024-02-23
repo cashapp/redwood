@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.emojisearch.composeui
+package com.example.redwood.emojisearch.desktop
 
 import com.example.redwood.emojisearch.presenter.HttpClient
 import kotlin.coroutines.resume
@@ -30,7 +30,7 @@ import okhttp3.Response
 import okio.IOException
 
 class JvmHttpClient(
-  private val okHttpClient: OkHttpClient = OkHttpClient(),
+  private val okHttpClient: OkHttpClient,
 ) : HttpClient {
 
   override suspend fun call(url: String, headers: Map<String, String>): String {
