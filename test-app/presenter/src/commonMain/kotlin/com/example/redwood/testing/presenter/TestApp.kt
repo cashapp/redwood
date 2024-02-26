@@ -44,7 +44,10 @@ class TestContext(
 )
 
 @Composable
-fun TestApp(context: TestContext) {
+fun TestApp(
+  context: TestContext,
+  modifier: Modifier = Modifier,
+) {
   var screenKey by rememberSaveable { mutableStateOf<String?>(null) }
   if (screenKey == null) {
     ScreenList(onScreenChange = { screenKey = it })
@@ -52,7 +55,7 @@ fun TestApp(context: TestContext) {
     val onBack = { screenKey = null }
     BackHandler(onBack = onBack)
 
-    Column(width = Fill, height = Fill) {
+    Column(width = Fill, height = Fill, modifier = modifier) {
       Button("Back", onClick = onBack)
 
       val content = screens[screenKey]

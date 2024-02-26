@@ -225,7 +225,7 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
 @RedwoodCodegenApi
 public class RedwoodComposeContent<out W : Widget<*>> {
   @Composable
-  public fun into(
+  public fun Children(
     accessor: (W) -> Widget.Children<*>,
     content: @Composable () -> Unit,
   ) {

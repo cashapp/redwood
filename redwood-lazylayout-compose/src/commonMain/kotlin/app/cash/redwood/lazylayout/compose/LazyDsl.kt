@@ -136,13 +136,13 @@ public annotation class ExperimentalRedwoodLazyLayoutApi
  */
 @Composable
 public fun LazyRow(
+  placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
-  modifier: Modifier = Modifier,
-  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
@@ -196,14 +196,14 @@ public fun LazyRow(
 public fun LazyRow(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   pullRefreshContentColor: UInt = 0xFF000000u,
-  modifier: Modifier = Modifier,
-  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(
@@ -249,13 +249,13 @@ public fun LazyRow(
  */
 @Composable
 public fun LazyColumn(
+  placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
-  modifier: Modifier = Modifier,
-  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   LazyList(
@@ -309,14 +309,14 @@ public fun LazyColumn(
 public fun LazyColumn(
   refreshing: Boolean,
   onRefresh: (() -> Unit)?,
+  placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   width: Constraint = Constraint.Wrap,
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
   pullRefreshContentColor: UInt = 0xFF000000u,
-  modifier: Modifier = Modifier,
-  placeholder: @Composable () -> Unit,
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(

@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -28,7 +29,7 @@ import com.example.redwood.counter.compose.Button
 import com.example.redwood.counter.compose.Text
 
 @Composable
-fun Counter(value: Int = 0) {
+fun Counter(modifier: Modifier = Modifier, value: Int = 0) {
   var count by rememberSaveable { mutableStateOf(value) }
 
   Column(
@@ -36,6 +37,7 @@ fun Counter(value: Int = 0) {
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = MainAxisAlignment.Center,
+    modifier = modifier,
   ) {
     Button("-1", onClick = { count-- })
     Text("Count: $count")

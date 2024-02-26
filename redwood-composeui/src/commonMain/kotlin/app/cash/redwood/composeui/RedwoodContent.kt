@@ -90,7 +90,7 @@ public fun RedwoodContent(
       }
     },
   ) {
-    children.render()
+    children.Render()
   }
 }
 

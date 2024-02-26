@@ -48,13 +48,14 @@ private val frontColor = 0x880000FFu
 private val rowHeight = 80.dp
 
 @Composable
-fun BoxSandbox() {
+fun BoxSandbox(modifier: Modifier = Modifier) {
   Column(
     width = Fill,
     height = Fill,
     overflow = Overflow.Scroll,
     horizontalAlignment = Stretch,
     verticalAlignment = MainAxisAlignment.Start,
+    modifier = modifier,
   ) {
     val crossAxisAlignments = listOf(
       Start,

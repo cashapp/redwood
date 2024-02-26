@@ -114,7 +114,7 @@ internal class ComposeUiFlexContainer(
         }
         super.margin(margin)
 
-        children.render()
+        children.Render()
       },
       modifier = computeModifier(),
       measurePolicy = ::measure,

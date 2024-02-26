@@ -68,6 +68,7 @@ interface Navigator {
 fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
+  modifier: Modifier = Modifier,
   safeAreaInsets: Margin = LocalUiConfiguration.current.safeAreaInsets,
 ) {
   val scope = rememberCoroutineScope()
@@ -107,10 +108,12 @@ fun EmojiSearch(
     }
   }
 
-  val filteredEmojis by derivedStateOf {
-    val searchTerms = searchTerm.text.split(" ")
-    allEmojis.filter { image ->
-      searchTerms.all { image.label.contains(it, ignoreCase = true) }
+  val filteredEmojis by remember {
+    derivedStateOf {
+      val searchTerms = searchTerm.text.split(" ")
+      allEmojis.filter { image ->
+        searchTerms.all { image.label.contains(it, ignoreCase = true) }
+      }
     }
   }
 
@@ -119,6 +122,7 @@ fun EmojiSearch(
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     margin = safeAreaInsets,
+    modifier = modifier,
   ) {
     TextInput(
       state = TextFieldState(searchTerm.text),
@@ -165,6 +169,7 @@ fun EmojiSearch(
 @Composable
 fun Item(
   emojiImage: EmojiImage,
+  modifier: Modifier = Modifier,
   onClick: () -> Unit = {},
 ) {
   Row(
