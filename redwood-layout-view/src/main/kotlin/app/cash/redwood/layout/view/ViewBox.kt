@@ -40,7 +40,7 @@ internal class ViewBox(
 ) : FrameLayout(context), Box<View> {
   override var modifier: Modifier = Modifier
 
-  override val value = this
+  override val value get() = this
 
   override val children = ViewGroupChildren(this)
 
