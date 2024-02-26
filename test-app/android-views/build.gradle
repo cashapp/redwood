@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
+redwoodBuild {
+  embedZiplineApplication(projects.testApp.presenterTreehouse)
+}
+
 android {
   namespace "com.example.redwood.testing.android.views"
 }
@@ -14,4 +18,5 @@ dependencies {
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation libs.google.material
+  implementation libs.okio.assetfilesystem
 }

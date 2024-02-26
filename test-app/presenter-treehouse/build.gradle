@@ -3,6 +3,10 @@ apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'app.cash.zipline'
 apply plugin: 'app.cash.redwood'
 
+redwoodBuild {
+  ziplineApplication('test-app')
+}
+
 kotlin {
   iosArm64()
   iosX64()

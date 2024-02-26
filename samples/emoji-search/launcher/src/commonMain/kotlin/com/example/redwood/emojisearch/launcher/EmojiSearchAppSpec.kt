@@ -28,13 +28,12 @@ class EmojiSearchAppSpec(
   override val manifestUrl: Flow<String>,
   private val hostApi: HostApi,
 ) : TreehouseApp.Spec<EmojiSearchPresenter>() {
-  override val name = "emoji-search"
-  override val serializersModule = emojiSearchSerializersModule
+  override val name get() = "emoji-search"
+  override val serializersModule get() = emojiSearchSerializersModule
 
-  override val freshnessChecker: FreshnessChecker
-    get() = object : FreshnessChecker {
-      override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
-    }
+  override val freshnessChecker = object : FreshnessChecker {
+    override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
+  }
 
   override fun bindServices(zipline: Zipline) {
     zipline.bind<HostApi>("HostApi", hostApi)
