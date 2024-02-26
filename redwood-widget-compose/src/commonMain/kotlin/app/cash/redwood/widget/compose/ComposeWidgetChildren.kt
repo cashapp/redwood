@@ -29,7 +29,7 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
   public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
-  public fun render() {
+  public fun Render() {
     // Observe the layout modifier count so we recompose if it changes.
     modifierTick
 

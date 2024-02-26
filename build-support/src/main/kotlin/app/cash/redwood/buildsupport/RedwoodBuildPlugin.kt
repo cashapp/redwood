@@ -100,12 +100,19 @@ class RedwoodBuildPlugin : Plugin<Project> {
           // Avoid 'build' folders within test fixture projects which may contain generated sources.
           it.targetExclude("src/test/fixture/**/build/**")
         }
-        it.ktlint(libs.ktlint.get().version).editorConfigOverride(
-          mapOf(
-            "ktlint_standard_filename" to "disabled",
-            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
-          ),
-        )
+        it.ktlint(libs.ktlint.get().version)
+          .customRuleSets(
+            listOf(
+              libs.ktlintComposeRules.get().toString(),
+            ),
+          )
+          .editorConfigOverride(
+            mapOf(
+              "ktlint_standard_filename" to "disabled",
+              "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+              "ktlint_compose_compositionlocal-allowlist" to "disabled",
+            ),
+          )
         it.licenseHeaderFile(licenseHeaderFile)
       }
     }

@@ -18,9 +18,7 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -35,8 +33,8 @@ internal fun LazyList(
   height: Constraint,
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
-  modifier: Modifier,
   placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
@@ -79,8 +77,8 @@ internal fun RefreshableLazyList(
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
   pullRefreshContentColor: UInt,
-  modifier: Modifier,
   placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)

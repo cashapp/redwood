@@ -54,7 +54,7 @@ fun Row(
       set(overflow) { recordChanged(); widget.overflow(it) }
     },
     content = {
-      into(Row<*>::children) {
+      Children(Row<*>::children) {
         RowScopeImpl.children()
       }
     },
@@ -151,7 +151,7 @@ internal fun generateComposable(
               }
               is Children -> {
                 childrenLambda.apply {
-                  add("into(%T::%N) {\n", widgetType, trait.name)
+                  add("Children(%T::%N) {\n", widgetType, trait.name)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.flatName + "Impl"))
