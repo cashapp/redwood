@@ -55,10 +55,10 @@ public interface RedwoodComposition {
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-public fun <W : Any> RedwoodComposition(
+public fun <T : Any> RedwoodComposition(
   scope: CoroutineScope,
-  view: RedwoodView<W>,
-  provider: Widget.Provider<W>,
+  view: RedwoodView<T>,
+  provider: Widget.Provider<T>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
   view.reset()
@@ -104,13 +104,13 @@ public fun <W : Any> RedwoodComposition(
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-public fun <W : Any> RedwoodComposition(
+public fun <T : Any> RedwoodComposition(
   scope: CoroutineScope,
-  container: Widget.Children<W>,
+  container: Widget.Children<T>,
   onBackPressedDispatcher: OnBackPressedDispatcher,
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
-  provider: Widget.Provider<W>,
+  provider: Widget.Provider<T>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
   return WidgetRedwoodComposition(
@@ -122,12 +122,12 @@ public fun <W : Any> RedwoodComposition(
   )
 }
 
-private class WidgetRedwoodComposition<W : Any>(
+private class WidgetRedwoodComposition<T : Any>(
   private val scope: CoroutineScope,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   private val savedStateRegistry: SaveableStateRegistry?,
   private val uiConfigurations: StateFlow<UiConfiguration>,
-  applier: NodeApplier<W>,
+  applier: NodeApplier<T>,
 ) : RedwoodComposition {
   private val recomposer = Recomposer(scope.coroutineContext)
   private val composition = Composition(applier, recomposer)
@@ -172,9 +172,9 @@ private class WidgetRedwoodComposition<W : Any>(
 
 /** @suppress For generated code usage only. */
 @RedwoodCodegenApi
-public interface RedwoodApplier<W : Any> {
-  public val provider: Widget.Provider<W>
-  public fun recordChanged(widget: Widget<W>)
+public interface RedwoodApplier<R : Any> {
+  public val provider: Widget.Provider<R>
+  public fun recordChanged(widget: Widget<R>)
 }
 
 /**
@@ -185,10 +185,10 @@ public interface RedwoodApplier<W : Any> {
  */
 @Composable
 @RedwoodCodegenApi
-public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
-  crossinline factory: (P) -> W,
-  update: @DisallowComposableCalls Updater<WidgetNode<W, *>>.() -> Unit,
-  content: @Composable RedwoodComposeContent<W>.() -> Unit,
+public inline fun <P : Widget.Provider<*>, WidgetT : Widget<*>> RedwoodComposeNode(
+  crossinline factory: (P) -> WidgetT,
+  update: @DisallowComposableCalls Updater<WidgetNode<WidgetT, *>>.() -> Unit,
+  content: @Composable RedwoodComposeContent<WidgetT>.() -> Unit,
 ) {
   // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
   //  with currentComposer) in sync with ComposeNode.
@@ -213,7 +213,7 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
     currentComposer.useNode()
   }
 
-  Updater<WidgetNode<W, *>>(currentComposer).update()
+  Updater<WidgetNode<WidgetT, *>>(currentComposer).update()
   RedwoodComposeContent.Instance.content()
 
   currentComposer.endNode()
@@ -223,10 +223,10 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
  * @suppress For generated code usage only.
  */
 @RedwoodCodegenApi
-public class RedwoodComposeContent<out W : Widget<*>> {
+public class RedwoodComposeContent<out WidgetT : Widget<*>> {
   @Composable
   public fun into(
-    accessor: (W) -> Widget.Children<*>,
+    accessor: (WidgetT) -> Widget.Children<*>,
     content: @Composable () -> Unit,
   ) {
     ComposeNode<ChildrenNode<*>, Applier<*>>(

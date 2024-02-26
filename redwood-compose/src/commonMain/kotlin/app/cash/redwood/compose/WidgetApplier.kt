@@ -50,15 +50,15 @@ import kotlin.math.min
  * Compose maintains that relationship internally to support positioning the applier.
  */
 @OptIn(RedwoodCodegenApi::class)
-internal class NodeApplier<W : Any>(
-  override val provider: Widget.Provider<W>,
-  root: Widget.Children<W>,
+internal class NodeApplier<E : Any>(
+  override val provider: Widget.Provider<E>,
+  root: Widget.Children<E>,
   private val onEndChanges: () -> Unit,
-) : AbstractApplier<Node<W>>(ChildrenNode(root)), RedwoodApplier<W> {
+) : AbstractApplier<Node<E>>(ChildrenNode(root)), RedwoodApplier<E> {
   private var closed = false
   private val changedWidgets = LinkedHashSet<ChangeListener>()
 
-  override fun recordChanged(widget: Widget<W>) {
+  override fun recordChanged(widget: Widget<E>) {
     if (widget is ChangeListener) {
       changedWidgets += widget
     }
@@ -75,26 +75,26 @@ internal class NodeApplier<W : Any>(
     onEndChanges.invoke()
   }
 
-  override fun insertTopDown(index: Int, instance: Node<W>) {
+  override fun insertTopDown(index: Int, instance: Node<E>) {
     check(!closed)
 
     // If this is a synthetic children node, immediately attach it to its widget node parent when
     // traversing down the tree. This ensures we can add widget nodes to children nodes in
     // bottom-up order.
     if (instance is ChildrenNode) {
-      val widgetNode = current as WidgetNode<Widget<W>, W>
+      val widgetNode = current as WidgetNode<Widget<E>, E>
       instance.attachTo(widgetNode.widget)
     }
   }
 
-  override fun insertBottomUp(index: Int, instance: Node<W>) {
+  override fun insertBottomUp(index: Int, instance: Node<E>) {
     check(!closed)
 
     // We only attach widgets to their parent node's children when traversing back up the tree.
     // This ensures that the initial properties of the widget have been set before it is attached.
     if (instance is WidgetNode<*, *>) {
-      val widgetNode = instance as WidgetNode<Widget<W>, W>
-      val current = current as ChildrenNode<W>
+      val widgetNode = instance as WidgetNode<Widget<E>, E>
+      val current = current as ChildrenNode<E>
 
       current.insert(index, widgetNode)
       current.parent?.let(::recordChanged)
@@ -124,7 +124,7 @@ internal class NodeApplier<W : Any>(
 
 /** @suppress For generated code usage only. */
 @RedwoodCodegenApi
-public sealed interface Node<W : Any>
+public sealed interface Node<E : Any>
 
 /**
  * A node which wraps a [Widget] and also holds onto the [Widget.Children] in which the widget
@@ -134,15 +134,15 @@ public sealed interface Node<W : Any>
  * @suppress For generated code usage only.
  */
 @RedwoodCodegenApi
-public class WidgetNode<out W : Widget<V>, V : Any>(
-  private val applier: RedwoodApplier<V>,
-  public val widget: W,
-) : Node<V> {
+public class WidgetNode<out WidgetT : Widget<E>, E : Any>(
+  private val applier: RedwoodApplier<E>,
+  public val widget: WidgetT,
+) : Node<E> {
   public fun recordChanged() {
     applier.recordChanged(widget)
   }
 
-  public var container: Widget.Children<V>? = null
+  public var container: Widget.Children<E>? = null
 
   /** The index of [widget] within its parent [container] when attached. */
   public var index: Int = -1
@@ -176,17 +176,17 @@ public class WidgetNode<out W : Widget<V>, V : Any>(
  * cannot transition back to 1 afterwards.
  */
 @RedwoodCodegenApi
-internal class ChildrenNode<W : Any> private constructor(
-  private var accessor: ((Widget<W>) -> Widget.Children<W>)?,
-  parent: Widget<W>?,
-  private var _children: Widget.Children<W>?,
-) : Node<W> {
-  constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null, null)
-  constructor(children: Widget.Children<W>) : this(null, null, children)
+internal class ChildrenNode<E : Any> private constructor(
+  private var accessor: ((Widget<E>) -> Widget.Children<E>)?,
+  parent: Widget<E>?,
+  private var _children: Widget.Children<E>?,
+) : Node<E> {
+  constructor(accessor: (Widget<E>) -> Widget.Children<E>) : this(accessor, null, null)
+  constructor(children: Widget.Children<E>) : this(null, null, children)
 
-  private val nodes = mutableListOf<WidgetNode<Widget<W>, W>>()
+  private val nodes = mutableListOf<WidgetNode<Widget<E>, E>>()
 
-  fun insert(index: Int, node: WidgetNode<Widget<W>, W>) {
+  fun insert(index: Int, node: WidgetNode<Widget<E>, E>) {
     nodes.let { nodes ->
       // Bump the index of any nodes which will be shifted.
       for (i in index until nodes.size) {
@@ -233,16 +233,16 @@ internal class ChildrenNode<W : Any> private constructor(
   }
 
   /** The parent of this children group. Null when the root children instance. */
-  var parent: Widget<W>? = parent
+  var parent: Widget<E>? = parent
     get() {
       checkNotNull(_children) { "Not attached" }
       return field
     }
     private set
 
-  private val children: Widget.Children<W> get() = checkNotNull(_children) { "Not attached" }
+  private val children: Widget.Children<E> get() = checkNotNull(_children) { "Not attached" }
 
-  fun attachTo(parent: Widget<W>) {
+  fun attachTo(parent: Widget<E>) {
     _children = checkNotNull(accessor).invoke(parent)
     this.parent = parent
     accessor = null
