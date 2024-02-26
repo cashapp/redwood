@@ -163,7 +163,7 @@ class EmojiSearchActivity : ComponentActivity() {
         manifestUrl = manifestUrlFlow,
         hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
       ),
-      eventListenerFactory = { app, manifestUrl -> appEventListener },
+      eventListenerFactory = { _, _ -> appEventListener },
     )
 
     treehouseApp.start()

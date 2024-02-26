@@ -17,6 +17,8 @@ package com.example.redwood.testing.launcher
 
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
+import app.cash.zipline.loader.FreshnessChecker
 import com.example.redwood.testing.treehouse.HostApi
 import com.example.redwood.testing.treehouse.TestAppPresenter
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +27,11 @@ class TestAppSpec(
   override val manifestUrl: Flow<String>,
   private val hostApi: HostApi,
 ) : TreehouseApp.Spec<TestAppPresenter>() {
-  override val name = "test-app"
+  override val name get() = "test-app"
+
+  override val freshnessChecker = object : FreshnessChecker {
+    override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
+  }
 
   override fun bindServices(zipline: Zipline) {
     zipline.bind<HostApi>("HostApi", hostApi)
