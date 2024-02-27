@@ -12,7 +12,7 @@ Changed:
 - The render function of `ComposeWidgetChildren` has been renamed to `Render` to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#naming-unit-composable-functions-as-entities).
 
 Fixed:
-
+- Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
 
 
 ## [0.8.0] - 2024-02-22

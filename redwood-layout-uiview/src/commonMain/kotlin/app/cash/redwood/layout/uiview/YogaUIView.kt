@@ -13,10 +13,12 @@ import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UIEvent
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
 import platform.UIKit.UIView
@@ -123,6 +125,13 @@ internal class YogaUIView(
   override fun setScrollEnabled(scrollEnabled: Boolean) {
     super.setScrollEnabled(scrollEnabled)
     setNeedsLayout()
+  }
+
+  override fun hitTest(point: CValue<CGPoint>, withEvent: UIEvent?): UIView? {
+    // Don't consume touch events that don't hit a subview.
+    return typedSubviews.firstNotNullOfOrNull { subview ->
+      subview.hitTest(subview.convertPoint(point, fromView = this), withEvent)
+    }
   }
 }
 
