@@ -129,14 +129,9 @@ internal class YogaUIView(
 
   override fun hitTest(point: CValue<CGPoint>, withEvent: UIEvent?): UIView? {
     // Don't consume touch events that don't hit a subview.
-    for (subview in typedSubviews) {
-      val localPoint = subview.convertPoint(point, fromView = this)
-      val touchedView = subview.hitTest(localPoint, withEvent)
-      if (touchedView != null) {
-        return touchedView
-      }
+    return typedSubviews.firstNotNullOfOrNull { subview ->
+      subview.hitTest(subview.convertPoint(point, fromView = this), withEvent)
     }
-    return null
   }
 }
 
