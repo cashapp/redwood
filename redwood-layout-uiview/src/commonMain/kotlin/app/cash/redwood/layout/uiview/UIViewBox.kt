@@ -32,10 +32,12 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UIEvent
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
@@ -44,7 +46,7 @@ internal class UIViewBox : Box<UIView> {
 
   override var modifier: Modifier = Modifier
 
-  override val children = value.children
+  override val children get() = value.children
 
   override fun width(width: Constraint) {
     value.widthConstraint = width
@@ -65,7 +67,7 @@ internal class UIViewBox : Box<UIView> {
     value.verticalAlignment = verticalAlignment
   }
 
-  internal class View() : UIView(CGRectZero.readValue()) {
+  internal class View : UIView(CGRectZero.readValue()) {
     var widthConstraint = Constraint.Wrap
     var heightConstraint = Constraint.Wrap
 
@@ -214,6 +216,18 @@ internal class UIViewBox : Box<UIView> {
         }
       }
       return CGSizeMake(max(maxRequestedWidth, maxItemWidth), max(maxRequestedHeight, maxItemHeight))
+    }
+
+    override fun hitTest(point: CValue<CGPoint>, withEvent: UIEvent?): UIView? {
+      // Don't consume touch events that don't hit a subview.
+      for (subview in typedSubviews) {
+        val localPoint = subview.convertPoint(point, fromView = this)
+        val touchedView = subview.hitTest(localPoint, withEvent)
+        if (touchedView != null) {
+          return touchedView
+        }
+      }
+      return null
     }
   }
 }
