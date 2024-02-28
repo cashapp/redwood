@@ -70,7 +70,7 @@ robolectric = { module = "org.robolectric:robolectric", version = "4.11.1" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-assetfilesystem = { module = "com.squareup.okio:okio-assetfilesystem", version.ref = "okio" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version = "4.12.0" }
-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version = "3.3.0-alpha02-0.5.0" }
+paging-compose-common = { module = "app.cash.paging:paging-compose-common", version = "3.3.0-alpha02-0.5.1" }
 zipline = { module = "app.cash.zipline:zipline", version.ref = "zipline" }
 zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", version.ref = "zipline" }
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "zipline" }
