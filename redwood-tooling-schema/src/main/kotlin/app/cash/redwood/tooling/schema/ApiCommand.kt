@@ -69,6 +69,7 @@ internal class ApiCommand : CliktCommand(
       is Failure -> {
         throw PrintMessage(result.message, statusCode = 127, printError = true)
       }
+
       Success -> {
         // Nothing to do!
       }

@@ -750,7 +750,9 @@ private fun DeprecationAnnotation.toDeprecation(source: () -> String): ParsedDep
   return ParsedDeprecation(
     level = when (level) {
       "WARNING" -> Level.WARNING
+
       "ERROR" -> Level.ERROR
+
       else -> {
         throw IllegalArgumentException(
           "Schema deprecation does not support level $level: ${source()}",

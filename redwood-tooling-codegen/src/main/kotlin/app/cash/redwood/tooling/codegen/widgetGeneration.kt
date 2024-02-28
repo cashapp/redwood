@@ -204,6 +204,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Event -> {
                 addFunction(
                   FunSpec.builder(trait.name)
@@ -223,6 +224,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Children -> {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
@@ -241,6 +243,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }

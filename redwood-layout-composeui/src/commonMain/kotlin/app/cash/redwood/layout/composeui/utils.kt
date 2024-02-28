@@ -77,14 +77,17 @@ internal fun measureSpecsToConstraints(
       minWidth = width.toInt()
       maxWidth = width.toInt()
     }
+
     MeasureMode.AtMost -> {
       minWidth = 0
       maxWidth = width.toInt()
     }
+
     MeasureMode.Undefined -> {
       minWidth = 0
       maxWidth = Constraints.Infinity
     }
+
     else -> throw AssertionError()
   }
   val minHeight: Int
@@ -94,14 +97,17 @@ internal fun measureSpecsToConstraints(
       minHeight = height.toInt()
       maxHeight = height.toInt()
     }
+
     MeasureMode.AtMost -> {
       minHeight = 0
       maxHeight = height.toInt()
     }
+
     MeasureMode.Undefined -> {
       minHeight = 0
       maxHeight = Constraints.Infinity
     }
+
     else -> throw AssertionError()
   }
   return Constraints(minWidth, maxWidth, minHeight, maxHeight)

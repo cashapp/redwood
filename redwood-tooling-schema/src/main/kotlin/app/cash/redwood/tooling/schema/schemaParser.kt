@@ -494,7 +494,9 @@ private fun KAnnotatedElement.parseDeprecation(source: () -> String): ParsedDepr
       ParsedDeprecation(
         level = when (deprecated.level) {
           WARNING -> Level.WARNING
+
           ERROR -> Level.ERROR
+
           else -> {
             throw IllegalArgumentException(
               "Schema deprecation does not support level ${deprecated.level}: ${source()}",

@@ -91,31 +91,38 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
       is GrowModifier -> {
         flexGrow = childModifier.value.toFloat()
       }
+
       is ShrinkModifier -> {
         flexShrink = childModifier.value.toFloat()
       }
+
       is MarginModifier -> with(density) {
         marginStart = childModifier.margin.start.toPx().toFloat()
         marginEnd = childModifier.margin.end.toPx().toFloat()
         marginTop = childModifier.margin.top.toPx().toFloat()
         marginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
+
       is HorizontalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
       }
+
       is VerticalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
       }
+
       is WidthModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
         requestedMinWidth = width
         requestedMaxWidth = width
       }
+
       is HeightModifier -> with(density) {
         val height = childModifier.height.toPx().toFloat()
         requestedMinHeight = height
         requestedMaxHeight = height
       }
+
       is SizeModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
         requestedMinWidth = width
@@ -124,6 +131,7 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
         requestedMinHeight = height
         requestedMaxHeight = height
       }
+
       is FlexModifier -> {
         val flex = childModifier.value.coerceAtLeast(0.0).toFloat()
         flexGrow = flex

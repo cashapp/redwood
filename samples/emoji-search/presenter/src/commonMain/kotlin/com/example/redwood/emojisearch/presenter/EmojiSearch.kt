@@ -131,6 +131,7 @@ fun EmojiSearch(
         // Make it easy to trigger a crash to manually test exception handling!
         when (textFieldState.text) {
           "crash" -> throw RuntimeException("boom!")
+
           "async" -> {
             scope.launch {
               throw RuntimeException("boom!")

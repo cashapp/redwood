@@ -48,11 +48,13 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
           add(generateComposable(schema, widget))
         }
       }
+
       Modifiers -> {
         for (modifier in schema.modifiers) {
           add(generateModifierInterface(schema, modifier))
         }
       }
+
       Testing -> {
         add(generateTester(this@generateFileSpecs))
         add(generateMutableWidgetFactory(schema))
@@ -61,6 +63,7 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
           add(generateWidgetValue(schema, widget))
         }
       }
+
       Widget -> {
         add(generateWidgetFactories(this@generateFileSpecs))
         add(generateWidgetFactory(schema))

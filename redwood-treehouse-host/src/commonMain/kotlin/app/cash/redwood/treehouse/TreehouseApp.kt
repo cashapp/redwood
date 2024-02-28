@@ -58,6 +58,7 @@ public class TreehouseApp<A : AppService> private constructor(
           is LoadResult.Failure -> {
             null // EventListener already notified.
           }
+
           is LoadResult.Success -> {
             createCodeSession(loadResult.zipline)
           }

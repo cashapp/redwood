@@ -74,6 +74,7 @@ internal class SparseList<T> : AbstractList<T?>() {
         }
         null
       }
+
       else -> {
         externalIndexes.removeAt(searchIndex)
         for (i in searchIndex until externalIndexes.size) {
@@ -102,6 +103,7 @@ internal class SparseList<T> : AbstractList<T?>() {
         externalIndexes.add(insertIndex, index)
         insertIndex + 1
       }
+
       else -> insertIndex
     }
 
@@ -155,12 +157,14 @@ internal class SparseList<T> : AbstractList<T?>() {
             nextExternalIndex++
             return
           }
+
           // Return a non-null element and bump the internal index.
           nextInternalIndex < elements.size -> {
             setNext(elements[nextInternalIndex])
             nextInternalIndex++
             nextExternalIndex++
           }
+
           else -> done()
         }
       }

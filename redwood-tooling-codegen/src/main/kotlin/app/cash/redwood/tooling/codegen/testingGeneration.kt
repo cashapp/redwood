@@ -200,7 +200,9 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                           addCode("%1N = %1N!!,\n", trait.name)
                         }
                       }
+
                       is Children -> addCode("%1N = %1N.map { it.`value` },\n", trait.name)
+
                       is ProtocolTrait -> throw AssertionError()
                     }
                   }
@@ -241,6 +243,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Children -> {
                 val mutableChildrenOfMutableWidget = RedwoodWidget.MutableListChildren
                   .parameterizedBy(RedwoodTesting.WidgetValue)
@@ -251,6 +254,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }
@@ -329,6 +333,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
 
         toWidgetPropertiesBuilder.addStatement("instance.%1N(%1N)", trait.name)
       }
+
       is Children -> {
         type = Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
         defaultExpression = CodeBlock.of("%M()", Stdlib.listOf)
@@ -340,6 +345,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
           .addStatement("instance.%N.insert(index, child.toWidget(provider))", trait.name)
           .endControlFlow()
       }
+
       is Event -> {
         type = trait.lambdaType
         defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }

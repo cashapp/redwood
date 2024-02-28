@@ -220,6 +220,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         itemsBefore.removeRange(0, delta)
         deleteRows(0, delta)
       }
+
       newItemsBefore > itemsBefore.size -> {
         // Grow the before window.
         val delta = newItemsBefore - itemsBefore.size
@@ -236,6 +237,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         itemsAfter.removeRange(itemsAfter.size - delta, itemsAfter.size)
         deleteRows(index, delta)
       }
+
       newItemsAfter > itemsAfter.size -> {
         // Grow the after window.
         val delta = newItemsAfter - itemsAfter.size

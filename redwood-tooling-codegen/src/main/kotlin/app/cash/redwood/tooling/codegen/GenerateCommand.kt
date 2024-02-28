@@ -64,10 +64,12 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
+
       is ProtocolCodegenType -> {
         val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
+
       else -> throw AssertionError()
     }
   }
