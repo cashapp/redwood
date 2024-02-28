@@ -168,15 +168,19 @@ class ProtocolTest {
           0 -> {
             { state = 1 }
           }
+
           1 -> {
             { state = 2 }
           }
+
           2 -> {
             null
           }
+
           3 -> {
             null
           }
+
           else -> fail()
         },
       )
@@ -239,9 +243,11 @@ class ProtocolTest {
           0 -> {
             { state = 1 }
           }
+
           1 -> {
             { state = 2 }
           }
+
           else -> fail()
         },
       )

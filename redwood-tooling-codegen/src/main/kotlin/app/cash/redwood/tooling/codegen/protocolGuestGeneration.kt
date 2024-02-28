@@ -364,6 +364,7 @@ internal fun generateProtocolWidget(
                     .build(),
                 )
               }
+
               is ProtocolEvent -> {
                 addProperty(
                   PropertySpec.builder(trait.name, trait.lambdaType.copy(nullable = true), PRIVATE)
@@ -407,6 +408,7 @@ internal fun generateProtocolWidget(
                     .build(),
                 )
               }
+
               is ProtocolChildren -> {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
@@ -545,46 +547,55 @@ internal fun generateProtocolModifierSerializers(
               index,
               property.name,
             )
+
             BYTE -> serializerBody.addStatement(
               "composite.encodeByteElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             CHAR -> serializerBody.addStatement(
               "composite.encodeCharElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             SHORT -> serializerBody.addStatement(
               "composite.encodeShortElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             INT -> serializerBody.addStatement(
               "composite.encodeIntElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             LONG -> serializerBody.addStatement(
               "composite.encodeLongElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             FLOAT -> serializerBody.addStatement(
               "composite.encodeFloatElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             DOUBLE -> serializerBody.addStatement(
               "composite.encodeDoubleElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             STRING -> serializerBody.addStatement(
               "composite.encodeStringElement(descriptor, %L, value.%N)",
               index,
               property.name,
             )
+
             else -> {
               val serializerId = serializerIds.computeIfAbsent(propertyType) {
                 nextSerializerId++

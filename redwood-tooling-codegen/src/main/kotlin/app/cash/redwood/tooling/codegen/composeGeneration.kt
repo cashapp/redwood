@@ -111,6 +111,7 @@ internal fun generateComposable(
                     }
                     .build()
                 }
+
                 is Event -> {
                   ParameterSpec.builder(trait.name, trait.lambdaType)
                     .apply {
@@ -121,6 +122,7 @@ internal fun generateComposable(
                     }
                     .build()
                 }
+
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage(), it.flatName) }
                   ParameterSpec.builder(trait.name, composableLambda(scope))
@@ -132,6 +134,7 @@ internal fun generateComposable(
                     }
                     .build()
                 }
+
                 is ProtocolTrait -> throw AssertionError()
               },
             )
@@ -149,6 +152,7 @@ internal fun generateComposable(
               -> {
                 updateLambda.add("set(%1N) { recordChanged(); widget.%1N(it) }\n", trait.name)
               }
+
               is Children -> {
                 childrenLambda.apply {
                   add("Children(%T::%N) {\n", widgetType, trait.name)
@@ -161,6 +165,7 @@ internal fun generateComposable(
                   add("}\n")
                 }
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }

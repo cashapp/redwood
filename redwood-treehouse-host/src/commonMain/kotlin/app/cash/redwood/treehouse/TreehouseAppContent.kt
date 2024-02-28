@@ -105,6 +105,7 @@ internal class TreehouseAppContent<A : AppService>(
           ),
         )
       }
+
       else -> previousState.codeState
     }
 

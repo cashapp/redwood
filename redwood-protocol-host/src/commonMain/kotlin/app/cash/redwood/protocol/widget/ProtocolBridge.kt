@@ -68,6 +68,7 @@ public class ProtocolBridge<W : Any>(
             "Insert attempted to replace existing widget with ID ${change.id.value}"
           }
         }
+
         is ChildrenChange -> {
           val node = node(id)
           val children = node.children(change.tag) ?: continue
@@ -76,9 +77,11 @@ public class ProtocolBridge<W : Any>(
               val child = node(change.childId)
               children.insert(change.index, child)
             }
+
             is Move -> {
               children.move(change.fromIndex, change.toIndex, change.count)
             }
+
             is Remove -> {
               children.remove(change.index, change.count)
               @Suppress("ConvertArgumentToSet") // Compose side guarantees set semantics.
@@ -91,6 +94,7 @@ public class ProtocolBridge<W : Any>(
             changedWidgets += widget
           }
         }
+
         is ModifierChange -> {
           val modifier = change.elements.fold<_, Modifier>(Modifier) { modifier, element ->
             modifier.then(factory.createModifier(element))
@@ -103,6 +107,7 @@ public class ProtocolBridge<W : Any>(
             changedWidgets += widget
           }
         }
+
         is PropertyChange -> {
           val node = node(change.id)
           node.apply(change, eventSink)

@@ -46,6 +46,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
           }
         }
       }
+
       Widget -> {
         add(generateProtocolFactory(this@generateFileSpecs))
         for (dependency in all) {

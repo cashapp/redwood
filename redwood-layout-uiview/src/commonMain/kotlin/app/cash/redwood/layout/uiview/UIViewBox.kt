@@ -108,12 +108,15 @@ internal class UIViewBox : Box<UIView> {
             is HorizontalAlignment -> {
               itemHorizontalAlignment = childModifier.alignment
             }
+
             is VerticalAlignment -> {
               itemVerticalAlignment = childModifier.alignment
             }
+
             is Width -> {
               requestedWidth = childModifier.width.toPlatformDp()
             }
+
             is Height -> {
               requestedHeight = childModifier.height.toPlatformDp()
             }
@@ -132,8 +135,11 @@ internal class UIViewBox : Box<UIView> {
             x = 0.0
             childWidth = frame.useContents { this.size.width }
           }
+
           CrossAxisAlignment.Start -> x = 0.0
+
           CrossAxisAlignment.Center -> x = (frame.useContents { this.size.width } - childWidth) / 2.0
+
           CrossAxisAlignment.End -> x = frame.useContents { this.size.width } - childWidth
         }
         when (itemVerticalAlignment) {
@@ -141,8 +147,11 @@ internal class UIViewBox : Box<UIView> {
             y = 0.0
             childHeight = frame.useContents { this.size.height }
           }
+
           CrossAxisAlignment.Start -> y = 0.0
+
           CrossAxisAlignment.Center -> y = (frame.useContents { this.size.height } - childHeight) / 2.0
+
           CrossAxisAlignment.End -> y = frame.useContents { this.size.height } - childHeight
         }
 
@@ -167,6 +176,7 @@ internal class UIViewBox : Box<UIView> {
                 maxRequestedWidth = childModifier.width.value
               }
             }
+
             is Height -> {
               if (childModifier.height.value > maxRequestedHeight) {
                 maxRequestedHeight = childModifier.height.value
@@ -184,6 +194,7 @@ internal class UIViewBox : Box<UIView> {
               maxItemWidth = size.useContents { this.width }
               maxItemHeight = size.useContents { this.height }
             }
+
             Constraint.Wrap -> { // Fill Wrap
               maxItemWidth = size.useContents { this.width }
               maxItemHeight = typedSubviews
@@ -192,6 +203,7 @@ internal class UIViewBox : Box<UIView> {
             }
           }
         }
+
         Constraint.Wrap -> {
           when (heightConstraint) {
             Constraint.Fill -> { // Wrap Fill
@@ -200,6 +212,7 @@ internal class UIViewBox : Box<UIView> {
                 .max()
               maxItemHeight = size.useContents { this.height }
             }
+
             Constraint.Wrap -> { // Wrap Wrap
               val unconstrainedSizes = typedSubviews
                 .map { it.sizeThatFits(size) }
