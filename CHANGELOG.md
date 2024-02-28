@@ -1,18 +1,32 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.9.0...HEAD
 
 New:
+-
+
+Changed:
+-
+
+Fixed:
+-
+
+
+## [0.9.0] - 2024-02-28
+[0.9.0]: https://github.com/cashapp/redwood/releases/tag/0.9.0
 
 Changed:
 - Added `Modifier` parameter to `RedwoodContent` which is applied to the root `Box` into which content is rendered (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
 - The parameter order of `LazyRow` and `LazyColumn` have changed to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
 - The parameter order of `TreehouseContent` has changed to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
 - The render function of `ComposeWidgetChildren` has been renamed to `Render` to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#naming-unit-composable-functions-as-entities).
+- Disable decoy generation for JS target to make compatible with JetBrains Compose 1.6. This is an ABI-breaking change, so all Compose-based libraries targeting JS will also need to have been recompiled.
 
 Fixed:
 - Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
+
+This version works with Kotlin 1.9.22 by default.
 
 
 ## [0.8.0] - 2024-02-22
