@@ -18,12 +18,6 @@ package app.cash.redwood.buildsupport
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
@@ -41,18 +35,6 @@ internal class ComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun applyToCompilation(
     kotlinCompilation: KotlinCompilation<*>,
   ): Provider<List<SubpluginOption>> {
-    when (kotlinCompilation.platformType) {
-      js -> {
-        // This enables a workaround for Compose lambda generation to function correctly in JS.
-        // Note: We cannot use SubpluginOption to do this because it targets the Compose plugin.
-        kotlinCompilation.kotlinOptions.freeCompilerArgs +=
-          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true")
-      }
-      common, androidJvm, jvm, native, wasm -> {
-        // Nothing to do!
-      }
-    }
-
     return kotlinCompilation.target.project.provider { emptyList() }
   }
 }
