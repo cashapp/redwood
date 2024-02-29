@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("ktlint:standard:function-naming", "ktlint:standard:property-naming")
+
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.Constraint
