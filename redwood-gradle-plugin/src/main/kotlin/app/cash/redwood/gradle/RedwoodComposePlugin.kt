@@ -20,6 +20,8 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
@@ -106,6 +108,21 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
       api(project.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID))
+    }
+
+    when (kotlinCompilation.platformType) {
+      js, wasm -> {
+        // The Compose compiler sometimes chooses to emit a duplicate signature rather than looking
+        // for an existing one. This occurs on all targets, but JS and WASM (which currently uses
+        // the JS compiler) have an explicit check for this. We disable this check which is deemed
+        // safe as the first-party JB Compose plugin does the same thing.
+        // https://github.com/JetBrains/compose-multiplatform/issues/3418#issuecomment-1971555314
+        kotlinCompilation.compilerOptions.configure {
+          freeCompilerArgs.add("-Xklib-enable-signature-clash-checks=false")
+        }
+      }
+
+      else -> {}
     }
 
     return kotlinCompilation.target.project.provider { emptyList() }
