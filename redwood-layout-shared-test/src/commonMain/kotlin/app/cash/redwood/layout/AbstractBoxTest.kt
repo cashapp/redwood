@@ -36,13 +36,13 @@ abstract class AbstractBoxTest<T : Any> {
   abstract fun verifySnapshot(value: T)
 
   @Test
-  open fun testDefaults() {
+  fun testDefaults() {
     val widget = Box()
     verifySnapshot(widget.value)
   }
 
   @Test
-  open fun testWrap() {
+  fun testWrap() {
     val widget = Box {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
@@ -51,7 +51,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  open fun testFill() {
+  fun testFill() {
     val widget = Box {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -60,7 +60,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  open fun testWrapWithChildren() {
+  fun testWrapWithChildren() {
     val widget = Box {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
@@ -72,7 +72,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  open fun testFillWithChildren() {
+  fun testFillWithChildren() {
     val widget = Box {
       width(Constraint.Fill)
       height(Constraint.Fill)

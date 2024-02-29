@@ -22,7 +22,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
+import androidx.core.view.updateMarginsRelative
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -69,10 +69,10 @@ internal class ViewBox(
   override fun margin(margin: Margin) {
     updateLayoutParams<MarginLayoutParams> {
       with(density) {
-        updateMargins(
-          left = margin.start.toPxInt(),
+        updateMarginsRelative(
+          start = margin.start.toPxInt(),
           top = margin.top.toPxInt(),
-          right = margin.end.toPxInt(),
+          end = margin.end.toPxInt(),
           bottom = margin.bottom.toPxInt(),
         )
       }
