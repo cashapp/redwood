@@ -15,13 +15,9 @@
  */
 package app.cash.redwood.layout.view
 
-import android.content.Context
-import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
@@ -51,25 +47,19 @@ class ViewFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ): ViewTestFlexContainer {
-    return ViewTestFlexContainer(paparazzi.context, direction, backgroundColor)
+    val delegate = ViewFlexContainer(paparazzi.context, direction).apply {
+      value.setBackgroundColor(backgroundColor)
+    }
+    return ViewTestFlexContainer(delegate)
   }
 
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun widget(backgroundColor: Int) = object : Text<View> {
-    override val value = TextView(paparazzi.context).apply {
-      setBackgroundColor(backgroundColor)
-      textSize = 18f
-      textDirection = View.TEXT_DIRECTION_LOCALE
-      setTextColor(Color.BLACK)
-    }
-
-    override var modifier: Modifier = Modifier
-
-    override fun text(text: String) {
-      value.text = text
+  override fun widget(backgroundColor: Int): Text<View> {
+    return ViewText(paparazzi.context).apply {
+      value.setBackgroundColor(backgroundColor)
     }
   }
 
@@ -77,16 +67,10 @@ class ViewFlexContainerTest(
     paparazzi.snapshot(container.value, name)
   }
 
-  class ViewTestFlexContainer private constructor(
+  class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,
   ) : TestFlexContainer<View>, FlexContainer<View> by delegate, ChangeListener by delegate {
     private var childCount = 0
-
-    constructor(context: Context, direction: FlexDirection, backgroundColor: Int) : this(
-      ViewFlexContainer(context, direction).apply {
-        value.setBackgroundColor(backgroundColor)
-      },
-    )
 
     override fun add(widget: Widget<View>) {
       addAt(childCount, widget)

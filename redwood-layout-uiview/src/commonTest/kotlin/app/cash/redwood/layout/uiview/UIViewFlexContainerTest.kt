@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
@@ -26,7 +25,6 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
-import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
 class UIViewFlexContainerTest(
@@ -36,9 +34,9 @@ class UIViewFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ): UIViewTestFlexContainer {
-    val container = UIViewTestFlexContainer(UIViewFlexContainer(direction))
-    container.value.backgroundColor = backgroundColor.toUIColor()
-    return container
+    return UIViewTestFlexContainer(UIViewFlexContainer(direction)).apply {
+      value.backgroundColor = backgroundColor.toUIColor()
+    }
   }
 
   override fun row() = flexContainer(FlexDirection.Row)
@@ -46,18 +44,8 @@ class UIViewFlexContainerTest(
   override fun column() = flexContainer(FlexDirection.Column)
 
   override fun widget(backgroundColor: Int): Text<UIView> {
-    return object : Text<UIView> {
-      override val value = UILabel().apply {
-        this.numberOfLines = 0
-        this.backgroundColor = backgroundColor.toUIColor()
-        this.textColor = UIColor.blackColor
-      }
-
-      override var modifier: Modifier = Modifier
-
-      override fun text(text: String) {
-        value.text = text
-      }
+    return UIViewText().apply {
+      value.backgroundColor = backgroundColor.toUIColor()
     }
   }
 
