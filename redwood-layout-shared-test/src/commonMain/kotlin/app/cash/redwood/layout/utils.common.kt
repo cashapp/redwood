@@ -17,6 +17,8 @@
 
 package app.cash.redwood.layout
 
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.widget.Widget
 import kotlin.test.assertTrue
 
 const val Transparent: Int = 0x00000000
@@ -31,6 +33,12 @@ fun Color(
   blue: Int,
 ): Int {
   return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
+}
+
+interface Color<T : Any> : Widget<T> {
+  fun width(width: Dp)
+  fun height(height: Dp)
+  fun color(color: Int)
 }
 
 /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */

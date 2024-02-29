@@ -22,12 +22,14 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
+import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
@@ -38,70 +40,76 @@ import app.cash.redwood.widget.ViewGroupChildren
 internal class ViewBox(
   context: Context,
 ) : FrameLayout(context), Box<View> {
+  private val density = Density(context.resources)
+  private var horizontalAlignment = CrossAxisAlignment.Start
+  private var verticalAlignment = CrossAxisAlignment.Start
+  private var width = Constraint.Wrap
+  private var height = Constraint.Wrap
+
   override var modifier: Modifier = Modifier
 
   override val value get() = this
 
   override val children = ViewGroupChildren(this)
 
-  private val density = Density(context.resources)
-
-  private var defaultHorizontalAlignment = CrossAxisAlignment.Start
-  private var defaultVerticalAlignment = CrossAxisAlignment.Start
-  private var width = Constraint.Fill
-  private var height = Constraint.Fill
-
-  init {
-    layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+  override fun generateDefaultLayoutParams(): LayoutParams {
+    return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
   }
 
   override fun width(width: Constraint) {
     this.width = width
+    invalidate()
   }
 
   override fun height(height: Constraint) {
     this.height = height
+    invalidate()
   }
 
   override fun margin(margin: Margin) {
-    updateLayoutParams {
-      val layoutParams = this as MarginLayoutParams
+    updateLayoutParams<MarginLayoutParams> {
       with(density) {
-        layoutParams.setMargins(
-          margin.start.toPxInt(),
-          margin.top.toPxInt(),
-          margin.end.toPxInt(),
-          margin.bottom.toPxInt(),
+        updateMargins(
+          left = margin.start.toPxInt(),
+          top = margin.top.toPxInt(),
+          right = margin.end.toPxInt(),
+          bottom = margin.bottom.toPxInt(),
         )
       }
     }
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    this.defaultHorizontalAlignment = horizontalAlignment
+    this.horizontalAlignment = horizontalAlignment
+    invalidate()
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    this.defaultVerticalAlignment = verticalAlignment
+    this.verticalAlignment = verticalAlignment
+    invalidate()
   }
 
   /** Flush Redwood's modifiers into FrameLayout's LayoutParams before it measures. */
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    var widthMode = MeasureSpec.getMode(widthMeasureSpec)
+    val widthMode = if (width == Constraint.Fill) {
+      MeasureSpec.EXACTLY
+    } else {
+      MeasureSpec.getMode(widthMeasureSpec)
+    }
     val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-    var heightMode = MeasureSpec.getMode(heightMeasureSpec)
+
+    val heightMode = if (height == Constraint.Fill) {
+      MeasureSpec.EXACTLY
+    } else {
+      MeasureSpec.getMode(heightMeasureSpec)
+    }
     val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
     for (child in children.widgets) {
-      val layoutParams = child.value.layoutParams as LayoutParams
-      layoutParams.setFrom(child.modifier)
-      child.value.layoutParams = layoutParams // To force layout.
+      child.value.updateLayoutParams<LayoutParams> {
+        setFrom(child.modifier)
+      }
     }
-
-    // If we're supposed to fill, never measure a size smaller than what's offered.
-    // (This will turn MeasureSpec.AT_MOST into MeasureSpec.EXACTLY.)
-    if (width == Constraint.Fill) widthMode = MeasureSpec.EXACTLY
-    if (height == Constraint.Fill) heightMode = MeasureSpec.EXACTLY
 
     super.onMeasure(
       MeasureSpec.makeMeasureSpec(widthSize, widthMode),
@@ -110,11 +118,10 @@ internal class ViewBox(
   }
 
   private fun LayoutParams.setFrom(modifier: Modifier) {
-    var horizontalAlignment = defaultHorizontalAlignment
-    var verticalAlignment = defaultVerticalAlignment
-
-    var requestedWidth: Int? = null
-    var requestedHeight: Int? = null
+    var horizontalAlignment = horizontalAlignment
+    var verticalAlignment = verticalAlignment
+    var requestedWidth = Int.MIN_VALUE
+    var requestedHeight = Int.MIN_VALUE
 
     modifier.forEach { childModifier ->
       // Check for modifier overrides in the children, otherwise default to the Box's alignment
@@ -136,6 +143,11 @@ internal class ViewBox(
           requestedHeight = with(density) { childModifier.height.toPxInt() }
         }
 
+        is Size -> {
+          requestedWidth = with(density) { childModifier.width.toPxInt() }
+          requestedHeight = with(density) { childModifier.height.toPxInt() }
+        }
+
         is MarginModifier -> {
           with(density) {
             marginStart = childModifier.margin.start.toPxInt()
@@ -147,16 +159,16 @@ internal class ViewBox(
       }
     }
 
-    if (horizontalAlignment == CrossAxisAlignment.Stretch) {
-      requestedWidth = MATCH_PARENT
+    width = if (requestedWidth != Int.MIN_VALUE) {
+      requestedWidth
+    } else {
+      horizontalAlignment.toDimension()
     }
-
-    if (verticalAlignment == CrossAxisAlignment.Stretch) {
-      requestedHeight = MATCH_PARENT
+    height = if (requestedHeight != Int.MIN_VALUE) {
+      requestedHeight
+    } else {
+      verticalAlignment.toDimension()
     }
-
-    width = requestedWidth ?: horizontalAlignment.toWidth()
-    height = requestedHeight ?: verticalAlignment.toWidth()
     gravity = toGravity(horizontalAlignment, verticalAlignment)
   }
 
@@ -169,25 +181,25 @@ internal class ViewBox(
       CrossAxisAlignment.Center -> Gravity.CENTER_HORIZONTAL
       CrossAxisAlignment.End -> Gravity.RIGHT
       CrossAxisAlignment.Stretch -> Gravity.FILL_HORIZONTAL
-      else -> 0
+      else -> throw AssertionError()
     }
     val verticalGravity = when (verticalAlignment) {
       CrossAxisAlignment.Start -> Gravity.TOP
       CrossAxisAlignment.Center -> Gravity.CENTER_VERTICAL
       CrossAxisAlignment.End -> Gravity.BOTTOM
       CrossAxisAlignment.Stretch -> Gravity.FILL_VERTICAL
-      else -> 0
+      else -> throw AssertionError()
     }
     return horizontalGravity or verticalGravity
   }
 
-  private fun CrossAxisAlignment.toWidth(defaultValue: Int = WRAP_CONTENT): Int {
+  private fun CrossAxisAlignment.toDimension(): Int {
     return when (this) {
-      CrossAxisAlignment.Start -> defaultValue
-      CrossAxisAlignment.Center -> defaultValue
-      CrossAxisAlignment.End -> defaultValue
+      CrossAxisAlignment.Start -> WRAP_CONTENT
+      CrossAxisAlignment.Center -> WRAP_CONTENT
+      CrossAxisAlignment.End -> WRAP_CONTENT
       CrossAxisAlignment.Stretch -> MATCH_PARENT
-      else -> defaultValue
+      else -> throw AssertionError()
     }
   }
 }
