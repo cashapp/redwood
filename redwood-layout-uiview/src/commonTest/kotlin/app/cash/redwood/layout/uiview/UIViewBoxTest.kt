@@ -26,14 +26,14 @@ class UIViewBoxTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractBoxTest<UIView>() {
 
-  override fun Box(block: Box<UIView>.() -> Unit): Box<UIView> {
-    val box = UIViewBox().apply(block)
-    box.value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
-    return box
+  override fun Box(): Box<UIView> {
+    return UIViewBox().apply {
+      value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
+    }
   }
 
-  override fun Color(block: Color<UIView>.() -> Unit): Color<UIView> {
-    return UIViewColor().apply(block)
+  override fun Color(): Color<UIView> {
+    return UIViewColor()
   }
 
   override fun verifySnapshot(value: UIView) {

@@ -36,14 +36,14 @@ class ViewBoxTest : AbstractBoxTest<View>() {
     theme = "android:Theme.Material.Light.NoActionBar",
   )
 
-  override fun Box(block: Box<View>.() -> Unit): Box<View> {
-    val box = ViewBox(paparazzi.context).apply(block)
-    box.background = ColorDrawable(0x88000000.toInt())
-    return box
+  override fun Box(): Box<View> {
+    return ViewBox(paparazzi.context).apply {
+      background = ColorDrawable(0x88000000.toInt())
+    }
   }
 
-  override fun Color(block: Color<View>.() -> Unit): Color<View> {
-    return ViewColor(paparazzi.context).apply(block)
+  override fun Color(): Color<View> {
+    return ViewColor(paparazzi.context)
   }
 
   override fun verifySnapshot(value: View) {
