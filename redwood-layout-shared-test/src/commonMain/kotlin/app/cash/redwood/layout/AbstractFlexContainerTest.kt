@@ -535,7 +535,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container)
   }
 
-  @Test fun nestedColumnsWithFlex() {
+  @Test fun testNestedColumnsWithFlex() {
     val outerContainer = flexContainer(FlexDirection.Column)
     outerContainer.width(Constraint.Fill)
     outerContainer.height(Constraint.Fill)
