@@ -24,6 +24,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -55,20 +56,21 @@ class UIViewColor : Color<UIView> {
   private var height = 0.0
 
   override fun width(width: Dp) {
-    this.width = with(Density.Default) {
-      width.toPx()
-    }
-    value.invalidateIntrinsicContentSize()
+    this.width = with(Density.Default) { width.toPx() }
+    invalidate()
   }
 
   override fun height(height: Dp) {
-    this.height = with(Density.Default) {
-      height.toPx()
-    }
-    value.invalidateIntrinsicContentSize()
+    this.height = with(Density.Default) { height.toPx() }
+    invalidate()
   }
 
   override fun color(color: Int) {
     value.backgroundColor = color.toUIColor()
+  }
+
+  private fun invalidate() {
+    value.setFrame(CGRectMake(0.0, 0.0, width, height))
+    value.invalidateIntrinsicContentSize()
   }
 }

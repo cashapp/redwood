@@ -18,7 +18,7 @@ package app.cash.redwood.layout.uiview
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
 import app.cash.redwood.layout.widget.Box
-import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -28,7 +28,7 @@ class UIViewBoxTest(
 
   override fun Box(block: Box<UIView>.() -> Unit): Box<UIView> {
     val box = UIViewBox().apply(block)
-    box.value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 128.0)
+    box.value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
     return box
   }
 
@@ -37,13 +37,17 @@ class UIViewBoxTest(
   }
 
   override fun verifySnapshot(value: UIView) {
-    val container = UIView()
-    container.addSubview(value)
-    container.frame.useContents {
-      size.width = 250.0
-      size.height = 250.0
+    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
+
+    // Snapshot the container on a white background.
+    val frame = UIView().apply {
+      backgroundColor = UIColor.whiteColor
+      setFrame(screenSize)
+      addSubview(value)
+      layoutIfNeeded()
     }
-    container.sizeToFit()
-    callback.verifySnapshot(container, null)
+
+    callback.verifySnapshot(frame, null)
+    value.removeFromSuperview()
   }
 }

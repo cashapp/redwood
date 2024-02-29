@@ -28,7 +28,6 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.UIViewChildren
-import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
