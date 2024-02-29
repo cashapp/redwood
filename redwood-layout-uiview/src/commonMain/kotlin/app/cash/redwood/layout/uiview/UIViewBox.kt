@@ -70,6 +70,7 @@ internal class UIViewBox : Box<UIView> {
         right = margin.end.toPx(),
       )
     }
+    value.setNeedsLayout()
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
@@ -114,8 +115,8 @@ internal class UIViewBox : Box<UIView> {
         var itemHorizontalAlignment = horizontalAlignment
         var itemVerticalAlignment = verticalAlignment
 
-        var requestedWidth: CGFloat? = null
-        var requestedHeight: CGFloat? = null
+        var requestedWidth: CGFloat = Double.MIN_VALUE
+        var requestedHeight: CGFloat = Double.MIN_VALUE
 
         widget.modifier.forEach { childModifier ->
           when (childModifier) {
@@ -143,8 +144,16 @@ internal class UIViewBox : Box<UIView> {
         }
 
         // Use requested modifiers, otherwise use the size established from sizeToFit().
-        var childWidth: CGFloat = requestedWidth ?: view.frame.useContents { size.width }
-        var childHeight: CGFloat = requestedHeight ?: view.frame.useContents { size.height }
+        var childWidth: CGFloat = if (requestedWidth != Double.MIN_VALUE) {
+          requestedWidth
+        } else {
+          view.frame.useContents { size.width }
+        }
+        var childHeight: CGFloat = if (requestedHeight != Double.MIN_VALUE) {
+          requestedHeight
+        } else {
+          view.frame.useContents { size.height }
+        }
 
         // Compute origin and stretch if needed.
         var x: CGFloat = 0.0
@@ -246,8 +255,8 @@ internal class UIViewBox : Box<UIView> {
         }
       }
       return CGSizeMake(
-        width = max(maxRequestedWidth, maxItemWidth),
-        height = max(maxRequestedHeight, maxItemHeight),
+        width = maxOf(maxRequestedWidth, maxItemWidth),
+        height = maxOf(maxRequestedHeight, maxItemHeight),
       )
     }
 
