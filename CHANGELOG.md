@@ -11,9 +11,9 @@ Changed:
 
 Fixed:
 - Fix the `View` implementation of `Box` to wrap its width and height by default. This matches the behavior of the `UIView` implementation and all other layout widgets.
+- Fix the `UIView` implementation of `Box` not updating when some of its parameters are changed.
 - Fix `Modifier.size` not being applied to children inside a `Box`.
 - Fix `Margin` not being applied to the `UIView` implementation of `Box`.
-- Fix the `UIView` implementation of `Box` not updating when some of its parameters are changed.
 
 
 ## [0.9.0] - 2024-02-28
