@@ -14,7 +14,7 @@ Fixed:
 - Fix the `UIView` implementation of `Box` not updating when some of its parameters are changed.
 - Fix `Modifier.size` not being applied to children inside a `Box`.
 - Fix `Margin` not being applied to the `UIView` implementation of `Box`.
-- The `View` implementation of `Box` now applies start/end margins correctly in RTL.
+- The `View` implementation of `Box` now applies start/end margins correctly in RTL, and does not crash if set before the native view was attached.
 
 
 ## [0.9.0] - 2024-02-28
