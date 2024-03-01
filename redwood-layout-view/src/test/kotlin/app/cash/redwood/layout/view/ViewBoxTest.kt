@@ -23,17 +23,22 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
 import app.cash.redwood.layout.widget.Box
+import com.android.resources.LayoutDirection
+import com.google.testing.junit.testparameterinjector.TestParameter
+import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
-class ViewBoxTest : AbstractBoxTest<View>() {
+@RunWith(TestParameterInjector::class)
+class ViewBoxTest(
+  @TestParameter layoutDirection: LayoutDirection,
+) : AbstractBoxTest<View>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
-    deviceConfig = DeviceConfig.PIXEL_6,
+    deviceConfig = DeviceConfig.PIXEL_6.copy(layoutDirection = layoutDirection),
     theme = "android:Theme.Material.Light.NoActionBar",
+    supportsRtl = true,
   )
 
   override fun Box(): Box<View> {
