@@ -18,11 +18,11 @@ package app.cash.redwood.layout.view
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMarginsRelative
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -45,6 +45,7 @@ internal class ViewBox(
   private var verticalAlignment = CrossAxisAlignment.Start
   private var width = Constraint.Wrap
   private var height = Constraint.Wrap
+  private var margin: Margin? = null
 
   override var modifier: Modifier = Modifier
 
@@ -66,15 +67,32 @@ internal class ViewBox(
     invalidate()
   }
 
+  override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
+    if (params != null) {
+      margin?.let { margin ->
+        maybeUpdateLayoutParams(margin, params)
+      }
+    }
+    super.setLayoutParams(params)
+  }
+
   override fun margin(margin: Margin) {
-    updateLayoutParams<MarginLayoutParams> {
+    this.margin = margin
+
+    layoutParams?.let { params ->
+      maybeUpdateLayoutParams(margin, params)
+      // Write instance back out to indicate it has changed.
+      super.setLayoutParams(params)
+    }
+  }
+
+  private fun maybeUpdateLayoutParams(margin: Margin, params: ViewGroup.LayoutParams) {
+    if (params is MarginLayoutParams) {
       with(density) {
-        updateMarginsRelative(
-          start = margin.start.toPxInt(),
-          top = margin.top.toPxInt(),
-          end = margin.end.toPxInt(),
-          bottom = margin.bottom.toPxInt(),
-        )
+        params.marginStart = margin.start.toPxInt()
+        params.topMargin = margin.top.toPxInt()
+        params.marginEnd = margin.end.toPxInt()
+        params.bottomMargin = margin.bottom.toPxInt()
       }
     }
   }

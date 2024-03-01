@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:function-naming", "ktlint:standard:property-naming")
+@file:Suppress("ktlint:standard:function-naming")
 
 package app.cash.redwood.layout
 
@@ -21,6 +21,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import kotlin.test.Test
 
@@ -205,6 +206,29 @@ abstract class AbstractBoxTest<T : Any> {
       children.insert(0, Color(Red, 300.dp, 300.dp))
       children.insert(1, Color(Green, 200.dp, 200.dp))
       children.insert(2, Color(Blue, 100.dp, 100.dp))
+    }
+    verifySnapshot(widget.value)
+  }
+
+  @Test
+  fun testMargins() {
+    // Different margins allow us to know which direction start and end get applied.
+    val asymmetric = Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp)
+
+    val widget = Box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+
+      // Ensure Box applies its margins correctly to the parent.
+      margin(asymmetric)
+
+      children.insert(
+        0,
+        Color(Red, 100.dp, 100.dp).apply {
+          // Ensure Box honors margins correctly from its children.
+          modifier = MarginImpl(asymmetric)
+        },
+      )
     }
     verifySnapshot(widget.value)
   }

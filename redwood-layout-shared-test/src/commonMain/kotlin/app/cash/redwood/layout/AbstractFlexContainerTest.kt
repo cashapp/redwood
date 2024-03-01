@@ -19,18 +19,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.modifier.Flex
-import app.cash.redwood.layout.modifier.Grow
-import app.cash.redwood.layout.modifier.Height
-import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
-import app.cash.redwood.layout.modifier.Shrink
-import app.cash.redwood.layout.modifier.Size
-import app.cash.redwood.layout.modifier.VerticalAlignment
-import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
-import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
@@ -41,7 +31,7 @@ import kotlin.test.Test
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(
     direction: FlexDirection,
-    backgroundColor: Int = Color(51, 0, 0, 255),
+    backgroundColor: Int = argb(51, 0, 0, 255),
   ): TestFlexContainer<T>
 
   abstract fun row(): Row<T>
@@ -574,10 +564,6 @@ interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
   fun removeAt(index: Int)
 }
 
-interface Text<T : Any> : Widget<T> {
-  fun text(text: String)
-}
-
 private val movies = listOf(
   "The Godfather",
   "The Dark Knight",
@@ -592,38 +578,3 @@ private val movies = listOf(
   "Se7en",
   "Seven Samurai",
 )
-
-private data class CrossAxisAlignmentImpl(
-  override val alignment: CrossAxisAlignment,
-) : HorizontalAlignment, VerticalAlignment
-
-private data class WidthImpl(
-  override val width: Dp,
-) : Width
-
-private data class HeightImpl(
-  override val height: Dp,
-) : Height
-
-private data class SizeImpl(
-  override val width: Dp,
-  override val height: Dp,
-) : Size
-
-private data class MarginImpl(
-  override val margin: Margin,
-) : MarginModifier {
-  constructor(all: Dp = 0.dp) : this(Margin(all))
-}
-
-private data class GrowImpl(
-  override val value: Double,
-) : Grow
-
-private data class ShrinkImpl(
-  override val value: Double,
-) : Shrink
-
-private data class FlexImpl(
-  override val value: Double,
-) : Flex

@@ -13,11 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:function-naming", "ktlint:standard:property-naming")
+@file:Suppress("ktlint:standard:property-naming")
 
 package app.cash.redwood.layout
 
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Flex
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.Height
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.Size
+import app.cash.redwood.layout.modifier.VerticalAlignment
+import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
 import kotlin.test.assertTrue
 
@@ -26,7 +37,7 @@ const val Red: Int = 0xffff0000.toInt()
 const val Green: Int = 0xff00ff00.toInt()
 const val Blue: Int = 0xff0000ff.toInt()
 
-fun Color(
+fun argb(
   alpha: Int,
   red: Int,
   green: Int,
@@ -41,7 +52,46 @@ interface Color<T : Any> : Widget<T> {
   fun color(color: Int)
 }
 
+interface Text<T : Any> : Widget<T> {
+  fun text(text: String)
+}
+
 /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
 fun assumeTrue(b: Boolean) {
   assertTrue(b)
 }
+
+internal data class CrossAxisAlignmentImpl(
+  override val alignment: CrossAxisAlignment,
+) : HorizontalAlignment, VerticalAlignment
+
+internal data class WidthImpl(
+  override val width: Dp,
+) : Width
+
+internal data class HeightImpl(
+  override val height: Dp,
+) : Height
+
+internal data class SizeImpl(
+  override val width: Dp,
+  override val height: Dp,
+) : Size
+
+internal data class MarginImpl(
+  override val margin: Margin,
+) : app.cash.redwood.layout.modifier.Margin {
+  constructor(all: Dp = 0.dp) : this(Margin(all))
+}
+
+internal data class GrowImpl(
+  override val value: Double,
+) : Grow
+
+internal data class ShrinkImpl(
+  override val value: Double,
+) : Shrink
+
+internal data class FlexImpl(
+  override val value: Double,
+) : Flex
