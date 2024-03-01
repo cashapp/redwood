@@ -177,9 +177,9 @@ internal class ViewBox(
     verticalAlignment: CrossAxisAlignment,
   ): Int {
     val horizontalGravity = when (horizontalAlignment) {
-      CrossAxisAlignment.Start -> Gravity.LEFT
+      CrossAxisAlignment.Start -> Gravity.START
       CrossAxisAlignment.Center -> Gravity.CENTER_HORIZONTAL
-      CrossAxisAlignment.End -> Gravity.RIGHT
+      CrossAxisAlignment.End -> Gravity.END
       CrossAxisAlignment.Stretch -> Gravity.FILL_HORIZONTAL
       else -> throw AssertionError()
     }
