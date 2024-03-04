@@ -66,9 +66,8 @@ class ViewLazyListTest(
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
   }
 
-  override fun widget(backgroundColor: Int) = object : Text<View> {
+  override fun text() = object : Text<View> {
     override val value = TextView(paparazzi.context).apply {
-      setBackgroundColor(backgroundColor)
       textSize = 18f
       setTextColor(Color.BLACK)
     }
@@ -77,6 +76,10 @@ class ViewLazyListTest(
 
     override fun text(text: String) {
       value.text = text
+    }
+
+    override fun bgColor(color: Int) {
+      value.setBackgroundColor(color)
     }
   }
 

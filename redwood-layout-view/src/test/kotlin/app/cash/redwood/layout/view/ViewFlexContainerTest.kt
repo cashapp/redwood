@@ -20,7 +20,6 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -57,11 +56,7 @@ class ViewFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun widget(backgroundColor: Int): Text<View> {
-    return ViewText(paparazzi.context).apply {
-      value.setBackgroundColor(backgroundColor)
-    }
-  }
+  override fun text() = ViewText(paparazzi.context)
 
   override fun verifySnapshot(container: Widget<View>, name: String?) {
     paparazzi.snapshot(container.value, name)

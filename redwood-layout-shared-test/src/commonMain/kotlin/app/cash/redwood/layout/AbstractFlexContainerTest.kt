@@ -38,17 +38,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   abstract fun column(): Column<T>
 
-  abstract fun widget(
-    backgroundColor: Int = Green,
-  ): Text<T>
+  abstract fun text(): Text<T>
 
-  fun widget(
+  fun text(
     text: String,
     modifier: Modifier = Modifier,
     backgroundColor: Int = Green,
   ): Text<T> {
-    val widget = widget(backgroundColor)
+    val widget = text()
     widget.text(text)
+    widget.bgColor(backgroundColor)
     widget.modifier = modifier
     return widget
   }
@@ -117,7 +116,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
-    container.add(widget(movies.first()))
+    container.add(text(movies.first()))
     container.onEndChanges()
     verifySnapshot(container)
   }
@@ -137,7 +136,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -158,7 +157,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -187,7 +186,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
         else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
       }
-      container.add(widget(movie, modifier))
+      container.add(text(movie, modifier))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -235,7 +234,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(crossAxisAlignment)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -247,7 +246,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Center)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container, "Center")
@@ -278,7 +277,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.mainAxisAlignment(mainAxisAlignment)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -290,7 +289,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", WidthImpl(50.dp)))
+      container.add(text("$index", WidthImpl(50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -302,7 +301,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", HeightImpl(50.dp)))
+      container.add(text("$index", HeightImpl(50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -314,7 +313,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
+      container.add(text("$index", SizeImpl(50.dp, 50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -325,7 +324,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
-    val widget = widget("")
+    val widget = text("")
     container.add(widget)
     container.onEndChanges()
     verifySnapshot(container, "initial")
@@ -345,8 +344,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -355,8 +354,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -365,8 +364,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -380,47 +379,47 @@ abstract class AbstractFlexContainerTest<T : Any> {
       height(Constraint.Fill)
     }
 
-    column.add(widget("All rows have a 100 px margin on the right!"))
+    column.add(text("All rows have a 100 px margin on the right!"))
 
-    column.add(widget("1 element + no shrink:"))
+    column.add(text("1 element + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0)))
+        add(text("x ".repeat(100), GrowImpl(1.0)))
       },
     )
 
-    column.add(widget("1 element + shrink:"))
+    column.add(text("1 element + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
       },
     )
 
-    column.add(widget("2 elements + no shrink:"))
+    column.add(text("2 elements + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0)))
-        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(text("x ".repeat(100), GrowImpl(1.0)))
+        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
-    column.add(widget("2 elements + shrink:"))
+    column.add(text("2 elements + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
-        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
@@ -431,15 +430,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(widget("A"))
-    container.add(widget("B"))
-    container.add(widget("D"))
-    container.add(widget("E"))
+    container.add(text("A"))
+    container.add(text("B"))
+    container.add(text("D"))
+    container.add(text("E"))
 
     container.onEndChanges()
     verifySnapshot(container, "ABDE")
 
-    container.addAt(index = 2, widget = widget("C"))
+    container.addAt(index = 2, widget = text("C"))
     container.onEndChanges()
     verifySnapshot(container, "ABCDE")
 
@@ -461,13 +460,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
-          widget(
+          text(
             "A",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
           ),
         )
         add(
-          widget(
+          text(
             "B",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
           ),
@@ -482,14 +481,14 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
-          widget(
+          text(
             "C",
             GrowImpl(1.0)
               .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
           ),
         )
         add(
-          widget(
+          text(
             "D",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
           ),
@@ -507,10 +506,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(widget("REALLY LONG TEXT", FlexImpl(1.0)))
-    container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
-    container.add(widget("A", FlexImpl(1.0)))
-    container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    container.add(text("REALLY LONG TEXT", FlexImpl(1.0)))
+    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(text("A", FlexImpl(1.0)))
+    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     verifySnapshot(container)
   }
 
@@ -518,10 +517,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(widget("REALLY LONG TEXT", FlexImpl(3.0)))
-    container.add(widget("SHORTER TEXT", FlexImpl(1.0)))
-    container.add(widget("A", FlexImpl(1.0)))
-    container.add(widget("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    container.add(text("REALLY LONG TEXT", FlexImpl(3.0)))
+    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(text("A", FlexImpl(1.0)))
+    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     verifySnapshot(container)
   }
 
@@ -534,16 +533,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val innerContainer1 = flexContainer(FlexDirection.Column)
     innerContainer1.width(Constraint.Fill)
     innerContainer1.crossAxisAlignment(CrossAxisAlignment.Center)
-    innerContainer1.add(widget("INNER CONTAINER 1 TEXT 1"))
-    innerContainer1.add(widget("INNER CONTAINER 1 TEXT 2"))
+    innerContainer1.add(text("INNER CONTAINER 1 TEXT 1"))
+    innerContainer1.add(text("INNER CONTAINER 1 TEXT 2"))
 
     val innerContainer2 = flexContainer(FlexDirection.Column)
     innerContainer2.width(Constraint.Fill)
     innerContainer2.crossAxisAlignment(CrossAxisAlignment.Center)
     innerContainer2.mainAxisAlignment(MainAxisAlignment.Center)
     innerContainer2.margin(Margin(bottom = 24.dp))
-    innerContainer1.add(widget("INNER CONTAINER 2 TEXT 1"))
-    innerContainer1.add(widget("INNER CONTAINER 2 TEXT 2"))
+    innerContainer1.add(text("INNER CONTAINER 2 TEXT 1"))
+    innerContainer1.add(text("INNER CONTAINER 2 TEXT 2"))
 
     outerContainer.add(innerContainer1)
     outerContainer.add(innerContainer2)

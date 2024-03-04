@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:function-naming")
-
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.api.Constraint
@@ -27,11 +25,13 @@ import kotlin.test.Test
 
 abstract class AbstractBoxTest<T : Any> {
 
-  abstract fun Box(): Box<T>
+  abstract fun box(): Box<T>
 
-  abstract fun Color(): Color<T>
+  abstract fun color(): Color<T>
 
-  fun Color(color: Int, width: Dp, height: Dp) = Color().apply {
+  abstract fun text(): Text<T>
+
+  fun color(color: Int, width: Dp, height: Dp) = color().apply {
     color(color)
     width(width)
     height(height)
@@ -41,13 +41,13 @@ abstract class AbstractBoxTest<T : Any> {
 
   @Test
   fun testDefaults() {
-    val widget = Box()
+    val widget = box()
     verifySnapshot(widget.value)
   }
 
   @Test
   fun testWrap() {
-    val widget = Box().apply {
+    val widget = box().apply {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
     }
@@ -56,7 +56,7 @@ abstract class AbstractBoxTest<T : Any> {
 
   @Test
   fun testFill() {
-    val widget = Box().apply {
+    val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
@@ -198,14 +198,32 @@ abstract class AbstractBoxTest<T : Any> {
     horizontalAlignment: CrossAxisAlignment,
     verticalAlignment: CrossAxisAlignment,
   ) {
-    val widget = Box().apply {
+    val widget = box().apply {
       width(constraint)
       height(constraint)
       horizontalAlignment(horizontalAlignment)
       verticalAlignment(verticalAlignment)
-      children.insert(0, Color(Red, 300.dp, 300.dp))
-      children.insert(1, Color(Green, 200.dp, 200.dp))
-      children.insert(2, Color(Blue, 100.dp, 100.dp))
+      children.insert(
+        0,
+        text().apply {
+          text("LongLongLongLongLongLongLong\n".repeat(12).trim())
+          bgColor(Red)
+        },
+      )
+      children.insert(
+        1,
+        text().apply {
+          text("MediumMedium\n".repeat(7).trim())
+          bgColor(Green)
+        },
+      )
+      children.insert(
+        2,
+        text().apply {
+          text("Short\n".repeat(2).trim())
+          bgColor(Blue)
+        },
+      )
     }
     verifySnapshot(widget.value)
   }
@@ -215,7 +233,7 @@ abstract class AbstractBoxTest<T : Any> {
     // Different margins allow us to know which direction start and end get applied.
     val asymmetric = Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp)
 
-    val widget = Box().apply {
+    val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
 
@@ -224,7 +242,7 @@ abstract class AbstractBoxTest<T : Any> {
 
       children.insert(
         0,
-        Color(Red, 100.dp, 100.dp).apply {
+        color(Red, 100.dp, 100.dp).apply {
           // Ensure Box honors margins correctly from its children.
           modifier = MarginImpl(asymmetric)
         },

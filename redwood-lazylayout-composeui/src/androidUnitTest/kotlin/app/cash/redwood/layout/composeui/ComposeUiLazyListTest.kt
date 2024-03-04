@@ -31,6 +31,7 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.Transparent
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
@@ -71,14 +72,15 @@ class ComposeUiLazyListTest(
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
   }
 
-  override fun widget(backgroundColor: Int) = object : Text<@Composable () -> Unit> {
+  override fun text() = object : Text<@Composable () -> Unit> {
     private var text by mutableStateOf("")
+    private var bgColor by mutableStateOf(Transparent)
 
     override val value = @Composable {
       BasicText(
         text = this.text,
         style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color(backgroundColor)),
+        modifier = Modifier.background(Color(bgColor)),
       )
     }
 
@@ -86,6 +88,10 @@ class ComposeUiLazyListTest(
 
     override fun text(text: String) {
       this.text = text
+    }
+
+    override fun bgColor(color: Int) {
+      bgColor = color
     }
   }
 

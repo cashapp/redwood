@@ -20,6 +20,7 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color as ColorWidget
+import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -39,9 +40,11 @@ class ComposeUiBoxTest(
     supportsRtl = true,
   )
 
-  override fun Box(): Box<@Composable () -> Unit> = ComposeUiBox(0x88000000.toInt())
+  override fun box(): Box<@Composable () -> Unit> = ComposeUiBox(0x88000000.toInt())
 
-  override fun Color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
+  override fun color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
+
+  override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
 
   override fun verifySnapshot(value: @Composable () -> Unit) {
     paparazzi.snapshot(composable = value)
