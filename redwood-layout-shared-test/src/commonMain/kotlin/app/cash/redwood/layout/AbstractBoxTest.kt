@@ -87,6 +87,13 @@ abstract class AbstractBoxTest<T : Any> {
   )
 
   @Test
+  fun testWrapWithChildren_Wrap_Stretch_Start() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.Start,
+  )
+
+  @Test
   fun testWrapWithChildren_Wrap_Start_Center() = testWithChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Start,
@@ -104,6 +111,13 @@ abstract class AbstractBoxTest<T : Any> {
   fun testWrapWithChildren_Wrap_End_Center() = testWithChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
+    verticalAlignment = CrossAxisAlignment.Center,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_Stretch_Center() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
@@ -126,6 +140,41 @@ abstract class AbstractBoxTest<T : Any> {
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.End,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_Stretch_End() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.End,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_Start_Stretch() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Start,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_Center_Stretch() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Center,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_End_Stretch() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.End,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testWrapWithChildren_Wrap_Stretch_Stretch() = testWithChildren(
+    constraint = Constraint.Wrap,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   // testFillWithChildren
@@ -152,6 +201,13 @@ abstract class AbstractBoxTest<T : Any> {
   )
 
   @Test
+  fun testFillWithChildren_Wrap_Stretch_Start() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.Start,
+  )
+
+  @Test
   fun testFillWithChildren_Wrap_Start_Center() = testWithChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Start,
@@ -169,6 +225,13 @@ abstract class AbstractBoxTest<T : Any> {
   fun testFillWithChildren_Wrap_End_Center() = testWithChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
+    verticalAlignment = CrossAxisAlignment.Center,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_Stretch_Center() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
@@ -191,6 +254,41 @@ abstract class AbstractBoxTest<T : Any> {
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.End,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_Stretch_End() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.End,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_Start_Stretch() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Start,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_Center_Stretch() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Center,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_End_Stretch() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.End,
+    verticalAlignment = CrossAxisAlignment.Stretch,
+  )
+
+  @Test
+  fun testFillWithChildren_Wrap_Stretch_Stretch() = testWithChildren(
+    constraint = Constraint.Fill,
+    horizontalAlignment = CrossAxisAlignment.Stretch,
+    verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   private fun testWithChildren(
