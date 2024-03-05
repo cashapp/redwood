@@ -17,6 +17,7 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
+import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
@@ -26,14 +27,18 @@ class UIViewBoxTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractBoxTest<UIView>() {
 
-  override fun Box(): Box<UIView> {
+  override fun box(): Box<UIView> {
     return UIViewBox().apply {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
     }
   }
 
-  override fun Color(): Color<UIView> {
+  override fun color(): Color<UIView> {
     return UIViewColor()
+  }
+
+  override fun text(): Text<UIView> {
+    return UIViewText()
   }
 
   override fun verifySnapshot(value: UIView) {

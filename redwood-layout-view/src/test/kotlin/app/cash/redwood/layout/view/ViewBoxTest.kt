@@ -22,6 +22,7 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
+import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -41,14 +42,18 @@ class ViewBoxTest(
     supportsRtl = true,
   )
 
-  override fun Box(): Box<View> {
+  override fun box(): Box<View> {
     return ViewBox(paparazzi.context).apply {
       background = ColorDrawable(0x88000000.toInt())
     }
   }
 
-  override fun Color(): Color<View> {
+  override fun color(): Color<View> {
     return ViewColor(paparazzi.context)
+  }
+
+  override fun text(): Text<View> {
+    return ViewText(paparazzi.context)
   }
 
   override fun verifySnapshot(value: View) {

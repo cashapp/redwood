@@ -42,6 +42,10 @@ class UIViewText : Text<UIView> {
   override fun text(text: String) {
     value.text = text
   }
+
+  override fun bgColor(color: Int) {
+    value.backgroundColor = color.toUIColor()
+  }
 }
 
 class UIViewColor : Color<UIView> {

@@ -16,21 +16,13 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
@@ -63,23 +55,7 @@ class ComposeUiFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun widget(backgroundColor: Int) = object : Text<@Composable () -> Unit> {
-    private var text by mutableStateOf("")
-
-    override val value = @Composable {
-      BasicText(
-        text = this.text,
-        style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color(backgroundColor)),
-      )
-    }
-
-    override var modifier: RedwoodModifier = RedwoodModifier
-
-    override fun text(text: String) {
-      this.text = text
-    }
-  }
+  override fun text() = ComposeUiText()
 
   override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {

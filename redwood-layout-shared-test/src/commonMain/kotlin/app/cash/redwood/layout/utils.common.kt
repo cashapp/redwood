@@ -54,6 +54,7 @@ interface Color<T : Any> : Widget<T> {
 
 interface Text<T : Any> : Widget<T> {
   fun text(text: String)
+  fun bgColor(color: Int)
 }
 
 /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */

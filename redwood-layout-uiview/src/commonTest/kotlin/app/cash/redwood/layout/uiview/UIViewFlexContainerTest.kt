@@ -17,7 +17,6 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
@@ -43,11 +42,7 @@ class UIViewFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun widget(backgroundColor: Int): Text<UIView> {
-    return UIViewText().apply {
-      value.backgroundColor = backgroundColor.toUIColor()
-    }
-  }
+  override fun text() = UIViewText()
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,

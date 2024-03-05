@@ -16,7 +16,6 @@
 package app.cash.redwood.layout.view
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.Modifier
@@ -35,6 +34,10 @@ class ViewText(context: Context) : Text<View> {
 
   override fun text(text: String) {
     value.text = text
+  }
+
+  override fun bgColor(color: Int) {
+    value.setBackgroundColor(color)
   }
 }
 
@@ -60,6 +63,6 @@ class ViewColor(context: Context) : Color<View> {
   }
 
   override fun color(color: Int) {
-    value.background = ColorDrawable(color)
+    value.setBackgroundColor(color)
   }
 }
