@@ -40,13 +40,13 @@ abstract class AbstractBoxTest<T : Any> {
   abstract fun verifySnapshot(value: T)
 
   @Test
-  fun testDefaults() {
+  fun testEmpty_Defaults() {
     val widget = box()
     verifySnapshot(widget.value)
   }
 
   @Test
-  fun testWrap() {
+  fun testEmpty_Wrap() {
     val widget = box().apply {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
@@ -55,7 +55,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testFill() {
+  fun testEmpty_Fill() {
     val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -63,235 +63,233 @@ abstract class AbstractBoxTest<T : Any> {
     verifySnapshot(widget.value)
   }
 
-  // testWrapWithChildren
+  // testChildren
 
   @Test
-  fun testWrapWithChildren_Wrap_Start_Start() = testWithChildren(
+  fun testChildren_Wrap_Start_Start() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Center_Start() = testWithChildren(
+  fun testChildren_Wrap_Center_Start() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_End_Start() = testWithChildren(
+  fun testChildren_Wrap_End_Start() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Stretch_Start() = testWithChildren(
+  fun testChildren_Wrap_Stretch_Start() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Start_Center() = testWithChildren(
+  fun testChildren_Wrap_Start_Center() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Center_Center() = testWithChildren(
+  fun testChildren_Wrap_Center_Center() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_End_Center() = testWithChildren(
+  fun testChildren_Wrap_End_Center() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Stretch_Center() = testWithChildren(
+  fun testChildren_Wrap_Stretch_Center() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Start_End() = testWithChildren(
+  fun testChildren_Wrap_Start_End() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Center_End() = testWithChildren(
+  fun testChildren_Wrap_Center_End() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_End_End() = testWithChildren(
+  fun testChildren_Wrap_End_End() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Stretch_End() = testWithChildren(
+  fun testChildren_Wrap_Stretch_End() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Start_Stretch() = testWithChildren(
+  fun testChildren_Wrap_Start_Stretch() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Center_Stretch() = testWithChildren(
+  fun testChildren_Wrap_Center_Stretch() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_End_Stretch() = testWithChildren(
+  fun testChildren_Wrap_End_Stretch() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testWrapWithChildren_Wrap_Stretch_Stretch() = testWithChildren(
+  fun testChildren_Wrap_Stretch_Stretch() = testChildren(
     constraint = Constraint.Wrap,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
-  // testFillWithChildren
-
   @Test
-  fun testFillWithChildren_Wrap_Start_Start() = testWithChildren(
+  fun testChildren_Fill_Start_Start() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Center_Start() = testWithChildren(
+  fun testChildren_Fill_Center_Start() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_End_Start() = testWithChildren(
+  fun testChildren_Fill_End_Start() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Stretch_Start() = testWithChildren(
+  fun testChildren_Fill_Stretch_Start() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Start,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Start_Center() = testWithChildren(
+  fun testChildren_Fill_Start_Center() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Center_Center() = testWithChildren(
+  fun testChildren_Fill_Center_Center() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_End_Center() = testWithChildren(
+  fun testChildren_Fill_End_Center() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Stretch_Center() = testWithChildren(
+  fun testChildren_Fill_Stretch_Center() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Center,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Start_End() = testWithChildren(
+  fun testChildren_Fill_Start_End() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Center_End() = testWithChildren(
+  fun testChildren_Fill_Center_End() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_End_End() = testWithChildren(
+  fun testChildren_Fill_End_End() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Stretch_End() = testWithChildren(
+  fun testChildren_Fill_Stretch_End() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.End,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Start_Stretch() = testWithChildren(
+  fun testChildren_Fill_Start_Stretch() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Start,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Center_Stretch() = testWithChildren(
+  fun testChildren_Fill_Center_Stretch() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Center,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_End_Stretch() = testWithChildren(
+  fun testChildren_Fill_End_Stretch() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.End,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
   @Test
-  fun testFillWithChildren_Wrap_Stretch_Stretch() = testWithChildren(
+  fun testChildren_Fill_Stretch_Stretch() = testChildren(
     constraint = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
     verticalAlignment = CrossAxisAlignment.Stretch,
   )
 
-  private fun testWithChildren(
+  private fun testChildren(
     constraint: Constraint,
     horizontalAlignment: CrossAxisAlignment,
     verticalAlignment: CrossAxisAlignment,
