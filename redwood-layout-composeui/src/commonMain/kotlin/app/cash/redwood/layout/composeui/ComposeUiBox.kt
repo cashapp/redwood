@@ -100,7 +100,8 @@ internal class ComposeUiBox(
         CrossAxisAlignment.Start -> -1f
         CrossAxisAlignment.Center -> 0f
         CrossAxisAlignment.End -> 1f
-        CrossAxisAlignment.Stretch -> TODO()
+        // TODO Implement stretch with custom Layout.
+        CrossAxisAlignment.Stretch -> -1f
         else -> throw AssertionError()
       },
       verticalBias = alignment.verticalBias,
@@ -114,7 +115,8 @@ internal class ComposeUiBox(
         CrossAxisAlignment.Start -> -1f
         CrossAxisAlignment.Center -> 0f
         CrossAxisAlignment.End -> 1f
-        CrossAxisAlignment.Stretch -> TODO()
+        // TODO Implement stretch with custom Layout.
+        CrossAxisAlignment.Stretch -> -1f
         else -> throw AssertionError()
       },
     )
