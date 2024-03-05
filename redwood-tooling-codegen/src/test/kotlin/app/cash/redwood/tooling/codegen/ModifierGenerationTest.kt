@@ -74,7 +74,7 @@ class ModifierGenerationTest {
 
     val modifier = schema.modifiers.single { it.type.names.last() == "ScopedModifier" }
     val scope = modifier.scopes.single { it.names.last() == "ModifierScope" }
-    val scopeSpec = generateScope(schema, scope)
+    val scopeSpec = generateModifierScope(schema, scope)
     assertThat(scopeSpec.toString()).contains(
       """
       |  @Stable

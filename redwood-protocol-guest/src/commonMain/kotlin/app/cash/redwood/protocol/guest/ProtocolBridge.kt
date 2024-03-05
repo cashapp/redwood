@@ -34,14 +34,14 @@ public interface ProtocolBridge : EventSink {
    * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
    * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
    */
-  public val root: Widget.Children<Nothing>
+  public val root: Widget.Children<Unit>
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes
    * are also recorded. You **must** attach returned widgets to [root] or the children of a widget
    * in the tree beneath [root] in order for it to be tracked.
    */
-  public val widgetSystem: WidgetSystem<Nothing>
+  public val widgetSystem: WidgetSystem<Unit>
 
   /**
    * Returns any changes to [root] or [widgetSystem]-produced widgets since the last time this

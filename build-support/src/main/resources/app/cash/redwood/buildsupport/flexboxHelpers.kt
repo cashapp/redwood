@@ -86,7 +86,7 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 }
 
 internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
-  parentModifier.forEach { childModifier ->
+  parentModifier.forEachScoped { childModifier ->
     when (childModifier) {
       is GrowModifier -> {
         flexGrow = childModifier.value.toFloat()

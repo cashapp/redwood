@@ -41,8 +41,9 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
     when (type) {
       Compose -> {
         generateModifierImpls(schema)?.let { add(it) }
+        generateUnscopedModifiers(schema)?.let { add(it) }
         for (scope in schema.scopes) {
-          add(generateScope(schema, scope))
+          add(generateModifierScope(schema, scope))
         }
         for (widget in schema.widgets) {
           add(generateComposable(schema, widget))

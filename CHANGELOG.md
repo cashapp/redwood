@@ -6,6 +6,7 @@
 New:
 - Compose UI implementation for `Box`.
 - Layout modifier support for HTML DOM layouts.
+- Unscoped modifiers provide a global hook for side-effecting behavior on native views. For example, create a background color modifier which changes the platform-native UI node through a factory function.
 
 Changed:
 - Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).

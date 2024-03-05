@@ -57,7 +57,7 @@ class ComposeGenerationTest {
   @Test fun `scope is annotated with layout scope marker`() {
     val schema = ProtocolSchemaSet.parse(ScopedAndUnscopedSchema::class).schema
 
-    val fileSpec = generateScope(schema, FqType(listOf("example", "RowScope")))
+    val fileSpec = generateModifierScope(schema, FqType(listOf("example", "RowScope")))
     assertThat(fileSpec.toString()).contains(
       """
       |@LayoutScopeMarker

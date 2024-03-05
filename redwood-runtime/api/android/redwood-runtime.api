@@ -4,17 +4,31 @@ public abstract interface annotation class app/cash/redwood/LayoutScopeMarker : 
 public abstract interface class app/cash/redwood/Modifier {
 	public static final field Companion Lapp/cash/redwood/Modifier$Companion;
 	public abstract fun forEach (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun forEachScoped (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun forEachUnscoped (Lkotlin/jvm/functions/Function1;)V
 	public fun then (Lapp/cash/redwood/Modifier;)Lapp/cash/redwood/Modifier;
 }
 
 public final class app/cash/redwood/Modifier$Companion : app/cash/redwood/Modifier {
 	public fun forEach (Lkotlin/jvm/functions/Function1;)V
+	public fun forEachScoped (Lkotlin/jvm/functions/Function1;)V
+	public fun forEachUnscoped (Lkotlin/jvm/functions/Function1;)V
 	public fun then (Lapp/cash/redwood/Modifier;)Lapp/cash/redwood/Modifier;
 	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class app/cash/redwood/Modifier$Element : app/cash/redwood/Modifier {
 	public fun forEach (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class app/cash/redwood/Modifier$ScopedElement : app/cash/redwood/Modifier$Element {
+	public fun forEachScoped (Lkotlin/jvm/functions/Function1;)V
+	public fun forEachUnscoped (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class app/cash/redwood/Modifier$UnscopedElement : app/cash/redwood/Modifier$Element {
+	public fun forEachScoped (Lkotlin/jvm/functions/Function1;)V
+	public fun forEachUnscoped (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface annotation class app/cash/redwood/RedwoodCodegenApi : java/lang/annotation/Annotation {

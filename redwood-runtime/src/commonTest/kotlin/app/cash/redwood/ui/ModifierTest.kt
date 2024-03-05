@@ -109,6 +109,6 @@ class ModifierTest {
   }
 }
 
-private class NamedModifier(private val name: String) : Modifier.Element {
+private class NamedModifier(private val name: String) : Modifier.ScopedElement {
   override fun toString() = name
 }

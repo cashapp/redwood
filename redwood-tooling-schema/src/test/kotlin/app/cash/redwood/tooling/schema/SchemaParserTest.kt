@@ -1009,25 +1009,6 @@ class SchemaParserTest(
   }
 
   @Schema(
-    members = [
-      UnscopedModifier::class,
-    ],
-  )
-  interface UnscopedModifierSchema
-
-  @Modifier(1)
-  object UnscopedModifier
-
-  @Test fun `layout modifier must have at least one scope`() {
-    assertFailure { parser.parse(UnscopedModifierSchema::class) }
-      .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.UnscopedModifier " +
-          "must have at least one scope.",
-      )
-  }
-
-  @Schema(
     [
       SerializationModifier::class,
     ],

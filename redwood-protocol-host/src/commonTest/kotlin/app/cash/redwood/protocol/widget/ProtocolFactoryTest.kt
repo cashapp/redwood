@@ -327,8 +327,8 @@ class ProtocolFactoryTest {
       .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
   }
 
-  class RecordingTextInput : TextInput<Nothing> {
-    override val value get() = TODO()
+  class RecordingTextInput : TextInput<Unit> {
+    override val value get() = Unit
     override var modifier: Modifier = Modifier
 
     var text: String? = null

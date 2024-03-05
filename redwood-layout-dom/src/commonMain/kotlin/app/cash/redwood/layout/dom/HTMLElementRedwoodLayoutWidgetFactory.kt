@@ -156,7 +156,7 @@ private class HTMLFlexElementChildren(
       }
     }
 
-    modifier.forEach { element ->
+    modifier.forEachScoped { element ->
       when (element) {
         is MarginModifier -> {
           value.style.apply {

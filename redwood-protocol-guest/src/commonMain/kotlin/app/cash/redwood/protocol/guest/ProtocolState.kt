@@ -64,7 +64,7 @@ public class ProtocolState {
 
   public fun getWidget(id: Id): ProtocolWidget? = widgets[id.value]
 
-  public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Nothing> {
+  public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Unit> {
     return ProtocolWidgetChildren(id, tag, this)
   }
 }

@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
+import com.example.redwood.testing.modifier.BackgroundColor
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.Button2
 import com.example.redwood.testing.widget.Rectangle
@@ -25,18 +26,20 @@ import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
 import com.example.redwood.testing.widget.TextInput
 
-open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Nothing> {
-  override fun TestRow(): TestRow<Nothing> = TODO()
-  override fun ScopedTestRow(): ScopedTestRow<Nothing> = TODO()
-  override fun Text(): Text<Nothing> = TODO()
-  override fun Button() = object : Button<Nothing> {
-    override val value get() = TODO()
+open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Unit> {
+  override fun TestRow(): TestRow<Unit> = TODO()
+  override fun ScopedTestRow(): ScopedTestRow<Unit> = TODO()
+  override fun Text(): Text<Unit> = TODO()
+  override fun Button() = object : Button<Unit> {
+    override val value get() = Unit
     override var modifier: Modifier = Modifier
 
     override fun text(text: String?) = TODO()
     override fun onClick(onClick: (() -> Unit)?) = TODO()
   }
-  override fun Button2(): Button2<Nothing> = TODO()
-  override fun TextInput(): TextInput<Nothing> = TODO()
-  override fun Rectangle(): Rectangle<Nothing> = TODO()
+  override fun Button2(): Button2<Unit> = TODO()
+  override fun TextInput(): TextInput<Unit> = TODO()
+  override fun Rectangle(): Rectangle<Unit> = TODO()
+  override fun BackgroundColor(value: Unit, modifier: BackgroundColor) {
+  }
 }

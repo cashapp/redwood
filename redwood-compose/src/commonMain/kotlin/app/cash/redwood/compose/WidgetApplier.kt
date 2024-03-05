@@ -151,6 +151,11 @@ public class WidgetNode<out W : Widget<V>, V : Any>(
   public companion object {
     public val SetModifiers: WidgetNode<Widget<Any>, Any>.(Modifier) -> Unit = {
       recordChanged()
+
+      it.forEachUnscoped { element ->
+        applier.widgetSystem.apply(widget.value, element)
+      }
+
       widget.modifier = it
       container?.onModifierUpdated(index, widget)
     }

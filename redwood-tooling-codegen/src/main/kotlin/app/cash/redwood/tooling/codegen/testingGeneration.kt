@@ -139,7 +139,16 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
-                .addCode("return %T()", schema.mutableWidgetType(widget))
+                .addStatement("return %T()", schema.mutableWidgetType(widget))
+                .build(),
+            )
+          }
+          for (modifier in schema.unscopedModifiers) {
+            addFunction(
+              FunSpec.builder(modifier.type.flatName)
+                .addModifiers(OVERRIDE)
+                .addParameter("value", RedwoodTesting.WidgetValue)
+                .addParameter("modifier", schema.modifierType(modifier))
                 .build(),
             )
           }

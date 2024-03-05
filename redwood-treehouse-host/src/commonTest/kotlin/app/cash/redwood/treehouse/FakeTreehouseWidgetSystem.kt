@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.Modifier.UnscopedElement
-import app.cash.redwood.widget.WidgetSystem
+import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import kotlinx.serialization.json.Json
 
-class FakeWidgetSystem : WidgetSystem<FakeWidget> {
-  override fun apply(value: FakeWidget, element: UnscopedElement) {
-  }
+internal class FakeTreehouseWidgetSystem : TreehouseView.WidgetSystem<FakeWidget> {
+  override fun widgetFactory(
+    json: Json,
+    protocolMismatchHandler: ProtocolMismatchHandler,
+  ) = FakeProtocolNodeFactory()
 }

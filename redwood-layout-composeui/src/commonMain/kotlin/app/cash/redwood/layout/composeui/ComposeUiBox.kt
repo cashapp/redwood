@@ -85,7 +85,7 @@ internal class ComposeUiBox(
     var matchParentWidth = matchParentWidth
     var matchParentHeight = matchParentHeight
 
-    forEach { childModifier ->
+    forEachScoped { childModifier ->
       when (childModifier) {
         is HorizontalAlignment -> {
           matchParentWidth = childModifier.alignment == CrossAxisAlignment.Stretch

@@ -441,9 +441,6 @@ private fun parseModifier(
   require(tag in 1 until MAX_MEMBER_TAG) {
     "@Modifier $memberFqType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
-  require(annotation.scopes.isNotEmpty()) {
-    "@Modifier $memberFqType must have at least one scope."
-  }
 
   val properties = if (memberType.objectInstance != null) {
     emptyList()
