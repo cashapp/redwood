@@ -73,15 +73,9 @@ internal fun generateComposable(
       FunSpec.builder(flatName)
         .addAnnotation(ComposeRuntime.Composable)
         .optIn(Redwood.RedwoodCodegenApi)
+        .maybeAddKDoc(widget.documentation)
+        .maybeAddDeprecation(widget.deprecation)
         .apply {
-          widget.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
-
-          widget.deprecation?.let { deprecation ->
-            addAnnotation(deprecation.toAnnotationSpec())
-          }
-
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.
           val modifierIndex = widget.traits.indexOfLast { it !is Children } + 1
@@ -103,35 +97,23 @@ internal fun generateComposable(
               when (trait) {
                 is Property -> {
                   ParameterSpec.builder(trait.name, trait.type.asTypeName())
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
 
                 is Event -> {
                   ParameterSpec.builder(trait.name, trait.lambdaType)
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
 
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage(), it.flatName) }
                   ParameterSpec.builder(trait.name, composableLambda(scope))
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
 
@@ -268,23 +250,16 @@ private fun generateModifierFunction(
     .addAnnotation(ComposeRuntime.Stable)
     .receiver(Redwood.Modifier)
     .returns(Redwood.Modifier)
+    .maybeAddKDoc(modifier.documentation)
     .apply {
-      modifier.documentation?.let { documentation ->
-        addKdoc(documentation)
-      }
-
       val arguments = mutableListOf<CodeBlock>()
       for (property in modifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
 
         addParameter(
           ParameterSpec.builder(property.name, property.type.asTypeName())
-            .apply {
-              property.defaultExpression?.let { defaultValue(it) }
-              property.documentation?.let { documentation ->
-                addKdoc(documentation)
-              }
-            }
+            .maybeAddKDoc(property.documentation)
+            .maybeDefaultValue(property.defaultExpression)
             .build(),
         )
       }

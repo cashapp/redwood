@@ -431,9 +431,7 @@ internal fun generateProtocolModifierImpls(
 
                 primaryConstructor.addParameter(
                   ParameterSpec.builder(property.name, propertyType)
-                    .apply {
-                      property.defaultExpression?.let { defaultValue(it) }
-                    }
+                    .maybeDefaultValue(property.defaultExpression)
                     .build(),
                 )
 

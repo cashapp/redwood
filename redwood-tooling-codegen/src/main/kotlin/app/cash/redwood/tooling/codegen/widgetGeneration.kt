@@ -114,23 +114,16 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
             .addMember("exact = true")
             .build(),
         )
+        .maybeAddKDoc(schema.documentation)
         .apply {
-          schema.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
-
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(ABSTRACT)
                 .returns(schema.widgetType(widget).parameterizedBy(typeVariableW))
+                .maybeAddDeprecation(widget.deprecation)
+                .maybeAddKDoc(widget.documentation)
                 .apply {
-                  widget.deprecation?.let { deprecation ->
-                    addAnnotation(deprecation.toAnnotationSpec())
-                  }
-                  widget.documentation?.let { documentation ->
-                    addKdoc(documentation)
-                  }
                   if (widget is ProtocolWidget) {
                     addKdoc("{tag=${widget.tag}}")
                   }
@@ -171,14 +164,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
             .addMember("exact = true")
             .build(),
         )
+        .maybeAddDeprecation(widget.deprecation)
+        .maybeAddKDoc(widget.documentation)
         .apply {
-          widget.deprecation?.let { deprecation ->
-            addAnnotation(deprecation.toAnnotationSpec())
-          }
-
-          widget.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
           if (widget is ProtocolWidget) {
             addKdoc("{tag=${widget.tag}}")
           }
@@ -190,13 +178,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -210,13 +194,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -229,13 +209,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
                     .addModifiers(ABSTRACT)
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
