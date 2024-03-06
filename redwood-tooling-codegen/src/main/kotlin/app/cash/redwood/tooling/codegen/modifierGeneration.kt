@@ -28,18 +28,12 @@ internal fun generateModifierInterface(schema: Schema, modifier: Modifier): File
     .addType(
       TypeSpec.interfaceBuilder(type)
         .addSuperinterface(Redwood.ModifierElement)
+        .maybeAddDeprecation(modifier.deprecation)
         .apply {
-          modifier.deprecation?.let { deprecation ->
-            addAnnotation(deprecation.toAnnotationSpec())
-          }
           for (property in modifier.properties) {
             addProperty(
               PropertySpec.builder(property.name, property.type.asTypeName())
-                .apply {
-                  property.deprecation?.let { deprecation ->
-                    addAnnotation(deprecation.toAnnotationSpec())
-                  }
-                }
+                .maybeAddDeprecation(property.deprecation)
                 .build(),
             )
           }

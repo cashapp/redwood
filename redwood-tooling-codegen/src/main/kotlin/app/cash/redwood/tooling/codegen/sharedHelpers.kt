@@ -32,6 +32,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.Documentable
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
@@ -206,26 +207,44 @@ internal fun modifierToString(modifier: Modifier): FunSpec {
     .build()
 }
 
-internal fun Deprecation.toAnnotationSpec(): AnnotationSpec {
-  return AnnotationSpec.builder(Deprecated::class)
-    .addMember("%S", message)
-    .addMember("level = %M", level.toMemberName())
-    .build()
-}
-
 internal val suppressDeprecations = AnnotationSpec.builder(Suppress::class)
   .useSiteTarget(AnnotationSpec.UseSiteTarget.FILE)
   .addMember("%S, %S", "DEPRECATION", "OVERRIDE_DEPRECATION")
   .build()
 
-private fun Deprecation.Level.toMemberName(): MemberName {
-  return MemberName(
-    DeprecationLevel::class.asClassName(),
-    when (this) {
-      WARNING -> DeprecationLevel.WARNING.name
-      ERROR -> DeprecationLevel.ERROR.name
-    },
-  )
+/** Add a `@Deprecated` annotation corresponding to [deprecation], if it is not null. */
+internal fun <T : Annotatable.Builder<T>> T.maybeAddDeprecation(deprecation: Deprecation?) = apply {
+  if (deprecation != null) {
+    addAnnotation(
+      AnnotationSpec.builder(Deprecated::class)
+        .addMember("%S", deprecation.message)
+        .addMember(
+          "level = %M",
+          MemberName(
+            DeprecationLevel::class.asClassName(),
+            when (deprecation.level) {
+              WARNING -> DeprecationLevel.WARNING.name
+              ERROR -> DeprecationLevel.ERROR.name
+            },
+          ),
+        )
+        .build(),
+    )
+  }
+}
+
+/** Calls [Documentable.Builder.addKdoc] if [string] is not null. */
+internal fun <T : Documentable.Builder<T>> T.maybeAddKDoc(string: String?) = apply {
+  if (string != null) {
+    addKdoc(string)
+  }
+}
+
+/** Calls [ParameterSpec.Builder.defaultValue] if [value] is not null. */
+internal fun ParameterSpec.Builder.maybeDefaultValue(value: String?) = apply {
+  if (value != null) {
+    defaultValue(value)
+  }
 }
 
 internal fun <T : Annotatable.Builder<T>> T.optIn(vararg names: ClassName): T = apply {
