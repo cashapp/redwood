@@ -82,7 +82,7 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 turbine = "app.cash.turbine:turbine:1.0.0"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.2.1"
 ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.3.11"
-googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.20.0"
+googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.21.0"
 poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.2"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
