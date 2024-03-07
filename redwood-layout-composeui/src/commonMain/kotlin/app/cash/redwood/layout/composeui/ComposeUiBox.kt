@@ -15,8 +15,6 @@
  */
 package app.cash.redwood.layout.composeui
 
-import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.util.fastMap
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
@@ -71,11 +71,13 @@ internal class ComposeUiBox(
   }
 
   @Composable
-  private fun computeChildrenLayoutInfo(): List<BoxChildLayoutInfo> {
+  private fun computeChildrenLayoutInfo(): BoxChildrenLayoutInfo {
     // Observe the layout modifier count so we recompose if it changes.
     modifierTick
 
-    return children.widgets.fastMap { it.modifier.toBoxChildLayoutInfo() }
+    return BoxChildrenLayoutInfo(
+      infos = children.widgets.fastMap { it.modifier.toBoxChildLayoutInfo() },
+    )
   }
 
   private fun RedwoodModifier.toBoxChildLayoutInfo(): BoxChildLayoutInfo {
@@ -185,7 +187,8 @@ internal class ComposeUiBox(
 
   private fun CrossAxisAlignment.toBias() = when (this) {
     CrossAxisAlignment.Stretch,
-    CrossAxisAlignment.Start -> -1f
+    CrossAxisAlignment.Start,
+    -> -1f
     CrossAxisAlignment.Center -> 0f
     CrossAxisAlignment.End -> 1f
     else -> throw AssertionError()

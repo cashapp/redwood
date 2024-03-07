@@ -26,9 +26,7 @@ import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.node.ParentDataModifierNode
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.fastForEachIndexed
@@ -43,13 +41,13 @@ import kotlin.math.max
  */
 @Composable
 internal inline fun Box(
-  childrenLayoutInfo: List<BoxChildLayoutInfo>,
+  childrenLayoutInfo: BoxChildrenLayoutInfo,
   modifier: Modifier = Modifier,
   propagateMinConstraints: Boolean = false,
   content: @Composable () -> Unit,
 ) {
   val measurePolicy = remember(childrenLayoutInfo, propagateMinConstraints) {
-    BoxMeasurePolicy(childrenLayoutInfo, propagateMinConstraints)
+    BoxMeasurePolicy(childrenLayoutInfo.infos, propagateMinConstraints)
   }
   Layout(
     content = content,
@@ -57,6 +55,19 @@ internal inline fun Box(
     modifier = modifier,
   )
 }
+
+/** Wrapper class to ensure argument stability when passed to a Compose function. */
+@Immutable
+internal data class BoxChildrenLayoutInfo(
+  val infos: List<BoxChildLayoutInfo>,
+)
+
+@Immutable
+internal data class BoxChildLayoutInfo(
+  val alignment: Alignment,
+  val matchParentWidth: Boolean,
+  val matchParentHeight: Boolean,
+)
 
 @PublishedApi
 internal data class BoxMeasurePolicy(
@@ -82,20 +93,24 @@ internal data class BoxMeasurePolicy(
 
     if (measurables.size == 1) {
       val measurable = measurables[0]
-      val boxWidth: Int
-      val boxHeight: Int
-      val placeable: Placeable
-      if (!measurable.matchesParentSize) {
-        placeable = measurable.measure(contentConstraints)
-        boxWidth = max(constraints.minWidth, placeable.width)
-        boxHeight = max(constraints.minHeight, placeable.height)
-      } else {
-        boxWidth = constraints.minWidth
-        boxHeight = constraints.minHeight
-        placeable = measurable.measure(
-          Constraints.fixed(constraints.minWidth, constraints.minHeight),
+      val layoutInfo = childrenLayoutInfo[0]
+      var childConstraints = contentConstraints
+      if (layoutInfo.matchParentWidth) {
+        childConstraints = childConstraints.copy(
+          minWidth = constraints.minWidth,
+          maxWidth = constraints.minWidth,
         )
       }
+      if (layoutInfo.matchParentHeight) {
+        childConstraints = childConstraints.copy(
+          minHeight = constraints.minHeight,
+          maxHeight = constraints.minHeight,
+        )
+      }
+      val placeable = measurable.measure(childConstraints)
+      val boxWidth = max(constraints.minWidth, placeable.width)
+      val boxHeight = max(constraints.minHeight, placeable.height)
+
       return layout(boxWidth, boxHeight) {
         placeInBox(placeable, layoutDirection, boxWidth, boxHeight, childrenLayoutInfo[0])
       }
@@ -107,28 +122,37 @@ internal data class BoxMeasurePolicy(
     var boxWidth = constraints.minWidth
     var boxHeight = constraints.minHeight
     measurables.fastForEachIndexed { index, measurable ->
-      if (!measurable.matchesParentSize) {
+      val layoutInfo = childrenLayoutInfo[index]
+      if (layoutInfo.matchParentWidth || layoutInfo.matchParentHeight) {
+        hasMatchParentSizeChildren = true
+      } else {
         val placeable = measurable.measure(contentConstraints)
         placeables[index] = placeable
         boxWidth = max(boxWidth, placeable.width)
         boxHeight = max(boxHeight, placeable.height)
-      } else {
-        hasMatchParentSizeChildren = true
       }
     }
 
     // Now measure match parent size children, if any.
     if (hasMatchParentSizeChildren) {
-      // The infinity check is needed for default intrinsic measurements.
-      val matchParentSizeConstraints = Constraints(
-        minWidth = if (boxWidth != Constraints.Infinity) boxWidth else 0,
-        minHeight = if (boxHeight != Constraints.Infinity) boxHeight else 0,
-        maxWidth = boxWidth,
-        maxHeight = boxHeight,
-      )
       measurables.fastForEachIndexed { index, measurable ->
-        if (measurable.matchesParentSize) {
-          placeables[index] = measurable.measure(matchParentSizeConstraints)
+        val layoutInfo = childrenLayoutInfo[index]
+        if (layoutInfo.matchParentWidth || layoutInfo.matchParentHeight) {
+          // The infinity check is needed for default intrinsic measurements.
+          var childConstraints = contentConstraints
+          if (layoutInfo.matchParentWidth) {
+            childConstraints = childConstraints.copy(
+              minWidth = if (boxWidth != Constraints.Infinity) boxWidth else 0,
+              maxWidth = boxWidth,
+            )
+          }
+          if (layoutInfo.matchParentHeight) {
+            childConstraints = childConstraints.copy(
+              minHeight = if (boxHeight != Constraints.Infinity) boxHeight else 0,
+              maxHeight = boxHeight,
+            )
+          }
+          placeables[index] = measurable.measure(childConstraints)
         }
       }
     }
@@ -136,8 +160,7 @@ internal data class BoxMeasurePolicy(
     // Specify the size of the Box and position its children.
     return layout(boxWidth, boxHeight) {
       placeables.forEachIndexed { index, placeable ->
-        placeable as Placeable
-        placeInBox(placeable, layoutDirection, boxWidth, boxHeight, childrenLayoutInfo[index])
+        placeInBox(placeable!!, layoutDirection, boxWidth, boxHeight, childrenLayoutInfo[index])
       }
     }
   }
@@ -150,18 +173,10 @@ private fun Placeable.PlacementScope.placeInBox(
   boxHeight: Int,
   layoutInfo: BoxChildLayoutInfo,
 ) {
-  val childAlignment = layoutInfo.alignment
-  val position = childAlignment.align(
+  val position = layoutInfo.alignment.align(
     IntSize(placeable.width, placeable.height),
     IntSize(boxWidth, boxHeight),
     layoutDirection,
   )
   placeable.place(position)
 }
-
-@Immutable
-internal data class BoxChildLayoutInfo(
-  val alignment: Alignment,
-  val matchParentWidth: Boolean,
-  val matchParentHeight: Boolean,
-)
