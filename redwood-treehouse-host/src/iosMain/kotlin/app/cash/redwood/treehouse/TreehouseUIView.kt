@@ -18,8 +18,15 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
+import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UIScreen
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIView
 
@@ -60,13 +67,73 @@ public class TreehouseUIView private constructor(
   private class RootUiView : UIView(cValue { CGRectZero }) {
     lateinit var treehouseView: TreehouseUIView
 
+    private var sizeThatFits = CGSizeMake(0.0, 0.0)
+
+    /**
+     * We've got a few things making layouts difficult:
+     *
+     *  * This view may be itself used with either Auto Layout or manual layout (like [sizeThatFits]
+     *    and [setFrame]).
+     *  * The contents are updated dynamically.
+     *
+     * It seems the simplest thing to do is to override [layoutSubviews], and to call
+     * [invalidateIntrinsicContentSize] from within that if the frame we're given isn't the size
+     * we want.
+     *
+     * https://mischa-hildebrand.de/en/2017/11/the-auto-layout-comprehendium/
+     * https://forums.developer.apple.com/forums/thread/682973
+     */
     override fun layoutSubviews() {
+      super.layoutSubviews()
+
+      val oldWidthThatFits = sizeThatFits.useContents { width }
+      val oldHeightThatFits = sizeThatFits.useContents { height }
+
+      // TODO(jessewilson): is passing the screen bounds to sizeThatFits() appropriate?
+      this.sizeThatFits = sizeThatFits(
+        UIScreen.mainScreen.bounds.useContents<CGRect, CValue<CGSize>> {
+          CGSizeMake(size.width, size.height)
+        },
+      )
+      val widthThatFits = sizeThatFits.useContents { width }
+      val heightThatFits = sizeThatFits.useContents { height }
+
+      // Trigger another layout if our intrinsic size was out of date.
+      if (widthThatFits != oldWidthThatFits || heightThatFits != oldHeightThatFits) {
+        invalidateIntrinsicContentSize()
+      }
+
+      val frameOrigin = frame.useContents { origin }
+      val frameThatFits = CGRectMake(frameOrigin.x, frameOrigin.y, widthThatFits, heightThatFits)
+      subviews.forEach {
+        (it as UIView).setFrame(frameThatFits)
+      }
+
       // Bounds likely changed. Report new size.
       treehouseView.updateUiConfiguration()
+    }
 
+    override fun intrinsicContentSize(): CValue<CGSize> = sizeThatFits
+
+    override fun didAddSubview(subview: UIView) {
+      super.didAddSubview(subview)
+      invalidateIntrinsicContentSize()
+    }
+
+    override fun willRemoveSubview(subview: UIView) {
+      super.willRemoveSubview(subview)
+      invalidateIntrinsicContentSize()
+    }
+
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      var maxWidth = 0.0
+      var maxHeight = 0.0
       subviews.forEach {
-        (it as UIView).setFrame(bounds)
+        val sizeThatFits = (it as UIView).sizeThatFits(size)
+        maxWidth = maxOf(maxWidth, sizeThatFits.useContents { width })
+        maxHeight = maxOf(maxHeight, sizeThatFits.useContents { height })
       }
+      return CGSizeMake(maxWidth, maxHeight)
     }
 
     override fun didMoveToSuperview() {
