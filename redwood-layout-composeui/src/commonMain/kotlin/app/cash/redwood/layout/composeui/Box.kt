@@ -15,12 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +28,6 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.ParentDataModifierNode
 import androidx.compose.ui.platform.InspectorInfo
-import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
@@ -42,40 +36,33 @@ import androidx.compose.ui.util.fastForEachIndexed
 import kotlin.math.max
 
 /**
- * A custom [androidx.compose.foundation.layout.Box] implementation that supports stretching
- * children along each axis individually.
+ * A custom [androidx.compose.foundation.layout.Box] implementation that:
+ *
+ * - Supports passing child layout info as part of the Box's constructor instead of reading the
+ *   information from the child's modifier.
+ * - Supports stretching children along each axis individually.
  */
 @Composable
 internal inline fun Box(
+  noinline childLayoutInfo: (index: Int) -> BoxChildLayoutInfo,
   modifier: Modifier = Modifier,
   contentAlignment: Alignment = Alignment.TopStart,
   propagateMinConstraints: Boolean = false,
-  content: @Composable BoxScope.() -> Unit,
+  content: @Composable () -> Unit,
 ) {
-  val measurePolicy = rememberBoxMeasurePolicy(contentAlignment, propagateMinConstraints)
+  val measurePolicy = remember(contentAlignment, propagateMinConstraints) {
+    BoxMeasurePolicy(childLayoutInfo, contentAlignment, propagateMinConstraints)
+  }
   Layout(
-    content = { BoxScopeInstance.content() },
+    content = content,
     measurePolicy = measurePolicy,
     modifier = modifier,
   )
 }
 
 @PublishedApi
-@Composable
-internal fun rememberBoxMeasurePolicy(
-  alignment: Alignment,
-  propagateMinConstraints: Boolean,
-): MeasurePolicy = if (alignment == Alignment.TopStart && !propagateMinConstraints) {
-  DefaultBoxMeasurePolicy
-} else {
-  remember(alignment, propagateMinConstraints) {
-    BoxMeasurePolicy(alignment, propagateMinConstraints)
-  }
-}
-
-private val DefaultBoxMeasurePolicy = BoxMeasurePolicy(Alignment.TopStart, false)
-
-private data class BoxMeasurePolicy(
+internal data class BoxMeasurePolicy(
+  private val childLayoutInfo: (index: Int) -> BoxChildLayoutInfo,
   private val alignment: Alignment,
   private val propagateMinConstraints: Boolean,
 ) : MeasurePolicy {
@@ -177,81 +164,10 @@ private fun Placeable.PlacementScope.placeInBox(
   placeable.place(position)
 }
 
-/**
- * A BoxScope provides a scope for the children of [Box] and [BoxWithConstraints].
- */
-@LayoutScopeMarker
-@Immutable
-internal interface BoxScope {
-  @Stable
-  fun Modifier.layoutInfo(
-    alignment: Alignment,
-    matchParentWidth: Boolean,
-    matchParentHeight: Boolean,
-  ): Modifier
-}
-
-internal object BoxScopeInstance : BoxScope {
-  @Stable
-  override fun Modifier.layoutInfo(
-    alignment: Alignment,
-    matchParentWidth: Boolean,
-    matchParentHeight: Boolean,
-  ) = then(
-    BoxChildDataElement(
-      alignment = alignment,
-      matchParentWidth = matchParentWidth,
-      matchParentHeight = matchParentHeight,
-      inspectorInfo = debugInspectorInfo {
-        name = "layoutInfo"
-        properties["align"] = alignment
-        properties["matchParentWidth"] = matchParentWidth
-        properties["matchParentHeight"] = matchParentHeight
-      },
-    ),
-  )
-}
-
 private val Measurable.boxChildDataNode: BoxChildDataNode? get() = parentData as? BoxChildDataNode
 private val Measurable.matchesParentSize: Boolean get() = matchesParentWidth && matchesParentHeight
 private val Measurable.matchesParentWidth: Boolean get() = boxChildDataNode?.matchParentWidth ?: false
 private val Measurable.matchesParentHeight: Boolean get() = boxChildDataNode?.matchParentHeight ?: false
-
-private class BoxChildDataElement(
-  private val alignment: Alignment,
-  private val matchParentWidth: Boolean,
-  private val matchParentHeight: Boolean,
-  private val inspectorInfo: InspectorInfo.() -> Unit,
-) : ModifierNodeElement<BoxChildDataNode>() {
-  override fun create(): BoxChildDataNode {
-    return BoxChildDataNode(alignment, matchParentWidth, matchParentHeight)
-  }
-
-  override fun update(node: BoxChildDataNode) {
-    node.alignment = alignment
-    node.matchParentWidth = matchParentWidth
-    node.matchParentHeight = matchParentHeight
-  }
-
-  override fun InspectorInfo.inspectableProperties() {
-    inspectorInfo()
-  }
-
-  override fun hashCode(): Int {
-    var result = alignment.hashCode()
-    result = 31 * result + matchParentWidth.hashCode()
-    result = 31 * result + matchParentHeight.hashCode()
-    return result
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    val otherModifier = other as? BoxChildDataElement ?: return false
-    return alignment == otherModifier.alignment &&
-      matchParentWidth == otherModifier.matchParentWidth &&
-      matchParentHeight == otherModifier.matchParentHeight
-  }
-}
 
 private class BoxChildDataNode(
   var alignment: Alignment,
@@ -260,3 +176,9 @@ private class BoxChildDataNode(
 ) : ParentDataModifierNode, Modifier.Node() {
   override fun Density.modifyParentData(parentData: Any?) = this@BoxChildDataNode
 }
+
+internal class BoxChildLayoutInfo(
+  val alignment: Alignment,
+  val matchParentWidth: Boolean,
+  val matchParentHeight: Boolean,
+)

@@ -30,9 +30,17 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
+import androidx.compose.ui.platform.LocalDensity
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.modifier.Height
+import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Size
+import app.cash.redwood.layout.modifier.VerticalAlignment
+import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
@@ -45,11 +53,68 @@ internal class ComposeUiBox(
   private var height by mutableStateOf(Constraint.Wrap)
   private var margin by mutableStateOf(Margin.Zero)
   private var alignment by mutableStateOf(BiasAlignment(-1f, -1f))
+  private var matchParentWidth by mutableStateOf(false)
+  private var matchParentHeight by mutableStateOf(false)
+  private var density by mutableStateOf(Density(1.0))
 
   override val value = @Composable {
-    Box(computeModifier(), contentAlignment = alignment) {
+    density = Density(LocalDensity.current.density.toDouble())
+
+    Box(
+      childLayoutInfo = ::computeChildLayoutInfo,
+      modifier = computeModifier(),
+      contentAlignment = alignment,
+    ) {
       children.Render()
     }
+  }
+
+  private fun computeChildLayoutInfo(index: Int): BoxChildLayoutInfo {
+    var alignment = alignment
+    var matchParentWidth = matchParentWidth
+    var matchParentHeight = matchParentHeight
+
+    children.widgets[index].modifier.forEach { childModifier ->
+      when (childModifier) {
+        is HorizontalAlignment -> {
+          matchParentWidth = childModifier.alignment == CrossAxisAlignment.Stretch
+          alignment = BiasAlignment(
+            horizontalBias = alignment.horizontalBias,
+            verticalBias = childModifier.alignment.toBias(),
+          )
+        }
+
+        is VerticalAlignment -> {
+          matchParentHeight = childModifier.alignment == CrossAxisAlignment.Stretch
+          alignment = BiasAlignment(
+            horizontalBias = childModifier.alignment.toBias(),
+            verticalBias = alignment.verticalBias,
+          )
+        }
+
+        is Width -> {
+          // TODO
+        }
+
+        is Height -> {
+          // TODO
+        }
+
+        is Size -> {
+          // TODO
+        }
+
+        is MarginModifier -> {
+          // TODO
+        }
+      }
+    }
+
+    return BoxChildLayoutInfo(
+      alignment = alignment,
+      matchParentWidth = matchParentWidth,
+      matchParentHeight = matchParentHeight,
+    )
   }
 
   @Composable
@@ -94,30 +159,26 @@ internal class ComposeUiBox(
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    matchParentWidth = horizontalAlignment == CrossAxisAlignment.Stretch
     alignment = BiasAlignment(
-      horizontalBias = when (horizontalAlignment) {
-        CrossAxisAlignment.Start -> -1f
-        CrossAxisAlignment.Center -> 0f
-        CrossAxisAlignment.End -> 1f
-        // TODO Implement stretch with custom Layout.
-        CrossAxisAlignment.Stretch -> -1f
-        else -> throw AssertionError()
-      },
+      horizontalBias = horizontalAlignment.toBias(),
       verticalBias = alignment.verticalBias,
     )
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    matchParentHeight = verticalAlignment == CrossAxisAlignment.Stretch
     alignment = BiasAlignment(
       horizontalBias = alignment.horizontalBias,
-      verticalBias = when (verticalAlignment) {
-        CrossAxisAlignment.Start -> -1f
-        CrossAxisAlignment.Center -> 0f
-        CrossAxisAlignment.End -> 1f
-        // TODO Implement stretch with custom Layout.
-        CrossAxisAlignment.Stretch -> -1f
-        else -> throw AssertionError()
-      },
+      verticalBias = verticalAlignment.toBias(),
     )
+  }
+
+  private fun CrossAxisAlignment.toBias() = when (this) {
+    CrossAxisAlignment.Stretch,
+    CrossAxisAlignment.Start -> -1f
+    CrossAxisAlignment.Center -> 0f
+    CrossAxisAlignment.End -> 1f
+    else -> throw AssertionError()
   }
 }
