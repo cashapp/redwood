@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +26,7 @@ import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.ParentDataModifierNode
-import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
@@ -44,14 +43,13 @@ import kotlin.math.max
  */
 @Composable
 internal inline fun Box(
-  noinline childLayoutInfo: (index: Int) -> BoxChildLayoutInfo,
+  childrenLayoutInfo: List<BoxChildLayoutInfo>,
   modifier: Modifier = Modifier,
-  contentAlignment: Alignment = Alignment.TopStart,
   propagateMinConstraints: Boolean = false,
   content: @Composable () -> Unit,
 ) {
-  val measurePolicy = remember(contentAlignment, propagateMinConstraints) {
-    BoxMeasurePolicy(childLayoutInfo, contentAlignment, propagateMinConstraints)
+  val measurePolicy = remember(childrenLayoutInfo, propagateMinConstraints) {
+    BoxMeasurePolicy(childrenLayoutInfo, propagateMinConstraints)
   }
   Layout(
     content = content,
@@ -62,8 +60,7 @@ internal inline fun Box(
 
 @PublishedApi
 internal data class BoxMeasurePolicy(
-  private val childLayoutInfo: (index: Int) -> BoxChildLayoutInfo,
-  private val alignment: Alignment,
+  private val childrenLayoutInfo: List<BoxChildLayoutInfo>,
   private val propagateMinConstraints: Boolean,
 ) : MeasurePolicy {
   override fun MeasureScope.measure(
@@ -100,7 +97,7 @@ internal data class BoxMeasurePolicy(
         )
       }
       return layout(boxWidth, boxHeight) {
-        placeInBox(placeable, measurable, layoutDirection, boxWidth, boxHeight, alignment)
+        placeInBox(placeable, layoutDirection, boxWidth, boxHeight, childrenLayoutInfo[0])
       }
     }
 
@@ -140,8 +137,7 @@ internal data class BoxMeasurePolicy(
     return layout(boxWidth, boxHeight) {
       placeables.forEachIndexed { index, placeable ->
         placeable as Placeable
-        val measurable = measurables[index]
-        placeInBox(placeable, measurable, layoutDirection, boxWidth, boxHeight, alignment)
+        placeInBox(placeable, layoutDirection, boxWidth, boxHeight, childrenLayoutInfo[index])
       }
     }
   }
@@ -149,13 +145,12 @@ internal data class BoxMeasurePolicy(
 
 private fun Placeable.PlacementScope.placeInBox(
   placeable: Placeable,
-  measurable: Measurable,
   layoutDirection: LayoutDirection,
   boxWidth: Int,
   boxHeight: Int,
-  alignment: Alignment,
+  layoutInfo: BoxChildLayoutInfo,
 ) {
-  val childAlignment = measurable.boxChildDataNode?.alignment ?: alignment
+  val childAlignment = layoutInfo.alignment
   val position = childAlignment.align(
     IntSize(placeable.width, placeable.height),
     IntSize(boxWidth, boxHeight),
@@ -164,20 +159,8 @@ private fun Placeable.PlacementScope.placeInBox(
   placeable.place(position)
 }
 
-private val Measurable.boxChildDataNode: BoxChildDataNode? get() = parentData as? BoxChildDataNode
-private val Measurable.matchesParentSize: Boolean get() = matchesParentWidth && matchesParentHeight
-private val Measurable.matchesParentWidth: Boolean get() = boxChildDataNode?.matchParentWidth ?: false
-private val Measurable.matchesParentHeight: Boolean get() = boxChildDataNode?.matchParentHeight ?: false
-
-private class BoxChildDataNode(
-  var alignment: Alignment,
-  var matchParentWidth: Boolean,
-  var matchParentHeight: Boolean,
-) : ParentDataModifierNode, Modifier.Node() {
-  override fun Density.modifyParentData(parentData: Any?) = this@BoxChildDataNode
-}
-
-internal class BoxChildLayoutInfo(
+@Immutable
+internal data class BoxChildLayoutInfo(
   val alignment: Alignment,
   val matchParentWidth: Boolean,
   val matchParentHeight: Boolean,

@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.util.fastMap
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
@@ -47,7 +48,8 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 internal class ComposeUiBox(
   private val backgroundColor: Int = 0,
 ) : Box<@Composable () -> Unit> {
-  override val children = ComposeWidgetChildren()
+  private var modifierTick by mutableStateOf(0)
+  override val children = ComposeWidgetChildren(onModifierUpdated = { modifierTick++ })
 
   private var width by mutableStateOf(Constraint.Wrap)
   private var height by mutableStateOf(Constraint.Wrap)
@@ -61,20 +63,27 @@ internal class ComposeUiBox(
     density = Density(LocalDensity.current.density.toDouble())
 
     Box(
-      childLayoutInfo = ::computeChildLayoutInfo,
+      childrenLayoutInfo = computeChildrenLayoutInfo(),
       modifier = computeModifier(),
-      contentAlignment = alignment,
     ) {
       children.Render()
     }
   }
 
-  private fun computeChildLayoutInfo(index: Int): BoxChildLayoutInfo {
+  @Composable
+  private fun computeChildrenLayoutInfo(): List<BoxChildLayoutInfo> {
+    // Observe the layout modifier count so we recompose if it changes.
+    modifierTick
+
+    return children.widgets.fastMap { it.modifier.toBoxChildLayoutInfo() }
+  }
+
+  private fun RedwoodModifier.toBoxChildLayoutInfo(): BoxChildLayoutInfo {
     var alignment = alignment
     var matchParentWidth = matchParentWidth
     var matchParentHeight = matchParentHeight
 
-    children.widgets[index].modifier.forEach { childModifier ->
+    forEach { childModifier ->
       when (childModifier) {
         is HorizontalAlignment -> {
           matchParentWidth = childModifier.alignment == CrossAxisAlignment.Stretch
