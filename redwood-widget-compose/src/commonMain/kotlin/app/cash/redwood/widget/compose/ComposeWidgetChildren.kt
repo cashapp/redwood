@@ -21,8 +21,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.widget.Widget
+import kotlin.jvm.JvmOverloads
 
-public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
+public class ComposeWidgetChildren @JvmOverloads constructor(
+  private val onModifierUpdated: () -> Unit = {},
+) : Widget.Children<@Composable () -> Unit> {
   private var modifierTick by mutableStateOf(0)
 
   private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
@@ -52,5 +55,6 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
 
   override fun onModifierUpdated() {
     modifierTick++
+    onModifierUpdated.invoke()
   }
 }
