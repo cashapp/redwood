@@ -121,6 +121,14 @@ internal class ComposeUiBox(
       }
     }
 
+    // TODO: Support these cases.
+    if (width == Constraint.Wrap && matchParentWidth) {
+      matchParentWidth = false
+    }
+    if (height == Constraint.Wrap && matchParentHeight) {
+      matchParentHeight = false
+    }
+
     return BoxChildLayoutInfo(
       alignment = alignment,
       matchParentWidth = matchParentWidth,
