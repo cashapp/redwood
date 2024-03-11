@@ -15,14 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.Modifier
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
+import app.cash.redwood.treehouse.LayoutTester.Constraint
+import app.cash.redwood.treehouse.LayoutTester.Subject
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
-import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -132,11 +131,30 @@ class TreehouseUIViewTest {
       .isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
   }
 
-  private fun viewWidget(view: UIView) = object : Widget<UIView> {
-    override val value: UIView get() = view
-    override var modifier: Modifier = Modifier
-  }
+  /** Confirm that the layout with the treehouse view is the same as the layout without it. */
+  @Test fun layoutIsPassThrough() {
+    for (horizontal in Constraint.entries) {
+      for (vertical in Constraint.entries) {
+        assertThat(LayoutTester(Subject.Reference, horizontal, vertical).subjectFrame())
+          .isEqualTo(
+            Rectangle(
+              x = horizontal.initialX,
+              y = vertical.initialY,
+              width = horizontal.initialWidth,
+              height = vertical.initialHeight,
+            ),
+          )
 
-  private val throwingWidgetSystem =
-    WidgetSystem<UIView> { _, _ -> throw UnsupportedOperationException() }
+        assertThat(LayoutTester(Subject.TreehouseView, horizontal, vertical).subjectFrame())
+          .isEqualTo(
+            Rectangle(
+              x = horizontal.initialX,
+              y = vertical.initialY,
+              width = horizontal.initialWidth,
+              height = vertical.initialHeight,
+            ),
+          )
+      }
+    }
+  }
 }

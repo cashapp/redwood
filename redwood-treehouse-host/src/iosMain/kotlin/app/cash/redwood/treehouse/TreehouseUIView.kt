@@ -137,6 +137,7 @@ public class TreehouseUIView private constructor(
     }
 
     override fun didMoveToSuperview() {
+      super.didMoveToSuperview()
       treehouseView.superviewChanged()
     }
 
