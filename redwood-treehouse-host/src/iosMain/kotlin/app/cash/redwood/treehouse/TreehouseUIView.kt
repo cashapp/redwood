@@ -20,6 +20,10 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
+import platform.UIKit.UILayoutConstraintAxisVertical
+import platform.UIKit.UIStackView
+import platform.UIKit.UIStackViewAlignmentFill
+import platform.UIKit.UIStackViewDistributionFillEqually
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIView
 
@@ -33,7 +37,7 @@ public typealias TreehouseUIKitView = TreehouseUIView
 @ObjCName("TreehouseUIView", exact = true)
 public class TreehouseUIView private constructor(
   override val widgetSystem: WidgetSystem<UIView>,
-  view: UIView,
+  view: RootUiView,
 ) : TreehouseView<UIView>, RedwoodUIView(view) {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
@@ -50,26 +54,41 @@ public class TreehouseUIView private constructor(
   public constructor(widgetSystem: WidgetSystem<UIView>) : this(widgetSystem, RootUiView())
 
   init {
-    (view as RootUiView).treehouseView = this
+    view.treehouseView = this
   }
 
   private fun superviewChanged() {
     readyForContentChangeListener?.onReadyForContentChanged(this)
   }
 
-  private class RootUiView : UIView(cValue { CGRectZero }) {
+  /**
+   * The root view is just a vertical stack.
+   *
+   * In practice we expect this to contain either zero child subviews (especially when
+   * newly-initialized) or one child subview, which will usually be a layout container.
+   *
+   * This could just as easily be a horizontal stack. A box would be even better, but there's no
+   * such built-in component and implementing it manually is difficult if we want to react to
+   * content resizes.
+   */
+  private class RootUiView : UIStackView(cValue { CGRectZero }) {
     lateinit var treehouseView: TreehouseUIView
 
+    init {
+      this.axis = UILayoutConstraintAxisVertical
+      this.alignment = UIStackViewAlignmentFill // Fill horizontal.
+      this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
+    }
+
     override fun layoutSubviews() {
+      super.layoutSubviews()
+
       // Bounds likely changed. Report new size.
       treehouseView.updateUiConfiguration()
-
-      subviews.forEach {
-        (it as UIView).setFrame(bounds)
-      }
     }
 
     override fun didMoveToSuperview() {
+      super.didMoveToSuperview()
       treehouseView.superviewChanged()
     }
 
