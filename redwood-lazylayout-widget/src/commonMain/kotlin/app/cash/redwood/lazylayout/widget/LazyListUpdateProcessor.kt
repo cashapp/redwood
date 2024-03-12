@@ -185,15 +185,15 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       when (edit) {
         is Edit.Insert -> {
           for (i in 0 until edit.widgets.size) {
-            val index = itemsBefore.size + edit.index + i
             val binding = Binding(this).apply {
               content = edit.widgets[i]
             }
             loadedItems.add(edit.index + i, binding)
-
-            // Publish a structural change.
-            insertRows(index, 1)
           }
+
+          // Publish a structural change.
+          val index = itemsBefore.size + edit.index
+          insertRows(index, edit.widgets.size)
         }
 
         is Edit.Move -> {
@@ -203,12 +203,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
         is Edit.Remove -> {
           for (i in edit.index until edit.index + edit.count) {
-            val index = itemsBefore.size + edit.index
             loadedItems.removeAt(edit.index)
-
-            // Publish a structural change.
-            deleteRows(index, 1)
           }
+
+          // Publish a structural change.
+          val index = itemsBefore.size + edit.index
+          deleteRows(index, edit.count)
         }
       }
     }
