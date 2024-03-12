@@ -251,7 +251,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       kotlin.targets.withType(KotlinJvmTarget::class.java) { target ->
         target.compilations.configureEach {
           it.kotlinOptions.freeCompilerArgs += listOf(
-            "-Xjdk-release=$javaVersion"
+            "-Xjdk-release=$javaVersion",
           )
         }
       }
