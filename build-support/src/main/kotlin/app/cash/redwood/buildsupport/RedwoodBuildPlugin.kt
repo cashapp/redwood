@@ -44,6 +44,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
@@ -241,6 +242,17 @@ class RedwoodBuildPlugin : Plugin<Project> {
           it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
           it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
           it.languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+      }
+
+      // We set the JVM target (the bytecode version) above for all Kotlin-based Java bytecode
+      // compilations, but we also need to set the JDK API version for the Kotlin JVM targets to
+      // prevent linking against newer JDK APIs (the Android targets link against the android.jar).
+      kotlin.targets.withType(KotlinJvmTarget::class.java) { target ->
+        target.compilations.configureEach {
+          it.kotlinOptions.freeCompilerArgs += listOf(
+            "-Xjdk-release=$javaVersion"
+          )
         }
       }
 
