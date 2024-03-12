@@ -57,7 +57,7 @@ class TreehouseUIViewLayoutTest {
       )
 
     tester.growSubject()
-    assertThat(tester.subjectFrame())
+    assertThat(tester.subjectFrame(), "$horizontal $vertical")
       .isEqualTo(
         Rectangle(
           x = horizontal.grownX,
