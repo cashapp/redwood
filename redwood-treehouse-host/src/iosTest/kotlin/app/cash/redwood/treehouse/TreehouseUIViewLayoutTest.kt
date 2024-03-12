@@ -35,7 +35,7 @@ class TreehouseUIViewLayoutTest {
 
   private fun layoutIsPassThrough(subject: Subject, horizontal: Constraint, vertical: Constraint) {
     val tester = LayoutTester(subject, horizontal, vertical)
-    assertThat(tester.subjectFrame())
+    assertThat(tester.subjectFrame(), "$horizontal $vertical")
       .isEqualTo(
         Rectangle(
           x = horizontal.initialX,
