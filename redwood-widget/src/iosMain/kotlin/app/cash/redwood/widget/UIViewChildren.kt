@@ -22,14 +22,14 @@ import platform.darwin.NSInteger
 
 @ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
-  private val parent: UIView,
-  private val insert: (UIView, Int) -> Unit = when (parent) {
-    is UIStackView -> { view, index -> parent.insertArrangedSubview(view, index.convert()) }
-    else -> { view, index -> parent.insertSubview(view, index.convert<NSInteger>()) }
+  private val container: UIView,
+  private val insert: (UIView, Int) -> Unit = when (container) {
+    is UIStackView -> { view, index -> container.insertArrangedSubview(view, index.convert()) }
+    else -> { view, index -> container.insertSubview(view, index.convert<NSInteger>()) }
   },
-  private val remove: (index: Int, count: Int) -> Array<UIView> = when (parent) {
-    is UIStackView -> { index, count -> parent.typedArrangedSubviews.remove(index, count) }
-    else -> { index, count -> parent.typedSubviews.remove(index, count) }
+  private val remove: (index: Int, count: Int) -> Array<UIView> = when (container) {
+    is UIStackView -> { index, count -> container.typedArrangedSubviews.remove(index, count) }
+    else -> { index, count -> container.typedSubviews.remove(index, count) }
   },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
@@ -69,7 +69,7 @@ public class UIViewChildren(
   }
 
   private fun invalidate() {
-    (parent.superview ?: parent).setNeedsLayout()
+    (container.superview ?: container).setNeedsLayout()
   }
 }
 
