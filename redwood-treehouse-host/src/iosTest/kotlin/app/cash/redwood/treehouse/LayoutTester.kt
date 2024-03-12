@@ -150,10 +150,11 @@ class LayoutTester(
       grownY = 45.0,
       grownWidth = 90.0,
       grownHeight = 30.0,
-    )
+    ),
   }
 
   enum class Subject {
-    Reference, TreehouseView
+    Reference,
+    TreehouseView,
   }
 }
