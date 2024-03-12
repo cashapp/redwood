@@ -16,6 +16,7 @@ Fixed:
 - Fix `Margin` not being applied to the `UIView` implementation of `Box`.
 - The `View` implementation of `Box` now applies start/end margins correctly in RTL, and does not crash if set before the native view was attached.
 - Fix the backgroundColor for `UIViewLazyList` to be transparent. This matches the behavior of the other `LazyList` platform implementations.
+- Fix `TreehouseUIView` to size itself according to the size of its subview.
 
 
 ## [0.9.0] - 2024-02-28

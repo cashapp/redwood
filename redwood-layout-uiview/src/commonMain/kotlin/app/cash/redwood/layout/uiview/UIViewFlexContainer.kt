@@ -71,7 +71,8 @@ internal class UIViewFlexContainer(
   }
 
   override fun onEndChanges() {
-    value.setNeedsLayout()
+    value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
+    value.setNeedsLayout() // Update layout of subviews.
   }
 }
 
