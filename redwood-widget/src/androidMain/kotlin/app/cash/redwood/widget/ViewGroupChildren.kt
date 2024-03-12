@@ -58,7 +58,7 @@ public class ViewGroupChildren(
     remove.invoke(index, count)
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<View>) {
     container.requestLayout()
   }
 }

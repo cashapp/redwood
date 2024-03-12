@@ -23,6 +23,7 @@ import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -32,7 +33,6 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
@@ -46,7 +46,7 @@ fun Row(
   modifier: Modifier = Modifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
+  RedwoodComposeNode<SunspotWidgetFactoryProvider<Any>, Row<Any>, Any>(
     factory = { it.RedwoodLayout.Row() },
     update = {
       set(modifier, WidgetNode.SetModifiers)
@@ -54,7 +54,7 @@ fun Row(
       set(overflow) { recordChanged(); widget.overflow(it) }
     },
     content = {
-      Children(Row<*>::children) {
+      Children(Row<Any>::children) {
         RowScopeImpl.children()
       }
     },
@@ -65,7 +65,7 @@ internal fun generateComposable(
   schema: Schema,
   widget: Widget,
 ): FileSpec {
-  val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
+  val widgetType = schema.widgetType(widget).parameterizedBy(ANY)
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.composePackage(), flatName)
     .addAnnotation(suppressDeprecations)
@@ -171,10 +171,11 @@ internal fun generateComposable(
           )
 
           addStatement(
-            "%M<%T, %T>(%L)",
+            "%M<%T, %T, %T>(%L)",
             RedwoodCompose.RedwoodComposeNode,
-            schema.getWidgetFactoryProviderType().parameterizedBy(STAR),
+            schema.getWidgetFactoryProviderType().parameterizedBy(ANY),
             widgetType,
+            ANY,
             arguments.joinToCode(",\n", "\n", ",\n"),
           )
         }

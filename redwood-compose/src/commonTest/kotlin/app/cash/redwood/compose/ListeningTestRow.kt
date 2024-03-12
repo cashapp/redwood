@@ -42,7 +42,7 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
       changes += "children remove"
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<WidgetValue>) {
     }
   }
 

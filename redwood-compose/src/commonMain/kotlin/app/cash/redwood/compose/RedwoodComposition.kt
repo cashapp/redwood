@@ -185,9 +185,9 @@ public interface RedwoodApplier<W : Any> {
  */
 @Composable
 @RedwoodCodegenApi
-public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
+public inline fun <P : Widget.Provider<V>, W : Widget<V>, V : Any> RedwoodComposeNode(
   crossinline factory: (P) -> W,
-  update: @DisallowComposableCalls Updater<WidgetNode<W, *>>.() -> Unit,
+  update: @DisallowComposableCalls Updater<WidgetNode<W, V>>.() -> Unit,
   content: @Composable RedwoodComposeContent<W>.() -> Unit,
 ) {
   // NOTE: You MUST keep the implementation of this function (or more specifically, the interaction
@@ -202,18 +202,18 @@ public inline fun <P : Widget.Provider<*>, W : Widget<*>> RedwoodComposeNode(
       "UNCHECKED_CAST",
       "UNNECESSARY_NOT_NULL_ASSERTION",
     )
-    val applier = currentComposer.applier!! as RedwoodApplier<Any>
+    val applier = currentComposer.applier!! as RedwoodApplier<V>
 
     currentComposer.createNode {
       // Safe so long as you use generated composition function.
       @Suppress("UNCHECKED_CAST")
-      WidgetNode(applier, factory(applier.provider as P) as Widget<Any>)
+      WidgetNode(applier, factory(applier.provider as P))
     }
   } else {
     currentComposer.useNode()
   }
 
-  Updater<WidgetNode<W, *>>(currentComposer).update()
+  Updater<WidgetNode<W, V>>(currentComposer).update()
   RedwoodComposeContent.Instance.content()
 
   currentComposer.endNode()

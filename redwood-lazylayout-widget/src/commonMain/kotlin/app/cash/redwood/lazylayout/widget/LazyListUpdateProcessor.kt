@@ -76,7 +76,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       error("unexpected call")
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     }
   }
 
@@ -107,7 +107,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       }
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     }
   }
 

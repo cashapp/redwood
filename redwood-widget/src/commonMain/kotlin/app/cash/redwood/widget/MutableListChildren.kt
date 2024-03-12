@@ -39,7 +39,7 @@ public class MutableListChildren<W : Any>(
     container.remove(index, count)
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     modifierUpdated()
   }
 }

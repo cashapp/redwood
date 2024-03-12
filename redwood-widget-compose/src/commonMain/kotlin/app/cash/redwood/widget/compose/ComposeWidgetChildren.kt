@@ -53,7 +53,7 @@ public class ComposeWidgetChildren @JvmOverloads constructor(
     _widgets.remove(index, count)
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<@Composable () -> Unit>) {
     modifierTick++
     onModifierUpdated.invoke()
   }
