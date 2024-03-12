@@ -19,7 +19,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
 public class HTMLElementChildren(
-  private val parent: HTMLElement,
+  private val container: HTMLElement,
 ) : Widget.Children<HTMLElement> {
   private val _widgets = ArrayList<Widget<HTMLElement>>()
   public val widgets: List<Widget<HTMLElement>> get() = _widgets
@@ -28,16 +28,16 @@ public class HTMLElementChildren(
     _widgets.add(index, widget)
 
     // Null element returned when index == childCount causes insertion at end.
-    val current = parent.children[index]
-    parent.insertBefore(widget.value, current)
+    val current = container.children[index]
+    container.insertBefore(widget.value, current)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
     val elements = Array(count) {
-      val element = parent.children[fromIndex] as HTMLElement
-      parent.removeChild(element)
+      val element = container.children[fromIndex] as HTMLElement
+      container.removeChild(element)
       element
     }
 
@@ -48,8 +48,8 @@ public class HTMLElementChildren(
     }
     elements.forEachIndexed { offset, element ->
       // Null element returned when newIndex + offset == childCount causes insertion at end.
-      val current = parent.children[newIndex + offset]
-      parent.insertBefore(element, current)
+      val current = container.children[newIndex + offset]
+      container.insertBefore(element, current)
     }
   }
 
@@ -57,15 +57,15 @@ public class HTMLElementChildren(
     _widgets.remove(index, count)
 
     repeat(count) {
-      parent.removeChild(parent.children[index]!!)
+      container.removeChild(container.children[index]!!)
     }
   }
 
   override fun onModifierUpdated() {
     // If this function is being invoked we are guaranteed to have at least one child.
 
-    val element = parent.children[0] as HTMLElement
-    parent.removeChild(element)
-    parent.insertBefore(element, parent.children[0])
+    val element = container.children[0] as HTMLElement
+    container.removeChild(element)
+    container.insertBefore(element, container.children[0])
   }
 }

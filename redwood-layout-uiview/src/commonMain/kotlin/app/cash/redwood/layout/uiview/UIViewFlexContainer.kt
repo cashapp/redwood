@@ -40,7 +40,7 @@ internal class UIViewFlexContainer(
   override val density: Density get() = Density.Default
   override val value: UIView get() = yogaView
   override val children = UIViewChildren(
-    parent = value,
+    container = value,
     insert = { view, index ->
       yogaView.rootNode.children.add(index, view.asNode())
       value.insertSubview(view, index.convert<NSInteger>())

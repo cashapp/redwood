@@ -89,7 +89,7 @@ internal class UIViewBox : Box<UIView> {
     var verticalAlignment = CrossAxisAlignment.Start
 
     val children = UIViewChildren(
-      parent = this,
+      container = this,
       insert = { view, index ->
         insertSubview(view, index.convert<NSInteger>())
         view.setNeedsLayout()

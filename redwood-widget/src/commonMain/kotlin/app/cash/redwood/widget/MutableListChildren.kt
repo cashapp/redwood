@@ -20,23 +20,23 @@ import kotlin.native.ObjCName
 /**
  * A [MutableList] that is also a [Widget.Children].
  *
- * @param list Optional existing [MutableList] instance to wrap.
+ * @param container Optional existing [MutableList] instance to wrap.
  */
 @ObjCName("MutableListChildren", exact = true)
 public class MutableListChildren<W : Any>(
-  private val list: MutableList<Widget<W>> = mutableListOf(),
+  private val container: MutableList<Widget<W>> = mutableListOf(),
   private val modifierUpdated: () -> Unit = {},
-) : Widget.Children<W>, MutableList<Widget<W>> by list {
+) : Widget.Children<W>, MutableList<Widget<W>> by container {
   override fun insert(index: Int, widget: Widget<W>) {
-    list.add(index, widget)
+    container.add(index, widget)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    list.move(fromIndex, toIndex, count)
+    container.move(fromIndex, toIndex, count)
   }
 
   override fun remove(index: Int, count: Int) {
-    list.remove(index, count)
+    container.remove(index, count)
   }
 
   override fun onModifierUpdated() {
