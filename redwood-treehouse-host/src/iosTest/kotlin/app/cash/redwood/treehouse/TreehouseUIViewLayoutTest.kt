@@ -46,7 +46,7 @@ class TreehouseUIViewLayoutTest {
       )
 
     tester.shrinkSubject()
-    assertThat(tester.subjectFrame())
+    assertThat(tester.subjectFrame(), "$horizontal $vertical")
       .isEqualTo(
         Rectangle(
           x = horizontal.shrunkX,
