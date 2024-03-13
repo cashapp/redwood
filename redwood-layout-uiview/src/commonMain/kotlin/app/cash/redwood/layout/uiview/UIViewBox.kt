@@ -46,7 +46,7 @@ internal class UIViewBox : Box<UIView> {
 
   override var modifier: Modifier = Modifier
 
-  override val children = value.children
+  override val children get() = value.children
 
   override fun width(width: Constraint) {
     value.widthConstraint = width
@@ -80,7 +80,7 @@ internal class UIViewBox : Box<UIView> {
     value.setNeedsLayout()
   }
 
-  internal class View() : UIView(CGRectZero.readValue()) {
+  internal class View : UIView(CGRectZero.readValue()) {
     var widthConstraint = Constraint.Wrap
     var heightConstraint = Constraint.Wrap
     var horizontalAlignment = CrossAxisAlignment.Start
