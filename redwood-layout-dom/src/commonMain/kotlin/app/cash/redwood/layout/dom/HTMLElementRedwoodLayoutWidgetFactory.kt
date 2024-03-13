@@ -28,7 +28,6 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.widget.HTMLElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -70,7 +69,7 @@ private class HTMLFlexContainer(
     value.style.flexDirection = direction
   }
 
-  override val children = HTMLElementChildren(value)
+  override val children = HTMLFlexElementChildren(value)
 
   override fun width(width: Constraint) {
     value.style.width = width.toCss()
