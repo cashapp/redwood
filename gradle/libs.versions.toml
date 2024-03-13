@@ -8,7 +8,7 @@ jbCompose = "1.6.0"
 lint = "31.3.0"
 zipline = "1.8.0"
 coil = "3.0.0-alpha06"
-okio = "3.8.0"
+okio = "3.9.0"
 
 [libraries]
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
