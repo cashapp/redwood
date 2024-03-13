@@ -109,12 +109,12 @@ internal fun Schema.widgetValueType(widget: Widget): ClassName {
   return ClassName(widgetPackage(), "${widget.type.flatName}Value")
 }
 
-internal fun Schema.getWidgetFactoryProviderType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryProvider")
+internal fun Schema.getWidgetFactoryOwnerType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryOwner")
 }
 
-internal fun Schema.getWidgetFactoriesType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}WidgetFactories")
+internal fun Schema.getWidgetSystemType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}WidgetSystem")
 }
 
 internal fun Schema.widgetPackage(host: Schema? = null): String {

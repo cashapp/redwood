@@ -30,36 +30,45 @@ import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
-@ObjCName("ExampleWidgetFactories", exact = true)
-class ExampleWidgetFactories<W : Any>(
+@OptIn(RedwoodCodegenApi::class)
+@ObjCName("ExampleWidgetSystem", exact = true)
+class ExampleWidgetSystem<W : Any>(
   override val Example: ExampleWidgetFactory<W>,
   override val RedwoodLayout: RedwoodLayoutWidgetFactory<W>,
-) : ExampleWidgetFactoryProvider<W>
+) : WidgetSystem<W>,
+    ExampleWidgetFactoryProvider<W>,
+    RedwoodLayoutWidgetFactoryProvider<W>
 
-interface ExampleWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProvider<W> {
+@RedwoodCodegenApi
+interface ExampleWidgetFactoryProvider<W : Any> {
   val Example: ExampleWidgetFactory<W>
 }
  */
-internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
+internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
-  val widgetFactoriesType = schema.getWidgetFactoriesType()
-  return FileSpec.builder(widgetFactoriesType)
+  val widgetSystemType = schema.getWidgetSystemType()
+  return FileSpec.builder(widgetSystemType)
     .addAnnotation(suppressDeprecations)
     .addType(
-      TypeSpec.classBuilder(widgetFactoriesType)
+      TypeSpec.classBuilder(widgetSystemType)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-        .optIn(Stdlib.ExperimentalObjCName)
+        .addSuperinterface(RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
+        .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
-            .addMember("%S", widgetFactoriesType.simpleName)
+            .addMember("%S", widgetSystemType.simpleName)
             .addMember("exact = true")
             .build(),
         )
         .apply {
+          for (dependency in schemaSet.all) {
+            addSuperinterface(dependency.getWidgetFactoryOwnerType().parameterizedBy(typeVariableW))
+          }
+
           val constructorBuilder = FunSpec.constructorBuilder()
 
           for (dependency in schemaSet.all) {
@@ -76,16 +85,24 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
         }
         .build(),
     )
+    .addTypeAlias(
+      TypeAliasSpec.builder("${schema.type.flatName}WidgetFactories", widgetSystemType.parameterizedBy(typeVariableW))
+        .addTypeVariable(typeVariableW.copy(bounds = emptyList()))
+        .addAnnotation(
+          AnnotationSpec.builder(Deprecated::class)
+            .addMember("%S", "Renamed to ${widgetSystemType.simpleName}")
+            .addMember("%T(%S, %S)", ReplaceWith::class, widgetSystemType.simpleName, widgetSystemType.toString())
+            .build(),
+        )
+        .build(),
+    )
     .addType(
-      TypeSpec.interfaceBuilder(schema.getWidgetFactoryProviderType())
+      TypeSpec.interfaceBuilder(schema.getWidgetFactoryOwnerType())
+        .addKdoc("@suppress For generated code usage only.")
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+        .addAnnotation(Redwood.RedwoodCodegenApi)
+        .addSuperinterface(RedwoodWidget.WidgetFactoryOwner.parameterizedBy(typeVariableW))
         .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
-        .apply {
-          for (dependency in schemaSet.dependencies.values) {
-            addSuperinterface(dependency.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-          }
-        }
         .build(),
     )
     .build()

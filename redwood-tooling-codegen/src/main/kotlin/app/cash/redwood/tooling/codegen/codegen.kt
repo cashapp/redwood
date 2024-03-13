@@ -65,7 +65,7 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
       }
 
       Widget -> {
-        add(generateWidgetFactories(this@generateFileSpecs))
+        add(generateWidgetSystem(this@generateFileSpecs))
         add(generateWidgetFactory(schema))
         for (widget in schema.widgets) {
           add(generateWidget(schema, widget))

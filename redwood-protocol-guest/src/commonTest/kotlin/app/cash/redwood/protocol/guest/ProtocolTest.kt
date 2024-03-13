@@ -280,7 +280,7 @@ class ProtocolTest {
   private fun TestScope.testProtocolComposition(): TestRedwoodComposition<List<Change>> {
     val composition = TestRedwoodComposition(
       scope = backgroundScope,
-      provider = bridge.provider,
+      widgetSystem = bridge.widgetSystem,
       container = bridge.root,
     ) {
       bridge.getChangesOrNull() ?: emptyList()

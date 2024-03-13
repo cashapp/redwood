@@ -42,7 +42,7 @@ import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
 import kotlinx.coroutines.CoroutineScope
@@ -70,7 +70,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory(
-        provider = EmojiSearchWidgetFactories(
+        widgetSystem = EmojiSearchWidgetSystem(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),

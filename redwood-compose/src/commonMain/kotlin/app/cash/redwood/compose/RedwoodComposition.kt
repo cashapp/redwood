@@ -39,6 +39,8 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetFactoryOwner
+import app.cash.redwood.widget.WidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
@@ -58,7 +60,7 @@ public interface RedwoodComposition {
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   view: RedwoodView<W>,
-  provider: Widget.Provider<W>,
+  widgetSystem: WidgetSystem<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
   view.reset()
@@ -95,7 +97,7 @@ public fun <W : Any> RedwoodComposition(
     view.onBackPressedDispatcher,
     saveableStateRegistry,
     view.uiConfiguration,
-    provider,
+    widgetSystem,
     onEndChanges,
   )
 }
@@ -110,7 +112,7 @@ public fun <W : Any> RedwoodComposition(
   onBackPressedDispatcher: OnBackPressedDispatcher,
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
-  provider: Widget.Provider<W>,
+  widgetSystem: WidgetSystem<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
   return WidgetRedwoodComposition(
@@ -118,7 +120,7 @@ public fun <W : Any> RedwoodComposition(
     onBackPressedDispatcher,
     saveableStateRegistry,
     uiConfigurations,
-    NodeApplier(provider, container, onEndChanges),
+    NodeApplier(widgetSystem, container, onEndChanges),
   )
 }
 
@@ -173,20 +175,20 @@ private class WidgetRedwoodComposition<W : Any>(
 /** @suppress For generated code usage only. */
 @RedwoodCodegenApi
 public interface RedwoodApplier<W : Any> {
-  public val provider: Widget.Provider<W>
+  public val widgetSystem: WidgetSystem<W>
   public fun recordChanged(widget: Widget<W>)
 }
 
 /**
  * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
- * we expose the provider type [P] to our factory function so the correct widget can be created.
+ * we expose the owner type [O] to our factory function so the correct widget can be created.
  *
  * @suppress For generated code usage only.
  */
 @Composable
 @RedwoodCodegenApi
-public inline fun <P : Widget.Provider<V>, W : Widget<V>, V : Any> RedwoodComposeNode(
-  crossinline factory: (P) -> W,
+public inline fun <O : WidgetFactoryOwner<V>, W : Widget<V>, V : Any> RedwoodComposeNode(
+  crossinline factory: (O) -> W,
   update: @DisallowComposableCalls Updater<WidgetNode<W, V>>.() -> Unit,
   content: @Composable RedwoodComposeContent<W>.() -> Unit,
 ) {
@@ -207,7 +209,7 @@ public inline fun <P : Widget.Provider<V>, W : Widget<V>, V : Any> RedwoodCompos
     currentComposer.createNode {
       // Safe so long as you use generated composition function.
       @Suppress("UNCHECKED_CAST")
-      WidgetNode(applier, factory(applier.provider as P))
+      WidgetNode(applier, factory(applier.widgetSystem as O))
     }
   } else {
     currentComposer.useNode()

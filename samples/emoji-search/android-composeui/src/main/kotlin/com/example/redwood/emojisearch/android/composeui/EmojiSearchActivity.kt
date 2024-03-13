@@ -52,7 +52,7 @@ import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -84,7 +84,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory<@Composable () -> Unit>(
-        provider = EmojiSearchWidgetFactories(
+        widgetSystem = EmojiSearchWidgetSystem(
           EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),

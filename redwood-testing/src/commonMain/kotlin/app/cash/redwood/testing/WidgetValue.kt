@@ -17,6 +17,7 @@ package app.cash.redwood.testing
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 
 /**
  * A widget that's implemented as a value class, appropriate for use in tests.
@@ -31,7 +32,7 @@ public interface WidgetValue {
   public val childrenLists: List<List<WidgetValue>>
     get() = listOf()
 
-  public fun <W : Any> toWidget(provider: Widget.Provider<W>): Widget<W>
+  public fun <W : Any> toWidget(widgetSystem: WidgetSystem<W>): Widget<W>
 }
 
 /**

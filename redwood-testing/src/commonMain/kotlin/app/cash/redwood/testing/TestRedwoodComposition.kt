@@ -25,6 +25,7 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +41,10 @@ import kotlinx.coroutines.withTimeout
 /**
  * Performs Redwood composition strictly for testing.
  */
-
 @Suppress("FunctionName") // ktlint bug
 public fun <W : Any, S> TestRedwoodComposition(
   scope: CoroutineScope,
-  provider: Widget.Provider<W>,
+  widgetSystem: WidgetSystem<W>,
   container: Widget.Children<W>,
   onBackPressedDispatcher: OnBackPressedDispatcher = NoOpOnBackPressedDispatcher,
   savedState: TestSavedState? = null,
@@ -53,7 +53,7 @@ public fun <W : Any, S> TestRedwoodComposition(
 ): TestRedwoodComposition<S> {
   return RealTestRedwoodComposition(
     scope,
-    provider,
+    widgetSystem,
     container,
     onBackPressedDispatcher,
     savedState,
@@ -89,7 +89,7 @@ private class MapBasedTestSavedState(
 /** Performs Redwood composition strictly for testing. */
 private class RealTestRedwoodComposition<W : Any, S>(
   scope: CoroutineScope,
-  provider: Widget.Provider<W>,
+  widgetSystem: WidgetSystem<W>,
   container: Widget.Children<W>,
   onBackPressedDispatcher: OnBackPressedDispatcher,
   savedState: TestSavedState?,
@@ -124,7 +124,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
     onBackPressedDispatcher = onBackPressedDispatcher,
     saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
-    provider = provider,
+    widgetSystem = widgetSystem,
     onEndChanges = {
       val newSnapshot = createSnapshot()
 

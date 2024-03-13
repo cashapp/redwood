@@ -29,7 +29,7 @@ public fun List<WidgetValue>.toChangeList(
 ): SnapshotChangeList {
   val bridge = factory.create(json)
   for ((index, child) in withIndex()) {
-    bridge.root.insert(index, child.toWidget(bridge.provider))
+    bridge.root.insert(index, child.toWidget(bridge.widgetSystem))
   }
   return SnapshotChangeList(bridge.getChangesOrNull() ?: emptyList())
 }

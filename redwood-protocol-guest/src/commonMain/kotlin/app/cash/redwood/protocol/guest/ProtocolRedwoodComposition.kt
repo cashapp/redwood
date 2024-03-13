@@ -47,7 +47,7 @@ public fun ProtocolRedwoodComposition(
     onBackPressedDispatcher = onBackPressedDispatcher,
     saveableStateRegistry = saveableStateRegistry,
     uiConfigurations = uiConfigurations,
-    provider = bridge.provider,
+    widgetSystem = bridge.widgetSystem,
   ) {
     bridge.getChangesOrNull()?.let(changesSink::sendChanges)
   }

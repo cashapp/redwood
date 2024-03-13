@@ -127,6 +127,6 @@ private class StringWidget(override val value: String) : Widget<String> {
 
 @OptIn(RedwoodCodegenApi::class)
 private object NoOpRedwoodApplier : RedwoodApplier<String> {
-  override val provider get() = throw UnsupportedOperationException()
+  override val widgetSystem get() = throw UnsupportedOperationException()
   override fun recordChanged(widget: Widget<String>) = Unit
 }

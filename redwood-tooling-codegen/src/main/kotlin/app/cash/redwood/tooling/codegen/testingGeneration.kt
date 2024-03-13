@@ -47,12 +47,12 @@ suspend fun <R> ExampleTester(
   uiConfiguration: UiConfiguration = UiConfiguration(),
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
-  val factories = ExampleWidgetFactories(
+  val widgetSystem = ExampleWidgetSystem(
     TestSchema = TestSchemaTestingWidgetFactory(),
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
-  val tester = TestRedwoodComposition(this, factories, container, savedState, uiConfiguration) {
+  val tester = TestRedwoodComposition(this, widgetSystem, container, savedState, uiConfiguration) {
     container.map { it.value }
   }
   try {
@@ -96,7 +96,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .addTypeVariable(typeVarR)
         .returns(typeVarR)
         .beginControlFlow("return %M", KotlinxCoroutines.coroutineScope)
-        .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
+        .addCode("val widgetSystem = %T(⇥\n", schema.getWidgetSystemType())
         .apply {
           for (dependency in schemaSet.all) {
             addCode("%N = %T(),\n", dependency.type.flatName, dependency.getTestingWidgetFactoryType())
@@ -104,7 +104,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("val tester = %T(this, factories, container, onBackPressedDispatcher, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
+        .beginControlFlow("val tester = %T(this, widgetSystem, container, onBackPressedDispatcher, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
         .beginControlFlow("try")
@@ -342,7 +342,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         childrenLists += CodeBlock.of("%N", trait.name)
 
         toWidgetChildrenBuilder.beginControlFlow("for ((index, child) in %N.withIndex())", trait.name)
-          .addStatement("instance.%N.insert(index, child.toWidget(provider))", trait.name)
+          .addStatement("instance.%N.insert(index, child.toWidget(widgetSystem))", trait.name)
           .endControlFlow()
       }
 
@@ -417,11 +417,13 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .addFunction(
           FunSpec.builder("toWidget")
             .addModifiers(OVERRIDE)
+            .optIn(Redwood.RedwoodCodegenApi)
             .addTypeVariable(typeVariableW)
-            .addParameter("provider", RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+            .addParameter("widgetSystem", RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
             .returns(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
-            .addStatement("val factory = provider as %T", schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-            .addStatement("val instance = factory.%L.%L()", schema.type.flatName, widget.type.flatName)
+            .addStatement("@%T(%S) // Type parameter shared in generated code.", Suppress::class, "UNCHECKED_CAST")
+            .addStatement("val factoryOwner = widgetSystem as %T", schema.getWidgetFactoryOwnerType().parameterizedBy(typeVariableW))
+            .addStatement("val instance = factoryOwner.%L.%L()", schema.type.flatName, widget.type.flatName)
             .addStatement("")
             .addStatement("instance.modifier = modifier")
             .addCode(toWidgetPropertiesBuilder.build())

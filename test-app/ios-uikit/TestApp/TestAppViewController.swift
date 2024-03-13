@@ -33,7 +33,7 @@ class TestAppViewController : UIViewController {
 
         let testAppLauncher = TestAppLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = testAppLauncher.createTreehouseApp()
-        let widgetSystem = TestSchemaWidgetSystem()
+        let widgetSystem = TestSchemaTreehouseWidgetSystem()
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: TestAppContent(),
@@ -59,13 +59,13 @@ class TestAppContent : TreehouseContentSource {
     }
 }
 
-class TestSchemaWidgetSystem : TreehouseViewWidgetSystem {
+class TestSchemaTreehouseWidgetSystem : TreehouseViewWidgetSystem {
     func widgetFactory(
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
     ) -> ProtocolFactory {
         return TestSchemaProtocolFactory<UIView>(
-            provider: TestSchemaWidgetFactories<UIView>(
+            widgetSystem: TestSchemaWidgetSystem<UIView>(
                 TestSchema: IosTestSchemaWidgetFactory(),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()

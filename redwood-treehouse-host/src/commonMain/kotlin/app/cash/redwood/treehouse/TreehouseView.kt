@@ -41,6 +41,8 @@ public interface TreehouseView<W : Any> : RedwoodView<W> {
     public fun performSave(id: String)
   }
 
+  // TODO Rename this type to something else, along with ProtocolFactory which needs a rewrite
+  //  to behave more like the guest-side ProtocolBridge and its companion.
   @ObjCName("TreehouseViewWidgetSystem", exact = true)
   public fun interface WidgetSystem<W : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */

@@ -10,6 +10,7 @@ Changed:
 - Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).
 - `onModifierChanged` callback in `Widget.Children` now receives the index and the `Widget` instance affected by the change.
 - Revert: Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
+- The generated "widget factories" type (e.g., `MySchemaWidgetFactories`) is now called a "widget system" (e.g., `MySchemaWidgetSystem`). Sometimes it was also referred to as a "provider" in parameter names. A `@Deprecated typealias` is generated for now, but will be removed in the future.
 
 Fixed:
 - JVM targets now correctly link against Java 8 APIs. Previously they produced Java 8 bytecode, but linked against the compile JDK's APIs (21). This allowed linking against newer APIs that might not exist on older runtimes, which is no longer possible. Android targets which also produce Java 8 bytecode were not affected.

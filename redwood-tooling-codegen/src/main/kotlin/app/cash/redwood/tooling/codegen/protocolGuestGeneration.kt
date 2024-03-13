@@ -47,11 +47,11 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
 /*
-class ExampleProtocolBridge(
+class ExampleProtocolBridge private constructor(
   private val state: ProtocolState,
   private val mismatchHandler: ProtocolMismatchHandler,
   override val root: Widget.Children<Nothing>,
-  override val provider: ExampleWidgetFactoryProvider<Nothing>,
+  override val widgetSystem: ExampleWidgetSystem<Nothing>,
 ) : ProtocolBridge {
   override fun getChangesOrNull(): List<Change>? = state.getChangesOrNull()
   override fun sendEvent(event: Event) {
@@ -70,11 +70,11 @@ class ExampleProtocolBridge(
     ): ExampleProtocolBridge {
       val bridge = ProtocolBridge()
       val root = bridge.widgetChildren(Id.Root, ChildrenTag.Root)
-      val factories = ExampleWidgetFactories(
+      val widgetSystem = ExampleWidgetSystem(
           Example = ProtocolExampleWidgetFactory(bridge, json, mismatchHandler),
           RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(bridge, json, mismatchHandler),
       )
-      return ExampleProtocolBridge(bridge, mismatchHandler, root, factories)
+      return ExampleProtocolBridge(bridge, mismatchHandler, root, widgetSystem)
     }
   }
 }
@@ -84,7 +84,7 @@ internal fun generateProtocolBridge(
 ): FileSpec {
   val schema = schemaSet.schema
   val type = schema.protocolBridgeType()
-  val providerType = schema.getWidgetFactoryProviderType().parameterizedBy(NOTHING)
+  val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(NOTHING)
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
     .addType(
@@ -92,10 +92,11 @@ internal fun generateProtocolBridge(
         .addSuperinterface(ProtocolGuest.ProtocolBridge)
         .primaryConstructor(
           FunSpec.constructorBuilder()
+            .addModifiers(PRIVATE)
             .addParameter("state", ProtocolGuest.ProtocolState)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
-            .addParameter("provider", providerType)
+            .addParameter("widgetSystem", widgetSystemType)
             .build(),
         )
         .addProperty(
@@ -114,8 +115,8 @@ internal fun generateProtocolBridge(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("provider", providerType, OVERRIDE)
-            .initializer("provider")
+          PropertySpec.builder("widgetSystem", widgetSystemType, OVERRIDE)
+            .initializer("widgetSystem")
             .build(),
         )
         .addFunction(
@@ -155,9 +156,9 @@ internal fun generateProtocolBridge(
                       add(CodeBlock.of("%N = %T(state, json, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                     }
                   }
-                  addStatement("val factories = %T(\n%L)", schema.getWidgetFactoriesType(), arguments.joinToCode(separator = ",\n"))
+                  addStatement("val widgetSystem = %T(\n%L)", schema.getWidgetSystemType(), arguments.joinToCode(separator = ",\n"))
                 }
-                .addStatement("return %T(state, mismatchHandler, root, factories)", type)
+                .addStatement("return %T(state, mismatchHandler, root, widgetSystem)", type)
                 .build(),
             )
             .build(),

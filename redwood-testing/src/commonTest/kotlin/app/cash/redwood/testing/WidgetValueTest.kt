@@ -17,7 +17,7 @@ package app.cash.redwood.testing
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.widget.Widget.Provider
+import app.cash.redwood.widget.WidgetSystem
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
@@ -67,7 +67,7 @@ class WidgetValueTest {
     override val modifier: Modifier = Modifier,
     override val childrenLists: List<List<WidgetValue>> = listOf(),
   ) : WidgetValue {
-    override fun <W : Any> toWidget(provider: Provider<W>): Widget<W> {
+    override fun <W : Any> toWidget(widgetSystem: WidgetSystem<W>): Widget<W> {
       throw AssertionError()
     }
   }

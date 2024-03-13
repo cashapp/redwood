@@ -78,7 +78,8 @@ internal object RedwoodWidget {
   val Widget = ClassName("app.cash.redwood.widget", "Widget")
   val WidgetChildren = Widget.nestedClass("Children")
   val WidgetChildrenOfW = WidgetChildren.parameterizedBy(typeVariableW)
-  val WidgetProvider = Widget.nestedClass("Provider")
+  val WidgetSystem = ClassName("app.cash.redwood.widget", "WidgetSystem")
+  val WidgetFactoryOwner = ClassName("app.cash.redwood.widget", "WidgetFactoryOwner")
   val MutableListChildren = ClassName("app.cash.redwood.widget", "MutableListChildren")
 }
 

@@ -38,7 +38,7 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.testing.launcher.TestAppSpec
 import com.example.redwood.testing.treehouse.TestAppPresenter
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
 import kotlinx.coroutines.CoroutineScope
@@ -67,7 +67,7 @@ class TestAppActivity : ComponentActivity() {
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
       ) = TestSchemaProtocolFactory(
-        provider = TestSchemaWidgetFactories(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = AndroidTestSchemaWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),

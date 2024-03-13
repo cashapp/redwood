@@ -27,8 +27,8 @@ import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.Closeable
@@ -42,8 +42,8 @@ fun exposedTypes(
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
-  widgetSystem: WidgetSystem<*>,
-  widgetFactories: EmojiSearchWidgetFactories<*>,
+  treehouseWidgetSystem: WidgetSystem<*>,
+  widgetSystem: EmojiSearchWidgetSystem<*>,
 ) {
   throw AssertionError()
 }
