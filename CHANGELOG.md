@@ -33,7 +33,7 @@ Changed:
 - Disable decoy generation for JS target to make compatible with JetBrains Compose 1.6. This is an ABI-breaking change, so all Compose-based libraries targeting JS will also need to have been recompiled.
 
 Fixed:
-
+- Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
 
 This version works with Kotlin 1.9.22 by default.
 
