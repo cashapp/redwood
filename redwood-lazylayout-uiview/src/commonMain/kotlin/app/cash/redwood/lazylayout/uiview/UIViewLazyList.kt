@@ -82,20 +82,24 @@ internal open class UIViewLazyList(
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.beginUpdates()
-      tableView.insertRowsAtIndexPaths(
-        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
-        UITableViewRowAnimationNone,
-      )
+      UIView.performWithoutAnimation {
+        tableView.insertRowsAtIndexPaths(
+          (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+          UITableViewRowAnimationNone,
+        )
+      }
       tableView.endUpdates()
     }
 
     override fun deleteRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.beginUpdates()
-      tableView.deleteRowsAtIndexPaths(
-        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
-        UITableViewRowAnimationNone,
-      )
+      UIView.performWithoutAnimation {
+        tableView.deleteRowsAtIndexPaths(
+          (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+          UITableViewRowAnimationNone,
+        )
+      }
       tableView.endUpdates()
     }
 
