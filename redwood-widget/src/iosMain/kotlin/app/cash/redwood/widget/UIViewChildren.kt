@@ -64,7 +64,7 @@ public class UIViewChildren(
     invalidate()
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<UIView>) {
     invalidate()
   }
 

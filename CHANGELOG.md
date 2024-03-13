@@ -8,6 +8,7 @@ New:
 
 Changed:
 - Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).
+- `onModifierChanged` callback in `Widget.Children` now receives the index and the `Widget` instance affected by the change.
 
 Fixed:
 - JVM targets now correctly link against Java 8 APIs. Previously they produced Java 8 bytecode, but linked against the compile JDK's APIs (21). This allowed linking against newer APIs that might not exist on older runtimes, which is no longer possible. Android targets which also produce Java 8 bytecode were not affected.

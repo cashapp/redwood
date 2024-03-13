@@ -42,7 +42,7 @@ public abstract class ProtocolNode<W : Any> {
 
   public fun updateModifier(modifier: Modifier) {
     widget.modifier = modifier
-    container?.onModifierUpdated()
+    container?.onModifierUpdated(index, widget)
   }
 
   /**

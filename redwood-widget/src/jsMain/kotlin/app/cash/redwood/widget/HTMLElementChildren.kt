@@ -61,7 +61,7 @@ public class HTMLElementChildren(
     }
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
     // If this function is being invoked we are guaranteed to have at least one child.
 
     val element = container.children[0] as HTMLElement

@@ -148,10 +148,10 @@ public class WidgetNode<out W : Widget<V>, V : Any>(
   public var index: Int = -1
 
   public companion object {
-    public val SetModifiers: WidgetNode<*, *>.(Modifier) -> Unit = {
+    public val SetModifiers: WidgetNode<Widget<Any>, Any>.(Modifier) -> Unit = {
       recordChanged()
       widget.modifier = it
-      container?.onModifierUpdated()
+      container?.onModifierUpdated(index, widget)
     }
   }
 }

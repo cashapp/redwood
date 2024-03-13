@@ -66,6 +66,6 @@ public interface Widget<W : Any> {
     public fun remove(index: Int, count: Int)
 
     /** Indicates that [Modifier]s for the child widgets have changed. */
-    public fun onModifierUpdated()
+    public fun onModifierUpdated(index: Int, widget: Widget<W>)
   }
 }
