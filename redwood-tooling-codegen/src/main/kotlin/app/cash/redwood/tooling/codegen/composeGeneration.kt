@@ -173,7 +173,7 @@ internal fun generateComposable(
           addStatement(
             "%M<%T, %T, %T>(%L)",
             RedwoodCompose.RedwoodComposeNode,
-            schema.getWidgetFactoryProviderType().parameterizedBy(ANY),
+            schema.getWidgetFactoryOwnerType().parameterizedBy(ANY),
             widgetType,
             ANY,
             arguments.joinToCode(",\n", "\n", ",\n"),

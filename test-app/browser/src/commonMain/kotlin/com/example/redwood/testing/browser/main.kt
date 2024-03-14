@@ -23,7 +23,7 @@ import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testing.presenter.HttpClient
 import com.example.redwood.testing.presenter.TestApp
 import com.example.redwood.testing.presenter.TestContext
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.js.json
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -41,7 +41,7 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     view = content.asRedwoodView(),
-    provider = TestSchemaWidgetFactories(
+    widgetSystem = TestSchemaWidgetSystem(
       TestSchema = HtmlWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),

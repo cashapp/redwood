@@ -28,8 +28,8 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import com.example.redwood.testing.treehouse.TestAppPresenter
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.Closeable
@@ -44,8 +44,8 @@ fun exposedTypes(
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
-  widgetSystem: WidgetSystem<*>,
-  widgetFactories: TestSchemaWidgetFactories<*>,
+  treehouseWidgetSystem: WidgetSystem<*>,
+  widgetSystem: TestSchemaWidgetSystem<*>,
 ) {
   throw AssertionError()
 }

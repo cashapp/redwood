@@ -33,7 +33,7 @@ import coil3.serviceLoaderEnabled
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.presenter.EmojiSearch
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import okhttp3.OkHttpClient
 
 fun main() {
@@ -45,7 +45,7 @@ fun main() {
       add(OkHttpNetworkFetcherFactory(client))
     }
     .build()
-  val factories = EmojiSearchWidgetFactories(
+  val widgetSystem = EmojiSearchWidgetSystem(
     EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
@@ -58,7 +58,7 @@ fun main() {
     ) {
       EmojiSearchTheme {
         Scaffold { contentPadding ->
-          RedwoodContent(factories, modifier = Modifier.padding(contentPadding)) {
+          RedwoodContent(widgetSystem, modifier = Modifier.padding(contentPadding)) {
             EmojiSearch(
               httpClient = httpClient,
               navigator = DesktopNavigator,

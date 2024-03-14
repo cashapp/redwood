@@ -38,10 +38,6 @@ public interface Widget<W : Any> {
    */
   public var modifier: Modifier
 
-  /** Marker interface for types whose properties expose factories of [Widget]s. */
-  @Suppress("unused") // This type parameter used to match against other types like Children.
-  public interface Provider<W : Any>
-
   /**
    * An interface for manipulating a widget's list of children.
    *

@@ -39,7 +39,7 @@ import com.squareup.kotlinpoet.joinToCode
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
 public class ExampleProtocolFactory<W : Any>(
-  private val provider: ExampleWidgetFactoryProvider<W>,
+  private val widgetSystem: ExampleWidgetSystem<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GeneratedProtocolFactory<W> {
@@ -70,7 +70,7 @@ internal fun generateProtocolFactory(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
-  val provider = schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW)
+  val widgetSystem = schema.getWidgetSystemType().parameterizedBy(typeVariableW)
   val type = schema.protocolFactoryType()
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
@@ -87,7 +87,7 @@ internal fun generateProtocolFactory(
         )
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("provider", provider)
+            .addParameter("widgetSystem", widgetSystem)
             .addParameter(
               ParameterSpec.builder("json", KotlinxSerialization.Json)
                 .defaultValue("%T", KotlinxSerialization.JsonDefault)
@@ -101,8 +101,8 @@ internal fun generateProtocolFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("provider", provider, PRIVATE)
-            .initializer("provider")
+          PropertySpec.builder("widgetSystem", widgetSystem, PRIVATE)
+            .initializer("widgetSystem")
             .build(),
         )
         .addProperty(
@@ -129,7 +129,7 @@ internal fun generateProtocolFactory(
               for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                 for (widget in dependency.widgets.sortedBy { it.tag }) {
                   addStatement(
-                    "%L -> %T(provider.%N.%N(), json, mismatchHandler)",
+                    "%L -> %T(widgetSystem.%N.%N(), json, mismatchHandler)",
                     widget.tag,
                     dependency.protocolNodeType(widget, schema),
                     dependency.type.flatName,

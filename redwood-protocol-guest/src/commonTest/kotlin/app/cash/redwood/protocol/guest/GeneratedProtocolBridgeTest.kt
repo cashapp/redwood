@@ -48,7 +48,7 @@ class GeneratedProtocolBridgeTest {
       }
     }
     val bridge = TestSchemaProtocolBridge.create(json)
-    val textInput = bridge.provider.TestSchema.TextInput()
+    val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
 
@@ -66,7 +66,7 @@ class GeneratedProtocolBridgeTest {
       }
     }
     val bridge = TestSchemaProtocolBridge.create(json)
-    val button = bridge.provider.TestSchema.Button()
+    val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customType(10.seconds)
@@ -96,7 +96,7 @@ class GeneratedProtocolBridgeTest {
       }
     }
     val bridge = TestSchemaProtocolBridge.create(json)
-    val button = bridge.provider.TestSchema.Button()
+    val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customTypeWithDefault(10.seconds, "sup")
@@ -126,7 +126,7 @@ class GeneratedProtocolBridgeTest {
       }
     }
     val bridge = TestSchemaProtocolBridge.create(json)
-    val textInput = bridge.provider.TestSchema.TextInput()
+    val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
 
@@ -142,7 +142,7 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventThrowsDefault() {
     val bridge = TestSchemaProtocolBridge.create()
-    val button = bridge.provider.TestSchema.Button() as ProtocolWidget
+    val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -154,7 +154,7 @@ class GeneratedProtocolBridgeTest {
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
     val bridge = TestSchemaProtocolBridge.create(mismatchHandler = handler)
-    val button = bridge.provider.TestSchema.Button() as ProtocolWidget
+    val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 

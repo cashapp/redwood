@@ -21,6 +21,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import kotlin.math.max
 import kotlin.math.min
 
@@ -51,7 +52,7 @@ import kotlin.math.min
  */
 @OptIn(RedwoodCodegenApi::class)
 internal class NodeApplier<W : Any>(
-  override val provider: Widget.Provider<W>,
+  override val widgetSystem: WidgetSystem<W>,
   root: Widget.Children<W>,
   private val onEndChanges: () -> Unit,
 ) : AbstractApplier<Node<W>>(ChildrenNode(root)), RedwoodApplier<W> {

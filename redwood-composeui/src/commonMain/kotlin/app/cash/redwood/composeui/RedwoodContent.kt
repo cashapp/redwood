@@ -35,19 +35,19 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /** Render a Redwood composition inside of Compose UI. */
 @Composable
 public fun RedwoodContent(
-  provider: Widget.Provider<@Composable () -> Unit>,
+  widgetSystem: WidgetSystem<@Composable () -> Unit>,
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
 ) {
   // If the provider or content change, reset any assumption about the rendered size.
-  var viewportSize by remember(provider, content) { mutableStateOf(Size.Zero) }
+  var viewportSize by remember(widgetSystem, content) { mutableStateOf(Size.Zero) }
 
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
@@ -66,11 +66,11 @@ public fun RedwoodContent(
   val saveableStateRegistry = LocalSaveableStateRegistry.current
 
   // For simplicity, a new provider or content lambda gets an entirely new composition and children.
-  val children = remember(provider, content) { ComposeWidgetChildren() }
-  DisposableEffect(provider, content) {
+  val children = remember(widgetSystem, content) { ComposeWidgetChildren() }
+  DisposableEffect(widgetSystem, content) {
     val composition = RedwoodComposition(
       scope = scope,
-      provider = provider,
+      widgetSystem = widgetSystem,
       container = children,
       onBackPressedDispatcher = onBackPressedDispatcher,
       saveableStateRegistry = saveableStateRegistry,

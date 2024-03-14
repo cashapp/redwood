@@ -21,16 +21,17 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import kotlinx.serialization.json.Json
 
 /**
- * Exposes a [Widget.Children] and [Widget.Provider] whose changes can be captured as a list
+ * Exposes a [Widget.Children] and [WidgetSystem] whose changes can be captured as a list
  * of [Change]s to send to a remote frontend. Incoming [Event]s can also be sent to this instance
  * and will be routed to the appropriate handler.
  */
 public interface ProtocolBridge : EventSink {
   /**
-   * The root of the widget tree onto which [provider]-produced widgets can be added. Changes to
+   * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
    * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
    */
   public val root: Widget.Children<Nothing>
@@ -40,11 +41,11 @@ public interface ProtocolBridge : EventSink {
    * are also recorded. You **must** attach returned widgets to [root] or the children of a widget
    * in the tree beneath [root] in order for it to be tracked.
    */
-  public val provider: Widget.Provider<Nothing>
+  public val widgetSystem: WidgetSystem<Nothing>
 
   /**
-   * Returns any changes to [root] or [provider]-produced widgets since the last time this function
-   * was called. Returns null if no changes occurred.
+   * Returns any changes to [root] or [widgetSystem]-produced widgets since the last time this
+   * function was called. Returns null if no changes occurred.
    */
   public fun getChangesOrNull(): List<Change>?
 

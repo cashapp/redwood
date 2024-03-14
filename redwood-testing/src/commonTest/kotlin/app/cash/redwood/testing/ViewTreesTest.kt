@@ -46,7 +46,7 @@ import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import com.example.redwood.testing.widget.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -132,12 +132,12 @@ class ViewTreesTest {
     assertThat(protocolChanges).isEqualTo(expected)
 
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
-    val mutableFactories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val protocolNodes = TestSchemaProtocolFactory(mutableFactories)
+    val protocolNodes = TestSchemaProtocolFactory(widgetSystem)
     val widgetContainer = MutableListChildren<WidgetValue>()
     val widgetBridge = ProtocolBridge(widgetContainer, protocolNodes) {
       throw AssertionError()

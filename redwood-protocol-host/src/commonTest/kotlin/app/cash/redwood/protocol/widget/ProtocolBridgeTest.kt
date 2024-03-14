@@ -29,7 +29,7 @@ import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
@@ -39,7 +39,7 @@ class ProtocolBridgeTest {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
-        provider = TestSchemaWidgetFactories(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
@@ -64,7 +64,7 @@ class ProtocolBridgeTest {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
-        provider = TestSchemaWidgetFactories(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
@@ -90,7 +90,7 @@ class ProtocolBridgeTest {
     val bridge = ProtocolBridge(
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
-        provider = TestSchemaWidgetFactories(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
@@ -149,7 +149,7 @@ class ProtocolBridgeTest {
     val bridge = ProtocolBridge(
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
       factory = TestSchemaProtocolFactory(
-        provider = TestSchemaWidgetFactories(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = EmptyTestSchemaWidgetFactory(),
           RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
