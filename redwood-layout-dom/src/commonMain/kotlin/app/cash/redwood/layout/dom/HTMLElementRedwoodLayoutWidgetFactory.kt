@@ -20,7 +20,13 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Flex
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.Margin as MarginModifier
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.Size
+import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
@@ -145,6 +151,25 @@ private class HTMLFlexElementChildren(
             marginTop = element.margin.top.toPxString()
             marginBottom = element.margin.bottom.toPxString()
           }
+        }
+        is Grow -> value.style.apply {
+          flexGrow = element.value.toString()
+        }
+        is Shrink -> value.style.apply {
+          flexShrink = element.value.toString()
+        }
+        is Flex -> value.style.apply {
+          flex = element.value.toString()
+        }
+        is Width -> value.style.apply {
+          width = element.width.toPxString()
+        }
+        is Height -> value.style.apply {
+          height = element.height.toPxString()
+        }
+        is Size -> value.style.apply {
+          width = element.width.toPxString()
+          height = element.height.toPxString()
         }
       }
     }
