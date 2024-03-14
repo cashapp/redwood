@@ -78,5 +78,3 @@ module:redwood-widget-compose
 app.cash.redwood.widget.compose
 module:redwood-widget-testing
 app.cash.redwood.widget.testing
-module:redwood-yoga
-app.cash.redwood.yoga
