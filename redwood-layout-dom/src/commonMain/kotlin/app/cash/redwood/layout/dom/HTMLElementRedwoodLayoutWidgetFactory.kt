@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
@@ -29,6 +30,7 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.Widget
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -70,7 +72,7 @@ private class HTMLFlexContainer(
     value.style.flexDirection = direction
   }
 
-  override val children = HTMLElementChildren(value)
+  override val children: Widget.Children<HTMLElement> = HTMLFlexElementChildren(value)
 
   override fun width(width: Constraint) {
     value.style.width = width.toCss()
@@ -116,4 +118,35 @@ private class HTMLSpacer(
   }
 
   override var modifier: Modifier = Modifier
+}
+
+private class HTMLFlexElementChildren(
+  private val container: HTMLElement,
+  private val delegate: HTMLElementChildren = HTMLElementChildren(container),
+) :
+  Widget.Children<HTMLElement> by delegate {
+  override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers()
+    delegate.onModifierUpdated(index, widget)
+  }
+
+  override fun insert(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers()
+    delegate.insert(index, widget)
+  }
+
+  private fun Widget<HTMLElement>.applyModifiers() {
+    modifier.forEach { element ->
+      when (element) {
+        is MarginModifier -> {
+          value.style.apply {
+            marginInlineStart = element.margin.start.toPxString()
+            marginInlineEnd = element.margin.end.toPxString()
+            marginTop = element.margin.top.toPxString()
+            marginBottom = element.margin.bottom.toPxString()
+          }
+        }
+      }
+    }
+  }
 }
