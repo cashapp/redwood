@@ -1,0 +1,82 @@
+public abstract interface class app/cash/redwood/widget/ChangeListener {
+	public abstract fun onEndChanges ()V
+}
+
+public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwood/widget/Widget$Children, java/util/List, kotlin/jvm/internal/markers/KMutableList {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun add (ILapp/cash/redwood/widget/Widget;)V
+	public synthetic fun add (ILjava/lang/Object;)V
+	public fun add (Lapp/cash/redwood/widget/Widget;)Z
+	public synthetic fun add (Ljava/lang/Object;)Z
+	public fun addAll (ILjava/util/Collection;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public fun clear ()V
+	public fun contains (Lapp/cash/redwood/widget/Widget;)Z
+	public final fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun get (I)Lapp/cash/redwood/widget/Widget;
+	public synthetic fun get (I)Ljava/lang/Object;
+	public fun getSize ()I
+	public fun indexOf (Lapp/cash/redwood/widget/Widget;)I
+	public final fun indexOf (Ljava/lang/Object;)I
+	public fun insert (ILapp/cash/redwood/widget/Widget;)V
+	public fun isEmpty ()Z
+	public fun iterator ()Ljava/util/Iterator;
+	public fun lastIndexOf (Lapp/cash/redwood/widget/Widget;)I
+	public final fun lastIndexOf (Ljava/lang/Object;)I
+	public fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Ljava/util/ListIterator;
+	public fun move (III)V
+	public fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
+	public final fun remove (I)Lapp/cash/redwood/widget/Widget;
+	public synthetic fun remove (I)Ljava/lang/Object;
+	public fun remove (II)V
+	public fun remove (Lapp/cash/redwood/widget/Widget;)Z
+	public final fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun removeAt (I)Lapp/cash/redwood/widget/Widget;
+	public fun retainAll (Ljava/util/Collection;)Z
+	public fun set (ILapp/cash/redwood/widget/Widget;)Lapp/cash/redwood/widget/Widget;
+	public synthetic fun set (ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun size ()I
+	public fun subList (II)Ljava/util/List;
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+}
+
+public abstract interface class app/cash/redwood/widget/RedwoodView {
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
+	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
+	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun reset ()V
+}
+
+public abstract interface class app/cash/redwood/widget/SavedStateRegistry {
+	public abstract fun canBeSaved (Ljava/lang/Object;)Z
+	public abstract fun consumeRestoredState ()Ljava/util/Map;
+	public abstract fun registerSavedStateProvider (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun unregisterSavedStateProvider ()V
+}
+
+public abstract interface class app/cash/redwood/widget/Widget {
+	public abstract fun getModifier ()Lapp/cash/redwood/Modifier;
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun setModifier (Lapp/cash/redwood/Modifier;)V
+}
+
+public abstract interface class app/cash/redwood/widget/Widget$Children {
+	public abstract fun insert (ILapp/cash/redwood/widget/Widget;)V
+	public abstract fun move (III)V
+	public abstract fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
+	public abstract fun remove (II)V
+}
+
+public abstract interface class app/cash/redwood/widget/WidgetFactoryOwner {
+}
+
+public abstract interface class app/cash/redwood/widget/WidgetSystem {
+}
+

@@ -1,0 +1,87 @@
+public final class app/cash/redwood/compose/AndroidUiDispatcher : kotlinx/coroutines/CoroutineDispatcher {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/compose/AndroidUiDispatcher$Companion;
+	public synthetic fun <init> (Landroid/view/Choreographer;Landroid/os/Handler;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun dispatch (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Runnable;)V
+	public final fun getChoreographer ()Landroid/view/Choreographer;
+	public final fun getFrameClock ()Landroidx/compose/runtime/MonotonicFrameClock;
+}
+
+public final class app/cash/redwood/compose/AndroidUiDispatcher$Companion {
+	public final fun getMain ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class app/cash/redwood/compose/AndroidUiFrameClock : androidx/compose/runtime/MonotonicFrameClock {
+	public static final field $stable I
+	public fun <init> (Landroid/view/Choreographer;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
+	public fun withFrameNanos (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class app/cash/redwood/compose/BackHandlerKt {
+	public static final fun BackHandler (ZLkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+	public static final fun getCurrent (Lapp/cash/redwood/ui/OnBackPressedDispatcher$Companion;Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/OnBackPressedDispatcher;
+	public static final fun getLocalOnBackPressedDispatcher ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+}
+
+public abstract interface class app/cash/redwood/compose/Node {
+}
+
+public abstract interface class app/cash/redwood/compose/RedwoodApplier {
+	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
+	public abstract fun recordChanged (Lapp/cash/redwood/widget/Widget;)V
+}
+
+public final class app/cash/redwood/compose/RedwoodComposeContent {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/compose/RedwoodComposeContent$Companion;
+	public fun <init> ()V
+	public final fun Children (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class app/cash/redwood/compose/RedwoodComposeContent$Companion {
+	public final fun getInstance ()Lapp/cash/redwood/compose/RedwoodComposeContent;
+}
+
+public abstract interface class app/cash/redwood/compose/RedwoodComposition {
+	public abstract fun cancel ()V
+	public abstract fun setContent (Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class app/cash/redwood/compose/RedwoodCompositionKt {
+	public static final fun RedwoodComposeNode (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public static final fun RedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/RedwoodView;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static final fun RedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static synthetic fun RedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/RedwoodView;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static synthetic fun RedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
+}
+
+public final class app/cash/redwood/compose/UiConfigurationKt {
+	public static final fun getCurrent (Lapp/cash/redwood/ui/UiConfiguration$Companion;Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/UiConfiguration;
+	public static final fun getLocalUiConfiguration ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+}
+
+public final class app/cash/redwood/compose/WidgetNode : app/cash/redwood/compose/Node {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/compose/WidgetNode$Companion;
+	public fun <init> (Lapp/cash/redwood/compose/RedwoodApplier;Lapp/cash/redwood/widget/Widget;)V
+	public final fun getContainer ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun getIndex ()I
+	public final fun getWidget ()Lapp/cash/redwood/widget/Widget;
+	public final fun recordChanged ()V
+	public final fun setContainer (Lapp/cash/redwood/widget/Widget$Children;)V
+	public final fun setIndex (I)V
+}
+
+public final class app/cash/redwood/compose/WidgetNode$Companion {
+	public final fun getSetModifiers ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class app/cash/redwood/compose/WidgetVersionKt {
+	public static final fun getLocalWidgetVersion ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public static final fun getWidgetVersion (Landroidx/compose/runtime/Composer;I)I
+}
+

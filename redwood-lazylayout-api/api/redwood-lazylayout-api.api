@@ -1,0 +1,29 @@
+public final class app/cash/redwood/lazylayout/api/ScrollItemIndex {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/lazylayout/api/ScrollItemIndex$Companion;
+	public fun <init> (IIZ)V
+	public synthetic fun <init> (IIZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnimated ()Z
+	public final fun getId ()I
+	public final fun getIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/lazylayout/api/ScrollItemIndex$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/lazylayout/api/ScrollItemIndex$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/lazylayout/api/ScrollItemIndex$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+

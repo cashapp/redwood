@@ -1,0 +1,30 @@
+public final class app/cash/redwood/tooling/codegen/CodegenKt {
+	public static final fun generate (Lapp/cash/redwood/tooling/schema/SchemaSet;Lapp/cash/redwood/tooling/codegen/CodegenType;Ljava/nio/file/Path;)V
+}
+
+public final class app/cash/redwood/tooling/codegen/CodegenType : java/lang/Enum {
+	public static final field Compose Lapp/cash/redwood/tooling/codegen/CodegenType;
+	public static final field Modifiers Lapp/cash/redwood/tooling/codegen/CodegenType;
+	public static final field Testing Lapp/cash/redwood/tooling/codegen/CodegenType;
+	public static final field Widget Lapp/cash/redwood/tooling/codegen/CodegenType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/tooling/codegen/CodegenType;
+	public static fun values ()[Lapp/cash/redwood/tooling/codegen/CodegenType;
+}
+
+public final class app/cash/redwood/tooling/codegen/Main {
+	public static final fun main ([Ljava/lang/String;)V
+}
+
+public final class app/cash/redwood/tooling/codegen/ProtocolCodegenKt {
+	public static final fun generate (Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;Lapp/cash/redwood/tooling/codegen/ProtocolCodegenType;Ljava/nio/file/Path;)V
+}
+
+public final class app/cash/redwood/tooling/codegen/ProtocolCodegenType : java/lang/Enum {
+	public static final field Compose Lapp/cash/redwood/tooling/codegen/ProtocolCodegenType;
+	public static final field Widget Lapp/cash/redwood/tooling/codegen/ProtocolCodegenType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/tooling/codegen/ProtocolCodegenType;
+	public static fun values ()[Lapp/cash/redwood/tooling/codegen/ProtocolCodegenType;
+}
+

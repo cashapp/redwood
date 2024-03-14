@@ -1,0 +1,45 @@
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge : app/cash/redwood/protocol/EventSink {
+	public abstract fun getChangesOrNull ()Ljava/util/List;
+	public abstract fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
+}
+
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge$Factory {
+	public abstract fun create (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+}
+
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolMismatchHandler {
+	public static final field Companion Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler$Companion;
+	public static final field Throwing Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;
+	public abstract fun onUnknownEvent-_LM6m-c (II)V
+	public abstract fun onUnknownEventNode-1ccMwuE (II)V
+}
+
+public final class app/cash/redwood/protocol/guest/ProtocolMismatchHandler$Companion {
+}
+
+public final class app/cash/redwood/protocol/guest/ProtocolRedwoodCompositionKt {
+	public static final fun ProtocolRedwoodComposition-7J1iaxU (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/ProtocolBridge;Lapp/cash/redwood/protocol/ChangesSink;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;)Lapp/cash/redwood/compose/RedwoodComposition;
+}
+
+public final class app/cash/redwood/protocol/guest/ProtocolState {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun addWidget (Lapp/cash/redwood/protocol/guest/ProtocolWidget;)V
+	public final fun append (Lapp/cash/redwood/protocol/Change;)V
+	public final fun getChangesOrNull ()Ljava/util/List;
+	public final fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
+	public final fun nextId-0HhLjSo ()I
+	public final fun removeWidget-ou3jOuA (I)V
+	public final fun widgetChildren-AWfp_YY (II)Lapp/cash/redwood/widget/Widget$Children;
+}
+
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget : app/cash/redwood/widget/Widget {
+	public abstract fun getId-0HhLjSo ()I
+	public abstract fun getTag-BlhN7y0 ()I
+	public synthetic fun getValue ()Ljava/lang/Object;
+	public fun getValue ()Ljava/lang/Void;
+	public abstract fun sendEvent (Lapp/cash/redwood/protocol/Event;)V
+}
+

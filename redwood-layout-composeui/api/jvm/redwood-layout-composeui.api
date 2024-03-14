@@ -1,0 +1,20 @@
+public final class app/cash/redwood/layout/composeui/BoxMeasurePolicy : androidx/compose/ui/layout/MeasurePolicy {
+	public static final field $stable I
+	public fun <init> (Ljava/util/List;Z)V
+	public final fun copy (Ljava/util/List;Z)Lapp/cash/redwood/layout/composeui/BoxMeasurePolicy;
+	public static synthetic fun copy$default (Lapp/cash/redwood/layout/composeui/BoxMeasurePolicy;Ljava/util/List;ZILjava/lang/Object;)Lapp/cash/redwood/layout/composeui/BoxMeasurePolicy;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun measure-3p2s80s (Landroidx/compose/ui/layout/MeasureScope;Ljava/util/List;J)Landroidx/compose/ui/layout/MeasureResult;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/composeui/ComposeUiRedwoodLayoutWidgetFactory : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun Box ()Lapp/cash/redwood/layout/widget/Box;
+	public fun Column ()Lapp/cash/redwood/layout/widget/Column;
+	public fun Row ()Lapp/cash/redwood/layout/widget/Row;
+	public fun Spacer ()Lapp/cash/redwood/layout/widget/Spacer;
+}
+

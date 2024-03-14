@@ -1,0 +1,7 @@
+public final class app/cash/redwood/lazylayout/composeui/ComposeUiRedwoodLazyLayoutWidgetFactory : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun LazyList ()Lapp/cash/redwood/lazylayout/widget/LazyList;
+	public fun RefreshableLazyList ()Lapp/cash/redwood/lazylayout/widget/RefreshableLazyList;
+}
+

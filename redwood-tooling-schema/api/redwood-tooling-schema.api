@@ -1,0 +1,181 @@
+public abstract interface class app/cash/redwood/tooling/schema/Deprecation {
+	public abstract fun getLevel ()Lapp/cash/redwood/tooling/schema/Deprecation$Level;
+	public abstract fun getMessage ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/tooling/schema/Deprecation$Level : java/lang/Enum {
+	public static final field ERROR Lapp/cash/redwood/tooling/schema/Deprecation$Level;
+	public static final field WARNING Lapp/cash/redwood/tooling/schema/Deprecation$Level;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/tooling/schema/Deprecation$Level;
+	public static fun values ()[Lapp/cash/redwood/tooling/schema/Deprecation$Level;
+}
+
+public final class app/cash/redwood/tooling/schema/EmbeddedSchema {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lapp/cash/redwood/tooling/schema/EmbeddedSchema;
+	public static synthetic fun copy$default (Lapp/cash/redwood/tooling/schema/EmbeddedSchema;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lapp/cash/redwood/tooling/schema/EmbeddedSchema;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getJson ()Ljava/lang/String;
+	public final fun getPath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/tooling/schema/FqType {
+	public static final field Companion Lapp/cash/redwood/tooling/schema/FqType$Companion;
+	public fun <init> (Ljava/util/List;Lapp/cash/redwood/tooling/schema/FqType$Variance;Ljava/util/List;Z)V
+	public synthetic fun <init> (Ljava/util/List;Lapp/cash/redwood/tooling/schema/FqType$Variance;Ljava/util/List;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Z
+	public final fun copy (Ljava/util/List;Lapp/cash/redwood/tooling/schema/FqType$Variance;Ljava/util/List;Z)Lapp/cash/redwood/tooling/schema/FqType;
+	public static synthetic fun copy$default (Lapp/cash/redwood/tooling/schema/FqType;Ljava/util/List;Lapp/cash/redwood/tooling/schema/FqType$Variance;Ljava/util/List;ZILjava/lang/Object;)Lapp/cash/redwood/tooling/schema/FqType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNames ()Ljava/util/List;
+	public final fun getNullable ()Z
+	public final fun getParameterTypes ()Ljava/util/List;
+	public final fun getVariance ()Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/tooling/schema/FqType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lapp/cash/redwood/tooling/schema/FqType$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/tooling/schema/FqType;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/tooling/schema/FqType;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/tooling/schema/FqType$Companion {
+	public final fun bestGuess (Ljava/lang/String;)Lapp/cash/redwood/tooling/schema/FqType;
+	public final fun getStar ()Lapp/cash/redwood/tooling/schema/FqType;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/tooling/schema/FqType$Variance : java/lang/Enum {
+	public static final field In Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public static final field Invariant Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public static final field Out Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/tooling/schema/FqType$Variance;
+	public static fun values ()[Lapp/cash/redwood/tooling/schema/FqType$Variance;
+}
+
+public final class app/cash/redwood/tooling/schema/Main {
+	public static final fun main ([Ljava/lang/String;)V
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Modifier {
+	public abstract fun getDeprecation ()Lapp/cash/redwood/tooling/schema/Deprecation;
+	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getProperties ()Ljava/util/List;
+	public abstract fun getScopes ()Ljava/util/List;
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Modifier$Property {
+	public abstract fun getDefaultExpression ()Ljava/lang/String;
+	public abstract fun getDeprecation ()Lapp/cash/redwood/tooling/schema/Deprecation;
+	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
+	public abstract fun isSerializable ()Z
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolModifier : app/cash/redwood/tooling/schema/Modifier {
+	public abstract fun getTag ()I
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolSchema : app/cash/redwood/tooling/schema/Schema {
+	public fun getDependencies ()Ljava/util/List;
+	public abstract fun getModifiers ()Ljava/util/List;
+	public abstract fun getTaggedDependencies ()Ljava/util/Map;
+	public abstract fun getWidgets ()Ljava/util/List;
+	public abstract fun toEmbeddedSchema ()Lapp/cash/redwood/tooling/schema/EmbeddedSchema;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolSchemaSet : app/cash/redwood/tooling/schema/SchemaSet {
+	public static final field Companion Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet$Companion;
+	public fun getAll ()Ljava/util/List;
+	public abstract fun getDependencies ()Ljava/util/Map;
+	public abstract fun getSchema ()Lapp/cash/redwood/tooling/schema/ProtocolSchema;
+}
+
+public final class app/cash/redwood/tooling/schema/ProtocolSchemaSet$Companion {
+	public final fun load (Lapp/cash/redwood/tooling/schema/FqType;Ljava/lang/ClassLoader;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
+	public final fun parse (Lkotlin/reflect/KClass;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget : app/cash/redwood/tooling/schema/Widget {
+	public abstract fun getTag ()I
+	public abstract fun getTraits ()Ljava/util/List;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolChildren : app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolTrait, app/cash/redwood/tooling/schema/Widget$Children {
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolEvent : app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolTrait, app/cash/redwood/tooling/schema/Widget$Event {
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolProperty : app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolTrait, app/cash/redwood/tooling/schema/Widget$Property {
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget$ProtocolTrait : app/cash/redwood/tooling/schema/Widget$Trait {
+	public abstract fun getTag ()I
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Schema {
+	public abstract fun getDependencies ()Ljava/util/List;
+	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getModifiers ()Ljava/util/List;
+	public abstract fun getScopes ()Ljava/util/List;
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
+	public abstract fun getWidgets ()Ljava/util/List;
+}
+
+public final class app/cash/redwood/tooling/schema/SchemaParserFirKt {
+	public static final fun parseProtocolSchema (Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
+	public static final fun parseSchema (Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/SchemaSet;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/SchemaSet {
+	public fun getAll ()Ljava/util/List;
+	public abstract fun getDependencies ()Ljava/util/Map;
+	public abstract fun getSchema ()Lapp/cash/redwood/tooling/schema/Schema;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget {
+	public abstract fun getDeprecation ()Lapp/cash/redwood/tooling/schema/Deprecation;
+	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getTraits ()Ljava/util/List;
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget$Children : app/cash/redwood/tooling/schema/Widget$Trait {
+	public abstract fun getScope ()Lapp/cash/redwood/tooling/schema/FqType;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget$Event : app/cash/redwood/tooling/schema/Widget$Trait {
+	public abstract fun getParameterTypes ()Ljava/util/List;
+	public abstract fun isNullable ()Z
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget$Property : app/cash/redwood/tooling/schema/Widget$Trait {
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget$Trait {
+	public abstract fun getDefaultExpression ()Ljava/lang/String;
+	public abstract fun getDeprecation ()Lapp/cash/redwood/tooling/schema/Deprecation;
+	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getName ()Ljava/lang/String;
+}
+

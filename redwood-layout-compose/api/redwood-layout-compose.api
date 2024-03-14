@@ -1,0 +1,51 @@
+public final class app/cash/redwood/layout/compose/BoxKt {
+	public static final fun Box-o2unFmY (IILapp/cash/redwood/ui/Margin;IILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class app/cash/redwood/layout/compose/BoxScope {
+	public fun height-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun horizontalAlignment-9tyzA_o (Lapp/cash/redwood/Modifier;I)Lapp/cash/redwood/Modifier;
+	public fun margin (Lapp/cash/redwood/Modifier;Lapp/cash/redwood/ui/Margin;)Lapp/cash/redwood/Modifier;
+	public fun size-j5SIcws (Lapp/cash/redwood/Modifier;DD)Lapp/cash/redwood/Modifier;
+	public fun verticalAlignment-9tyzA_o (Lapp/cash/redwood/Modifier;I)Lapp/cash/redwood/Modifier;
+	public fun width-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+}
+
+public final class app/cash/redwood/layout/compose/ColumnKt {
+	public static final fun Column-n_TNbJ4 (IILapp/cash/redwood/ui/Margin;IIILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class app/cash/redwood/layout/compose/ColumnScope {
+	public fun flex (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun grow (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun height-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun horizontalAlignment-9tyzA_o (Lapp/cash/redwood/Modifier;I)Lapp/cash/redwood/Modifier;
+	public fun margin (Lapp/cash/redwood/Modifier;Lapp/cash/redwood/ui/Margin;)Lapp/cash/redwood/Modifier;
+	public fun shrink (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun size-j5SIcws (Lapp/cash/redwood/Modifier;DD)Lapp/cash/redwood/Modifier;
+	public fun width-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+}
+
+public final class app/cash/redwood/layout/compose/LayoutScopesKt {
+	public static final fun flex (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+}
+
+public final class app/cash/redwood/layout/compose/RowKt {
+	public static final fun Row-dhzo6EI (IILapp/cash/redwood/ui/Margin;IIILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class app/cash/redwood/layout/compose/RowScope {
+	public fun flex (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun grow (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun height-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun margin (Lapp/cash/redwood/Modifier;Lapp/cash/redwood/ui/Margin;)Lapp/cash/redwood/Modifier;
+	public fun shrink (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+	public fun size-j5SIcws (Lapp/cash/redwood/Modifier;DD)Lapp/cash/redwood/Modifier;
+	public fun verticalAlignment-9tyzA_o (Lapp/cash/redwood/Modifier;I)Lapp/cash/redwood/Modifier;
+	public fun width-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
+}
+
+public final class app/cash/redwood/layout/compose/SpacerKt {
+	public static final fun Spacer-t48wi74 (DDLapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+

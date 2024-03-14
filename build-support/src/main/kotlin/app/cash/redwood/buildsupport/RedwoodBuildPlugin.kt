@@ -20,6 +20,7 @@ import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
+import kotlinx.validation.ApiValidationExtension
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Action
 import org.gradle.api.JavaVersion
@@ -385,6 +386,16 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       check(explicit) {
         """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
       }
+    }
+
+    // Published modules should track their public API.
+    project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
+    val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
+    apiValidation.apply {
+      nonPublicMarkers += listOf(
+        // The yoga module is an implementation detail of our layouts.
+        "app.cash.redwood.yoga.RedwoodYogaApi",
+      )
     }
   }
 

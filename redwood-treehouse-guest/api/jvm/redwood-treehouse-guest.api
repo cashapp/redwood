@@ -1,0 +1,12 @@
+public final class app/cash/redwood/treehouse/StandardAppLifecycle : app/cash/redwood/treehouse/AppLifecycle {
+	public synthetic fun <init> (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public final fun getFrameClock ()Landroidx/compose/runtime/MonotonicFrameClock;
+	public fun sendFrame (J)V
+	public fun start (Lapp/cash/redwood/treehouse/AppLifecycle$Host;)V
+}
+
+public final class app/cash/redwood/treehouse/TreehouseComposeKt {
+	public static final fun asZiplineTreehouseUi (Lapp/cash/redwood/treehouse/TreehouseUi;Lapp/cash/redwood/treehouse/StandardAppLifecycle;)Lapp/cash/redwood/treehouse/ZiplineTreehouseUi;
+}
+

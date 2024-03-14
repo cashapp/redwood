@@ -35,6 +35,7 @@ public fun interface MeasureCallback {
   public val width: Float,
   public val height: Float,
 ) {
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public const val UNDEFINED: Float = Yoga.YGUndefined
   }
@@ -51,6 +52,7 @@ public value class MeasureMode private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Undefined: MeasureMode = MeasureMode(0)
     public val Exactly: MeasureMode = MeasureMode(1)
