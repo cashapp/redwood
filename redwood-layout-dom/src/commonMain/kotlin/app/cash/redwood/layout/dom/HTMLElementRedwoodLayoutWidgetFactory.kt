@@ -132,16 +132,30 @@ private class HTMLFlexElementChildren(
 ) :
   Widget.Children<HTMLElement> by delegate {
   override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
-    widget.applyModifiers()
+    widget.applyModifiers(clearStyles = true)
     delegate.onModifierUpdated(index, widget)
   }
 
   override fun insert(index: Int, widget: Widget<HTMLElement>) {
-    widget.applyModifiers()
+    widget.applyModifiers(clearStyles = false)
     delegate.insert(index, widget)
   }
 
-  private fun Widget<HTMLElement>.applyModifiers() {
+  private fun Widget<HTMLElement>.applyModifiers(clearStyles: Boolean) {
+    if (clearStyles) {
+      value.style.apply {
+        removeProperty("margin-inline-start")
+        removeProperty("margin-inline-end")
+        removeProperty("margin-top")
+        removeProperty("margin-bottom")
+        removeProperty("flex-grow")
+        removeProperty("flex-shrink")
+        removeProperty("flex")
+        removeProperty("width")
+        removeProperty("height")
+      }
+    }
+
     modifier.forEach { element ->
       when (element) {
         is MarginModifier -> {
