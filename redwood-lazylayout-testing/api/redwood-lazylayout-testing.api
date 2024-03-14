@@ -1,0 +1,58 @@
+public final class app/cash/redwood/lazylayout/widget/LazyListValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getCrossAxisAlignment-eoX4IBc ()I
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getItems ()Ljava/util/List;
+	public final fun getItemsAfter ()I
+	public final fun getItemsBefore ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnViewportChanged ()Lkotlin/jvm/functions/Function2;
+	public final fun getPlaceholder ()Ljava/util/List;
+	public final fun getScrollItemIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public final fun isVertical ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutTesterKt {
+	public static final fun RedwoodLazyLayoutTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodLazyLayoutTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutTestingWidgetFactory : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory {
+	public fun <init> ()V
+	public fun LazyList ()Lapp/cash/redwood/lazylayout/widget/LazyList;
+	public fun RefreshableLazyList ()Lapp/cash/redwood/lazylayout/widget/RefreshableLazyList;
+}
+
+public final class app/cash/redwood/lazylayout/widget/RefreshableLazyListValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIZLkotlin/jvm/functions/Function0;IILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;ILjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIZLkotlin/jvm/functions/Function0;IILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;ILjava/util/List;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getCrossAxisAlignment-eoX4IBc ()I
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getItems ()Ljava/util/List;
+	public final fun getItemsAfter ()I
+	public final fun getItemsBefore ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnRefresh ()Lkotlin/jvm/functions/Function0;
+	public final fun getOnViewportChanged ()Lkotlin/jvm/functions/Function2;
+	public final fun getPlaceholder ()Ljava/util/List;
+	public final fun getPullRefreshContentColor-pVg5ArA ()I
+	public final fun getRefreshing ()Z
+	public final fun getScrollItemIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public final fun isVertical ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+

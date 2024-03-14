@@ -1,0 +1,79 @@
+public final class app/cash/redwood/layout/widget/BoxValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Ljava/util/List;
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-eoX4IBc ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getVerticalAlignment-eoX4IBc ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/layout/widget/ColumnValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Ljava/util/List;
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-eoX4IBc ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOverflow-Andb1w4 ()I
+	public final fun getVerticalAlignment-Ng1ngeI ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/layout/widget/RedwoodLayoutTesterKt {
+	public static final fun RedwoodLayoutTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodLayoutTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class app/cash/redwood/layout/widget/RedwoodLayoutTestingWidgetFactory : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
+	public fun <init> ()V
+	public fun Box ()Lapp/cash/redwood/layout/widget/Box;
+	public fun Column ()Lapp/cash/redwood/layout/widget/Column;
+	public fun Row ()Lapp/cash/redwood/layout/widget/Row;
+	public fun Spacer ()Lapp/cash/redwood/layout/widget/Spacer;
+}
+
+public final class app/cash/redwood/layout/widget/RowValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Ljava/util/List;
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-Ng1ngeI ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOverflow-Andb1w4 ()I
+	public final fun getVerticalAlignment-eoX4IBc ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/layout/widget/SpacerValue : app/cash/redwood/testing/WidgetValue {
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;DDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;DDLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getHeight-hdgK9uQ ()D
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getWidth-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+

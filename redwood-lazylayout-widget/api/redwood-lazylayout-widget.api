@@ -1,0 +1,78 @@
+public abstract interface class app/cash/redwood/lazylayout/widget/LazyList : app/cash/redwood/widget/Widget {
+	public abstract fun crossAxisAlignment-njEs0f8 (I)V
+	public abstract fun getItems ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun height-DyLkt4w (I)V
+	public abstract fun isVertical (Z)V
+	public abstract fun itemsAfter (I)V
+	public abstract fun itemsBefore (I)V
+	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun onViewportChanged (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun scrollItemIndex (Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;)V
+	public abstract fun width-DyLkt4w (I)V
+}
+
+public abstract class app/cash/redwood/lazylayout/widget/LazyListScrollProcessor {
+	public fun <init> ()V
+	public abstract fun contentSize ()I
+	public final fun onEndChanges ()V
+	public final fun onUserScroll (II)V
+	public final fun onViewportChanged (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun programmaticScroll (IZ)V
+	public final fun scrollItemIndex (Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;)V
+}
+
+public abstract class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor {
+	public fun <init> ()V
+	public final fun bind (ILjava/lang/Object;)Lapp/cash/redwood/lazylayout/widget/LazyListUpdateProcessor$Binding;
+	protected fun createPlaceholder (Ljava/lang/Object;)Ljava/lang/Object;
+	protected abstract fun deleteRows (II)V
+	public final fun getBindings ()Ljava/util/List;
+	public final fun getItems ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun getOrCreateView (ILkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun getSize ()I
+	protected abstract fun insertRows (II)V
+	public final fun itemsAfter (I)V
+	public final fun itemsBefore (I)V
+	public final fun onEndChanges ()V
+	protected abstract fun setContent (Ljava/lang/Object;Lapp/cash/redwood/widget/Widget;)V
+}
+
+public final class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor$Binding {
+	public final fun getView ()Ljava/lang/Object;
+	public final fun isBound ()Z
+	public final fun unbind ()V
+}
+
+public abstract interface class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory {
+	public abstract fun LazyList ()Lapp/cash/redwood/lazylayout/widget/LazyList;
+	public abstract fun RefreshableLazyList ()Lapp/cash/redwood/lazylayout/widget/RefreshableLazyList;
+}
+
+public abstract interface class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner : app/cash/redwood/widget/WidgetFactoryOwner {
+	public abstract fun getRedwoodLazyLayout ()Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;
+}
+
+public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public fun <init> (Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;)V
+	public fun getRedwoodLazyLayout ()Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;
+}
+
+public abstract interface class app/cash/redwood/lazylayout/widget/RefreshableLazyList : app/cash/redwood/widget/Widget {
+	public abstract fun crossAxisAlignment-njEs0f8 (I)V
+	public abstract fun getItems ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun height-DyLkt4w (I)V
+	public abstract fun isVertical (Z)V
+	public abstract fun itemsAfter (I)V
+	public abstract fun itemsBefore (I)V
+	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun onRefresh (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun onViewportChanged (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun pullRefreshContentColor-WZ4Q5Ns (I)V
+	public abstract fun refreshing (Z)V
+	public abstract fun scrollItemIndex (Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;)V
+	public abstract fun width-DyLkt4w (I)V
+}
+

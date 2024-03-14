@@ -1,0 +1,4 @@
+public final class app/cash/redwood/treehouse/composeui/TreehouseContentKt {
+	public static final fun TreehouseContent (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Lapp/cash/redwood/treehouse/TreehouseContentSource;Landroidx/compose/ui/Modifier;Lapp/cash/redwood/treehouse/CodeListener;Landroidx/compose/runtime/Composer;II)V
+}
+

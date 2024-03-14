@@ -1,0 +1,37 @@
+public abstract interface class app/cash/redwood/layout/modifier/Flex : app/cash/redwood/Modifier$Element {
+	public abstract fun getValue ()D
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Grow : app/cash/redwood/Modifier$Element {
+	public abstract fun getValue ()D
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Height : app/cash/redwood/Modifier$Element {
+	public abstract fun getHeight-hdgK9uQ ()D
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/HorizontalAlignment : app/cash/redwood/Modifier$Element {
+	public abstract fun getAlignment-eoX4IBc ()I
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Margin : app/cash/redwood/Modifier$Element {
+	public abstract fun getMargin ()Lapp/cash/redwood/ui/Margin;
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Shrink : app/cash/redwood/Modifier$Element {
+	public abstract fun getValue ()D
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Size : app/cash/redwood/Modifier$Element {
+	public abstract fun getHeight-hdgK9uQ ()D
+	public abstract fun getWidth-hdgK9uQ ()D
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/VerticalAlignment : app/cash/redwood/Modifier$Element {
+	public abstract fun getAlignment-eoX4IBc ()I
+}
+
+public abstract interface class app/cash/redwood/layout/modifier/Width : app/cash/redwood/Modifier$Element {
+	public abstract fun getWidth-hdgK9uQ ()D
+}
+

@@ -1,0 +1,86 @@
+public abstract interface class app/cash/redwood/gradle/RedwoodComposeExtension {
+	public abstract fun dangerZone (Lorg/gradle/api/Action;)V
+	public abstract fun getKotlinCompilerPlugin ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class app/cash/redwood/gradle/RedwoodComposeExtension$DangerZone {
+	public abstract fun enableMetrics ()V
+	public abstract fun enableReports ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodComposeGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodComposePlugin : org/jetbrains/kotlin/gradle/plugin/KotlinCompilerPluginSupportPlugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+	public fun applyToCompilation (Lorg/jetbrains/kotlin/gradle/plugin/KotlinCompilation;)Lorg/gradle/api/provider/Provider;
+	public fun getCompilerPluginId ()Ljava/lang/String;
+	public fun getPluginArtifact ()Lorg/jetbrains/kotlin/gradle/plugin/SubpluginArtifact;
+	public fun getPluginArtifactForNative ()Lorg/jetbrains/kotlin/gradle/plugin/SubpluginArtifact;
+	public fun isApplicable (Lorg/jetbrains/kotlin/gradle/plugin/KotlinCompilation;)Z
+}
+
+public final class app/cash/redwood/gradle/RedwoodComposeProtocolGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public abstract class app/cash/redwood/gradle/RedwoodGeneratorExtension : app/cash/redwood/gradle/RedwoodSchemaExtension {
+	public fun <init> ()V
+	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class app/cash/redwood/gradle/RedwoodGeneratorPlugin : org/gradle/api/Plugin {
+	public fun <init> (Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;)V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public final class app/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy : java/lang/Enum {
+	public static final field Compose Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field ComposeProtocol Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field Modifiers Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field Testing Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field Widget Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field WidgetProtocol Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static fun values ()[Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+}
+
+public final class app/cash/redwood/gradle/RedwoodLintPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public final class app/cash/redwood/gradle/RedwoodModifiersGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public abstract class app/cash/redwood/gradle/RedwoodSchemaExtension {
+	public fun <init> ()V
+	public abstract fun getApiTracking ()Lorg/gradle/api/provider/Property;
+	public abstract fun getType ()Lorg/gradle/api/provider/Property;
+}
+
+public final class app/cash/redwood/gradle/RedwoodSchemaPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public final class app/cash/redwood/gradle/RedwoodTestingGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodWidgetGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodWidgetProtocolGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+

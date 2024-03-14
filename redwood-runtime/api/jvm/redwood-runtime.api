@@ -1,0 +1,216 @@
+public abstract interface annotation class app/cash/redwood/LayoutScopeMarker : java/lang/annotation/Annotation {
+}
+
+public abstract interface class app/cash/redwood/Modifier {
+	public static final field Companion Lapp/cash/redwood/Modifier$Companion;
+	public abstract fun forEach (Lkotlin/jvm/functions/Function1;)V
+	public fun then (Lapp/cash/redwood/Modifier;)Lapp/cash/redwood/Modifier;
+}
+
+public final class app/cash/redwood/Modifier$Companion : app/cash/redwood/Modifier {
+	public fun forEach (Lkotlin/jvm/functions/Function1;)V
+	public fun then (Lapp/cash/redwood/Modifier;)Lapp/cash/redwood/Modifier;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class app/cash/redwood/Modifier$Element : app/cash/redwood/Modifier {
+	public fun forEach (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class app/cash/redwood/RedwoodCodegenApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class app/cash/redwood/ui/Cancellable {
+	public abstract fun cancel ()V
+}
+
+public final class app/cash/redwood/ui/Density {
+	public static final field Companion Lapp/cash/redwood/ui/Density$Companion;
+	public static final synthetic fun box-impl (D)Lapp/cash/redwood/ui/Density;
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getRawDensity ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public static final fun toDp-Ht7-4L4 (DD)D
+	public static final fun toDp-Ht7-4L4 (DF)D
+	public static final fun toDp-Ht7-4L4 (DI)D
+	public static final fun toPx-mnpKzHI (DD)D
+	public static final fun toPxInt-mnpKzHI (DD)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class app/cash/redwood/ui/Density$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/Density$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-wj95dkU (Lkotlinx/serialization/encoding/Decoder;)D
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize--vrfCzw (Lkotlinx/serialization/encoding/Encoder;D)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Density$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Dp {
+	public static final field Companion Lapp/cash/redwood/ui/Dp$Companion;
+	public static final synthetic fun box-impl (D)Lapp/cash/redwood/ui/Dp;
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class app/cash/redwood/ui/Dp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/Dp$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-Ht7-4L4 (Lkotlinx/serialization/encoding/Decoder;)D
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-slHoOYc (Lkotlinx/serialization/encoding/Encoder;D)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Dp$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/DpKt {
+	public static final fun fromPlatformDp (Lapp/cash/redwood/ui/Dp$Companion;D)D
+	public static final fun getDp (D)D
+	public static final fun getDp (F)D
+	public static final fun getDp (I)D
+	public static final fun toPlatformDp-mnpKzHI (D)D
+}
+
+public final class app/cash/redwood/ui/Margin {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/ui/Margin$Companion;
+	public synthetic fun <init> (DDDDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (DDDDLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBottom-hdgK9uQ ()D
+	public final fun getEnd-hdgK9uQ ()D
+	public final fun getStart-hdgK9uQ ()D
+	public final fun getTop-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/ui/Margin$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/Margin$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Margin;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Margin;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Margin$Companion {
+	public final fun getZero ()Lapp/cash/redwood/ui/Margin;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/MarginKt {
+	public static final fun Margin-mH_gOfM (DD)Lapp/cash/redwood/ui/Margin;
+	public static synthetic fun Margin-mH_gOfM$default (DDILjava/lang/Object;)Lapp/cash/redwood/ui/Margin;
+	public static final fun Margin-mnpKzHI (D)Lapp/cash/redwood/ui/Margin;
+	public static synthetic fun Margin-mnpKzHI$default (DILjava/lang/Object;)Lapp/cash/redwood/ui/Margin;
+}
+
+public abstract class app/cash/redwood/ui/OnBackPressedCallback {
+	public static final field $stable I
+	public fun <init> (Z)V
+	public final fun getEnabledChangedCallback ()Lkotlin/jvm/functions/Function0;
+	public abstract fun handleOnBackPressed ()V
+	public final fun isEnabled ()Z
+	public final fun setEnabled (Z)V
+	public final fun setEnabledChangedCallback (Lkotlin/jvm/functions/Function0;)V
+}
+
+public abstract interface class app/cash/redwood/ui/OnBackPressedDispatcher {
+	public static final field Companion Lapp/cash/redwood/ui/OnBackPressedDispatcher$Companion;
+	public abstract fun addCallback (Lapp/cash/redwood/ui/OnBackPressedCallback;)Lapp/cash/redwood/ui/Cancellable;
+}
+
+public final class app/cash/redwood/ui/OnBackPressedDispatcher$Companion {
+}
+
+public final class app/cash/redwood/ui/Size {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/ui/Size$Companion;
+	public synthetic fun <init> (DDLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHeight-hdgK9uQ ()D
+	public final fun getWidth-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/ui/Size$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/Size$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Size;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Size;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Size$Companion {
+	public final fun getZero ()Lapp/cash/redwood/ui/Size;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/UiConfiguration {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/redwood/ui/UiConfiguration$Companion;
+	public fun <init> ()V
+	public fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;D)V
+	public synthetic fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDarkMode ()Z
+	public final fun getDensity ()D
+	public final fun getSafeAreaInsets ()Lapp/cash/redwood/ui/Margin;
+	public final fun getViewportSize ()Lapp/cash/redwood/ui/Size;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/ui/UiConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/UiConfiguration$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/UiConfiguration;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/UiConfiguration;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/UiConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+

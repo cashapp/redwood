@@ -1,0 +1,196 @@
+public final class app/cash/redwood/layout/Box {
+	public synthetic fun <init> (IILapp/cash/redwood/ui/Margin;IILkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-jfchsNQ ()I
+	public final fun component2-jfchsNQ ()I
+	public final fun component3 ()Lapp/cash/redwood/ui/Margin;
+	public final fun component4-eoX4IBc ()I
+	public final fun component5-eoX4IBc ()I
+	public final fun component6 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-iJjxQrc (IILapp/cash/redwood/ui/Margin;IILkotlin/jvm/functions/Function1;)Lapp/cash/redwood/layout/Box;
+	public static synthetic fun copy-iJjxQrc$default (Lapp/cash/redwood/layout/Box;IILapp/cash/redwood/ui/Margin;IILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lapp/cash/redwood/layout/Box;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Lkotlin/jvm/functions/Function1;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-eoX4IBc ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public final fun getVerticalAlignment-eoX4IBc ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/BoxScope {
+	public static final field INSTANCE Lapp/cash/redwood/layout/BoxScope;
+}
+
+public final class app/cash/redwood/layout/Column {
+	public synthetic fun <init> (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-jfchsNQ ()I
+	public final fun component2-jfchsNQ ()I
+	public final fun component3 ()Lapp/cash/redwood/ui/Margin;
+	public final fun component4-Andb1w4 ()I
+	public final fun component5-eoX4IBc ()I
+	public final fun component6-Ng1ngeI ()I
+	public final fun component7 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-bVM0h8I (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;)Lapp/cash/redwood/layout/Column;
+	public static synthetic fun copy-bVM0h8I$default (Lapp/cash/redwood/layout/Column;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lapp/cash/redwood/layout/Column;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Lkotlin/jvm/functions/Function1;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-eoX4IBc ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public final fun getOverflow-Andb1w4 ()I
+	public final fun getVerticalAlignment-Ng1ngeI ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/ColumnScope {
+	public static final field INSTANCE Lapp/cash/redwood/layout/ColumnScope;
+}
+
+public final class app/cash/redwood/layout/Flex {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lapp/cash/redwood/layout/Flex;
+	public static synthetic fun copy$default (Lapp/cash/redwood/layout/Flex;DILjava/lang/Object;)Lapp/cash/redwood/layout/Flex;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Grow {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lapp/cash/redwood/layout/Grow;
+	public static synthetic fun copy$default (Lapp/cash/redwood/layout/Grow;DILjava/lang/Object;)Lapp/cash/redwood/layout/Grow;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Height {
+	public synthetic fun <init> (DLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-hdgK9uQ ()D
+	public final fun copy-mnpKzHI (D)Lapp/cash/redwood/layout/Height;
+	public static synthetic fun copy-mnpKzHI$default (Lapp/cash/redwood/layout/Height;DILjava/lang/Object;)Lapp/cash/redwood/layout/Height;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHeight-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/HorizontalAlignment {
+	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-eoX4IBc ()I
+	public final fun copy-njEs0f8 (I)Lapp/cash/redwood/layout/HorizontalAlignment;
+	public static synthetic fun copy-njEs0f8$default (Lapp/cash/redwood/layout/HorizontalAlignment;IILjava/lang/Object;)Lapp/cash/redwood/layout/HorizontalAlignment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment-eoX4IBc ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Margin {
+	public fun <init> (Lapp/cash/redwood/ui/Margin;)V
+	public final fun component1 ()Lapp/cash/redwood/ui/Margin;
+	public final fun copy (Lapp/cash/redwood/ui/Margin;)Lapp/cash/redwood/layout/Margin;
+	public static synthetic fun copy$default (Lapp/cash/redwood/layout/Margin;Lapp/cash/redwood/ui/Margin;ILjava/lang/Object;)Lapp/cash/redwood/layout/Margin;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class app/cash/redwood/layout/RedwoodLayout {
+}
+
+public final class app/cash/redwood/layout/Row {
+	public synthetic fun <init> (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-jfchsNQ ()I
+	public final fun component2-jfchsNQ ()I
+	public final fun component3 ()Lapp/cash/redwood/ui/Margin;
+	public final fun component4-Andb1w4 ()I
+	public final fun component5-Ng1ngeI ()I
+	public final fun component6-eoX4IBc ()I
+	public final fun component7 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-DTaUb5E (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;)Lapp/cash/redwood/layout/Row;
+	public static synthetic fun copy-DTaUb5E$default (Lapp/cash/redwood/layout/Row;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lapp/cash/redwood/layout/Row;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Lkotlin/jvm/functions/Function1;
+	public final fun getHeight-jfchsNQ ()I
+	public final fun getHorizontalAlignment-Ng1ngeI ()I
+	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
+	public final fun getOverflow-Andb1w4 ()I
+	public final fun getVerticalAlignment-eoX4IBc ()I
+	public final fun getWidth-jfchsNQ ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/RowScope {
+	public static final field INSTANCE Lapp/cash/redwood/layout/RowScope;
+}
+
+public final class app/cash/redwood/layout/Shrink {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lapp/cash/redwood/layout/Shrink;
+	public static synthetic fun copy$default (Lapp/cash/redwood/layout/Shrink;DILjava/lang/Object;)Lapp/cash/redwood/layout/Shrink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Size {
+	public synthetic fun <init> (DDLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-hdgK9uQ ()D
+	public final fun component2-hdgK9uQ ()D
+	public final fun copy-mH_gOfM (DD)Lapp/cash/redwood/layout/Size;
+	public static synthetic fun copy-mH_gOfM$default (Lapp/cash/redwood/layout/Size;DDILjava/lang/Object;)Lapp/cash/redwood/layout/Size;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHeight-hdgK9uQ ()D
+	public final fun getWidth-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Spacer {
+	public synthetic fun <init> (DDLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-hdgK9uQ ()D
+	public final fun component2-hdgK9uQ ()D
+	public final fun copy-mH_gOfM (DD)Lapp/cash/redwood/layout/Spacer;
+	public static synthetic fun copy-mH_gOfM$default (Lapp/cash/redwood/layout/Spacer;DDILjava/lang/Object;)Lapp/cash/redwood/layout/Spacer;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHeight-hdgK9uQ ()D
+	public final fun getWidth-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/VerticalAlignment {
+	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-eoX4IBc ()I
+	public final fun copy-njEs0f8 (I)Lapp/cash/redwood/layout/VerticalAlignment;
+	public static synthetic fun copy-njEs0f8$default (Lapp/cash/redwood/layout/VerticalAlignment;IILjava/lang/Object;)Lapp/cash/redwood/layout/VerticalAlignment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment-eoX4IBc ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/layout/Width {
+	public synthetic fun <init> (DLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-hdgK9uQ ()D
+	public final fun copy-mnpKzHI (D)Lapp/cash/redwood/layout/Width;
+	public static synthetic fun copy-mnpKzHI$default (Lapp/cash/redwood/layout/Width;DILjava/lang/Object;)Lapp/cash/redwood/layout/Width;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getWidth-hdgK9uQ ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

@@ -1,0 +1,59 @@
+public abstract interface class app/cash/redwood/layout/widget/Box : app/cash/redwood/widget/Widget {
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun height-DyLkt4w (I)V
+	public abstract fun horizontalAlignment-njEs0f8 (I)V
+	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun verticalAlignment-njEs0f8 (I)V
+	public abstract fun width-DyLkt4w (I)V
+}
+
+public abstract interface class app/cash/redwood/layout/widget/Column : app/cash/redwood/widget/Widget {
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun height-DyLkt4w (I)V
+	public abstract fun horizontalAlignment-njEs0f8 (I)V
+	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun overflow-OcAJ2MY (I)V
+	public abstract fun verticalAlignment-6exqka8 (I)V
+	public abstract fun width-DyLkt4w (I)V
+}
+
+public abstract interface class app/cash/redwood/layout/widget/FlexContainer : app/cash/redwood/layout/widget/Column, app/cash/redwood/layout/widget/Row {
+	public abstract fun crossAxisAlignment-njEs0f8 (I)V
+	public fun horizontalAlignment-6exqka8 (I)V
+	public fun horizontalAlignment-njEs0f8 (I)V
+	public abstract fun mainAxisAlignment-6exqka8 (I)V
+	public fun verticalAlignment-6exqka8 (I)V
+	public fun verticalAlignment-njEs0f8 (I)V
+}
+
+public abstract interface class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
+	public abstract fun Box ()Lapp/cash/redwood/layout/widget/Box;
+	public abstract fun Column ()Lapp/cash/redwood/layout/widget/Column;
+	public abstract fun Row ()Lapp/cash/redwood/layout/widget/Row;
+	public abstract fun Spacer ()Lapp/cash/redwood/layout/widget/Spacer;
+}
+
+public abstract interface class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner : app/cash/redwood/widget/WidgetFactoryOwner {
+	public abstract fun getRedwoodLayout ()Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;
+}
+
+public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public fun <init> (Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;)V
+	public fun getRedwoodLayout ()Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;
+}
+
+public abstract interface class app/cash/redwood/layout/widget/Row : app/cash/redwood/widget/Widget {
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun height-DyLkt4w (I)V
+	public abstract fun horizontalAlignment-6exqka8 (I)V
+	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun overflow-OcAJ2MY (I)V
+	public abstract fun verticalAlignment-njEs0f8 (I)V
+	public abstract fun width-DyLkt4w (I)V
+}
+
+public abstract interface class app/cash/redwood/layout/widget/Spacer : app/cash/redwood/widget/Widget {
+	public abstract fun height-mnpKzHI (D)V
+	public abstract fun width-mnpKzHI (D)V
+}
+

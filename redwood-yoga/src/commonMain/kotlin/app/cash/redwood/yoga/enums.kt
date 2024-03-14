@@ -28,6 +28,7 @@ public value class Direction private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Inherit: Direction = Direction(0)
     public val LTR: Direction = Direction(1)
@@ -51,6 +52,7 @@ public value class FlexDirection private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Row: FlexDirection = FlexDirection(0)
     public val RowReverse: FlexDirection = FlexDirection(1)
@@ -90,6 +92,7 @@ public value class JustifyContent private constructor(private val ordinal: Int) 
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val FlexStart: JustifyContent = JustifyContent(0)
     public val FlexEnd: JustifyContent = JustifyContent(1)
@@ -116,6 +119,7 @@ public value class AlignItems private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val FlexStart: AlignItems = AlignItems(0)
     public val FlexEnd: AlignItems = AlignItems(1)
@@ -146,6 +150,7 @@ public value class AlignSelf private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val FlexStart: AlignSelf = AlignSelf(0)
     public val FlexEnd: AlignSelf = AlignSelf(1)
