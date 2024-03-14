@@ -62,7 +62,7 @@
   <div class="breadcrumbs"><a href="../../index.html">redwood-protocol-guest</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.protocol.guest</a><span class="delimiter">/</span><span class="current">ProtocolBridge</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Protocol</span><wbr><span><span>Bridge</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ProtocolBridge</a> : <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-sink/index.html">EventSink</a></div><p class="paragraph">Exposes a <a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a> and <a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-provider/index.html">Widget.Provider</a> whose changes can be captured as a list of <a href="../../../redwood-protocol/app.cash.redwood.protocol/-change/index.html">Change</a>s to send to a remote frontend. Incoming <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a>s can also be sent to this instance and will be routed to the appropriate handler.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ProtocolBridge</a> : <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-sink/index.html">EventSink</a></div><p class="paragraph">Exposes a <a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a> and <a href="../../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a> whose changes can be captured as a list of <a href="../../../redwood-protocol/app.cash.redwood.protocol/-change/index.html">Change</a>s to send to a remote frontend. Incoming <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a>s can also be sent to this instance and will be routed to the appropriate handler.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -88,22 +88,7 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="972518381%2FProperties%2F1634211329" anchor-label="provider" id="972518381%2FProperties%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol-guest:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="provider.html"><span><span>provider</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="972518381%2FProperties%2F1634211329"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="provider.html">provider</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-provider/index.html">Widget.Provider</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The provider of factories of widgets which record property changes and whose children changes are also recorded. You <strong>must</strong> attach returned widgets to <a href="root.html">root</a> or the children of a widget in the tree beneath <a href="root.html">root</a> in order for it to be tracked.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1949770396%2FProperties%2F1634211329" anchor-label="root" id="1949770396%2FProperties%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="1949770396%2FProperties%2F1634211329" anchor-label="root" id="1949770396%2FProperties%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-protocol-guest:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -113,7 +98,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="root.html">root</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The root of the widget tree onto which <a href="provider.html">provider</a>-produced widgets can be added. Changes to this instance are recorded as changes to <a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/-companion/-root.html">Id.Root</a> and <a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/-companion/-root.html">ChildrenTag.Root</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="root.html">root</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The root of the widget tree onto which <a href="widget-system.html">widgetSystem</a>-produced widgets can be added. Changes to this instance are recorded as changes to <a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/-companion/-root.html">Id.Root</a> and <a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/-companion/-root.html">ChildrenTag.Root</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="662935051%2FProperties%2F1634211329" anchor-label="widgetSystem" id="662935051%2FProperties%2F1634211329" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":redwood-protocol-guest:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-guest:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="widget-system.html"><span>widget</span><wbr><span><span>System</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="662935051%2FProperties%2F1634211329"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="widget-system.html">widgetSystem</a><span class="token operator">: </span><a href="../../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The provider of factories of widgets which record property changes and whose children changes are also recorded. You <strong>must</strong> attach returned widgets to <a href="root.html">root</a> or the children of a widget in the tree beneath <a href="root.html">root</a> in order for it to be tracked.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="get-changes-or-null.html"><span class="token function">getChangesOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-change/index.html">Change</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns any changes to <a href="root.html">root</a> or <a href="provider.html">provider</a>-produced widgets since the last time this function was called. Returns null if no changes occurred.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-guest:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="get-changes-or-null.html"><span class="token function">getChangesOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-change/index.html">Change</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns any changes to <a href="root.html">root</a> or <a href="widget-system.html">widgetSystem</a>-produced widgets since the last time this function was called. Returns null if no changes occurred.</p></div></div></div>
                 </div>
               </div>
             </div>
