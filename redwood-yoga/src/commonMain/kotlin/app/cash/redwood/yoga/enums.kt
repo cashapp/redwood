@@ -17,6 +17,7 @@ package app.cash.redwood.yoga
 
 import kotlin.jvm.JvmInline
 
+@RedwoodYogaApi
 @JvmInline
 public value class Direction private constructor(private val ordinal: Int) {
 
@@ -38,6 +39,7 @@ public value class Direction private constructor(private val ordinal: Int) {
  * The direction children items are placed inside the flex container, it determines the
  * direction of the main axis (and the cross axis, perpendicular to the main axis).
  */
+@RedwoodYogaApi
 @JvmInline
 public value class FlexDirection private constructor(private val ordinal: Int) {
 
@@ -60,18 +62,21 @@ public value class FlexDirection private constructor(private val ordinal: Int) {
 /**
  * Returns `true` if this direction's main axis is horizontal.
  */
+@RedwoodYogaApi
 public val FlexDirection.isHorizontal: Boolean
   get() = this == FlexDirection.Row || this == FlexDirection.RowReverse
 
 /**
  * Returns `true` if this direction's main axis is vertical.
  */
+@RedwoodYogaApi
 public val FlexDirection.isVertical: Boolean
   get() = this == FlexDirection.Column || this == FlexDirection.ColumnReverse
 
 /**
  * This attribute controls the alignment along the main axis.
  */
+@RedwoodYogaApi
 @JvmInline
 public value class JustifyContent private constructor(private val ordinal: Int) {
 
@@ -98,6 +103,7 @@ public value class JustifyContent private constructor(private val ordinal: Int) 
 /**
  * This attribute controls the alignment along the cross axis.
  */
+@RedwoodYogaApi
 @JvmInline
 public value class AlignItems private constructor(private val ordinal: Int) {
 
@@ -126,6 +132,7 @@ public value class AlignItems private constructor(private val ordinal: Int) {
  * other than [AlignSelf.Auto], the cross axis alignment is
  * overridden for this child.
  */
+@RedwoodYogaApi
 @JvmInline
 public value class AlignSelf private constructor(private val ordinal: Int) {
 

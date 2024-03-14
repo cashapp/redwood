@@ -19,6 +19,7 @@ import app.cash.redwood.yoga.internal.YGNode
 import app.cash.redwood.yoga.internal.Yoga
 import app.cash.redwood.yoga.internal.enums.YGEdge
 
+@RedwoodYogaApi
 public class Node internal constructor(
   internal val native: YGNode,
 ) {

@@ -19,6 +19,7 @@ import app.cash.redwood.yoga.internal.Yoga
 import dev.drewhamilton.poko.Poko
 import kotlin.jvm.JvmInline
 
+@RedwoodYogaApi
 public fun interface MeasureCallback {
   public fun measure(
     node: Node,
@@ -29,6 +30,7 @@ public fun interface MeasureCallback {
   ): Size
 }
 
+@RedwoodYogaApi
 @Poko public class Size(
   public val width: Float,
   public val height: Float,
@@ -38,6 +40,7 @@ public fun interface MeasureCallback {
   }
 }
 
+@RedwoodYogaApi
 @JvmInline
 public value class MeasureMode private constructor(private val ordinal: Int) {
 
