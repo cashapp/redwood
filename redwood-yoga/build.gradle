@@ -26,3 +26,8 @@ spotless {
     targetExclude("src/**/kotlin/app/cash/redwood/yoga/internal/**")
   }
 }
+
+tasks.named("dokkaHtmlPartial") {
+  // Don't document this module as it's entirely implementation detail.
+  enabled = false
+}

@@ -21,10 +21,12 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
+import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -40,7 +42,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
@@ -232,18 +234,21 @@ class RedwoodBuildPlugin : Plugin<Project> {
       it.targetCompatibility = javaVersion.toString()
     }
 
-    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-      val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
-
+    withKotlinPlugins {
       // Apply opt-in annotations everywhere except the test-app schema where we want to ensure the
       // generated code isn't relying on them (without also generating appropriate opt-ins).
       if (!path.startsWith(":test-app:schema:")) {
-        kotlin.sourceSets.configureEach {
+        sourceSets.configureEach {
+          it.languageSettings.optIn("app.cash.redwood.yoga.RedwoodYogaApi")
           it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
           it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
           it.languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
       }
+    }
+
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
 
       // We set the JVM target (the bytecode version) above for all Kotlin-based Java bytecode
       // compilations, but we also need to set the JDK API version for the Kotlin JVM targets to
@@ -372,14 +377,10 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     // Published modules should be explicit about their API visibility.
     var explicit = false
-    val kotlinPluginHandler: (Plugin<Any>) -> Unit = {
-      val kotlin = project.extensions.getByType(KotlinTopLevelExtension::class.java)
-      kotlin.explicitApi()
+    project.withKotlinPlugins {
+      explicitApi()
       explicit = true
     }
-    project.plugins.withId("org.jetbrains.kotlin.android", kotlinPluginHandler)
-    project.plugins.withId("org.jetbrains.kotlin.jvm", kotlinPluginHandler)
-    project.plugins.withId("org.jetbrains.kotlin.multiplatform", kotlinPluginHandler)
     project.afterEvaluate {
       check(explicit) {
         """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
@@ -492,3 +493,13 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
 private val ziplineAttribute = Attribute.of("zipline", String::class.java)
 private const val ZIPLINE_ATTRIBUTE_VALUE = "yep"
+
+private fun Project.withKotlinPlugins(block: KotlinProjectExtension.() -> Unit) {
+  val handler = Action<AppliedPlugin> {
+    val kotlin = extensions.getByName("kotlin") as KotlinProjectExtension
+    kotlin.block()
+  }
+  pluginManager.withPlugin("org.jetbrains.kotlin.android", handler)
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm", handler)
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform", handler)
+}
