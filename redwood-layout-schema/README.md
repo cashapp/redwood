@@ -90,3 +90,19 @@ Column {
 <p style="text-align: center;">
   <img src="docs_images/spacer1.png">
 </p>
+
+## Density
+
+In the Redwood layout system, sizes are defined using screen density independent values, `Dp`. By using density independent values we ensure that our widgets look the same size on different devices and different platforms. These values can then be converted into values for a device's coordinate system using a `Density`. For example:
+
+```kotlin
+val width = 5.dp
+val widthPx = with(density) { width.toPx() }
+```
+
+The `density` object is created differently depending on the platform.
+
+- On Android, you can create a density object using `Density(resources)`.
+- On iOS, you can get a density object using `Density.Default`.
+    - We don't need to create a custom density object as iOS already handles density in their coordinate system by default.
+- In Compose UI, you can create a density object using `Density(LocalDensity.current.density.toDouble())`.
