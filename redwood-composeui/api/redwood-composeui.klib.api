@@ -1,0 +1,10 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-composeui>
+final fun app.cash.redwood.composeui/RedwoodContent(app.cash.redwood.widget/WidgetSystem<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>, androidx.compose.ui/Modifier?, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.composeui/RedwoodContent|RedwoodContent(app.cash.redwood.widget.WidgetSystem<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>;androidx.compose.ui.Modifier?;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.composeui/safeAreaInsets(androidx.compose.runtime/Composer?, kotlin/Int): app.cash.redwood.ui/Margin // app.cash.redwood.composeui/safeAreaInsets|safeAreaInsets(androidx.compose.runtime.Composer?;kotlin.Int){}[0]

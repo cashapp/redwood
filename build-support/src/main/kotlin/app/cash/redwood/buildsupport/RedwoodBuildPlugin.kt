@@ -21,6 +21,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import kotlinx.validation.ApiValidationExtension
+import kotlinx.validation.ExperimentalBCVApi
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Action
 import org.gradle.api.JavaVersion
@@ -392,6 +393,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
     val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
     apiValidation.apply {
+      @OptIn(ExperimentalBCVApi::class)
+      klib.enabled = true
+
       nonPublicMarkers += listOf(
         // The yoga module is an implementation detail of our layouts.
         "app.cash.redwood.yoga.RedwoodYogaApi",

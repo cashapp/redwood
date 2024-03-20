@@ -1,0 +1,15 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-layout-uiview>
+final class app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory : app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<platform.UIKit/UIView> { // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory|null[0]
+    constructor <init>() // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.<init>|<init>(){}[0]
+    final fun Box(): app.cash.redwood.layout.widget/Box<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Box|Box(){}[0]
+    final fun Column(): app.cash.redwood.layout.widget/Column<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Column|Column(){}[0]
+    final fun Row(): app.cash.redwood.layout.widget/Row<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Row|Row(){}[0]
+    final fun Spacer(): app.cash.redwood.layout.widget/Spacer<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]
+}
