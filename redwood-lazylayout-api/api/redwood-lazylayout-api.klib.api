@@ -1,0 +1,32 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-lazylayout-api>
+final class app.cash.redwood.lazylayout.api/ScrollItemIndex { // app.cash.redwood.lazylayout.api/ScrollItemIndex|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/Boolean =...) // app.cash.redwood.lazylayout.api/ScrollItemIndex.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.lazylayout.api/ScrollItemIndex.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.lazylayout.api/ScrollItemIndex.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.lazylayout.api/ScrollItemIndex.toString|toString(){}[0]
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.lazylayout.api/ScrollItemIndex> { // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer|null[0]
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.lazylayout.api/ScrollItemIndex // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]
+        final val descriptor // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.lazylayout.api/ScrollItemIndex.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+    }
+    final object Companion { // app.cash.redwood.lazylayout.api/ScrollItemIndex.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.lazylayout.api/ScrollItemIndex> // app.cash.redwood.lazylayout.api/ScrollItemIndex.Companion.serializer|serializer(){}[0]
+    }
+    final val animated // app.cash.redwood.lazylayout.api/ScrollItemIndex.animated|{}animated[0]
+        final fun <get-animated>(): kotlin/Boolean // app.cash.redwood.lazylayout.api/ScrollItemIndex.animated.<get-animated>|<get-animated>(){}[0]
+    final val id // app.cash.redwood.lazylayout.api/ScrollItemIndex.id|{}id[0]
+        final fun <get-id>(): kotlin/Int // app.cash.redwood.lazylayout.api/ScrollItemIndex.id.<get-id>|<get-id>(){}[0]
+    final val index // app.cash.redwood.lazylayout.api/ScrollItemIndex.index|{}index[0]
+        final fun <get-index>(): kotlin/Int // app.cash.redwood.lazylayout.api/ScrollItemIndex.index.<get-index>|<get-index>(){}[0]
+}
+final const val app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop|#static{}app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop[0]
+final const val app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop|#static{}app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop[0]
