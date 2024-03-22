@@ -19,7 +19,8 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.protocol.widget.RecyclingProtocolBridge
+import app.cash.redwood.protocol.widget.ReuseId
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
@@ -57,10 +58,11 @@ class ViewRecyclingTester(
 
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
-  private val widgetBridge = ProtocolBridge(
+  private val widgetBridge = RecyclingProtocolBridge(
     container = widgetContainer,
     factory = widgetProtocolFactory,
     eventSink = { throw AssertionError() },
+    tagToReuseId = { ReuseId("text") },
   )
 
   fun setContent(content: @Composable () -> Unit) {

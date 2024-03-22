@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isNotSameInstanceAs
+import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.widget.TextValue
 import kotlin.test.Test
@@ -58,7 +59,7 @@ class ViewRecyclingTest {
       // get the mutable view objects behind the snapshot
       assertThat(awaitSnapshot()).containsExactly(TextValue(text = "three"))
       // TODO: implement view recycling to get this to pass.
-      // assertThat(widgets.single()).isSameInstanceAs(textWidgetNodeV1)
+       assertThat(widgets.single()).isSameInstanceAs(textWidgetNodeV1)
     }
   }
 }

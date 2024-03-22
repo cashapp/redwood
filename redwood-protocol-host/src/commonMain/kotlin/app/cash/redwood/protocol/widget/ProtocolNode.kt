@@ -38,6 +38,8 @@ public abstract class ProtocolNode<W : Any> {
 
   internal var container: Widget.Children<W>? = null
 
+  internal var reuseId: ReuseId? = null
+
   public abstract fun apply(change: PropertyChange, eventSink: EventSink)
 
   public fun updateModifier(modifier: Modifier) {
