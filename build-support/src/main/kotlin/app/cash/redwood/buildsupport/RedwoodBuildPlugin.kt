@@ -159,6 +159,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
         "-Xpartial-linkage=disable",
         // https://github.com/JetBrains/compose-multiplatform/issues/3418
         "-Xklib-enable-signature-clash-checks=false",
+        // Translate capturing lambdas into anonymous JS functions rather than hoisting parameters
+        // and creating a named sibling function. Only affects targets which produce actual JS.
+        "-Xir-generate-inline-anonymous-functions",
       )
     }
   }
