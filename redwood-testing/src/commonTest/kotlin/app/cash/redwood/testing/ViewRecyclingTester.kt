@@ -19,7 +19,9 @@ import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.widget.RecyclingProtocolBridge
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.widget.ProtocolBridge
 import app.cash.redwood.protocol.widget.ReuseId
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
@@ -58,11 +60,25 @@ class ViewRecyclingTester(
 
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
-  private val widgetBridge = RecyclingProtocolBridge(
+  private val widgetBridge = ProtocolBridge(
     container = widgetContainer,
     factory = widgetProtocolFactory,
     eventSink = { throw AssertionError() },
-    tagToReuseId = { ReuseId("text") },
+    recycler = object : ProtocolBridge.Recycler {
+      override fun reuseId(widgetTag: WidgetTag): ReuseId? {
+        return when (widgetTag) {
+          WidgetTag(1000004) -> ReuseId("box")
+          else -> null
+        }
+      }
+
+      override fun childrenTags(widgetTag: WidgetTag): List<ChildrenTag> {
+        return when (widgetTag) {
+          WidgetTag(1000004) -> listOf(ChildrenTag(1))
+          else -> listOf()
+        }
+      }
+    },
   )
 
   fun setContent(content: @Composable () -> Unit) {

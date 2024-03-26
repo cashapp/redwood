@@ -22,6 +22,9 @@
 package app.cash.redwood.testing
 
 import androidx.compose.runtime.mutableStateOf
+import app.cash.redwood.layout.compose.Box
+import app.cash.redwood.layout.widget.BoxValue
+import app.cash.redwood.layout.widget.MutableBox
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isNotSameInstanceAs
@@ -39,27 +42,49 @@ class ViewRecyclingTest {
       val version = mutableStateOf(1)
       setContent {
         when (version.value) {
-          1 -> Text("one")
-          2 -> Text("two")
-          3 -> Text("three")
+          1 -> {
+            Box {
+              Text("one")
+            }
+          }
+          2 -> {
+            Box {
+              Text("two")
+            }
+          }
+          3 -> {
+            Box {
+              Text("three")
+            }
+          }
         }
       }
 
       // get the mutable view objects behind the snapshot
-      assertThat(awaitSnapshot()).containsExactly(TextValue(text = "one"))
-      val textWidgetNodeV1 = widgets.single()
+      assertThat(awaitSnapshot()).containsExactly(
+        BoxValue(children = listOf(TextValue(text = "one")))
+      )
+      val snapshot1Box = widgets.single() as MutableBox
+      val snapshot1BoxText = snapshot1Box.children.single()
 
       version.value = 2
-      assertThat(awaitSnapshot()).containsExactly(TextValue(text = "two"))
-      // When a widget is removed from a layout, it has to go to the pool before it goes back into
-      // the layout. (TODO: explain this idea better)
-      assertThat(widgets.single()).isNotSameInstanceAs(textWidgetNodeV1)
+      assertThat(awaitSnapshot()).containsExactly(
+        BoxValue(children = listOf(TextValue(text = "two")))
+      )
+      val snapshot2Box = widgets.single() as MutableBox
+      val snapshot2BoxText = snapshot2Box.children.single()
+      assertThat(snapshot2Box).isNotSameInstanceAs(snapshot1Box)
+      assertThat(snapshot2BoxText).isNotSameInstanceAs(snapshot1Box)
 
       version.value = 3
       // get the mutable view objects behind the snapshot
-      assertThat(awaitSnapshot()).containsExactly(TextValue(text = "three"))
-      // TODO: implement view recycling to get this to pass.
-       assertThat(widgets.single()).isSameInstanceAs(textWidgetNodeV1)
+      assertThat(awaitSnapshot()).containsExactly(
+        BoxValue(children = listOf(TextValue(text = "three")))
+      )
+      val snapshot3Box = widgets.single() as MutableBox
+      val snapshot3BoxText = snapshot3Box.children.single()
+      assertThat(snapshot3Box).isSameInstanceAs(snapshot1Box)
+      assertThat(snapshot3BoxText).isSameInstanceAs(snapshot1BoxText)
     }
   }
 }

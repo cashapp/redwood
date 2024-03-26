@@ -15,9 +15,12 @@
  */
 package app.cash.redwood.protocol.widget
 
-import kotlinx.serialization.Serializable
+import app.cash.redwood.protocol.WidgetTag
 import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
 
 @JvmInline
 @Serializable
 public value class ReuseId(public val value: String)
+
+internal val UnknownWidgetTag: WidgetTag = WidgetTag(-1)
