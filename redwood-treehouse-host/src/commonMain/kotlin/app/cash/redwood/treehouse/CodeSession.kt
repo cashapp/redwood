@@ -18,6 +18,8 @@ package app.cash.redwood.treehouse
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
@@ -63,6 +65,7 @@ internal abstract class CodeSession<A : AppService>(
   /** Invoked on [TreehouseDispatchers.zipline]. */
   protected abstract fun ziplineStart()
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   fun stop() {
     dispatchers.checkUi()
 
@@ -74,7 +77,7 @@ internal abstract class CodeSession<A : AppService>(
       listener.onStop(this)
     }
 
-    scope.launch(dispatchers.zipline) {
+    scope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
       ziplineStop()
       scope.cancel()
     }
