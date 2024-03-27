@@ -46,12 +46,14 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
+private val protocolViewType = UNIT
+
 /*
 class ExampleProtocolBridge private constructor(
   private val state: ProtocolState,
   private val mismatchHandler: ProtocolMismatchHandler,
-  override val root: Widget.Children<Nothing>,
-  override val widgetSystem: ExampleWidgetSystem<Nothing>,
+  override val root: Widget.Children<Unit>,
+  override val widgetSystem: ExampleWidgetSystem<Unit>,
 ) : ProtocolBridge {
   override fun getChangesOrNull(): List<Change>? = state.getChangesOrNull()
   override fun sendEvent(event: Event) {
@@ -84,7 +86,7 @@ internal fun generateProtocolBridge(
 ): FileSpec {
   val schema = schemaSet.schema
   val type = schema.protocolBridgeType()
-  val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(NOTHING)
+  val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(protocolViewType)
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
     .addType(
@@ -95,7 +97,7 @@ internal fun generateProtocolBridge(
             .addModifiers(PRIVATE)
             .addParameter("state", ProtocolGuest.ProtocolState)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
-            .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
+            .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType))
             .addParameter("widgetSystem", widgetSystemType)
             .build(),
         )
@@ -110,7 +112,7 @@ internal fun generateProtocolBridge(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("root", RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING), OVERRIDE)
+          PropertySpec.builder("root", RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType), OVERRIDE)
             .initializer("root")
             .build(),
         )
@@ -173,18 +175,18 @@ internal class ProtocolExampleWidgetFactory(
   private val state: ProtocolState,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ExampleWidgetFactory<Nothing> {
-  override fun Box(): Box<Nothing> {
+) : ExampleWidgetFactory<Unit> {
+  override fun Box(): Box<Unit> {
     val widget = ProtocolExampleBox(state, json, mismatchHandler)
     state.append(Create(widget.id, widget.tag))
     return widget
   }
-  override fun Text(): Text<Nothing> {
+  override fun Text(): Text<Unit> {
     return ProtocolExampleText(state, json, mismatchHandler)
     state.append(Create(widget.id, widget.tag))
     return widget
   }
-  override fun Button(): Button<Nothing> {
+  override fun Button(): Button<Unit> {
     val widget = ProtocolExampleButton(state, json, mismatchHandler)
     state.append(Create(widget.id, widget.tag))
     return widget
@@ -201,7 +203,7 @@ internal fun generateProtocolWidgetFactory(
     .addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(NOTHING))
+        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(protocolViewType))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("state", ProtocolGuest.ProtocolState)
@@ -229,13 +231,22 @@ internal fun generateProtocolWidgetFactory(
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(OVERRIDE)
-                .returns(schema.widgetType(widget).parameterizedBy(NOTHING))
+                .returns(schema.widgetType(widget).parameterizedBy(protocolViewType))
                 .addStatement(
                   "val widget = %T(state, json, mismatchHandler)",
                   schema.protocolWidgetType(widget, host),
                 )
                 .addStatement("state.append(%T(widget.id, widget.tag))", Protocol.Create)
                 .addStatement("return widget")
+                .build(),
+            )
+          }
+          for (modifier in schema.unscopedModifiers) {
+            addFunction(
+              FunSpec.builder(modifier.type.flatName)
+                .addModifiers(OVERRIDE)
+                .addParameter("value", protocolViewType)
+                .addParameter("modifier", schema.modifierType(modifier))
                 .build(),
             )
           }
@@ -250,7 +261,7 @@ internal class ProtocolButton(
   private val state: ProtocolState,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolWidget, Button<Nothing> {
+) : ProtocolWidget, Button<Unit> {
   public override val id: Id = state.nextId()
   public override val tag: WidgetTag get() = WidgetTag(3)
 
@@ -301,7 +312,7 @@ internal fun generateProtocolWidget(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addSuperinterface(ProtocolGuest.ProtocolWidget)
-        .addSuperinterface(widgetName.parameterizedBy(NOTHING))
+        .addSuperinterface(widgetName.parameterizedBy(protocolViewType))
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("state", ProtocolGuest.ProtocolState)
@@ -412,7 +423,7 @@ internal fun generateProtocolWidget(
 
               is ProtocolChildren -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(NOTHING))
+                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType))
                     .addModifiers(OVERRIDE)
                     .initializer("state.widgetChildren(id, %T(%L))", Protocol.ChildrenTag, trait.tag)
                     .build(),

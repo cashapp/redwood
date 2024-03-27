@@ -194,30 +194,48 @@ interface RowScope {
 
 internal object RowScopeImpl : RowScope
 */
-internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
+internal fun generateModifierScope(schema: Schema, scope: FqType): FileSpec {
   val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
+  val modifiers = schema.modifiers.filter { scope in it.scopes }
   return FileSpec.builder(scopeType)
     .addAnnotation(suppressDeprecations)
     .apply {
-      val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
-        .addAnnotation(Redwood.LayoutScopeMarker)
-
-      for (modifier in schema.modifiers) {
-        if (scope !in modifier.scopes) {
-          continue
-        }
-
-        scopeBuilder.addFunction(generateModifierFunction(schema, modifier))
-      }
-
-      addType(scopeBuilder.build())
+      addType(
+        TypeSpec.interfaceBuilder(scopeType)
+          .addAnnotation(Redwood.LayoutScopeMarker)
+          .apply {
+            for (modifier in modifiers) {
+              addFunction(generateModifierFunction(schema, modifier))
+            }
+          }
+          .build(),
+      )
       addType(
         TypeSpec.objectBuilder(scopeName + "Impl")
           .addModifiers(INTERNAL)
           .addSuperinterface(scopeType)
           .build(),
       )
+    }
+    .build()
+}
+
+/*
+@Stable
+fun Modifier.something(...): Modifier {
+  return then(SomethingImpl(...))
+}
+*/
+internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
+  if (schema.unscopedModifiers.isEmpty()) return null
+
+  return FileSpec.builder(schema.composePackage(), "unscoped")
+    .addAnnotation(suppressDeprecations)
+    .apply {
+      for (modifier in schema.unscopedModifiers) {
+        addFunction(generateModifierFunction(schema, modifier))
+      }
     }
     .build()
 }

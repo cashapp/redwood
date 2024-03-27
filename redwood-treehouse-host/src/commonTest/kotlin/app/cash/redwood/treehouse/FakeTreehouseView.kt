@@ -27,7 +27,7 @@ internal class FakeTreehouseView(
   override val onBackPressedDispatcher: FakeOnBackPressedDispatcher,
   override val uiConfiguration: StateFlow<UiConfiguration> = MutableStateFlow(UiConfiguration()),
 ) : TreehouseView<FakeWidget> {
-  override val widgetSystem = FakeWidgetSystem()
+  override val widgetSystem = FakeTreehouseWidgetSystem()
 
   override var readyForContentChangeListener: ReadyForContentChangeListener<FakeWidget>? = null
 

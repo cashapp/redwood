@@ -15,8 +15,16 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.Modifier
+
 /**
- * Marker interface for types whose properties expose factories for a schema and all its
+ * Interface for types whose properties expose factories for a schema and all its
  * transitive dependencies.
  */
-public interface WidgetSystem<W : Any>
+public interface WidgetSystem<W : Any> {
+  /**
+   * Find the appropriate schema factory and function to handle [element]
+   * and apply it to [value].
+   */
+  public fun apply(value: W, element: Modifier.UnscopedElement)
+}

@@ -17,7 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 
-class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Nothing> {
+class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Unit> {
   override fun Box() = TODO()
   override fun Column() = TODO()
   override fun Row() = TODO()

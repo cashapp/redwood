@@ -39,7 +39,7 @@ import com.squareup.kotlinpoet.joinToCode
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
 public class ExampleProtocolFactory<W : Any>(
-  private val widgetSystem: ExampleWidgetSystem<W>,
+  override val widgetSystem: ExampleWidgetSystem<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GeneratedProtocolFactory<W> {
@@ -101,7 +101,7 @@ internal fun generateProtocolFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("widgetSystem", widgetSystem, PRIVATE)
+          PropertySpec.builder("widgetSystem", widgetSystem, OVERRIDE)
             .initializer("widgetSystem")
             .build(),
         )

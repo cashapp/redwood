@@ -21,9 +21,11 @@ import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.widget.GeneratedProtocolFactory
 import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.widget.WidgetSystem
 
 @OptIn(RedwoodCodegenApi::class)
 internal class FakeProtocolNodeFactory : GeneratedProtocolFactory<FakeWidget> {
+  override val widgetSystem: WidgetSystem<FakeWidget> = FakeWidgetSystem()
   override fun createNode(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
   override fun createModifier(element: ModifierElement): Modifier = Modifier
 }

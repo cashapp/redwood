@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.widget.WidgetSystem
 import kotlin.native.ObjCName
 
 /**
@@ -27,7 +28,9 @@ import kotlin.native.ObjCName
  * @see ProtocolBridge
  */
 @ObjCName("ProtocolFactory", exact = true)
-public interface ProtocolFactory<W : Any>
+public interface ProtocolFactory<W : Any> {
+  public val widgetSystem: WidgetSystem<W>
+}
 
 /**
  * [ProtocolFactory] but containing codegen APIs.

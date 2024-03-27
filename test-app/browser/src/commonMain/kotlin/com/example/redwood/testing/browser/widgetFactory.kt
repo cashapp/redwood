@@ -15,6 +15,7 @@
  */
 package com.example.redwood.testing.browser
 
+import com.example.redwood.testing.modifier.BackgroundColor
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
@@ -45,4 +46,9 @@ class HtmlWidgetFactory(
   override fun ScopedTestRow() = throw UnsupportedOperationException()
 
   override fun TestRow() = throw UnsupportedOperationException()
+
+  @OptIn(ExperimentalStdlibApi::class)
+  override fun BackgroundColor(value: HTMLElement, modifier: BackgroundColor) {
+    value.style.backgroundColor = "#" + modifier.color.toHexString()
+  }
 }

@@ -59,6 +59,8 @@ internal val Event.lambdaType: TypeName
     returnType = UNIT,
   ).copy(nullable = isNullable)
 
+internal val Schema.unscopedModifiers get() = modifiers.filter { it.scopes.isEmpty() }
+
 internal fun Schema.composePackage(host: Schema? = null): String {
   return if (host == null) {
     val packageName = type.names[0]

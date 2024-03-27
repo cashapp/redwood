@@ -115,7 +115,7 @@ internal class UIViewBox : Box<UIView> {
         var requestedWidth: CGFloat = Double.MIN_VALUE
         var requestedHeight: CGFloat = Double.MIN_VALUE
 
-        widget.modifier.forEach { childModifier ->
+        widget.modifier.forEachScoped { childModifier ->
           when (childModifier) {
             is HorizontalAlignment -> {
               itemHorizontalAlignment = childModifier.alignment
@@ -193,7 +193,7 @@ internal class UIViewBox : Box<UIView> {
 
       // Get the largest sizes based on explicit widget modifiers.
       children.widgets.forEach { widget ->
-        widget.modifier.forEach { childModifier ->
+        widget.modifier.forEachScoped { childModifier ->
           when (childModifier) {
             is Width -> with(Density.Default) {
               maxRequestedWidth = maxOf(maxRequestedWidth, childModifier.width.toPx())

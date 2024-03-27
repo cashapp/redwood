@@ -26,12 +26,11 @@ import app.cash.redwood.widget.Widget
  *
  * @suppress For generated code use only.
  */
-public interface ProtocolWidget : Widget<Nothing> {
+public interface ProtocolWidget : Widget<Unit> {
   public val id: Id
   public val tag: WidgetTag
 
-  override val value: Nothing
-    get() = throw AssertionError()
+  override val value: Unit get() = Unit
 
   public fun sendEvent(event: Event)
 }

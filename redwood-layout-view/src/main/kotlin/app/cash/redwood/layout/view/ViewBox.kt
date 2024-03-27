@@ -141,7 +141,7 @@ internal class ViewBox(
     var requestedWidth = Int.MIN_VALUE
     var requestedHeight = Int.MIN_VALUE
 
-    modifier.forEach { childModifier ->
+    modifier.forEachScoped { childModifier ->
       // Check for modifier overrides in the children, otherwise default to the Box's alignment
       // values.
       when (childModifier) {

@@ -17,7 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 
-class EmptyRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<Nothing> {
+class EmptyRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<Unit> {
   override fun LazyList() = TODO()
   override fun RefreshableLazyList() = TODO()
 }

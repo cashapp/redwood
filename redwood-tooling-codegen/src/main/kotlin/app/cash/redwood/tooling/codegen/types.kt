@@ -61,6 +61,8 @@ internal object WidgetProtocol {
 internal object Redwood {
   val Modifier = ClassName("app.cash.redwood", "Modifier")
   val ModifierElement = Modifier.nestedClass("Element")
+  val ModifierScopedElement = Modifier.nestedClass("ScopedElement")
+  val ModifierUnscopedElement = Modifier.nestedClass("UnscopedElement")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
   val OnBackPressedDispatcher = ClassName("app.cash.redwood.ui", "OnBackPressedDispatcher")

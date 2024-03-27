@@ -24,10 +24,10 @@ internal class ProtocolWidgetChildren(
   private val id: Id,
   private val tag: ChildrenTag,
   private val state: ProtocolState,
-) : Widget.Children<Nothing> {
+) : Widget.Children<Unit> {
   private val ids = mutableListOf<Id>()
 
-  override fun insert(index: Int, widget: Widget<Nothing>) {
+  override fun insert(index: Int, widget: Widget<Unit>) {
     widget as ProtocolWidget
     ids.add(index, widget.id)
     state.addWidget(widget)
@@ -51,6 +51,6 @@ internal class ProtocolWidgetChildren(
     state.append(ChildrenChange.Move(id, tag, fromIndex, toIndex, count))
   }
 
-  override fun onModifierUpdated(index: Int, widget: Widget<Nothing>) {
+  override fun onModifierUpdated(index: Int, widget: Widget<Unit>) {
   }
 }

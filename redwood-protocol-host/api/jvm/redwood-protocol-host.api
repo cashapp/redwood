@@ -14,6 +14,7 @@ public final class app/cash/redwood/protocol/widget/ProtocolChildren {
 }
 
 public abstract interface class app/cash/redwood/protocol/widget/ProtocolFactory {
+	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 }
 
 public abstract interface class app/cash/redwood/protocol/widget/ProtocolMismatchHandler {

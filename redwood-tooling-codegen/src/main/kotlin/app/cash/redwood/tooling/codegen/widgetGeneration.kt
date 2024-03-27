@@ -40,12 +40,29 @@ class ExampleWidgetSystem<W : Any>(
   override val Example: ExampleWidgetFactory<W>,
   override val RedwoodLayout: RedwoodLayoutWidgetFactory<W>,
 ) : WidgetSystem<W>,
-    ExampleWidgetFactoryProvider<W>,
-    RedwoodLayoutWidgetFactoryProvider<W>
+    ExampleWidgetFactoryOwner<W>,
+    RedwoodLayoutWidgetFactoryOwner<W> {
+  override fun apply(value: W, element: Modifier.UnscopedElement) {
+    Example.apply(value, element)
+    RedwoodLayout.apply(value, element)
+  }
+}
 
 @RedwoodCodegenApi
-interface ExampleWidgetFactoryProvider<W : Any> {
+interface ExampleWidgetFactoryOwner<W : Any> {
   val Example: ExampleWidgetFactory<W>
+
+  companion object {
+    fun <W : Any> apply(
+      factory: ExampleWidgetFactory<W>,
+      value: W,
+      element: Modifier.UnscopedElement,
+    ): W? {
+      when (element) {
+        is BackgroundColor -> factory.BackgroundColor(value, element)
+      }
+    }
+  }
 }
  */
 internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
@@ -83,6 +100,22 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
 
           primaryConstructor(constructorBuilder.build())
         }
+        .addFunction(
+          FunSpec.builder("apply")
+            .addModifiers(OVERRIDE)
+            .addParameter("value", typeVariableW)
+            .addParameter("element", Redwood.ModifierUnscopedElement)
+            .apply {
+              for (dependency in schemaSet.all) {
+                addStatement(
+                  "%T.apply(%N, value, element)",
+                  dependency.getWidgetFactoryOwnerType(),
+                  dependency.type.flatName,
+                )
+              }
+            }
+            .build(),
+        )
         .build(),
     )
     .addTypeAlias(
@@ -103,6 +136,39 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .addSuperinterface(RedwoodWidget.WidgetFactoryOwner.parameterizedBy(typeVariableW))
         .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
+        .addType(
+          TypeSpec.companionObjectBuilder()
+            .addFunction(
+              FunSpec.builder("apply")
+                .addTypeVariable(typeVariableW)
+                .addParameter("factory", schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
+                .addParameter("value", typeVariableW)
+                .addParameter("element", Redwood.ModifierUnscopedElement)
+                .apply {
+                  if (schema.unscopedModifiers.isEmpty()) {
+                    // Even with no modifiers, we need to maintain this function signature for
+                    // other modules to call into it.
+                    addAnnotation(
+                      AnnotationSpec.builder(Suppress::class)
+                        .addMember("%S", "UNUSED_PARAMETER")
+                        .build(),
+                    )
+                  } else {
+                    beginControlFlow("when (element)")
+                    for (globalModifier in schema.unscopedModifiers) {
+                      addStatement(
+                        "is %T -> factory.%N(value, element)",
+                        schema.modifierType(globalModifier),
+                        globalModifier.type.flatName,
+                      )
+                    }
+                    endControlFlow()
+                  }
+                }
+                .build(),
+            )
+            .build(),
+        )
         .build(),
     )
     .build()
@@ -145,6 +211,16 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
                     addKdoc("{tag=${widget.tag}}")
                   }
                 }
+                .build(),
+            )
+          }
+
+          for (modifier in schema.unscopedModifiers) {
+            addFunction(
+              FunSpec.builder(modifier.type.flatName)
+                .addModifiers(ABSTRACT)
+                .addParameter("value", typeVariableW)
+                .addParameter("modifier", schema.modifierType(modifier))
                 .build(),
             )
           }

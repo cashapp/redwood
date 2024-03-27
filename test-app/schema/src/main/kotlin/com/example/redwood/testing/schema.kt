@@ -42,6 +42,7 @@ import kotlin.time.Duration
     Button2::class,
     TextInput::class,
     Rectangle::class,
+    BackgroundColor::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -140,3 +141,8 @@ public object CustomTypeWithMultipleScopes
 
 @Modifier(7, TestScope::class)
 public data object CustomTypeDataObject
+
+@Modifier(8)
+public data class BackgroundColor(
+  val color: Int,
+)
