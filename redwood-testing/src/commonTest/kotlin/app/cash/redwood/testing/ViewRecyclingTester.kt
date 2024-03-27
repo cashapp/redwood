@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress(
+  "CANNOT_OVERRIDE_INVISIBLE_MEMBER",
+  "INVISIBLE_MEMBER",
+  "INVISIBLE_REFERENCE",
+)
 package app.cash.redwood.testing
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.layout.widget.MutableBox
+import app.cash.redwood.layout.widget.MutableColumn
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.ChildrenTag
@@ -26,6 +33,9 @@ import app.cash.redwood.protocol.widget.ReuseId
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
+import com.example.redwood.testing.widget.MutableButton
+import com.example.redwood.testing.widget.MutableSplit
+import com.example.redwood.testing.widget.MutableText
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
@@ -67,14 +77,18 @@ class ViewRecyclingTester(
     recycler = object : ProtocolBridge.Recycler {
       override fun reuseId(widgetTag: WidgetTag): ReuseId? {
         return when (widgetTag) {
-          WidgetTag(1000004) -> ReuseId("box")
+          WidgetTag(9) -> ReuseId("hello") // Split.
+          WidgetTag(1_000_002) -> null // Column.
+          WidgetTag(1_000_004) -> ReuseId("hello") // Box.
           else -> null
         }
       }
 
       override fun childrenTags(widgetTag: WidgetTag): List<ChildrenTag> {
         return when (widgetTag) {
-          WidgetTag(1000004) -> listOf(ChildrenTag(1))
+          WidgetTag(9) -> listOf(ChildrenTag(1), ChildrenTag(2)) // Split.
+          WidgetTag(1_000_002) -> listOf(ChildrenTag(1)) // Column.
+          WidgetTag(1_000_004) -> listOf(ChildrenTag(1)) // box.
           else -> listOf()
         }
       }
@@ -105,5 +119,34 @@ suspend fun <R> viewRecyclingTest(
     tester.body()
   } finally {
     tester.composition.cancel()
+  }
+}
+
+fun List<Widget<WidgetValue>>.flatten(): Sequence<Widget<WidgetValue>> {
+  return sequence {
+    for (widget in this@flatten) {
+      flattenRecursive(widget)
+    }
+  }
+}
+
+private suspend fun SequenceScope<Widget<WidgetValue>>.flattenRecursive(
+  widget: Widget<WidgetValue>,
+) {
+  yield(widget)
+
+  val childrenLists = when (widget) {
+    is MutableBox -> listOf(widget.children)
+    is MutableButton -> listOf()
+    is MutableColumn -> listOf(widget.children)
+    is MutableSplit -> listOf(widget.left, widget.right)
+    is MutableText -> listOf()
+    else -> error("unexpected widget: $widget")
+  }
+
+  for (children in childrenLists) {
+    for (child in children) {
+      flattenRecursive(child)
+    }
   }
 }

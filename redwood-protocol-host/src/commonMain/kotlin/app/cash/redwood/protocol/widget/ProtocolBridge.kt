@@ -385,7 +385,7 @@ public class ProtocolBridge<W : Any>(
 }
 
 @OptIn(RedwoodCodegenApi::class)
-internal class RootProtocolNode<W : Any>(
+private class RootProtocolNode<W : Any>(
   children: Widget.Children<W>,
 ) : ProtocolNode<W>(), Widget<W> {
   private val children = ProtocolChildren(children)

@@ -42,6 +42,7 @@ import kotlin.time.Duration
     Button2::class,
     TextInput::class,
     Rectangle::class,
+    Split::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -104,6 +105,12 @@ public data class Rectangle(
 
   @Default("0f")
   @Property(2) val cornerRadius: Float,
+)
+
+@Widget(9)
+public data class Split(
+  @Children(1) val left: () -> Unit,
+  @Children(2) val right: () -> Unit,
 )
 
 public object TestScope
