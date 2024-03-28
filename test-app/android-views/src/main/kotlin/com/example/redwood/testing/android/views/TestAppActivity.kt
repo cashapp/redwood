@@ -38,6 +38,7 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.testing.launcher.TestAppSpec
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.treehouse.TestAppPresenter
+import com.example.redwood.testing.treehouse.testAppSerializersModule
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
@@ -128,7 +129,9 @@ class TestAppActivity : ComponentActivity() {
       embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
       stateStore = FileStateStore(
-        json = Json,
+        json = Json {
+          serializersModule = testAppSerializersModule
+        },
         fileSystem = FileSystem.SYSTEM,
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),
