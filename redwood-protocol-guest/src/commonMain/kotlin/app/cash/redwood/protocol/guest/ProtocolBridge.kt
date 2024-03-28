@@ -49,6 +49,10 @@ public interface ProtocolBridge : EventSink {
    */
   public fun getChangesOrNull(): List<Change>?
 
+  /**
+   * Incremented each time changes become available after a call to [getChangesOrNull]. This
+   * participates in state management and is appropriate for use as a key in a composable function.
+   */
   public val compositionsCount: Int
 
   public interface Factory {

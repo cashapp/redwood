@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.guest
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.LocalWidgetVersion
@@ -55,7 +56,9 @@ public fun ProtocolRedwoodComposition(
     widgetVersion
   ) {
     key(bridge.compositionsCount) {
-      bridge.getChangesOrNull()?.let(changesSink::sendChanges)
+      SideEffect {
+        bridge.getChangesOrNull()?.let(changesSink::sendChanges)
+      }
     }
   }
 }
