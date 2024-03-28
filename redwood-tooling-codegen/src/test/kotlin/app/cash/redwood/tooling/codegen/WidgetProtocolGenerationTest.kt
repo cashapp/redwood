@@ -67,4 +67,15 @@ class WidgetProtocolGenerationTest {
       contains("1_000_001 -> GrowImpl.serializer()")
     }
   }
+
+  @Test fun `children tags are included in generated protocol factory`() {
+    val schema = ProtocolSchemaSet.parse(TestSchema::class)
+
+    val fileSpec = generateProtocolFactory(schema)
+    assertThat(fileSpec.toString()).all {
+      contains("WidgetTag(1) to listOf(ChildrenTag(1)),")
+      contains("WidgetTag(1_000_003) to listOf(),")
+      contains("WidgetTag(2_000_002) to listOf(ChildrenTag(1), ChildrenTag(2)),")
+    }
+  }
 }

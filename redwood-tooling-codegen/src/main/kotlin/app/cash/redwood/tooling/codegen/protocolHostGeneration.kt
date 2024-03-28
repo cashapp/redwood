@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
+import app.cash.redwood.tooling.codegen.Protocol.WidgetTag
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
@@ -29,11 +31,16 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
+import com.squareup.kotlinpoet.KModifier.PUBLIC
+import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.MAP
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
 /*
@@ -175,6 +182,35 @@ internal fun generateProtocolFactory(
                 addStatement("return json.decodeFromJsonElement(serializer, element.value)")
               }
             }
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder(
+            "childrenTags",
+            MAP.parameterizedBy(WidgetTag, LIST.parameterizedBy(ChildrenTag)),
+            OVERRIDE,
+            PUBLIC,
+          )
+            .initializer(
+              buildCodeBlock {
+                val mapOf = MemberName("kotlin.collections", "mapOf")
+                val listOf = MemberName("kotlin.collections", "listOf")
+                add("%M(⇥\n", mapOf)
+                for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                  for (widget in dependency.widgets.sortedBy { it.tag }) {
+                    add("%T(%L) to %M(", WidgetTag, widget.tag, listOf)
+                    var first = true
+                    for (children in widget.traits.filterIsInstance<ProtocolChildren>().sortedBy { it.tag }) {
+                      if (!first) add(", ")
+                      first = false
+                      add("%T(%L)", ChildrenTag, children.tag)
+                    }
+                    add("),\n", WidgetTag, widget.tag, "a", "b")
+                  }
+                }
+                add("⇤)\n")
+              },
+            )
             .build(),
         )
         .build(),
