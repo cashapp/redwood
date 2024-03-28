@@ -21,7 +21,6 @@ import android.widget.Button as ButtonWidget
 import android.widget.TextView
 import com.example.redwood.testing.modifier.BackgroundColor
 import com.example.redwood.testing.widget.Button
-import com.example.redwood.testing.widget.Rectangle
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
 
@@ -34,8 +33,7 @@ class AndroidTestSchemaWidgetFactory(
   override fun Button(): Button<View> = ViewButton(ButtonWidget(context))
   override fun Button2() = TODO()
   override fun TextInput() = TODO()
-  override fun Rectangle(): Rectangle<View> = ViewRectangle(context)
   override fun BackgroundColor(value: View, modifier: BackgroundColor) {
-    value.setBackgroundColor(modifier.color)
+    value.setBackgroundColor(modifier.color.toInt())
   }
 }

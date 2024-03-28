@@ -17,33 +17,48 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.view.View
-import android.widget.Space
+import android.view.View.MeasureSpec.AT_MOST
+import android.view.View.MeasureSpec.EXACTLY
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+import kotlin.math.min
 
 internal class ViewSpacer(
   context: Context,
-) : Spacer<View> {
+) : View(context), Spacer<View> {
   private val density = Density(context.resources)
 
-  override val value = Space(context)
+  override val value get() = this
 
   override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
     value.minimumWidth = with(density) { width.toPxInt() }
-    invalidate()
+    value.requestLayout()
   }
 
   override fun height(height: Dp) {
     value.minimumHeight = with(density) { height.toPxInt() }
-    invalidate()
+    value.requestLayout()
   }
 
-  private fun invalidate() {
-    value.invalidate()
-    value.requestLayout()
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    setMeasuredDimension(
+      getDefaultSizeSpace(suggestedMinimumWidth, widthMeasureSpec),
+      getDefaultSizeSpace(suggestedMinimumHeight, heightMeasureSpec),
+    )
+  }
+
+  /** Replicates the behavior of [android.widget.Space]. */
+  private fun getDefaultSizeSpace(size: Int, measureSpec: Int): Int {
+    val specMode = MeasureSpec.getMode(measureSpec)
+    val specSize = MeasureSpec.getSize(measureSpec)
+    return when (specMode) {
+      AT_MOST -> min(size, specSize)
+      EXACTLY -> specSize
+      else -> size
+    }
   }
 }

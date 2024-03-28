@@ -17,7 +17,7 @@ package com.example.redwood.testing.treehouse
 
 import app.cash.zipline.Zipline
 
-private val zipline by lazy { Zipline.get() }
+private val zipline by lazy { Zipline.get(testAppSerializersModule) }
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
