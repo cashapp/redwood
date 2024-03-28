@@ -20,6 +20,12 @@ internal external class JsArray<E> {
   @JsName("length")
   val size: Int
 
+  @JsName("at")
+  operator fun get(index: Int): E
+
+  @JsName("set")
+  operator fun set(index: Int, element: E)
+
   @JsName("push")
   fun add(element: E)
 }

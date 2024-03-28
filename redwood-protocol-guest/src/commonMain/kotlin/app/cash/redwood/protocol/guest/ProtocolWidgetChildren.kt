@@ -31,6 +31,7 @@ internal class ProtocolWidgetChildren(
     widget as ProtocolWidget
     ids.add(index, widget.id)
     state.addWidget(widget)
+    state.requireCreateOrDetach(id, widget)
     state.append(ChildrenChange.Add(id, tag, widget.id, index))
   }
 
