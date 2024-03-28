@@ -41,7 +41,6 @@ import kotlin.time.Duration
     Button::class,
     Button2::class,
     TextInput::class,
-    Rectangle::class,
     BackgroundColor::class,
   ],
   dependencies = [
@@ -98,15 +97,6 @@ public data class TextInput(
   @Property(5) val maxLength: Int,
 )
 
-@Widget(8)
-public data class Rectangle(
-  /** expects argb format: 0xAARRGGBBu*/
-  @Property(1) val backgroundColor: UInt,
-
-  @Default("0f")
-  @Property(2) val cornerRadius: Float,
-)
-
 public object TestScope
 
 public object SecondaryTestScope
@@ -144,5 +134,6 @@ public data object CustomTypeDataObject
 
 @Modifier(8)
 public data class BackgroundColor(
-  val color: Int,
+  /** Expects argb format: `0xAARRGGBBu`. */
+  val color: UInt,
 )

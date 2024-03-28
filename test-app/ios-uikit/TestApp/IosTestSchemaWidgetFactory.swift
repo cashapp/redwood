@@ -36,10 +36,6 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
         fatalError()
     }
 
-    func Rectangle() -> Rectangle {
-        return RectangleBinding()
-    }
-
     func ScopedTestRow() -> ScopedTestRow {
         fatalError()
     }
