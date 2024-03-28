@@ -50,7 +50,7 @@ public class ProtocolState {
     for (i in 0 until changes.size) {
       when (val change = changes[i]) {
         is Create -> {
-          if (change.id == id) return // The added node is newly-created.
+          if (change.id == widget.id) return // The added node is newly-created.
         }
 
         is Remove -> {
@@ -77,7 +77,7 @@ public class ProtocolState {
       }
     }
 
-    throw IllegalStateException("no Create or Remove change for added node $id")
+    throw IllegalStateException("no Create or Remove change for added node ${widget.id}")
   }
 
   /**
