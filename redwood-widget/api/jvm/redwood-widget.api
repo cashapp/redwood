@@ -19,6 +19,7 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 	public fun get (I)Lapp/cash/redwood/widget/Widget;
 	public synthetic fun get (I)Ljava/lang/Object;
 	public fun getSize ()I
+	public fun getWidgets ()Ljava/util/List;
 	public fun indexOf (Lapp/cash/redwood/widget/Widget;)I
 	public final fun indexOf (Ljava/lang/Object;)I
 	public fun insert (ILapp/cash/redwood/widget/Widget;)V
@@ -68,6 +69,7 @@ public abstract interface class app/cash/redwood/widget/Widget {
 }
 
 public abstract interface class app/cash/redwood/widget/Widget$Children {
+	public abstract fun getWidgets ()Ljava/util/List;
 	public abstract fun insert (ILapp/cash/redwood/widget/Widget;)V
 	public abstract fun move (III)V
 	public abstract fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V

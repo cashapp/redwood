@@ -45,6 +45,12 @@ public interface Widget<W : Any> {
    * list. No additional validation needs to be performed (for example, checking index bounds).
    */
   public interface Children<W : Any> {
+    /**
+     * A view of current child widgets.
+     * This list will change its contents as the mutator functions below are invoked.
+     */
+    public val widgets: List<Widget<W>>
+
     /** Insert child [widget] at [index]. */
     public fun insert(index: Int, widget: Widget<W>)
 

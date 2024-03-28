@@ -29,7 +29,7 @@ public class ComposeWidgetChildren @JvmOverloads constructor(
   private var modifierTick by mutableStateOf(0)
 
   private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
-  public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
+  override val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
   public fun Render() {

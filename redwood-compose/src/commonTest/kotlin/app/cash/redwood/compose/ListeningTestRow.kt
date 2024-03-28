@@ -31,6 +31,8 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
   }
 
   override val children = object : Widget.Children<WidgetValue> {
+    override val widgets: List<Widget<WidgetValue>> get() = emptyList()
+
     override fun insert(index: Int, widget: Widget<WidgetValue>) {
       changes += "children insert"
     }

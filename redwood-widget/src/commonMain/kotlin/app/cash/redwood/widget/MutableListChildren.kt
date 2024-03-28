@@ -27,6 +27,8 @@ public class MutableListChildren<W : Any>(
   private val container: MutableList<Widget<W>> = mutableListOf(),
   private val modifierUpdated: () -> Unit = {},
 ) : Widget.Children<W>, MutableList<Widget<W>> by container {
+  override val widgets: MutableList<Widget<W>> get() = container
+
   override fun insert(index: Int, widget: Widget<W>) {
     container.add(index, widget)
   }
