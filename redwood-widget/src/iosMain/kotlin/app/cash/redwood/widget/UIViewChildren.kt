@@ -33,7 +33,7 @@ public class UIViewChildren(
   },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
-  public val widgets: List<Widget<UIView>> get() = _widgets
+  override val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.add(index, widget)

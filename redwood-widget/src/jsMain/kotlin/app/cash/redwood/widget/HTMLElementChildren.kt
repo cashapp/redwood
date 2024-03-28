@@ -22,7 +22,7 @@ public class HTMLElementChildren(
   private val container: HTMLElement,
 ) : Widget.Children<HTMLElement> {
   private val _widgets = ArrayList<Widget<HTMLElement>>()
-  public val widgets: List<Widget<HTMLElement>> get() = _widgets
+  override val widgets: List<Widget<HTMLElement>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<HTMLElement>) {
     _widgets.add(index, widget)

@@ -63,7 +63,11 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   /** We expect placeholders to be added early and to never change. */
   public val placeholder: Widget.Children<W> = object : Widget.Children<W> {
+    private val _widgets = mutableListOf<Widget<W>>()
+    override val widgets: List<Widget<W>> get() = _widgets
+
     override fun insert(index: Int, widget: Widget<W>) {
+      _widgets += widget
       if (firstPlaceholder == null) firstPlaceholder = widget
       placeholdersQueue += widget
     }
@@ -82,7 +86,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   /** Changes to this list are collected and processed in batch once all changes are received. */
   public val items: Widget.Children<W> = object : Widget.Children<W> {
+    private val _widgets = mutableListOf<Widget<W>>()
+    override val widgets: List<Widget<W>> get() = _widgets
+
     override fun insert(index: Int, widget: Widget<W>) {
+      _widgets.add(index, widget)
+
       val last = edits.lastOrNull()
       if (last is Edit.Insert && index in last.index until last.index + last.widgets.size + 1) {
         // Grow the preceding insert. This makes promotion logic easier.
@@ -93,10 +102,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+      _widgets.move(fromIndex, toIndex, count)
+
       edits += Edit.Move(fromIndex, toIndex, count)
     }
 
     override fun remove(index: Int, count: Int) {
+      _widgets.remove(index, count)
+
       val last = edits.lastOrNull()
       if (last is Edit.Remove && index in last.index - count until last.index + 1) {
         // Grow the preceding remove. This makes promotion logic easier.

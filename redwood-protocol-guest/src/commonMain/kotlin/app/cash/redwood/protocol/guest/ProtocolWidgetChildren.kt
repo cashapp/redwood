@@ -25,18 +25,19 @@ internal class ProtocolWidgetChildren(
   private val tag: ChildrenTag,
   private val state: ProtocolState,
 ) : Widget.Children<Unit> {
-  private val ids = mutableListOf<Id>()
+  private val _widgets = mutableListOf<ProtocolWidget>()
+  override val widgets: List<Widget<Unit>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<Unit>) {
     widget as ProtocolWidget
-    ids.add(index, widget.id)
+    _widgets.add(index, widget)
     state.addWidget(widget)
     state.append(ChildrenChange.Add(id, tag, widget.id, index))
   }
 
   override fun remove(index: Int, count: Int) {
-    val removingIds = ids.subList(index, index + count)
-    val removedIds = removingIds.toList()
+    val removingIds = _widgets.subList(index, index + count)
+    val removedIds = removingIds.map(ProtocolWidget::id)
     removingIds.clear()
 
     for (removedId in removedIds) {
@@ -47,7 +48,7 @@ internal class ProtocolWidgetChildren(
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
-    ids.move(fromIndex, toIndex, count)
+    _widgets.move(fromIndex, toIndex, count)
     state.append(ChildrenChange.Move(id, tag, fromIndex, toIndex, count))
   }
 

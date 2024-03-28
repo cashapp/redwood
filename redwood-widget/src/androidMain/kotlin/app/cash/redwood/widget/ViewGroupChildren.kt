@@ -28,7 +28,7 @@ public class ViewGroupChildren(
   },
 ) : Widget.Children<View> {
   private val _widgets = ArrayList<Widget<View>>()
-  public val widgets: List<Widget<View>> get() = _widgets
+  override val widgets: List<Widget<View>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<View>) {
     _widgets.add(index, widget)
