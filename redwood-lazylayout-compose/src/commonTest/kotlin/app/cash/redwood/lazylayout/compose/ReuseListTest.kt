@@ -20,7 +20,6 @@
 )
 package app.cash.redwood.lazylayout.compose
 
-
 import androidx.compose.runtime.mutableStateListOf
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.widget.ColumnValue

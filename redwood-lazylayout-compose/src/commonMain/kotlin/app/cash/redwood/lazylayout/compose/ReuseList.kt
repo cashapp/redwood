@@ -20,6 +20,14 @@ import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
+/**
+ * Execute [render] for each item in [items], while minimizing the amount of work the applier needs
+ * to do when elements are added and removed.
+ *
+ * This uses Compose's [movableContentOf] to match inserted items to removed items, and will reuse
+ * element subtrees where possible. This will also track moves of elements within the list, so long
+ * as the key function matches.
+ */
 @Composable
 public fun <T> ReuseList(
   items: List<T>,
@@ -61,7 +69,7 @@ public fun <T> ReuseList(
       nextPool[index] = entry
     }
 
-    entry.Show(item)
+    entry.show(item)
   }
 
   // Get the next pool ready for use.
@@ -76,5 +84,5 @@ private class PoolEntry<T>(
   render: @Composable (T) -> Unit,
 ) {
   var free = false
-  val Show: @Composable (T) -> Unit = movableContentOf(render)
+  val show: @Composable (T) -> Unit = movableContentOf(render)
 }
