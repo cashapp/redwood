@@ -142,17 +142,17 @@ internal fun generateProtocolFactory(
                 add("%M(⇥\n", mapOf)
                 for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
                   for (widget in dependency.widgets.sortedBy { it.tag }) {
-                    add("%T(%L) to %M(", WidgetTag, widget.tag, listOf)
-                    var first = true
-                    for (children in widget.traits
-                      .filterIsInstance<ProtocolChildren>()
-                      .sortedBy { it.tag }
-                    ) {
-                      if (!first) add(", ")
-                      first = false
-                      add("%T(%L)", ChildrenTag, children.tag)
-                    }
-                    add("),\n", WidgetTag, widget.tag, "a", "b")
+                    add(
+                      "%T(%L) to %M(%L),\n",
+                      WidgetTag,
+                      widget.tag,
+                      listOf,
+                      widget.traits
+                        .filterIsInstance<ProtocolChildren>()
+                        .sortedBy { it.tag }
+                        .map { CodeBlock.of("%T(%L)", ChildrenTag, it.tag) }
+                        .joinToCode(),
+                    )
                   }
                 }
                 add("⇤)\n")
