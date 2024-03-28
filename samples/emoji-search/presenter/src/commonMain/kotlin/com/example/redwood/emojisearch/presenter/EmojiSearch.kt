@@ -85,7 +85,9 @@ fun EmojiSearch(
 
   var searchTerm by rememberSaveable(stateSaver = searchTermSaver) { mutableStateOf(TextFieldState("")) }
 
-  val lazyListState = rememberLazyListState()
+  val lazyListState = rememberLazyListState {
+    reuseItems = true
+  }
 
   LaunchedEffect(searchTerm) {
     lazyListState.programmaticScroll(0, animated = true)

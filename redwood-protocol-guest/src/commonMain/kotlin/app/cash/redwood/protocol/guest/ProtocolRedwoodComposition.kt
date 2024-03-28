@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.guest
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
@@ -48,21 +49,28 @@ public fun ProtocolRedwoodComposition(
     saveableStateRegistry = saveableStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = bridge.widgetSystem,
+  )
+  return ProtocolRedwoodComposition(
+    composition,
+    widgetVersion
   ) {
-    bridge.getChangesOrNull()?.let(changesSink::sendChanges)
+    key(bridge.compositionsCount) {
+      bridge.getChangesOrNull()?.let(changesSink::sendChanges)
+    }
   }
-  return ProtocolRedwoodComposition(composition, widgetVersion)
 }
 
 private class ProtocolRedwoodComposition(
   private val composition: RedwoodComposition,
   private val widgetVersion: UInt,
+  private val onEndChanges: @Composable () -> Unit,
 ) : RedwoodComposition by composition {
   override fun setContent(content: @Composable () -> Unit) {
     composition.setContent {
       CompositionLocalProvider(LocalWidgetVersion provides widgetVersion) {
         content()
       }
+      onEndChanges()
     }
   }
 }

@@ -57,11 +57,7 @@ internal fun LazyList(
     scrollItemIndex = state.programmaticScrollIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
-      for (index in itemsBefore until itemCount - itemsAfter) {
-        key(index) {
-          itemProvider.Item(index)
-        }
-      }
+      Items(itemProvider, itemCount, itemsBefore, itemsAfter, state.reuseItems)
     },
   )
 }
@@ -104,11 +100,33 @@ internal fun RefreshableLazyList(
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     pullRefreshContentColor = pullRefreshContentColor,
     items = {
-      for (index in itemsBefore until itemCount - itemsAfter) {
-        key(index) {
-          itemProvider.Item(index)
-        }
-      }
+      Items(itemProvider, itemCount, itemsBefore, itemsAfter, state.reuseItems)
     },
   )
+}
+
+@Composable
+private fun Items(
+  itemProvider: LazyListItemProvider,
+  itemCount: Int,
+  itemsBefore: Int,
+  itemsAfter: Int,
+  reuseItems: Boolean,
+) {
+  if (reuseItems) {
+    ReuseList(
+      itemCount = itemCount - (itemsBefore + itemsAfter),
+      key = { it + itemsBefore },
+    ) {
+      key(it + itemsBefore) {
+        itemProvider.Item(it + itemsBefore)
+      }
+    }
+  } else {
+    for (index in itemsBefore until itemCount - itemsAfter) {
+      key(index) {
+        itemProvider.Item(index)
+      }
+    }
+  }
 }

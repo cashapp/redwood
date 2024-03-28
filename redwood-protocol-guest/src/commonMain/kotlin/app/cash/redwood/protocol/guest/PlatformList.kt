@@ -17,9 +17,11 @@ package app.cash.redwood.protocol.guest
 
 internal expect class PlatformList<E>() {
   val size: Int
-  operator fun get(index: Int): E
-  operator fun set(index: Int, element: E)
   fun add(element: E)
 }
+
+internal expect fun <E> PlatformList<E>.get(index: Int): E
+
+internal expect fun <E> PlatformList<E>.set(index: Int, element: E)
 
 internal expect fun <E> PlatformList<E>.asList(): List<E>

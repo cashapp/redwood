@@ -20,17 +20,19 @@ internal external class JsArray<E> {
   @JsName("length")
   val size: Int
 
-  @JsName("at")
-  operator fun get(index: Int): E
-
-  @JsName("set")
-  operator fun set(index: Int, element: E)
-
   @JsName("push")
   fun add(element: E)
 }
 
 internal actual typealias PlatformList<E> = JsArray<E>
+
+internal actual inline fun <E> PlatformList<E>.get(index: Int): E {
+  return asDynamic()[index].unsafeCast<E>()
+}
+
+internal actual inline fun <E> PlatformList<E>.set(index: Int, element: E) {
+  asDynamic()[index] = element
+}
 
 internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
   return JsArrayList(this)

@@ -34,55 +34,87 @@ public fun <T> ReuseList(
   key: (T) -> Any,
   render: @Composable (T) -> Unit,
 ) {
-  val poolState = remember { mutableStateOf(listOf<PoolEntry<T>>()) }
-  val pool = poolState.value
+  ReuseList(
+    itemCount = items.size,
+    key = { key(items[it]) },
+    render = { render(items[it]) },
+  )
+}
+
+@Composable
+public fun ReuseList(
+  itemCount: Int,
+  key: (Int) -> Any,
+  render: @Composable (Int) -> Unit,
+) {
+  val poolState = remember { mutableStateOf(listOf<PoolEntry>()) }
+
+  val pool = rebuildPool(poolState.value, itemCount, key, render)
+  poolState.value = pool
+
+  // Render each item.
+  for (i in 0 until itemCount) {
+    pool[i].show(i)
+  }
+}
+
+@Composable
+private fun rebuildPool(
+  pool: List<PoolEntry>,
+  itemCount: Int,
+  key: (Int) -> Any,
+  render: @Composable (Int) -> Unit,
+): List<PoolEntry> {
+  // Mark all old entries as free.
   var freeEntryCount = pool.size
+  for (entry in pool) {
+    entry.free = true
+  }
 
-  val nextPool = arrayOfNulls<PoolEntry<T>>(items.size)
+  val result = arrayOfNulls<PoolEntry>(itemCount)
 
-  // Find matches for items in the pool.
-  for ((index, item) in items.withIndex()) {
-    val itemKey = key(item)
+  // Take entries from the pool that match by key.
+  for (i in 0 until itemCount) {
+    val itemKey = key(i)
     val entry = pool.firstOrNull { it.free && it.key == itemKey }
     if (entry != null) {
-      nextPool[index] = entry
+      entry.free = false
+      result[i] = entry
       freeEntryCount--
     }
   }
 
-  // Render each item and prepare the next pool.
-  for ((index, item) in items.withIndex()) {
-    var entry = nextPool[index]
+  // Take entries from the pool that don't match. Allocate new entries when the pool is empty.
+  var hits = 0
+  var misses = 0
+  for (i in 0 until itemCount) {
+    var entry = result[i]
 
     if (entry == null) {
       if (freeEntryCount > 0) {
+        hits++
         entry = pool.first { it.free }
         freeEntryCount--
         entry.free = false
-        entry.key = key(item)
+        entry.key = key(i)
       } else {
+        misses++
         entry = PoolEntry(
-          key = key(item),
+          key = key(i),
           render = render,
         )
       }
-      nextPool[index] = entry
+      result[i] = entry
     }
-
-    entry.show(item)
   }
 
-  // Get the next pool ready for use.
-  for (reusableItem in nextPool) {
-    reusableItem!!.free = true
-  }
-  poolState.value = nextPool.map { it!! }
+  return result.map { it!! }
 }
 
-private class PoolEntry<T>(
+private class PoolEntry(
   var key: Any,
-  render: @Composable (T) -> Unit,
+  render: @Composable (Int) -> Unit,
 ) {
   var free = false
-  val show: @Composable (T) -> Unit = movableContentOf(render)
+  val show: @Composable (Int) -> Unit = movableContentOf(render)
 }

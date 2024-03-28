@@ -23,6 +23,14 @@ package app.cash.redwood.protocol.guest
 )
 internal actual typealias PlatformList<E> = ArrayList<E>
 
+internal actual inline fun <E> PlatformList<E>.set(index: Int, element: E) {
+  this[index] = element
+}
+
+internal actual inline fun <E> PlatformList<E>.get(index: Int): E {
+  return this[index]
+}
+
 @Suppress(
   // Explicitly trying to be zero-overhead.
   "NOTHING_TO_INLINE",
