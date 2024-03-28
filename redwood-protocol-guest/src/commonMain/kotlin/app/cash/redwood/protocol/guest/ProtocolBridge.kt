@@ -49,6 +49,8 @@ public interface ProtocolBridge : EventSink {
    */
   public fun getChangesOrNull(): List<Change>?
 
+  public val compositionsCount: Int
+
   public interface Factory {
     /** Create a new [ProtocolBridge] with its own protocol state and set of tracked widgets. */
     public fun create(

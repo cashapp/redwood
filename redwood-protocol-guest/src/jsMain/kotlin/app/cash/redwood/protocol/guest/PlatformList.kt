@@ -26,6 +26,14 @@ internal external class JsArray<E> {
 
 internal actual typealias PlatformList<E> = JsArray<E>
 
+internal actual inline fun <E> PlatformList<E>.get(index: Int): E {
+  return asDynamic()[index].unsafeCast<E>()
+}
+
+internal actual inline fun <E> PlatformList<E>.set(index: Int, element: E) {
+  asDynamic()[index] = element
+}
+
 internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
   return JsArrayList(this)
 }

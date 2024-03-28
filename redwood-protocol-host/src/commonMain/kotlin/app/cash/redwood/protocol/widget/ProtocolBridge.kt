@@ -97,11 +97,11 @@ public class ProtocolBridge<W : Any>(
 
         is ModifierChange -> {
           val node = node(id)
-          val value = node.widget.value
 
           val modifier = change.elements.fold<_, Modifier>(Modifier) { outer, element ->
             val inner = factory.createModifier(element)
             if (inner is Modifier.UnscopedElement) {
+              val value = node.widget.value
               factory.widgetSystem.apply(value, inner)
             }
             outer.then(inner)

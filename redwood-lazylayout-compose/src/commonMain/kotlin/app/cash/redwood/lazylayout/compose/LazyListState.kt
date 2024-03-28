@@ -29,9 +29,10 @@ private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
  * Creates a [LazyListState] that is remembered across compositions.
  */
 @Composable
-public fun rememberLazyListState(): LazyListState {
+public fun rememberLazyListState(configure: LazyListState.() -> Unit = {}): LazyListState {
   return rememberSaveable(saver = saver) {
     LazyListState()
+      .apply(configure)
   }
 }
 
@@ -74,6 +75,9 @@ public open class LazyListState {
 
   /** How many items to load in anticipation of scrolling down. */
   public var preloadAfterItemCount: Int by mutableStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+
+  /** True to reuse widgets for better performance. */
+  public var reuseItems: Boolean by mutableStateOf(false)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(

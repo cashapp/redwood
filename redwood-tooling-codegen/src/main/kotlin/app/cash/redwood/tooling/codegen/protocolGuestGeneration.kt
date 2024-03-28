@@ -34,6 +34,7 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
+import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.NOTHING
@@ -119,6 +120,15 @@ internal fun generateProtocolBridge(
         .addProperty(
           PropertySpec.builder("widgetSystem", widgetSystemType, OVERRIDE)
             .initializer("widgetSystem")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("compositionsCount", Int::class, PUBLIC, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return state.compositionsCount")
+                .build()
+            )
             .build(),
         )
         .addFunction(
