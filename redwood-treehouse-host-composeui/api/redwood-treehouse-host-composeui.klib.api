@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-treehouse-host-composeui>
+final fun <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse.composeui/TreehouseContent(app.cash.redwood.treehouse/TreehouseApp<#A>, app.cash.redwood.treehouse/TreehouseView.WidgetSystem<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>, app.cash.redwood.treehouse/TreehouseContentSource<#A>, androidx.compose.ui/Modifier?, app.cash.redwood.treehouse/CodeListener?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.treehouse.composeui/TreehouseContent|TreehouseContent(app.cash.redwood.treehouse.TreehouseApp<0:0>;app.cash.redwood.treehouse.TreehouseView.WidgetSystem<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>;app.cash.redwood.treehouse.TreehouseContentSource<0:0>;androidx.compose.ui.Modifier?;app.cash.redwood.treehouse.CodeListener?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){0§<app.cash.redwood.treehouse.AppService>}[0]
