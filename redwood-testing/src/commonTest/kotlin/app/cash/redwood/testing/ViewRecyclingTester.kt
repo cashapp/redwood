@@ -22,6 +22,9 @@
 package app.cash.redwood.testing
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.MutableBox
 import app.cash.redwood.layout.widget.MutableColumn
@@ -105,65 +108,71 @@ suspend fun <R> viewRecyclingTest(
 }
 
 suspend fun assertReuse(
-  step1: @Composable () -> Unit,
-  step2: @Composable () -> Unit,
+  content: @Composable (step: Int) -> Unit,
   assertFullSubtreesEqual: Boolean = true,
-  step2Value: WidgetValue,
+  step3Value: WidgetValue,
 ): Pair<List<Widget<WidgetValue>>, List<Widget<WidgetValue>>> {
   return viewRecyclingTest {
-    // Create widgets for step 1.
-    setContent(step1)
+    var step by mutableStateOf(1)
+    setContent {
+      content(step)
+    }
+
+    // Step 1 draws the initial content, including the reusable element.
     awaitSnapshot()
     val step1Widgets = widgets.toList()
     val step1WidgetsFlattened = step1Widgets.flatten().toList()
 
-    // Clear the content, so those widgets are all pooled.
-    setContent {
-    }
+    // Step 2 removes it, causing it to be pooled.
+    step = 2
     awaitSnapshot()
 
-    // Create widgets for step 2.
-    setContent(step2)
+    // Step 3 adds it back from the pool.
+    step = 3
     awaitSnapshot()
-    val step2Widgets = widgets
-    val step2WidgetsFlattened = step2Widgets.flatten().toList()
+    val step3Widgets = widgets
+    val step3WidgetsFlattened = step3Widgets.flatten().toList()
 
     // Confirm the widgets are all the same.
     if (assertFullSubtreesEqual) {
-      assertThat(step2WidgetsFlattened).isEqualTo(step1WidgetsFlattened)
+      assertThat(step3WidgetsFlattened).isEqualTo(step1WidgetsFlattened)
     }
-    assertThat(widgets.single().value).isEqualTo(step2Value)
-    step1Widgets to step2Widgets
+    assertThat(widgets.single().value).isEqualTo(step3Value)
+    step1Widgets to step3Widgets
   }
 }
 
 suspend fun assertNoReuse(
-  step1: @Composable () -> Unit,
-  beforeStep2CompositionOnly: (@Composable () -> Unit)? = null,
-  step2: @Composable () -> Unit,
+  content: @Composable (step: Int) -> Unit,
+  stepCount: Int = 3,
 ) {
+  require(stepCount == 3 || stepCount == 4)
+
   viewRecyclingTest {
-    // Create widgets for step 1.
-    setContent(step1)
+    var step by mutableStateOf(1)
+    setContent {
+      content(step)
+    }
+
+    // Step 1 draws the initial content, including the reusable element.
     awaitSnapshot()
     val allWidgetsBefore = widgets.flatten().toSet()
 
-    // Clear the content, so those widgets are all pooled.
-    setContent {
-    }
+    // Step 2 removes it, causing it to be pooled.
+    step = 2
     awaitSnapshot()
 
-    // Queue up changes for an intermediate step, but don't apply them. This is what happens in
-    // production when the guest emits produces faster than the host consumes them. Use this to
-    // cause a node to be added and removed in the same list of changes.
-    if (beforeStep2CompositionOnly != null) {
-      setContent(beforeStep2CompositionOnly)
+    // Queue up changes for step 3, but don't apply them. This is what happens in production when
+    // the guest emits produces faster than the host consumes them. Use this to cause a node to be
+    // added and removed in the same list of changes.
+    step = 3
+    if (stepCount == 4) {
       composition.awaitSnapshot()
+      step = 4
     }
-
-    // Create widgets for step 2.
-    setContent(step2)
     awaitSnapshot()
+
+    // Get widgets from the last step.
     val allWidgetsAfter = widgets.flatten().toSet()
 
     // Confirm none of the after widgets were reused.

@@ -27,11 +27,8 @@ import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.widget.BoxValue
 import app.cash.redwood.layout.widget.ColumnValue
 import app.cash.redwood.layout.widget.MutableBox
-import app.cash.redwood.layout.widget.MutableColumn
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testing.compose.Button
@@ -40,7 +37,6 @@ import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.compose.reuse
 import com.example.redwood.testing.widget.SplitValue
 import com.example.redwood.testing.widget.TextValue
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -105,19 +101,23 @@ class ViewRecyclingTest {
   @Test
   fun reuseWithMultipleChildren() = runTest {
     assertReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
-          Text("b")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+              Text("b")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("c")
+              Text("d")
+            }
+          }
         }
       },
-      step2 = {
-        Box(modifier = reuse) {
-          Text("c")
-          Text("d")
-        }
-      },
-      step2Value = BoxValue(
+      step3Value = BoxValue(
         modifier = reuse,
         children = listOf(
           TextValue(text = "c"),
@@ -128,29 +128,59 @@ class ViewRecyclingTest {
   }
 
   @Test
+  fun multipleElementsReused() = runTest {
+    assertReuse(
+      content = { step ->
+        Column {
+          when (step) {
+            1 -> {
+              Text(modifier = reuse, text = "a")
+              Text(modifier = reuse, text = "b")
+            }
+            3 -> {
+              Text(modifier = reuse, text = "c")
+              Text(modifier = reuse, text = "d")
+            }
+          }
+        }
+      },
+      step3Value = ColumnValue(
+        children = listOf(
+          TextValue(modifier = reuse, text = "c"),
+          TextValue(modifier = reuse, text = "d"),
+        ),
+      ),
+    )
+  }
+
+  @Test
   fun reuseWithNestedChildren() = runTest {
     assertReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Column {
-            Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Column {
+                Text("a")
+              }
+              Column {
+                Text("b")
+              }
+            }
           }
-          Column {
-            Text("b")
+          3 -> {
+            Box(modifier = reuse) {
+              Column {
+                Text("c")
+              }
+              Column {
+                Text("d")
+              }
+            }
           }
         }
       },
-      step2 = {
-        Box(modifier = reuse) {
-          Column {
-            Text("c")
-          }
-          Column {
-            Text("d")
-          }
-        }
-      },
-      step2Value = BoxValue(
+      step3Value = BoxValue(
         modifier = reuse,
         children = listOf(
           ColumnValue(
@@ -171,35 +201,39 @@ class ViewRecyclingTest {
   @Test
   fun reuseWithDeeplyNestedChildren() = runTest {
     assertReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
-          Column {
-            Column {
-              Text("b")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
               Column {
-                Text("c")
+                Column {
+                  Text("b")
+                  Column {
+                    Text("c")
+                  }
+                }
+                Text("d")
               }
             }
-            Text("d")
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("e")
+              Column {
+                Column {
+                  Text("f")
+                  Column {
+                    Text("g")
+                  }
+                }
+                Text("h")
+              }
+            }
           }
         }
       },
-      step2 = {
-        Box(modifier = reuse) {
-          Text("e")
-          Column {
-            Column {
-              Text("f")
-              Column {
-                Text("g")
-              }
-            }
-            Text("h")
-          }
-        }
-      },
-      step2Value = BoxValue(
+      step3Value = BoxValue(
         modifier = reuse,
         children = listOf(
           TextValue(text = "e"),
@@ -224,74 +258,64 @@ class ViewRecyclingTest {
   }
 
   @Test
-  @Ignore // We don't recycle the Box when its parent is removed.
   fun reuseNotAtRoot() = runTest {
-    val (step1Widgets, step2Widgets) = assertReuse(
-      step1 = {
+    assertReuse(
+      content = { step ->
         Column {
-          Box(modifier = reuse) {
-            Text("a")
+          when (step) {
+            1 -> {
+              Text(modifier = reuse, text = "a")
+            }
+            3 -> {
+              Text(modifier = reuse, text = "b")
+            }
           }
         }
       },
-      step2 = {
-        Column {
-          Box(modifier = reuse) {
-            Text("b")
-          }
-        }
-      },
-      assertFullSubtreesEqual = false,
-      step2Value = ColumnValue(
+      step3Value = ColumnValue(
         children = listOf(
-          BoxValue(
-            modifier = reuse,
-            children = listOf(
-              TextValue(text = "b"),
-            ),
-          ),
+          TextValue(modifier = reuse, text = "b"),
         ),
       ),
     )
-
-    val step1Column = step1Widgets.single() as MutableColumn
-    val step2Column = step2Widgets.single() as MutableColumn
-    assertThat(step2Column).isNotEqualTo(step1Column)
-    assertThat(step2Column.children).isEqualTo(step1Column.children)
   }
 
   @Test
   fun reuseMultipleChildrenWithDifferentTags() = runTest {
     assertReuse(
-      step1 = {
-        Split(
-          modifier = reuse,
-          left = {
-            Text("a")
-            Text("b")
-            Text("c")
-          },
-          right = {
-            Text("d")
-            Text("e")
-          },
-        )
+      content = { step ->
+        when (step) {
+          1 -> {
+            Split(
+              modifier = reuse,
+              left = {
+                Text("a")
+                Text("b")
+                Text("c")
+              },
+              right = {
+                Text("d")
+                Text("e")
+              },
+            )
+          }
+          3 -> {
+            Split(
+              modifier = reuse,
+              left = {
+                Text("f")
+                Text("g")
+                Text("h")
+              },
+              right = {
+                Text("i")
+                Text("j")
+              },
+            )
+          }
+        }
       },
-      step2 = {
-        Split(
-          modifier = reuse,
-          left = {
-            Text("f")
-            Text("g")
-            Text("h")
-          },
-          right = {
-            Text("i")
-            Text("j")
-          },
-        )
-      },
-      step2Value = SplitValue(
+      step3Value = SplitValue(
         modifier = reuse,
         left = listOf(
           TextValue(text = "f"),
@@ -309,15 +333,19 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenNewNodeHasMoreChildren() = runTest {
     assertNoReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
-        }
-      },
-      step2 = {
-        Box(modifier = reuse) {
-          Text("a")
-          Text("b")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("a")
+              Text("b")
+            }
+          }
         }
       },
     )
@@ -326,15 +354,19 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenNewNodeHasFewerChildren() = runTest {
     assertNoReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
-          Text("b")
-        }
-      },
-      step2 = {
-        Box(modifier = reuse) {
-          Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+              Text("b")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
         }
       },
     )
@@ -343,19 +375,23 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenNodeHasDifferentType() = runTest {
     assertNoReuse(
-      step1 = {
-        Split(
-          modifier = reuse,
-          left = {
-            Text("a")
-          },
-          right = {
-          },
-        )
-      },
-      step2 = {
-        Box(modifier = reuse) {
-          Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Split(
+              modifier = reuse,
+              left = {
+                Text("a")
+              },
+              right = {
+              },
+            )
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
         }
       },
     )
@@ -364,14 +400,18 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenChildNodeHasDifferentType() = runTest {
     assertNoReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
-        }
-      },
-      step2 = {
-        Box(modifier = reuse) {
-          Button("a", onClick = null)
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Button("a", onClick = null)
+            }
+          }
         }
       },
     )
@@ -380,25 +420,29 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenChildHasDifferentChildrenTag() = runTest {
     assertNoReuse(
-      step1 = {
-        Split(
-          modifier = reuse,
-          left = {
-            Text("a")
-          },
-          right = {
-          },
-        )
-      },
-      step2 = {
-        Split(
-          modifier = reuse,
-          left = {
-          },
-          right = {
-            Text("a")
-          },
-        )
+      content = { step ->
+        when (step) {
+          1 -> {
+            Split(
+              modifier = reuse,
+              left = {
+                Text("a")
+              },
+              right = {
+              },
+            )
+          }
+          3 -> {
+            Split(
+              modifier = reuse,
+              left = {
+              },
+              right = {
+                Text("a")
+              },
+            )
+          }
+        }
       },
     )
   }
@@ -406,14 +450,18 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenReuseIdNotSet() = runTest {
     assertNoReuse(
-      step1 = {
-        Box {
-          Text("a")
-        }
-      },
-      step2 = {
-        Box {
-          Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box {
+              Text("a")
+            }
+          }
+          3 -> {
+            Box {
+              Text("a")
+            }
+          }
         }
       },
     )
@@ -422,42 +470,75 @@ class ViewRecyclingTest {
   @Test
   fun noReuseWhenReusedNodeIsAddedAndThenRemovedInSameUpdate() = runTest {
     assertNoReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          4 -> {
+          }
         }
       },
-      beforeStep2CompositionOnly = {
-        Box(modifier = reuse) {
-          Text("a")
-        }
-      },
-      step2 = {
-      },
+      stepCount = 4,
     )
   }
 
   @Test
   fun noReuseWhenChildIsAddedAndThenRemovedInSameUpdate() = runTest {
     assertNoReuse(
-      step1 = {
-        Box(modifier = reuse) {
-          Text("a")
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          3 -> {
+            Box(modifier = reuse) {
+              Text("a")
+            }
+          }
+          4 -> {
+            Box(modifier = reuse) {
+            }
+          }
         }
       },
-      beforeStep2CompositionOnly = {
-        Box(modifier = reuse) {
-          Text("a")
-        }
-      },
-      step2 = {
-        Box(modifier = reuse) {
-        }
-      },
+      stepCount = 4,
     )
   }
 
   @Test
   fun noReuseWhenChildAddsAreOutOfOrder() = runTest {
+    assertNoReuse(
+      content = { step ->
+        when (step) {
+          1 -> {
+            Box(modifier = reuse) {
+              Text("a")
+              Text("b")
+            }
+          }
+          3, 4 -> {
+            Box(modifier = reuse) {
+              // Get the Add "c" event to follow the Add "d" event by doing 2 compositions and
+              // concatenating their changes.
+              if (step == 4) {
+                Text("c")
+              }
+              Text("d")
+            }
+          }
+        }
+      },
+      stepCount = 4,
+    )
   }
 }
