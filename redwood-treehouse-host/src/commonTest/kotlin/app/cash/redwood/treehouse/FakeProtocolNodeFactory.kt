@@ -27,7 +27,7 @@ import app.cash.redwood.widget.WidgetSystem
 @OptIn(RedwoodCodegenApi::class)
 internal class FakeProtocolNodeFactory : GeneratedProtocolFactory<FakeWidget> {
   override val widgetSystem: WidgetSystem<FakeWidget> = FakeWidgetSystem()
-  override val childrenTags: Map<WidgetTag, List<ChildrenTag>> = mapOf()
   override fun createNode(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
   override fun createModifier(element: ModifierElement): Modifier = Modifier
+  override fun widgetChildren(tag: WidgetTag): List<ChildrenTag> = emptyList()
 }

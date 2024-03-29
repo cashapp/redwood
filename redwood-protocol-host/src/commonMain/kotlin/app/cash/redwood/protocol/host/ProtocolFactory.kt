@@ -57,11 +57,6 @@ public interface GeneratedProtocolFactory<W : Any> : ProtocolFactory<W> {
    */
   public fun createModifier(element: ModifierElement): Modifier
 
-  /**
-   * A map that reflects the tree structure for this factory.
-   *
-   * This map's keys are all known widget tags. Each entry's values are the known children tags
-   * for that widget tag.
-   */
-  public val childrenTags: Map<WidgetTag, List<ChildrenTag>>
+  /** Look up known children tags for the given widget [tag]. */
+  public fun widgetChildren(tag: WidgetTag): List<ChildrenTag>
 }
