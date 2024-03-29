@@ -17,8 +17,8 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.SnapshotChangeList
-import app.cash.redwood.protocol.widget.ProtocolBridge
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import kotlinx.serialization.json.Json
 
 /**

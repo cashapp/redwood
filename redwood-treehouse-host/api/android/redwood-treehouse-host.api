@@ -156,6 +156,6 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseView$SaveCal
 }
 
 public abstract interface class app/cash/redwood/treehouse/TreehouseView$WidgetSystem {
-	public abstract fun widgetFactory (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/widget/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/widget/ProtocolFactory;
+	public abstract fun widgetFactory (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/host/ProtocolFactory;
 }
 

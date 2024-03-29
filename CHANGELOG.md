@@ -12,6 +12,7 @@ New:
 Changed:
 - Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).
 - `onModifierChanged` callback in `Widget.Children` now receives the index and the `Widget` instance affected by the change.
+- The package of 'redwood-protocol-host' changed to `app.cash.redwood.protocol.host`. This should not affect end-users as its types are mostly for internal use.
 - The entire `redwood-yoga` artifact's public API has been annotated with an opt-in annotation indicating that it's only for Redwood internal use and is not stable.
 - Revert: Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
 - The generated "widget factories" type (e.g., `MySchemaWidgetFactories`) is now called a "widget system" (e.g., `MySchemaWidgetSystem`). Sometimes it was also referred to as a "provider" in parameter names. A `@Deprecated typealias` is generated for now, but will be removed in the future.

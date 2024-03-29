@@ -22,7 +22,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.MutableListChildren

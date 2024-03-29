@@ -22,7 +22,7 @@ import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory

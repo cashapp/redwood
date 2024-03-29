@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.widget
+package app.cash.redwood.protocol.host
 
-import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
+import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventSink
 
-class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Unit> {
-  override fun Box() = TODO()
-  override fun Column() = TODO()
-  override fun Row() = TODO()
-  override fun Spacer() = TODO()
+class RecordingEventSink : EventSink {
+  val events = mutableListOf<Event>()
+
+  override fun sendEvent(event: Event) {
+    events += event
+  }
 }

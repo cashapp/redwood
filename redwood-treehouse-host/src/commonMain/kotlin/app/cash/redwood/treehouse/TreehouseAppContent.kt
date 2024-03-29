@@ -18,8 +18,8 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.widget.ProtocolBridge
-import app.cash.redwood.protocol.widget.ProtocolFactory
+import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolFactory
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration

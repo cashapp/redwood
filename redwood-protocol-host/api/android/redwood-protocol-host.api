@@ -1,39 +1,39 @@
-public abstract interface class app/cash/redwood/protocol/widget/GeneratedProtocolFactory : app/cash/redwood/protocol/widget/ProtocolFactory {
+public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocolFactory : app/cash/redwood/protocol/host/ProtocolFactory {
 	public abstract fun createModifier (Lapp/cash/redwood/protocol/ModifierElement;)Lapp/cash/redwood/Modifier;
-	public abstract fun createNode-WCEpcRY (I)Lapp/cash/redwood/protocol/widget/ProtocolNode;
+	public abstract fun createNode-WCEpcRY (I)Lapp/cash/redwood/protocol/host/ProtocolNode;
 	public abstract fun getChildrenTags ()Ljava/util/Map;
 }
 
-public final class app/cash/redwood/protocol/widget/ProtocolBridge : app/cash/redwood/protocol/ChangesSink {
-	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/widget/ProtocolFactory;Lapp/cash/redwood/protocol/EventSink;)V
+public final class app/cash/redwood/protocol/host/ProtocolBridge : app/cash/redwood/protocol/ChangesSink {
+	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/EventSink;)V
 	public fun sendChanges (Ljava/util/List;)V
 }
 
-public final class app/cash/redwood/protocol/widget/ProtocolChildren {
+public final class app/cash/redwood/protocol/host/ProtocolChildren {
 	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;)V
 	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
 }
 
-public abstract interface class app/cash/redwood/protocol/widget/ProtocolFactory {
+public abstract interface class app/cash/redwood/protocol/host/ProtocolFactory {
 	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 }
 
-public abstract interface class app/cash/redwood/protocol/widget/ProtocolMismatchHandler {
-	public static final field Companion Lapp/cash/redwood/protocol/widget/ProtocolMismatchHandler$Companion;
-	public static final field Throwing Lapp/cash/redwood/protocol/widget/ProtocolMismatchHandler;
+public abstract interface class app/cash/redwood/protocol/host/ProtocolMismatchHandler {
+	public static final field Companion Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler$Companion;
+	public static final field Throwing Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler;
 	public abstract fun onUnknownChildren-iETOA3M (II)V
 	public abstract fun onUnknownModifier-nx0wl1g (I)V
 	public abstract fun onUnknownProperty-LKUuuww (II)V
 	public abstract fun onUnknownWidget-WCEpcRY (I)V
 }
 
-public final class app/cash/redwood/protocol/widget/ProtocolMismatchHandler$Companion {
+public final class app/cash/redwood/protocol/host/ProtocolMismatchHandler$Companion {
 }
 
-public abstract class app/cash/redwood/protocol/widget/ProtocolNode {
+public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public fun <init> ()V
 	public abstract fun apply (Lapp/cash/redwood/protocol/PropertyChange;Lapp/cash/redwood/protocol/EventSink;)V
-	public abstract fun children-dBpC-2Y (I)Lapp/cash/redwood/protocol/widget/ProtocolChildren;
+	public abstract fun children-dBpC-2Y (I)Lapp/cash/redwood/protocol/host/ProtocolChildren;
 	public abstract fun getWidget ()Lapp/cash/redwood/widget/Widget;
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
 }

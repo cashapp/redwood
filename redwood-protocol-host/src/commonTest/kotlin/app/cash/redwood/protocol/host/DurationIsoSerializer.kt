@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.widget
+package app.cash.redwood.protocol.host
 
 import kotlin.time.Duration
 import kotlinx.serialization.KSerializer

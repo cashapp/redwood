@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.widget
+package app.cash.redwood.protocol.host
 
-import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 
-class EmptyRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<Unit> {
-  override fun LazyList() = TODO()
-  override fun RefreshableLazyList() = TODO()
+class EmptyRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<Unit> {
+  override fun Box() = TODO()
+  override fun Column() = TODO()
+  override fun Row() = TODO()
+  override fun Spacer() = TODO()
 }

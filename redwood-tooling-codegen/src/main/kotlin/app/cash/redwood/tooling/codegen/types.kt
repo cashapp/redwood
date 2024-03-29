@@ -52,10 +52,10 @@ internal object ProtocolGuest {
 
 internal object WidgetProtocol {
   val ProtocolMismatchHandler =
-    ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
-  val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
-  val ProtocolChildren = ClassName("app.cash.redwood.protocol.widget", "ProtocolChildren")
-  val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.widget", "GeneratedProtocolFactory")
+    ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
+  val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
+  val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
+  val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.host", "GeneratedProtocolFactory")
 }
 
 internal object Redwood {

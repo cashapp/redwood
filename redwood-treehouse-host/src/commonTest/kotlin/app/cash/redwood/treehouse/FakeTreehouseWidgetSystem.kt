@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import kotlinx.serialization.json.Json
 
 internal class FakeTreehouseWidgetSystem : TreehouseView.WidgetSystem<FakeWidget> {
