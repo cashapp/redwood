@@ -19,8 +19,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import com.example.redwood.testing.testing.TestRowValue
 import com.example.redwood.testing.widget.TestRow
-import com.example.redwood.testing.widget.TestRowValue
 
 class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
   private val changes = ArrayList<String>()
@@ -52,6 +52,7 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
   override fun onEndChanges() {
     changes += "onEndChanges"
   }
+
   override var modifier: Modifier
     get() = throw AssertionError()
     set(value) {

@@ -44,9 +44,9 @@ import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testing.testing.TestSchemaTester
 import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.testing.TextValue
-import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow

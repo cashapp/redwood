@@ -32,7 +32,7 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import com.example.redwood.testing.compose.TestScope
-import com.example.redwood.testing.widget.TestSchemaProtocolFactory
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import com.example.redwood.testing.widget.TextInput
 import kotlin.test.Test

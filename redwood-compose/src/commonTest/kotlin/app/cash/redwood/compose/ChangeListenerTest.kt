@@ -32,11 +32,11 @@ import assertk.assertions.isEmpty
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.ScopedTestRow
 import com.example.redwood.testing.compose.TestRow
-import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.compose.Text
+import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test

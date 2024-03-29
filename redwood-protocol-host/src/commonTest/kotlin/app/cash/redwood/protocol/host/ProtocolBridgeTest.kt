@@ -28,7 +28,7 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.widget.TestSchemaProtocolFactory
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
