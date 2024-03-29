@@ -16,6 +16,7 @@
 package com.example.redwood.testing.browser
 
 import com.example.redwood.testing.modifier.BackgroundColor
+import com.example.redwood.testing.modifier.Reuse
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
@@ -50,5 +51,8 @@ class HtmlWidgetFactory(
   @OptIn(ExperimentalStdlibApi::class)
   override fun BackgroundColor(value: HTMLElement, modifier: BackgroundColor) {
     value.style.backgroundColor = "#" + modifier.color.toHexString()
+  }
+  override fun Split() = TODO()
+  override fun Reuse(value: HTMLElement, modifier: Reuse) {
   }
 }
