@@ -225,12 +225,7 @@ public class ProtocolBridge<W : Any>(
     }
 
     // Build a new changes list that omits the events we no longer need.
-    val result = mutableListOf<Change>()
-    for (change in changesAndNulls) {
-      if (change != null) result += change
-    }
-
-    return result
+    return changesAndNulls.filterNotNull()
   }
 
   /**
