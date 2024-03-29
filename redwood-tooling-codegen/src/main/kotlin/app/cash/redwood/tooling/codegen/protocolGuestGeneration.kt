@@ -92,6 +92,7 @@ internal fun generateProtocolBridge(
     .addType(
       TypeSpec.classBuilder(type)
         .addSuperinterface(ProtocolGuest.ProtocolBridge)
+        .optIn(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addModifiers(PRIVATE)
@@ -204,6 +205,7 @@ internal fun generateProtocolWidgetFactory(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(protocolViewType))
+        .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("state", ProtocolGuest.ProtocolState)
@@ -313,6 +315,7 @@ internal fun generateProtocolWidget(
         .addModifiers(INTERNAL)
         .addSuperinterface(ProtocolGuest.ProtocolWidget)
         .addSuperinterface(widgetName.parameterizedBy(protocolViewType))
+        .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addParameter("state", ProtocolGuest.ProtocolState)

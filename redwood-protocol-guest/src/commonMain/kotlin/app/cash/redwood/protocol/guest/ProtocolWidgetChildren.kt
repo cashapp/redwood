@@ -15,11 +15,13 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
+@OptIn(RedwoodCodegenApi::class)
 internal class ProtocolWidgetChildren(
   private val id: Id,
   private val tag: ChildrenTag,
