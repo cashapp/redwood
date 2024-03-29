@@ -100,18 +100,18 @@ class ProtocolTest {
         ModifierChange(Id(1)),
         // Text
         Create(Id(2), WidgetTag(3)),
-        ModifierChange(Id(2)),
         // text
         PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hey")),
+        ModifierChange(Id(2)),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
         // Row
         Create(Id(3), WidgetTag(1)),
         ModifierChange(Id(3)),
         // Text
         Create(Id(4), WidgetTag(3)),
-        ModifierChange(Id(4)),
         // text
         PropertyChange(Id(4), PropertyTag(1), JsonPrimitive("hello")),
+        ModifierChange(Id(4)),
         ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
@@ -131,27 +131,27 @@ class ProtocolTest {
       listOf(
         // Button
         Create(Id(1), WidgetTag(4)),
-        ModifierChange(Id(1)),
         // text
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
         PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
+        ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
         // Button
         Create(Id(2), WidgetTag(4)),
-        ModifierChange(Id(2)),
         // text
         PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
         PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)),
+        ModifierChange(Id(2)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
         // Button2
         Create(Id(3), WidgetTag(7)),
-        ModifierChange(Id(3)),
         // text
         PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
         PropertyChange(Id(3), PropertyTag(2), JsonPrimitive(true)),
+        ModifierChange(Id(3)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
       ),
     )
@@ -190,11 +190,11 @@ class ProtocolTest {
       listOf(
         // Button
         Create(Id(1), WidgetTag(4)),
-        ModifierChange(Id(1)),
         // text
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
         // onClick
         PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
+        ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
@@ -257,11 +257,11 @@ class ProtocolTest {
       listOf(
         // Button2
         Create(Id(1), WidgetTag(7)),
-        ModifierChange(Id(1)),
         // text
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
         // onClick
         PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
+        ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
