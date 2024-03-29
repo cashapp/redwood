@@ -187,8 +187,8 @@ public class ProtocolBridge<W : Any>(
     for ((index, change) in changes.withIndex()) {
       if (change !is ModifierChange) continue
 
-      val reuseModifierIndex = change.elements.indexOfFirst { it.tag.value == REUSE_MODIFIER_TAG }
-      if (reuseModifierIndex == -1) continue
+      val wantsReuse = change.elements.any { it.tag.value == REUSE_MODIFIER_TAG }
+      if (!wantsReuse) continue
 
       val candidateIndex = pool.indexOfFirst { it.reuse }
       if (candidateIndex == -1) continue
