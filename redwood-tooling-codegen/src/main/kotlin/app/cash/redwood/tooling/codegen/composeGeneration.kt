@@ -328,3 +328,7 @@ private fun generateModifierImpl(
     .addFunction(modifierToString(modifier))
     .build()
 }
+
+private fun Schema.modifierImpl(modifier: Modifier): ClassName {
+  return ClassName(composePackage(), modifier.type.flatName + "Impl")
+}

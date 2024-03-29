@@ -36,6 +36,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
   return buildList {
     when (type) {
       Compose -> {
+        add(protocolGuestDeprecations(schema))
         add(generateProtocolBridge(this@generateFileSpecs))
         add(generateComposeProtocolModifierSerialization(this@generateFileSpecs))
         for (dependency in all) {
@@ -48,6 +49,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
       }
 
       Widget -> {
+        add(protocolHostDeprecations(schema))
         add(generateProtocolFactory(this@generateFileSpecs))
         for (dependency in all) {
           generateProtocolModifierImpls(dependency, host = schema)?.let { add(it) }

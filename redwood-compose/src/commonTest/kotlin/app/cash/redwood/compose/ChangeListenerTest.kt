@@ -20,8 +20,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
-import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
@@ -35,8 +35,8 @@ import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.compose.Text
+import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaProtocolFactory
-import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test

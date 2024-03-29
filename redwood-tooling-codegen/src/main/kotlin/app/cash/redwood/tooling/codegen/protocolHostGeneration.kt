@@ -23,6 +23,8 @@ import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.Widget
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -37,10 +39,32 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
+
+// TODO Delete this once 0.10.0 is released.
+internal fun protocolHostDeprecations(schema: Schema): FileSpec {
+  val typeName = "${schema.type.flatName}ProtocolFactory"
+  val newType = ClassName(schema.hostProtocolPackage(), typeName)
+  val unboundW = TypeVariableName("V")
+  return FileSpec.builder(schema.widgetPackage(), "protocolHostDeprecated")
+    .addAnnotation(suppressDeprecations)
+    .addTypeAlias(
+      TypeAliasSpec.builder(typeName, newType.parameterizedBy(unboundW))
+        .addTypeVariable(unboundW)
+        .addAnnotation(
+          AnnotationSpec.builder(Deprecated::class)
+            .addMember("%S", "Change import to .protocol.host.$typeName")
+            .build(),
+        )
+        .build(),
+    )
+    .build()
+}
 
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
@@ -88,7 +112,7 @@ internal fun generateProtocolFactory(
 ): FileSpec {
   val schema = schemaSet.schema
   val widgetSystem = schema.getWidgetSystemType().parameterizedBy(typeVariableW)
-  val type = schema.protocolFactoryType()
+  val type = ClassName(schema.hostProtocolPackage(), "${schema.type.flatName}ProtocolFactory")
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
     .addType(
@@ -212,7 +236,7 @@ internal fun generateProtocolFactory(
                 beginControlFlow("val serializer = when (element.tag.value)")
                 val host = schemaSet.schema
                 for ((localSchema, modifier) in modifiers) {
-                  val typeName = ClassName(localSchema.widgetPackage(host), modifier.type.flatName + "Impl")
+                  val typeName = ClassName(localSchema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
                   if (modifier.properties.isEmpty()) {
                     addStatement("%L -> return %T", modifier.tag, typeName)
                   } else {
@@ -470,11 +494,11 @@ internal fun generateProtocolModifierImpls(
   if (schema.modifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.widgetPackage(host), "modifierImpls")
+  return FileSpec.builder(schema.hostProtocolPackage(host), "modifierImpls")
     .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in schema.modifiers) {
-        val typeName = ClassName(schema.widgetPackage(host), modifier.type.flatName + "Impl")
+        val typeName = ClassName(schema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
         val typeBuilder = if (modifier.properties.isEmpty()) {
           TypeSpec.objectBuilder(typeName)
         } else {
@@ -514,4 +538,8 @@ internal fun generateProtocolModifierImpls(
       }
     }
     .build()
+}
+
+private fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
+  return ClassName(hostProtocolPackage(host), "Protocol${widget.type.flatName}")
 }

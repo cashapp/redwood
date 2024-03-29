@@ -57,6 +57,7 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
       }
 
       Testing -> {
+        add(testingDeprecations(schema))
         add(generateTester(this@generateFileSpecs))
         add(generateMutableWidgetFactory(schema))
         for (widget in schema.widgets) {

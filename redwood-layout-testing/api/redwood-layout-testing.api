@@ -1,4 +1,4 @@
-public final class app/cash/redwood/layout/widget/BoxValue : app/cash/redwood/testing/WidgetValue {
+public final class app/cash/redwood/layout/testing/BoxValue : app/cash/redwood/testing/WidgetValue {
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -15,7 +15,7 @@ public final class app/cash/redwood/layout/widget/BoxValue : app/cash/redwood/te
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
 
-public final class app/cash/redwood/layout/widget/ColumnValue : app/cash/redwood/testing/WidgetValue {
+public final class app/cash/redwood/layout/testing/ColumnValue : app/cash/redwood/testing/WidgetValue {
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -33,12 +33,12 @@ public final class app/cash/redwood/layout/widget/ColumnValue : app/cash/redwood
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
 
-public final class app/cash/redwood/layout/widget/RedwoodLayoutTesterKt {
+public final class app/cash/redwood/layout/testing/RedwoodLayoutTesterKt {
 	public static final fun RedwoodLayoutTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun RedwoodLayoutTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class app/cash/redwood/layout/widget/RedwoodLayoutTestingWidgetFactory : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
+public final class app/cash/redwood/layout/testing/RedwoodLayoutTestingWidgetFactory : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
 	public fun <init> ()V
 	public fun Box ()Lapp/cash/redwood/layout/widget/Box;
 	public fun Column ()Lapp/cash/redwood/layout/widget/Column;
@@ -46,7 +46,7 @@ public final class app/cash/redwood/layout/widget/RedwoodLayoutTestingWidgetFact
 	public fun Spacer ()Lapp/cash/redwood/layout/widget/Spacer;
 }
 
-public final class app/cash/redwood/layout/widget/RowValue : app/cash/redwood/testing/WidgetValue {
+public final class app/cash/redwood/layout/testing/RowValue : app/cash/redwood/testing/WidgetValue {
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -64,7 +64,7 @@ public final class app/cash/redwood/layout/widget/RowValue : app/cash/redwood/te
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
 
-public final class app/cash/redwood/layout/widget/SpacerValue : app/cash/redwood/testing/WidgetValue {
+public final class app/cash/redwood/layout/testing/SpacerValue : app/cash/redwood/testing/WidgetValue {
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;DDILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;DDLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -75,5 +75,10 @@ public final class app/cash/redwood/layout/widget/SpacerValue : app/cash/redwood
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/layout/widget/TestingDeprecatedKt {
+	public static final fun RedwoodLayoutTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodLayoutTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
