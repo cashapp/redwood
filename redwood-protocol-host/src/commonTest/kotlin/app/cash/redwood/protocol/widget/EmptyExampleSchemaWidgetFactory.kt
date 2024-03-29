@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
 import com.example.redwood.testing.modifier.BackgroundColor
+import com.example.redwood.testing.modifier.Reuse
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.Button2
 import com.example.redwood.testing.widget.Rectangle
@@ -44,4 +45,6 @@ open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Unit> {
   override fun BackgroundColor(value: Unit, modifier: BackgroundColor) {
   }
   override fun Split(): Split<Unit> = TODO()
+  override fun Reuse(value: Unit, modifier: Reuse) {
+  }
 }
