@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.WidgetSystem
@@ -55,4 +56,12 @@ public interface GeneratedProtocolFactory<W : Any> : ProtocolFactory<W> {
    * or result in the unit [`Modifier`][Modifier.Companion] being returned.
    */
   public fun createModifier(element: ModifierElement): Modifier
+
+  /**
+   * A map that reflects the tree structure for this factory.
+   *
+   * This map's keys are all known widget tags. Each entry's values are the known children tags
+   * for that widget tag.
+   */
+  public val childrenTags: Map<WidgetTag, List<ChildrenTag>>
 }

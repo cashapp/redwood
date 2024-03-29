@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
+import app.cash.redwood.tooling.codegen.Protocol.WidgetTag
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
@@ -29,11 +31,15 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
+import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.MAP
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
 /*
@@ -43,6 +49,13 @@ public class ExampleProtocolFactory<W : Any>(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GeneratedProtocolFactory<W> {
+  public override val childrenTags: Map<WidgetTag, List<ChildrenTag>> = mapOf(
+        WidgetTag(1) to listOf(ChildrenTag(1)),
+        WidgetTag(2) to listOf(ChildrenTag(1)),
+        WidgetTag(1_000_001) to listOf(ChildrenTag(1)),
+        WidgetTag(1_000_002) to listOf(ChildrenTag(1)),
+      )
+
   override fun createNode(tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
     1 -> TextProtocolNode(delegate.Sunspot.Text(), json, mismatchHandler)
     2 -> ButtonProtocolNode(delegate.Sunspot.Button(), json, mismatchHandler)
@@ -113,6 +126,37 @@ internal fun generateProtocolFactory(
         .addProperty(
           PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder(
+            "childrenTags",
+            MAP.parameterizedBy(WidgetTag, LIST.parameterizedBy(ChildrenTag)),
+            OVERRIDE,
+          )
+            .initializer(
+              buildCodeBlock {
+                val mapOf = MemberName("kotlin.collections", "mapOf")
+                val listOf = MemberName("kotlin.collections", "listOf")
+                add("%M(⇥\n", mapOf)
+                for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                  for (widget in dependency.widgets.sortedBy { it.tag }) {
+                    add(
+                      "%T(%L) to %M(%L),\n",
+                      WidgetTag,
+                      widget.tag,
+                      listOf,
+                      widget.traits
+                        .filterIsInstance<ProtocolChildren>()
+                        .sortedBy { it.tag }
+                        .map { CodeBlock.of("%T(%L)", ChildrenTag, it.tag) }
+                        .joinToCode(),
+                    )
+                  }
+                }
+                add("⇤)\n")
+              },
+            )
             .build(),
         )
         .addFunction(
