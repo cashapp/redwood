@@ -28,6 +28,7 @@ import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.ScopedTestRow
@@ -76,7 +77,8 @@ abstract class AbstractChangeListenerTest {
     snapshot: () -> T,
   ): TestRedwoodComposition<T>
 
-  @Test fun propertyChangeNotifiesWidget() = runTest {
+  @Test
+  fun propertyChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -91,13 +93,19 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "text hi",
+      "onClick false",
+      "onEndChanges",
+    )
 
     text = "hello"
     assertThat(c.awaitSnapshot()).containsExactly("text hello", "onEndChanges")
   }
 
-  @Test fun unrelatedPropertyChangeDoesNotNotifyWidget() = runTest {
+  @Test
+  fun unrelatedPropertyChangeDoesNotNotifyWidget() = runTest {
     val button = ListeningButton()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -113,13 +121,19 @@ abstract class AbstractChangeListenerTest {
       Button("hi", onClick = null)
       Text(text)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "text hi",
+      "onClick false",
+      "onEndChanges",
+    )
 
     text = "hello"
     assertThat(c.awaitSnapshot()).isEmpty()
   }
 
-  @Test fun modifierChangeNotifiesWidget() = runTest {
+  @Test
+  fun modifierChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -134,7 +148,12 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button("hi", onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "text hi",
+      "onClick false",
+      "onEndChanges",
+    )
 
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
@@ -142,7 +161,8 @@ abstract class AbstractChangeListenerTest {
     assertThat(c.awaitSnapshot()).containsExactly("modifier AccessibilityDescription(value=hey)", "onEndChanges")
   }
 
-  @Test fun multipleChangesNotifyWidgetOnce() = runTest {
+  @Test
+  fun multipleChangesNotifyWidgetOnce() = runTest {
     val button = ListeningButton()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -158,16 +178,26 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "text hi",
+      "onClick false",
+      "onEndChanges",
+    )
 
     text = "hello"
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier AccessibilityDescription(value=hey)", "text hello", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier AccessibilityDescription(value=hey)",
+      "text hello",
+      "onEndChanges",
+    )
   }
 
-  @Test fun childrenChangeNotifiesWidget() = runTest {
+  @Test
+  fun childrenChangeNotifiesWidget() = runTest {
     val row = ListeningTestRow()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -188,13 +218,19 @@ abstract class AbstractChangeListenerTest {
         Button("three", onClick = null)
       }
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "children insert", "children insert", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "children insert",
+      "children insert",
+      "onEndChanges",
+    )
 
     two = true
     assertThat(c.awaitSnapshot()).containsExactly("children insert", "onEndChanges")
   }
 
-  @Test fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
+  @Test
+  fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
     val row = ListeningTestRow()
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
@@ -217,7 +253,11 @@ abstract class AbstractChangeListenerTest {
         }
       }
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "children insert", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
+      "modifier Modifier",
+      "children insert",
+      "onEndChanges",
+    )
 
     two = true
     assertThat(c.awaitSnapshot()).isEmpty()

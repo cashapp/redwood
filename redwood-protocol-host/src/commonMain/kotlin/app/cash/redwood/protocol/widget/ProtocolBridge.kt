@@ -64,12 +64,16 @@ public class ProtocolBridge<W : Any>(
     @Suppress("NAME_SHADOWING")
     val changes = applyReuse(changes)
       .sortedBy {
-        // Apply structural changes first, then property changes, then modifiers. That way a
-        // widget's properties are always set before WidgetSystem.apply() is called.
+        // Create nodes, set their properties, set their modifiers, and then finally put them in
+        // their place in the widget tree. This order is chosen such that:
+        //  - no redundant modifier updates on newly-created children
+        //  - we don't apply modifiers until their properties are all set
+        //  - we can't change the relative orders of insert/move/remove without adjusting indexes
         when (it) {
+          is Create -> 0
           is PropertyChange -> 1
           is ModifierChange -> 2
-          else -> 0
+          else -> 3
         }
       }
 
