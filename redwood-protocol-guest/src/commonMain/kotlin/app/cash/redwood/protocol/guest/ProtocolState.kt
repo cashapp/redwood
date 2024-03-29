@@ -15,12 +15,14 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
 /** @suppress For generated code use only. */
+@RedwoodCodegenApi
 public class ProtocolState {
   private var nextValue = Id.Root.value + 1
   private val widgets = PlatformMap<Int, ProtocolWidget>()
