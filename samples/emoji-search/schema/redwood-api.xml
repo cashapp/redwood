@@ -11,4 +11,5 @@
     <property tag="1" name="url" type="kotlin.String"/>
     <event tag="2" name="onClick" nullable="true"/>
   </widget>
+  <modifier tag="-4543827" type="com.example.redwood.emojisearch.Reuse"/>
 </schema>
