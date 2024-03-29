@@ -51,6 +51,13 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
     func BackgroundColor(value: Any, modifier: BackgroundColor) {
         (value as! UIView).backgroundColor = UIColor(argb: UInt(modifier.color))
     }
+
+    func Split() -> Split {
+        fatalError()
+    }
+
+    func Reuse(value: Any, modifier: Reuse) {
+    }
 }
 
 extension UIColor {

@@ -17,6 +17,7 @@ package com.example.redwood.emojisearch.composeui
 
 import androidx.compose.runtime.Composable
 import coil3.ImageLoader
+import com.example.redwood.emojisearch.modifier.Reuse
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
@@ -28,4 +29,6 @@ class ComposeUiEmojiSearchWidgetFactory(
   override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage(imageLoader)
+  override fun Reuse(value: @Composable () -> Unit, modifier: Reuse) {
+  }
 }

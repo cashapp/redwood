@@ -19,6 +19,7 @@ kotlin {
       dependencies {
         api projects.redwoodLayoutWidget
         api projects.redwoodLazylayoutWidget
+        api projects.samples.emojiSearch.schema.modifiers
         api projects.samples.emojiSearch.values
       }
     }

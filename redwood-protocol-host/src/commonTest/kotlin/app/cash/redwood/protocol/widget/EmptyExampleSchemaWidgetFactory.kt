@@ -17,10 +17,12 @@ package app.cash.redwood.protocol.widget
 
 import app.cash.redwood.Modifier
 import com.example.redwood.testing.modifier.BackgroundColor
+import com.example.redwood.testing.modifier.Reuse
 import com.example.redwood.testing.widget.Button
 import com.example.redwood.testing.widget.Button2
 import com.example.redwood.testing.widget.Rectangle
 import com.example.redwood.testing.widget.ScopedTestRow
+import com.example.redwood.testing.widget.Split
 import com.example.redwood.testing.widget.TestRow
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.Text
@@ -41,5 +43,8 @@ open class EmptyTestSchemaWidgetFactory : TestSchemaWidgetFactory<Unit> {
   override fun TextInput(): TextInput<Unit> = TODO()
   override fun Rectangle(): Rectangle<Unit> = TODO()
   override fun BackgroundColor(value: Unit, modifier: BackgroundColor) {
+  }
+  override fun Split(): Split<Unit> = TODO()
+  override fun Reuse(value: Unit, modifier: Reuse) {
   }
 }

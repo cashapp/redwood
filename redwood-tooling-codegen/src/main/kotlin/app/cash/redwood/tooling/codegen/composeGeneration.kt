@@ -124,7 +124,6 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(modifier, %T.SetModifiers)\n", RedwoodCompose.WidgetNode)
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
@@ -151,6 +150,9 @@ internal fun generateComposable(
               is ProtocolTrait -> throw AssertionError()
             }
           }
+
+          // Set all properties then the modifiers.
+          updateLambda.add("set(modifier, %T.SetModifiers)\n", RedwoodCompose.WidgetNode)
 
           val arguments = listOf(
             CodeBlock.of("factory = { it.%N.%N() }", schema.type.flatName, flatName),

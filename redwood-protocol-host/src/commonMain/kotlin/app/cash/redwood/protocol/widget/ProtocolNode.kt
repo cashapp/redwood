@@ -20,6 +20,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import kotlin.math.max
 import kotlin.math.min
@@ -37,6 +38,9 @@ public abstract class ProtocolNode<W : Any> {
   internal var index: Int = -1
 
   internal var container: Widget.Children<W>? = null
+
+  internal var widgetTag: WidgetTag = UnknownWidgetTag
+  internal var reuse = false
 
   public abstract fun apply(change: PropertyChange, eventSink: EventSink)
 
@@ -62,7 +66,7 @@ public abstract class ProtocolNode<W : Any> {
 public class ProtocolChildren<W : Any>(
   public val children: Widget.Children<W>,
 ) {
-  private val nodes = mutableListOf<ProtocolNode<W>>()
+  internal val nodes = mutableListOf<ProtocolNode<W>>()
 
   internal fun insert(index: Int, node: ProtocolNode<W>) {
     nodes.let { nodes ->
@@ -110,3 +114,5 @@ public class ProtocolChildren<W : Any>(
     children.move(from, to, count)
   }
 }
+
+internal val UnknownWidgetTag: WidgetTag = WidgetTag(-1)
