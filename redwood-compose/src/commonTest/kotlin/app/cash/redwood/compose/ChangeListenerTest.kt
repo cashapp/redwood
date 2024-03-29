@@ -28,7 +28,6 @@ import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.ScopedTestRow
@@ -93,12 +92,7 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null)
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "text hi",
-      "onClick false",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).containsExactly("text hello", "onEndChanges")
@@ -121,12 +115,7 @@ abstract class AbstractChangeListenerTest {
       Button("hi", onClick = null)
       Text(text)
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "text hi",
-      "onClick false",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).isEmpty()
@@ -148,12 +137,7 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button("hi", onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "text hi",
-      "onClick false",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
@@ -178,22 +162,13 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "text hi",
-      "onClick false",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier AccessibilityDescription(value=hey)",
-      "text hello",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("text hello", "modifier AccessibilityDescription(value=hey)", "onEndChanges")
   }
 
   @Test
@@ -218,12 +193,7 @@ abstract class AbstractChangeListenerTest {
         Button("three", onClick = null)
       }
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "children insert",
-      "children insert",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "children insert", "children insert", "onEndChanges")
 
     two = true
     assertThat(c.awaitSnapshot()).containsExactly("children insert", "onEndChanges")
@@ -253,11 +223,7 @@ abstract class AbstractChangeListenerTest {
         }
       }
     }
-    assertThat(c.awaitSnapshot()).containsExactlyInAnyOrder(
-      "modifier Modifier",
-      "children insert",
-      "onEndChanges",
-    )
+    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "children insert", "onEndChanges")
 
     two = true
     assertThat(c.awaitSnapshot()).isEmpty()

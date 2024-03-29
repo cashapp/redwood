@@ -63,19 +63,6 @@ public class ProtocolBridge<W : Any>(
   override fun sendChanges(changes: List<Change>) {
     @Suppress("NAME_SHADOWING")
     val changes = applyReuse(changes)
-      .sortedBy {
-        // Create nodes, set their properties, set their modifiers, and then finally put them in
-        // their place in the widget tree. This order is chosen such that:
-        //  - no redundant modifier updates on newly-created children
-        //  - we don't apply modifiers until their properties are all set
-        //  - we can't change the relative orders of insert/move/remove without adjusting indexes
-        when (it) {
-          is Create -> 0
-          is PropertyChange -> 1
-          is ModifierChange -> 2
-          else -> 3
-        }
-      }
 
     val removedIds = mutableListOf<Id>()
 
