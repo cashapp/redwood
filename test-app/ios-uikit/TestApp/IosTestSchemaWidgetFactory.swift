@@ -57,7 +57,6 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
     }
 
     func Reuse(value: Any, modifier: Reuse) {
-        fatalError()
     }
 }
 
