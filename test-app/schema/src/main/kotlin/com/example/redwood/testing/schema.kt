@@ -43,6 +43,8 @@ import kotlin.time.Duration
     TextInput::class,
     Rectangle::class,
     BackgroundColor::class,
+    Split::class,
+    Reuse::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -107,6 +109,12 @@ public data class Rectangle(
   @Property(2) val cornerRadius: Float,
 )
 
+@Widget(9)
+public data class Split(
+  @Children(1) val left: () -> Unit,
+  @Children(2) val right: () -> Unit,
+)
+
 public object TestScope
 
 public object SecondaryTestScope
@@ -146,3 +154,6 @@ public data object CustomTypeDataObject
 public data class BackgroundColor(
   val color: Int,
 )
+
+@Modifier(-4_543_827) // -4_543_827 is a reserved tag.
+public object Reuse

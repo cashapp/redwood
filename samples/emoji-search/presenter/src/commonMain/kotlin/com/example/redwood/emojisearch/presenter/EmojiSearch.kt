@@ -43,6 +43,7 @@ import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
+import com.example.redwood.emojisearch.compose.reuse
 import example.values.TextFieldState
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -157,6 +158,7 @@ fun EmojiSearch(
     ) {
       items(filteredEmojis) { image ->
         Item(
+          modifier = Modifier.reuse(),
           emojiImage = image,
           onClick = {
             navigator.openUrl(image.url)
@@ -174,6 +176,7 @@ fun Item(
   onClick: () -> Unit = {},
 ) {
   Row(
+    modifier = modifier,
     width = Constraint.Fill,
     height = Constraint.Wrap,
     verticalAlignment = CrossAxisAlignment.Center,

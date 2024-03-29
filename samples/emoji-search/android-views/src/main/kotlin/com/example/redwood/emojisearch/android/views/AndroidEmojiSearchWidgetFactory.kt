@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.redwood.emojisearch.modifier.Reuse
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
@@ -30,4 +31,6 @@ class AndroidEmojiSearchWidgetFactory(
   override fun TextInput(): TextInput<View> = ViewTextInput(context)
   override fun Text(): Text<View> = ViewText(TextView(context))
   override fun Image(): Image<View> = ViewImage(ImageView(context))
+  override fun Reuse(value: View, modifier: Reuse) {
+  }
 }

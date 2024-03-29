@@ -125,6 +125,7 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:emoji-search:schema'
   include ':samples:emoji-search:schema:compose'
   include ':samples:emoji-search:schema:compose:protocol'
+  include ':samples:emoji-search:schema:modifiers'
   include ':samples:emoji-search:schema:testing'
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'

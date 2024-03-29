@@ -18,6 +18,7 @@ package com.example.redwood.emojisearch
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Default
+import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
@@ -29,6 +30,7 @@ import example.values.TextFieldState
     TextInput::class,
     Text::class,
     Image::class,
+    Reuse::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -60,3 +62,6 @@ data class Image(
   @Property(1) val url: String,
   @Property(2) @Default("null") val onClick: (() -> Unit)? = null,
 )
+
+@Modifier(-4_543_827) // -4_543_827 is a reserved tag.
+public object Reuse
