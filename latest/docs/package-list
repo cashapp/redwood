@@ -48,7 +48,7 @@ app.cash.redwood.protocol
 module:redwood-protocol-guest
 app.cash.redwood.protocol.guest
 module:redwood-protocol-host
-app.cash.redwood.protocol.widget
+app.cash.redwood.protocol.host
 module:redwood-runtime
 app.cash.redwood
 app.cash.redwood.ui
