@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.redwood.testing.treehouse
 
-import Foundation
-import TestAppKt
-import UIKit
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.modules.SerializersModule
 
-class RectangleBinding: Rectangle {
-
-    private let root: UIView = {
-        let view = UIView()
-        return view
-    }()
-
-    var modifier: Modifier = ExposedKt.modifier()
-    var value: Any { root }
-
-    func backgroundColor(backgroundColor: UInt32) {
-        root.backgroundColor = UIColor(argb: UInt(backgroundColor))
-    }
-
-    func cornerRadius(cornerRadius: Float) {
-        root.layer.cornerRadius = CGFloat(cornerRadius)
-    }
+val testAppSerializersModule = SerializersModule {
+  contextual(UInt::class, UInt.serializer())
 }
