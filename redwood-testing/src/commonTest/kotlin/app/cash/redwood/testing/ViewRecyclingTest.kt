@@ -13,12 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress(
-  "CANNOT_OVERRIDE_INVISIBLE_MEMBER",
-  "INVISIBLE_MEMBER",
-  "INVISIBLE_REFERENCE",
-)
-
 package app.cash.redwood.testing
 
 import app.cash.redwood.Modifier
@@ -26,7 +20,6 @@ import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.BoxValue
 import app.cash.redwood.layout.testing.ColumnValue
-import app.cash.redwood.layout.testing.MutableBox
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isNotSameInstanceAs
@@ -44,6 +37,7 @@ class ViewRecyclingTest {
   private val reuse = Modifier.reuse()
 
   /** Confirm views are recycled in the simplest case. */
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   @Test
   fun happyPath() = runTest {
     viewRecyclingTest {
@@ -59,7 +53,7 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "one")),
         ),
       )
-      val snapshot1Box = widgets.single() as MutableBox
+      val snapshot1Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
       val snapshot1BoxText = snapshot1Box.children.single()
 
       // Update the content. The old widgets are pooled and new widgets are created.
@@ -74,7 +68,7 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "two")),
         ),
       )
-      val snapshot2Box = widgets.single() as MutableBox
+      val snapshot2Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
       val snapshot2BoxText = snapshot2Box.children.single()
       assertThat(snapshot2Box).isNotSameInstanceAs(snapshot1Box)
       assertThat(snapshot2BoxText).isNotSameInstanceAs(snapshot1Box)
@@ -91,7 +85,7 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "three")),
         ),
       )
-      val snapshot3Box = widgets.single() as MutableBox
+      val snapshot3Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
       val snapshot3BoxText = snapshot3Box.children.single()
       assertThat(snapshot3Box).isSameInstanceAs(snapshot1Box)
       assertThat(snapshot3BoxText).isSameInstanceAs(snapshot1BoxText)
@@ -148,6 +142,97 @@ class ViewRecyclingTest {
         children = listOf(
           TextValue(modifier = reuse, text = "c"),
           TextValue(modifier = reuse, text = "d"),
+        ),
+      ),
+    )
+  }
+
+  @Test
+  fun multipleElementsOfDifferentTypesReused() = runTest {
+    assertReuse(
+      content = { step ->
+        Column {
+          when (step) {
+            1 -> {
+              Text(modifier = reuse, text = "a")
+              Box(modifier = reuse) {
+                Text(text = "b")
+              }
+            }
+            3 -> {
+              Box(modifier = reuse) {
+                Text(text = "c")
+              }
+              Text(modifier = reuse, text = "d")
+            }
+          }
+        }
+      },
+      step3Value = ColumnValue(
+        children = listOf(
+          BoxValue(
+            modifier = reuse,
+            children = listOf(
+              TextValue(text = "c"),
+            ),
+          ),
+          TextValue(modifier = reuse, text = "d"),
+        ),
+      ),
+    )
+  }
+
+  /** This confirms the shape hash works in practice. */
+  @Test
+  fun multipleElementsOfDifferentShapesReused() = runTest {
+    assertReuse(
+      content = { step ->
+        Column {
+          when (step) {
+            1 -> {
+              Box(modifier = reuse) {
+                Text(text = "a")
+              }
+              Box(modifier = reuse) {
+              }
+              Box(modifier = reuse) {
+                Text(text = "b")
+                Text(text = "c")
+              }
+            }
+            3 -> {
+              Box(modifier = reuse) {
+                Text(text = "d")
+                Text(text = "e")
+              }
+              Box(modifier = reuse) {
+                Text(text = "f")
+              }
+              Box(modifier = reuse) {
+              }
+            }
+          }
+        }
+      },
+      step3Value = ColumnValue(
+        children = listOf(
+          BoxValue(
+            modifier = reuse,
+            children = listOf(
+              TextValue(text = "d"),
+              TextValue(text = "e"),
+            ),
+          ),
+          BoxValue(
+            modifier = reuse,
+            children = listOf(
+              TextValue(text = "f"),
+            ),
+          ),
+          BoxValue(
+            modifier = reuse,
+            children = listOf(),
+          ),
         ),
       ),
     )

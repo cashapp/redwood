@@ -42,6 +42,9 @@ public abstract class ProtocolNode<W : Any> {
   internal var widgetTag: WidgetTag = UnknownWidgetTag
   internal var reuse = false
 
+  /** Assigned when the node is added to the pool. */
+  internal var shapeHash = 0L
+
   public abstract fun apply(change: PropertyChange, eventSink: EventSink)
 
   public fun updateModifier(modifier: Modifier) {
