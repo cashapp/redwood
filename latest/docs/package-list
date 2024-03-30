@@ -20,6 +20,7 @@ app.cash.redwood.layout.modifier
 module:redwood-layout-schema
 app.cash.redwood.layout
 module:redwood-layout-testing
+app.cash.redwood.layout.testing
 app.cash.redwood.layout.widget
 module:redwood-layout-uiview
 app.cash.redwood.layout.uiview
@@ -36,6 +37,7 @@ app.cash.redwood.lazylayout.composeui
 module:redwood-lazylayout-schema
 app.cash.redwood.lazylayout
 module:redwood-lazylayout-testing
+app.cash.redwood.lazylayout.testing
 app.cash.redwood.lazylayout.widget
 module:redwood-lazylayout-uiview
 app.cash.redwood.lazylayout.uiview
