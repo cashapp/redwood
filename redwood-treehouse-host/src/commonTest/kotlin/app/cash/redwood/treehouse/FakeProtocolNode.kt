@@ -22,8 +22,8 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
-import app.cash.redwood.protocol.widget.ProtocolChildren
-import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.host.ProtocolChildren
+import app.cash.redwood.protocol.host.ProtocolNode
 import kotlinx.serialization.json.JsonPrimitive
 
 /**

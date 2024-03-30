@@ -20,8 +20,8 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.widget.GeneratedProtocolFactory
-import app.cash.redwood.protocol.widget.ProtocolNode
+import app.cash.redwood.protocol.host.GeneratedProtocolFactory
+import app.cash.redwood.protocol.host.ProtocolNode
 import app.cash.redwood.widget.WidgetSystem
 
 @OptIn(RedwoodCodegenApi::class)

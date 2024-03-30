@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.ProtocolFactory
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolFactory
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.widget.RedwoodView
 import kotlin.native.ObjCName
 import kotlinx.serialization.json.Json

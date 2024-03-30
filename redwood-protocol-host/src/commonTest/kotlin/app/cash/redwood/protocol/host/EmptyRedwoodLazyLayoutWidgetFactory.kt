@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.widget
+package app.cash.redwood.protocol.host
 
-import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 
-class RecordingEventSink : EventSink {
-  val events = mutableListOf<Event>()
-
-  override fun sendEvent(event: Event) {
-    events += event
-  }
+class EmptyRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<Unit> {
+  override fun LazyList() = TODO()
+  override fun RefreshableLazyList() = TODO()
 }

@@ -21,7 +21,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline

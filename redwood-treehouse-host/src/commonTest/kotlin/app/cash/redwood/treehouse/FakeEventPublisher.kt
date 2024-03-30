@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.zipline.EventListener
 
 class FakeEventPublisher : EventPublisher {

@@ -30,7 +30,7 @@ import app.cash.redwood.layout.widget.MutableBox
 import app.cash.redwood.layout.widget.MutableColumn
 import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat

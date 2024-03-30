@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.widget
+package app.cash.redwood.protocol.host
 
 import app.cash.redwood.Modifier
 import com.example.redwood.testing.modifier.BackgroundColor
