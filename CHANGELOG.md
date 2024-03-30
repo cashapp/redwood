@@ -16,6 +16,10 @@ Changed:
 - The entire `redwood-yoga` artifact's public API has been annotated with an opt-in annotation indicating that it's only for Redwood internal use and is not stable.
 - Revert: Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
 - The generated "widget factories" type (e.g., `MySchemaWidgetFactories`) is now called a "widget system" (e.g., `MySchemaWidgetSystem`). Sometimes it was also referred to as a "provider" in parameter names. A `@Deprecated typealias` is generated for now, but will be removed in the future.
+- The package names of some generated code has changed. Deprecated `typealias`es are generated in the old locations for public types and functions, but those will be removed in the next release.
+  - Testing code is now under `your.package.testing`.
+  - Protocol guest code is now under `your.package.protocol.guest`.
+  - Protocol host code is now under `your.package.protocol.host`.
 
 Fixed:
 - Fix failure to release JS resources when calling `CoroutineScope` is being cancelled

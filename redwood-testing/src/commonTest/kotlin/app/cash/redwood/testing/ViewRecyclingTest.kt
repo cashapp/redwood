@@ -24,9 +24,9 @@ package app.cash.redwood.testing
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
-import app.cash.redwood.layout.widget.BoxValue
-import app.cash.redwood.layout.widget.ColumnValue
-import app.cash.redwood.layout.widget.MutableBox
+import app.cash.redwood.layout.testing.BoxValue
+import app.cash.redwood.layout.testing.ColumnValue
+import app.cash.redwood.layout.testing.MutableBox
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isNotSameInstanceAs
@@ -35,8 +35,8 @@ import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Split
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.compose.reuse
-import com.example.redwood.testing.widget.SplitValue
-import com.example.redwood.testing.widget.TextValue
+import com.example.redwood.testing.testing.SplitValue
+import com.example.redwood.testing.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

@@ -61,34 +61,16 @@ internal val Event.lambdaType: TypeName
 
 internal val Schema.unscopedModifiers get() = modifiers.filter { it.scopes.isEmpty() }
 
-internal fun Schema.composePackage(host: Schema? = null): String {
-  return if (host == null) {
-    val packageName = type.names[0]
-    "$packageName.compose"
-  } else {
-    val hostPackage = host.type.names[0]
-    "$hostPackage.compose.${type.flatName.lowercase()}"
-  }
-}
+internal fun Schema.composePackage() = type.names[0] + ".compose"
+internal fun Schema.modifierPackage() = type.names[0] + ".modifier"
+internal fun Schema.testingPackage() = type.names[0] + ".testing"
+internal fun Schema.widgetPackage() = type.names[0] + ".widget"
 
-internal fun Schema.protocolBridgeType(): ClassName {
-  return ClassName(composePackage(), "${type.flatName}ProtocolBridge")
-}
-
-internal fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "Protocol${type.flatName}WidgetFactory")
-}
-
-internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
-}
-
-internal fun Schema.protocolFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}ProtocolFactory")
-}
-
-internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "Protocol${widget.type.flatName}")
+internal fun Schema.guestProtocolPackage(host: Schema? = null) = protocolPackage("guest", host)
+internal fun Schema.hostProtocolPackage(host: Schema? = null) = protocolPackage("host", host)
+private fun Schema.protocolPackage(name: String, host: Schema?): String {
+  val base = (host ?: this).type.names[0] + ".protocol." + name
+  return if (host != null) "$base.${type.flatName.lowercase()}" else base
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
@@ -99,18 +81,6 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}WidgetFactory")
 }
 
-internal fun Schema.getTestingWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}TestingWidgetFactory")
-}
-
-internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(), "Mutable${widget.type.flatName}")
-}
-
-internal fun Schema.widgetValueType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(), "${widget.type.flatName}Value")
-}
-
 internal fun Schema.getWidgetFactoryOwnerType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryOwner")
 }
@@ -119,34 +89,9 @@ internal fun Schema.getWidgetSystemType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}WidgetSystem")
 }
 
-internal fun Schema.widgetPackage(host: Schema? = null): String {
-  return if (host == null) {
-    val packageName = type.names[0]
-    "$packageName.widget"
-  } else {
-    val hostPackage = host.type.names[0]
-    "$hostPackage.widget.${type.flatName.lowercase()}"
-  }
-}
-
 internal fun Schema.modifierType(modifier: Modifier): ClassName {
-  return ClassName(type.names[0] + ".modifier", modifier.type.flatName)
+  return ClassName(modifierPackage(), modifier.type.flatName)
 }
-
-internal fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
-  return ClassName(composePackage(host), modifier.type.flatName + "Serializer")
-}
-
-internal fun Schema.modifierImpl(modifier: Modifier): ClassName {
-  return ClassName(composePackage(), modifier.type.flatName + "Impl")
-}
-
-internal fun Schema.getTesterFunction(): MemberName {
-  return MemberName(widgetPackage(), "${type.flatName}Tester")
-}
-
-internal val Schema.modifierToProtocol: MemberName get() =
-  MemberName(composePackage(), "toProtocol")
 
 internal fun ProtocolSchemaSet.allModifiers(): List<Pair<ProtocolSchema, ProtocolModifier>> {
   return all.flatMap { schema ->

@@ -26,8 +26,8 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.treehouse.TestAppPresenter
-import com.example.redwood.testing.widget.TestSchemaProtocolFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import okio.ByteString

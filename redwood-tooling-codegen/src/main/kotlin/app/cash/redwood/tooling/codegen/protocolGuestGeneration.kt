@@ -15,16 +15,20 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.redwood.tooling.schema.Modifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
+import app.cash.redwood.tooling.schema.Schema
+import app.cash.redwood.tooling.schema.Widget
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.BYTE
 import com.squareup.kotlinpoet.CHAR
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.DOUBLE
 import com.squareup.kotlinpoet.FLOAT
@@ -36,17 +40,37 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SHORT
 import com.squareup.kotlinpoet.STRING
+import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
 private val protocolViewType = UNIT
+
+// TODO Delete this once 0.10.0 is released.
+internal fun protocolGuestDeprecations(schema: Schema): FileSpec {
+  val typeName = "${schema.type.flatName}ProtocolBridge"
+  val newType = ClassName(schema.guestProtocolPackage(), typeName)
+  return FileSpec.builder(schema.composePackage(), "protocolGuestDeprecated")
+    .addAnnotation(suppressDeprecations)
+    .addTypeAlias(
+      TypeAliasSpec.builder(typeName, newType)
+        .addAnnotation(
+          AnnotationSpec.builder(Deprecated::class)
+            .addMember("%S", "Change import to .protocol.guest.$typeName")
+            .build(),
+        )
+        .build(),
+    )
+    .build()
+}
 
 /*
 class ExampleProtocolBridge private constructor(
@@ -85,7 +109,7 @@ internal fun generateProtocolBridge(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
-  val type = schema.protocolBridgeType()
+  val type = ClassName(schema.guestProtocolPackage(), "${schema.type.flatName}ProtocolBridge")
   val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(protocolViewType)
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
@@ -531,7 +555,7 @@ internal fun generateProtocolModifierSerializers(
   if (serializableModifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.composePackage(host), "modifierSerializers")
+  return FileSpec.builder(schema.guestProtocolPackage(host), "modifierSerializers")
     .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in serializableModifiers) {
@@ -720,7 +744,7 @@ internal fun generateComposeProtocolModifierSerialization(
 ): FileSpec {
   val schema = schemaSet.schema
   val name = schema.modifierToProtocol.simpleName
-  return FileSpec.builder(schema.composePackage(), "modifierSerialization")
+  return FileSpec.builder(schema.guestProtocolPackage(), "modifierSerialization")
     .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(name)
@@ -776,3 +800,18 @@ internal fun generateComposeProtocolModifierSerialization(
     )
     .build()
 }
+
+private fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
+  return ClassName(guestProtocolPackage(host), "Protocol${type.flatName}WidgetFactory")
+}
+
+private fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
+  return ClassName(guestProtocolPackage(host), "Protocol${widget.type.flatName}")
+}
+
+private fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
+  return ClassName(guestProtocolPackage(host), modifier.type.flatName + "Serializer")
+}
+
+internal val Schema.modifierToProtocol: MemberName get() =
+  MemberName(guestProtocolPackage(), "toProtocol")

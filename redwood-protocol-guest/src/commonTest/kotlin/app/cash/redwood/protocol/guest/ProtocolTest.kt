@@ -41,8 +41,8 @@ import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Button2
 import com.example.redwood.testing.compose.TestRow
-import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.Text
+import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.flow.MutableStateFlow

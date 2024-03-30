@@ -23,7 +23,9 @@ import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -33,16 +35,71 @@ import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.SUSPEND
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.joinToCode
 
+// TODO Delete this once 0.10.0 is released.
+internal fun testingDeprecations(schema: Schema): FileSpec {
+  val typeVarR = TypeVariableName("R")
+  val testingFunctionBodyType = LambdaTypeName.get(
+    receiver = RedwoodTesting.TestRedwoodComposition
+      .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
+    returnType = typeVarR,
+  ).copy(suspending = true)
+  val testingFunctionName = "${schema.type.flatName}Tester"
+  val deprecation = AnnotationSpec.builder(Deprecated::class)
+    .addMember("%S", "Change import to .testing.$testingFunctionName")
+    .build()
+  return FileSpec.builder(schema.widgetPackage(), "testingDeprecated")
+    .addAnnotation(suppressDeprecations)
+    .addFunction(
+      FunSpec.builder(testingFunctionName)
+        .addAnnotation(deprecation)
+        .addModifiers(SUSPEND)
+        .addParameter(
+          ParameterSpec.builder("onBackPressedDispatcher", Redwood.OnBackPressedDispatcher)
+            .defaultValue("%T", RedwoodTesting.NoOpOnBackPressedDispatcher)
+            .build(),
+        )
+        .addParameter(
+          ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))
+            .defaultValue("null")
+            .build(),
+        )
+        .addParameter(
+          ParameterSpec.builder("uiConfiguration", Redwood.UiConfiguration)
+            .defaultValue("%T()", Redwood.UiConfiguration)
+            .build(),
+        )
+        .addParameter("body", testingFunctionBodyType)
+        .addTypeVariable(typeVarR)
+        .returns(typeVarR)
+        .addStatement("return %M(onBackPressedDispatcher, savedState, uiConfiguration, body)", MemberName(schema.testingPackage(), testingFunctionName))
+        .build(),
+    )
+    .apply {
+      for (widget in schema.widgets) {
+        val valueType = schema.widgetValueType(widget)
+        addTypeAlias(
+          TypeAliasSpec.builder(valueType.simpleName, valueType)
+            .addAnnotation(deprecation)
+            .build(),
+        )
+      }
+    }
+    .build()
+}
+
 /*
 suspend fun <R> ExampleTester(
+  onBackPressedDispatcher: OnBackPressedDispatcher = NoOpOnBackPressedDispatcher,
   savedState: TestSavedState? = null,
   uiConfiguration: UiConfiguration = UiConfiguration(),
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
@@ -64,14 +121,14 @@ suspend fun <R> ExampleTester(
 */
 internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
-  val testerFunction = schema.getTesterFunction()
+  val testerFunction = MemberName(schema.testingPackage(), "${schema.type.flatName}Tester")
   val typeVarR = TypeVariableName("R")
   val bodyType = LambdaTypeName.get(
     receiver = RedwoodTesting.TestRedwoodComposition
       .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
     returnType = typeVarR,
   ).copy(suspending = true)
-  return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
+  return FileSpec.builder(testerFunction)
     .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(testerFunction)
@@ -445,4 +502,16 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
     .build()
+}
+
+private fun Schema.getTestingWidgetFactoryType(): ClassName {
+  return ClassName(testingPackage(), "${type.flatName}TestingWidgetFactory")
+}
+
+private fun Schema.mutableWidgetType(widget: Widget): ClassName {
+  return ClassName(testingPackage(), "Mutable${widget.type.flatName}")
+}
+
+private fun Schema.widgetValueType(widget: Widget): ClassName {
+  return ClassName(testingPackage(), "${widget.type.flatName}Value")
 }
