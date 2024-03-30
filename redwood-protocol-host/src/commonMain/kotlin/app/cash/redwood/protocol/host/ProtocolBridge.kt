@@ -305,7 +305,7 @@ public class ProtocolBridge<W : Any>(
       if (widgetTag == UnknownWidgetTag) return false // No 'Create' for this.
       if (other.widgetTag != widgetTag) return false // Widget types don't match.
 
-      for (childrenTag in factory.childrenTags[widgetTag]!!) {
+      for (childrenTag in factory.widgetChildren(widgetTag)) {
         if (
           !shapeMatchesChildren(
             factory = factory,

@@ -1,7 +1,7 @@
 public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocolFactory : app/cash/redwood/protocol/host/ProtocolFactory {
 	public abstract fun createModifier (Lapp/cash/redwood/protocol/ModifierElement;)Lapp/cash/redwood/Modifier;
 	public abstract fun createNode-WCEpcRY (I)Lapp/cash/redwood/protocol/host/ProtocolNode;
-	public abstract fun getChildrenTags ()Ljava/util/Map;
+	public abstract fun widgetChildren-WCEpcRY (I)Ljava/util/List;
 }
 
 public final class app/cash/redwood/protocol/host/ProtocolBridge : app/cash/redwood/protocol/ChangesSink {
