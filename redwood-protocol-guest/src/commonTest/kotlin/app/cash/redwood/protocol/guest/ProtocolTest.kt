@@ -20,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
+import app.cash.redwood.layout.compose.Column
+import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
@@ -36,8 +38,11 @@ import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.message
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.Button2
 import com.example.redwood.testing.compose.TestRow
@@ -275,6 +280,38 @@ class ProtocolTest {
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
+  }
+
+  @Test fun entireSubtreeRemoved() = runTest {
+    val composition = testProtocolComposition()
+
+    var clicks = 0
+    var remove by mutableStateOf(false)
+    composition.setContent {
+      if (!remove) {
+        Row {
+          Column {
+            Button("Click?", onClick = { clicks++ })
+          }
+        }
+      }
+    }
+    composition.awaitSnapshot()
+    assertThat(clicks).isEqualTo(0)
+
+    // Ensure the button is present and receiving clicks.
+    bridge.sendEvent(Event(Id(3), EventTag(2)))
+    assertThat(clicks).isEqualTo(1)
+
+    remove = true
+    composition.awaitSnapshot()
+
+    // If the whole tree was removed, we cannot target the button anymore.
+    assertFailure { bridge.sendEvent(Event(Id(3), EventTag(2))) }
+      .isInstanceOf<IllegalArgumentException>()
+      .message()
+      .isEqualTo("Unknown node ID 3 for event with tag 2")
+    assertThat(clicks).isEqualTo(1)
   }
 
   private fun TestScope.testProtocolComposition(): TestRedwoodComposition<List<Change>> {

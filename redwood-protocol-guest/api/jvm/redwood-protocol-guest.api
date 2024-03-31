@@ -32,7 +32,6 @@ public final class app/cash/redwood/protocol/guest/ProtocolState {
 	public final fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
 	public final fun nextId-0HhLjSo ()I
 	public final fun removeWidget-ou3jOuA (I)V
-	public final fun widgetChildren-AWfp_YY (II)Lapp/cash/redwood/widget/Widget$Children;
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget : app/cash/redwood/widget/Widget {
@@ -41,5 +40,17 @@ public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget :
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Lkotlin/Unit;
 	public abstract fun sendEvent (Lapp/cash/redwood/protocol/Event;)V
+	public abstract fun visitIds (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/cash/redwood/widget/Widget$Children {
+	public static final field $stable I
+	public synthetic fun <init> (IILapp/cash/redwood/protocol/guest/ProtocolState;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getWidgets ()Ljava/util/List;
+	public fun insert (ILapp/cash/redwood/widget/Widget;)V
+	public fun move (III)V
+	public fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
+	public fun remove (II)V
+	public final fun visitIds (Lkotlin/jvm/functions/Function1;)V
 }
 

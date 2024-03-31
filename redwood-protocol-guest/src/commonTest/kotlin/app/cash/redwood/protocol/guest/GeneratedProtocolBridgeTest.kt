@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.guest
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventTag
@@ -40,6 +41,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
+@OptIn(RedwoodCodegenApi::class)
 class GeneratedProtocolBridgeTest {
   @Test fun propertyUsesSerializersModule() {
     val json = Json {
