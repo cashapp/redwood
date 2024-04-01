@@ -80,6 +80,18 @@ gradlePlugin {
       description = "Redwood schema layout modifier code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodModifiersGeneratorPlugin"
     }
+    redwoodProtocolGuestGenerator {
+      id = "app.cash.redwood.generator.protocol.guest"
+      displayName = "Redwood generator (guest protocol)"
+      description = "Redwood schema guest protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodProtocolGuestGeneratorPlugin"
+    }
+    redwoodProtocolHostGenerator {
+      id = "app.cash.redwood.generator.protocol.host"
+      displayName = "Redwood generator (host protocol)"
+      description = "Redwood schema host protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodProtocolHostGeneratorPlugin"
+    }
     redwoodTestingGenerator {
       id = "app.cash.redwood.generator.testing"
       displayName = "Redwood generator (testing)"

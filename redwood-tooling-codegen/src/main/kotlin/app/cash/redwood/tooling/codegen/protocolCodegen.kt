@@ -15,15 +15,15 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Compose
-import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Widget
+import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Guest
+import app.cash.redwood.tooling.codegen.ProtocolCodegenType.Host
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import com.squareup.kotlinpoet.FileSpec
 import java.nio.file.Path
 
 public enum class ProtocolCodegenType {
-  Compose,
-  Widget,
+  Guest,
+  Host,
 }
 
 public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Path) {
@@ -35,7 +35,7 @@ public fun ProtocolSchemaSet.generate(type: ProtocolCodegenType, destination: Pa
 internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): List<FileSpec> {
   return buildList {
     when (type) {
-      Compose -> {
+      Guest -> {
         add(protocolGuestDeprecations(schema))
         add(generateProtocolBridge(this@generateFileSpecs))
         add(generateComposeProtocolModifierSerialization(this@generateFileSpecs))
@@ -48,7 +48,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
         }
       }
 
-      Widget -> {
+      Host -> {
         add(protocolHostDeprecations(schema))
         add(generateProtocolFactory(this@generateFileSpecs))
         for (dependency in all) {

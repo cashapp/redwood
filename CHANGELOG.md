@@ -20,6 +20,8 @@ Changed:
   - Testing code is now under `your.package.testing`.
   - Protocol guest code is now under `your.package.protocol.guest`.
   - Protocol host code is now under `your.package.protocol.host`.
+- The 'app.cash.redwood.generator.compose.protocol' and 'app.cash.redwood.generator.widget.protocol' Gradle plugins are now deprecated and will be removed in the next release. Use 'app.cash.redwood.generator.protocol.guest' and 'app.cash.redwood.generator.protocol.host', respectively.
+- The 'redwood-tooling-codegen' CLI flags for protocol codegen have changed from `--compose-protocol` and `--widget-protocol` to `--protocol-guest` and `--protocol-host`, respectively.
 
 Fixed:
 - Fix failure to release JS resources when calling `CoroutineScope` is being cancelled
