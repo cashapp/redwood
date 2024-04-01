@@ -25,6 +25,8 @@ public final class app/cash/redwood/gradle/RedwoodComposePlugin : org/jetbrains/
 
 public final class app/cash/redwood/gradle/RedwoodComposeProtocolGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
 	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
 }
 
 public abstract class app/cash/redwood/gradle/RedwoodGeneratorExtension : app/cash/redwood/gradle/RedwoodSchemaExtension {
@@ -40,11 +42,11 @@ public abstract class app/cash/redwood/gradle/RedwoodGeneratorPlugin : org/gradl
 
 public final class app/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy : java/lang/Enum {
 	public static final field Compose Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
-	public static final field ComposeProtocol Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static final field Modifiers Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field ProtocolGuest Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field ProtocolHost Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static final field Testing Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static final field Widget Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
-	public static final field WidgetProtocol Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static fun values ()[Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
@@ -57,6 +59,14 @@ public final class app/cash/redwood/gradle/RedwoodLintPlugin : org/gradle/api/Pl
 }
 
 public final class app/cash/redwood/gradle/RedwoodModifiersGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodProtocolGuestGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodProtocolHostGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
 	public fun <init> ()V
 }
 
@@ -82,5 +92,7 @@ public final class app/cash/redwood/gradle/RedwoodWidgetGeneratorPlugin : app/ca
 
 public final class app/cash/redwood/gradle/RedwoodWidgetProtocolGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
 	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
 }
 
