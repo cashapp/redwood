@@ -58,7 +58,7 @@ class ProtocolFactoryTest {
     )
 
     val t = assertFailsWith<IllegalArgumentException> {
-      factory.createNode(WidgetTag(345432))
+      factory.createNode(Id(1), WidgetTag(345432))
     }
     assertThat(t).hasMessage("Unknown widget tag 345432")
   }
@@ -74,7 +74,7 @@ class ProtocolFactoryTest {
       mismatchHandler = handler,
     )
 
-    assertThat(factory.createNode(WidgetTag(345432))).isNull()
+    assertThat(factory.createNode(Id(1), WidgetTag(345432))).isNull()
 
     assertThat(handler.events.single()).isEqualTo("Unknown widget 345432")
   }
@@ -214,7 +214,7 @@ class ProtocolFactoryTest {
         RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
-    val button = factory.createNode(WidgetTag(4))!!
+    val button = factory.createNode(Id(1), WidgetTag(4))!!
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(ChildrenTag(345432))
@@ -233,7 +233,7 @@ class ProtocolFactoryTest {
       mismatchHandler = handler,
     )
 
-    val button = factory.createNode(WidgetTag(4))!!
+    val button = factory.createNode(Id(1), WidgetTag(4))!!
     assertThat(button.children(ChildrenTag(345432))).isNull()
 
     assertThat(handler.events.single()).isEqualTo("Unknown children 345432 for 4")
@@ -256,7 +256,7 @@ class ProtocolFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.createNode(WidgetTag(5))!!
+    val textInput = factory.createNode(Id(1), WidgetTag(5))!!
 
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
@@ -272,7 +272,7 @@ class ProtocolFactoryTest {
         RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
       ),
     )
-    val button = factory.createNode(WidgetTag(4))!!
+    val button = factory.createNode(Id(1), WidgetTag(4))!!
 
     val change = PropertyChange(Id(1), PropertyTag(345432))
     val eventSink = EventSink { throw UnsupportedOperationException() }
@@ -292,7 +292,7 @@ class ProtocolFactoryTest {
       ),
       mismatchHandler = handler,
     )
-    val button = factory.createNode(WidgetTag(4))!!
+    val button = factory.createNode(Id(1), WidgetTag(4))!!
 
     button.apply(PropertyChange(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
@@ -316,7 +316,7 @@ class ProtocolFactoryTest {
       ),
       json = json,
     )
-    val textInput = factory.createNode(WidgetTag(5))!!
+    val textInput = factory.createNode(Id(1), WidgetTag(5))!!
 
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyChange(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)

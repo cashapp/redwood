@@ -1,6 +1,6 @@
 public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocolFactory : app/cash/redwood/protocol/host/ProtocolFactory {
 	public abstract fun createModifier (Lapp/cash/redwood/protocol/ModifierElement;)Lapp/cash/redwood/Modifier;
-	public abstract fun createNode-WCEpcRY (I)Lapp/cash/redwood/protocol/host/ProtocolNode;
+	public abstract fun createNode-kyz2zXs (II)Lapp/cash/redwood/protocol/host/ProtocolNode;
 	public abstract fun widgetChildren-WCEpcRY (I)Ljava/util/List;
 }
 
@@ -12,6 +12,7 @@ public final class app/cash/redwood/protocol/host/ProtocolBridge : app/cash/redw
 public final class app/cash/redwood/protocol/host/ProtocolChildren {
 	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;)V
 	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun visitIds (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class app/cash/redwood/protocol/host/ProtocolFactory {
@@ -31,10 +32,13 @@ public final class app/cash/redwood/protocol/host/ProtocolMismatchHandler$Compan
 }
 
 public abstract class app/cash/redwood/protocol/host/ProtocolNode {
-	public fun <init> ()V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun apply (Lapp/cash/redwood/protocol/PropertyChange;Lapp/cash/redwood/protocol/EventSink;)V
 	public abstract fun children-dBpC-2Y (I)Lapp/cash/redwood/protocol/host/ProtocolChildren;
+	public final fun getId-0HhLjSo ()I
 	public abstract fun getWidget ()Lapp/cash/redwood/widget/Widget;
+	public final fun getWidgetTag-BlhN7y0 ()I
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
+	public abstract fun visitIds (Lkotlin/jvm/functions/Function1;)V
 }
 

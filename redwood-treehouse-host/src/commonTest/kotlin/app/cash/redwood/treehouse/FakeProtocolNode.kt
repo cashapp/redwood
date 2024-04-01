@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.host.ProtocolChildren
 import app.cash.redwood.protocol.host.ProtocolNode
 import kotlinx.serialization.json.JsonPrimitive
@@ -30,7 +31,10 @@ import kotlinx.serialization.json.JsonPrimitive
  * This supports [FakeWidget] and its [FakeWidget.label] property.
  */
 @RedwoodCodegenApi
-internal class FakeProtocolNode : ProtocolNode<FakeWidget>() {
+internal class FakeProtocolNode(
+  id: Id,
+  tag: WidgetTag,
+) : ProtocolNode<FakeWidget>(id, tag) {
   override val widget = FakeWidget()
 
   override fun apply(change: PropertyChange, eventSink: EventSink) {
@@ -42,5 +46,9 @@ internal class FakeProtocolNode : ProtocolNode<FakeWidget>() {
 
   override fun children(tag: ChildrenTag): ProtocolChildren<FakeWidget>? {
     error("unexpected call")
+  }
+
+  override fun visitIds(block: (Id) -> Unit) {
+    block(id)
   }
 }

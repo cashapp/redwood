@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
@@ -31,7 +32,10 @@ import kotlin.math.min
  * @suppress
  */
 @RedwoodCodegenApi
-public abstract class ProtocolNode<W : Any> {
+public abstract class ProtocolNode<W : Any>(
+  public val id: Id,
+  public val widgetTag: WidgetTag,
+) {
   public abstract val widget: Widget<W>
 
   /** The index of [widget] within its parent [container]. */
@@ -39,7 +43,6 @@ public abstract class ProtocolNode<W : Any> {
 
   internal var container: Widget.Children<W>? = null
 
-  internal var widgetTag: WidgetTag = UnknownWidgetTag
   internal var reuse = false
 
   /** Assigned when the node is added to the pool. */
@@ -60,6 +63,9 @@ public abstract class ProtocolNode<W : Any> {
    * continue executing.
    */
   public abstract fun children(tag: ChildrenTag): ProtocolChildren<W>?
+
+  /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
+  public abstract fun visitIds(block: (Id) -> Unit)
 }
 
 /**
@@ -116,6 +122,12 @@ public class ProtocolChildren<W : Any>(
 
     children.move(from, to, count)
   }
-}
 
-internal val UnknownWidgetTag: WidgetTag = WidgetTag(-1)
+  public fun visitIds(block: (Id) -> Unit) {
+    nodes.let { nodes ->
+      for (i in nodes.indices) {
+        nodes[i].visitIds(block)
+      }
+    }
+  }
+}

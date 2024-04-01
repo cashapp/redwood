@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.host.GeneratedProtocolFactory
@@ -27,7 +28,7 @@ import app.cash.redwood.widget.WidgetSystem
 @OptIn(RedwoodCodegenApi::class)
 internal class FakeProtocolNodeFactory : GeneratedProtocolFactory<FakeWidget> {
   override val widgetSystem: WidgetSystem<FakeWidget> = FakeWidgetSystem()
-  override fun createNode(tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode()
+  override fun createNode(id: Id, tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode(id, tag)
   override fun createModifier(element: ModifierElement): Modifier = Modifier
   override fun widgetChildren(tag: WidgetTag): List<ChildrenTag> = emptyList()
 }
