@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.protocol.host
 
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenChange.Remove
 import app.cash.redwood.protocol.ChildrenTag
@@ -25,15 +28,20 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.MutableListChildren
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.message
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
 
+@OptIn(RedwoodCodegenApi::class)
 class ProtocolBridgeTest {
   @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
@@ -176,5 +184,64 @@ class ProtocolBridgeTest {
       ),
     )
     assertThat(modifierUpdateCount).isEqualTo(1)
+  }
+
+  @Test fun entireSubtreeRemoved() {
+    val bridge = ProtocolBridge(
+      container = MutableListChildren(),
+      factory = TestSchemaProtocolFactory(
+        widgetSystem = TestSchemaWidgetSystem(
+          TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+        ),
+      ),
+      eventSink = ::error,
+    )
+
+    // TestRow {
+    //   TestRow {
+    //     Text("hello")
+    bridge.sendChanges(
+      listOf(
+        // TestRow
+        Create(Id(1), WidgetTag(1)),
+        ModifierChange(Id(1)),
+        // TestRow
+        Create(Id(2), WidgetTag(1)),
+        ModifierChange(Id(2)),
+        // Text
+        Create(Id(3), WidgetTag(3)),
+        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hello")),
+        ModifierChange(Id(3)),
+        Add(Id(2), ChildrenTag(1), Id(3), 0),
+        Add(Id(1), ChildrenTag(1), Id(2), 0),
+        Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      ),
+    )
+
+    // Validate we're tracking ID=3.
+    bridge.sendChanges(
+      listOf(
+        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hey")),
+      ),
+    )
+
+    // Remove root TestRow.
+    bridge.sendChanges(
+      listOf(
+        Remove(Id.Root, ChildrenTag.Root, 0, 1, listOf(Id(1))),
+      ),
+    )
+
+    assertFailure {
+      bridge.sendChanges(
+        listOf(
+          PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("sup")),
+        ),
+      )
+    }.isInstanceOf<IllegalStateException>()
+      .message()
+      .isEqualTo("Unknown widget ID 3")
   }
 }

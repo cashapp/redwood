@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.host
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.WidgetSystem
@@ -41,13 +42,13 @@ public interface ProtocolFactory<W : Any> {
 @RedwoodCodegenApi
 public interface GeneratedProtocolFactory<W : Any> : ProtocolFactory<W> {
   /**
-   * Create a new protocol node of the specified [tag].
+   * Create a new protocol node with [id] of the specified [tag].
    *
    * Invalid [tag] values can either produce an exception or result in `null` being returned.
    * If `null` is returned, the caller should make every effort to ignore this node and
    * continue executing.
    */
-  public fun createNode(tag: WidgetTag): ProtocolNode<W>?
+  public fun createNode(id: Id, tag: WidgetTag): ProtocolNode<W>?
 
   /**
    * Create a new modifier from the specified [element].

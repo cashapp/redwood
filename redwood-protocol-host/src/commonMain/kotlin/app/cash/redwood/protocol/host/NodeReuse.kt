@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.host
 
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.host.ProtocolBridge.ReuseNode
 
 /**
@@ -114,3 +115,5 @@ internal fun shapeHash(
 
   return result
 }
+
+internal val UnknownWidgetTag: WidgetTag = WidgetTag(-1)

@@ -64,15 +64,12 @@ public class ProtocolBridge<W : Any>(
     @Suppress("NAME_SHADOWING")
     val changes = applyReuse(changes)
 
-    val removedIds = mutableListOf<Id>()
-
     for (i in changes.indices) {
       val change = changes[i]
       val id = change.id
       when (change) {
         is Create -> {
-          val node = factory.createNode(change.tag) ?: continue
-          node.widgetTag = change.tag
+          val node = factory.createNode(id, change.tag) ?: continue
           val old = nodes.put(change.id, node)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${change.id.value}"
@@ -93,8 +90,12 @@ public class ProtocolBridge<W : Any>(
             }
 
             is Remove -> {
+              for (childIndex in change.index until change.index + change.count) {
+                val child = children.nodes[childIndex]
+                poolIfReusable(child)
+                child.visitIds(nodes::remove)
+              }
               children.remove(change.index, change.count)
-              removedIds += change.removedIds
             }
           }
 
@@ -138,19 +139,6 @@ public class ProtocolBridge<W : Any>(
       }
     }
 
-    // Apply deferred removes. Do this last so properties + modifiers always find their widget,
-    // even if it's marked for death.
-    for (removedId in removedIds) {
-      val removedNode = nodes.remove(removedId) ?: continue
-      if (removedNode.reuse) {
-        removedNode.shapeHash = shapeHash(factory, removedNode)
-        pool.addFirst(removedNode)
-        if (pool.size > POOL_SIZE) {
-          pool.removeLast() // Prune the least-recently added element.
-        }
-      }
-    }
-
     if (changedWidgets.isNotEmpty()) {
       for (widget in changedWidgets) {
         widget.onEndChanges()
@@ -161,6 +149,16 @@ public class ProtocolBridge<W : Any>(
 
   private fun node(id: Id): ProtocolNode<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID ${id.value}" }
+  }
+
+  private fun poolIfReusable(removedNode: ProtocolNode<W>) {
+    if (removedNode.reuse) {
+      removedNode.shapeHash = shapeHash(this.factory, removedNode)
+      pool.addFirst(removedNode)
+      if (pool.size > POOL_SIZE) {
+        pool.removeLast() // Prune the least-recently added element.
+      }
+    }
   }
 
   /**
@@ -342,7 +340,7 @@ public class ProtocolBridge<W : Any>(
 @OptIn(RedwoodCodegenApi::class)
 private class RootProtocolNode<W : Any>(
   children: Widget.Children<W>,
-) : ProtocolNode<W>(), Widget<W> {
+) : ProtocolNode<W>(Id.Root, UnknownWidgetTag), Widget<W> {
   private val children = ProtocolChildren(children)
 
   override fun apply(change: PropertyChange, eventSink: EventSink) {
@@ -352,6 +350,10 @@ private class RootProtocolNode<W : Any>(
   override fun children(tag: ChildrenTag) = when (tag) {
     ChildrenTag.Root -> children
     else -> throw AssertionError("unexpected: $tag")
+  }
+
+  override fun visitIds(block: (Id) -> Unit) {
+    throw AssertionError()
   }
 
   override val widget: Widget<W> get() = this
