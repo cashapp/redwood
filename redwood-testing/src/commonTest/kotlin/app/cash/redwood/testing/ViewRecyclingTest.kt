@@ -22,6 +22,7 @@ import app.cash.redwood.layout.testing.BoxValue
 import app.cash.redwood.layout.testing.ColumnValue
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.hasSize
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testing.compose.Button
@@ -625,5 +626,76 @@ class ViewRecyclingTest {
       },
       stepCount = 4,
     )
+  }
+
+  @Test
+  @Suppress("INVISIBLE_MEMBER") // To test implementation details!
+  fun reuseFullPoolSize() = runTest {
+    val textCount = app.cash.redwood.protocol.host.POOL_SIZE
+
+    assertReuse(
+      content = { step ->
+        Column {
+          when (step) {
+            1 -> {
+              for (i in 0 until textCount) {
+                Text(modifier = reuse, text = "a")
+              }
+            }
+            3 -> {
+              for (i in 0 until textCount) {
+                Text(modifier = reuse, text = "z")
+              }
+            }
+          }
+        }
+      },
+      step3Value = ColumnValue(
+        children = (0 until textCount).map {
+          TextValue(modifier = reuse, text = "z")
+        },
+      ),
+    )
+  }
+
+  @Test
+  @Suppress("INVISIBLE_MEMBER") // To test implementation details!
+  fun noReuseBeyondPoolSize() = runTest {
+    val poolSize = app.cash.redwood.protocol.host.POOL_SIZE
+    val textCount = poolSize + 1
+
+    val (step1Widgets, step3Widgets) = assertReuse(
+      content = { step ->
+        Column {
+          when (step) {
+            1 -> {
+              for (i in 0 until textCount) {
+                Text(modifier = reuse, text = "a")
+              }
+            }
+            3 -> {
+              for (i in 0 until textCount) {
+                Text(modifier = reuse, text = "z")
+              }
+            }
+          }
+        }
+      },
+      step3Value = ColumnValue(
+        children = (0 until textCount).map {
+          TextValue(modifier = reuse, text = "z")
+        },
+      ),
+      assertFullSubtreesEqual = false,
+    )
+
+    // Drop the enclosing column from each list of widgets.
+    val step1Texts = step1Widgets.drop(1)
+    val step3Texts = step3Widgets.drop(1)
+    assertThat(step1Texts).hasSize(textCount)
+    assertThat(step3Texts).hasSize(textCount)
+
+    // We should hit for every element in the pool (and 1 miss).
+    assertThat(step1Texts.intersect(step3Texts.toSet())).hasSize(poolSize)
   }
 }

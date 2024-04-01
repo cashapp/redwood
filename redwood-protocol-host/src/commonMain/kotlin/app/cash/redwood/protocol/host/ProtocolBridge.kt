@@ -144,7 +144,10 @@ public class ProtocolBridge<W : Any>(
       val removedNode = nodes.remove(removedId) ?: continue
       if (removedNode.reuse) {
         removedNode.shapeHash = shapeHash(factory, removedNode)
-        pool.addLast(removedNode)
+        pool.addFirst(removedNode)
+        if (pool.size > POOL_SIZE) {
+          pool.removeLast() // Prune the least-recently added element.
+        }
       }
     }
 
@@ -363,3 +366,10 @@ private class RootProtocolNode<W : Any>(
 }
 
 private const val REUSE_MODIFIER_TAG = -4_543_827
+
+/**
+ * Cache a fixed number of recently removed widgets with the 'reuse' modifier. This number balances
+ * the number of cache hits against the memory cost of the pool, and the cost of searching the pool
+ * for a match.
+ */
+internal const val POOL_SIZE = 16

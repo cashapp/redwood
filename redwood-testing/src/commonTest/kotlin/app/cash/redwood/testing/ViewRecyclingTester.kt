@@ -129,7 +129,7 @@ suspend fun assertReuse(
         .containsExactlyInAnyOrder(*step1WidgetsFlattened.toTypedArray())
     }
     assertThat(widgets.single().value).isEqualTo(step3Value)
-    step1Widgets to step3Widgets
+    step1WidgetsFlattened to step3WidgetsFlattened
   }
 }
 
