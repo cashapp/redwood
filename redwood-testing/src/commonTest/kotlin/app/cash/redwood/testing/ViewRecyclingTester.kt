@@ -13,12 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress(
-  "CANNOT_OVERRIDE_INVISIBLE_MEMBER",
-  "INVISIBLE_MEMBER",
-  "INVISIBLE_REFERENCE",
-)
-
 package app.cash.redwood.testing
 
 import androidx.compose.runtime.Composable
@@ -26,21 +20,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.layout.testing.MutableBox
-import app.cash.redwood.layout.testing.MutableColumn
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
-import com.example.redwood.testing.testing.MutableButton
-import com.example.redwood.testing.testing.MutableSplit
-import com.example.redwood.testing.testing.MutableText
 import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
@@ -135,7 +125,8 @@ suspend fun assertReuse(
 
     // Confirm the widgets are all the same.
     if (assertFullSubtreesEqual) {
-      assertThat(step3WidgetsFlattened).isEqualTo(step1WidgetsFlattened)
+      assertThat(step3WidgetsFlattened)
+        .containsExactlyInAnyOrder(*step1WidgetsFlattened.toTypedArray())
     }
     assertThat(widgets.single().value).isEqualTo(step3Value)
     step1Widgets to step3Widgets
@@ -188,17 +179,18 @@ private fun List<Widget<WidgetValue>>.flatten(): Sequence<Widget<WidgetValue>> {
   }
 }
 
+@Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
 private suspend fun SequenceScope<Widget<WidgetValue>>.flattenRecursive(
   widget: Widget<WidgetValue>,
 ) {
   yield(widget)
 
   val childrenLists = when (widget) {
-    is MutableBox -> listOf(widget.children)
-    is MutableButton -> listOf()
-    is MutableColumn -> listOf(widget.children)
-    is MutableSplit -> listOf(widget.left, widget.right)
-    is MutableText -> listOf()
+    is app.cash.redwood.layout.testing.MutableBox -> listOf(widget.children)
+    is app.cash.redwood.layout.testing.MutableColumn -> listOf(widget.children)
+    is com.example.redwood.testing.testing.MutableButton -> listOf()
+    is com.example.redwood.testing.testing.MutableSplit -> listOf(widget.left, widget.right)
+    is com.example.redwood.testing.testing.MutableText -> listOf()
     else -> error("unexpected widget: $widget")
   }
 

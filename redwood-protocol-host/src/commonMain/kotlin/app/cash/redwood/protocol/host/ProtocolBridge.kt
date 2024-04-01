@@ -141,8 +141,11 @@ public class ProtocolBridge<W : Any>(
     // Apply deferred removes. Do this last so properties + modifiers always find their widget,
     // even if it's marked for death.
     for (removedId in removedIds) {
-      val removedNode = nodes.remove(removedId)
-      if (removedNode?.reuse == true) pool.addLast(removedNode)
+      val removedNode = nodes.remove(removedId) ?: continue
+      if (removedNode.reuse) {
+        removedNode.shapeHash = shapeHash(factory, removedNode)
+        pool.addLast(removedNode)
+      }
     }
 
     if (changedWidgets.isNotEmpty()) {
@@ -168,47 +171,58 @@ public class ProtocolBridge<W : Any>(
    * Returns the updated set of changes that omits any changes that were implemented with reuse.
    */
   private fun applyReuse(changes: List<Change>): List<Change> {
-    val idToSubtree = mutableMapOf<Id, ReuseSubtree<W>>()
+    if (pool.isEmpty()) return changes // Short circuit reuse.
 
     // Find nodes that have Modifier.reuse
+    val idToNode = mutableMapOf<Id, ReuseNode<W>>()
     for ((index, change) in changes.withIndex()) {
       if (change !is ModifierChange) continue
 
-      val wantsReuse = change.elements.any { it.tag.value == REUSE_MODIFIER_TAG }
-      if (!wantsReuse) continue
+      // Must have a reuse modifier.
+      if (change.elements.none { it.tag.value == REUSE_MODIFIER_TAG }) continue
 
-      val candidateIndex = pool.indexOfFirst { it.reuse }
-      if (candidateIndex == -1) continue
-
+      // Must have a Create node that precedes it.
       if (changes.subList(0, index).none { it is Create && it.id == change.id }) continue
 
-      idToSubtree[change.id] = ReuseSubtree(
+      idToNode[change.id] = ReuseNode(
         widgetId = change.id,
         childrenTag = ChildrenTag.Root,
-        candidateReusedNode = pool.removeAt(candidateIndex),
       )
     }
 
     // Return early if there's no widgets to attempt to reuse for this set of changes.
-    if (idToSubtree.isEmpty()) return changes
+    if (idToNode.isEmpty()) return changes
 
-    // Collect subtree information in rounds, eventually terminating when we loop through all of the
+    // Collect node information in rounds, eventually terminating when we loop through all of the
     // changes without encountering an 'Add' change that we hadn't seen in a prior round.
-    while (putSubtreesForChildrenOfSubtrees(idToSubtree, changes)) {
+    while (putNodesForChildrenOfNodes(idToNode, changes)) {
       // Keep going.
     }
 
     // We know the shape of each subtree. Process the Create and ChildrenChange objects.
-    populateCreateIndexAndEligibleForReuse(idToSubtree, changes)
+    populateCreateIndexAndEligibleForReuse(idToNode, changes)
 
-    // If the _shape_ of a reuse candidate matches the reused node, remove the corresponding
-    // changes and use the reused node.
+    // If the _shape_ of a reuse candidate matches a pooled node, remove the corresponding changes
+    // and use the pooled node.
     val changesAndNulls: Array<Change?> = changes.toTypedArray()
-    for (subtree in idToSubtree.values) {
-      val reusedNode = subtree.candidateReusedNode ?: continue // Not a subtree root.
-      if (subtree.shapeMatches(factory, reusedNode)) {
-        subtree.assignReusedNodeRecursive(nodes, changesAndNulls, reusedNode)
-      }
+    for (reuseNode in idToNode.values) {
+      // Only look for reuse roots.
+      if (reuseNode.changeIndexForAdd != -1) continue
+
+      // Find a pooled node with the same shape hash.
+      val shapeHash = shapeHash(factory, reuseNode)
+      if (shapeHash == 0L) continue // Ineligible for pooling.
+      val pooledNodeIndex = pool.indexOfFirst { it.shapeHash == shapeHash }
+      if (pooledNodeIndex == -1) continue // No shape match.
+
+      // Confirm the reuse node has the same shape. (This defends against hash collisions.)
+      val pooledNode = pool[pooledNodeIndex]
+      if (!shapesEqual(factory, reuseNode, pooledNode)) continue
+
+      // Success! Take the pooled node.
+      pool.removeAt(pooledNodeIndex)
+      reuseNode.assignPooledNodeRecursive(nodes, changesAndNulls, pooledNode)
+      pooledNode.shapeHash = 0L // An updated hash will be computed if it's pooled again.
     }
 
     // Build a new changes list that omits the events we no longer need.
@@ -216,29 +230,29 @@ public class ProtocolBridge<W : Any>(
   }
 
   /**
-   * Populate [idToSubtree] with the immediate children of the elements of [idToSubtree]. Call this
+   * Populate [idToNode] with the immediate children of the elements of [idToNode]. Call this
    * function in rounds until the entire tree is constructed.
    *
    * Returns true if new child nodes were found and added.
    */
-  private fun putSubtreesForChildrenOfSubtrees(
-    idToSubtree: MutableMap<Id, ReuseSubtree<W>>,
+  private fun putNodesForChildrenOfNodes(
+    idToNode: MutableMap<Id, ReuseNode<W>>,
     changes: List<Change>,
   ): Boolean {
     var nodesAddedToMap = false
     for ((index, change) in changes.withIndex()) {
       if (change !is Add) continue
-      val parentSubtree = idToSubtree[change.id] ?: continue // Parent isn't reused.
-      if (idToSubtree[change.childId] != null) continue // Child already created.
+      val parent = idToNode[change.id] ?: continue // Parent isn't reused.
+      if (idToNode[change.childId] != null) continue // Child already created.
 
-      val childSubtree = ReuseSubtree<W>(
+      val child = ReuseNode<W>(
         widgetId = change.childId,
         childrenTag = change.tag,
         indexInParent = change.index,
         changeIndexForAdd = index,
       )
-      idToSubtree[change.childId] = childSubtree
-      parentSubtree.children += childSubtree
+      idToNode[change.childId] = child
+      parent.children += child
       nodesAddedToMap = true
     }
 
@@ -247,124 +261,74 @@ public class ProtocolBridge<W : Any>(
 
   /** Returns true if any nodes were added to the map. */
   private fun populateCreateIndexAndEligibleForReuse(
-    idToSubtree: MutableMap<Id, ReuseSubtree<W>>,
+    idToNode: Map<Id, ReuseNode<W>>,
     changes: List<Change>,
   ) {
     for ((index, change) in changes.withIndex()) {
       when {
-        // Track the Create for each node in the reuse subtrees.
+        // Track the Create for each node in the reuse nodes.
         change is Create -> {
-          val subtree = idToSubtree[change.id]
-          if (subtree != null) {
-            subtree.changeIndexForCreate = index
-            subtree.widgetTag = change.tag
+          val node = idToNode[change.id]
+          if (node != null) {
+            node.changeIndexForCreate = index
+            node.widgetTag = change.tag
           }
         }
 
         // Any other children change disqualifies this node from reuse.
         change !is Add && change is ChildrenChange -> {
-          val subtree = idToSubtree[change.id] ?: continue
-          subtree.eligibleForReuse = false
+          val node = idToNode[change.id] ?: continue
+          node.eligibleForReuse = false
         }
       }
     }
   }
 
-  private class ReuseSubtree<W : Any>(
+  internal class ReuseNode<W : Any>(
     val widgetId: Id,
     /** Which of its parent's slots this node is added to. */
     val childrenTag: ChildrenTag,
     /** Where this node goes in that slot. */
     val indexInParent: Int = -1,
     /**
-     * The reused node that we'll attempt to match this node with. This is non-null if this node
-     * has a reuseId, and null otherwise.
+     * The index in the changes list to remove if the reuse is performed. This is -1 if this node
+     * is the root of the reuse subtree.
      */
-    val candidateReusedNode: ProtocolNode<W>? = null,
-    /** An index in the changes list to clear if the reuse is performed. */
     var changeIndexForAdd: Int = -1,
   ) {
     /** Another index in the changes list to clear if the reuse is performed. */
     var changeIndexForCreate: Int = -1
 
-    val children = mutableListOf<ReuseSubtree<W>>()
+    val children = mutableListOf<ReuseNode<W>>()
     var eligibleForReuse = true
     var widgetTag: WidgetTag = UnknownWidgetTag
-
-    /**
-     * Returns true if this subtree and [other] have the same shape. The shapes match if:
-     *
-     *  * Both have the same widget tag
-     *  * Both have the same number of children, in each slot
-     *  * The paired up children have the same shape, recursively.
-     *
-     * Note that this condition isn't concerned with properties or modifiers.
-     */
-    fun shapeMatches(factory: GeneratedProtocolFactory<*>, other: ProtocolNode<*>): Boolean {
-      if (!eligibleForReuse) return false // This node is ineligible.
-      if (widgetTag == UnknownWidgetTag) return false // No 'Create' for this.
-      if (other.widgetTag != widgetTag) return false // Widget types don't match.
-
-      for (childrenTag in factory.widgetChildren(widgetTag)) {
-        if (
-          !shapeMatchesChildren(
-            factory = factory,
-            otherChildren = other.children(childrenTag)?.nodes ?: listOf(),
-            childrenTag = childrenTag,
-          )
-        ) {
-          return false
-        }
-      }
-
-      return true
-    }
-
-    private fun shapeMatchesChildren(
-      factory: GeneratedProtocolFactory<*>,
-      otherChildren: List<ProtocolNode<*>>,
-      childrenTag: ChildrenTag,
-    ): Boolean {
-      var childCount = 0
-
-      for (child in children) {
-        if (child.childrenTag != childrenTag) continue // From a different slot.
-        if (child.indexInParent != childCount) return false // Out of order child?
-        if (childCount >= otherChildren.size) return false // Other has fewer children.
-        val otherChild = otherChildren[childCount++]
-        if (!child.shapeMatches(factory, otherChild)) return false // Subtree mismatch.
-      }
-
-      if (childCount != otherChildren.size) return false // Other has more children.
-      return true
-    }
 
     /**
      * When a reused node matches a newly-created node, this puts the reused node and its
      * descendants into the nodes map.
      */
-    fun assignReusedNodeRecursive(
+    fun assignPooledNodeRecursive(
       nodes: MutableMap<Id, ProtocolNode<W>>,
       changesAndNulls: Array<Change?>,
-      other: ProtocolNode<W>,
+      pooled: ProtocolNode<W>,
     ) {
       // Reuse the node.
-      val old = nodes.put(widgetId, other)
+      val old = nodes.put(widgetId, pooled)
       require(old == null) {
         "Insert attempted to replace existing widget with ID $widgetId"
       }
 
       // Remove the corresponding changes that we avoided by node reuse. We don't clear the 'Add'
-      // that adds the subtree root to its new parent.
+      // that adds the node to its new parent.
       changesAndNulls[changeIndexForCreate] = null
       if (changeIndexForAdd != -1) {
         changesAndNulls[changeIndexForAdd] = null
       }
 
       for (child in children) {
-        child.assignReusedNodeRecursive(
+        child.assignPooledNodeRecursive(
           nodes = nodes,
-          other = other.children(child.childrenTag)!!.nodes[child.indexInParent],
+          pooled = pooled.children(child.childrenTag)!!.nodes[child.indexInParent],
           changesAndNulls = changesAndNulls,
         )
       }
