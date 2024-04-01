@@ -21,14 +21,15 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.widget.Widget
 
-@OptIn(RedwoodCodegenApi::class)
-internal class ProtocolWidgetChildren(
+/** @suppress For generated code use only. */
+@RedwoodCodegenApi
+public class ProtocolWidgetChildren(
   private val id: Id,
   private val tag: ChildrenTag,
   private val state: ProtocolState,
 ) : Widget.Children<Unit> {
   private val _widgets = mutableListOf<ProtocolWidget>()
-  override val widgets: List<Widget<Unit>> get() = _widgets
+  override val widgets: List<ProtocolWidget> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<Unit>) {
     widget as ProtocolWidget
@@ -38,14 +39,14 @@ internal class ProtocolWidgetChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    val removingIds = _widgets.subList(index, index + count)
-    val removedIds = removingIds.map(ProtocolWidget::id)
-    removingIds.clear()
-
-    for (removedId in removedIds) {
-      state.removeWidget(removedId)
+    val removedIds = ArrayList<Id>(count)
+    for (i in index until index + count) {
+      val widget = _widgets[i]
+      widget.visitIds(state::removeWidget)
+      removedIds += widget.id
     }
 
+    _widgets.remove(index, count)
     state.append(ChildrenChange.Remove(id, tag, index, count, removedIds))
   }
 
@@ -55,5 +56,11 @@ internal class ProtocolWidgetChildren(
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<Unit>) {
+  }
+
+  public fun visitIds(block: (Id) -> Unit) {
+    for (i in _widgets.indices) {
+      _widgets[i].visitIds(block)
+    }
   }
 }

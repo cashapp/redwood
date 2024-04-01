@@ -17,9 +17,7 @@ package app.cash.redwood.protocol.guest
 
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
-import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.widget.Widget
 
 /** @suppress For generated code use only. */
 @RedwoodCodegenApi
@@ -65,8 +63,4 @@ public class ProtocolState {
   }
 
   public fun getWidget(id: Id): ProtocolWidget? = widgets[id.value]
-
-  public fun widgetChildren(id: Id, tag: ChildrenTag): Widget.Children<Unit> {
-    return ProtocolWidgetChildren(id, tag, this)
-  }
 }

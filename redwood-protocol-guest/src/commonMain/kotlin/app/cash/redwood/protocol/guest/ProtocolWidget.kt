@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
@@ -26,6 +27,7 @@ import app.cash.redwood.widget.Widget
  *
  * @suppress For generated code use only.
  */
+@RedwoodCodegenApi
 public interface ProtocolWidget : Widget<Unit> {
   public val id: Id
   public val tag: WidgetTag
@@ -33,4 +35,7 @@ public interface ProtocolWidget : Widget<Unit> {
   override val value: Unit get() = Unit
 
   public fun sendEvent(event: Event)
+
+  /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
+  public fun visitIds(block: (Id) -> Unit)
 }

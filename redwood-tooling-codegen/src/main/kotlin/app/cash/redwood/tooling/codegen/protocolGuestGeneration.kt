@@ -40,6 +40,7 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -94,13 +95,13 @@ class ExampleProtocolBridge private constructor(
       json: Json,
       mismatchHandler: ProtocolMismatchHandler,
     ): ExampleProtocolBridge {
-      val bridge = ProtocolBridge()
-      val root = bridge.widgetChildren(Id.Root, ChildrenTag.Root)
+      val state = ProtocolState()
+      val root = ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, state)
       val widgetSystem = ExampleWidgetSystem(
-          Example = ProtocolExampleWidgetFactory(bridge, json, mismatchHandler),
-          RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(bridge, json, mismatchHandler),
+          Example = ProtocolExampleWidgetFactory(state, json, mismatchHandler),
+          RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(state, json, mismatchHandler),
       )
-      return ExampleProtocolBridge(bridge, mismatchHandler, root, widgetSystem)
+      return ExampleProtocolBridge(state, mismatchHandler, root, widgetSystem)
     }
   }
 }
@@ -176,7 +177,7 @@ internal fun generateProtocolBridge(
                 .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
                 .returns(type)
                 .addStatement("val state = %T()", ProtocolGuest.ProtocolState)
-                .addStatement("val root = state.widgetChildren(%T.Root, %T.Root)", Protocol.Id, Protocol.ChildrenTag)
+                .addStatement("val root = %T(%T.Root, %T.Root, state)", ProtocolGuest.ProtocolWidgetChildren, Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
                     for (dependency in schemaSet.all) {
@@ -323,6 +324,10 @@ internal class ProtocolButton(
       else -> mismatchHandler.onUnknownEvent(12, event.tag)
     }
   }
+
+  override fun visitIds(block: (Id) -> Unit) {
+    block(id)
+  }
 }
 */
 internal fun generateProtocolWidget(
@@ -450,9 +455,9 @@ internal fun generateProtocolWidget(
 
               is ProtocolChildren -> {
                 addProperty(
-                  PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType))
+                  PropertySpec.builder(trait.name, ProtocolGuest.ProtocolWidgetChildren)
                     .addModifiers(OVERRIDE)
-                    .initializer("state.widgetChildren(id, %T(%L))", Protocol.ChildrenTag, trait.tag)
+                    .initializer("%T(id, %T(%L), state)", ProtocolGuest.ProtocolWidgetChildren, Protocol.ChildrenTag, trait.tag)
                     .build(),
                 )
               }
@@ -517,6 +522,20 @@ internal fun generateProtocolWidget(
                 .addStatement("state.append(%T(id, value.%M(json)))", Protocol.ModifierChange, host.modifierToProtocol)
                 .build(),
             )
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("visitIds")
+            .addModifiers(OVERRIDE)
+            .addParameter("block", LambdaTypeName.get(null, Protocol.Id, returnType = UNIT))
+            .addStatement("block(id)")
+            .apply {
+              for (trait in widget.traits) {
+                if (trait is ProtocolChildren) {
+                  addStatement("%N.visitIds(block)", trait.name)
+                }
+              }
+            }
             .build(),
         )
         .build(),
