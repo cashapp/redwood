@@ -94,9 +94,9 @@ public data class Button2(
 public data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val customType: Duration?,
-  @Property(3) val onChange: (String) -> Unit,
-  @Property(4) val onChangeCustomType: (Duration) -> Unit,
-  @Property(5) val maxLength: Int,
+  @Property(3) @Default("null") val onChange: ((String) -> Unit)?,
+  @Property(4) @Default("null") val onChangeCustomType: ((Duration) -> Unit)?,
+  @Property(5) @Default("null") val maxLength: Int?,
 )
 
 @Widget(9)
