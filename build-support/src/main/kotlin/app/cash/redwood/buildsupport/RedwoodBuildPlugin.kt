@@ -130,9 +130,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
         }
         it.exceptionFormat = FULL
       }
-      // Force tests to always run to avoid caching issues.
-      // TODO Delete this! Anything not working is bad/missing task inputs or a bug.
-      task.outputs.upToDateWhen { false }
     }
   }
 
