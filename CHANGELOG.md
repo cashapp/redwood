@@ -35,6 +35,7 @@ Fixed:
 - Fix `TreehouseUIView` to size itself according to the size of its subview.
 - In `UIViewLazyList`, adding `beginUpdates`/`endUpdates` calls to `insertRows`/`deleteRows`, and wrapping changes in `UIView.performWithoutAnimation` blocks.
 - Fix memory leak in 'protocol-guest' and 'protocol-host' where child nodes beneath a removed node were incorrectly retained in an internal map indefinitely.
+- Ensure that Zipline services are not closed prematurely when disposing a Treehouse UI.
 
 
 ## [0.9.0] - 2024-02-28
