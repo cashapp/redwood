@@ -48,9 +48,9 @@ class ProtocolBridgeTest {
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = EmptyTestSchemaWidgetFactory(),
-          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+          TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
       ),
       eventSink = ::error,
@@ -73,9 +73,9 @@ class ProtocolBridgeTest {
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = EmptyTestSchemaWidgetFactory(),
-          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+          TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
       ),
       eventSink = ::error,
@@ -99,9 +99,9 @@ class ProtocolBridgeTest {
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = EmptyTestSchemaWidgetFactory(),
-          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+          TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
       ),
       eventSink = ::error,
@@ -158,9 +158,9 @@ class ProtocolBridgeTest {
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = EmptyTestSchemaWidgetFactory(),
-          RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+          TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
       ),
       eventSink = ::error,

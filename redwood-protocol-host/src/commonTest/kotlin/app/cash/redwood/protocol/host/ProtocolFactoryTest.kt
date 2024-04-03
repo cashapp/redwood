@@ -17,6 +17,8 @@ package app.cash.redwood.protocol.host
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
@@ -33,8 +35,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
+import com.example.redwood.testing.testing.TextInputValue
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
-import com.example.redwood.testing.widget.TextInput
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
@@ -51,9 +54,9 @@ class ProtocolFactoryTest {
   @Test fun unknownWidgetThrowsDefault() {
     val factory = TestSchemaProtocolFactory(
       TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
     )
 
@@ -67,9 +70,9 @@ class ProtocolFactoryTest {
     val handler = RecordingProtocolMismatchHandler()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -87,9 +90,9 @@ class ProtocolFactoryTest {
     }
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       json = json,
     )
@@ -116,9 +119,9 @@ class ProtocolFactoryTest {
     }
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       json = json,
     )
@@ -145,9 +148,9 @@ class ProtocolFactoryTest {
   @Test fun unknownModifierThrowsDefault() {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
     )
 
@@ -171,9 +174,9 @@ class ProtocolFactoryTest {
     val handler = RecordingProtocolMismatchHandler()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       json = json,
       mismatchHandler = handler,
@@ -209,9 +212,9 @@ class ProtocolFactoryTest {
   @Test fun unknownChildrenThrowsDefault() {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
     )
     val button = factory.createNode(Id(1), WidgetTag(4))!!
@@ -226,9 +229,9 @@ class ProtocolFactoryTest {
     val handler = RecordingProtocolMismatchHandler()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -245,14 +248,11 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val recordingTextInput = RecordingTextInput()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = object : EmptyTestSchemaWidgetFactory() {
-          override fun TextInput() = recordingTextInput
-        },
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       json = json,
     )
@@ -261,15 +261,15 @@ class ProtocolFactoryTest {
     val throwingEventSink = EventSink { error(it) }
     textInput.apply(PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
 
-    assertThat(recordingTextInput.customType).isEqualTo(10.seconds)
+    assertThat((textInput.widget.value as TextInputValue).customType).isEqualTo(10.seconds)
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
     )
     val button = factory.createNode(Id(1), WidgetTag(4))!!
@@ -286,9 +286,9 @@ class ProtocolFactoryTest {
     val handler = RecordingProtocolMismatchHandler()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = EmptyTestSchemaWidgetFactory(),
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       mismatchHandler = handler,
     )
@@ -305,14 +305,11 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val recordingTextInput = RecordingTextInput()
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = object : EmptyTestSchemaWidgetFactory() {
-          override fun TextInput() = recordingTextInput
-        },
-        RedwoodLayout = EmptyRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = EmptyRedwoodLazyLayoutWidgetFactory(),
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       json = json,
     )
@@ -321,49 +318,9 @@ class ProtocolFactoryTest {
     val eventSink = RecordingEventSink()
     textInput.apply(PropertyChange(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)
 
-    recordingTextInput.onChangeCustomType!!.invoke(10.seconds)
+    (textInput.widget.value as TextInputValue).onChangeCustomType!!.invoke(10.seconds)
 
     assertThat(eventSink.events.single())
       .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
-  }
-
-  class RecordingTextInput : TextInput<Unit> {
-    override val value get() = Unit
-    override var modifier: Modifier = Modifier
-
-    var text: String? = null
-      private set
-
-    override fun text(text: String?) {
-      this.text = text
-    }
-
-    var customType: Duration? = null
-      private set
-
-    override fun customType(customType: Duration?) {
-      this.customType = customType
-    }
-
-    var onChange: ((String) -> Unit)? = null
-      private set
-
-    override fun onChange(onChange: (String) -> Unit) {
-      this.onChange = onChange
-    }
-
-    var onChangeCustomType: ((Duration) -> Unit)? = null
-      private set
-
-    override fun onChangeCustomType(onChangeCustomType: (Duration) -> Unit) {
-      this.onChangeCustomType = onChangeCustomType
-    }
-
-    var maxLength: Int? = null
-      private set
-
-    override fun maxLength(maxLength: Int) {
-      this.maxLength = maxLength
-    }
   }
 }
