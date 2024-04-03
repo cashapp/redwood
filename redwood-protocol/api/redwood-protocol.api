@@ -77,6 +77,7 @@ public final class app/cash/redwood/protocol/ChildrenChange$Move$Companion {
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove : app/cash/redwood/protocol/ChildrenChange {
 	public static final field Companion Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;
+	public synthetic fun <init> (IIIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (IIIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCount ()I

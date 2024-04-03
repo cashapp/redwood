@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.guest
 
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
@@ -36,6 +37,37 @@ public interface ProtocolWidget : Widget<Unit> {
 
   public fun sendEvent(event: Event)
 
-  /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
-  public fun visitIds(block: (Id) -> Unit)
+  /**
+   * Perform a depth-first walk of this widget's children hierarchy.
+   *
+   * For example, given the hierarchy:
+   * ```kotlin
+   * Split(
+   *   left = {
+   *     Row {
+   *       Text(..)
+   *       Button(..)
+   *     }
+   *   },
+   *   right = {
+   *     Column {
+   *       Button(..)
+   *       Text(..)
+   *     }
+   *   }
+   * }
+   * ```
+   * You will see the following argument values passed to [block] if invoked on the `Split`:
+   * 1. parent: `Row`, childrenTag: 1, children: `[Text+Button]`
+   * 2. parent: `Split`, childrenTag: 1, children: `[Row]`
+   * 3. parent: `Column`, childrenTag: 1, children: `[Button+Text]`
+   * 4. parent: `Split`, childrenTag: 2, children: `[Column]`
+   */
+  public fun depthFirstWalk(
+    block: (
+      parent: ProtocolWidget,
+      childrenTag: ChildrenTag,
+      children: ProtocolWidgetChildren,
+    ) -> Unit,
+  )
 }

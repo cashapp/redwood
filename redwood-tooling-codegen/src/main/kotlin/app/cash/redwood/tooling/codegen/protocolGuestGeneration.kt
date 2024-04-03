@@ -96,7 +96,7 @@ class ExampleProtocolBridge private constructor(
       json: Json,
       mismatchHandler: ProtocolMismatchHandler,
     ): ExampleProtocolBridge {
-      val state = ProtocolState()
+      val state = ProtocolState(hostVersion)
       val root = ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, state)
       val widgetSystem = ExampleWidgetSystem(
           Example = ProtocolExampleWidgetFactory(state, json, mismatchHandler),
@@ -178,7 +178,7 @@ internal fun generateProtocolBridge(
                 .addParameter("json", KotlinxSerialization.Json)
                 .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
                 .returns(type)
-                .addStatement("val state = %T()", ProtocolGuest.ProtocolState)
+                .addStatement("val state = %T(hostVersion)", ProtocolGuest.ProtocolState)
                 .addStatement("val root = %T(%T.Root, %T.Root, state)", ProtocolGuest.ProtocolWidgetChildren, Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
@@ -327,8 +327,7 @@ internal class ProtocolButton(
     }
   }
 
-  override fun visitIds(block: (Id) -> Unit) {
-    block(id)
+  override fun depthFirstWalk(block: (ProtocolWidget, ChildrenTag, ProtocolWidgetChildren) -> Unit) {
   }
 }
 */
@@ -527,14 +526,22 @@ internal fun generateProtocolWidget(
             .build(),
         )
         .addFunction(
-          FunSpec.builder("visitIds")
+          FunSpec.builder("depthFirstWalk")
             .addModifiers(OVERRIDE)
-            .addParameter("block", LambdaTypeName.get(null, Protocol.Id, returnType = UNIT))
-            .addStatement("block(id)")
+            .addParameter(
+              "block",
+              LambdaTypeName.get(
+                null,
+                ProtocolGuest.ProtocolWidget,
+                Protocol.ChildrenTag,
+                ProtocolGuest.ProtocolWidgetChildren,
+                returnType = UNIT,
+              ),
+            )
             .apply {
               for (trait in widget.traits) {
                 if (trait is ProtocolChildren) {
-                  addStatement("%N.visitIds(block)", trait.name)
+                  addStatement("%N.depthFirstWalk(this, block)", trait.name)
                 }
               }
             }
