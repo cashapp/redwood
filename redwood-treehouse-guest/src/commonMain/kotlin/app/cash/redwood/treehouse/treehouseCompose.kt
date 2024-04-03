@@ -27,8 +27,12 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.plus
 
 /**
@@ -54,6 +58,11 @@ private class RedwoodZiplineTreehouseUi(
    * host configurations flow.
    */
   override val scope = (treehouseUi as? ZiplineScoped)?.scope ?: ZiplineScope()
+
+  private val coroutineScope = CoroutineScope(
+    appLifecycle.coroutineScope.coroutineContext +
+      Job(appLifecycle.coroutineScope.coroutineContext.job),
+  )
 
   private lateinit var composition: RedwoodComposition
 
@@ -102,7 +111,7 @@ private class RedwoodZiplineTreehouseUi(
     )
 
     val composition = ProtocolRedwoodComposition(
-      scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
+      scope = coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
       changesSink = host,
@@ -121,9 +130,12 @@ private class RedwoodZiplineTreehouseUi(
   }
 
   override fun close() {
+    coroutineScope.coroutineContext.job.invokeOnCompletion {
+      scope.close()
+    }
+    coroutineScope.cancel()
     composition.cancel()
     treehouseUi.close()
-    scope.close()
   }
 }
 
