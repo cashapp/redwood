@@ -176,14 +176,19 @@ public class ProtocolBridge<W : Any>(
 
     // Find nodes that have Modifier.reuse
     val idToNode = mutableMapOf<Id, ReuseNode<W>>()
-    for ((index, change) in changes.withIndex()) {
+    var lastCreatedId = Id.Root
+    for (change in changes) {
+      if (change is Create) {
+        lastCreatedId = change.id
+        continue
+      }
       if (change !is ModifierChange) continue
 
       // Must have a reuse modifier.
       if (change.elements.none { it.tag.value == REUSE_MODIFIER_TAG }) continue
 
       // Must have a Create node that precedes it.
-      if (changes.subList(0, index).none { it is Create && it.id == change.id }) continue
+      if (lastCreatedId != change.id) continue
 
       idToNode[change.id] = ReuseNode(
         widgetId = change.id,
