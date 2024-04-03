@@ -49,7 +49,11 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(json)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      json = json,
+    )
     val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
@@ -67,7 +71,11 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(json)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      json = json,
+    )
     val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -97,7 +105,11 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(json)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      json = json,
+    )
     val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -127,7 +139,11 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(json)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      json = json,
+    )
     val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
@@ -143,7 +159,10 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val bridge = TestSchemaProtocolBridge.create()
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+    )
     val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
@@ -155,7 +174,11 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = TestSchemaProtocolBridge.create(mismatchHandler = handler)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      mismatchHandler = handler,
+    )
     val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -164,7 +187,10 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventNodeThrowsDefault() {
-    val bridge = TestSchemaProtocolBridge.create()
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+    )
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendEvent(Event(Id(3456543), EventTag(1)))
     }
@@ -173,7 +199,11 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventNodeCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = TestSchemaProtocolBridge.create(mismatchHandler = handler)
+    val bridge = TestSchemaProtocolBridge.create(
+      // Use latest guest version as the host version to avoid any compatibility behavior.
+      hostVersion = guestRedwoodVersion,
+      mismatchHandler = handler,
+    )
 
     bridge.sendEvent(Event(Id(3456543), EventTag(1)))
 

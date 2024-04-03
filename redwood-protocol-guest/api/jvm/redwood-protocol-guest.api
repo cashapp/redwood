@@ -5,8 +5,8 @@ public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge :
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge$Factory {
-	public abstract fun create (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
-	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+	public abstract fun create-Bvskwvs (Ljava/lang/String;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+	public static synthetic fun create-Bvskwvs$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Ljava/lang/String;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolMismatchHandler {
@@ -52,5 +52,9 @@ public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/
 	public fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
 	public fun remove (II)V
 	public final fun visitIds (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class app/cash/redwood/protocol/guest/VersionKt {
+	public static final fun getGuestRedwoodVersion ()Ljava/lang/String;
 }
 

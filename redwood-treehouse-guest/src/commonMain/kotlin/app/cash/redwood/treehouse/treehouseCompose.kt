@@ -37,8 +37,11 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge =
-    appLifecycle.protocolBridgeFactory.create(appLifecycle.json, appLifecycle.mismatchHandler)
+  val bridge = appLifecycle.protocolBridgeFactory.create(
+    hostVersion = appLifecycle.hostProtocolVersion,
+    json = appLifecycle.json,
+    mismatchHandler = appLifecycle.mismatchHandler,
+  )
   return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
 }
 

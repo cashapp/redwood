@@ -27,6 +27,7 @@ import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertFailure
 import assertk.assertThat
@@ -45,6 +46,7 @@ import kotlinx.serialization.json.JsonPrimitive
 class ProtocolBridgeTest {
   @Test fun createRootIdThrows() {
     val bridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
@@ -70,6 +72,7 @@ class ProtocolBridgeTest {
 
   @Test fun duplicateIdThrows() {
     val bridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
@@ -96,6 +99,7 @@ class ProtocolBridgeTest {
 
   @Test fun removeRemoves() {
     val bridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
@@ -155,6 +159,7 @@ class ProtocolBridgeTest {
   @Test fun modifierChangeNotifiesContainer() {
     var modifierUpdateCount = 0
     val bridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
@@ -188,6 +193,7 @@ class ProtocolBridgeTest {
 
   @Test fun entireSubtreeRemoved() {
     val bridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(

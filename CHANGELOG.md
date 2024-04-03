@@ -22,6 +22,7 @@ Changed:
   - Protocol host code is now under `your.package.protocol.host`.
 - The 'app.cash.redwood.generator.compose.protocol' and 'app.cash.redwood.generator.widget.protocol' Gradle plugins are now deprecated and will be removed in the next release. Use 'app.cash.redwood.generator.protocol.guest' and 'app.cash.redwood.generator.protocol.host', respectively.
 - The 'redwood-tooling-codegen' CLI flags for protocol codegen have changed from `--compose-protocol` and `--widget-protocol` to `--protocol-guest` and `--protocol-host`, respectively.
+- Entrypoints to the protocol on the host-side and guest-side now require supplying the version of Redwood in use on the other side in order to ensure compatibility and work around any bugs in older versions. This uses a new `RedwoodVersion` type, and will be automatically wired if using our Treehouse artifacts.
 
 Fixed:
 - Fix failure to release JS resources when calling `CoroutineScope` is being cancelled

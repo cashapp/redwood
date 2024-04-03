@@ -22,7 +22,9 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.MutableListChildren
@@ -55,10 +57,15 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
-    val composeBridge = TestSchemaProtocolBridge.create()
-    val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolFactory(widgetSystem)) {
-      throw AssertionError()
-    }
+    val composeBridge = TestSchemaProtocolBridge.create(
+      hostVersion = hostRedwoodVersion,
+    )
+    val widgetBridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
+      container = MutableListChildren(),
+      factory = TestSchemaProtocolFactory(widgetSystem),
+      eventSink = { throw AssertionError() },
+    )
     return TestRedwoodComposition(this, composeBridge.widgetSystem, composeBridge.root) {
       composeBridge.getChangesOrNull()?.let { changes ->
         widgetBridge.sendChanges(changes)

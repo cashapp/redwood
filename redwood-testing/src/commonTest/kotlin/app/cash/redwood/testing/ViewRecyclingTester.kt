@@ -22,7 +22,9 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
@@ -45,7 +47,9 @@ import kotlinx.coroutines.coroutineScope
 class ViewRecyclingTester(
   coroutineScope: CoroutineScope,
 ) {
-  private val compositionProtocolBridge = TestSchemaProtocolBridge.create()
+  private val compositionProtocolBridge = TestSchemaProtocolBridge.create(
+    hostVersion = hostRedwoodVersion,
+  )
 
   internal val composition = TestRedwoodComposition(
     scope = coroutineScope,
@@ -65,6 +69,7 @@ class ViewRecyclingTester(
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
   private val widgetBridge = ProtocolBridge(
+    guestVersion = guestRedwoodVersion,
     container = widgetContainer,
     factory = widgetProtocolFactory,
     eventSink = { throw AssertionError() },

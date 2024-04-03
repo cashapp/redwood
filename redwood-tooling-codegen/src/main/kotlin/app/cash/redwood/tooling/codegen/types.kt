@@ -38,6 +38,7 @@ internal object Protocol {
   val ModifierTag = ClassName("app.cash.redwood.protocol", "ModifierTag")
   val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
+  val RedwoodVersion = ClassName("app.cash.redwood.protocol", "RedwoodVersion")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 

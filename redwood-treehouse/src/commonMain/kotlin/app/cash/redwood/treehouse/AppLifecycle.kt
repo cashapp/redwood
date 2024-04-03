@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
@@ -30,6 +31,13 @@ public interface AppLifecycle : ZiplineService {
 
   /** Platform features to the guest application. */
   public interface Host : ZiplineService {
+    /**
+     * The Redwood version of the host.
+     * This may be used to alter the behavior to work around bugs discovered in the future, and to
+     * ensure the serialized protocol is remains compatible with what the host expects.
+     */
+    public val hostProtocolVersion: RedwoodVersion
+
     public fun requestFrame()
 
     /** Notify the host that an event was unrecognized and will be ignored. */
