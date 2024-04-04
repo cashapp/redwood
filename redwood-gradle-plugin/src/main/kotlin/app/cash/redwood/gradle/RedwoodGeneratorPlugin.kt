@@ -113,13 +113,9 @@ public abstract class RedwoodGeneratorPlugin(
       it.classpath.from(schemaConfiguration)
     }
 
-    project.afterEvaluate {
-      check(project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        "Redwood schema plugin requires the Kotlin multiplatform plugin to be applied."
-      }
-
-      val schemaProject = extension.source.get()
-      project.dependencies.add(schemaConfiguration.name, schemaProject)
+    var hasMpp = false
+    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      hasMpp = true
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.sourceSets.getByName(COMMON_MAIN_SOURCE_SET_NAME) { sourceSet ->
@@ -128,6 +124,15 @@ public abstract class RedwoodGeneratorPlugin(
           api(project.redwoodDependency(strategy.dependencyArtifactId))
         }
       }
+    }
+
+    project.afterEvaluate {
+      check(hasMpp) {
+        "Redwood schema plugin requires the Kotlin multiplatform plugin to be applied."
+      }
+
+      val schemaProject = extension.source.get()
+      project.dependencies.add(schemaConfiguration.name, schemaProject)
     }
   }
 }
