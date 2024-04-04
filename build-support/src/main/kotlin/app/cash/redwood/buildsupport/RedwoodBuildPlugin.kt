@@ -272,7 +272,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       // Disable the release linking tasks because we never need it for iOS sample applications.
       // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
       kotlin.targets.withType(KotlinNativeTarget::class.java) { target ->
-        target.binaries.all {
+        target.binaries.configureEach {
           if (it.buildType == NativeBuildType.RELEASE) {
             it.linkTask.enabled = false
           }
