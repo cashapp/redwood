@@ -296,7 +296,6 @@ internal class LazyListContainerCell(
 
   override fun prepareForReuse() {
     super.prepareForReuse()
-    removeAllSubviews()
     binding?.unbind()
     binding = null
   }
