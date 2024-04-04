@@ -1,5 +1,6 @@
 public abstract interface class app/cash/redwood/treehouse/AppLifecycle : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/AppLifecycle$Companion;
+	public abstract fun getGuestProtocolVersion-7jYel6c ()Ljava/lang/String;
 	public abstract fun sendFrame (J)V
 	public abstract fun start (Lapp/cash/redwood/treehouse/AppLifecycle$Host;)V
 }

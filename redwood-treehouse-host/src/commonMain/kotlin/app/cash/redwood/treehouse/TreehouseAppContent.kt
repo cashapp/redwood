@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.ProtocolFactory
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -313,7 +312,10 @@ private class ViewContentCodeBinding<A : AppService>(
   /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
   private var viewOrNull: TreehouseView<*>? = null
 
-  /** Only accessed on [TreehouseDispatchers.ui]. Null before [initView] and after [cancel]. */
+  /**
+   * Only accessed on [TreehouseDispatchers.ui].
+   * Null before [initView]+[receiveChangesOnUiDispatcher] and after [cancel].
+   */
   private var bridgeOrNull: ProtocolBridge<*>? = null
 
   /** Only accessed on [TreehouseDispatchers.zipline]. */
@@ -351,18 +353,6 @@ private class ViewContentCodeBinding<A : AppService>(
 
     view.saveCallback = this
 
-    @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-    bridgeOrNull = ProtocolBridge(
-      // TODO Wire through guest version. Wanted this from AppLifecycle but it's bound too late.
-      guestVersion = RedwoodVersion.Unknown,
-      container = view.children as Widget.Children<Any>,
-      factory = view.widgetSystem.widgetFactory(
-        json = codeSession.json,
-        protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
-      ) as ProtocolFactory<Any>,
-      eventSink = this,
-    )
-
     // Apply all the changes received before we had a view to apply them to.
     while (true) {
       val changes = changesAwaitingInitView.removeFirstOrNull() ?: break
@@ -388,14 +378,12 @@ private class ViewContentCodeBinding<A : AppService>(
   }
 
   private fun receiveChangesOnUiDispatcher(changes: List<Change>) {
-    val view = viewOrNull
-    val bridge = bridgeOrNull
-
     if (canceled) {
       return
     }
 
-    if (view == null || bridge == null) {
+    val view = viewOrNull
+    if (view == null) {
       if (changesAwaitingInitView.isEmpty()) {
         // Unblock coroutines suspended on TreehouseAppContent.awaitContent().
         val currentState = stateFlow.value
@@ -412,6 +400,21 @@ private class ViewContentCodeBinding<A : AppService>(
 
       changesAwaitingInitView += changes
       return
+    }
+
+    var bridge = bridgeOrNull
+    if (bridge == null) {
+      @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
+      bridge = ProtocolBridge(
+        guestVersion = codeSession.guestProtocolVersion,
+        container = view.children as Widget.Children<Any>,
+        factory = view.widgetSystem.widgetFactory(
+          json = codeSession.json,
+          protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
+        ) as ProtocolFactory<Any>,
+        eventSink = this,
+      )
+      bridgeOrNull = bridge
     }
 
     if (changesCount++ == 0) {

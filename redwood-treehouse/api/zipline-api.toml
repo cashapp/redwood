@@ -9,6 +9,9 @@ functions = [
 
   # fun start(app.cash.redwood.treehouse.AppLifecycle.Host): kotlin.Unit
   "Xd61ecfL",
+
+  # val guestProtocolVersion: app.cash.redwood.protocol.RedwoodVersion
+  "0iFPbldz",
 ]
 
 [app.cash.redwood.treehouse.AppLifecycle.Host]

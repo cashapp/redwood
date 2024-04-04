@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.host.hostRedwoodVersion
+
 internal class FakeAppService private constructor(
   private val name: String,
   private val eventLog: EventLog,
@@ -26,6 +29,10 @@ internal class FakeAppService private constructor(
     get() = mutableUis.toList()
 
   override val appLifecycle = object : AppLifecycle {
+    override val guestProtocolVersion: RedwoodVersion
+      // Use latest host version as the guest version to avoid any compatibility behavior.
+      get() = hostRedwoodVersion
+
     override fun start(host: AppLifecycle.Host) {
       eventLog += "$name.appLifecycle.start()"
     }

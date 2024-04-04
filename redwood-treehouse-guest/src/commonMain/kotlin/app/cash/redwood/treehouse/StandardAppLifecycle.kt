@@ -23,6 +23,7 @@ import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import app.cash.zipline.ZiplineApiMismatchException
 import kotlin.coroutines.CoroutineContext
@@ -37,6 +38,9 @@ public class StandardAppLifecycle(
 ) : AppLifecycle {
   private var started = false
   private lateinit var host: Host
+
+  override val guestProtocolVersion: RedwoodVersion
+    get() = guestRedwoodVersion
 
   internal val hostProtocolVersion: RedwoodVersion get() {
     return try {

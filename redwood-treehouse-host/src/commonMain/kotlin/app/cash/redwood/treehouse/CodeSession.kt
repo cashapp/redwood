@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,8 @@ internal abstract class CodeSession<A : AppService>(
   }
 
   abstract val json: Json
+
+  abstract val guestProtocolVersion: RedwoodVersion
 
   fun start() {
     dispatchers.checkUi()

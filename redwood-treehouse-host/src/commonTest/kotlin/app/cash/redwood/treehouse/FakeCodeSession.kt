@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.host.hostRedwoodVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
@@ -32,6 +34,10 @@ internal class FakeCodeSession(
 ) {
   override val json: Json
     get() = Json
+
+  override val guestProtocolVersion: RedwoodVersion
+    // Use latest host version as the guest version to avoid any compatibility behavior.
+    get() = hostRedwoodVersion
 
   override fun ziplineStart() {
     eventLog += "$name.start()"

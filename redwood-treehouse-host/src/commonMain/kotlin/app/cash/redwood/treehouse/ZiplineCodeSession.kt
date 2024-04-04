@@ -15,7 +15,9 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +37,22 @@ internal class ZiplineCodeSession<A : AppService>(
   appService = appService,
 ) {
   private val ziplineScope = ZiplineScope()
+  private lateinit var appLifecycle: AppLifecycle
 
   override val json: Json
     get() = zipline.json
 
+  override val guestProtocolVersion: RedwoodVersion
+    get() {
+      return try {
+        appLifecycle.guestProtocolVersion
+      } catch (_: ZiplineApiMismatchException) {
+        RedwoodVersion.Unknown
+      }
+    }
+
   override fun ziplineStart() {
-    val appLifecycle = appService.withScope(ziplineScope).appLifecycle
+    appLifecycle = appService.withScope(ziplineScope).appLifecycle
 
     val host = RealAppLifecycleHost(
       appLifecycle = appLifecycle,
