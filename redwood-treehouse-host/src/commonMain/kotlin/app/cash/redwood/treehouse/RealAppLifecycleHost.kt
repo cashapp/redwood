@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.host.hostRedwoodVersion
 
 internal class RealAppLifecycleHost(
   private val appLifecycle: AppLifecycle,
@@ -25,6 +26,8 @@ internal class RealAppLifecycleHost(
   private val eventPublisher: EventPublisher,
   private val codeSession: CodeSession<*>,
 ) : AppLifecycle.Host {
+  override val hostProtocolVersion get() = hostRedwoodVersion
+
   override fun requestFrame() {
     frameClock.requestFrame(appLifecycle)
   }

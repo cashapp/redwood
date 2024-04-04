@@ -20,6 +20,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
 import kotlinx.serialization.json.Json
@@ -52,6 +53,7 @@ public interface ProtocolBridge : EventSink {
   public interface Factory {
     /** Create a new [ProtocolBridge] with its own protocol state and set of tracked widgets. */
     public fun create(
+      hostVersion: RedwoodVersion,
       json: Json = Json.Default,
       mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
     ): ProtocolBridge

@@ -23,6 +23,7 @@ public final class app/cash/redwood/treehouse/AppLifecycle$DefaultImpls {
 
 public abstract interface class app/cash/redwood/treehouse/AppLifecycle$Host : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/AppLifecycle$Host$Companion;
+	public abstract fun getHostProtocolVersion-7jYel6c ()Ljava/lang/String;
 	public abstract fun handleUncaughtException (Ljava/lang/Throwable;)V
 	public abstract fun onUnknownEvent-_LM6m-c (II)V
 	public abstract fun onUnknownEventNode-1ccMwuE (II)V

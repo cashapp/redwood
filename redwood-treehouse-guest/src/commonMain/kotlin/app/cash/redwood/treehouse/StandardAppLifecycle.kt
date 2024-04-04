@@ -19,10 +19,12 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.AppLifecycle.Host
+import app.cash.zipline.ZiplineApiMismatchException
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +37,14 @@ public class StandardAppLifecycle(
 ) : AppLifecycle {
   private var started = false
   private lateinit var host: Host
+
+  internal val hostProtocolVersion: RedwoodVersion get() {
+    return try {
+      host.hostProtocolVersion
+    } catch (_: ZiplineApiMismatchException) {
+      RedwoodVersion.Unknown
+    }
+  }
 
   private val broadcastFrameClock: BroadcastFrameClock = BroadcastFrameClock {
     if (started) {

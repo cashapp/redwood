@@ -3,6 +3,7 @@ import app.cash.redwood.buildsupport.KmpTargets
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.gmazzo.buildconfig'
 
 redwoodBuild {
   composeCompiler()
@@ -51,4 +52,18 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
+}
+
+buildConfig {
+  useKotlinOutput {
+    topLevelConstants = true
+  }
+
+  className("Version")
+  packageName('app.cash.redwood.protocol.guest')
+  buildConfigField(
+    "app.cash.redwood.protocol.RedwoodVersion",
+    "guestRedwoodVersion",
+    "RedwoodVersion(\"${project.version}\")",
+  )
 }

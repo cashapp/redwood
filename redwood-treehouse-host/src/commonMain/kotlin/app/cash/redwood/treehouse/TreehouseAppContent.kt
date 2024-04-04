@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.ProtocolFactory
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -352,6 +353,8 @@ private class ViewContentCodeBinding<A : AppService>(
 
     @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
     bridgeOrNull = ProtocolBridge(
+      // TODO Wire through guest version. Wanted this from AppLifecycle but it's bound too late.
+      guestVersion = RedwoodVersion.Unknown,
       container = view.children as Widget.Children<Any>,
       factory = view.widgetSystem.widgetFactory(
         json = codeSession.json,

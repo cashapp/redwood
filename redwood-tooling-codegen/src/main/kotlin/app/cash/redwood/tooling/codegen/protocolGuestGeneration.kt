@@ -92,6 +92,7 @@ class ExampleProtocolBridge private constructor(
 
   companion object : ProtocolBridge.Factory {
     override fun create(
+      hostVersion: RedwoodVersion,
       json: Json,
       mismatchHandler: ProtocolMismatchHandler,
     ): ExampleProtocolBridge {
@@ -173,6 +174,7 @@ internal fun generateProtocolBridge(
             .addFunction(
               FunSpec.builder("create")
                 .addModifiers(OVERRIDE)
+                .addParameter("hostVersion", Protocol.RedwoodVersion)
                 .addParameter("json", KotlinxSerialization.Json)
                 .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
                 .returns(type)

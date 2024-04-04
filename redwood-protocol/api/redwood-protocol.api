@@ -374,6 +374,40 @@ public final class app/cash/redwood/protocol/PropertyTag$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class app/cash/redwood/protocol/RedwoodVersion : java/lang/Comparable {
+	public static final field Companion Lapp/cash/redwood/protocol/RedwoodVersion$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lapp/cash/redwood/protocol/RedwoodVersion;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-lbpnSQA (Ljava/lang/String;)I
+	public static fun compareTo-lbpnSQA (Ljava/lang/String;Ljava/lang/String;)I
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class app/cash/redwood/protocol/RedwoodVersion$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lapp/cash/redwood/protocol/RedwoodVersion$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-lfoQLWY (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-E69qDtc (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/protocol/RedwoodVersion$Companion {
+	public final fun getUnknown-7jYel6c ()Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class app/cash/redwood/protocol/SnapshotChangeList {
 	public static final field Companion Lapp/cash/redwood/protocol/SnapshotChangeList$Companion;
 	public static final synthetic fun box-impl (Ljava/util/List;)Lapp/cash/redwood/protocol/SnapshotChangeList;

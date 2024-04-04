@@ -58,7 +58,10 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
 class ProtocolTest {
-  private val bridge = TestSchemaProtocolBridge.create()
+  private val bridge = TestSchemaProtocolBridge.create(
+    // Use latest guest version as the host version to avoid any compatibility behavior.
+    hostVersion = guestRedwoodVersion,
+  )
 
   @Test fun widgetVersionPropagated() = runTest {
     val composition = ProtocolRedwoodComposition(

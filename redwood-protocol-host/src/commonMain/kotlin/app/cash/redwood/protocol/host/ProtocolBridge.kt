@@ -29,6 +29,7 @@ import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -44,6 +45,8 @@ import kotlin.native.ObjCName
 @OptIn(RedwoodCodegenApi::class)
 @ObjCName("ProtocolBridge", exact = true)
 public class ProtocolBridge<W : Any>(
+  @Suppress("UNUSED_PARAMETER")
+  guestVersion: RedwoodVersion,
   container: Widget.Children<W>,
   factory: ProtocolFactory<W>,
   private val eventSink: EventSink,

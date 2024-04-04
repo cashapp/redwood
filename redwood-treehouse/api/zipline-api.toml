@@ -28,6 +28,9 @@ functions = [
 
   # fun requestFrame(): kotlin.Unit
   "/TkBiP/u",
+
+  # val hostProtocolVersion: app.cash.redwood.protocol.RedwoodVersion
+  "4ifoT9Ua",
 ]
 
 [app.cash.redwood.treehouse.AppService]
