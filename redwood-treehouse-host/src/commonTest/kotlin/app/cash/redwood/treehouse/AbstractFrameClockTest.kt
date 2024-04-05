@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import assertk.all
 import assertk.assertThat
@@ -42,6 +43,7 @@ abstract class AbstractFrameClockTest {
 
     val frameTimes = Channel<Long>(Channel.UNLIMITED)
     val appLifecycle = object : AppLifecycle {
+      override val guestProtocolVersion get() = RedwoodVersion.Unknown
       override fun start(host: Host) {
       }
       override fun sendFrame(timeNanos: Long) {

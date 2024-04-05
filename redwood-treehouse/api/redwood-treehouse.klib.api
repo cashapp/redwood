@@ -18,6 +18,8 @@ abstract interface app.cash.redwood.treehouse/AppLifecycle : app.cash.zipline/Zi
             abstract fun <get-hostProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/AppLifecycle.Host.hostProtocolVersion.<get-hostProtocolVersion>|<get-hostProtocolVersion>(){}[0]
         final object Companion // app.cash.redwood.treehouse/AppLifecycle.Host.Companion|null[0]
     }
+    abstract val guestProtocolVersion // app.cash.redwood.treehouse/AppLifecycle.guestProtocolVersion|{}guestProtocolVersion[0]
+        abstract fun <get-guestProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/AppLifecycle.guestProtocolVersion.<get-guestProtocolVersion>|<get-guestProtocolVersion>(){}[0]
     final object Companion // app.cash.redwood.treehouse/AppLifecycle.Companion|null[0]
 }
 abstract interface app.cash.redwood.treehouse/AppService : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/AppService|null[0]

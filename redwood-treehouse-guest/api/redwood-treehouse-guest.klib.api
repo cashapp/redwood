@@ -12,5 +12,7 @@ final class app.cash.redwood.treehouse/StandardAppLifecycle : app.cash.redwood.t
     final fun start(app.cash.redwood.treehouse/AppLifecycle.Host) // app.cash.redwood.treehouse/StandardAppLifecycle.start|start(app.cash.redwood.treehouse.AppLifecycle.Host){}[0]
     final val frameClock // app.cash.redwood.treehouse/StandardAppLifecycle.frameClock|{}frameClock[0]
         final fun <get-frameClock>(): androidx.compose.runtime/MonotonicFrameClock // app.cash.redwood.treehouse/StandardAppLifecycle.frameClock.<get-frameClock>|<get-frameClock>(){}[0]
+    final val guestProtocolVersion // app.cash.redwood.treehouse/StandardAppLifecycle.guestProtocolVersion|{}guestProtocolVersion[0]
+        final fun <get-guestProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/StandardAppLifecycle.guestProtocolVersion.<get-guestProtocolVersion>|<get-guestProtocolVersion>(){}[0]
 }
 final fun (app.cash.redwood.treehouse/TreehouseUi).app.cash.redwood.treehouse/asZiplineTreehouseUi(app.cash.redwood.treehouse/StandardAppLifecycle): app.cash.redwood.treehouse/ZiplineTreehouseUi // app.cash.redwood.treehouse/asZiplineTreehouseUi|asZiplineTreehouseUi@app.cash.redwood.treehouse.TreehouseUi(app.cash.redwood.treehouse.StandardAppLifecycle){}[0]

@@ -25,6 +25,13 @@ import kotlinx.serialization.Contextual
 
 @ObjCName("AppLifecycle", exact = true)
 public interface AppLifecycle : ZiplineService {
+  /**
+   * The Redwood version of the guest.
+   * This may be used to alter the behavior to work around bugs discovered in the future, and to
+   * ensure the serialized protocol remains compatible with what the guest expects.
+   */
+  public val guestProtocolVersion: RedwoodVersion
+
   public fun start(host: Host)
 
   public fun sendFrame(timeNanos: @Contextual Long)
@@ -34,7 +41,7 @@ public interface AppLifecycle : ZiplineService {
     /**
      * The Redwood version of the host.
      * This may be used to alter the behavior to work around bugs discovered in the future, and to
-     * ensure the serialized protocol is remains compatible with what the host expects.
+     * ensure the serialized protocol remains compatible with what the host expects.
      */
     public val hostProtocolVersion: RedwoodVersion
 
