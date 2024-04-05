@@ -1,7 +1,20 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.9.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.10.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.10.0] - 2024-04-05
+[0.10.0]: https://github.com/cashapp/redwood/releases/tag/0.10.0
 
 New:
 - Compose UI implementation for `Box`.
