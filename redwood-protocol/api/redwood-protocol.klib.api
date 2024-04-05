@@ -322,7 +322,7 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
             final fun <get-toIndex>(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Move.toIndex.<get-toIndex>|<get-toIndex>(){}[0]
     }
     final class Remove : app.cash.redwood.protocol/ChildrenChange { // app.cash.redwood.protocol/ChildrenChange.Remove|null[0]
-        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id>) // app.cash.redwood.protocol/ChildrenChange.Remove.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
+        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> =...) // app.cash.redwood.protocol/ChildrenChange.Remove.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/ChildrenChange.Remove.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Remove.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // app.cash.redwood.protocol/ChildrenChange.Remove.toString|toString(){}[0]

@@ -39,15 +39,36 @@ public class ProtocolWidgetChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    val removedIds = ArrayList<Id>(count)
-    for (i in index until index + count) {
-      val widget = _widgets[i]
-      widget.visitIds(state::removeWidget)
-      removedIds += widget.id
+    if (state.synthesizeSubtreeRemoval) {
+      val removedIds = ArrayList<Id>(count)
+      for (i in index until index + count) {
+        val widget = _widgets[i]
+        removedIds += widget.id
+        state.removeWidget(widget.id)
+
+        widget.depthFirstWalk { parent, childrenTag, children ->
+          val childIds = children.widgets.map(ProtocolWidget::id)
+          for (childId in childIds) {
+            state.removeWidget(childId)
+          }
+          state.append(ChildrenChange.Remove(parent.id, childrenTag, 0, childIds.size, childIds))
+        }
+      }
+      state.append(ChildrenChange.Remove(id, tag, index, count, removedIds))
+    } else {
+      for (i in index until index + count) {
+        val widget = _widgets[i]
+        state.removeWidget(widget.id)
+        widget.depthFirstWalk { _, _, children ->
+          for (childWidget in children.widgets) {
+            state.removeWidget(childWidget.id)
+          }
+        }
+      }
+      state.append(ChildrenChange.Remove(id, tag, index, count))
     }
 
     _widgets.remove(index, count)
-    state.append(ChildrenChange.Remove(id, tag, index, count, removedIds))
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -58,9 +79,13 @@ public class ProtocolWidgetChildren(
   override fun onModifierUpdated(index: Int, widget: Widget<Unit>) {
   }
 
-  public fun visitIds(block: (Id) -> Unit) {
-    for (i in _widgets.indices) {
-      _widgets[i].visitIds(block)
+  public fun depthFirstWalk(
+    parent: ProtocolWidget,
+    block: (ProtocolWidget, ChildrenTag, ProtocolWidgetChildren) -> Unit,
+  ) {
+    for (widget in widgets) {
+      widget.depthFirstWalk(block)
     }
+    block(parent, tag, this)
   }
 }

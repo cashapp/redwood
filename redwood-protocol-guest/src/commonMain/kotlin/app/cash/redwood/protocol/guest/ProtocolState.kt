@@ -18,13 +18,23 @@ package app.cash.redwood.protocol.guest
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.RedwoodVersion
 
 /** @suppress For generated code use only. */
 @RedwoodCodegenApi
-public class ProtocolState {
+public class ProtocolState(
+  hostVersion: RedwoodVersion,
+) {
   private var nextValue = Id.Root.value + 1
   private val widgets = PlatformMap<Int, ProtocolWidget>()
   private var changes = PlatformList<Change>()
+
+  /**
+   * Host versions prior to 0.10.0 contained a bug where they did not recursively remove widgets
+   * from the protocol map which leaked any child views of a removed node. We can work around this
+   * on the guest side by synthesizing removes for every node in the subtree.
+   */
+  internal val synthesizeSubtreeRemoval = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   public fun nextId(): Id {
     val value = nextValue

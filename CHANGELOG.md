@@ -35,7 +35,7 @@ Fixed:
 - Fix the backgroundColor for `UIViewLazyList` to be transparent. This matches the behavior of the other `LazyList` platform implementations.
 - Fix `TreehouseUIView` to size itself according to the size of its subview.
 - In `UIViewLazyList`, adding `beginUpdates`/`endUpdates` calls to `insertRows`/`deleteRows`, and wrapping changes in `UIView.performWithoutAnimation` blocks.
-- Fix memory leak in 'protocol-guest' and 'protocol-host' where child nodes beneath a removed node were incorrectly retained in an internal map indefinitely.
+- Fix memory leak in 'protocol-guest' and 'protocol-host' where child nodes beneath a removed node were incorrectly retained in an internal map indefinitely. The guest protocol code has been updated to work around this memory leak when deployed to old hosts by sending individual remove operations for each node in the subtree.
 - Ensure that Zipline services are not closed prematurely when disposing a Treehouse UI.
 - In `UIViewLazyList`, don't remove subviews from hierarchy during `prepareForReuse` call
 
