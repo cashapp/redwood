@@ -7,7 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- In `UIViewLazyList`'s `UITableView`, adding special-case handling for programmatic scroll-to-top calls.
 
 Fixed:
 - Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
