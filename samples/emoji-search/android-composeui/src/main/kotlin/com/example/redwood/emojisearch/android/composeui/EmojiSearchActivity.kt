@@ -50,8 +50,8 @@ import coil3.serviceLoaderEnabled
 import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
+import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

@@ -7,7 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- Removed generated `typealias`es for package names which changed in 0.10.0.
 
 Fixed:
 - Nothing yet!
