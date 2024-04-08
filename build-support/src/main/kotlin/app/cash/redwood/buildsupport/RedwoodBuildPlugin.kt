@@ -196,6 +196,10 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     plugins.withId("com.android.application") {
       val android = extensions.getByName("android") as BaseExtension
+      android.packagingOptions.apply {
+        // Keep native symbols for diagnosing sample application crashes.
+        doNotStrip("**/*.so")
+      }
       android.buildTypes.apply {
         // Libraries don't build debug so fall back to release.
         getByName("debug") {
