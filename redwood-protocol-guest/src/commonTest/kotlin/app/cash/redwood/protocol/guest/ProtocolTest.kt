@@ -315,9 +315,7 @@ class ProtocolTest {
    * introduced a crash. Special-case this by not synthesizing subtree removal for these children.
    */
   @Test fun entireSubtreeNotRemovedForLazyListPlaceholders() = runTest {
-    val removeSubtree = removeSubtree(RedwoodVersion("0.9.0"), lazyList = true)
-    println(removeSubtree)
-    assertThat(removeSubtree)
+    assertThat(removeSubtree(RedwoodVersion("0.9.0"), lazyList = true))
       .containsExactly(
         ChildrenChange.Remove(Id(2), ChildrenTag(2), 0, 1, listOf(Id(23))),
         ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, 1, listOf(Id(2))),
@@ -360,7 +358,6 @@ class ProtocolTest {
 
     // Ensure the button is present and receiving clicks.
     bridge.sendEvent(Event(button.id, EventTag(2)))
-    println(initialSnapshot)
     assertThat(clicks).isEqualTo(1)
 
     remove = true
