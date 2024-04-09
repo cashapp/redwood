@@ -20,6 +20,7 @@ import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
+import kotlin.concurrent.Volatile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
@@ -37,22 +38,26 @@ internal class ZiplineCodeSession<A : AppService>(
   appService = appService,
 ) {
   private val ziplineScope = ZiplineScope()
-  private lateinit var appLifecycle: AppLifecycle
 
   override val json: Json
     get() = zipline.json
 
-  override val guestProtocolVersion: RedwoodVersion
-    get() {
-      return try {
-        appLifecycle.guestProtocolVersion
-      } catch (_: ZiplineApiMismatchException) {
-        RedwoodVersion.Unknown
-      }
+  @Volatile
+  private var _guestProtocolVersion: RedwoodVersion? = null
+
+  override val guestProtocolVersion: RedwoodVersion get() =
+    checkNotNull(_guestProtocolVersion) {
+      "Cannot access guest version before ziplineStart"
     }
 
   override fun ziplineStart() {
-    appLifecycle = appService.withScope(ziplineScope).appLifecycle
+    val appLifecycle = appService.withScope(ziplineScope).appLifecycle
+
+    _guestProtocolVersion = try {
+      appLifecycle.guestProtocolVersion
+    } catch (_: ZiplineApiMismatchException) {
+      RedwoodVersion.Unknown
+    }
 
     val host = RealAppLifecycleHost(
       appLifecycle = appLifecycle,
