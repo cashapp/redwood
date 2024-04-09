@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
 
 
 ## [0.10.0] - 2024-04-05
