@@ -42,6 +42,8 @@ final class app.cash.redwood.protocol.guest/ProtocolState { // app.cash.redwood.
     final fun getWidget(app.cash.redwood.protocol/Id): app.cash.redwood.protocol.guest/ProtocolWidget? // app.cash.redwood.protocol.guest/ProtocolState.getWidget|getWidget(app.cash.redwood.protocol.Id){}[0]
     final fun nextId(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.guest/ProtocolState.nextId|nextId(){}[0]
     final fun removeWidget(app.cash.redwood.protocol/Id) // app.cash.redwood.protocol.guest/ProtocolState.removeWidget|removeWidget(app.cash.redwood.protocol.Id){}[0]
+    final val synthesizeSubtreeRemoval // app.cash.redwood.protocol.guest/ProtocolState.synthesizeSubtreeRemoval|{}synthesizeSubtreeRemoval[0]
+        final fun <get-synthesizeSubtreeRemoval>(): kotlin/Boolean // app.cash.redwood.protocol.guest/ProtocolState.synthesizeSubtreeRemoval.<get-synthesizeSubtreeRemoval>|<get-synthesizeSubtreeRemoval>(){}[0]
 }
 final class app.cash.redwood.protocol.guest/ProtocolWidgetChildren : app.cash.redwood.widget/Widget.Children<kotlin/Unit> { // app.cash.redwood.protocol.guest/ProtocolWidgetChildren|null[0]
     constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, app.cash.redwood.protocol.guest/ProtocolState) // app.cash.redwood.protocol.guest/ProtocolWidgetChildren.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;app.cash.redwood.protocol.guest.ProtocolState){}[0]

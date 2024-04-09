@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
@@ -301,7 +302,31 @@ class ProtocolTest {
       )
   }
 
-  private suspend fun TestScope.removeSubtree(hostVersion: RedwoodVersion): List<Change> {
+  @Test fun entireSubtreeRemovedForLazyListPlaceholders() = runTest {
+    assertThat(removeSubtree(latestVersion, lazyList = true))
+      .containsExactly(
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 1),
+      )
+  }
+
+  /**
+   * Our LazyList binding on host platforms incorrectly assumed that the placeholders children was
+   * append-only. When we fixed a host-side memory leak by traversing guest children, that
+   * introduced a crash. Special-case this by not synthesizing subtree removal for these children.
+   */
+  @Test fun entireSubtreeNotRemovedForLazyListPlaceholders() = runTest {
+    assertThat(removeSubtree(RedwoodVersion("0.9.0"), lazyList = true))
+      .containsExactly(
+        ChildrenChange.Remove(Id(2), ChildrenTag(2), 0, 1, listOf(Id(23))),
+        ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, 1, listOf(Id(2))),
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 1, listOf(Id(1))),
+      )
+  }
+
+  private suspend fun TestScope.removeSubtree(
+    hostVersion: RedwoodVersion,
+    lazyList: Boolean = false,
+  ): List<Change> {
     val (composition, bridge) = testProtocolComposition(hostVersion)
 
     var clicks = 0
@@ -309,27 +334,40 @@ class ProtocolTest {
     composition.setContent {
       if (!remove) {
         Row {
-          Column {
-            Button("Click?", onClick = { clicks++ })
+          if (lazyList) {
+            LazyColumn(
+              placeholder = {
+                Text("placeholder")
+              },
+            ) {
+              item {
+                Button("Click?", onClick = { clicks++ })
+              }
+            }
+          } else {
+            Column {
+              Button("Click?", onClick = { clicks++ })
+            }
           }
         }
       }
     }
-    composition.awaitSnapshot()
+    val initialSnapshot = composition.awaitSnapshot()
+    val button = initialSnapshot.first { it is Create && it.tag.value == 4 }
     assertThat(clicks).isEqualTo(0)
 
     // Ensure the button is present and receiving clicks.
-    bridge.sendEvent(Event(Id(3), EventTag(2)))
+    bridge.sendEvent(Event(button.id, EventTag(2)))
     assertThat(clicks).isEqualTo(1)
 
     remove = true
     val removeChanges = composition.awaitSnapshot()
 
     // If the whole tree was removed, we cannot target the button anymore.
-    assertFailure { bridge.sendEvent(Event(Id(3), EventTag(2))) }
+    assertFailure { bridge.sendEvent(Event(button.id, EventTag(2))) }
       .isInstanceOf<IllegalArgumentException>()
       .message()
-      .isEqualTo("Unknown node ID 3 for event with tag 2")
+      .isEqualTo("Unknown node ID ${button.id.value} for event with tag 2")
     assertThat(clicks).isEqualTo(1)
 
     return removeChanges
