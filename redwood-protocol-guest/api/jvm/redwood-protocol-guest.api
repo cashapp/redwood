@@ -29,6 +29,7 @@ public final class app/cash/redwood/protocol/guest/ProtocolState {
 	public final fun addWidget (Lapp/cash/redwood/protocol/guest/ProtocolWidget;)V
 	public final fun append (Lapp/cash/redwood/protocol/Change;)V
 	public final fun getChangesOrNull ()Ljava/util/List;
+	public final fun getSynthesizeSubtreeRemoval ()Z
 	public final fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
 	public final fun nextId-0HhLjSo ()I
 	public final fun removeWidget-ou3jOuA (I)V
