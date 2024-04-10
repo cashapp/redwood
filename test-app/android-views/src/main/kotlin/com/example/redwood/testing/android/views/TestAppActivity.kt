@@ -126,8 +126,8 @@ class TestAppActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
-      embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
+      embeddedDir = "/".toPath(),
       stateStore = FileStateStore(
         json = Json {
           serializersModule = testAppSerializersModule

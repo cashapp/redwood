@@ -151,10 +151,10 @@ public class TreehouseApp<A : AppService> private constructor(
         cache = factory.cache,
       )
 
-      if (factory.embeddedDir != null && factory.embeddedFileSystem != null) {
+      if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
         loader = loader.withEmbedded(
-          embeddedDir = factory.embeddedDir,
           embeddedFileSystem = factory.embeddedFileSystem,
+          embeddedDir = factory.embeddedDir,
         )
       }
     }
@@ -199,8 +199,8 @@ public class TreehouseApp<A : AppService> private constructor(
     internal val httpClient: ZiplineHttpClient,
     internal val frameClockFactory: FrameClock.Factory,
     internal val manifestVerifier: ManifestVerifier,
-    internal val embeddedDir: Path?,
     internal val embeddedFileSystem: FileSystem?,
+    internal val embeddedDir: Path?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
     internal val concurrentDownloads: Int,
