@@ -16,6 +16,7 @@ public abstract class app/cash/redwood/lazylayout/widget/LazyListScrollProcessor
 	public fun <init> ()V
 	public abstract fun contentSize ()I
 	public final fun onEndChanges ()V
+	public final fun onScrollToTop ()V
 	public final fun onUserScroll (II)V
 	public final fun onViewportChanged (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun programmaticScroll (IZ)V

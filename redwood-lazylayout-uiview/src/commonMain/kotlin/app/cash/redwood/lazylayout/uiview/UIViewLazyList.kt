@@ -76,6 +76,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
       // assume that it's a programmatic scroll-to-top call.
       if (contentOffset.useContents { y } == 0.0 && this.contentOffset.useContents { y } != 0.0) {
         isDoingProgrammaticScroll = true
+        scrollProcessor.onScrollToTop()
       }
       super.setContentOffset(contentOffset, animated)
     }
@@ -197,10 +198,6 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
       }
 
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        isDoingProgrammaticScroll = false
-      }
-
-      override fun scrollViewDidScrollToTop(scrollView: UIScrollView) {
         isDoingProgrammaticScroll = false
       }
     }
