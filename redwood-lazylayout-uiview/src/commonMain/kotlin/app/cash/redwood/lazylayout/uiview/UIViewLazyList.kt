@@ -37,6 +37,8 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -56,17 +58,29 @@ import platform.UIKit.UITableViewDataSourceProtocol
 import platform.UIKit.UITableViewDelegateProtocol
 import platform.UIKit.UITableViewRowAnimationNone
 import platform.UIKit.UITableViewScrollPosition
+import platform.UIKit.UITableViewStyle
 import platform.UIKit.UIView
 import platform.UIKit.indexPathForItem
 import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal open class UIViewLazyList(
-  internal val tableView: UITableView = UITableView(
+internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
+  internal val tableView: UITableView = object : UITableView(
     CGRectZero.readValue(),
-  ),
-) : LazyList<UIView>, ChangeListener {
+    UITableViewStyle.UITableViewStylePlain,
+  ) {
+    override fun setContentOffset(contentOffset: CValue<CGPoint>, animated: Boolean) {
+      // If the caller is requesting a contentOffset with y == 0,
+      // and the current contentOffset.y is not 0,
+      // assume that it's a programmatic scroll-to-top call.
+      if (contentOffset.useContents { y } == 0.0 && this.contentOffset.useContents { y } != 0.0) {
+        isDoingProgrammaticScroll = true
+      }
+      super.setContentOffset(contentOffset, animated)
+    }
+  }
+
   override var modifier: Modifier = Modifier
 
   override val value: UIView
@@ -183,6 +197,10 @@ internal open class UIViewLazyList(
       }
 
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        isDoingProgrammaticScroll = false
+      }
+
+      override fun scrollViewDidScrollToTop(scrollView: UIScrollView) {
         isDoingProgrammaticScroll = false
       }
     }

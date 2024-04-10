@@ -522,7 +522,14 @@ internal fun generateProtocolWidget(
             .apply {
               for (trait in widget.traits) {
                 if (trait is ProtocolChildren) {
-                  addStatement("%N.depthFirstWalk(this, block)", trait.name)
+                  if (workAroundLazyListPlaceholderRemoveCrash(widget, trait)) {
+                    addComment("Work around the LazyList.placeholder remove crash.")
+                    beginControlFlow("if (!state.synthesizeSubtreeRemoval)")
+                    addStatement("%N.depthFirstWalk(this, block)", trait.name)
+                    endControlFlow()
+                  } else {
+                    addStatement("%N.depthFirstWalk(this, block)", trait.name)
+                  }
                 }
               }
             }
@@ -532,6 +539,22 @@ internal fun generateProtocolWidget(
     )
     .build()
 }
+
+private val lazyListTypeNames = listOf("app.cash.redwood.lazylayout", "LazyList")
+
+/**
+ * Returns true if this is the `LazyList.placeholder` trait, which had a severe bug in host code
+ * by assuming `Widget.Children.remove()` is never be called. (This started crashing when we fixed
+ * host-side memory leaks by removing guest-side children.)
+ *
+ * We work around this by not attempting to fix the host-side memory leak. This turns out to not
+ * be a problem in practice anyway, because we never remove placeholders until we remove the
+ * entire LazyList.
+ */
+private fun workAroundLazyListPlaceholderRemoveCrash(
+  widget: ProtocolWidget,
+  trait: ProtocolWidget.ProtocolTrait,
+): Boolean = widget.type.names == lazyListTypeNames && trait.name == "placeholder"
 
 /*
 internal object GrowSerializer : KSerializer<Grow> {

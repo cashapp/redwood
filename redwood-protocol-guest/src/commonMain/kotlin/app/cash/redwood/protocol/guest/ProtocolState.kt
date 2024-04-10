@@ -34,7 +34,7 @@ public class ProtocolState(
    * from the protocol map which leaked any child views of a removed node. We can work around this
    * on the guest side by synthesizing removes for every node in the subtree.
    */
-  internal val synthesizeSubtreeRemoval = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
+  public val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   public fun nextId(): Id {
     val value = nextValue
