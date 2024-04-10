@@ -23,7 +23,6 @@ import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.ANY
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -39,63 +38,10 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.joinToCode
-
-// TODO Delete this once 0.10.0 is released.
-internal fun testingDeprecations(schema: Schema): FileSpec {
-  val typeVarR = TypeVariableName("R")
-  val testingFunctionBodyType = LambdaTypeName.get(
-    receiver = RedwoodTesting.TestRedwoodComposition
-      .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
-    returnType = typeVarR,
-  ).copy(suspending = true)
-  val testingFunctionName = "${schema.type.flatName}Tester"
-  val deprecation = AnnotationSpec.builder(Deprecated::class)
-    .addMember("%S", "Change import to .testing.$testingFunctionName")
-    .build()
-  return FileSpec.builder(schema.widgetPackage(), "testingDeprecated")
-    .addAnnotation(suppressDeprecations)
-    .addFunction(
-      FunSpec.builder(testingFunctionName)
-        .addAnnotation(deprecation)
-        .addModifiers(SUSPEND)
-        .addParameter(
-          ParameterSpec.builder("onBackPressedDispatcher", Redwood.OnBackPressedDispatcher)
-            .defaultValue("%T", RedwoodTesting.NoOpOnBackPressedDispatcher)
-            .build(),
-        )
-        .addParameter(
-          ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))
-            .defaultValue("null")
-            .build(),
-        )
-        .addParameter(
-          ParameterSpec.builder("uiConfiguration", Redwood.UiConfiguration)
-            .defaultValue("%T()", Redwood.UiConfiguration)
-            .build(),
-        )
-        .addParameter("body", testingFunctionBodyType)
-        .addTypeVariable(typeVarR)
-        .returns(typeVarR)
-        .addStatement("return %M(onBackPressedDispatcher, savedState, uiConfiguration, body)", MemberName(schema.testingPackage(), testingFunctionName))
-        .build(),
-    )
-    .apply {
-      for (widget in schema.widgets) {
-        val valueType = schema.widgetValueType(widget)
-        addTypeAlias(
-          TypeAliasSpec.builder(valueType.simpleName, valueType)
-            .addAnnotation(deprecation)
-            .build(),
-        )
-      }
-    }
-    .build()
-}
 
 /*
 suspend fun <R> ExampleTester(

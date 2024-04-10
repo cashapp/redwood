@@ -47,31 +47,12 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SHORT
 import com.squareup.kotlinpoet.STRING
-import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
 private val protocolViewType = UNIT
-
-// TODO Delete this once 0.10.0 is released.
-internal fun protocolGuestDeprecations(schema: Schema): FileSpec {
-  val typeName = "${schema.type.flatName}ProtocolBridge"
-  val newType = ClassName(schema.guestProtocolPackage(), typeName)
-  return FileSpec.builder(schema.composePackage(), "protocolGuestDeprecated")
-    .addAnnotation(suppressDeprecations)
-    .addTypeAlias(
-      TypeAliasSpec.builder(typeName, newType)
-        .addAnnotation(
-          AnnotationSpec.builder(Deprecated::class)
-            .addMember("%S", "Change import to .protocol.guest.$typeName")
-            .build(),
-        )
-        .build(),
-    )
-    .build()
-}
 
 /*
 class ExampleProtocolBridge private constructor(

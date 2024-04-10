@@ -20,9 +20,9 @@ import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.testing.flatten
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.redwood.counter.widget.ButtonValue
-import com.example.redwood.counter.widget.SchemaTester
-import com.example.redwood.counter.widget.TextValue
+import com.example.redwood.counter.testing.ButtonValue
+import com.example.redwood.counter.testing.SchemaTester
+import com.example.redwood.counter.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

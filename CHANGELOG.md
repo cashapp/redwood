@@ -7,6 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
+- Removed generated `typealias`es for package names which changed in 0.10.0.
 - In `UIViewLazyList`'s `UITableView`, adding special-case handling for programmatic scroll-to-top calls.
 
 Fixed:

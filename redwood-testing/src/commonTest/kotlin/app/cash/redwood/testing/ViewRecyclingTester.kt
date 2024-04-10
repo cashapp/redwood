@@ -33,8 +33,8 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
 import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testing.testing.TestSchemaTester
 import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaTester
 import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope

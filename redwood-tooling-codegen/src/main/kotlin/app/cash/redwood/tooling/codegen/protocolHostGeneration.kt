@@ -41,33 +41,11 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
-
-// TODO Delete this once 0.10.0 is released.
-internal fun protocolHostDeprecations(schema: Schema): FileSpec {
-  val typeName = "${schema.type.flatName}ProtocolFactory"
-  val newType = ClassName(schema.hostProtocolPackage(), typeName)
-  val unboundW = TypeVariableName("V")
-  return FileSpec.builder(schema.widgetPackage(), "protocolHostDeprecated")
-    .addAnnotation(suppressDeprecations)
-    .addTypeAlias(
-      TypeAliasSpec.builder(typeName, newType.parameterizedBy(unboundW))
-        .addTypeVariable(unboundW)
-        .addAnnotation(
-          AnnotationSpec.builder(Deprecated::class)
-            .addMember("%S", "Change import to .protocol.host.$typeName")
-            .build(),
-        )
-        .build(),
-    )
-    .build()
-}
 
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
