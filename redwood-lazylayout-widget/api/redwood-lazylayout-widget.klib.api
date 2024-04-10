@@ -38,6 +38,7 @@ abstract class app.cash.redwood.lazylayout.widget/LazyListScrollProcessor { // a
     abstract fun programmaticScroll(kotlin/Int, kotlin/Boolean) // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.programmaticScroll|programmaticScroll(kotlin.Int;kotlin.Boolean){}[0]
     constructor <init>() // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.<init>|<init>(){}[0]
     final fun onEndChanges() // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.onEndChanges|onEndChanges(){}[0]
+    final fun onScrollToTop() // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.onScrollToTop|onScrollToTop(){}[0]
     final fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]
     final fun onViewportChanged(kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>) // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.onViewportChanged|onViewportChanged(kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>){}[0]
     final fun scrollItemIndex(app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.scrollItemIndex|scrollItemIndex(app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]

@@ -65,6 +65,18 @@ public abstract class LazyListScrollProcessor {
     onViewportChanged?.invoke(firstIndex, lastIndex)
   }
 
+  /**
+   * Reacts to a scroll-to-top being initiated.
+   */
+  public fun onScrollToTop() {
+    if (this.mostRecentFirstIndex == 0) return // Already at the top.
+    if (this.mostRecentLastIndex == -1) return // Never scrolled. Ignore.
+
+    // This assumes that (mostRecentLastIndex - mostRecentFirstIndex + 1) rows
+    // will be visible after the scroll-to-top completes.
+    onUserScroll(0, mostRecentLastIndex - mostRecentFirstIndex)
+  }
+
   /** Returns the number of items we're scrolling over. */
   public abstract fun contentSize(): Int
 
