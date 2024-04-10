@@ -75,7 +75,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
       // and the current contentOffset.y is not 0,
       // assume that it's a programmatic scroll-to-top call.
       if (contentOffset.useContents { y } == 0.0 && this.contentOffset.useContents { y } != 0.0) {
-        isDoingProgrammaticScroll = true
+        ignoreScrollUpdates = true
         scrollProcessor.onScrollToTop()
       }
       super.setContentOffset(contentOffset, animated)
@@ -123,13 +123,13 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
     }
   }
 
-  private var isDoingProgrammaticScroll = false
+  private var ignoreScrollUpdates = false
 
   private val scrollProcessor = object : LazyListScrollProcessor() {
     override fun contentSize() = updateProcessor.size
 
     override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
-      isDoingProgrammaticScroll = animated // Don't forward scroll updates to scrollProcessor.
+      ignoreScrollUpdates = animated // Don't forward scroll updates to scrollProcessor.
       tableView.scrollToRowAtIndexPath(
         NSIndexPath.indexPathForItem(firstIndex.toLong(), 0),
         UITableViewScrollPosition.UITableViewScrollPositionTop,
@@ -179,7 +179,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
   private val tableViewDelegate: UITableViewDelegateProtocol =
     object : NSObject(), UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
-        if (isDoingProgrammaticScroll) return // Only notify of user scrolls.
+        if (ignoreScrollUpdates) return // Only notify of user scrolls.
 
         val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
         if (visibleIndexPaths.isEmpty()) return
@@ -194,11 +194,11 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
        * programmatically scrolling anymore.
        */
       override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        isDoingProgrammaticScroll = false
+        ignoreScrollUpdates = false
       }
 
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        isDoingProgrammaticScroll = false
+        ignoreScrollUpdates = false
       }
     }
 
