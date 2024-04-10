@@ -9,6 +9,7 @@ New:
 Changed:
 - Removed generated `typealias`es for package names which changed in 0.10.0.
 - In `UIViewLazyList`'s `UITableView`, adding special-case handling for programmatic scroll-to-top calls.
+- APIs accepting a `FileSystem` and `Path` now have the `FileSystem` coming before the `Path` in the parameter list. Compatibility functions are retained for this version, but will be removed in the next version.
 
 Fixed:
 - Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
