@@ -119,7 +119,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo(". . C D [...8]")
+    assertThat(processor.toString()).isEqualTo(".v2 .v2 C D [...8]")
 
     processor.itemsBefore(4)
     processor.itemsAfter(3)
@@ -128,7 +128,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo(". . . . [...8]")
+    assertThat(processor.toString()).isEqualTo(".v2 .v2 .v2 .v2 [...8]")
 
     processor.itemsBefore(6)
     processor.itemsAfter(1)
@@ -137,7 +137,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo(". . . . [...8]")
+    assertThat(processor.toString()).isEqualTo(".v2 .v2 .v2 .v2 [...8]")
 
     processor.itemsBefore(4)
     processor.itemsAfter(3)
@@ -146,7 +146,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo(". . . . [...8]")
+    assertThat(processor.toString()).isEqualTo(".v2 .v2 .v2 .v2 [...8]")
 
     processor.itemsBefore(2)
     processor.itemsAfter(5)
@@ -155,7 +155,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo(". . C D [...8]")
+    assertThat(processor.toString()).isEqualTo(".v2 .v2 Cv3 Dv3 [...8]")
 
     processor.itemsBefore(0)
     processor.itemsAfter(7)
@@ -164,7 +164,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("A B C D [...8]")
+    assertThat(processor.toString()).isEqualTo("Av3 Bv3 Cv3 Dv3 [...8]")
   }
 
   /**
@@ -201,7 +201,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I . . .")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 . . .")
 
     processor.itemsBefore(6)
     processor.itemsAfter(1)
@@ -210,14 +210,14 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J K .")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2 .")
 
     processor.itemsBefore(7)
     processor.itemsAfter(0)
     processor.items.insert(5, StringWidget("L"))
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J K L")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2 Lv2")
 
     processor.itemsBefore(5)
     processor.itemsAfter(2)
@@ -226,7 +226,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J . .")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 .v3 .v3")
 
     processor.itemsBefore(3)
     processor.itemsAfter(4)
@@ -235,7 +235,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] . . . .")
+    assertThat(processor.toString()).isEqualTo("[8...] .v3 .v3 .v3 .v3")
 
     processor.itemsBefore(1)
     processor.itemsAfter(6)
@@ -244,7 +244,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] . . . .")
+    assertThat(processor.toString()).isEqualTo("[8...] .v3 .v3 .v3 .v3")
   }
 
   @Test
@@ -279,7 +279,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J K L M [...7]")
+    assertThat(processor.toString()).isEqualTo("[8...] I J Kv2 Lv2 Mv2 [...7]")
 
     // Load the bottom 10.
     processor.itemsBefore(10)
@@ -295,7 +295,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] . . K L M [...7]")
+    assertThat(processor.toString()).isEqualTo("[8...] .v2 .v2 Kv2 Lv2 Mv2 [...7]")
 
     // Load the middle 10.
     processor.itemsBefore(5)
@@ -311,7 +311,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J K L M [...7]")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv3 Jv3 Kv2 Lv2 Mv2 [...7]")
 
     // Load the first 10.
     processor.itemsBefore(0)
@@ -327,7 +327,7 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
     processor.onEndChanges()
-    assertThat(processor.toString()).isEqualTo("[8...] I J . . . [...7]")
+    assertThat(processor.toString()).isEqualTo("[8...] Iv3 Jv3 .v3 .v3 .v3 [...7]")
   }
 
   @Test
@@ -373,33 +373,160 @@ class LazyListUpdateProcessorTest {
   }
 
   @Test
-  fun noncontiguousScroll() {
-    processor.itemsBefore(10)
-    processor.itemsAfter(10)
-    processor.items.insert(0, StringWidget("K"))
-    processor.items.insert(1, StringWidget("L"))
-    processor.items.insert(2, StringWidget("M"))
-    processor.items.insert(3, StringWidget("N"))
-    processor.items.insert(4, StringWidget("O"))
+  fun noncontiguousScrollUp() {
+    processor.itemsBefore(4)
+    processor.itemsAfter(4)
+    processor.items.insert(0, StringWidget("E"))
+    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(2, StringWidget("G"))
     processor.onEndChanges()
 
-    processor.scrollTo(10, 5)
-    assertThat(processor.toString()).isEqualTo("[10...] K L M N O [...10]")
+    processor.scrollTo(4, 3)
+    assertThat(processor.toString()).isEqualTo("[4...] E F G [...4]")
 
-    processor.scrollTo(0, 5)
-    assertThat(processor.toString()).isEqualTo(". . . . . [...20]")
+    processor.scrollTo(0, 3)
+    assertThat(processor.toString()).isEqualTo(". . . [...8]")
 
     processor.itemsBefore(0)
-    processor.itemsAfter(20)
+    processor.itemsAfter(8)
     processor.items.insert(0, StringWidget("A"))
     processor.items.insert(1, StringWidget("B"))
     processor.items.insert(2, StringWidget("C"))
-    processor.items.insert(3, StringWidget("D"))
-    processor.items.insert(4, StringWidget("E"))
-    processor.items.remove(5, 5)
+    processor.items.remove(3, 3)
     processor.onEndChanges()
 
-    assertThat(processor.toString()).isEqualTo("A B C D E [...20]")
+    assertThat(processor.toString()).isEqualTo("Av2 Bv2 Cv2 [...8]")
+  }
+
+  @Test
+  fun noncontiguousScrollDown() {
+    processor.itemsBefore(4)
+    processor.itemsAfter(4)
+    processor.items.insert(0, StringWidget("E"))
+    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(2, StringWidget("G"))
+    processor.onEndChanges()
+
+    processor.scrollTo(4, 3)
+    assertThat(processor.toString()).isEqualTo("[4...] E F G [...4]")
+
+    processor.scrollTo(8, 3)
+    assertThat(processor.toString()).isEqualTo("[8...] . . .")
+
+    processor.itemsBefore(8)
+    processor.itemsAfter(0)
+    processor.items.insert(0, StringWidget("I"))
+    processor.items.insert(1, StringWidget("J"))
+    processor.items.insert(2, StringWidget("K"))
+    processor.items.remove(3, 3)
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2")
+  }
+
+  @Test
+  fun adjacentScrollUp() {
+    processor.itemsBefore(3)
+    processor.itemsAfter(3)
+    processor.items.insert(0, StringWidget("D"))
+    processor.items.insert(1, StringWidget("E"))
+    processor.items.insert(2, StringWidget("F"))
+    processor.onEndChanges()
+
+    processor.scrollTo(3, 3)
+    assertThat(processor.toString()).isEqualTo("[3...] D E F [...3]")
+
+    processor.scrollTo(0, 3)
+    assertThat(processor.toString()).isEqualTo(". . . [...6]")
+
+    processor.itemsBefore(0)
+    processor.itemsAfter(6)
+    processor.items.insert(0, StringWidget("A"))
+    processor.items.insert(1, StringWidget("B"))
+    processor.items.insert(2, StringWidget("C"))
+    processor.items.remove(3, 3)
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("Av2 Bv2 Cv2 [...6]")
+  }
+
+  @Test
+  fun adjacentScrollDown() {
+    processor.itemsBefore(3)
+    processor.itemsAfter(3)
+    processor.items.insert(0, StringWidget("D"))
+    processor.items.insert(1, StringWidget("E"))
+    processor.items.insert(2, StringWidget("F"))
+    processor.onEndChanges()
+
+    processor.scrollTo(3, 3)
+    assertThat(processor.toString()).isEqualTo("[3...] D E F [...3]")
+
+    processor.scrollTo(6, 3)
+    assertThat(processor.toString()).isEqualTo("[6...] . . .")
+
+    processor.itemsBefore(6)
+    processor.itemsAfter(0)
+    processor.items.insert(0, StringWidget("G"))
+    processor.items.insert(1, StringWidget("H"))
+    processor.items.insert(2, StringWidget("I"))
+    processor.items.remove(3, 3)
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("[6...] Gv2 Hv2 Iv2")
+  }
+
+  /** Our event processing should work regardless of the order changes are received in. */
+  @Test
+  fun noncontiguousScrollUpRemoveChangeFirst() {
+    processor.itemsBefore(4)
+    processor.itemsAfter(4)
+    processor.items.insert(0, StringWidget("E"))
+    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(2, StringWidget("G"))
+    processor.onEndChanges()
+
+    processor.scrollTo(4, 3)
+    assertThat(processor.toString()).isEqualTo("[4...] E F G [...4]")
+
+    processor.scrollTo(0, 3)
+    assertThat(processor.toString()).isEqualTo(". . . [...8]")
+
+    processor.itemsBefore(0)
+    processor.itemsAfter(8)
+    processor.items.remove(0, 3)
+    processor.items.insert(0, StringWidget("A"))
+    processor.items.insert(1, StringWidget("B"))
+    processor.items.insert(2, StringWidget("C"))
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("Av2 Bv2 Cv2 [...8]")
+  }
+
+  @Test
+  fun noncontiguousScrollDownRemoveChangeFirst() {
+    processor.itemsBefore(4)
+    processor.itemsAfter(4)
+    processor.items.insert(0, StringWidget("E"))
+    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(2, StringWidget("G"))
+    processor.onEndChanges()
+
+    processor.scrollTo(4, 3)
+    assertThat(processor.toString()).isEqualTo("[4...] E F G [...4]")
+
+    processor.scrollTo(8, 3)
+    assertThat(processor.toString()).isEqualTo("[8...] . . .")
+
+    processor.itemsBefore(8)
+    processor.itemsAfter(0)
+    processor.items.remove(0, 3)
+    processor.items.insert(0, StringWidget("I"))
+    processor.items.insert(1, StringWidget("J"))
+    processor.items.insert(2, StringWidget("K"))
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2")
   }
 
   class StringWidget(
