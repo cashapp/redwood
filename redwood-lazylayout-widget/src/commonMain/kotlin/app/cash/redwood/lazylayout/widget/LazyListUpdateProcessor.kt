@@ -136,6 +136,24 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   }
 
   public fun onEndChanges() {
+    // Walk through the edits pairwise attempting to swap inserts and removes. By applying removes
+    // first we create more opportunities to successfully call maybeShiftLoadedWindow() below.
+    //
+    // Note that when swapping edits we need to adjust their offsets.
+    for (e in 0 until edits.size - 1) {
+      val a = edits[e]
+      val b = edits[e + 1]
+
+      if (a is Edit.Insert && b is Edit.Remove) {
+        // A remove follows an insert. Apply the remove first.
+        if (b.index >= a.index + a.widgets.size) {
+          b.index -= a.widgets.size
+          edits[e] = b
+          edits[e + 1] = a
+        }
+      }
+    }
+
     for (e in edits.indices) {
       val edit = edits[e]
 
@@ -145,6 +163,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         edit is Edit.Insert &&
         edit.index == 0
       ) {
+        maybeShiftLoadedWindow(edit.widgets.size)
         // The before window is shrinking. Promote inserts into loads.
         val toPromoteCount = minOf(edit.widgets.size, itemsBefore.size - newItemsBefore)
         for (i in edit.widgets.size - 1 downTo edit.widgets.size - toPromoteCount) {
@@ -172,6 +191,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         edit is Edit.Insert &&
         edit.index == loadedItems.size
       ) {
+        maybeShiftLoadedWindow(newItemsBefore + loadedItems.size)
         // The after window is shrinking. Promote inserts into loads.
         val toPromoteCount = minOf(edit.widgets.size, itemsAfter.size - newItemsAfter)
         for (i in 0 until toPromoteCount) {
@@ -261,6 +281,28 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     edits.clear()
+  }
+
+  /**
+   * When the loaded window is empty, the boundary between [itemsBefore] and [itemsAfter] is
+   * arbitrary: we can move it without any externally-visible effects.
+   *
+   * And we do want to move it! In particular, aligning the boundary with an incoming edit gives us
+   * the best opportunity to do in-place updates instead of calling [insertRows] and [deleteRows].
+   */
+  private fun maybeShiftLoadedWindow(splitIndex: Int) {
+    if (loadedItems.size != 0) return
+
+    if (splitIndex < itemsBefore.size) {
+      // TODO(jwilson): add an efficient transferRange function on SparseList.
+      for (i in itemsBefore.size - 1 downTo splitIndex) {
+        itemsAfter.add(0, itemsBefore.removeLast())
+      }
+    } else if (splitIndex > itemsBefore.size) {
+      for (i in itemsBefore.size until splitIndex) {
+        itemsBefore.add(itemsAfter.removeAt(0))
+      }
+    }
   }
 
   private fun placeholderToLoaded(

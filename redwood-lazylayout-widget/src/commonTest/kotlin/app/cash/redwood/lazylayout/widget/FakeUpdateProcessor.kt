@@ -20,6 +20,37 @@ import app.cash.redwood.widget.Widget
 /**
  * This fake simulates a real scroll window, which is completely independent of the window of loaded
  * items. Tests should call [scrollTo] to move the scroll window.
+ *
+ * Interpreting [toString]
+ * -----------------------
+ *
+ * This class encodes its UI state in a string for use in assert statements. This string is very
+ * information-dense! Here's some samples:
+ *
+ *  * `A B C`
+ *  * `[3...] . .v2 Fv2 G . [...4]`
+ *
+ * Here's how to make sense of this gibberish:
+ *
+ *  * `[3...]` - the number of elements before the top of the scroll window. This format doesn't
+ *    care whether these elements are placeholders or loaded - they're off screen!
+ *
+ *  * `[...4]` - the number of elements after the bottom of the scroll window.
+ *
+ *  * `.` - an on-screen placeholder. This happens in customer apps when the scroll window has moved
+ *    and the loaded window hasn't caught up to that yet.
+ *
+ *  * `A`, `B`, `C` - an on-screen loaded element. This can be any string but in our tests we
+ *    typically put `A` at index 0, `B` at 1, etc.
+ *
+ *  * `@2` - how many times this cell has been updated in-place. When content is loaded or unloaded,
+ *    the update processor can notify the UI with either a content edit (the cell's content changed)
+ *    or a delete + insert. The two strategies yield the same content, but achieve it with different
+ *    transition animations. We prefer edit-in-place over insert + delete when data loads.
+ *
+ * So given the update `[3...] . .v2 Fv2 G . [...4]`, we have a scroll window showing indexes 3 thru
+ * 8 inclusive, with only 5 and 6 loaded. The elements at 4 and 5 have been updated-in-place, which
+ * is why they're at version 2.
  */
 class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCell, String>() {
   private var dataSize = 0
@@ -79,6 +110,7 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
   }
 
   override fun setContent(view: StringCell, content: Widget<String>?) {
+    view.version++
     view.content = content
   }
 
@@ -125,13 +157,17 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
       },
       separator = " ",
     ) {
-      it.content!!.value
+      when {
+        it.version != 1 -> "${it.content!!.value}v${it.version}"
+        else -> it.content!!.value
+      }
     }
   }
 
   class StringCell(
     val binding: Binding<StringCell, String>,
   ) {
+    var version = 0
     var content: Widget<String>? = null
   }
 }
