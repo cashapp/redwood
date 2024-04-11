@@ -294,14 +294,13 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     if (loadedItems.size != 0) return
 
     if (splitIndex < itemsBefore.size) {
-      // TODO(jwilson): add an efficient transferRange function on SparseList.
-      for (i in itemsBefore.size - 1 downTo splitIndex) {
-        itemsAfter.add(0, itemsBefore.removeLast())
-      }
+      val count = itemsBefore.size - splitIndex
+      itemsAfter.addRange(0, itemsBefore, splitIndex, count)
+      itemsBefore.removeRange(splitIndex, splitIndex + count)
     } else if (splitIndex > itemsBefore.size) {
-      for (i in itemsBefore.size until splitIndex) {
-        itemsBefore.add(itemsAfter.removeAt(0))
-      }
+      val count = splitIndex - itemsBefore.size
+      itemsBefore.addRange(itemsBefore.size, itemsAfter, 0, count)
+      itemsAfter.removeRange(0, count)
     }
   }
 
