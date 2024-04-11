@@ -15,6 +15,9 @@ Fixed:
 - Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
 - Avoid calling into the internal Zipline instance from the UI thread on startup. This would manifest as weird native crashes due to multiple threads mutating shared memory.
 
+Upgraded:
+- Zipline 1.9.0.
+
 
 ## [0.10.0] - 2024-04-05
 [0.10.0]: https://github.com/cashapp/redwood/releases/tag/0.10.0
