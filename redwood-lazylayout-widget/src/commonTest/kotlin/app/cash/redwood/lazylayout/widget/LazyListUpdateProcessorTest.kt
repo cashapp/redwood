@@ -372,6 +372,36 @@ class LazyListUpdateProcessorTest {
     assertThat(processor.toString()).isEqualTo("[4...] . F G H . [...4]")
   }
 
+  @Test
+  fun noncontiguousScroll() {
+    processor.itemsBefore(10)
+    processor.itemsAfter(10)
+    processor.items.insert(0, StringWidget("K"))
+    processor.items.insert(1, StringWidget("L"))
+    processor.items.insert(2, StringWidget("M"))
+    processor.items.insert(3, StringWidget("N"))
+    processor.items.insert(4, StringWidget("O"))
+    processor.onEndChanges()
+
+    processor.scrollTo(10, 5)
+    assertThat(processor.toString()).isEqualTo("[10...] K L M N O [...10]")
+
+    processor.scrollTo(0, 5)
+    assertThat(processor.toString()).isEqualTo(". . . . . [...20]")
+
+    processor.itemsBefore(0)
+    processor.itemsAfter(20)
+    processor.items.insert(0, StringWidget("A"))
+    processor.items.insert(1, StringWidget("B"))
+    processor.items.insert(2, StringWidget("C"))
+    processor.items.insert(3, StringWidget("D"))
+    processor.items.insert(4, StringWidget("E"))
+    processor.items.remove(5, 5)
+    processor.onEndChanges()
+
+    assertThat(processor.toString()).isEqualTo("A B C D E [...20]")
+  }
+
   class StringWidget(
     override var value: String,
   ) : Widget<String> {
