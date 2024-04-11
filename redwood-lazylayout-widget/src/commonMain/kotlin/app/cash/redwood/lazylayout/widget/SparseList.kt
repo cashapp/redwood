@@ -94,7 +94,7 @@ internal class SparseList<T> : AbstractList<T?>() {
     }
   }
 
-  fun add(index: Int, value: T) {
+  fun add(index: Int, value: T?) {
     val insertIndex = insertIndex(index)
 
     val shiftFrom = when {
@@ -109,6 +109,17 @@ internal class SparseList<T> : AbstractList<T?>() {
 
     for (i in shiftFrom until externalIndexes.size) {
       externalIndexes[i]++
+    }
+  }
+
+  /**
+   * Take [count] elements from [source] at [sourceIndex], add them to this at [index].
+   *
+   * This function is equivalent to repeated calls to [add], but more efficient.
+   */
+  fun addRange(index: Int, source: SparseList<T>, sourceIndex: Int, count: Int) {
+    for (i in 0 until count) {
+      add(index + i, source[sourceIndex + i])
     }
   }
 
