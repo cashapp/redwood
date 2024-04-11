@@ -445,4 +445,41 @@ class SparseListTest {
     assertThat(target.toList())
       .containsExactly(null, null, "F", "G", null, "B", "C", "D")
   }
+
+  /**
+   * This test highlights the difference between operating on logical indices vs. physical indices.
+   * This is the kind of thing we expect to be efficient in benchmarks.
+   */
+  @Test
+  fun addRangeWithLargeSparseIndexes() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 9_000)
+    source.set(5_000, "A")
+    source.set(5_001, "B")
+    source.set(5_003, "C")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 7_000)
+    target.set(3_001, "D")
+    target.set(3_002, "E")
+    target.set(3_005, "F")
+
+    target.addRange(3_004, source, sourceIndex = 4_000, count = 2_000)
+
+    val expectedSource = buildList {
+      for (i in 0 until 9_000) add(null)
+      set(5_000, "A")
+      set(5_001, "B")
+      set(5_003, "C")
+    }
+    val expected = buildList {
+      for (i in 0 until 7_000) add(null)
+      set(3_001, "D")
+      set(3_002, "E")
+      set(3_005, "F")
+      addAll(3_004, expectedSource.subList(4_000, 4_000 + 2_000))
+    }
+
+    assertThat(target.toList()).isEqualTo(expected)
+  }
 }
