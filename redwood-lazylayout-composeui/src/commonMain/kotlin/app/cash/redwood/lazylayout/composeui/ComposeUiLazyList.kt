@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,8 +56,8 @@ internal class ComposeUiLazyList :
   RefreshableLazyList<@Composable () -> Unit> {
   private var isVertical by mutableStateOf(false)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
-  private var itemsBefore by mutableStateOf(0)
-  private var itemsAfter by mutableStateOf(0)
+  private var itemsBefore by mutableIntStateOf(0)
+  private var itemsAfter by mutableIntStateOf(0)
   private var isRefreshing by mutableStateOf(false)
   private var onRefresh: (() -> Unit)? by mutableStateOf(null)
   private var width by mutableStateOf(Constraint.Wrap)

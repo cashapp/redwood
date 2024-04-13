@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import assertk.assertThat
 import assertk.assertions.corresponds
@@ -39,7 +40,7 @@ class StateSnapshotTest {
     }
     val stateSnapshot = StateSnapshot(
       mapOf(
-        "key1" to listOf(mutableStateOf(1)),
+        "key1" to listOf(mutableIntStateOf(1)),
         "key2" to listOf(1),
         "key3" to listOf(mutableStateOf("str")),
         "key4" to listOf("str"),
@@ -100,7 +101,7 @@ class StateSnapshotTest {
       .single()
       .isNotNull()
       .isInstanceOf<MutableState<*>>()
-      .corresponds(mutableStateOf(1), ::mutableStateCorrespondence)
+      .corresponds(mutableIntStateOf(1), ::mutableStateCorrespondence)
     assertThat(deserialized.content).key("key2").isEqualTo(listOf(1))
     assertThat(deserialized.content)
       .key("key3")

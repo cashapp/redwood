@@ -16,6 +16,7 @@
 package app.cash.redwood.compose
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,7 +49,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        var backCounter by remember { mutableStateOf(0) }
+        var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
           backCounter++
         }
@@ -66,7 +67,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        val backCounter by remember { mutableStateOf(0) }
+        val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
         Text(backCounter.toString())
       }
@@ -83,7 +84,7 @@ class BackHandlerTest {
     TestSchemaTester(onBackPressedDispatcher) {
       var enabled by mutableStateOf(false)
       setContent {
-        var backCounter by remember { mutableStateOf(0) }
+        var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled) {
           backCounter++
         }
@@ -105,7 +106,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        var backCounter by remember { mutableStateOf(0) }
+        var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
         Box {
           BackHandler {
@@ -127,7 +128,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        var backCounter by remember { mutableStateOf(0) }
+        var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
           backCounter += 1
         }
@@ -149,7 +150,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        var backCounter by remember { mutableStateOf(0) }
+        var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
         Box {
           BackHandler {
@@ -171,7 +172,7 @@ class BackHandlerTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
     TestSchemaTester(onBackPressedDispatcher) {
       setContent {
-        val backCounter by remember { mutableStateOf(0) }
+        val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
         Box {
           BackHandler(enabled = false, throwingOnBack)

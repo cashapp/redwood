@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.guest
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
@@ -169,7 +170,7 @@ class ProtocolTest {
   @Test fun protocolSkipsNullableLambdaChangeOfSamePresence() = runTest {
     val (composition, bridge) = testProtocolComposition()
 
-    var state by mutableStateOf(0)
+    var state by mutableIntStateOf(0)
     composition.setContent {
       Button(
         "state: $state",
@@ -244,7 +245,7 @@ class ProtocolTest {
   @Test fun protocolSkipsNonNullLambdaChange() = runTest {
     val (composition, bridge) = testProtocolComposition()
 
-    var state by mutableStateOf(0)
+    var state by mutableIntStateOf(0)
     composition.setContent {
       Button2(
         "state: $state",

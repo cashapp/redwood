@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,7 +49,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 internal class ComposeUiBox(
   private val backgroundColor: Int = 0,
 ) : Box<@Composable () -> Unit> {
-  private var modifierTick by mutableStateOf(0)
+  private var modifierTick by mutableIntStateOf(0)
   override val children = ComposeWidgetChildren(onModifierUpdated = { modifierTick++ })
 
   private var width by mutableStateOf(Constraint.Wrap)
