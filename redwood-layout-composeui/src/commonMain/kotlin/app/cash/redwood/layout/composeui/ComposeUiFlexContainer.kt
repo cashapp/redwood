@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,7 +60,7 @@ internal class ComposeUiFlexContainer(
   override val children = ComposeWidgetChildren()
   override var modifier: RedwoodModifier = RedwoodModifier
 
-  private var recomposeTick by mutableStateOf(0)
+  private var recomposeTick by mutableIntStateOf(0)
   private var width by mutableStateOf(Constraint.Wrap)
   private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)

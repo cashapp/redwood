@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,7 +77,7 @@ fun EmojiSearch(
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
   // Simple counter that allows us to trigger refreshes by simple incrementing the value
-  var refreshSignal by remember { mutableStateOf(0) }
+  var refreshSignal by remember { mutableIntStateOf(0) }
   var refreshing by remember { mutableStateOf(false) }
 
   val searchTermSaver = object : Saver<TextFieldState, String> {

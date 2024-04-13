@@ -17,7 +17,7 @@ package app.cash.redwood.testing
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
@@ -108,7 +108,7 @@ suspend fun assertReuse(
   step3Value: WidgetValue,
 ): Pair<List<Widget<WidgetValue>>, List<Widget<WidgetValue>>> {
   return viewRecyclingTest {
-    var step by mutableStateOf(1)
+    var step by mutableIntStateOf(1)
     setContent {
       content(step)
     }
@@ -145,7 +145,7 @@ suspend fun assertNoReuse(
   require(stepCount == 3 || stepCount == 4)
 
   viewRecyclingTest {
-    var step by mutableStateOf(1)
+    var step by mutableIntStateOf(1)
     setContent {
       content(step)
     }

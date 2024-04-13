@@ -17,6 +17,7 @@ package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,16 +65,16 @@ public open class LazyListState {
   private var userScrolled = false
 
   /** Bounds of what the user is looking at. Everything else is placeholders! */
-  public var firstIndex: Int by mutableStateOf(0)
+  public var firstIndex: Int by mutableIntStateOf(0)
     private set
-  public var lastIndex: Int by mutableStateOf(0)
+  public var lastIndex: Int by mutableIntStateOf(0)
     private set
 
   /** How many items to load in anticipation of scrolling up. */
-  public var preloadBeforeItemCount: Int by mutableStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+  public var preloadBeforeItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
   /** How many items to load in anticipation of scrolling down. */
-  public var preloadAfterItemCount: Int by mutableStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+  public var preloadAfterItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
