@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.lazylayout.widget
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
 
 /**
@@ -110,6 +111,18 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
   }
 
   override fun setContent(view: StringCell, content: Widget<String>?) {
+    content as StringWidget?
+
+    // It is an error for `content` to already have a parent cell.
+    val previous = view.content as StringWidget?
+    require(content?.parentCell == null)
+    if (previous != null) {
+      previous.parentCell = null
+    }
+    if (content != null) {
+      content.parentCell = view
+    }
+
     view.version++
     view.content = content
   }
@@ -169,5 +182,12 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
   ) {
     var version = 0
     var content: Widget<String>? = null
+  }
+
+  class StringWidget(
+    override var value: String,
+  ) : Widget<String> {
+    internal var parentCell: StringCell? = null
+    override var modifier: Modifier = Modifier
   }
 }

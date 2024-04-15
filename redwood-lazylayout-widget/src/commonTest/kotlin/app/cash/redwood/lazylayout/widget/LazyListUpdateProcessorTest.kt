@@ -15,8 +15,7 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-import app.cash.redwood.Modifier
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringWidget
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
@@ -527,11 +526,5 @@ class LazyListUpdateProcessorTest {
     processor.onEndChanges()
 
     assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2")
-  }
-
-  class StringWidget(
-    override var value: String,
-  ) : Widget<String> {
-    override var modifier: Modifier = Modifier
   }
 }
