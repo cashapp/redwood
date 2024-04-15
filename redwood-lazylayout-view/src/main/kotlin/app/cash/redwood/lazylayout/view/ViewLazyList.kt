@@ -282,6 +282,9 @@ internal open class ViewLazyList private constructor(
 
         val view = value?.value
         if (view != null) {
+          require(view.parent == null) {
+            "Received $view with unexpected parent ${view.parent}; modifier=${content?.modifier}"
+          }
           view.layoutParams = createLayoutParams()
           container.addView(view)
         }
