@@ -15,8 +15,7 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-import app.cash.redwood.Modifier
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringWidget
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
@@ -529,9 +528,39 @@ class LazyListUpdateProcessorTest {
     assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2")
   }
 
-  class StringWidget(
-    override var value: String,
-  ) : Widget<String> {
-    override var modifier: Modifier = Modifier
+  @Test
+  fun removeMiddleLoadedItemThatIsBound() {
+    processor.itemsBefore(8)
+    processor.itemsAfter(8)
+    processor.items.insert(0, StringWidget("I"))
+    processor.items.insert(1, StringWidget("J"))
+    processor.items.insert(2, StringWidget("K"))
+    processor.items.insert(3, StringWidget("L"))
+    processor.onEndChanges()
+
+    processor.scrollTo(6, 8)
+    assertThat(processor.toString()).isEqualTo("[6...] . . I J K L . . [...6]")
+
+    processor.items.remove(2, 1) // 'K'.
+    processor.onEndChanges()
+    assertThat(processor.toString()).isEqualTo("[6...] . . I J L . . . [...5]")
+  }
+
+  @Test
+  fun removeMiddleLoadedItemThatIsNotBound() {
+    processor.itemsBefore(8)
+    processor.itemsAfter(8)
+    processor.items.insert(0, StringWidget("I"))
+    processor.items.insert(1, StringWidget("J"))
+    processor.items.insert(2, StringWidget("K"))
+    processor.items.insert(3, StringWidget("L"))
+    processor.onEndChanges()
+
+    processor.scrollTo(2, 4)
+    assertThat(processor.toString()).isEqualTo("[2...] . . . . [...14]")
+
+    processor.items.remove(2, 1) // 'K'.
+    processor.onEndChanges()
+    assertThat(processor.toString()).isEqualTo("[2...] . . . . [...13]")
   }
 }

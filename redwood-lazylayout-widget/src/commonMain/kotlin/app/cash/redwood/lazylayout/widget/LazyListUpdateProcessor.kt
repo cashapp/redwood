@@ -237,7 +237,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         is Edit.Remove -> {
           for (i in edit.index until edit.index + edit.count) {
             val index = itemsBefore.size + edit.index
-            loadedItems.removeAt(edit.index)
+            val removed = loadedItems.removeAt(edit.index)
+            removed.unbind()
 
             // Publish a structural change.
             deleteRows(index, 1)
