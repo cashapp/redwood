@@ -540,7 +540,10 @@ internal fun generateProtocolWidget(
     .build()
 }
 
-private val lazyListTypeNames = listOf("app.cash.redwood.lazylayout", "LazyList")
+private val placeholderParentTypeNames = listOf(
+  listOf("app.cash.redwood.lazylayout", "LazyList"),
+  listOf("app.cash.redwood.lazylayout", "RefreshableLazyList"),
+)
 
 /**
  * Returns true if this is the `LazyList.placeholder` trait, which had a severe bug in host code
@@ -554,7 +557,7 @@ private val lazyListTypeNames = listOf("app.cash.redwood.lazylayout", "LazyList"
 private fun workAroundLazyListPlaceholderRemoveCrash(
   widget: ProtocolWidget,
   trait: ProtocolWidget.ProtocolTrait,
-): Boolean = widget.type.names == lazyListTypeNames && trait.name == "placeholder"
+): Boolean = widget.type.names in placeholderParentTypeNames && trait.name == "placeholder"
 
 /*
 internal object GrowSerializer : KSerializer<Grow> {
