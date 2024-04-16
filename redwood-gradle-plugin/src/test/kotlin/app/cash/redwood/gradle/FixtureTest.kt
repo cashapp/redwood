@@ -15,11 +15,15 @@
  */
 package app.cash.redwood.gradle
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsExactly
+import assertk.assertions.containsOnly
+import assertk.assertions.exists
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
 import assertk.assertions.prop
 import java.io.File
 import org.gradle.testkit.runner.BuildTask
@@ -206,6 +210,34 @@ class FixtureTest {
     assertThat(result.output).contains(
       "The Redwood Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.",
     )
+  }
+
+  @Test fun composeCompilerMetrics() {
+    val fixtureDir = File("src/test/fixture/compose-compiler-metrics")
+    fixtureGradleRunner(fixtureDir).build()
+    assertThat(fixtureDir.resolve("build/reports/redwood/compose-metrics/compileKotlin")).all {
+      exists()
+      prop("children", File::list)
+        .isNotNull()
+        .containsOnly(
+          "compose-compiler-metrics-module.json",
+        )
+    }
+  }
+
+  @Test fun composeCompilerReports() {
+    val fixtureDir = File("src/test/fixture/compose-compiler-reports")
+    fixtureGradleRunner(fixtureDir).build()
+    assertThat(fixtureDir.resolve("build/reports/redwood/compose-reports/compileKotlin")).all {
+      exists()
+      prop("children", File::list)
+        .isNotNull()
+        .containsOnly(
+          "compose-compiler-reports-classes.txt",
+          "compose-compiler-reports-composables.csv",
+          "compose-compiler-reports-composables.txt",
+        )
+    }
   }
 
   private fun fixtureGradleRunner(

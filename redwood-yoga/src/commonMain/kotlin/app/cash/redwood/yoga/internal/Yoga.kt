@@ -796,6 +796,14 @@ internal object Yoga {
     }
   }
 
+  fun YGNodeStyleGetFlexBasisPercent(node: YGNode): Float {
+    return if (node.style.flexBasis.isPercent()) {
+      node.style.flexBasis.convertToYgValue().value
+    } else {
+      -1.0f // This is a stand-in for any non-percent value.
+    }
+  }
+
   private fun <T : Enum<T>> updateStyleIndexed(
     node: YGNode,
     edge: T,
@@ -1587,14 +1595,14 @@ internal object Yoga {
     )
     val isMainAxisRow = YGFlexDirectionIsRow(mainAxis)
     val mainAxisSize = if (isMainAxisRow) width else height
-    val mainAxisownerSize = if (isMainAxisRow) ownerWidth else ownerHeight
+    val mainAxisOwnerSize = if (isMainAxisRow) ownerWidth else ownerHeight
     var childWidth: Float
     var childHeight: Float
     var childWidthMeasureMode: YGMeasureMode
     var childHeightMeasureMode: YGMeasureMode
     val resolvedFlexBasis = YGResolveValue(
       child.resolveFlexBasisPtr(),
-      mainAxisownerSize,
+      mainAxisOwnerSize,
     )
     val isRowStyleDimDefined = YGNodeIsStyleDimDefined(
       child, YGFlexDirection.YGFlexDirectionRow,

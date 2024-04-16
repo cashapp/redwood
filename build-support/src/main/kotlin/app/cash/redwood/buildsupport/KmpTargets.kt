@@ -45,44 +45,9 @@ fun addAllTargets(project: Project, skipJs: Boolean = false) {
       macosArm64()
       macosX64()
 
-      val commonMain = sourceSets.getByName("commonMain")
-      val commonTest = sourceSets.getByName("commonTest")
-
-      val nativeMain = sourceSets.create("nativeMain").apply {
-        dependsOn(commonMain)
-      }
-      val nativeTest = sourceSets.create("nativeTest").apply {
-        dependsOn(commonTest)
-      }
-
-      val iosMain = sourceSets.create("iosMain").apply {
-        dependsOn(nativeMain)
-      }
-      val iosTest = sourceSets.create("iosTest").apply {
-        dependsOn(nativeTest)
-      }
-
-      val macosMain = sourceSets.create("macosMain").apply {
-        dependsOn(nativeMain)
-      }
-      val macosTest = sourceSets.create("macosTest").apply {
-        dependsOn(nativeTest)
-      }
-
-      targets.all { target ->
-        // Some Kotlin targets do not have this property, but native ones always will.
-        if (target.platformType.name == "native") {
-          if (target.name.startsWith("ios")) {
-            target.compilations.getByName("main").defaultSourceSet.dependsOn(iosMain)
-            target.compilations.getByName("test").defaultSourceSet.dependsOn(iosTest)
-          } else if (target.name.startsWith("macos")) {
-            target.compilations.getByName("main").defaultSourceSet.dependsOn(macosMain)
-            target.compilations.getByName("test").defaultSourceSet.dependsOn(macosTest)
-          } else {
-            throw AssertionError("Unknown target ${target.name}")
-          }
-        }
-      }
+      // This will happen by default, but we explicitly invoke it so that projects can add custom
+      // source sets that depend on the ones produced as a result of these defaults.
+      applyDefaultHierarchyTemplate()
     }
   }
 }

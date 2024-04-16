@@ -16,7 +16,8 @@
 package app.cash.redwood.testing
 
 import app.cash.redwood.protocol.SnapshotChangeList
-import app.cash.redwood.protocol.compose.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import kotlinx.serialization.json.Json
 
 /**
@@ -27,9 +28,13 @@ public fun List<WidgetValue>.toChangeList(
   factory: ProtocolBridge.Factory,
   json: Json = Json.Default,
 ): SnapshotChangeList {
-  val bridge = factory.create(json)
+  val bridge = factory.create(
+    // Use latest guest version as the host version to avoid any compatibility behavior.
+    hostVersion = guestRedwoodVersion,
+    json = json,
+  )
   for ((index, child) in withIndex()) {
-    bridge.root.insert(index, child.toWidget(bridge.provider))
+    bridge.root.insert(index, child.toWidget(bridge.widgetSystem))
   }
   return SnapshotChangeList(bridge.getChangesOrNull() ?: emptyList())
 }

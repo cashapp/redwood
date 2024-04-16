@@ -37,6 +37,8 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -56,37 +58,64 @@ import platform.UIKit.UITableViewDataSourceProtocol
 import platform.UIKit.UITableViewDelegateProtocol
 import platform.UIKit.UITableViewRowAnimationNone
 import platform.UIKit.UITableViewScrollPosition
+import platform.UIKit.UITableViewStyle
 import platform.UIKit.UIView
 import platform.UIKit.indexPathForItem
 import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal open class UIViewLazyList(
-  internal val tableView: UITableView = UITableView(
+internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
+  internal val tableView: UITableView = object : UITableView(
     CGRectZero.readValue(),
-  ),
-) : LazyList<UIView>, ChangeListener {
+    UITableViewStyle.UITableViewStylePlain,
+  ) {
+    override fun setContentOffset(contentOffset: CValue<CGPoint>, animated: Boolean) {
+      // If the caller is requesting a contentOffset with y == 0,
+      // and the current contentOffset.y is not 0,
+      // assume that it's a programmatic scroll-to-top call.
+      if (contentOffset.useContents { y } == 0.0 && this.contentOffset.useContents { y } != 0.0) {
+        ignoreScrollUpdates = true
+        scrollProcessor.onScrollToTop()
+      }
+      super.setContentOffset(contentOffset, animated)
+    }
+  }
+
   override var modifier: Modifier = Modifier
 
   override val value: UIView
     get() = tableView
 
   private val updateProcessor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+    override fun createPlaceholder(original: UIView): UIView? {
+      return object : UIView(CGRectZero.readValue()) {
+        override fun sizeThatFits(size: CValue<CGSize>) = original.sizeThatFits(size)
+      }
+    }
+
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
-      tableView.insertRowsAtIndexPaths(
-        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
-        UITableViewRowAnimationNone,
-      )
+      tableView.beginUpdates()
+      UIView.performWithoutAnimation {
+        tableView.insertRowsAtIndexPaths(
+          (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+          UITableViewRowAnimationNone,
+        )
+      }
+      tableView.endUpdates()
     }
 
     override fun deleteRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
-      tableView.deleteRowsAtIndexPaths(
-        (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
-        UITableViewRowAnimationNone,
-      )
+      tableView.beginUpdates()
+      UIView.performWithoutAnimation {
+        tableView.deleteRowsAtIndexPaths(
+          (index until index + count).map { NSIndexPath.indexPathForItem(it.convert(), 0) },
+          UITableViewRowAnimationNone,
+        )
+      }
+      tableView.endUpdates()
     }
 
     override fun setContent(view: LazyListContainerCell, content: Widget<UIView>?) {
@@ -94,13 +123,13 @@ internal open class UIViewLazyList(
     }
   }
 
-  private var isDoingProgrammaticScroll = false
+  private var ignoreScrollUpdates = false
 
   private val scrollProcessor = object : LazyListScrollProcessor() {
     override fun contentSize() = updateProcessor.size
 
     override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
-      isDoingProgrammaticScroll = animated // Don't forward scroll updates to scrollProcessor.
+      ignoreScrollUpdates = animated // Don't forward scroll updates to scrollProcessor.
       tableView.scrollToRowAtIndexPath(
         NSIndexPath.indexPathForItem(firstIndex.toLong(), 0),
         UITableViewScrollPosition.UITableViewScrollPositionTop,
@@ -138,7 +167,7 @@ internal open class UIViewLazyList(
       index: Int,
     ): LazyListContainerCell {
       val result = tableView.dequeueReusableCellWithIdentifier(
-        identifier = reuseIdentifier,
+        identifier = REUSE_IDENTIFIER,
         forIndexPath = NSIndexPath.indexPathForItem(index.convert(), 0.convert()),
       ) as LazyListContainerCell
       require(result.binding == null)
@@ -150,7 +179,7 @@ internal open class UIViewLazyList(
   private val tableViewDelegate: UITableViewDelegateProtocol =
     object : NSObject(), UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
-        if (isDoingProgrammaticScroll) return // Only notify of user scrolls.
+        if (ignoreScrollUpdates) return // Only notify of user scrolls.
 
         val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
         if (visibleIndexPaths.isEmpty()) return
@@ -160,8 +189,16 @@ internal open class UIViewLazyList(
         scrollProcessor.onUserScroll(firstIndex, lastIndex)
       }
 
+      /**
+       * If the user begins a drag while we’re programmatically scrolling, well then we're not
+       * programmatically scrolling anymore.
+       */
+      override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        ignoreScrollUpdates = false
+      }
+
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        isDoingProgrammaticScroll = false
+        ignoreScrollUpdates = false
       }
     }
 
@@ -169,14 +206,14 @@ internal open class UIViewLazyList(
     tableView.apply {
       dataSource = this@UIViewLazyList.dataSource
       delegate = tableViewDelegate
-      prefetchingEnabled = true
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
+      backgroundColor = UIColor.clearColor
 
       registerClass(
-        cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, reuseIdentifier)
+        cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, REUSE_IDENTIFIER)
           .initWithFrame(CGRectZero.readValue()).classForCoder() as ObjCClass?,
-        forCellReuseIdentifier = reuseIdentifier,
+        forCellReuseIdentifier = REUSE_IDENTIFIER,
       )
     }
   }
@@ -225,7 +262,7 @@ internal open class UIViewLazyList(
   }
 }
 
-private const val reuseIdentifier = "LazyListContainerCell"
+private const val REUSE_IDENTIFIER = "LazyListContainerCell"
 
 internal class LazyListContainerCell(
   style: UITableViewCellStyle,
@@ -239,7 +276,6 @@ internal class LazyListContainerCell(
       removeAllSubviews()
       if (value != null) {
         contentView.addSubview(value.value)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
       }
       setNeedsLayout()
     }
@@ -258,6 +294,8 @@ internal class LazyListContainerCell(
 
   override fun willMoveToSuperview(newSuperview: UIView?) {
     super.willMoveToSuperview(newSuperview)
+
+    backgroundColor = UIColor.clearColor
 
     // Confirm the cell is bound when it's about to be displayed.
     if (superview == null && newSuperview != null) {
@@ -293,6 +331,7 @@ internal class LazyListContainerCell(
     contentView.subviews.forEach {
       (it as UIView).removeFromSuperview()
     }
+    selectedBackgroundView = null
   }
 }
 

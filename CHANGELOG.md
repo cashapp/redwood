@@ -1,8 +1,127 @@
 # Change Log
 
 ## [Unreleased]
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.10.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Removed generated `typealias`es for package names which changed in 0.10.0.
+- In `UIViewLazyList`'s `UITableView`, adding special-case handling for programmatic scroll-to-top calls.
+- APIs accepting a `FileSystem` and `Path` now have the `FileSystem` coming before the `Path` in the parameter list. Compatibility functions are retained for this version, but will be removed in the next version.
+
+Fixed:
+- Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
+- Avoid calling into the internal Zipline instance from the UI thread on startup. This would manifest as weird native crashes due to multiple threads mutating shared memory.
+
+Upgraded:
+- Zipline 1.9.0.
+
+
+## [0.10.0] - 2024-04-05
+[0.10.0]: https://github.com/cashapp/redwood/releases/tag/0.10.0
+
+New:
+- Compose UI implementation for `Box`.
+- Layout modifier support for HTML DOM layouts.
+- Unscoped modifiers provide a global hook for side-effecting behavior on native views. For example, create a background color modifier which changes the platform-native UI node through a factory function.
+- `Widget.Children` interface now exposes `widgets: List<Widget<W>>` property. Most subtypes were already exposing this individually.
+
+Changed:
+- Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).
+- `onModifierChanged` callback in `Widget.Children` now receives the index and the `Widget` instance affected by the change.
+- The package of 'redwood-protocol-host' changed to `app.cash.redwood.protocol.host`. This should not affect end-users as its types are mostly for internal use.
+- The entire `redwood-yoga` artifact's public API has been annotated with an opt-in annotation indicating that it's only for Redwood internal use and is not stable.
+- Revert: Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
+- The generated "widget factories" type (e.g., `MySchemaWidgetFactories`) is now called a "widget system" (e.g., `MySchemaWidgetSystem`). Sometimes it was also referred to as a "provider" in parameter names. A `@Deprecated typealias` is generated for now, but will be removed in the future.
+- The package names of some generated code has changed. Deprecated `typealias`es are generated in the old locations for public types and functions, but those will be removed in the next release.
+  - Testing code is now under `your.package.testing`.
+  - Protocol guest code is now under `your.package.protocol.guest`.
+  - Protocol host code is now under `your.package.protocol.host`.
+- The 'app.cash.redwood.generator.compose.protocol' and 'app.cash.redwood.generator.widget.protocol' Gradle plugins are now deprecated and will be removed in the next release. Use 'app.cash.redwood.generator.protocol.guest' and 'app.cash.redwood.generator.protocol.host', respectively.
+- The 'redwood-tooling-codegen' CLI flags for protocol codegen have changed from `--compose-protocol` and `--widget-protocol` to `--protocol-guest` and `--protocol-host`, respectively.
+- Entrypoints to the protocol on the host-side and guest-side now require supplying the version of Redwood in use on the other side in order to ensure compatibility and work around any bugs in older versions. This uses a new `RedwoodVersion` type, and will be automatically wired if using our Treehouse artifacts.
+
+Fixed:
+- Fix failure to release JS resources when calling `CoroutineScope` is being cancelled
+- JVM targets now correctly link against Java 8 APIs. Previously they produced Java 8 bytecode, but linked against the compile JDK's APIs (21). This allowed linking against newer APIs that might not exist on older runtimes, which is no longer possible. Android targets which also produce Java 8 bytecode were not affected.
+- Fix the `View` implementation of `Box` to wrap its width and height by default. This matches the behavior of the `UIView` implementation and all other layout widgets.
+- Fix the `UIView` implementation of `Box` not updating when some of its parameters are changed.
+- Fix `Modifier.size` not being applied to children inside a `Box`.
+- Fix `Margin` not being applied to the `UIView` implementation of `Box`.
+- The `View` implementation of `Box` now applies start/end margins correctly in RTL, and does not crash if set before the native view was attached.
+- Fix the backgroundColor for `UIViewLazyList` to be transparent. This matches the behavior of the other `LazyList` platform implementations.
+- Fix `TreehouseUIView` to size itself according to the size of its subview.
+- In `UIViewLazyList`, adding `beginUpdates`/`endUpdates` calls to `insertRows`/`deleteRows`, and wrapping changes in `UIView.performWithoutAnimation` blocks.
+- Fix memory leak in 'protocol-guest' and 'protocol-host' where child nodes beneath a removed node were incorrectly retained in an internal map indefinitely. The guest protocol code has been updated to work around this memory leak when deployed to old hosts by sending individual remove operations for each node in the subtree.
+- Ensure that Zipline services are not closed prematurely when disposing a Treehouse UI.
+- In `UIViewLazyList`, don't remove subviews from hierarchy during `prepareForReuse` call
+
+
+## [0.9.0] - 2024-02-28
+[0.9.0]: https://github.com/cashapp/redwood/releases/tag/0.9.0
+
+Changed:
+- Added `Modifier` parameter to `RedwoodContent` which is applied to the root `Box` into which content is rendered (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
+- The parameter order of `LazyRow` and `LazyColumn` have changed to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
+- The parameter order of `TreehouseContent` has changed to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#elements-accept-and-respect-a-modifier-parameter).
+- The render function of `ComposeWidgetChildren` has been renamed to `Render` to reflect Compose best practices (https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#naming-unit-composable-functions-as-entities).
+- Disable decoy generation for JS target to make compatible with JetBrains Compose 1.6. This is an ABI-breaking change, so all Compose-based libraries targeting JS will also need to have been recompiled.
+
+Fixed:
+- Don't block touch events to non-subviews below a `Row`, `Column`, or `Box` in the iOS `UIView` implementation. This matches the behavior of the Android View and Compose UI implementations.
+
+This version works with Kotlin 1.9.22 by default.
+
+
+## [0.8.0] - 2024-02-22
+[0.8.0]: https://github.com/cashapp/redwood/releases/tag/0.8.0
+
+New:
+- `flex(double)` modifier for layouts which acts as a weight along the main axis.
+- Allow reserving widget, modifier, property, and children tags in the schema. This can be used to document old items which no longer exist and prevent their values from accidentally being reused.
+- Add `dangerZone { }` DSL to the `redwood { }` Gradle extension which allows enabling Compose reports and metrics. Currently these features break build caching as Compose forces the use of absolute paths in the Kotlin compiler arguments when in use (hence why they're marked as dangerous).
+- `BackHandler` composable provides a callback for handling hardware back affordances (currently only on Android).
+- Expose `frameClock` on `StandardAppLifecycle` to allow monitoring host frames.
+- `CodeListener.onUncaughtException` notifies of any uncaught exceptions which occur in Treehouse guest code.
+- Preview: Add `Box` widget which stacks children on top of each other. This is currently only implemented for Android views and iOS UIKit.
+- Support `rememberSaveable` in plain Redwood compositions.
+- Programmatic scrolls on `LazyListState` can now set `animated=true` for an animated scroll.
+- Add `ziplineCreated`, `manifestReady`, and `codeLoadSkippedNotFresh` event callbacks to Treehouse `EventListener`.
+
+Changed:
+- The Treehouse Zipline disk cache directory is no longer within the cache directory on Android. This ensures it can't be cleared while the app is running. Zipline automatically constrains the directory to a maximum size so old entires will still be purged automatically.
+- Set the Zipline thread's stack size to 8MiB on Android to match iOS.
+- Use `margin-inline-start` and `margin-inline-end` for the start and end margin, respectively, for the HTML DOM layout bindings.
+- `TestRedwoodComposition` now accepts only the initial `UiConfiuration` and exposes a `MutableStateFlow` for changing its value over time.
+- `TreehouseLayout` now defines a default ID to allow state saving and restoration to work. Note that this will only work when a single instance is present in the hierarchy. If you have multiple, supply your own unique IDs.
+- Emoji Search sample applications now bundle the latest guest code at compile-time and do not require the server running to work.
+- The built-in `RedwoodView` for `HTMLElement` now reports density changes to the `UiConfiguration`.
+- Redwood protocol modules have been renamed to 'guest' and 'host' to match Treehouse conventions.
+- Suppress deprecation warnings in generated code. This code often refers to user types which may be deprecated, and should not cause additional warnings.
+- `TreehouseAppContent.preload` is now idempotent.
+- `LazyList` on iOS has changed from `UICollectionView` to `UITableView`, and changes to the backing data are now reported granularly rather than reloading everything.
+- Allow arbitrary serializable content within `rememberSaveable` inside Treehouse.
+- Add a `TreehouseApp` argument to `CodeListener`. Combined with the new uncaught exception callback, this provides an easy way to restart a Treehouse application on a crash.
+- `EventListener.Factory` instances are now supplied as part of a `TreehouseApp` instead of a `TreehouseAppFactory`. This more closely scopes them with the lifetime of the `Zipline` instance.
+
+Fixed:
+- Ensure changes to modifiers notify their parent widget when using Treehouse.
+- Explicitly mark the generated scope objects as `@Stable` to prevent needless recomposition.
+- Dispose the old composition when the `RedwoodContent` composable recomposes or is removed from the composition.
+- Ensure `UIViewChildren` indexes children using `typedArrangedSubviews` when removing views from a `UIStackView`.
+- Correctly parse `data object` modifiers in the schema.
+- Remember the default `CodeListener` for `TreehouseContent` to avoid unneccessary recomposition on creation.
+- When calling `TreehouseUi.start`, fall back to older API signature when newer one does not match. This is needed because an addiitonal parameter was added in newer versions, but older guest code may have the old signature.
+- Persist saved values from Treehouse without jumping back to the UI thread which allows proper restoration after a config change.
+- Reset the requested widths and heights of a layout in the underlying Yoga engine when the size is invalidated. This ensures that the engine will properly measure changed content the grows and shrinks in either dimension.
+
+This version works with Kotlin 1.9.22 by default.
+
 
 ## [0.7.0] - 2023-09-13
+[0.7.0]: https://github.com/cashapp/redwood/releases/tag/0.7.0
 
 New:
 - Expose viewport size and density in `UiConfiguration`.
@@ -22,6 +141,7 @@ This version works with Kotlin 1.9.10 by default.
 
 
 ## [0.6.0] - 2023-08-10
+[0.6.0]: https://github.com/cashapp/redwood/releases/tag/0.6.0
 
 New:
 - Support for specifying custom Compose compiler versions. This will allow you to use the latest
@@ -50,6 +170,7 @@ This version works with Kotlin 1.9.0 by default.
 
 
 ## [0.5.0] - 2023-07-05
+[0.5.0]: https://github.com/cashapp/redwood/releases/tag/0.5.0
 
 This release marks Redwood's "beta" period which provides slightly more stability guarantees than
 before. All future releases up to (but NOT including) 1.0 will have protocol and service
@@ -88,6 +209,7 @@ This version only works with Kotlin 1.8.22.
 
 
 ## [0.4.0] - 2023-06-09
+[0.4.0]: https://github.com/cashapp/redwood/releases/tag/0.4.0
 
 New:
 - Experimental support for refresh indicators on `LazyRow` and `LazyColumn` via `refreshing` boolean
@@ -142,6 +264,7 @@ This version only works with Kotlin 1.8.20.
 
 
 ## [0.3.0] - 2023-05-15
+[0.3.0]: https://github.com/cashapp/redwood/releases/tag/0.3.0
 
 New:
 
@@ -187,6 +310,7 @@ This version only works with Kotlin 1.8.20.
 
 
 ## [0.2.1] - 2023-01-31
+[0.2.1]: https://github.com/cashapp/redwood/releases/tag/0.2.1
 
 Changed:
 - Do not use a `ScrollView`/`HorizontalScrollView` as the parent container for View-based `Row` and
@@ -199,6 +323,7 @@ This version only works with Kotlin 1.7.20.
 
 
 ## [0.2.0] - 2023-01-30
+[0.2.0]: https://github.com/cashapp/redwood/releases/tag/0.2.0
 
 New:
 - `redwood-layout-dom` module provides HTML implementations of `Row` and `Column`.
@@ -228,19 +353,8 @@ This version only works with Kotlin 1.7.20.
 
 
 ## [0.1.0] - 2022-12-23
+[0.1.0]: https://github.com/cashapp/redwood/releases/tag/0.1.0
 
 Initial release.
 
 This version only works with Kotlin 1.7.20.
-
-
-
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.7.0...HEAD
-[0.7.0]: https://github.com/cashapp/redwood/releases/tag/0.7.0
-[0.6.0]: https://github.com/cashapp/redwood/releases/tag/0.6.0
-[0.5.0]: https://github.com/cashapp/redwood/releases/tag/0.5.0
-[0.4.0]: https://github.com/cashapp/redwood/releases/tag/0.4.0
-[0.3.0]: https://github.com/cashapp/redwood/releases/tag/0.3.0
-[0.2.1]: https://github.com/cashapp/redwood/releases/tag/0.2.1
-[0.2.0]: https://github.com/cashapp/redwood/releases/tag/0.2.0
-[0.1.0]: https://github.com/cashapp/redwood/releases/tag/0.1.0

@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  * Annotates an otherwise unused type with a set of [Widget]-annotated or [Modifier]-annotated
  * classes which are all part of this schema.
  *
- * ```
+ * ```kotlin
  * @Schema([
  *   Row::class,
  *   RowAlignment::class,
@@ -42,6 +42,44 @@ import kotlin.reflect.KClass
 public annotation class Schema(
   val members: Array<KClass<*>>,
   val dependencies: Array<Dependency> = [],
+  /**
+   * Widget tags which are reserved. These cannot be used by a widget in [members].
+   * This is useful for ensuring tags from old, retired widgets are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedWidgets = [
+   *     4, // Retired Column widget.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedWidgets: IntArray = [],
+  /**
+   * Modifier tags which are reserved. These cannot be used by a modifier in [members].
+   * This is useful for ensuring tags from old, retired modifiers are not accidentally reused.
+   *
+   * ```kotlin
+   * @Schema(
+   *   members = [
+   *     Row::class,
+   *     Button::class,
+   *     Text::class,
+   *   ],
+   *   reservedModifiers = [
+   *     3, // Retired RowAlignment modifier.
+   *   ],
+   * )
+   * interface MySchema
+   * ```
+   */
+  val reservedModifiers: IntArray = [],
 ) {
   @Retention(RUNTIME)
   @Target // None, use only within @Schema.
@@ -67,7 +105,39 @@ public annotation class Schema(
  */
 @Retention(RUNTIME)
 @Target(CLASS)
-public annotation class Widget(val tag: Int)
+public annotation class Widget(
+  val tag: Int,
+  /**
+   * Property tags which are reserved. These cannot be used by a [@Property][Property] annotation.
+   * This is useful for ensuring tags from old, retired properties are not accidentally reused.
+   *
+   * ```kotlin
+   * @Widget(
+   *   tag = 12,
+   *   reservedProperties = [
+   *     3, // Retired double-click event.
+   *   ],
+   * )
+   * data class MyButton(…)
+   * ```
+   */
+  val reservedProperties: IntArray = [],
+  /**
+   * Children tags which are reserved. These cannot be used by a [@Children][Children] annotation.
+   * This is useful for ensuring tags from old, retired children are not accidentally reused.
+   *
+   * ```kotlin
+   * @Widget(
+   *   tag = 12,
+   *   reservedChildren = [
+   *     2, // Retired action item slot.
+   *   ],
+   * )
+   * data class Toolbar(…)
+   * ```
+   */
+  val reservedChildren: IntArray = [],
+)
 
 /**
  * Annotates a [Widget] property which represents a property on the associated UI widget. Properties
@@ -130,9 +200,19 @@ public annotation class Children(
 public annotation class Default(val expression: String)
 
 /**
- * Annotates a data class which represents a layout modifier for a [Widget]. Each layout modifier
- * in a [Schema] must have a unique [tag] among all [Modifier] annotations in the [Schema].
- * Additionally, each layout modifier can be associated with one or more scopes.
+ * Annotates a data class which represents a modifier for a [Widget].
+ *
+ * Each modifier in a [Schema] must have a unique [tag] among all [Modifier] annotations in the
+ * [Schema].
+ *
+ * ```
+ * @Modifier(1)
+ * data class BackgroundColor(
+ *   val value: Color,
+ * )
+ * ```
+ *
+ * To create a modifier that applies a specific parent widget, supply one or more scope types.
  *
  * ```
  * @Modifier(1, RowScope::class)
@@ -140,6 +220,24 @@ public annotation class Default(val expression: String)
  *   val value: VerticalAlignment,
  * )
  * ```
+ *
+ * When defining the [Widget], use the same scope type as a receiver on [Children] property.
+ *
+ * ```
+ * @Widget(1)
+ * data class Row(
+ *   @Children(1) val children: RowScope.() -> Unit,
+ * )
+ * ```
+ *
+ * When a modifier is applied to a widget it will be processed in one of two ways:
+ * 1. If scoped, the parent widget which provides the scope will query the value. For example,
+ *    each implementation of a `Row` will handle `HorizontalAlignment` set on its children.
+ * 2. If unscoped, the widget factory interface will expose callback functions that are invoked
+ *    when a value is used. For example, a `BackgroundColor(value: V, modifier: BackgroundColor)`
+ *    function will be generated on the widget factory for each implementation to provide. The
+ *    implementation should be idempotent, as it will be invoked each time a new modifier chain is
+ *    set, even if the specific unscoped modifier has not changed.
  */
 @Retention(RUNTIME)
 @Target(CLASS)

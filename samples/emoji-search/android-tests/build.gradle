@@ -1,0 +1,12 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+dependencies {
+  implementation(libs.junit)
+  implementation(libs.androidx.test.core)
+  implementation(libs.androidx.test.uiautomator)
+}
+
+android {
+  namespace 'com.example.redwood.emojisearch.android.tests'
+}

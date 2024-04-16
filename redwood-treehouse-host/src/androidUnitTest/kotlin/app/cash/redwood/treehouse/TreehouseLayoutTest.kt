@@ -35,7 +35,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +54,7 @@ class TreehouseLayoutTest {
     val view = View(activity)
     layout.children.insert(0, viewWidget(view))
     assertThat(layout.childCount).isEqualTo(1)
-    assertThat(layout.getChildAt(0)).isSameAs(view)
+    assertThat(layout.getChildAt(0)).isSameInstanceAs(view)
   }
 
   @Test fun attachAndDetachSendsStateChange() {

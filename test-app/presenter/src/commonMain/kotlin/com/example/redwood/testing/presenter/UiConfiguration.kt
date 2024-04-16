@@ -16,6 +16,7 @@
 package com.example.redwood.testing.presenter
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.Modifier
 import app.cash.redwood.compose.current
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
@@ -24,8 +25,8 @@ import app.cash.redwood.ui.dp
 import com.example.redwood.testing.compose.Text
 
 @Composable
-fun UiConfigurationValues() {
-  Column(margin = Margin(16.dp)) {
+fun UiConfigurationValues(modifier: Modifier = Modifier) {
+  Column(margin = Margin(16.dp), modifier = modifier) {
     val uiConfiguration = UiConfiguration.current
 
     Text("Dark mode: ${uiConfiguration.darkMode}")

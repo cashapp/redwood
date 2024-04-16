@@ -1,13 +1,14 @@
 [versions]
-kotlin = "1.9.10"
-kotlinx-coroutines = "1.7.3"
-kotlinx-serialization = "1.6.0"
-androidx-activity = "1.8.0"
-jbCompose = "1.5.3"
-lint = "31.1.1"
-zipline = "1.3.0"
-coil = "2.4.0"
-okio = "3.6.0"
+kotlin = "1.9.23"
+kotlinx-coroutines = "1.8.0"
+kotlinx-serialization = "1.6.3"
+androidx-activity = "1.8.2"
+androidx-compose-ui = "1.6.5"
+jbCompose = "1.6.2"
+lint = "31.3.2"
+zipline = "1.9.0"
+coil = "3.0.0-alpha06"
+okio = "3.9.0"
 
 [libraries]
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
@@ -20,33 +21,40 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version
 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.15.0-Beta.2"
 
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.2'
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.3'
 
-atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.22.0"
-dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.10"
-spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.22.0"
-gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
+atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.23.2"
+dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.20"
+spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.25.0"
+gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.28.0"
 buildConfigPlugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx.activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
-androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.3"
+androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.11"
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose-ui" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-ui" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.3.2" }
 androidx-swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
-androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 
-google-material = { module = "com.google.android.material:material", version = "1.10.0" }
+androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha01"
 
-jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.2"
+google-material = { module = "com.google.android.material:material", version = "1.11.0" }
+
+jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.10.1"
 jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jbCompose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }
@@ -56,27 +64,29 @@ jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jbCompose" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.1.1" }
-kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.14.2" }
-clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.2.1" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.3.2" }
+kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.16.0" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.3.0" }
 junit = { module = "junit:junit", version = "4.13.2" }
-testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.14" }
-assertk = "com.willowtreeapps.assertk:assertk:0.27.0"
-robolectric = { module = "org.robolectric:robolectric", version = "4.10.3" }
+testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.15" }
+assertk = "com.willowtreeapps.assertk:assertk:0.28.0"
+robolectric = { module = "org.robolectric:robolectric", version = "4.12.1" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-assetfilesystem = { module = "com.squareup.okio:okio-assetfilesystem", version.ref = "okio" }
-okHttp = { module = "com.squareup.okhttp3:okhttp", version = "4.12.0" }
-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version = "3.3.0-alpha02-0.4.0" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version = "4.12.0" }
+paging-compose-common = { module = "app.cash.paging:paging-compose-common", version = "3.3.0-alpha02-0.5.1" }
 zipline = { module = "app.cash.zipline:zipline", version.ref = "zipline" }
 zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", version.ref = "zipline" }
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "zipline" }
 paparazzi-gradlePlugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version = "1.3.1" }
 jimfs = "com.google.jimfs:jimfs:1.3.0"
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
-coil-core = { module = "io.coil-kt:coil", version.ref = "coil" }
-turbine = "app.cash.turbine:turbine:1.0.0"
-ktlint = "com.pinterest:ktlint:0.50.0"
-googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.18.1"
-poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.0"
+coil-compose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
+coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+turbine = "app.cash.turbine:turbine:1.1.0"
+ktlint = "com.pinterest.ktlint:ktlint-cli:1.2.1"
+ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.3.15"
+googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.22.0"
+poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.2"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }

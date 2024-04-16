@@ -1,0 +1,39 @@
+public final class app/cash/redwood/testing/NoOpOnBackPressedDispatcher : app/cash/redwood/ui/OnBackPressedDispatcher {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/testing/NoOpOnBackPressedDispatcher;
+	public fun addCallback (Lapp/cash/redwood/ui/OnBackPressedCallback;)Lapp/cash/redwood/ui/Cancellable;
+}
+
+public abstract interface class app/cash/redwood/testing/TestRedwoodComposition : app/cash/redwood/compose/RedwoodComposition {
+	public abstract fun awaitSnapshot-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitSnapshot-VtjQ1oo$default (Lapp/cash/redwood/testing/TestRedwoodComposition;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getUiConfigurations ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public abstract fun saveState ()Lapp/cash/redwood/testing/TestSavedState;
+}
+
+public final class app/cash/redwood/testing/TestRedwoodCompositionKt {
+	public static final fun TestRedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/WidgetSystem;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/testing/TestRedwoodComposition;
+	public static synthetic fun TestRedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/WidgetSystem;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/testing/TestRedwoodComposition;
+}
+
+public abstract class app/cash/redwood/testing/TestSavedState {
+	public static final field $stable I
+}
+
+public final class app/cash/redwood/testing/ToChangeListKt {
+	public static final fun toChangeList (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
+	public static final fun toChangeList (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
+	public static synthetic fun toChangeList$default (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
+	public static synthetic fun toChangeList$default (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
+}
+
+public abstract interface class app/cash/redwood/testing/WidgetValue {
+	public fun getChildrenLists ()Ljava/util/List;
+	public abstract fun getModifier ()Lapp/cash/redwood/Modifier;
+	public abstract fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/testing/WidgetValueKt {
+	public static final fun flatten (Ljava/util/List;)Lkotlin/sequences/Sequence;
+}
+

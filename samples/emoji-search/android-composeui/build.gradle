@@ -8,24 +8,31 @@ redwoodBuild {
 android {
   namespace 'com.example.redwood.emojisearch.android.composeui'
 
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
   buildFeatures {
     compose = true
+    // Needed to pass application ID to UIAutomator tests.
+    buildConfig = true
   }
 }
 
 dependencies {
-  implementation libs.coil.compose
+  implementation libs.coil.network.okhttp
+  implementation libs.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
   implementation projects.samples.emojiSearch.schema.widget.protocol
+  implementation projects.samples.emojiSearch.sharedComposeui
   implementation libs.androidx.activity.compose
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation libs.jetbrains.compose.material
   implementation libs.jetbrains.compose.ui
-  implementation libs.jetbrains.compose.ui.tooling.preview
   debugImplementation libs.jetbrains.compose.ui.tooling
   implementation projects.redwoodLayoutComposeui
   implementation projects.redwoodLazylayoutComposeui
@@ -33,4 +40,7 @@ dependencies {
   implementation projects.redwoodTreehouseHostComposeui
   implementation projects.redwoodWidgetCompose
   implementation libs.okio.assetfilesystem
+
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation projects.samples.emojiSearch.androidTests
 }

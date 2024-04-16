@@ -19,6 +19,7 @@ import app.cash.redwood.yoga.internal.Yoga
 import dev.drewhamilton.poko.Poko
 import kotlin.jvm.JvmInline
 
+@RedwoodYogaApi
 public fun interface MeasureCallback {
   public fun measure(
     node: Node,
@@ -29,15 +30,18 @@ public fun interface MeasureCallback {
   ): Size
 }
 
+@RedwoodYogaApi
 @Poko public class Size(
   public val width: Float,
   public val height: Float,
 ) {
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
-    public const val Undefined: Float = Yoga.YGUndefined
+    public const val UNDEFINED: Float = Yoga.YGUndefined
   }
 }
 
+@RedwoodYogaApi
 @JvmInline
 public value class MeasureMode private constructor(private val ordinal: Int) {
 
@@ -48,6 +52,7 @@ public value class MeasureMode private constructor(private val ordinal: Int) {
     else -> throw AssertionError()
   }
 
+  @RedwoodYogaApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Undefined: MeasureMode = MeasureMode(0)
     public val Exactly: MeasureMode = MeasureMode(1)

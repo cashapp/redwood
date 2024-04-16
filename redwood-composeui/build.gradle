@@ -19,9 +19,21 @@ kotlin {
         implementation projects.redwoodWidgetCompose
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.assertk
+      }
+    }
     androidMain {
       dependencies {
         implementation libs.androidx.activity.compose
+      }
+    }
+    androidUnitTest {
+      dependencies {
+        implementation libs.androidx.compose.ui.test.manifest
+        implementation libs.androidx.compose.ui.test.junit4
+        implementation libs.robolectric
       }
     }
   }
@@ -29,4 +41,8 @@ kotlin {
 
 android {
   namespace 'app.cash.redwood.composeui'
+
+  testOptions {
+    unitTests.includeAndroidResources = true  // Required by Robolectric.
+  }
 }

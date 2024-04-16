@@ -27,10 +27,12 @@ import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Event
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.Annotatable
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.Documentable
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
@@ -57,34 +59,18 @@ internal val Event.lambdaType: TypeName
     returnType = UNIT,
   ).copy(nullable = isNullable)
 
-internal fun Schema.composePackage(host: Schema? = null): String {
-  return if (host == null) {
-    val `package` = type.names[0]
-    "$`package`.compose"
-  } else {
-    val hostPackage = host.type.names[0]
-    "$hostPackage.compose.${type.flatName.lowercase()}"
-  }
-}
+internal val Schema.unscopedModifiers get() = modifiers.filter { it.scopes.isEmpty() }
 
-internal fun Schema.protocolBridgeType(): ClassName {
-  return ClassName(composePackage(), "${type.flatName}ProtocolBridge")
-}
+internal fun Schema.composePackage() = type.names[0] + ".compose"
+internal fun Schema.modifierPackage() = type.names[0] + ".modifier"
+internal fun Schema.testingPackage() = type.names[0] + ".testing"
+internal fun Schema.widgetPackage() = type.names[0] + ".widget"
 
-internal fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(composePackage(host), "Protocol${type.flatName}WidgetFactory")
-}
-
-internal fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(composePackage(host), "Protocol${widget.type.flatName}")
-}
-
-internal fun Schema.protocolNodeFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}ProtocolNodeFactory")
-}
-
-internal fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(widgetPackage(host), "Protocol${widget.type.flatName}")
+internal fun Schema.guestProtocolPackage(host: Schema? = null) = protocolPackage("guest", host)
+internal fun Schema.hostProtocolPackage(host: Schema? = null) = protocolPackage("host", host)
+private fun Schema.protocolPackage(name: String, host: Schema?): String {
+  val base = (host ?: this).type.names[0] + ".protocol." + name
+  return if (host != null) "$base.${type.flatName.lowercase()}" else base
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {
@@ -95,57 +81,17 @@ internal fun Schema.getWidgetFactoryType(): ClassName {
   return ClassName(widgetPackage(), "${type.flatName}WidgetFactory")
 }
 
-internal fun Schema.getTestingWidgetFactoryType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}TestingWidgetFactory")
+internal fun Schema.getWidgetFactoryOwnerType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryOwner")
 }
 
-internal fun Schema.mutableWidgetType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(), "Mutable${widget.type.flatName}")
-}
-
-internal fun Schema.widgetValueType(widget: Widget): ClassName {
-  return ClassName(widgetPackage(), "${widget.type.flatName}Value")
-}
-
-internal fun Schema.getWidgetFactoryProviderType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}WidgetFactoryProvider")
-}
-
-internal fun Schema.getWidgetFactoriesType(): ClassName {
-  return ClassName(widgetPackage(), "${type.flatName}WidgetFactories")
-}
-
-internal fun Schema.widgetPackage(host: Schema? = null): String {
-  return if (host == null) {
-    val `package` = type.names[0]
-    "$`package`.widget"
-  } else {
-    val hostPackage = host.type.names[0]
-    "$hostPackage.widget.${type.flatName.lowercase()}"
-  }
+internal fun Schema.getWidgetSystemType(): ClassName {
+  return ClassName(widgetPackage(), "${type.flatName}WidgetSystem")
 }
 
 internal fun Schema.modifierType(modifier: Modifier): ClassName {
-  return ClassName(type.names[0] + ".modifier", modifier.type.flatName)
+  return ClassName(modifierPackage(), modifier.type.flatName)
 }
-
-internal fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
-  return ClassName(composePackage(host), modifier.type.flatName + "Serializer")
-}
-
-internal fun Schema.modifierImpl(modifier: Modifier): ClassName {
-  return ClassName(composePackage(), modifier.type.flatName + "Impl")
-}
-
-internal fun Schema.getTesterFunction(): MemberName {
-  return MemberName(widgetPackage(), "${type.flatName}Tester")
-}
-
-internal val Schema.toModifier: MemberName get() =
-  MemberName(widgetPackage(), "toModifier")
-
-internal val Schema.modifierToProtocol: MemberName get() =
-  MemberName(composePackage(), "toProtocol")
 
 internal fun ProtocolSchemaSet.allModifiers(): List<Pair<ProtocolSchema, ProtocolModifier>> {
   return all.flatMap { schema ->
@@ -208,19 +154,54 @@ internal fun modifierToString(modifier: Modifier): FunSpec {
     .build()
 }
 
-internal fun Deprecation.toAnnotationSpec(): AnnotationSpec {
-  return AnnotationSpec.builder(Deprecated::class)
-    .addMember("%S", message)
-    .addMember("level = %M", level.toMemberName())
-    .build()
+internal val suppressDeprecations = AnnotationSpec.builder(Suppress::class)
+  .useSiteTarget(AnnotationSpec.UseSiteTarget.FILE)
+  .addMember("%S, %S", "DEPRECATION", "OVERRIDE_DEPRECATION")
+  .build()
+
+/** Add a `@Deprecated` annotation corresponding to [deprecation], if it is not null. */
+internal fun <T : Annotatable.Builder<T>> T.maybeAddDeprecation(deprecation: Deprecation?) = apply {
+  if (deprecation != null) {
+    addAnnotation(
+      AnnotationSpec.builder(Deprecated::class)
+        .addMember("%S", deprecation.message)
+        .addMember(
+          "level = %M",
+          MemberName(
+            DeprecationLevel::class.asClassName(),
+            when (deprecation.level) {
+              WARNING -> DeprecationLevel.WARNING.name
+              ERROR -> DeprecationLevel.ERROR.name
+            },
+          ),
+        )
+        .build(),
+    )
+  }
 }
 
-private fun Deprecation.Level.toMemberName(): MemberName {
-  return MemberName(
-    DeprecationLevel::class.asClassName(),
-    when (this) {
-      WARNING -> DeprecationLevel.WARNING.name
-      ERROR -> DeprecationLevel.ERROR.name
-    },
+/** Calls [Documentable.Builder.addKdoc] if [string] is not null. */
+internal fun <T : Documentable.Builder<T>> T.maybeAddKDoc(string: String?) = apply {
+  if (string != null) {
+    addKdoc(string)
+  }
+}
+
+/** Calls [ParameterSpec.Builder.defaultValue] if [value] is not null. */
+internal fun ParameterSpec.Builder.maybeDefaultValue(value: String?) = apply {
+  if (value != null) {
+    defaultValue(value)
+  }
+}
+
+internal fun <T : Annotatable.Builder<T>> T.optIn(vararg names: ClassName): T = apply {
+  addAnnotation(
+    AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+      .apply {
+        for (name in names) {
+          addMember("%T::class", name)
+        }
+      }
+      .build(),
   )
 }

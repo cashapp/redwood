@@ -16,6 +16,7 @@ dependencies {
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
   testImplementation projects.redwoodLayoutSharedTest
+  testImplementation projects.redwoodLayoutView
   testImplementation libs.testParameterInjector
 }
 

@@ -329,4 +329,157 @@ class SparseListTest {
     list.set(3, "A")
     assertThat(list.getOrCreate(3) { error("boom") }).isEqualTo("A")
   }
+
+  @Test
+  fun addRange() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 8)
+    source.set(4, "A")
+    source.set(5, "B")
+    source.set(7, "C")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 8)
+    target.set(2, "D")
+    target.set(3, "E")
+    target.set(6, "F")
+    assertThat(target.toList())
+      .containsExactly(null, null, "D", "E", null, null, "F", null)
+
+    // Add [null, "A", "B", null, "C"] before "E".
+    target.addRange(3, source, sourceIndex = 3, count = 5)
+
+    assertThat(target.toList())
+      .containsExactly(null, null, "D", null, "A", "B", null, "C", "E", null, null, "F", null)
+  }
+
+  @Test
+  fun addRangeSourceElementsAllNull() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 5)
+    source.set(0, "A")
+    source.set(4, "B")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 8)
+    target.set(2, "D")
+    target.set(3, "E")
+    assertThat(target.toList())
+      .containsExactly(null, null, "D", "E", null, null, null, null)
+
+    // Add [null, null, null] before "E".
+    target.addRange(3, source, sourceIndex = 1, count = 3)
+
+    assertThat(target.toList())
+      .containsExactly(null, null, "D", null, null, null, "E", null, null, null, null)
+  }
+
+  @Test
+  fun addRangeSourceElementsAllNonNull() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 5)
+    source.set(0, "A")
+    source.set(1, "B")
+    source.set(2, "C")
+    source.set(3, "D")
+    source.set(4, "E")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 8)
+    target.set(2, "F")
+    target.set(3, "G")
+    assertThat(target.toList())
+      .containsExactly(null, null, "F", "G", null, null, null, null)
+
+    // Add ["B", "C", "D"] before "G".
+    target.addRange(3, source, sourceIndex = 1, count = 3)
+
+    assertThat(target.toList())
+      .containsExactly(null, null, "F", "B", "C", "D", "G", null, null, null, null)
+  }
+
+  @Test
+  fun addRangeToFront() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 5)
+    source.set(0, "A")
+    source.set(1, "B")
+    source.set(2, "C")
+    source.set(3, "D")
+    source.set(4, "E")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 5)
+    target.set(2, "F")
+    target.set(3, "G")
+    assertThat(target.toList())
+      .containsExactly(null, null, "F", "G", null)
+
+    // Add ["B", "C", "D"] at 0.
+    target.addRange(0, source, sourceIndex = 1, count = 3)
+
+    assertThat(target.toList())
+      .containsExactly("B", "C", "D", null, null, "F", "G", null)
+  }
+
+  @Test
+  fun addRangeToEnd() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 5)
+    source.set(0, "A")
+    source.set(1, "B")
+    source.set(2, "C")
+    source.set(3, "D")
+    source.set(4, "E")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 5)
+    target.set(2, "F")
+    target.set(3, "G")
+    assertThat(target.toList())
+      .containsExactly(null, null, "F", "G", null)
+
+    // Add ["B", "C", "D"] at 5.
+    target.addRange(5, source, sourceIndex = 1, count = 3)
+
+    assertThat(target.toList())
+      .containsExactly(null, null, "F", "G", null, "B", "C", "D")
+  }
+
+  /**
+   * This test highlights the difference between operating on logical indices vs. physical indices.
+   * This is the kind of thing we expect to be efficient in benchmarks.
+   */
+  @Test
+  fun addRangeWithLargeSparseIndexes() {
+    val source = SparseList<String?>()
+    source.addNulls(0, 9_000)
+    source.set(5_000, "A")
+    source.set(5_001, "B")
+    source.set(5_003, "C")
+
+    val target = SparseList<String?>()
+    target.addNulls(0, 7_000)
+    target.set(3_001, "D")
+    target.set(3_002, "E")
+    target.set(3_005, "F")
+
+    target.addRange(3_004, source, sourceIndex = 4_000, count = 2_000)
+
+    val expectedSource = buildList {
+      for (i in 0 until 9_000) add(null)
+      set(5_000, "A")
+      set(5_001, "B")
+      set(5_003, "C")
+    }
+    val expected = buildList {
+      for (i in 0 until 7_000) add(null)
+      set(3_001, "D")
+      set(3_002, "E")
+      set(3_005, "F")
+      addAll(3_004, expectedSource.subList(4_000, 4_000 + 2_000))
+    }
+
+    assertThat(target.toList()).isEqualTo(expected)
+  }
 }

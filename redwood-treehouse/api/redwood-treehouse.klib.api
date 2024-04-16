@@ -1,0 +1,96 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-treehouse>
+abstract interface app.cash.redwood.treehouse/AppLifecycle : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/AppLifecycle|null[0]
+    abstract fun sendFrame(kotlin/Long) // app.cash.redwood.treehouse/AppLifecycle.sendFrame|sendFrame(kotlin.Long){}[0]
+    abstract fun start(app.cash.redwood.treehouse/AppLifecycle.Host) // app.cash.redwood.treehouse/AppLifecycle.start|start(app.cash.redwood.treehouse.AppLifecycle.Host){}[0]
+    abstract interface Host : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/AppLifecycle.Host|null[0]
+        abstract fun handleUncaughtException(kotlin/Throwable) // app.cash.redwood.treehouse/AppLifecycle.Host.handleUncaughtException|handleUncaughtException(kotlin.Throwable){}[0]
+        abstract fun onUnknownEvent(app.cash.redwood.protocol/WidgetTag, app.cash.redwood.protocol/EventTag) // app.cash.redwood.treehouse/AppLifecycle.Host.onUnknownEvent|onUnknownEvent(app.cash.redwood.protocol.WidgetTag;app.cash.redwood.protocol.EventTag){}[0]
+        abstract fun onUnknownEventNode(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag) // app.cash.redwood.treehouse/AppLifecycle.Host.onUnknownEventNode|onUnknownEventNode(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag){}[0]
+        abstract fun requestFrame() // app.cash.redwood.treehouse/AppLifecycle.Host.requestFrame|requestFrame(){}[0]
+        abstract val hostProtocolVersion // app.cash.redwood.treehouse/AppLifecycle.Host.hostProtocolVersion|{}hostProtocolVersion[0]
+            abstract fun <get-hostProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/AppLifecycle.Host.hostProtocolVersion.<get-hostProtocolVersion>|<get-hostProtocolVersion>(){}[0]
+        final object Companion // app.cash.redwood.treehouse/AppLifecycle.Host.Companion|null[0]
+    }
+    abstract val guestProtocolVersion // app.cash.redwood.treehouse/AppLifecycle.guestProtocolVersion|{}guestProtocolVersion[0]
+        abstract fun <get-guestProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/AppLifecycle.guestProtocolVersion.<get-guestProtocolVersion>|<get-guestProtocolVersion>(){}[0]
+    final object Companion // app.cash.redwood.treehouse/AppLifecycle.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/AppService : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/AppService|null[0]
+    abstract val appLifecycle // app.cash.redwood.treehouse/AppService.appLifecycle|{}appLifecycle[0]
+        abstract fun <get-appLifecycle>(): app.cash.redwood.treehouse/AppLifecycle // app.cash.redwood.treehouse/AppService.appLifecycle.<get-appLifecycle>|<get-appLifecycle>(){}[0]
+    final object Companion // app.cash.redwood.treehouse/AppService.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/CancellableService : app.cash.redwood.ui/Cancellable, app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/CancellableService|null[0]
+    final object Companion // app.cash.redwood.treehouse/CancellableService.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/ChangesSinkService : app.cash.redwood.protocol/ChangesSink, app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/ChangesSinkService|null[0]
+    final object Companion // app.cash.redwood.treehouse/ChangesSinkService.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/OnBackPressedCallbackService : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/OnBackPressedCallbackService|null[0]
+    abstract fun handleOnBackPressed() // app.cash.redwood.treehouse/OnBackPressedCallbackService.handleOnBackPressed|handleOnBackPressed(){}[0]
+    abstract val isEnabled // app.cash.redwood.treehouse/OnBackPressedCallbackService.isEnabled|{}isEnabled[0]
+        abstract fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // app.cash.redwood.treehouse/OnBackPressedCallbackService.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    final object Companion // app.cash.redwood.treehouse/OnBackPressedCallbackService.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/OnBackPressedDispatcherService : app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/OnBackPressedDispatcherService|null[0]
+    abstract fun addCallback(app.cash.redwood.treehouse/OnBackPressedCallbackService): app.cash.redwood.treehouse/CancellableService // app.cash.redwood.treehouse/OnBackPressedDispatcherService.addCallback|addCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService){}[0]
+    final object Companion // app.cash.redwood.treehouse/OnBackPressedDispatcherService.Companion|null[0]
+}
+abstract interface app.cash.redwood.treehouse/ZiplineTreehouseUi : app.cash.redwood.protocol/EventSink, app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/ZiplineTreehouseUi|null[0]
+    abstract fun start(app.cash.redwood.treehouse/ChangesSinkService, app.cash.redwood.treehouse/OnBackPressedDispatcherService, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>, app.cash.redwood.treehouse/StateSnapshot?) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ChangesSinkService;app.cash.redwood.treehouse.OnBackPressedDispatcherService;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>;app.cash.redwood.treehouse.StateSnapshot?){}[0]
+    abstract fun start(app.cash.redwood.treehouse/ChangesSinkService, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>, app.cash.redwood.treehouse/StateSnapshot?) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ChangesSinkService;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>;app.cash.redwood.treehouse.StateSnapshot?){}[0]
+    abstract fun start(app.cash.redwood.treehouse/ZiplineTreehouseUi.Host) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ZiplineTreehouseUi.Host){}[0]
+    abstract interface Host : app.cash.redwood.treehouse/ChangesSinkService, app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host|null[0]
+        abstract fun addOnBackPressedCallback(app.cash.redwood.treehouse/OnBackPressedCallbackService): app.cash.redwood.treehouse/CancellableService // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.addOnBackPressedCallback|addOnBackPressedCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService){}[0]
+        abstract val stateSnapshot // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.stateSnapshot|{}stateSnapshot[0]
+            abstract fun <get-stateSnapshot>(): app.cash.redwood.treehouse/StateSnapshot? // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.stateSnapshot.<get-stateSnapshot>|<get-stateSnapshot>(){}[0]
+        abstract val uiConfigurations // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.uiConfigurations|{}uiConfigurations[0]
+            abstract fun <get-uiConfigurations>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.uiConfigurations.<get-uiConfigurations>|<get-uiConfigurations>(){}[0]
+        final object Companion // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.Companion|null[0]
+    }
+    final object Companion // app.cash.redwood.treehouse/ZiplineTreehouseUi.Companion|null[0]
+    open fun snapshotState(): app.cash.redwood.treehouse/StateSnapshot? // app.cash.redwood.treehouse/ZiplineTreehouseUi.snapshotState|snapshotState(){}[0]
+}
+final class app.cash.redwood.treehouse/StateSnapshot { // app.cash.redwood.treehouse/StateSnapshot|null[0]
+    constructor <init>(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/Any?>>) // app.cash.redwood.treehouse/StateSnapshot.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.Any?>>){}[0]
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.treehouse/StateSnapshot> { // app.cash.redwood.treehouse/StateSnapshot.$serializer|null[0]
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.treehouse/StateSnapshot.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.treehouse/StateSnapshot // app.cash.redwood.treehouse/StateSnapshot.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.treehouse/StateSnapshot) // app.cash.redwood.treehouse/StateSnapshot.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.treehouse.StateSnapshot){}[0]
+        final val descriptor // app.cash.redwood.treehouse/StateSnapshot.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.treehouse/StateSnapshot.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+    }
+    final object Companion { // app.cash.redwood.treehouse/StateSnapshot.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.treehouse/StateSnapshot> // app.cash.redwood.treehouse/StateSnapshot.Companion.serializer|serializer(){}[0]
+        final val $childSerializers // app.cash.redwood.treehouse/StateSnapshot.Companion.$childSerializers|{}$childSerializers[0]
+    }
+    final val content // app.cash.redwood.treehouse/StateSnapshot.content|{}content[0]
+        final fun <get-content>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/Any?>> // app.cash.redwood.treehouse/StateSnapshot.content.<get-content>|<get-content>(){}[0]
+    final value class Id { // app.cash.redwood.treehouse/StateSnapshot.Id|null[0]
+        constructor <init>(kotlin/String?) // app.cash.redwood.treehouse/StateSnapshot.Id.<init>|<init>(kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.treehouse/StateSnapshot.Id.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // app.cash.redwood.treehouse/StateSnapshot.Id.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // app.cash.redwood.treehouse/StateSnapshot.Id.toString|toString(){}[0]
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.treehouse/StateSnapshot.Id> { // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer|null[0]
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.treehouse/StateSnapshot.Id // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.treehouse/StateSnapshot.Id) // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.treehouse.StateSnapshot.Id){}[0]
+            final val descriptor // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.treehouse/StateSnapshot.Id.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+        }
+        final object Companion { // app.cash.redwood.treehouse/StateSnapshot.Id.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.treehouse/StateSnapshot.Id> // app.cash.redwood.treehouse/StateSnapshot.Id.Companion.serializer|serializer(){}[0]
+        }
+        final val value // app.cash.redwood.treehouse/StateSnapshot.Id.value|{}value[0]
+            final fun <get-value>(): kotlin/String? // app.cash.redwood.treehouse/StateSnapshot.Id.value.<get-value>|<get-value>(){}[0]
+    }
+}
+final val app.cash.redwood.treehouse/SaveableStateSerializersModule // app.cash.redwood.treehouse/SaveableStateSerializersModule|{}SaveableStateSerializersModule[0]
+    final fun <get-SaveableStateSerializersModule>(): kotlinx.serialization.modules/SerializersModule // app.cash.redwood.treehouse/SaveableStateSerializersModule.<get-SaveableStateSerializersModule>|<get-SaveableStateSerializersModule>(){}[0]

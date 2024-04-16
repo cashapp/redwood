@@ -102,4 +102,17 @@ class LazyListScrollProcessorTest {
     processor.onUserScroll(6, 15)
     assertThat(processor.takeEvents()).containsExactly("userScroll(6, 15)")
   }
+
+  @Test
+  fun onScrollToTop() {
+    processor.size = 30
+
+    // Do a user scroll.
+    processor.onUserScroll(5, 14)
+    assertThat(processor.takeEvents()).containsExactly("userScroll(5, 14)")
+
+    // Alert the processor that a scroll-to-top is happening.
+    processor.onScrollToTop()
+    assertThat(processor.takeEvents()).containsExactly("userScroll(0, 9)")
+  }
 }

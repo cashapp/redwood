@@ -19,9 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,7 +35,6 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
-import app.cash.redwood.layout.compose.flex
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
@@ -43,7 +44,9 @@ import app.cash.redwood.ui.dp
 import com.example.redwood.emojisearch.compose.Image
 import com.example.redwood.emojisearch.compose.Text
 import com.example.redwood.emojisearch.compose.TextInput
+import com.example.redwood.emojisearch.compose.reuse
 import example.values.TextFieldState
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 data class EmojiImage(
@@ -62,33 +65,19 @@ interface Navigator {
   fun openUrl(url: String)
 }
 
-enum class Variant {
-  LAZY_COLUMN, SCROLLABLE_FLEXBOX, BUGGY_COLUMNS
-}
-
 @Composable
+@OptIn(ExperimentalRedwoodLazyLayoutApi::class)
 fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
-  variant: Variant = Variant.LAZY_COLUMN,
+  modifier: Modifier = Modifier,
+  safeAreaInsets: Margin = LocalUiConfiguration.current.safeAreaInsets,
 ) {
-  when (variant) {
-    Variant.LAZY_COLUMN -> LazyColumn(httpClient, navigator)
-    Variant.SCROLLABLE_FLEXBOX -> NestedFlexBoxContainers(httpClient)
-    Variant.BUGGY_COLUMNS -> BuggyNestedColumns()
-  }
-}
-
-@OptIn(ExperimentalRedwoodLazyLayoutApi::class)
-@Composable
-private fun LazyColumn(
-  httpClient: HttpClient,
-  navigator: Navigator,
-) {
+  val scope = rememberCoroutineScope()
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
 
   // Simple counter that allows us to trigger refreshes by simple incrementing the value
-  var refreshSignal by remember { mutableStateOf(0) }
+  var refreshSignal by remember { mutableIntStateOf(0) }
   var refreshing by remember { mutableStateOf(false) }
 
   val searchTermSaver = object : Saver<TextFieldState, String> {
@@ -121,10 +110,12 @@ private fun LazyColumn(
     }
   }
 
-  val filteredEmojis by derivedStateOf {
-    val searchTerms = searchTerm.text.split(" ")
-    allEmojis.filter { image ->
-      searchTerms.all { image.label.contains(it, ignoreCase = true) }
+  val filteredEmojis by remember {
+    derivedStateOf {
+      val searchTerms = searchTerm.text.split(" ")
+      allEmojis.filter { image ->
+        searchTerms.all { image.label.contains(it, ignoreCase = true) }
+      }
     }
   }
 
@@ -132,12 +123,26 @@ private fun LazyColumn(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = LocalUiConfiguration.current.safeAreaInsets,
+    margin = safeAreaInsets,
+    modifier = modifier,
   ) {
     TextInput(
       state = TextFieldState(searchTerm.text),
       hint = "Search",
-      onChange = { searchTerm = it },
+      onChange = { textFieldState ->
+        // Make it easy to trigger a crash to manually test exception handling!
+        when (textFieldState.text) {
+          "crash" -> throw RuntimeException("boom!")
+
+          "async" -> {
+            scope.launch {
+              throw RuntimeException("boom!")
+            }
+          }
+        }
+
+        searchTerm = textFieldState
+      },
     )
     LazyColumn(
       refreshing = refreshing,
@@ -154,6 +159,7 @@ private fun LazyColumn(
     ) {
       items(filteredEmojis) { image ->
         Item(
+          modifier = Modifier.reuse(),
           emojiImage = image,
           onClick = {
             navigator.openUrl(image.url)
@@ -167,9 +173,11 @@ private fun LazyColumn(
 @Composable
 fun Item(
   emojiImage: EmojiImage,
+  modifier: Modifier = Modifier,
   onClick: () -> Unit = {},
 ) {
   Row(
+    modifier = modifier,
     width = Constraint.Fill,
     height = Constraint.Wrap,
     verticalAlignment = CrossAxisAlignment.Center,

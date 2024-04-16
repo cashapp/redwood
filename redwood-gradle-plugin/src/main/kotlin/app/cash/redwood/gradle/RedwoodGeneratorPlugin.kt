@@ -16,13 +16,14 @@
 package app.cash.redwood.gradle
 
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Compose
-import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ComposeProtocol
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Modifiers
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ProtocolGuest
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ProtocolHost
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Testing
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Widget
-import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.WidgetProtocol
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.Logging
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_SOURCE_SET_NAME
@@ -31,10 +32,22 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_
 public class RedwoodComposeGeneratorPlugin : RedwoodGeneratorPlugin(Compose)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodComposeProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ComposeProtocol)
+public class RedwoodComposeProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ProtocolGuest) {
+  override fun apply(project: Project) {
+    Logging.getLogger(RedwoodComposeProtocolGeneratorPlugin::class.java)
+      .warn("This plugin is deprecated. Use 'app.cash.redwood.generator.protocol.guest' instead.")
+    super.apply(project)
+  }
+}
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodModifiersGeneratorPlugin : RedwoodGeneratorPlugin(Modifiers)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
+public class RedwoodProtocolGuestGeneratorPlugin : RedwoodGeneratorPlugin(ProtocolGuest)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
+public class RedwoodProtocolHostGeneratorPlugin : RedwoodGeneratorPlugin(ProtocolHost)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodTestingGeneratorPlugin : RedwoodGeneratorPlugin(Testing)
@@ -43,7 +56,13 @@ public class RedwoodTestingGeneratorPlugin : RedwoodGeneratorPlugin(Testing)
 public class RedwoodWidgetGeneratorPlugin : RedwoodGeneratorPlugin(Widget)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
-public class RedwoodWidgetProtocolGeneratorPlugin : RedwoodGeneratorPlugin(WidgetProtocol)
+public class RedwoodWidgetProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ProtocolHost) {
+  override fun apply(project: Project) {
+    Logging.getLogger(RedwoodComposeProtocolGeneratorPlugin::class.java)
+      .warn("This plugin is deprecated. Use 'app.cash.redwood.generator.protocol.host' instead.")
+    super.apply(project)
+  }
+}
 
 public abstract class RedwoodGeneratorPlugin(
   private val strategy: Strategy,
@@ -53,18 +72,18 @@ public abstract class RedwoodGeneratorPlugin(
     internal val dependencyArtifactId: String,
   ) {
     Compose("--compose", "redwood-compose"),
-    ComposeProtocol("--compose-protocol", "redwood-protocol-compose"),
     Modifiers("--modifier", "redwood-runtime"),
+    ProtocolGuest("--protocol-guest", "redwood-protocol-guest"),
+    ProtocolHost("--protocol-host", "redwood-protocol-host"),
     Testing("--testing", "redwood-testing"),
     Widget("--widget", "redwood-widget"),
-    WidgetProtocol("--widget-protocol", "redwood-protocol-widget"),
   }
 
   override fun apply(project: Project) {
     if (strategy == Compose) {
       project.plugins.apply(RedwoodComposePlugin::class.java)
     }
-    if (strategy == ComposeProtocol || strategy == WidgetProtocol) {
+    if (strategy == ProtocolGuest || strategy == ProtocolHost) {
       project.plugins.apply("org.jetbrains.kotlin.plugin.serialization")
     }
 
@@ -88,19 +107,15 @@ public abstract class RedwoodGeneratorPlugin(
       it.description = "Generate Redwood Kotlin sources"
 
       it.toolClasspath.from(toolingConfiguration)
-      it.outputDir.set(project.layout.buildDirectory.dir("generated/redwood"))
+      it.outputDir.set(project.redwoodGeneratedDir("sources"))
       it.generatorFlag.set(strategy.generatorFlag)
       it.schemaType.set(extension.type)
       it.classpath.from(schemaConfiguration)
     }
 
-    project.afterEvaluate {
-      check(project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        "Redwood schema plugin requires the Kotlin multiplatform plugin to be applied."
-      }
-
-      val schemaProject = extension.source.get()
-      project.dependencies.add(schemaConfiguration.name, schemaProject)
+    var hasMpp = false
+    project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      hasMpp = true
 
       val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
       kotlin.sourceSets.getByName(COMMON_MAIN_SOURCE_SET_NAME) { sourceSet ->
@@ -109,6 +124,15 @@ public abstract class RedwoodGeneratorPlugin(
           api(project.redwoodDependency(strategy.dependencyArtifactId))
         }
       }
+    }
+
+    project.afterEvaluate {
+      check(hasMpp) {
+        "Redwood schema plugin requires the Kotlin multiplatform plugin to be applied."
+      }
+
+      val schemaProject = extension.source.get()
+      project.dependencies.add(schemaConfiguration.name, schemaProject)
     }
   }
 }

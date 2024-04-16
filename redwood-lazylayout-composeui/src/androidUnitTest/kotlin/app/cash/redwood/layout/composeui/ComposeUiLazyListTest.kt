@@ -31,7 +31,10 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.Transparent
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
@@ -54,16 +57,30 @@ class ComposeUiLazyListTest(
     supportsRtl = true,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): ComposeTestFlexContainer {
+    return ComposeTestFlexContainer(direction, backgroundColor)
+  }
 
-  override fun widget() = object : Text<@Composable () -> Unit> {
+  override fun row(): Row<@Composable () -> Unit> {
+    return ComposeUiRedwoodLayoutWidgetFactory().Row()
+  }
+
+  override fun column(): Column<@Composable () -> Unit> {
+    return ComposeUiRedwoodLayoutWidgetFactory().Column()
+  }
+
+  override fun text() = object : Text<@Composable () -> Unit> {
     private var text by mutableStateOf("")
+    private var bgColor by mutableStateOf(Transparent)
 
     override val value = @Composable {
       BasicText(
         text = this.text,
         style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color.Green),
+        modifier = Modifier.background(Color(bgColor)),
       )
     }
 
@@ -72,9 +89,13 @@ class ComposeUiLazyListTest(
     override fun text(text: String) {
       this.text = text
     }
+
+    override fun bgColor(color: Int) {
+      bgColor = color
+    }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
+  override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {
       container.value()
     }
@@ -85,10 +106,10 @@ class ComposeUiLazyListTest(
   ) : TestFlexContainer<@Composable () -> Unit>, LazyList<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
-    constructor(direction: FlexDirection) : this(
+    constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiLazyList().apply {
         isVertical(direction == FlexDirection.Column)
-        testOnlyModifier = Modifier.background(Color(0, 0, 255, 51))
+        testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
     )
 
@@ -96,7 +117,17 @@ class ComposeUiLazyListTest(
     }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
-      delegate.items.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<() -> Unit>) {
+      delegate.items.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.items.remove(index = index, count = 1)
+      childCount--
     }
 
     override fun onEndChanges() {

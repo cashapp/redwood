@@ -17,16 +17,22 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.compose.ProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolRedwoodComposition
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.plus
 
 /**
@@ -35,8 +41,11 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge =
-    appLifecycle.protocolBridgeFactory.create(appLifecycle.json, appLifecycle.mismatchHandler)
+  val bridge = appLifecycle.protocolBridgeFactory.create(
+    hostVersion = appLifecycle.hostProtocolVersion,
+    json = appLifecycle.json,
+    mismatchHandler = appLifecycle.mismatchHandler,
+  )
   return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
 }
 
@@ -53,39 +62,50 @@ private class RedwoodZiplineTreehouseUi(
    */
   override val scope = (treehouseUi as? ZiplineScoped)?.scope ?: ZiplineScope()
 
+  private val coroutineScope = CoroutineScope(
+    appLifecycle.coroutineScope.coroutineContext +
+      Job(appLifecycle.coroutineScope.coroutineContext.job),
+  )
+
   private lateinit var composition: RedwoodComposition
 
   private lateinit var saveableStateRegistry: SaveableStateRegistry
 
-  @Deprecated(
-    "Use `start` method that takes in an `OnBackPressedDispatcherService` instead.",
-    ReplaceWith("start(changesSink, TODO(), uiConfigurations, stateSnapshot)"),
-  )
+  @Suppress("OVERRIDE_DEPRECATION")
   override fun start(
     changesSink: ChangesSinkService,
     uiConfigurations: StateFlow<UiConfiguration>,
     stateSnapshot: StateSnapshot?,
   ) {
-    val onBackPressedDispatcher = object : OnBackPressedDispatcherService {
-      override fun addCallback(
-        onBackPressedCallback: OnBackPressedCallbackService,
-      ): CancellableService {
-        return object : CancellableService {
-          override fun cancel() = Unit
-        }
-      }
-    }
-    start(changesSink, onBackPressedDispatcher, uiConfigurations, stateSnapshot)
+    start(changesSink, NullOnBackPressedDispatcherService, uiConfigurations, stateSnapshot)
   }
 
+  @Suppress("OVERRIDE_DEPRECATION")
   override fun start(
     changesSink: ChangesSinkService,
     onBackPressedDispatcher: OnBackPressedDispatcherService,
     uiConfigurations: StateFlow<UiConfiguration>,
     stateSnapshot: StateSnapshot?,
   ) {
+    val host = object : ZiplineTreehouseUi.Host {
+      override val uiConfigurations = uiConfigurations
+      override val stateSnapshot = stateSnapshot
+
+      override fun sendChanges(changes: List<Change>) {
+        changesSink.sendChanges(changes)
+      }
+
+      override fun addOnBackPressedCallback(
+        onBackPressedCallbackService: OnBackPressedCallbackService,
+      ): CancellableService = onBackPressedDispatcher.addCallback(onBackPressedCallbackService)
+    }
+
+    start(host)
+  }
+
+  override fun start(host: ZiplineTreehouseUi.Host) {
     this.saveableStateRegistry = SaveableStateRegistry(
-      restoredValues = stateSnapshot?.content,
+      restoredValues = host.stateSnapshot?.content,
       // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
       // With current serialization mechanism of stateSnapshot, this field is always true, an update
       // to lambda of this field might be needed when serialization mechanism of stateSnapshot
@@ -94,13 +114,13 @@ private class RedwoodZiplineTreehouseUi(
     )
 
     val composition = ProtocolRedwoodComposition(
-      scope = appLifecycle.coroutineScope + appLifecycle.frameClock,
+      scope = coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
-      changesSink = changesSink,
-      onBackPressedDispatcher = onBackPressedDispatcher.asNonService(),
+      changesSink = host,
+      onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
-      uiConfigurations = uiConfigurations,
+      uiConfigurations = host.uiConfigurations,
     )
     this.composition = composition
 
@@ -113,30 +133,44 @@ private class RedwoodZiplineTreehouseUi(
   }
 
   override fun close() {
+    coroutineScope.coroutineContext.job.invokeOnCompletion {
+      scope.close()
+    }
+    coroutineScope.cancel()
     composition.cancel()
     treehouseUi.close()
-    scope.close()
   }
 }
 
-private fun OnBackPressedDispatcherService.asNonService(): OnBackPressedDispatcher {
-  return object : OnBackPressedDispatcher {
-    override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
-      return this@asNonService.addCallback(onBackPressedCallback.asService())
-    }
+private fun ZiplineTreehouseUi.Host.asOnBackPressedDispatcher() = object : OnBackPressedDispatcher {
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    return this@asOnBackPressedDispatcher.addOnBackPressedCallback(
+      onBackPressedCallback.asService(),
+    )
   }
 }
 
-private fun OnBackPressedCallback.asService(): OnBackPressedCallbackService {
-  return object : OnBackPressedCallbackService {
-    override var isEnabled: Boolean
-      get() = this@asService.isEnabled
-      set(value) {
-        this@asService.isEnabled = value
-      }
+private fun OnBackPressedCallback.asService() = object : OnBackPressedCallbackService {
+  override val isEnabled = MutableStateFlow(this@asService.isEnabled)
 
-    override fun handleOnBackPressed() {
-      this@asService.handleOnBackPressed()
+  init {
+    enabledChangedCallback = {
+      isEnabled.value = this@asService.isEnabled
     }
   }
+
+  override fun handleOnBackPressed() {
+    this@asService.handleOnBackPressed()
+  }
+
+  override fun close() {
+    enabledChangedCallback = null
+  }
+}
+
+private object NullOnBackPressedDispatcherService : OnBackPressedDispatcherService {
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallbackService) =
+    object : CancellableService {
+      override fun cancel() = Unit
+    }
 }

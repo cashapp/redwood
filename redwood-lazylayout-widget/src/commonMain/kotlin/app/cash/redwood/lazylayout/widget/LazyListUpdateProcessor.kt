@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.lazylayout.widget
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
 
 /**
@@ -43,6 +44,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   /** Pool of placeholder widgets. */
   private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
+  /**
+   * The first placeholder ever returned. We use it to choose measured dimensions for created
+   * placeholders if the pool ever runs out.
+   */
+  private var firstPlaceholder: Widget<W>? = null
+
   /** Loaded items that may or may not have a view bound. */
   private var loadedItems = mutableListOf<Binding<V, W>>()
 
@@ -56,7 +63,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
   /** We expect placeholders to be added early and to never change. */
   public val placeholder: Widget.Children<W> = object : Widget.Children<W> {
+    private val _widgets = mutableListOf<Widget<W>>()
+    override val widgets: List<Widget<W>> get() = _widgets
+
     override fun insert(index: Int, widget: Widget<W>) {
+      _widgets += widget
+      if (firstPlaceholder == null) firstPlaceholder = widget
       placeholdersQueue += widget
     }
 
@@ -68,13 +80,18 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       error("unexpected call")
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     }
   }
 
   /** Changes to this list are collected and processed in batch once all changes are received. */
   public val items: Widget.Children<W> = object : Widget.Children<W> {
+    private val _widgets = mutableListOf<Widget<W>>()
+    override val widgets: List<Widget<W>> get() = _widgets
+
     override fun insert(index: Int, widget: Widget<W>) {
+      _widgets.add(index, widget)
+
       val last = edits.lastOrNull()
       if (last is Edit.Insert && index in last.index until last.index + last.widgets.size + 1) {
         // Grow the preceding insert. This makes promotion logic easier.
@@ -85,10 +102,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
+      _widgets.move(fromIndex, toIndex, count)
+
       edits += Edit.Move(fromIndex, toIndex, count)
     }
 
     override fun remove(index: Int, count: Int) {
+      _widgets.remove(index, count)
+
       val last = edits.lastOrNull()
       if (last is Edit.Remove && index in last.index - count until last.index + 1) {
         // Grow the preceding remove. This makes promotion logic easier.
@@ -99,7 +120,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       }
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     }
   }
 
@@ -115,6 +136,24 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   }
 
   public fun onEndChanges() {
+    // Walk through the edits pairwise attempting to swap inserts and removes. By applying removes
+    // first we create more opportunities to successfully call maybeShiftLoadedWindow() below.
+    //
+    // Note that when swapping edits we need to adjust their offsets.
+    for (e in 0 until edits.size - 1) {
+      val a = edits[e]
+      val b = edits[e + 1]
+
+      if (a is Edit.Insert && b is Edit.Remove) {
+        // A remove follows an insert. Apply the remove first.
+        if (b.index >= a.index + a.widgets.size) {
+          b.index -= a.widgets.size
+          edits[e] = b
+          edits[e + 1] = a
+        }
+      }
+    }
+
     for (e in edits.indices) {
       val edit = edits[e]
 
@@ -124,6 +163,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         edit is Edit.Insert &&
         edit.index == 0
       ) {
+        maybeShiftLoadedWindow(edit.widgets.size)
         // The before window is shrinking. Promote inserts into loads.
         val toPromoteCount = minOf(edit.widgets.size, itemsBefore.size - newItemsBefore)
         for (i in edit.widgets.size - 1 downTo edit.widgets.size - toPromoteCount) {
@@ -151,6 +191,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         edit is Edit.Insert &&
         edit.index == loadedItems.size
       ) {
+        maybeShiftLoadedWindow(newItemsBefore + loadedItems.size)
         // The after window is shrinking. Promote inserts into loads.
         val toPromoteCount = minOf(edit.widgets.size, itemsAfter.size - newItemsAfter)
         for (i in 0 until toPromoteCount) {
@@ -196,7 +237,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         is Edit.Remove -> {
           for (i in edit.index until edit.index + edit.count) {
             val index = itemsBefore.size + edit.index
-            loadedItems.removeAt(edit.index)
+            val removed = loadedItems.removeAt(edit.index)
+            removed.unbind()
 
             // Publish a structural change.
             deleteRows(index, 1)
@@ -212,6 +254,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         itemsBefore.removeRange(0, delta)
         deleteRows(0, delta)
       }
+
       newItemsBefore > itemsBefore.size -> {
         // Grow the before window.
         val delta = newItemsBefore - itemsBefore.size
@@ -228,6 +271,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         itemsAfter.removeRange(itemsAfter.size - delta, itemsAfter.size)
         deleteRows(index, delta)
       }
+
       newItemsAfter > itemsAfter.size -> {
         // Grow the after window.
         val delta = newItemsAfter - itemsAfter.size
@@ -238,6 +282,27 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     edits.clear()
+  }
+
+  /**
+   * When the loaded window is empty, the boundary between [itemsBefore] and [itemsAfter] is
+   * arbitrary: we can move it without any externally-visible effects.
+   *
+   * And we do want to move it! In particular, aligning the boundary with an incoming edit gives us
+   * the best opportunity to do in-place updates instead of calling [insertRows] and [deleteRows].
+   */
+  private fun maybeShiftLoadedWindow(splitIndex: Int) {
+    if (loadedItems.size != 0) return
+
+    if (splitIndex < itemsBefore.size) {
+      val count = itemsBefore.size - splitIndex
+      itemsAfter.addRange(0, itemsBefore, splitIndex, count)
+      itemsBefore.removeRange(splitIndex, splitIndex + count)
+    } else if (splitIndex > itemsBefore.size) {
+      val count = splitIndex - itemsBefore.size
+      itemsBefore.addRange(itemsBefore.size, itemsAfter, 0, count)
+      itemsAfter.removeRange(0, count)
+    }
   }
 
   private fun placeholderToLoaded(
@@ -253,7 +318,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     // We have a binding. Give it loaded content.
     require(placeholder.isPlaceholder)
-    placeholdersQueue += placeholder.content!!
+    recyclePlaceholder(placeholder.content!!)
     placeholder.isPlaceholder = false
     placeholder.content = loadedContent
     return placeholder
@@ -313,9 +378,34 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   }
 
   private fun takePlaceholder(): Widget<W> {
-    return placeholdersQueue.removeFirstOrNull()
+    val result = placeholdersQueue.removeFirstOrNull()
+    if (result != null) return result
+
+    val created = createPlaceholder(firstPlaceholder!!.value)
       ?: throw IllegalStateException("no more placeholders!")
+
+    return SizeOnlyPlaceholder(created)
   }
+
+  private fun recyclePlaceholder(placeholder: Widget<W>) {
+    if (placeholder !is SizeOnlyPlaceholder) {
+      placeholdersQueue += placeholder
+    }
+  }
+
+  private class SizeOnlyPlaceholder<W : Any>(
+    override val value: W,
+  ) : Widget<W> {
+    override var modifier: Modifier = Modifier
+  }
+
+  /**
+   * Returns an empty widget with the same dimensions as [original].
+   *
+   * @param original a placeholder provided by the guest code. It is a live view that is currently
+   *     in a layout.
+   */
+  protected open fun createPlaceholder(original: W): W? = null
 
   protected abstract fun insertRows(index: Int, count: Int)
 
@@ -383,7 +473,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         if (itemsAfterIndex != -1) processor.itemsAfter.set(itemsAfterIndex, null)
 
         // When a placeholder is reused, recycle its widget.
-        processor.placeholdersQueue += content!!
+        processor.recyclePlaceholder(content!!)
       }
     }
   }

@@ -19,26 +19,43 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.compose.ProtocolBridge
-import app.cash.redwood.protocol.compose.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.treehouse.AppLifecycle.Host
+import app.cash.zipline.ZiplineApiMismatchException
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.serialization.json.Json
 
-@OptIn(DelicateCoroutinesApi::class)
 public class StandardAppLifecycle(
   internal val protocolBridgeFactory: ProtocolBridge.Factory,
   internal val json: Json,
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
+  private var started = false
   private lateinit var host: Host
-  internal val coroutineScope: CoroutineScope = GlobalScope
 
-  private lateinit var broadcastFrameClock: BroadcastFrameClock
-  internal lateinit var frameClock: MonotonicFrameClock
+  override val guestProtocolVersion: RedwoodVersion
+    get() = guestRedwoodVersion
+
+  internal val hostProtocolVersion: RedwoodVersion get() {
+    return try {
+      host.hostProtocolVersion
+    } catch (_: ZiplineApiMismatchException) {
+      RedwoodVersion.Unknown
+    }
+  }
+
+  private val broadcastFrameClock: BroadcastFrameClock = BroadcastFrameClock {
+    if (started) {
+      host.requestFrame()
+    }
+  }
+  public val frameClock: MonotonicFrameClock get() = broadcastFrameClock
 
   internal val mismatchHandler: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
@@ -50,10 +67,23 @@ public class StandardAppLifecycle(
     }
   }
 
+  private val coroutineExceptionHandler = object : CoroutineExceptionHandler {
+    override val key: CoroutineContext.Key<*>
+      get() = CoroutineExceptionHandler.Key
+
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+      host.handleUncaughtException(exception)
+    }
+  }
+
+  internal val coroutineScope = CoroutineScope(coroutineExceptionHandler)
+
   override fun start(host: Host) {
+    check(!started) { "already started" }
+    this.started = true
     this.host = host
-    this.broadcastFrameClock = BroadcastFrameClock { host.requestFrame() }
-    this.frameClock = broadcastFrameClock
+
+    prepareEnvironment(coroutineExceptionHandler)
   }
 
   override fun sendFrame(timeNanos: Long) {

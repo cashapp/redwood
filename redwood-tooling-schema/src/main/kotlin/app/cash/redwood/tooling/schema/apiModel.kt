@@ -121,6 +121,7 @@ internal data class ApiSchema(
           return failure(differences, "API file does not match!")
         }
       }
+
       Generate -> {
         if (fileApi != null) {
           val differences = diffFrom(fileApi).filter { it.type == Fatal }
@@ -176,7 +177,9 @@ internal data class ApiSchema(
           diffs += Difference("Widget(tag=${widget.tag}) ${trait.humanType()}(tag=${trait.tag}) name changed from ${fileTrait.name} to ${trait.name}", Fixable)
         }
         when (trait) {
-          is ApiWidgetChildren -> Unit // Nothing else to verify for this type.
+          // Nothing else to verify for this type.
+          is ApiWidgetChildren -> Unit
+
           is ApiWidgetEvent -> {
             val fileEvent = fileTrait as ApiWidgetEvent
             if (trait.params != fileEvent.params) {
@@ -187,6 +190,7 @@ internal data class ApiSchema(
               diffs += Difference("Widget(tag=${widget.tag}) event(tag=${trait.tag}) nullability changed from ${fileEvent.nullable} to ${trait.nullable}", type)
             }
           }
+
           is ApiWidgetProperty -> {
             val fileProperty = fileTrait as ApiWidgetProperty
             if (trait.type != fileProperty.type) {

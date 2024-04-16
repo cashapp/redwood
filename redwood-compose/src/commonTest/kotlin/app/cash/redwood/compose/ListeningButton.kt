@@ -18,6 +18,7 @@ package app.cash.redwood.compose
 import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
+import com.example.redwood.testing.testing.ButtonValue
 import com.example.redwood.testing.widget.Button
 
 class ListeningButton : Button<WidgetValue>, ChangeListener {
@@ -46,5 +47,5 @@ class ListeningButton : Button<WidgetValue>, ChangeListener {
       changes += "modifier $value"
     }
 
-  override val value get() = throw AssertionError()
+  override val value get() = ButtonValue(text = "", onClick = {})
 }

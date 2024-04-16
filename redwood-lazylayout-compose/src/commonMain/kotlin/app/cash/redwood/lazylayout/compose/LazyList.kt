@@ -18,18 +18,12 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.ui.Margin
 import kotlin.jvm.JvmName
-
-private const val OffscreenItemsBufferCount = 30
 
 @Composable
 internal fun LazyList(
@@ -39,31 +33,22 @@ internal fun LazyList(
   height: Constraint,
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
-  modifier: Modifier,
   placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val itemsBefore = (state.firstIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0)
-  val itemsAfter = (itemCount - (state.lastIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
-  // TODO(jwilson): drop this down to 20 once this is fixed:
-  //     https://github.com/cashapp/redwood/issues/1551
-  var placeholderPoolSize by remember { mutableStateOf(30) }
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
+  val placeholderPoolSize = 20
   LazyList(
-    isVertical,
-    itemsBefore = itemsBefore,
-    itemsAfter = itemsAfter,
+    isVertical = isVertical,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
-
-      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
-      val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
-      // We only ever want to increase the pool size.
-      if (placeholderPoolSize < proposedPlaceholderPoolSize) {
-        placeholderPoolSize = proposedPlaceholderPoolSize
-      }
     },
+    itemsBefore = itemsBefore,
+    itemsAfter = itemsAfter,
     width = width,
     height = height,
     margin = margin,
@@ -92,28 +77,21 @@ internal fun RefreshableLazyList(
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
   pullRefreshContentColor: UInt,
-  modifier: Modifier,
   placeholder: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val itemsBefore = (state.firstIndex - OffscreenItemsBufferCount / 2).coerceAtLeast(0)
-  val itemsAfter = (itemCount - (state.lastIndex + OffscreenItemsBufferCount / 2).coerceAtMost(itemCount)).coerceAtLeast(0)
-  var placeholderPoolSize by remember { mutableStateOf(20) }
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
+  val placeholderPoolSize = 20
   RefreshableLazyList(
     isVertical,
     itemsBefore = itemsBefore,
     itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
-
-      val visibleItemCount = localLastVisibleItemIndex - localFirstVisibleItemIndex
-      val proposedPlaceholderPoolSize = visibleItemCount + visibleItemCount / 2
-      // We only ever want to increase the pool size.
-      if (placeholderPoolSize < proposedPlaceholderPoolSize) {
-        placeholderPoolSize = proposedPlaceholderPoolSize
-      }
     },
     refreshing = refreshing,
     onRefresh = onRefresh,

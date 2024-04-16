@@ -15,17 +15,11 @@
  */
 package app.cash.redwood.layout.view
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
-import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -48,42 +42,43 @@ class ViewFlexContainerTest(
     supportsRtl = true,
   )
 
-  override fun flexContainer(direction: FlexDirection): TestFlexContainer<View> {
-    return ViewTestFlexContainer(paparazzi.context, direction)
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): ViewTestFlexContainer {
+    val delegate = ViewFlexContainer(paparazzi.context, direction).apply {
+      value.setBackgroundColor(backgroundColor)
+    }
+    return ViewTestFlexContainer(delegate)
   }
 
-  override fun widget() = object : Text<View> {
-    override val value = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.GREEN)
-      textSize = 18f
-      textDirection = View.TEXT_DIRECTION_LOCALE
-      setTextColor(Color.BLACK)
-    }
+  override fun row() = flexContainer(FlexDirection.Row)
 
-    override var modifier: Modifier = Modifier
+  override fun column() = flexContainer(FlexDirection.Column)
 
-    override fun text(text: String) {
-      value.text = text
-    }
-  }
+  override fun text() = ViewText(paparazzi.context)
 
-  override fun verifySnapshot(container: TestFlexContainer<View>, name: String?) {
+  override fun verifySnapshot(container: Widget<View>, name: String?) {
     paparazzi.snapshot(container.value, name)
   }
 
-  class ViewTestFlexContainer private constructor(
+  class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,
   ) : TestFlexContainer<View>, FlexContainer<View> by delegate, ChangeListener by delegate {
     private var childCount = 0
 
-    constructor(context: Context, direction: FlexDirection) : this(
-      ViewFlexContainer(context, direction).apply {
-        value.setBackgroundColor(Color.argb(51, 0, 0, 255))
-      },
-    )
-
     override fun add(widget: Widget<View>) {
-      delegate.children.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<View>) {
+      delegate.children.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.children.remove(index = index, count = 1)
+      childCount--
     }
   }
 }

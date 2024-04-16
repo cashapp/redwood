@@ -18,9 +18,9 @@ kotlin {
       dependencies {
         implementation projects.testApp.schema.compose
         implementation projects.redwoodLazylayoutCompose
-        implementation projects.redwoodProtocolCompose
         implementation libs.paging.compose.common
         implementation libs.kotlinx.coroutines.core
+        implementation libs.kotlinx.serialization.json
       }
     }
   }

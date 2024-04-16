@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import assertk.all
 import assertk.assertThat
@@ -28,7 +29,7 @@ import kotlinx.coroutines.test.runTest
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class AbstractFrameClockTest {
-  internal abstract val frameClock: FrameClock
+  internal abstract val frameClockFactory: FrameClock.Factory
 
   @Test fun ticksWithTime() = runTest {
     val dispatchers = object : TreehouseDispatchers {
@@ -38,10 +39,11 @@ abstract class AbstractFrameClockTest {
       override fun checkZipline() {}
       override fun close() {}
     }
-    frameClock.start(this, dispatchers)
+    val frameClock = frameClockFactory.create(this, dispatchers)
 
     val frameTimes = Channel<Long>(Channel.UNLIMITED)
     val appLifecycle = object : AppLifecycle {
+      override val guestProtocolVersion get() = RedwoodVersion.Unknown
       override fun start(host: Host) {
       }
       override fun sendFrame(timeNanos: Long) {

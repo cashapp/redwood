@@ -38,37 +38,41 @@ internal object Protocol {
   val ModifierTag = ClassName("app.cash.redwood.protocol", "ModifierTag")
   val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
+  val RedwoodVersion = ClassName("app.cash.redwood.protocol", "RedwoodVersion")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
-internal object ComposeProtocol {
-  val ProtocolBridge = ClassName("app.cash.redwood.protocol.compose", "ProtocolBridge")
+internal object ProtocolGuest {
+  val ProtocolBridge = ClassName("app.cash.redwood.protocol.guest", "ProtocolBridge")
   val ProtocolBridgeFactory = ProtocolBridge.nestedClass("Factory")
-  val ProtocolState = ClassName("app.cash.redwood.protocol.compose", "ProtocolState")
+  val ProtocolState = ClassName("app.cash.redwood.protocol.guest", "ProtocolState")
   val ProtocolMismatchHandler =
-    ClassName("app.cash.redwood.protocol.compose", "ProtocolMismatchHandler")
-  val ProtocolWidget = ClassName("app.cash.redwood.protocol.compose", "ProtocolWidget")
+    ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
+  val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")
+  val ProtocolWidgetChildren = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetChildren")
 }
 
 internal object WidgetProtocol {
   val ProtocolMismatchHandler =
-    ClassName("app.cash.redwood.protocol.widget", "ProtocolMismatchHandler")
-  val ProtocolNode = ClassName("app.cash.redwood.protocol.widget", "ProtocolNode")
-  val ProtocolNodeFactory = ClassName("app.cash.redwood.protocol.widget", "ProtocolNodeFactory")
+    ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
+  val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
+  val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
+  val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.host", "GeneratedProtocolFactory")
 }
 
 internal object Redwood {
   val Modifier = ClassName("app.cash.redwood", "Modifier")
   val ModifierElement = Modifier.nestedClass("Element")
+  val ModifierScopedElement = Modifier.nestedClass("ScopedElement")
+  val ModifierUnscopedElement = Modifier.nestedClass("UnscopedElement")
   val LayoutScopeMarker = ClassName("app.cash.redwood", "LayoutScopeMarker")
   val RedwoodCodegenApi = ClassName("app.cash.redwood", "RedwoodCodegenApi")
+  val OnBackPressedDispatcher = ClassName("app.cash.redwood.ui", "OnBackPressedDispatcher")
   val UiConfiguration = ClassName("app.cash.redwood.ui", "UiConfiguration")
-  val OptInToRedwoodCodegenApi = AnnotationSpec.builder(Stdlib.OptIn)
-    .addMember("%T::class", RedwoodCodegenApi)
-    .build()
 }
 
 internal object RedwoodTesting {
+  val NoOpOnBackPressedDispatcher = ClassName("app.cash.redwood.testing", "NoOpOnBackPressedDispatcher")
   val TestRedwoodComposition = ClassName("app.cash.redwood.testing", "TestRedwoodComposition")
   val TestSavedState = ClassName("app.cash.redwood.testing", "TestSavedState")
   val WidgetValue = ClassName("app.cash.redwood.testing", "WidgetValue")
@@ -78,7 +82,8 @@ internal object RedwoodWidget {
   val Widget = ClassName("app.cash.redwood.widget", "Widget")
   val WidgetChildren = Widget.nestedClass("Children")
   val WidgetChildrenOfW = WidgetChildren.parameterizedBy(typeVariableW)
-  val WidgetProvider = Widget.nestedClass("Provider")
+  val WidgetSystem = ClassName("app.cash.redwood.widget", "WidgetSystem")
+  val WidgetFactoryOwner = ClassName("app.cash.redwood.widget", "WidgetFactoryOwner")
   val MutableListChildren = ClassName("app.cash.redwood.widget", "MutableListChildren")
 }
 
@@ -110,7 +115,6 @@ internal object Stdlib {
   val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
   val ObjCName = ClassName("kotlin.native", "ObjCName")
-  val OptIn = ClassName("kotlin", "OptIn")
   val buildList = MemberName("kotlin.collections", "buildList")
   val listOf = MemberName("kotlin.collections", "listOf")
 }

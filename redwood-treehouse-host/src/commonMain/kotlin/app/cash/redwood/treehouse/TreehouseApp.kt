@@ -15,7 +15,10 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
+import app.cash.zipline.loader.DefaultFreshnessCheckerNotFresh
+import app.cash.zipline.loader.FreshnessChecker
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineCache
@@ -23,10 +26,8 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import okio.Closeable
@@ -35,34 +36,36 @@ import okio.Path
 
 /**
  * This class binds downloaded code to on-screen views.
- *
- * It updates the content when new code is available in [onCodeChanged].
  */
 @ObjCName("TreehouseApp", exact = true)
 public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
-  internal val appScope: CoroutineScope,
+  private val appScope: CoroutineScope,
   public val spec: Spec<A>,
+  private val eventListenerFactory: EventListener.Factory,
 ) {
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
-  internal val eventPublisher: EventPublisher = factory.eventPublisher
 
-  private var started = false
+  private val codeHost = object : CodeHost<A>(
+    dispatchers = dispatchers,
+    appScope = appScope,
+    frameClockFactory = factory.frameClockFactory,
+    stateStore = factory.stateStore,
+  ) {
+    override fun codeUpdatesFlow(): Flow<CodeSession<A>> {
+      return ziplineFlow().mapNotNull { loadResult ->
+        when (loadResult) {
+          is LoadResult.Failure -> {
+            null // EventListener already notified.
+          }
 
-  /** Only accessed on [TreehouseDispatchers.zipline]. */
-  private var closed = false
-
-  /** Only accessed on [TreehouseDispatchers.ui]. */
-  internal var ziplineSession: ZiplineSession<A>? = null
-
-  /**
-   * Contents that this app is currently responsible for.
-   *
-   * Only accessed on [TreehouseDispatchers.ui].
-   */
-  internal val boundContents = mutableListOf<TreehouseAppContent<A>>()
-
-  internal val stateStore: StateStore = factory.stateStore
+          is LoadResult.Success -> {
+            createCodeSession(loadResult.zipline)
+          }
+        }
+      }
+    }
+  }
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -72,7 +75,7 @@ public class TreehouseApp<A : AppService> private constructor(
    * instance may be replaced if new code is loaded.
    */
   public val zipline: Zipline?
-    get() = ziplineSession?.zipline
+    get() = (codeHost.codeSession as? ZiplineCodeSession)?.zipline
 
   /**
    * Create content for [source].
@@ -85,7 +88,12 @@ public class TreehouseApp<A : AppService> private constructor(
   ): Content {
     start()
 
-    return TreehouseAppContent(this, source, codeListener)
+    return TreehouseAppContent(
+      codeHost = codeHost,
+      dispatchers = dispatchers,
+      codeEventPublisher = RealCodeEventPublisher(codeListener, this),
+      source = source,
+    )
   }
 
   /**
@@ -93,27 +101,29 @@ public class TreehouseApp<A : AppService> private constructor(
    * this app.
    *
    * This function returns immediately if this app is already started.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun start() {
-    if (started) return
-    started = true
+    codeHost.start()
+  }
 
-    eventPublisher.appStart(this)
+  /**
+   * Stop any currently-running code and stop receiving new code.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
+   */
+  public fun stop() {
+    codeHost.stop()
+  }
 
-    appScope.launch(dispatchers.zipline) {
-      val ziplineFileFlow = ziplineFlow()
-      ziplineFileFlow.collect {
-        when (it) {
-          is LoadResult.Success -> {
-            val app = spec.create(it.zipline)
-            onCodeChanged(it.zipline, app)
-          }
-          is LoadResult.Failure -> {
-            // EventListener already notified.
-          }
-        }
-      }
-    }
+  /**
+   * Stop the currently-running application (if any) and start it again.
+   *
+   * This function may only be invoked on [TreehouseDispatchers.ui].
+   */
+  public fun restart() {
+    codeHost.restart()
   }
 
   /**
@@ -121,25 +131,30 @@ public class TreehouseApp<A : AppService> private constructor(
    * found.
    */
   private fun ziplineFlow(): Flow<LoadResult> {
-    // Loads applications from the network only. The cache is neither read nor written.
     var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
       httpClient = factory.httpClient,
-      eventListener = eventPublisher.ziplineEventListener(this),
     )
 
     loader.concurrentDownloads = factory.concurrentDownloads
+
+    // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
+    val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
+      val eventListener = eventListenerFactory.create(this@TreehouseApp, manifestUrl)
+      RealEventPublisher(eventListener).ziplineEventListener
+    }
+    loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
 
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
         cache = factory.cache,
       )
 
-      if (factory.embeddedDir != null && factory.embeddedFileSystem != null) {
+      if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
         loader = loader.withEmbedded(
-          embeddedDir = factory.embeddedDir,
           embeddedFileSystem = factory.embeddedFileSystem,
+          embeddedDir = factory.embeddedDir,
         )
       }
     }
@@ -148,60 +163,27 @@ public class TreehouseApp<A : AppService> private constructor(
       applicationName = spec.name,
       manifestUrlFlow = spec.manifestUrl,
       serializersModule = spec.serializersModule,
+      freshnessChecker = spec.freshnessChecker,
     ) { zipline ->
       spec.bindServices(zipline)
     }
   }
 
-  /**
-   * Refresh the code. Even if no views are currently showing we refresh the code, so we're ready
-   * when a view is added.
-   *
-   * This function may only be invoked on [TreehouseDispatchers.zipline].
-   */
-  private fun onCodeChanged(zipline: Zipline, appService: A) {
-    dispatchers.checkZipline()
-    check(!closed)
+  private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
+    val appService = spec.create(zipline)
 
-    val sessionScope = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
-    sessionScope.launch(dispatchers.ui) {
-      val previous = ziplineSession
+    // Extract the RealEventPublisher() created in ziplineFlow().
+    val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
+    val eventPublisher = eventListener.eventPublisher
 
-      val next = ZiplineSession(
-        app = this@TreehouseApp,
-        appScope = appScope,
-        sessionScope = sessionScope,
-        appService = appService,
-        zipline = zipline,
-        frameClock = factory.frameClock,
-      )
-
-      next.start()
-
-      for (content in boundContents) {
-        content.receiveZiplineSession(next)
-      }
-
-      if (previous != null) {
-        sessionScope.launch(dispatchers.zipline) {
-          previous.cancel()
-        }
-      }
-
-      ziplineSession = next
-    }
-  }
-
-  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
-  public fun cancel() {
-    dispatchers.checkZipline()
-    closed = true
-    appScope.launch(dispatchers.ui) {
-      val session = ziplineSession ?: return@launch
-      session.cancel()
-      ziplineSession = null
-    }
-    eventPublisher.appCanceled(this)
+    return ZiplineCodeSession(
+      dispatchers = dispatchers,
+      eventPublisher = eventPublisher,
+      frameClockFactory = factory.frameClockFactory,
+      appService = appService,
+      zipline = zipline,
+      appScope = appScope,
+    )
   }
 
   /**
@@ -214,19 +196,16 @@ public class TreehouseApp<A : AppService> private constructor(
   public class Factory internal constructor(
     private val platform: TreehousePlatform,
     public val dispatchers: TreehouseDispatchers,
-    eventListener: EventListener,
     internal val httpClient: ZiplineHttpClient,
-    internal val frameClock: FrameClock,
+    internal val frameClockFactory: FrameClock.Factory,
     internal val manifestVerifier: ManifestVerifier,
-    internal val embeddedDir: Path?,
     internal val embeddedFileSystem: FileSystem?,
+    internal val embeddedDir: Path?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
   ) : Closeable {
-    internal val eventPublisher = EventPublisher(eventListener)
-
     /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
     internal val cache: ZiplineCache by lazy {
       platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
@@ -235,7 +214,8 @@ public class TreehouseApp<A : AppService> private constructor(
     public fun <A : AppService> create(
       appScope: CoroutineScope,
       spec: Spec<A>,
-    ): TreehouseApp<A> = TreehouseApp(this, appScope, spec)
+      eventListenerFactory: EventListener.Factory = EventListener.NONE,
+    ): TreehouseApp<A> = TreehouseApp(this, appScope, spec, eventListenerFactory)
 
     override fun close() {
       cache.close()
@@ -263,6 +243,9 @@ public class TreehouseApp<A : AppService> private constructor(
 
     public open val serializersModule: SerializersModule
       get() = EmptySerializersModule()
+
+    public open val freshnessChecker: FreshnessChecker
+      get() = DefaultFreshnessCheckerNotFresh
 
     /**
      * Returns true to only load code from the network. Otherwise, this will recover from

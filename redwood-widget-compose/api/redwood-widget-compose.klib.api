@@ -1,0 +1,19 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-widget-compose>
+final class app.cash.redwood.widget.compose/ComposeWidgetChildren : app.cash.redwood.widget/Widget.Children<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.widget.compose/ComposeWidgetChildren|null[0]
+    constructor <init>(kotlin/Function0<kotlin/Unit> =...) // app.cash.redwood.widget.compose/ComposeWidgetChildren.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
+    final fun Render(androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.widget.compose/ComposeWidgetChildren.Render|Render(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+    final fun insert(kotlin/Int, app.cash.redwood.widget/Widget<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>) // app.cash.redwood.widget.compose/ComposeWidgetChildren.insert|insert(kotlin.Int;app.cash.redwood.widget.Widget<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>){}[0]
+    final fun move(kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.widget.compose/ComposeWidgetChildren.move|move(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun onModifierUpdated(kotlin/Int, app.cash.redwood.widget/Widget<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>) // app.cash.redwood.widget.compose/ComposeWidgetChildren.onModifierUpdated|onModifierUpdated(kotlin.Int;app.cash.redwood.widget.Widget<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>){}[0]
+    final fun remove(kotlin/Int, kotlin/Int) // app.cash.redwood.widget.compose/ComposeWidgetChildren.remove|remove(kotlin.Int;kotlin.Int){}[0]
+    final val widgets // app.cash.redwood.widget.compose/ComposeWidgetChildren.widgets|{}widgets[0]
+        final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>> // app.cash.redwood.widget.compose/ComposeWidgetChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
+}
+final const val app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop // app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop|#static{}app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop[0]

@@ -37,11 +37,11 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     override func loadView() {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
-        let widgetSystem = EmojiSearchWidgetSystem(treehouseApp: treehouseApp)
+        let widgetSystem = EmojiSearchTreehouseWidgetSystem(treehouseApp: treehouseApp)
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: EmojiSearchContent(),
-            codeListener: CodeListener()
+            codeListener: EmojiSearchCodeListener(treehouseView)
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
         view = treehouseView.view
@@ -71,6 +71,28 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     }
 }
 
+class EmojiSearchCodeListener : CodeListener {
+    let treehouseView: TreehouseUIView
+
+    init(_ treehouseView: TreehouseUIView) {
+        self.treehouseView = treehouseView
+    }
+
+    override func onUncaughtException(app: TreehouseApp<AnyObject>, view: TreehouseView, exception: KotlinThrowable) {
+        treehouseView.reset()
+
+        let exceptionView = ExceptionView(exception)
+        exceptionView.translatesAutoresizingMaskIntoConstraints = false
+        treehouseView.view.addSubview(exceptionView)
+        NSLayoutConstraint.activate([
+            exceptionView.topAnchor.constraint(equalTo: treehouseView.view.topAnchor),
+            exceptionView.leftAnchor.constraint(equalTo: treehouseView.view.leftAnchor),
+            exceptionView.rightAnchor.constraint(equalTo: treehouseView.view.rightAnchor),
+            exceptionView.bottomAnchor.constraint(equalTo: treehouseView.view.bottomAnchor),
+        ])
+    }
+}
+
 class EmojiSearchContent : TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
         let treehouesUi = (app as! EmojiSearchPresenter)
@@ -78,7 +100,7 @@ class EmojiSearchContent : TreehouseContentSource {
     }
 }
 
-class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
+class EmojiSearchTreehouseWidgetSystem : TreehouseViewWidgetSystem {
     let treehouseApp: TreehouseApp<EmojiSearchPresenter>
 
     init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {
@@ -88,9 +110,9 @@ class EmojiSearchWidgetSystem : TreehouseViewWidgetSystem {
     func widgetFactory(
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
-    ) -> ProtocolNodeFactory {
-        return EmojiSearchProtocolNodeFactory<UIView>(
-            provider: EmojiSearchWidgetFactories<UIView>(
+    ) -> ProtocolFactory {
+        return EmojiSearchProtocolFactory<UIView>(
+            widgetSystem: EmojiSearchWidgetSystem<UIView>(
                 EmojiSearch: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()

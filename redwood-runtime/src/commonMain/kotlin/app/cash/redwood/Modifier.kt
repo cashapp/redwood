@@ -31,6 +31,16 @@ public interface Modifier {
   public fun forEach(block: (Element) -> Unit)
 
   /**
+   * Iterates over all [ScopedElement]s in this [Modifier].
+   */
+  public fun forEachScoped(block: (ScopedElement) -> Unit)
+
+  /**
+   * Iterates over all [UnscopedElement]s in this [Modifier].
+   */
+  public fun forEachUnscoped(block: (UnscopedElement) -> Unit)
+
+  /**
    * Concatenates this modifier with another.
    *
    * Returns a [Modifier] representing this modifier followed by [other] in sequence.
@@ -50,8 +60,32 @@ public interface Modifier {
   /**
    * A single element contained within a [Modifier] chain.
    */
-  public interface Element : Modifier {
+  public sealed interface Element : Modifier {
     override fun forEach(block: (Element) -> Unit): Unit = block(this)
+  }
+
+  /**
+   * An [Element] whose usage is scoped to a parent widget.
+   *
+   * For example, a `Column` widget may provide a `HorizontalAlignment` element for its children.
+   *
+   * @see UnscopedElement
+   */
+  public interface ScopedElement : Element {
+    override fun forEachScoped(block: (ScopedElement) -> Unit): Unit = block(this)
+    override fun forEachUnscoped(block: (UnscopedElement) -> Unit) {}
+  }
+
+  /**
+   * An [Element] whose usage is available on any widget.
+   *
+   * For example, a `BackgroundColor` element is applicable to all widgets.
+   *
+   * @see ScopedElement
+   */
+  public interface UnscopedElement : Element {
+    override fun forEachScoped(block: (ScopedElement) -> Unit) {}
+    override fun forEachUnscoped(block: (UnscopedElement) -> Unit): Unit = block(this)
   }
 
   /**
@@ -64,6 +98,8 @@ public interface Modifier {
   @ObjCName("EmptyModifier", exact = true)
   public companion object : Modifier {
     override fun forEach(block: (Element) -> Unit) {}
+    override fun forEachScoped(block: (ScopedElement) -> Unit) {}
+    override fun forEachUnscoped(block: (UnscopedElement) -> Unit) {}
     override infix fun then(other: Modifier): Modifier = other
     override fun toString(): String = "Modifier"
   }
@@ -76,6 +112,16 @@ private class CombinedModifier(
   override fun forEach(block: (Modifier.Element) -> Unit) {
     outer.forEach(block)
     inner.forEach(block)
+  }
+
+  override fun forEachScoped(block: (Modifier.ScopedElement) -> Unit) {
+    outer.forEachScoped(block)
+    inner.forEachScoped(block)
+  }
+
+  override fun forEachUnscoped(block: (Modifier.UnscopedElement) -> Unit) {
+    outer.forEachUnscoped(block)
+    inner.forEachUnscoped(block)
   }
 
   override fun equals(other: Any?): Boolean =

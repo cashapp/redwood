@@ -23,20 +23,20 @@ import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
 import com.example.redwood.counter.composeui.CounterTheme
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetFactories
+import com.example.redwood.counter.widget.SchemaWidgetSystem
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val factories = SchemaWidgetFactories(
+    val widgetSystem = SchemaWidgetSystem(
       Schema = ComposeUiWidgetFactory,
       RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     )
 
     setContent {
       CounterTheme {
-        RedwoodContent(factories) {
+        RedwoodContent(widgetSystem) {
           Counter()
         }
       }

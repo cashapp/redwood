@@ -1,0 +1,8 @@
+public final class app/cash/redwood/composeui/RedwoodContentKt {
+	public static final fun RedwoodContent (Lapp/cash/redwood/widget/WidgetSystem;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class app/cash/redwood/composeui/insetsJvm {
+	public static final fun safeAreaInsets (Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/Margin;
+}
+

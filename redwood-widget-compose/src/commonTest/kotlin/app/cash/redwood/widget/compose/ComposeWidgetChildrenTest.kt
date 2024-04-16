@@ -31,7 +31,7 @@ class ComposeWidgetChildrenTest : AbstractWidgetChildrenTest<@Composable () -> U
   override fun widget(name: String): @Composable () -> Unit {
     // There's no way to peek inside a composable function to identify it. Instead we
     // side-effect into a mutable list composition local in order to observe them.
-    return { NameList.current += name }
+    return { LocalNames.current += name }
   }
 
   override fun names(): List<String> {
@@ -46,8 +46,8 @@ class ComposeWidgetChildrenTest : AbstractWidgetChildrenTest<@Composable () -> U
     // record the names and then immediately cancel the composition.
     val names = mutableListOf<String>()
     composition.setContent {
-      CompositionLocalProvider(NameList provides names) {
-        children.render()
+      CompositionLocalProvider(LocalNames provides names) {
+        children.Render()
       }
     }
 
@@ -58,7 +58,7 @@ class ComposeWidgetChildrenTest : AbstractWidgetChildrenTest<@Composable () -> U
   }
 }
 
-private val NameList = compositionLocalOf<MutableList<String>> {
+private val LocalNames = compositionLocalOf<MutableList<String>> {
   throw AssertionError()
 }
 

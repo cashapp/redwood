@@ -23,7 +23,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -51,7 +50,7 @@ abstract class AbstractTreehouseDispatchersTest {
     uncaughtExceptionsCancelTheirJob(treehouseDispatchers.zipline)
   }
 
-  private suspend fun uncaughtExceptionsCancelTheirJob(dispatcher: CoroutineDispatcher) {
+  private suspend fun uncaughtExceptionsCancelTheirJob(dispatcher: CoroutineContext) {
     val exceptionCollector = ExceptionCollector()
 
     val failingJob = supervisorScope {

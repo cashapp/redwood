@@ -20,17 +20,13 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-private const val extensionName = "redwood"
-private const val redwoodComposeArtifactId = "redwood-compose"
+private const val EXTENSION_NAME = "redwood"
+private const val REDWOOD_COMPOSE_ARTIFACT_ID = "redwood-compose"
 
 public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   private lateinit var extension: RedwoodComposeExtension
@@ -38,7 +34,12 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
   override fun apply(target: Project) {
     super.apply(target)
 
-    extension = target.extensions.create(extensionName, RedwoodComposeExtension::class.java)
+    extension = RedwoodComposeExtensionImpl(target)
+    target.extensions.add(
+      RedwoodComposeExtension::class.java,
+      EXTENSION_NAME,
+      extension,
+    )
 
     target.plugins.withId("org.jetbrains.compose") {
       throw IllegalStateException(
@@ -52,7 +53,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
         |      sourceSets {
         |        commonMain {
         |          dependencies {
-        |            implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+        |            implementation("${target.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID)}")
         |          }
         |        }
         |      }
@@ -71,7 +72,7 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
           |within an Android Compose-based project you only need to add the runtime dependency:
           |
           |    dependencies {
-          |      implementation("${target.redwoodDependency(redwoodComposeArtifactId)}")
+          |      implementation("${target.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID)}")
           |    }
           """.trimMargin()
         }
@@ -91,10 +92,12 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
     val parts = plugin.split(":")
     return when (parts.size) {
       1 -> SubpluginArtifact("org.jetbrains.compose.compiler", "compiler", parts[0])
+
       3 -> SubpluginArtifact(parts[0], parts[1], parts[2])
+
       else -> error(
         """
-        |Illegal format of '$extensionName.${RedwoodComposeExtension::kotlinCompilerPlugin.name}' property.
+        |Illegal format of '$EXTENSION_NAME.${RedwoodComposeExtension::kotlinCompilerPlugin.name}' property.
         |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
         |Actual value: '$plugin'
         """.trimMargin(),
@@ -104,19 +107,22 @@ public class RedwoodComposePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      api(project.redwoodDependency(redwoodComposeArtifactId))
+      api(project.redwoodDependency(REDWOOD_COMPOSE_ARTIFACT_ID))
     }
 
     when (kotlinCompilation.platformType) {
-      js -> {
-        // This enables a workaround for Compose lambda generation to function correctly in JS.
-        // Note: We cannot use SubpluginOption to do this because it targets the Compose plugin.
-        kotlinCompilation.kotlinOptions.freeCompilerArgs +=
-          listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:generateDecoys=true")
+      js, wasm -> {
+        // The Compose compiler sometimes chooses to emit a duplicate signature rather than looking
+        // for an existing one. This occurs on all targets, but JS and WASM (which currently uses
+        // the JS compiler) have an explicit check for this. We disable this check which is deemed
+        // safe as the first-party JB Compose plugin does the same thing.
+        // https://github.com/JetBrains/compose-multiplatform/issues/3418#issuecomment-1971555314
+        kotlinCompilation.compilerOptions.configure {
+          freeCompilerArgs.add("-Xklib-enable-signature-clash-checks=false")
+        }
       }
-      common, androidJvm, jvm, native, wasm -> {
-        // Nothing to do!
-      }
+
+      else -> {}
     }
 
     return kotlinCompilation.target.project.provider { emptyList() }

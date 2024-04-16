@@ -9,7 +9,7 @@ pluginManagement {
 }
 
 plugins {
-  id "com.gradle.enterprise" version "3.15.1"
+  id "com.gradle.enterprise" version "3.17.1"
   id 'app.cash.redwood.settings'
 }
 
@@ -66,8 +66,8 @@ include ':redwood-lazylayout-uiview'
 include ':redwood-lazylayout-view'
 include ':redwood-lazylayout-widget'
 include ':redwood-protocol'
-include ':redwood-protocol-compose'
-include ':redwood-protocol-widget'
+include ':redwood-protocol-guest'
+include ':redwood-protocol-host'
 include ':redwood-runtime'
 include ':redwood-schema'
 include ':redwood-testing'
@@ -114,8 +114,10 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:counter:shared-composeui'
 
   include ':samples:emoji-search:android-composeui'
+  include ':samples:emoji-search:android-tests'
   include ':samples:emoji-search:android-views'
   include ':samples:emoji-search:browser'
+  include ':samples:emoji-search:desktop-composeui'
   include ':samples:emoji-search:ios-shared'
   include ':samples:emoji-search:launcher'
   include ':samples:emoji-search:presenter'
@@ -123,8 +125,10 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:emoji-search:schema'
   include ':samples:emoji-search:schema:compose'
   include ':samples:emoji-search:schema:compose:protocol'
+  include ':samples:emoji-search:schema:modifiers'
   include ':samples:emoji-search:schema:testing'
   include ':samples:emoji-search:schema:widget'
   include ':samples:emoji-search:schema:widget:protocol'
+  include ':samples:emoji-search:shared-composeui'
   include ':samples:emoji-search:values'
 }

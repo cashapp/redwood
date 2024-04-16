@@ -16,25 +16,32 @@
 package com.example.redwood.testing.android.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
+import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.testing.launcher.TestAppSpec
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testing.treehouse.TestAppPresenter
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.treehouse.testAppSerializersModule
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
@@ -42,9 +49,12 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
+import okio.assetfilesystem.asFileSystem
 
 class TestAppActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
+  private lateinit var treehouseLayout: TreehouseLayout
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -57,8 +67,8 @@ class TestAppActivity : ComponentActivity() {
       override fun widgetFactory(
         json: Json,
         protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = TestSchemaProtocolNodeFactory(
-        provider = TestSchemaWidgetFactories(
+      ) = TestSchemaProtocolFactory(
+        widgetSystem = TestSchemaWidgetSystem(
           TestSchema = AndroidTestSchemaWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
@@ -68,11 +78,44 @@ class TestAppActivity : ComponentActivity() {
       )
     }
 
-    setContentView(
-      TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
-        treehouseContentSource.bindWhenReady(this, treehouseApp)
-      },
-    )
+    treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
+      treehouseContentSource.bindWhenReady(this, treehouseApp)
+    }
+    setContentView(treehouseLayout)
+  }
+
+  private val appEventListener: EventListener = object : EventListener() {
+    private var success = true
+    private var snackbar: Snackbar? = null
+
+    override fun uncaughtException(exception: Throwable) {
+      Log.e("Treehouse", "uncaughtException", exception)
+    }
+
+    override fun codeLoadFailed(exception: Exception, startValue: Any?) {
+      Log.w("Treehouse", "codeLoadFailed", exception)
+      if (success) {
+        // Only show the Snackbar on the first transition from success.
+        success = false
+        snackbar =
+          Snackbar.make(treehouseLayout, "Unable to load guest code from server", LENGTH_INDEFINITE)
+            .setAction("Dismiss") { maybeDismissSnackbar() }
+            .also(Snackbar::show)
+      }
+    }
+
+    override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+      Log.i("Treehouse", "codeLoadSuccess")
+      success = true
+      maybeDismissSnackbar()
+    }
+
+    private fun maybeDismissSnackbar() {
+      snackbar?.let {
+        it.dismiss()
+        snackbar = null
+      }
+    }
   }
 
   private fun createTreehouseApp(): TreehouseApp<TestAppPresenter> {
@@ -83,8 +126,12 @@ class TestAppActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
+      embeddedFileSystem = applicationContext.assets.asFileSystem(),
+      embeddedDir = "/".toPath(),
       stateStore = FileStateStore(
-        json = Json,
+        json = Json {
+          serializersModule = testAppSerializersModule
+        },
         fileSystem = FileSystem.SYSTEM,
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),
@@ -99,6 +146,7 @@ class TestAppActivity : ComponentActivity() {
         manifestUrl = manifestUrlFlow,
         hostApi = RealHostApi(httpClient),
       ),
+      eventListenerFactory = { _, _ -> appEventListener },
     )
 
     treehouseApp.start()

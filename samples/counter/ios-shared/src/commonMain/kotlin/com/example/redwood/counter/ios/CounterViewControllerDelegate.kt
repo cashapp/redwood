@@ -20,7 +20,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.widget.RedwoodUIView
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetFactories
+import com.example.redwood.counter.widget.SchemaWidgetSystem
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
@@ -36,7 +36,7 @@ class CounterViewControllerDelegate(
     val composition = RedwoodComposition(
       scope = scope,
       view = RedwoodUIView(root),
-      provider = SchemaWidgetFactories(
+      widgetSystem = SchemaWidgetSystem(
         Schema = IosWidgetFactory,
         RedwoodLayout = UIViewRedwoodLayoutWidgetFactory(),
       ),

@@ -1,0 +1,130 @@
+public final class app/cash/redwood/layout/api/Constraint {
+	public static final field Companion Lapp/cash/redwood/layout/api/Constraint$Companion;
+	public static final synthetic fun box-impl (I)Lapp/cash/redwood/layout/api/Constraint;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class app/cash/redwood/layout/api/Constraint$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/layout/api/Constraint$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-wZ9MJrE (Lkotlinx/serialization/encoding/Decoder;)I
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-NlcmwgM (Lkotlinx/serialization/encoding/Encoder;I)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/Constraint$Companion {
+	public final fun getFill-jfchsNQ ()I
+	public final fun getWrap-jfchsNQ ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/CrossAxisAlignment {
+	public static final field Companion Lapp/cash/redwood/layout/api/CrossAxisAlignment$Companion;
+	public static final synthetic fun box-impl (I)Lapp/cash/redwood/layout/api/CrossAxisAlignment;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class app/cash/redwood/layout/api/CrossAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/layout/api/CrossAxisAlignment$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-ZTU8t1M (Lkotlinx/serialization/encoding/Decoder;)I
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-9tyzA_o (Lkotlinx/serialization/encoding/Encoder;I)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/CrossAxisAlignment$Companion {
+	public final fun getCenter-eoX4IBc ()I
+	public final fun getEnd-eoX4IBc ()I
+	public final fun getStart-eoX4IBc ()I
+	public final fun getStretch-eoX4IBc ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/MainAxisAlignment {
+	public static final field Companion Lapp/cash/redwood/layout/api/MainAxisAlignment$Companion;
+	public static final synthetic fun box-impl (I)Lapp/cash/redwood/layout/api/MainAxisAlignment;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class app/cash/redwood/layout/api/MainAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/layout/api/MainAxisAlignment$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-8E2bK0c (Lkotlinx/serialization/encoding/Decoder;)I
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-x5n47qk (Lkotlinx/serialization/encoding/Encoder;I)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/MainAxisAlignment$Companion {
+	public final fun getCenter-Ng1ngeI ()I
+	public final fun getEnd-Ng1ngeI ()I
+	public final fun getSpaceAround-Ng1ngeI ()I
+	public final fun getSpaceBetween-Ng1ngeI ()I
+	public final fun getSpaceEvenly-Ng1ngeI ()I
+	public final fun getStart-Ng1ngeI ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/Overflow {
+	public static final field Companion Lapp/cash/redwood/layout/api/Overflow$Companion;
+	public static final synthetic fun box-impl (I)Lapp/cash/redwood/layout/api/Overflow;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class app/cash/redwood/layout/api/Overflow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/layout/api/Overflow$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-yYV8bQ4 (Lkotlinx/serialization/encoding/Decoder;)I
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-PeVkpMM (Lkotlinx/serialization/encoding/Encoder;I)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/layout/api/Overflow$Companion {
+	public final fun getClip-Andb1w4 ()I
+	public final fun getScroll-Andb1w4 ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+

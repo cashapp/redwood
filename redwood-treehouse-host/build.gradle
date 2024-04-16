@@ -21,14 +21,14 @@ kotlin {
         api libs.zipline
         api libs.zipline.loader
         api projects.redwoodProtocol
-        api projects.redwoodProtocolWidget
+        api projects.redwoodProtocolHost
         api projects.redwoodTreehouse
       }
     }
 
     androidMain {
       dependencies {
-        api libs.okHttp
+        api libs.okhttp
         implementation libs.androidx.activity
       }
     }

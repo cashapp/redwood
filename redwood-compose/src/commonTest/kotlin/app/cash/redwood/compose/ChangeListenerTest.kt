@@ -20,9 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.layout.widget.RedwoodLayoutTestingWidgetFactory
-import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.widget.ProtocolBridge
+import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
+import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.MutableListChildren
@@ -32,34 +34,39 @@ import assertk.assertions.isEmpty
 import com.example.redwood.testing.compose.Button
 import com.example.redwood.testing.compose.ScopedTestRow
 import com.example.redwood.testing.compose.TestRow
-import com.example.redwood.testing.compose.TestSchemaProtocolBridge
 import com.example.redwood.testing.compose.TestScope
 import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.widget.TestSchemaProtocolNodeFactory
-import com.example.redwood.testing.widget.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetFactories
+import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testing.widget.TestSchemaWidgetFactory
+import com.example.redwood.testing.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 
 class DirectChangeListenerTest : AbstractChangeListenerTest() {
   override fun <T> CoroutineScope.launchComposition(
-    factories: TestSchemaWidgetFactories<WidgetValue>,
+    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
-  ) = TestRedwoodComposition(this, factories, MutableListChildren(), createSnapshot = snapshot)
+  ) = TestRedwoodComposition(this, widgetSystem, MutableListChildren(), createSnapshot = snapshot)
 }
 
 class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
   override fun <T> CoroutineScope.launchComposition(
-    factories: TestSchemaWidgetFactories<WidgetValue>,
+    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
-    val composeBridge = TestSchemaProtocolBridge.create()
-    val widgetBridge = ProtocolBridge(MutableListChildren(), TestSchemaProtocolNodeFactory(factories)) {
-      throw AssertionError()
-    }
-    return TestRedwoodComposition(this, composeBridge.provider, composeBridge.root) {
+    val composeBridge = TestSchemaProtocolBridge.create(
+      hostVersion = hostRedwoodVersion,
+    )
+    val widgetBridge = ProtocolBridge(
+      guestVersion = guestRedwoodVersion,
+      container = MutableListChildren(),
+      factory = TestSchemaProtocolFactory(widgetSystem),
+      eventSink = { throw AssertionError() },
+    )
+    return TestRedwoodComposition(this, composeBridge.widgetSystem, composeBridge.root) {
       composeBridge.getChangesOrNull()?.let { changes ->
         widgetBridge.sendChanges(changes)
       }
@@ -72,69 +79,72 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
 abstract class AbstractChangeListenerTest {
   // There is no test parameter injector in multiplatform, so we fake it with subtypes.
   abstract fun <T> CoroutineScope.launchComposition(
-    factories: TestSchemaWidgetFactories<WidgetValue>,
+    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T>
 
-  @Test fun propertyChangeNotifiesWidget() = runTest {
+  @Test
+  fun propertyChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, button::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, button::changes)
 
     var text by mutableStateOf("hi")
     c.setContent {
       Button(text, onClick = null)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).containsExactly("text hello", "onEndChanges")
   }
 
-  @Test fun unrelatedPropertyChangeDoesNotNotifyWidget() = runTest {
+  @Test
+  fun unrelatedPropertyChangeDoesNotNotifyWidget() = runTest {
     val button = ListeningButton()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, button::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, button::changes)
 
     var text by mutableStateOf("hi")
     c.setContent {
       Button("hi", onClick = null)
       Text(text)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).isEmpty()
   }
 
-  @Test fun modifierChangeNotifiesWidget() = runTest {
+  @Test
+  fun modifierChangeNotifiesWidget() = runTest {
     val button = ListeningButton()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, button::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, button::changes)
 
     var modifier by mutableStateOf<Modifier>(Modifier)
     c.setContent {
       Button("hi", onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
@@ -142,41 +152,43 @@ abstract class AbstractChangeListenerTest {
     assertThat(c.awaitSnapshot()).containsExactly("modifier AccessibilityDescription(value=hey)", "onEndChanges")
   }
 
-  @Test fun multipleChangesNotifyWidgetOnce() = runTest {
+  @Test
+  fun multipleChangesNotifyWidgetOnce() = runTest {
     val button = ListeningButton()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun Button() = button
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, button::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, button::changes)
 
     var text by mutableStateOf("hi")
     var modifier by mutableStateOf<Modifier>(Modifier)
     c.setContent {
       Button(text, onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier Modifier", "text hi", "onClick false", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
     }
-    assertThat(c.awaitSnapshot()).containsExactly("modifier AccessibilityDescription(value=hey)", "text hello", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hello", "modifier AccessibilityDescription(value=hey)", "onEndChanges")
   }
 
-  @Test fun childrenChangeNotifiesWidget() = runTest {
+  @Test
+  fun childrenChangeNotifiesWidget() = runTest {
     val row = ListeningTestRow()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun TestRow() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, row::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, row::changes)
 
     var two by mutableStateOf(false)
     c.setContent {
@@ -194,16 +206,17 @@ abstract class AbstractChangeListenerTest {
     assertThat(c.awaitSnapshot()).containsExactly("children insert", "onEndChanges")
   }
 
-  @Test fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
+  @Test
+  fun childrenDescendantChangeDoesNotNotifyWidget() = runTest {
     val row = ListeningTestRow()
-    val factories = TestSchemaWidgetFactories(
+    val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = object : TestSchemaWidgetFactory<WidgetValue> by TestSchemaTestingWidgetFactory() {
         override fun TestRow() = row
       },
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val c = backgroundScope.launchComposition(factories, row::changes)
+    val c = backgroundScope.launchComposition(widgetSystem, row::changes)
 
     var two by mutableStateOf(false)
     c.setContent {

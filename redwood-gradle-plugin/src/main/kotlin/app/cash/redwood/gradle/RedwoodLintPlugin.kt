@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
-private const val baseTaskName = "redwoodLint"
+private const val BASE_TASK_NAME = "redwoodLint"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodLintPlugin : Plugin<Project> {
@@ -51,7 +51,7 @@ public class RedwoodLintPlugin : Plugin<Project> {
       }
 
       val task = if (project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        val rootTask = project.tasks.register(baseTaskName) {
+        val rootTask = project.tasks.register(BASE_TASK_NAME) {
           it.group = VERIFICATION_GROUP
           it.description = taskDescription("all Kotlin targets")
         }
@@ -68,7 +68,7 @@ public class RedwoodLintPlugin : Plugin<Project> {
         checkNotNull(androidPlugin) {
           "Kotlin Android plugin requires either Android application or library plugin"
         }
-        val rootTask = project.tasks.register(baseTaskName) {
+        val rootTask = project.tasks.register(BASE_TASK_NAME) {
           it.group = VERIFICATION_GROUP
           it.description = taskDescription("all Kotlin targets")
         }
@@ -110,7 +110,7 @@ private fun configureKotlinAndroidVariants(
   }
   variants.configureEach { variant ->
     val taskName = buildString {
-      append(baseTaskName)
+      append(BASE_TASK_NAME)
       if (prefix) {
         append("Android")
       }
@@ -146,7 +146,7 @@ private fun configureKotlinMultiplatformTargets(
     val task = createKotlinTargetRedwoodLintTask(
       project,
       target,
-      taskName = baseTaskName + target.name.replaceFirstChar { it.titlecase(ROOT) },
+      taskName = BASE_TASK_NAME + target.name.replaceFirstChar { it.titlecase(ROOT) },
     )
     rootTask.configure {
       it.dependsOn(task)
@@ -158,7 +158,7 @@ private fun configureKotlinJvmProject(
   project: Project,
 ): TaskProvider<out Task> {
   val kotlin = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
-  return createKotlinTargetRedwoodLintTask(project, kotlin.target, baseTaskName)
+  return createKotlinTargetRedwoodLintTask(project, kotlin.target, BASE_TASK_NAME)
 }
 
 private fun createKotlinTargetRedwoodLintTask(

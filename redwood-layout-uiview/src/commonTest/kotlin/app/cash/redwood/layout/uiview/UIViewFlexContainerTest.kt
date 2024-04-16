@@ -15,41 +15,34 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
+import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
-import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
 class UIViewFlexContainerTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
-  override fun flexContainer(direction: FlexDirection): TestFlexContainer<UIView> {
-    return UIViewTestFlexContainer(UIViewFlexContainer(direction))
-  }
-
-  override fun widget(): Text<UIView> {
-    return object : Text<UIView> {
-      override val value = UILabel().apply {
-        numberOfLines = 0
-        backgroundColor = UIColor.greenColor
-        textColor = UIColor.blackColor
-      }
-
-      override var modifier: Modifier = Modifier
-
-      override fun text(text: String) {
-        value.text = text
-      }
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): UIViewTestFlexContainer {
+    return UIViewTestFlexContainer(UIViewFlexContainer(direction)).apply {
+      value.backgroundColor = backgroundColor.toUIColor()
     }
   }
+
+  override fun row() = flexContainer(FlexDirection.Row)
+
+  override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun text() = UIViewText()
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
@@ -61,11 +54,21 @@ class UIViewFlexContainerTest(
     }
 
     override fun add(widget: Widget<UIView>) {
-      delegate.children.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<UIView>) {
+      delegate.children.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.children.remove(index = index, count = 1)
+      childCount--
     }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<UIView>, name: String?) {
+  override fun verifySnapshot(container: Widget<UIView>, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
     container.value.setFrame(screenSize)
 

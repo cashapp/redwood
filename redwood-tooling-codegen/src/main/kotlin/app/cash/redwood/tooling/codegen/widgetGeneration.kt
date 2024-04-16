@@ -30,39 +30,62 @@ import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
-@ObjCName("ExampleWidgetFactories", exact = true)
-class ExampleWidgetFactories<W : Any>(
+@OptIn(RedwoodCodegenApi::class)
+@ObjCName("ExampleWidgetSystem", exact = true)
+class ExampleWidgetSystem<W : Any>(
   override val Example: ExampleWidgetFactory<W>,
   override val RedwoodLayout: RedwoodLayoutWidgetFactory<W>,
-) : ExampleWidgetFactoryProvider<W>
+) : WidgetSystem<W>,
+    ExampleWidgetFactoryOwner<W>,
+    RedwoodLayoutWidgetFactoryOwner<W> {
+  override fun apply(value: W, element: Modifier.UnscopedElement) {
+    Example.apply(value, element)
+    RedwoodLayout.apply(value, element)
+  }
+}
 
-interface ExampleWidgetFactoryProvider<W : Any> : RedwoodLayoutWidgetFactoryProvider<W> {
+@RedwoodCodegenApi
+interface ExampleWidgetFactoryOwner<W : Any> {
   val Example: ExampleWidgetFactory<W>
+
+  companion object {
+    fun <W : Any> apply(
+      factory: ExampleWidgetFactory<W>,
+      value: W,
+      element: Modifier.UnscopedElement,
+    ): W? {
+      when (element) {
+        is BackgroundColor -> factory.BackgroundColor(value, element)
+      }
+    }
+  }
 }
  */
-internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
+internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
-  val widgetFactoriesType = schema.getWidgetFactoriesType()
-  return FileSpec.builder(widgetFactoriesType)
+  val widgetSystemType = schema.getWidgetSystemType()
+  return FileSpec.builder(widgetSystemType)
+    .addAnnotation(suppressDeprecations)
     .addType(
-      TypeSpec.classBuilder(widgetFactoriesType)
+      TypeSpec.classBuilder(widgetSystemType)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .addSuperinterface(RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
+        .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
-            .addMember("%S", widgetFactoriesType.simpleName)
+            .addMember("%S", widgetSystemType.simpleName)
             .addMember("exact = true")
             .build(),
         )
         .apply {
+          for (dependency in schemaSet.all) {
+            addSuperinterface(dependency.getWidgetFactoryOwnerType().parameterizedBy(typeVariableW))
+          }
+
           val constructorBuilder = FunSpec.constructorBuilder()
 
           for (dependency in schemaSet.all) {
@@ -77,18 +100,75 @@ internal fun generateWidgetFactories(schemaSet: SchemaSet): FileSpec {
 
           primaryConstructor(constructorBuilder.build())
         }
+        .addFunction(
+          FunSpec.builder("apply")
+            .addModifiers(OVERRIDE)
+            .addParameter("value", typeVariableW)
+            .addParameter("element", Redwood.ModifierUnscopedElement)
+            .apply {
+              for (dependency in schemaSet.all) {
+                addStatement(
+                  "%T.apply(%N, value, element)",
+                  dependency.getWidgetFactoryOwnerType(),
+                  dependency.type.flatName,
+                )
+              }
+            }
+            .build(),
+        )
+        .build(),
+    )
+    .addTypeAlias(
+      TypeAliasSpec.builder("${schema.type.flatName}WidgetFactories", widgetSystemType.parameterizedBy(typeVariableW))
+        .addTypeVariable(typeVariableW.copy(bounds = emptyList()))
+        .addAnnotation(
+          AnnotationSpec.builder(Deprecated::class)
+            .addMember("%S", "Renamed to ${widgetSystemType.simpleName}")
+            .addMember("%T(%S, %S)", ReplaceWith::class, widgetSystemType.simpleName, widgetSystemType.toString())
+            .build(),
+        )
         .build(),
     )
     .addType(
-      TypeSpec.interfaceBuilder(schema.getWidgetFactoryProviderType())
+      TypeSpec.interfaceBuilder(schema.getWidgetFactoryOwnerType())
+        .addKdoc("@suppress For generated code usage only.")
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+        .addAnnotation(Redwood.RedwoodCodegenApi)
+        .addSuperinterface(RedwoodWidget.WidgetFactoryOwner.parameterizedBy(typeVariableW))
         .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
-        .apply {
-          for (dependency in schemaSet.dependencies.values) {
-            addSuperinterface(dependency.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-          }
-        }
+        .addType(
+          TypeSpec.companionObjectBuilder()
+            .addFunction(
+              FunSpec.builder("apply")
+                .addTypeVariable(typeVariableW)
+                .addParameter("factory", schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
+                .addParameter("value", typeVariableW)
+                .addParameter("element", Redwood.ModifierUnscopedElement)
+                .apply {
+                  if (schema.unscopedModifiers.isEmpty()) {
+                    // Even with no modifiers, we need to maintain this function signature for
+                    // other modules to call into it.
+                    addAnnotation(
+                      AnnotationSpec.builder(Suppress::class)
+                        .addMember("%S", "UNUSED_PARAMETER")
+                        .build(),
+                    )
+                  } else {
+                    beginControlFlow("when (element)")
+                    for (globalModifier in schema.unscopedModifiers) {
+                      addStatement(
+                        "is %T -> factory.%N(value, element)",
+                        schema.modifierType(globalModifier),
+                        globalModifier.type.flatName,
+                      )
+                    }
+                    endControlFlow()
+                  }
+                }
+                .build(),
+            )
+            .build(),
+        )
         .build(),
     )
     .build()
@@ -106,41 +186,41 @@ interface ExampleWidgetFactory<W : Any> : Widget.Factory<W> {
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
   val widgetFactoryType = schema.getWidgetFactoryType()
   return FileSpec.builder(widgetFactoryType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .optIn(Stdlib.ExperimentalObjCName)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", widgetFactoryType.simpleName)
             .addMember("exact = true")
             .build(),
         )
+        .maybeAddKDoc(schema.documentation)
         .apply {
-          schema.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
-
           for (widget in schema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(ABSTRACT)
                 .returns(schema.widgetType(widget).parameterizedBy(typeVariableW))
+                .maybeAddDeprecation(widget.deprecation)
+                .maybeAddKDoc(widget.documentation)
                 .apply {
-                  widget.deprecation?.let { deprecation ->
-                    addAnnotation(deprecation.toAnnotationSpec())
-                  }
-                  widget.documentation?.let { documentation ->
-                    addKdoc(documentation)
-                  }
                   if (widget is ProtocolWidget) {
                     addKdoc("{tag=${widget.tag}}")
                   }
                 }
+                .build(),
+            )
+          }
+
+          for (modifier in schema.unscopedModifiers) {
+            addFunction(
+              FunSpec.builder(modifier.type.flatName)
+                .addModifiers(ABSTRACT)
+                .addParameter("value", typeVariableW)
+                .addParameter("modifier", schema.modifierType(modifier))
                 .build(),
             )
           }
@@ -165,29 +245,21 @@ interface Button<W: Any> : Widget<W> {
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.widgetPackage(), flatName)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.interfaceBuilder(flatName)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.OptIn)
-            .addMember("%T::class", Stdlib.ExperimentalObjCName)
-            .build(),
-        )
+        .optIn(Stdlib.ExperimentalObjCName)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
             .addMember("%S", flatName)
             .addMember("exact = true")
             .build(),
         )
+        .maybeAddDeprecation(widget.deprecation)
+        .maybeAddKDoc(widget.documentation)
         .apply {
-          widget.deprecation?.let { deprecation ->
-            addAnnotation(deprecation.toAnnotationSpec())
-          }
-
-          widget.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
           if (widget is ProtocolWidget) {
             addKdoc("{tag=${widget.tag}}")
           }
@@ -199,13 +271,9 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.type.asTypeName())
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -213,18 +281,15 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Event -> {
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(ABSTRACT)
                     .addParameter(trait.name, trait.lambdaType)
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -232,17 +297,14 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Children -> {
                 addProperty(
                   PropertySpec.builder(trait.name, RedwoodWidget.WidgetChildrenOfW)
                     .addModifiers(ABSTRACT)
+                    .maybeAddDeprecation(trait.deprecation)
+                    .maybeAddKDoc(trait.documentation)
                     .apply {
-                      trait.deprecation?.let { deprecation ->
-                        addAnnotation(deprecation.toAnnotationSpec())
-                      }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
                       if (trait is ProtocolTrait) {
                         addKdoc("{tag=${trait.tag}}")
                       }
@@ -250,6 +312,7 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }

@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import assertk.assertThat
 import assertk.assertions.corresponds
@@ -39,7 +40,7 @@ class StateSnapshotTest {
     }
     val stateSnapshot = StateSnapshot(
       mapOf(
-        "key1" to listOf(mutableStateOf(1)),
+        "key1" to listOf(mutableIntStateOf(1)),
         "key2" to listOf(1),
         "key3" to listOf(mutableStateOf("str")),
         "key4" to listOf("str"),
@@ -58,43 +59,35 @@ class StateSnapshotTest {
           "content": {
               "key1": [
                   ["MutableState", {
-                          "value": ["kotlin.Int", 1
-                          ]
+                          "value": ["kotlin.Int", 1]
                       }
                   ]
               ],
               "key2": [
-                  ["kotlin.Int", 1
-                  ]
+                  ["kotlin.Int", 1]
               ],
               "key3": [
                   ["MutableState", {
-                          "value": ["kotlin.String", "str"
-                          ]
+                          "value": ["kotlin.String", "str"]
                       }
                   ]
               ],
               "key4": [
-                  ["kotlin.String", "str"
-                  ]
+                  ["kotlin.String", "str"]
               ],
               "key5": [
                   null
               ],
               "key6": [
-                  ["kotlin.Boolean", true
-                  ]
+                  ["kotlin.Boolean", true]
               ],
               "key7": [
-                  ["kotlin.Double", 1.5
-                  ]
+                  ["kotlin.Double", 1.5]
               ],
               "key8": [
                   ["kotlin.collections.ArrayList", [
-                          ["kotlin.Int", 1
-                          ],
-                          ["kotlin.String", "str"
-                          ]
+                          ["kotlin.Int", 1],
+                          ["kotlin.String", "str"]
                       ]
                   ]
               ]
@@ -108,7 +101,7 @@ class StateSnapshotTest {
       .single()
       .isNotNull()
       .isInstanceOf<MutableState<*>>()
-      .corresponds(mutableStateOf(1), ::mutableStateCorrespondence)
+      .corresponds(mutableIntStateOf(1), ::mutableStateCorrespondence)
     assertThat(deserialized.content).key("key2").isEqualTo(listOf(1))
     assertThat(deserialized.content)
       .key("key3")

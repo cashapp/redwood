@@ -1,0 +1,21 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.modifiers'
+
+archivesBaseName = 'schema-modifiers'
+
+kotlin {
+  iosArm64()
+  iosX64()
+  iosSimulatorArm64()
+
+  js {
+    browser()
+  }
+
+  jvm()
+}
+
+redwoodSchema {
+  source = projects.samples.emojiSearch.schema
+  type = 'com.example.redwood.emojisearch.EmojiSearch'
+}

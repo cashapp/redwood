@@ -17,19 +17,22 @@ package app.cash.redwood.widget.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.widget.Widget
+import kotlin.jvm.JvmOverloads
 
-public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
-  private var modifierTick by mutableStateOf(0)
+public class ComposeWidgetChildren @JvmOverloads constructor(
+  private val onModifierUpdated: () -> Unit = {},
+) : Widget.Children<@Composable () -> Unit> {
+  private var modifierTick by mutableIntStateOf(0)
 
   private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
-  public val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
+  override val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
 
   @Composable
-  public fun render() {
+  public fun Render() {
     // Observe the layout modifier count so we recompose if it changes.
     modifierTick
 
@@ -50,7 +53,8 @@ public class ComposeWidgetChildren : Widget.Children<@Composable () -> Unit> {
     _widgets.remove(index, count)
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<@Composable () -> Unit>) {
     modifierTick++
+    onModifierUpdated.invoke()
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.example.redwood.emojisearch.android.composeui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -42,10 +44,15 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
+import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
+import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
+import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -64,13 +71,21 @@ class EmojiSearchActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    val treehouseApp = createTreehouseApp()
+    val client = OkHttpClient()
+    val treehouseApp = createTreehouseApp(client)
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory(client))
+      }
+      .build()
+
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolNodeFactory<@Composable () -> Unit>(
-        provider = EmojiSearchWidgetFactories(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(),
+      EmojiSearchProtocolFactory<@Composable () -> Unit>(
+        widgetSystem = EmojiSearchWidgetSystem(
+          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -99,7 +114,7 @@ class EmojiSearchActivity : ComponentActivity() {
     private var success = true
     private var snackbarJob: Job? = null
 
-    override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+    override fun codeLoadFailed(exception: Exception, startValue: Any?) {
       Log.w("Treehouse", "codeLoadFailed", exception)
       if (success) {
         // Only show the Snackbar on the first transition from success.
@@ -114,35 +129,39 @@ class EmojiSearchActivity : ComponentActivity() {
       }
     }
 
-    override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+    override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
       Log.i("Treehouse", "codeLoadSuccess")
       success = true
       snackbarJob?.cancel()
     }
   }
 
-  private fun createTreehouseApp(): TreehouseApp<EmojiSearchPresenter> {
-    val httpClient = OkHttpClient()
-    val ziplineHttpClient = httpClient.asZiplineHttpClient()
-
+  private fun createTreehouseApp(httpClient: OkHttpClient): TreehouseApp<EmojiSearchPresenter> {
     val treehouseAppFactory = TreehouseAppFactory(
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
-      eventListener = appEventListener,
-      embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
+      embeddedDir = "/".toPath(),
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")
-      .withDevelopmentServerPush(ziplineHttpClient)
+      .withDevelopmentServerPush(httpClient.asZiplineHttpClient())
 
     val treehouseApp = treehouseAppFactory.create(
       appScope = scope,
       spec = EmojiSearchAppSpec(
         manifestUrl = manifestUrlFlow,
-        hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
+        hostApi = RealHostApi(
+          client = httpClient,
+          openUrl = { url ->
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setData(Uri.parse(url))
+            startActivity(intent)
+          },
+        ),
       ),
+      eventListenerFactory = { _, _ -> appEventListener },
     )
 
     treehouseApp.start()

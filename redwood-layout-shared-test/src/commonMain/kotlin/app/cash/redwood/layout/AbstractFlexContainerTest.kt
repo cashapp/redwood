@@ -19,31 +19,43 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
-import app.cash.redwood.layout.modifier.Grow
-import app.cash.redwood.layout.modifier.Height
-import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Shrink
-import app.cash.redwood.layout.modifier.Size
-import app.cash.redwood.layout.modifier.VerticalAlignment
-import app.cash.redwood.layout.modifier.Width
-import app.cash.redwood.ui.Dp
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
-import kotlin.test.assertTrue
 
 abstract class AbstractFlexContainerTest<T : Any> {
-  abstract fun flexContainer(direction: FlexDirection): TestFlexContainer<T>
-  abstract fun widget(): Text<T>
-  abstract fun verifySnapshot(container: TestFlexContainer<T>, name: String? = null)
+  abstract fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int = argb(51, 0, 0, 255),
+  ): TestFlexContainer<T>
 
-  private fun widget(text: String, modifier: Modifier = Modifier): Text<T> = widget().apply {
-    text(text)
-    this.modifier = modifier
+  abstract fun row(): Row<T>
+
+  abstract fun column(): Column<T>
+
+  abstract fun text(): Text<T>
+
+  fun text(
+    text: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Int = Green,
+  ): Text<T> {
+    val widget = text()
+    widget.text(text)
+    widget.bgColor(backgroundColor)
+    widget.modifier = modifier
+    return widget
   }
+
+  abstract fun verifySnapshot(
+    container: Widget<T>,
+    name: String? = null,
+  )
 
   @Test fun testEmptyLayout_Column() {
     emptyLayout(FlexDirection.Column)
@@ -104,7 +116,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
-    container.add(widget(movies.first()))
+    container.add(text(movies.first()))
     container.onEndChanges()
     verifySnapshot(container)
   }
@@ -124,7 +136,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -145,7 +157,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -174,7 +186,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
         else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
       }
-      container.add(widget(movie, modifier))
+      container.add(text(movie, modifier))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -222,20 +234,19 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(crossAxisAlignment)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
   }
 
-  @Test
-  fun columnWithUpdatedCrossAxisAlignment() {
+  @Test fun columnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Center)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container, "Center")
@@ -266,7 +277,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.mainAxisAlignment(mainAxisAlignment)
     movies.forEach { movie ->
-      container.add(widget(movie))
+      container.add(text(movie))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -278,7 +289,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", WidthImpl(50.dp)))
+      container.add(text("$index", WidthImpl(50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -290,7 +301,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", HeightImpl(50.dp)))
+      container.add(text("$index", HeightImpl(50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -302,7 +313,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(widget("$index", SizeImpl(50.dp, 50.dp)))
+      container.add(text("$index", SizeImpl(50.dp, 50.dp)))
     }
     container.onEndChanges()
     verifySnapshot(container)
@@ -313,7 +324,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
-    val widget = widget("")
+    val widget = text("")
     container.add(widget)
     container.onEndChanges()
     verifySnapshot(container, "initial")
@@ -333,8 +344,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -343,8 +354,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -353,8 +364,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(widget("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
-        add(widget("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(text("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -368,56 +379,175 @@ abstract class AbstractFlexContainerTest<T : Any> {
       height(Constraint.Fill)
     }
 
-    column.add(widget("All rows have a 100 px margin on the right!"))
+    column.add(text("All rows have a 100 px margin on the right!"))
 
-    column.add(widget("1 element + no shrink:"))
+    column.add(text("1 element + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0)))
+        add(text("x ".repeat(100), GrowImpl(1.0)))
       },
     )
 
-    column.add(widget("1 element + shrink:"))
+    column.add(text("1 element + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
       },
     )
 
-    column.add(widget("2 elements + no shrink:"))
+    column.add(text("2 elements + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0)))
-        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(text("x ".repeat(100), GrowImpl(1.0)))
+        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
-    column.add(widget("2 elements + shrink:"))
+    column.add(text("2 elements + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(widget("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
-        add(widget("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
     verifySnapshot(column)
   }
 
-  /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
-  private fun assumeTrue(b: Boolean) {
-    assertTrue(b)
+  @Test fun testDynamicElementUpdates() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(text("A"))
+    container.add(text("B"))
+    container.add(text("D"))
+    container.add(text("E"))
+
+    container.onEndChanges()
+    verifySnapshot(container, "ABDE")
+
+    container.addAt(index = 2, widget = text("C"))
+    container.onEndChanges()
+    verifySnapshot(container, "ABCDE")
+
+    container.removeAt(index = 0)
+    container.onEndChanges()
+    verifySnapshot(container, "BCDE")
+  }
+
+  @Test fun testDynamicContainerSize() {
+    val parent = column().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    parent.children.insert(
+      0,
+      flexContainer(FlexDirection.Column).apply {
+        modifier = GrowImpl(1.0)
+        width(Constraint.Fill)
+        mainAxisAlignment(MainAxisAlignment.SpaceBetween)
+        add(
+          text(
+            "A",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
+          ),
+        )
+        add(
+          text(
+            "B",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
+          ),
+        )
+      },
+    )
+
+    parent.children.insert(
+      1,
+      flexContainer(FlexDirection.Column).apply {
+        modifier = GrowImpl(1.0)
+        width(Constraint.Fill)
+        mainAxisAlignment(MainAxisAlignment.SpaceBetween)
+        add(
+          text(
+            "C",
+            GrowImpl(1.0)
+              .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
+          ),
+        )
+        add(
+          text(
+            "D",
+            GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
+          ),
+        )
+      },
+    )
+
+    verifySnapshot(parent, "both")
+
+    parent.children.remove(index = 1, count = 1)
+    verifySnapshot(parent, "single")
+  }
+
+  @Test fun testFlexDistributesWeightEqually() {
+    val container = flexContainer(FlexDirection.Row)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(text("REALLY LONG TEXT", FlexImpl(1.0)))
+    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(text("A", FlexImpl(1.0)))
+    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    verifySnapshot(container)
+  }
+
+  @Test fun testFlexDistributesWeightUnequally() {
+    val container = flexContainer(FlexDirection.Row)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.add(text("REALLY LONG TEXT", FlexImpl(3.0)))
+    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(text("A", FlexImpl(1.0)))
+    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    verifySnapshot(container)
+  }
+
+  @Test fun testNestedColumnsWithFlex() {
+    val outerContainer = flexContainer(FlexDirection.Column)
+    outerContainer.width(Constraint.Fill)
+    outerContainer.height(Constraint.Fill)
+    outerContainer.crossAxisAlignment(CrossAxisAlignment.Center)
+
+    val innerContainer1 = flexContainer(FlexDirection.Column)
+    innerContainer1.width(Constraint.Fill)
+    innerContainer1.crossAxisAlignment(CrossAxisAlignment.Center)
+    innerContainer1.add(text("INNER CONTAINER 1 TEXT 1"))
+    innerContainer1.add(text("INNER CONTAINER 1 TEXT 2"))
+
+    val innerContainer2 = flexContainer(FlexDirection.Column)
+    innerContainer2.width(Constraint.Fill)
+    innerContainer2.crossAxisAlignment(CrossAxisAlignment.Center)
+    innerContainer2.mainAxisAlignment(MainAxisAlignment.Center)
+    innerContainer2.margin(Margin(bottom = 24.dp))
+    innerContainer1.add(text("INNER CONTAINER 2 TEXT 1"))
+    innerContainer1.add(text("INNER CONTAINER 2 TEXT 2"))
+
+    outerContainer.add(innerContainer1)
+    outerContainer.add(innerContainer2)
+    innerContainer2.modifier = Modifier.then(FlexImpl(1.0))
+    verifySnapshot(outerContainer)
   }
 }
 
@@ -429,10 +559,8 @@ interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun add(widget: Widget<T>)
-}
-
-interface Text<T : Any> : Widget<T> {
-  fun text(text: String)
+  fun addAt(index: Int, widget: Widget<T>)
+  fun removeAt(index: Int)
 }
 
 private val movies = listOf(
@@ -449,34 +577,3 @@ private val movies = listOf(
   "Se7en",
   "Seven Samurai",
 )
-
-private data class CrossAxisAlignmentImpl(
-  override val alignment: CrossAxisAlignment,
-) : HorizontalAlignment, VerticalAlignment
-
-private data class WidthImpl(
-  override val width: Dp,
-) : Width
-
-private data class HeightImpl(
-  override val height: Dp,
-) : Height
-
-private data class SizeImpl(
-  override val width: Dp,
-  override val height: Dp,
-) : Size
-
-private data class MarginImpl(
-  override val margin: app.cash.redwood.ui.Margin,
-) : app.cash.redwood.layout.modifier.Margin {
-  constructor(all: Dp = 0.dp) : this(Margin(all))
-}
-
-private data class GrowImpl(
-  override val `value`: Double,
-) : Grow
-
-private data class ShrinkImpl(
-  override val `value`: Double,
-) : Shrink

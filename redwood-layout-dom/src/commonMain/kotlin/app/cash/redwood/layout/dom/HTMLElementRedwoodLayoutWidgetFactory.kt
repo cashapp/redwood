@@ -20,6 +20,13 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Flex
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.Height
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.Size
+import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.FlexContainer
@@ -29,6 +36,7 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.Widget
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -70,7 +78,7 @@ private class HTMLFlexContainer(
     value.style.flexDirection = direction
   }
 
-  override val children = HTMLElementChildren(value)
+  override val children: Widget.Children<HTMLElement> = HTMLFlexElementChildren(value)
 
   override fun width(width: Constraint) {
     value.style.width = width.toCss()
@@ -116,4 +124,68 @@ private class HTMLSpacer(
   }
 
   override var modifier: Modifier = Modifier
+}
+
+private class HTMLFlexElementChildren(
+  private val container: HTMLElement,
+  private val delegate: HTMLElementChildren = HTMLElementChildren(container),
+) :
+  Widget.Children<HTMLElement> by delegate {
+  override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers(clearStyles = true)
+    delegate.onModifierUpdated(index, widget)
+  }
+
+  override fun insert(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers(clearStyles = false)
+    delegate.insert(index, widget)
+  }
+
+  private fun Widget<HTMLElement>.applyModifiers(clearStyles: Boolean) {
+    if (clearStyles) {
+      value.style.apply {
+        removeProperty("margin-inline-start")
+        removeProperty("margin-inline-end")
+        removeProperty("margin-top")
+        removeProperty("margin-bottom")
+        removeProperty("flex-grow")
+        removeProperty("flex-shrink")
+        removeProperty("flex")
+        removeProperty("width")
+        removeProperty("height")
+      }
+    }
+
+    modifier.forEachScoped { element ->
+      when (element) {
+        is MarginModifier -> {
+          value.style.apply {
+            marginInlineStart = element.margin.start.toPxString()
+            marginInlineEnd = element.margin.end.toPxString()
+            marginTop = element.margin.top.toPxString()
+            marginBottom = element.margin.bottom.toPxString()
+          }
+        }
+        is Grow -> value.style.apply {
+          flexGrow = element.value.toString()
+        }
+        is Shrink -> value.style.apply {
+          flexShrink = element.value.toString()
+        }
+        is Flex -> value.style.apply {
+          flex = element.value.toString()
+        }
+        is Width -> value.style.apply {
+          width = element.width.toPxString()
+        }
+        is Height -> value.style.apply {
+          height = element.height.toPxString()
+        }
+        is Size -> value.style.apply {
+          width = element.width.toPxString()
+          height = element.height.toPxString()
+        }
+      }
+    }
+  }
 }

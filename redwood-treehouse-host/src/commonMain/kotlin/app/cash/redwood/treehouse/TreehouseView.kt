@@ -15,8 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.widget.ProtocolMismatchHandler
-import app.cash.redwood.protocol.widget.ProtocolNodeFactory
+import app.cash.redwood.protocol.host.ProtocolFactory
+import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.widget.RedwoodView
 import kotlin.native.ObjCName
 import kotlinx.serialization.json.Json
@@ -41,12 +41,14 @@ public interface TreehouseView<W : Any> : RedwoodView<W> {
     public fun performSave(id: String)
   }
 
+  // TODO Rename this type to something else, along with ProtocolFactory which needs a rewrite
+  //  to behave more like the guest-side ProtocolBridge and its companion.
   @ObjCName("TreehouseViewWidgetSystem", exact = true)
   public fun interface WidgetSystem<W : Any> {
     /** Returns a widget factory for encoding and decoding changes to the contents of [view]. */
     public fun widgetFactory(
       json: Json,
       protocolMismatchHandler: ProtocolMismatchHandler,
-    ): ProtocolNodeFactory<W>
+    ): ProtocolFactory<W>
   }
 }

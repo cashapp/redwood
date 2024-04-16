@@ -15,9 +15,14 @@
  */
 package app.cash.redwood.widget
 
+import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 import platform.UIKit.subviews
 
 @Suppress("UNCHECKED_CAST")
 internal val UIView.typedSubviews: List<UIView>
   get() = subviews as List<UIView>
+
+@Suppress("UNCHECKED_CAST")
+internal val UIStackView.typedArrangedSubviews: List<UIView>
+  get() = arrangedSubviews as List<UIView>

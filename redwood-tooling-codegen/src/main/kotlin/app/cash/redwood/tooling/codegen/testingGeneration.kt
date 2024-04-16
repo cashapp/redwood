@@ -24,6 +24,7 @@ import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -45,16 +46,17 @@ import com.squareup.kotlinpoet.joinToCode
 
 /*
 suspend fun <R> ExampleTester(
+  onBackPressedDispatcher: OnBackPressedDispatcher = NoOpOnBackPressedDispatcher,
   savedState: TestSavedState? = null,
   uiConfiguration: UiConfiguration = UiConfiguration(),
   body: suspend TestRedwoodComposition<List<WidgetValue>>.() -> R,
 ): R = coroutineScope {
-  val factories = ExampleWidgetFactories(
+  val widgetSystem = ExampleWidgetSystem(
     TestSchema = TestSchemaTestingWidgetFactory(),
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
   )
   val container = MutableListChildren<WidgetValue>()
-  val tester = TestRedwoodComposition(this, factories, container, savedState, uiConfiguration) {
+  val tester = TestRedwoodComposition(this, widgetSystem, container, savedState, uiConfiguration) {
     container.map { it.value }
   }
   try {
@@ -66,18 +68,24 @@ suspend fun <R> ExampleTester(
 */
 internal fun generateTester(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
-  val testerFunction = schema.getTesterFunction()
+  val testerFunction = MemberName(schema.testingPackage(), "${schema.type.flatName}Tester")
   val typeVarR = TypeVariableName("R")
   val bodyType = LambdaTypeName.get(
     receiver = RedwoodTesting.TestRedwoodComposition
       .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
     returnType = typeVarR,
   ).copy(suspending = true)
-  return FileSpec.builder(testerFunction.packageName, testerFunction.simpleName)
+  return FileSpec.builder(testerFunction)
+    .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(testerFunction)
-        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
+        .optIn(Redwood.RedwoodCodegenApi)
         .addModifiers(SUSPEND)
+        .addParameter(
+          ParameterSpec.builder("onBackPressedDispatcher", Redwood.OnBackPressedDispatcher)
+            .defaultValue("%T", RedwoodTesting.NoOpOnBackPressedDispatcher)
+            .build(),
+        )
         .addParameter(
           ParameterSpec.builder("savedState", RedwoodTesting.TestSavedState.copy(nullable = true))
             .defaultValue("null")
@@ -92,7 +100,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .addTypeVariable(typeVarR)
         .returns(typeVarR)
         .beginControlFlow("return %M", KotlinxCoroutines.coroutineScope)
-        .addCode("val factories = %T(⇥\n", schema.getWidgetFactoriesType())
+        .addCode("val widgetSystem = %T(⇥\n", schema.getWidgetSystemType())
         .apply {
           for (dependency in schemaSet.all) {
             addCode("%N = %T(),\n", dependency.type.flatName, dependency.getTestingWidgetFactoryType())
@@ -100,7 +108,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         }
         .addCode("⇤)\n")
         .addStatement("val container = %T<%T>()", RedwoodWidget.MutableListChildren, RedwoodTesting.WidgetValue)
-        .beginControlFlow("val tester = %T(this, factories, container, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
+        .beginControlFlow("val tester = %T(this, widgetSystem, container, onBackPressedDispatcher, savedState, uiConfiguration)", RedwoodTesting.TestRedwoodComposition)
         .addStatement("container.map { it.value }")
         .endControlFlow()
         .beginControlFlow("try")
@@ -124,6 +132,7 @@ public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetVa
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
   val mutableWidgetFactoryType = schema.getTestingWidgetFactoryType()
   return FileSpec.builder(mutableWidgetFactoryType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.WidgetValue))
@@ -134,7 +143,16 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
-                .addCode("return %T()", schema.mutableWidgetType(widget))
+                .addStatement("return %T()", schema.mutableWidgetType(widget))
+                .build(),
+            )
+          }
+          for (modifier in schema.unscopedModifiers) {
+            addFunction(
+              FunSpec.builder(modifier.type.flatName)
+                .addModifiers(OVERRIDE)
+                .addParameter("value", RedwoodTesting.WidgetValue)
+                .addParameter("modifier", schema.modifierType(modifier))
                 .build(),
             )
           }
@@ -168,6 +186,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
   val mutableWidgetType = schema.mutableWidgetType(widget)
   val widgetValueType = schema.widgetValueType(widget)
   return FileSpec.builder(mutableWidgetType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
@@ -194,7 +213,9 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                           addCode("%1N = %1N!!,\n", trait.name)
                         }
                       }
+
                       is Children -> addCode("%1N = %1N.map { it.`value` },\n", trait.name)
+
                       is ProtocolTrait -> throw AssertionError()
                     }
                   }
@@ -235,6 +256,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is Children -> {
                 val mutableChildrenOfMutableWidget = RedwoodWidget.MutableListChildren
                   .parameterizedBy(RedwoodTesting.WidgetValue)
@@ -245,6 +267,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                     .build(),
                 )
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }
@@ -361,6 +384,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
 
         toWidgetPropertiesBuilder.addStatement("instance.%1N(%1N)", trait.name)
       }
+
       is Children -> {
         type = Stdlib.List.parameterizedBy(RedwoodTesting.WidgetValue)
         defaultExpression = CodeBlock.of("%M()", Stdlib.listOf)
@@ -369,9 +393,10 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         childrenLists += CodeBlock.of("%N", trait.name)
 
         toWidgetChildrenBuilder.beginControlFlow("for ((index, child) in %N.withIndex())", trait.name)
-          .addStatement("instance.%N.insert(index, child.toWidget(provider))", trait.name)
+          .addStatement("instance.%N.insert(index, child.toWidget(widgetSystem))", trait.name)
           .endControlFlow()
       }
+
       is Event -> {
         type = trait.lambdaType
         defaultExpression = trait.defaultExpression?.let { CodeBlock.of(it) }
@@ -395,6 +420,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   }
 
   return FileSpec.builder(widgetValueType)
+    .addAnnotation(suppressDeprecations)
     .addType(
       classBuilder
         .primaryConstructor(constructorBuilder.build())
@@ -473,14 +499,16 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .addFunction(
           FunSpec.builder("toWidget")
             .addModifiers(OVERRIDE)
+            .optIn(Redwood.RedwoodCodegenApi)
             .addTypeVariable(typeVariableW)
-            .addParameter("provider", RedwoodWidget.WidgetProvider.parameterizedBy(typeVariableW))
+            .addParameter("widgetSystem", RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
             .returns(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
-            .addStatement("val factory = provider as %T", schema.getWidgetFactoryProviderType().parameterizedBy(typeVariableW))
-            .addStatement("val instance = factory.%L.%L()", schema.type.flatName, widget.type.flatName)
+            .addStatement("@%T(%S) // Type parameter shared in generated code.", Suppress::class, "UNCHECKED_CAST")
+            .addStatement("val factoryOwner = widgetSystem as %T", schema.getWidgetFactoryOwnerType().parameterizedBy(typeVariableW))
+            .addStatement("val instance = factoryOwner.%L.%L()", schema.type.flatName, widget.type.flatName)
             .addStatement("")
-            .addStatement("instance.modifier = modifier")
             .addCode(toWidgetPropertiesBuilder.build())
+            .addStatement("instance.modifier = modifier")
             .addStatement("")
             .addCode(toWidgetChildrenBuilder.build())
             .addStatement("")
@@ -490,4 +518,16 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         .build(),
     )
     .build()
+}
+
+private fun Schema.getTestingWidgetFactoryType(): ClassName {
+  return ClassName(testingPackage(), "${type.flatName}TestingWidgetFactory")
+}
+
+private fun Schema.mutableWidgetType(widget: Widget): ClassName {
+  return ClassName(testingPackage(), "Mutable${widget.type.flatName}")
+}
+
+private fun Schema.widgetValueType(widget: Widget): ClassName {
+  return ClassName(testingPackage(), "${widget.type.flatName}Value")
 }

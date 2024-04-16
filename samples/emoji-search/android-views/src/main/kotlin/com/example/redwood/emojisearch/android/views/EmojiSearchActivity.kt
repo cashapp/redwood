@@ -18,11 +18,14 @@ package com.example.redwood.emojisearch.android.views
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -36,10 +39,10 @@ import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
+import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
-import com.example.redwood.emojisearch.widget.EmojiSearchProtocolNodeFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
 import kotlinx.coroutines.CoroutineScope
@@ -66,8 +69,8 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolNodeFactory(
-        provider = EmojiSearchWidgetFactories(
+      EmojiSearchProtocolFactory(
+        widgetSystem = EmojiSearchWidgetSystem(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
@@ -78,16 +81,34 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
-      treehouseContentSource.bindWhenReady(this, treehouseApp)
+      treehouseContentSource.bindWhenReady(this, treehouseApp, codeListener)
     }
     setContentView(treehouseLayout)
+  }
+
+  private val codeListener: CodeListener = object : CodeListener() {
+    override fun onUncaughtException(
+      app: TreehouseApp<*>,
+      view: TreehouseView<*>,
+      exception: Throwable,
+    ) {
+      treehouseLayout.reset()
+      treehouseLayout.addView(
+        ExceptionView(treehouseLayout, exception),
+        LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT),
+      )
+    }
   }
 
   private val appEventListener: EventListener = object : EventListener() {
     private var success = true
     private var snackbar: Snackbar? = null
 
-    override fun codeLoadFailed(app: TreehouseApp<*>, manifestUrl: String?, exception: Exception, startValue: Any?) {
+    override fun uncaughtException(exception: Throwable) {
+      Log.e("Treehouse", "uncaughtException", exception)
+    }
+
+    override fun codeLoadFailed(exception: Exception, startValue: Any?) {
       Log.w("Treehouse", "codeLoadFailed", exception)
       if (success) {
         // Only show the Snackbar on the first transition from success.
@@ -99,7 +120,7 @@ class EmojiSearchActivity : ComponentActivity() {
       }
     }
 
-    override fun codeLoadSuccess(app: TreehouseApp<*>, manifestUrl: String?, manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+    override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
       Log.i("Treehouse", "codeLoadSuccess")
       success = true
       maybeDismissSnackbar()
@@ -121,9 +142,8 @@ class EmojiSearchActivity : ComponentActivity() {
       context = applicationContext,
       httpClient = httpClient,
       manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
-      eventListener = appEventListener,
-      embeddedDir = "/".toPath(),
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
+      embeddedDir = "/".toPath(),
       stateStore = FileStateStore(
         json = Json {
           useArrayPolymorphism = true
@@ -143,6 +163,7 @@ class EmojiSearchActivity : ComponentActivity() {
         manifestUrl = manifestUrlFlow,
         hostApi = RealHostApi(this@EmojiSearchActivity, httpClient),
       ),
+      eventListenerFactory = { _, _ -> appEventListener },
     )
 
     treehouseApp.start()

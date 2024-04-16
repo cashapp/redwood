@@ -15,12 +15,10 @@
  */
 package app.cash.redwood.gradle
 
-import javax.inject.Inject
-import org.gradle.api.model.ObjectFactory
+import org.gradle.api.Action
 import org.gradle.api.provider.Property
 
-public abstract class RedwoodComposeExtension
-@Inject constructor(objectFactory: ObjectFactory) {
+public interface RedwoodComposeExtension {
   /**
    * The version of the JetBrains Compose compiler to use, or a Maven coordinate triple of
    * the custom Compose compiler to use.
@@ -39,7 +37,48 @@ public abstract class RedwoodComposeExtension
    * }
    * ```
    */
-  public val kotlinCompilerPlugin: Property<String> =
-    objectFactory.property(String::class.java)
-      .convention(composeCompilerVersion)
+  public val kotlinCompilerPlugin: Property<String>
+
+  /**
+   * Configuration options that require extra care when used.
+   *
+   * @see DangerZone
+   */
+  public fun dangerZone(body: Action<DangerZone>)
+
+  /**
+   * Configuration options that require extra care when used. Please read the documentation of
+   * each member carefully to understand how it affects your build.
+   */
+  public interface DangerZone {
+    /**
+     * Enable the output of metrics from the Compose compiler.
+     *
+     * Text files will be written to `generated/redwood/compose-metrics/` in the project's build
+     * directory. See
+     * [the compiler documentation](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md#reports-breakdown)
+     * for more information about the contents.
+     *
+     * **NOTE:** This should only be enabled during investigation as it breaks the use of
+     * Gradle's build cache for this project's Kotlin compilation tasks.
+     *
+     * @see enableReports
+     */
+    public fun enableMetrics()
+
+    /**
+     * Enable the output of reports from the Compose compiler.
+     *
+     * Text files will be written to `generated/redwood/compose-reports/` in the project's build
+     * directory. See
+     * [the compiler documentation](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md#reports-breakdown)
+     * for more information about the contents.
+     *
+     * **NOTE:** This should only be enabled during investigation as it breaks the use of
+     * Gradle's build cache for this project's Kotlin compilation tasks.
+     *
+     * @see enableMetrics
+     */
+    public fun enableReports()
+  }
 }

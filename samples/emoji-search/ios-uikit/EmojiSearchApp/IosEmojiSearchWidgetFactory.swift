@@ -38,4 +38,6 @@ class IosEmojiSearchWidgetFactory<A : AnyObject>: EmojiSearchWidgetFactory {
     func Image() -> Image {
         return ImageBinding(imageLoader: imageLoader)
     }
+    func Reuse(value: Any, modifier: Reuse) {
+    }
 }

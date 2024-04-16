@@ -34,11 +34,11 @@ internal class CompactValue {
     return undefined || !isAuto() && !isPoint() && !isPercent() && payload_.value.isNaN()
   }
 
-  private fun isPercent(): Boolean {
+  fun isPercent(): Boolean {
     return payload_.unit == YGUnit.YGUnitPercent
   }
 
-  private fun isPoint(): Boolean {
+  fun isPoint(): Boolean {
     return payload_.unit == YGUnit.YGUnitPoint
   }
 

@@ -35,11 +35,11 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
   private val type by option()
     .switch(
       "--compose" to CodegenType.Compose,
-      "--compose-protocol" to ProtocolCodegenType.Compose,
       "--modifier" to CodegenType.Modifiers,
+      "--protocol-guest" to ProtocolCodegenType.Guest,
+      "--protocol-host" to ProtocolCodegenType.Host,
       "--testing" to CodegenType.Testing,
       "--widget" to CodegenType.Widget,
-      "--widget-protocol" to ProtocolCodegenType.Widget,
     )
     .help("Type of code to generate")
     .required()
@@ -64,10 +64,12 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
         val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
+
       is ProtocolCodegenType -> {
         val schemaSet = ProtocolSchemaSet.load(schemaType, classLoader)
         schemaSet.generate(type, out)
       }
+
       else -> throw AssertionError()
     }
   }

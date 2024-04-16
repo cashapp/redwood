@@ -4,11 +4,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 buildscript {
   dependencies {
     classpath libs.kotlin.gradlePlugin
+    classpath libs.androidGradlePlugin
     classpath libs.buildConfigPlugin
   }
   repositories {
     mavenCentral()
     gradlePluginPortal()
+    google()
   }
 }
 
@@ -22,6 +24,7 @@ allprojects {
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.github.gmazzo.buildconfig'
+apply plugin: 'com.android.lint'
 
 dependencies {
   compileOnly gradleApi()
@@ -31,10 +34,13 @@ dependencies {
   implementation libs.spotlessPlugin
   implementation libs.androidGradlePlugin
   implementation libs.jetbrains.compose.gradlePlugin
+  implementation libs.kotlinx.binaryCompatibilityValidator
   implementation libs.zipline
 
   // Expose the generated version catalog API to the plugin.
   implementation(files(libs.class.superclass.protectionDomain.codeSource.location))
+
+  lintChecks libs.androidx.gradlePluginLints
 }
 
 gradlePlugin {

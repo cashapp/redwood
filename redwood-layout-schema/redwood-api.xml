@@ -54,4 +54,7 @@
     <property name="height" type="app.cash.redwood.ui.Dp"/>
     <property name="width" type="app.cash.redwood.ui.Dp"/>
   </modifier>
+  <modifier tag="9" type="app.cash.redwood.layout.Flex">
+    <property name="value" type="kotlin.Double"/>
+  </modifier>
 </schema>

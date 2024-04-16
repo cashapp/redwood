@@ -19,5 +19,6 @@ import kotlin.test.Ignore
 
 @Ignore // TODO Does not work without linking XCTest and showing a XCUIApplication.
 class IosDisplayLinkClockTest : AbstractFrameClockTest() {
-  override val frameClock = IosDisplayLinkClock()
+  override val frameClockFactory: FrameClock.Factory
+    get() = IosDisplayLinkClock
 }

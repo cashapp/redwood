@@ -36,11 +36,14 @@ import kotlin.time.Duration
     CustomTypeStateless::class,
     CustomTypeWithDefault::class,
     CustomTypeWithMultipleScopes::class,
+    CustomTypeDataObject::class,
     Text::class,
     Button::class,
     Button2::class,
     TextInput::class,
-    Rectangle::class,
+    BackgroundColor::class,
+    Split::class,
+    Reuse::class,
   ],
   dependencies = [
     Dependency(1, RedwoodLayout::class),
@@ -91,18 +94,15 @@ public data class Button2(
 public data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val customType: Duration?,
-  @Property(3) val onChange: (String) -> Unit,
-  @Property(4) val onChangeCustomType: (Duration) -> Unit,
-  @Property(5) val maxLength: Int,
+  @Property(3) @Default("null") val onChange: ((String) -> Unit)?,
+  @Property(4) @Default("null") val onChangeCustomType: ((Duration) -> Unit)?,
+  @Property(5) @Default("null") val maxLength: Int?,
 )
 
-@Widget(8)
-public data class Rectangle(
-  /** expects argb format: 0xAARRGGBBu*/
-  @Property(1) val backgroundColor: UInt,
-
-  @Default("0f")
-  @Property(2) val cornerRadius: Float,
+@Widget(9)
+public data class Split(
+  @Children(1) val left: () -> Unit,
+  @Children(2) val right: () -> Unit,
 )
 
 public object TestScope
@@ -136,3 +136,15 @@ public data class CustomTypeWithDefault(
 
 @Modifier(6, TestScope::class, SecondaryTestScope::class)
 public object CustomTypeWithMultipleScopes
+
+@Modifier(7, TestScope::class)
+public data object CustomTypeDataObject
+
+@Modifier(8)
+public data class BackgroundColor(
+  /** Expects argb format: `0xAARRGGBBu`. */
+  val color: UInt,
+)
+
+@Modifier(-4_543_827) // -4_543_827 is a reserved tag.
+public object Reuse

@@ -18,11 +18,12 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
+import kotlinx.coroutines.flow.StateFlow
 
 /** Redwood's [OnBackPressedCallback] but implementing [ZiplineService]. */
 @ObjCName("OnBackPressedCallbackService", exact = true)
 public interface OnBackPressedCallbackService : ZiplineService {
-  public var isEnabled: Boolean
+  public val isEnabled: StateFlow<Boolean>
 
   public fun handleOnBackPressed()
 }

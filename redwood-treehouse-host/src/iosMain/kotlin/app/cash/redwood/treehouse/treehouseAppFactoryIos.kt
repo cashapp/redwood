@@ -17,13 +17,39 @@ package app.cash.redwood.treehouse
 
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
+import kotlin.DeprecationLevel.HIDDEN
 import okio.FileSystem
 import okio.Path
 
+@Suppress("FunctionName")
 public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
-  eventListener: EventListener = EventListener(),
+  embeddedFileSystem: FileSystem? = null,
+  embeddedDir: Path? = null,
+  cacheName: String = "zipline",
+  cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
+  concurrentDownloads: Int = 8,
+  stateStore: StateStore = MemoryStateStore(),
+): TreehouseApp.Factory = TreehouseApp.Factory(
+  platform = IosTreehousePlatform(),
+  dispatchers = IosTreehouseDispatchers(),
+  httpClient = httpClient,
+  frameClockFactory = IosDisplayLinkClock,
+  manifestVerifier = manifestVerifier,
+  embeddedFileSystem = embeddedFileSystem,
+  embeddedDir = embeddedDir,
+  cacheName = cacheName,
+  cacheMaxSizeInBytes = cacheMaxSizeInBytes,
+  concurrentDownloads = concurrentDownloads,
+  stateStore = stateStore,
+)
+
+@Deprecated("", level = HIDDEN) // TODO Delete overload once 0.11.0 ships.
+@Suppress("FunctionName")
+public fun TreehouseAppFactory(
+  httpClient: ZiplineHttpClient,
+  manifestVerifier: ManifestVerifier,
   embeddedDir: Path? = null,
   embeddedFileSystem: FileSystem? = null,
   cacheName: String = "zipline",
@@ -33,12 +59,11 @@ public fun TreehouseAppFactory(
 ): TreehouseApp.Factory = TreehouseApp.Factory(
   platform = IosTreehousePlatform(),
   dispatchers = IosTreehouseDispatchers(),
-  eventListener = eventListener,
   httpClient = httpClient,
-  frameClock = IosDisplayLinkClock(),
+  frameClockFactory = IosDisplayLinkClock,
   manifestVerifier = manifestVerifier,
-  embeddedDir = embeddedDir,
   embeddedFileSystem = embeddedFileSystem,
+  embeddedDir = embeddedDir,
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
   concurrentDownloads = concurrentDownloads,

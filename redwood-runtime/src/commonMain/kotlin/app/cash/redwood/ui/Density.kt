@@ -38,7 +38,7 @@ public value class Density(
 
   /** Convert a [Dp] into a pixel value. */
   public fun Dp.toPx(): Double {
-    return value * DensityMultiplier * rawDensity
+    return value * DENSITY_MULTIPLIER * rawDensity
   }
 
   /** Convert a [Dp] into the nearest integer pixel value. */
@@ -48,17 +48,17 @@ public value class Density(
 
   /** Convert a pixel value into a [Dp]. */
   public fun Int.toDp(): Dp {
-    return Dp(this / DensityMultiplier / rawDensity)
+    return Dp(this / DENSITY_MULTIPLIER / rawDensity)
   }
 
   /** Convert a pixel value into a [Dp]. */
   public fun Float.toDp(): Dp {
-    return Dp(this / DensityMultiplier / rawDensity)
+    return Dp(this / DENSITY_MULTIPLIER / rawDensity)
   }
 
   /** Convert a pixel value into a [Dp]. */
   public fun Double.toDp(): Dp {
-    return Dp(this / DensityMultiplier / rawDensity)
+    return Dp(this / DENSITY_MULTIPLIER / rawDensity)
   }
 
   /** Empty companion object used for extensions. */
@@ -69,4 +69,4 @@ public value class Density(
  * A multiplier that's used to normalize the density values of each
  * target platform so [Dp] values look similar on each device.
  */
-internal expect val DensityMultiplier: Double
+internal expect val DENSITY_MULTIPLIER: Double

@@ -15,4 +15,4 @@
  */
 package app.cash.redwood.ui
 
-internal actual const val DensityMultiplier = 1.0
+internal actual const val DENSITY_MULTIPLIER = 1.0

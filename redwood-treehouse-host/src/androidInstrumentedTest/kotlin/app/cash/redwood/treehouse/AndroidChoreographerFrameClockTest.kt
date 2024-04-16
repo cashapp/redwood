@@ -20,7 +20,7 @@ import kotlinx.coroutines.runBlocking
 
 class AndroidChoreographerFrameClockTest : AbstractFrameClockTest() {
   // Tests run on a background thread but Choreographer can only be grabbed from the main thread.
-  override val frameClock = runBlocking(Dispatchers.Main) {
-    AndroidChoreographerFrameClock()
+  override val frameClockFactory = runBlocking(Dispatchers.Main) {
+    AndroidChoreographerFrameClock.Factory()
   }
 }

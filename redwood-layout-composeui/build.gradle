@@ -42,3 +42,14 @@ android {
     androidResources = true
   }
 }
+
+afterEvaluate {
+  spotless {
+    kotlin {
+      targetExclude(
+        // Apache 2-licensed file from AOSP.
+        "src/commonMain/kotlin/app/cash/redwood/layout/composeui/Box.kt",
+      )
+    }
+  }
+}

@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import com.example.redwood.testing.testing.TestRowValue
 import com.example.redwood.testing.widget.TestRow
 
 class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
@@ -30,6 +31,8 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
   }
 
   override val children = object : Widget.Children<WidgetValue> {
+    override val widgets: List<Widget<WidgetValue>> get() = emptyList()
+
     override fun insert(index: Int, widget: Widget<WidgetValue>) {
       changes += "children insert"
     }
@@ -42,18 +45,19 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
       changes += "children remove"
     }
 
-    override fun onModifierUpdated() {
+    override fun onModifierUpdated(index: Int, widget: Widget<WidgetValue>) {
     }
   }
 
   override fun onEndChanges() {
     changes += "onEndChanges"
   }
+
   override var modifier: Modifier
     get() = throw AssertionError()
     set(value) {
       changes += "modifier $value"
     }
 
-  override val value: WidgetValue get() = throw AssertionError()
+  override val value: WidgetValue get() = TestRowValue()
 }

@@ -1,0 +1,9 @@
+public final class app/cash/redwood/treehouse/CompositionKt {
+	public static final fun bind (Lapp/cash/redwood/compose/RedwoodComposition;Lapp/cash/redwood/treehouse/TreehouseUi;)V
+}
+
+public abstract interface class app/cash/redwood/treehouse/TreehouseUi {
+	public abstract fun Show (Landroidx/compose/runtime/Composer;I)V
+	public fun close ()V
+}
+

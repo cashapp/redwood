@@ -20,11 +20,15 @@ import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
+import kotlinx.validation.ApiValidationExtension
+import kotlinx.validation.ExperimentalBCVApi
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
+import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -40,25 +44,26 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-private const val redwoodGroupId = "app.cash.redwood"
+private const val REDWOOD_GROUP_ID = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val redwoodVersion = "0.8.0-SNAPSHOT"
+private const val REDWOOD_VERSION = "0.11.0-SNAPSHOT"
 
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
   private lateinit var libs: LibrariesForLibs
 
   override fun apply(target: Project) {
-    target.group = redwoodGroupId
-    target.version = redwoodVersion
+    target.group = REDWOOD_GROUP_ID
+    target.version = REDWOOD_VERSION
 
     libs = target.extensions.getByName("libs") as LibrariesForLibs
 
@@ -100,9 +105,19 @@ class RedwoodBuildPlugin : Plugin<Project> {
           // Avoid 'build' folders within test fixture projects which may contain generated sources.
           it.targetExclude("src/test/fixture/**/build/**")
         }
-        it.ktlint(libs.ktlint.get().version).editorConfigOverride(
-          mapOf("ktlint_standard_filename" to "disabled"),
-        )
+        it.ktlint(libs.ktlint.get().version)
+          .customRuleSets(
+            listOf(
+              libs.ktlintComposeRules.get().toString(),
+            ),
+          )
+          .editorConfigOverride(
+            mapOf(
+              "ktlint_standard_filename" to "disabled",
+              "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+              "ktlint_compose_compositionlocal-allowlist" to "disabled",
+            ),
+          )
         it.licenseHeaderFile(licenseHeaderFile)
       }
     }
@@ -116,9 +131,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
         }
         it.exceptionFormat = FULL
       }
-      // Force tests to always run to avoid caching issues.
-      // TODO Delete this! Anything not working is bad/missing task inputs or a bug.
-      task.outputs.upToDateWhen { false }
     }
   }
 
@@ -145,6 +157,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
         "-Xpartial-linkage=disable",
         // https://github.com/JetBrains/compose-multiplatform/issues/3418
         "-Xklib-enable-signature-clash-checks=false",
+        // Translate capturing lambdas into anonymous JS functions rather than hoisting parameters
+        // and creating a named sibling function. Only affects targets which produce actual JS.
+        "-Xir-generate-inline-anonymous-functions",
       )
     }
   }
@@ -169,10 +184,31 @@ class RedwoodBuildPlugin : Plugin<Project> {
       }
     }
 
-    // Disable the release build type because we never need it for sample applications.
+    plugins.withId("com.android.library") {
+      val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
+      androidComponents.beforeVariants {
+        // Disable the debug build type for libraries because we only publish release.
+        if (it.buildType == "debug") {
+          it.enable = false
+        }
+      }
+    }
+
     plugins.withId("com.android.application") {
-      val android = extensions.getByType(AndroidComponentsExtension::class.java)
-      android.beforeVariants {
+      val android = extensions.getByName("android") as BaseExtension
+      android.packagingOptions.apply {
+        // Keep native symbols for diagnosing sample application crashes.
+        doNotStrip("**/*.so")
+      }
+      android.buildTypes.apply {
+        // Libraries don't build debug so fall back to release.
+        getByName("debug") {
+          it.matchingFallbacks += "release"
+        }
+      }
+      val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
+      androidComponents.beforeVariants {
+        // Disable the release build type for sample applications because we never need it.
         if (it.buildType == "release") {
           it.enable = false
         }
@@ -183,7 +219,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
   private fun Project.configureCommonKotlin() {
     tasks.withType(KotlinCompile::class.java).configureEach {
       it.kotlinOptions.freeCompilerArgs += listOf(
-        "-progressive", // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+        // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
+        "-progressive",
+        "-Xexpect-actual-classes",
       )
     }
 
@@ -202,16 +240,30 @@ class RedwoodBuildPlugin : Plugin<Project> {
       it.targetCompatibility = javaVersion.toString()
     }
 
-    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-      val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
-
+    withKotlinPlugins {
       // Apply opt-in annotations everywhere except the test-app schema where we want to ensure the
       // generated code isn't relying on them (without also generating appropriate opt-ins).
       if (!path.startsWith(":test-app:schema:")) {
-        kotlin.sourceSets.configureEach {
+        sourceSets.configureEach {
+          it.languageSettings.optIn("app.cash.redwood.yoga.RedwoodYogaApi")
           it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
           it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
           it.languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+      }
+    }
+
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+      val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
+
+      // We set the JVM target (the bytecode version) above for all Kotlin-based Java bytecode
+      // compilations, but we also need to set the JDK API version for the Kotlin JVM targets to
+      // prevent linking against newer JDK APIs (the Android targets link against the android.jar).
+      kotlin.targets.withType(KotlinJvmTarget::class.java) { target ->
+        target.compilations.configureEach {
+          it.kotlinOptions.freeCompilerArgs += listOf(
+            "-Xjdk-release=$javaVersion",
+          )
         }
       }
 
@@ -224,7 +276,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       // Disable the release linking tasks because we never need it for iOS sample applications.
       // TODO Switch to https://youtrack.jetbrains.com/issue/KT-54424 when it is supported.
       kotlin.targets.withType(KotlinNativeTarget::class.java) { target ->
-        target.binaries.all {
+        target.binaries.configureEach {
           if (it.buildType == NativeBuildType.RELEASE) {
             it.linkTask.enabled = false
           }
@@ -253,7 +305,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       repositories {
         it.maven {
           it.name = "LocalMaven"
-          it.url = project.rootProject.buildDir.resolve("localMaven").toURI()
+          it.url = project.rootProject.layout.buildDirectory.asFile.get().resolve("localMaven").toURI()
         }
 
         // Want to push to an internal repository for testing?
@@ -289,7 +341,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         signAllPublications()
       }
 
-      coordinates(redwoodGroupId, project.name, redwoodVersion)
+      coordinates(REDWOOD_GROUP_ID, project.name, REDWOOD_VERSION)
 
       pom { pom ->
         pom.name.set(project.name)
@@ -331,18 +383,27 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     // Published modules should be explicit about their API visibility.
     var explicit = false
-    val kotlinPluginHandler: (Plugin<Any>) -> Unit = {
-      val kotlin = project.extensions.getByType(KotlinTopLevelExtension::class.java)
-      kotlin.explicitApi()
+    project.withKotlinPlugins {
+      explicitApi()
       explicit = true
     }
-    project.plugins.withId("org.jetbrains.kotlin.android", kotlinPluginHandler)
-    project.plugins.withId("org.jetbrains.kotlin.jvm", kotlinPluginHandler)
-    project.plugins.withId("org.jetbrains.kotlin.multiplatform", kotlinPluginHandler)
     project.afterEvaluate {
       check(explicit) {
         """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
       }
+    }
+
+    // Published modules should track their public API.
+    project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
+    val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
+    apiValidation.apply {
+      @OptIn(ExperimentalBCVApi::class)
+      klib.enabled = true
+
+      nonPublicMarkers += listOf(
+        // The yoga module is an implementation detail of our layouts.
+        "app.cash.redwood.yoga.RedwoodYogaApi",
+      )
     }
   }
 
@@ -406,7 +467,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         it.isCanBeResolved = false
         it.isCanBeConsumed = true
         it.attributes {
-          it.attribute(ziplineAttribute, ziplineAttributeValue)
+          it.attribute(ziplineAttribute, ZIPLINE_ATTRIBUTE_VALUE)
         }
       }
       project.artifacts.add(ziplineConfiguration.name, zipTask)
@@ -429,7 +490,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         it.isCanBeResolved = true
         it.isCanBeConsumed = false
         it.attributes {
-          it.attribute(ziplineAttribute, ziplineAttributeValue)
+          it.attribute(ziplineAttribute, ZIPLINE_ATTRIBUTE_VALUE)
         }
       }
       project.dependencies.add(ziplineConfiguration.name, dependencyNotation)
@@ -450,4 +511,14 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 }
 
 private val ziplineAttribute = Attribute.of("zipline", String::class.java)
-private const val ziplineAttributeValue = "yep"
+private const val ZIPLINE_ATTRIBUTE_VALUE = "yep"
+
+private fun Project.withKotlinPlugins(block: KotlinProjectExtension.() -> Unit) {
+  val handler = Action<AppliedPlugin> {
+    val kotlin = extensions.getByName("kotlin") as KotlinProjectExtension
+    kotlin.block()
+  }
+  pluginManager.withPlugin("org.jetbrains.kotlin.android", handler)
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm", handler)
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform", handler)
+}

@@ -16,6 +16,7 @@
 package com.example.redwood.emojisearch.browser
 
 import app.cash.redwood.Modifier
+import com.example.redwood.emojisearch.modifier.Reuse
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
 import com.example.redwood.emojisearch.widget.Image
 import com.example.redwood.emojisearch.widget.Text
@@ -31,6 +32,8 @@ class HTMLElementEmojiSearchWidgetFactory(private val document: Document) : Emoj
   override fun TextInput(): TextInput<HTMLElement> = HtmlTextInput(document.createElement("input") as HTMLInputElement)
   override fun Text(): Text<HTMLElement> = HtmlText(document.createElement("span") as HTMLSpanElement)
   override fun Image(): Image<HTMLElement> = HtmlImage(document.createElement("img") as HTMLImageElement)
+  override fun Reuse(value: HTMLElement, modifier: Reuse) {
+  }
 }
 
 private class HtmlTextInput(

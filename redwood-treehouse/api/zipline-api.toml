@@ -9,6 +9,9 @@ functions = [
 
   # fun start(app.cash.redwood.treehouse.AppLifecycle.Host): kotlin.Unit
   "Xd61ecfL",
+
+  # val guestProtocolVersion: app.cash.redwood.protocol.RedwoodVersion
+  "0iFPbldz",
 ]
 
 [app.cash.redwood.treehouse.AppLifecycle.Host]
@@ -16,6 +19,9 @@ functions = [
 functions = [
   # fun close(): kotlin.Unit
   "moYx+T3e",
+
+  # fun handleUncaughtException(kotlin.Throwable): kotlin.Unit
+  "Hls+uhG7",
 
   # fun onUnknownEvent(app.cash.redwood.protocol.WidgetTag, app.cash.redwood.protocol.EventTag): kotlin.Unit
   "jmKreoSS",
@@ -25,6 +31,9 @@ functions = [
 
   # fun requestFrame(): kotlin.Unit
   "/TkBiP/u",
+
+  # val hostProtocolVersion: app.cash.redwood.protocol.RedwoodVersion
+  "4ifoT9Ua",
 ]
 
 [app.cash.redwood.treehouse.AppService]
@@ -66,8 +75,8 @@ functions = [
   # fun handleOnBackPressed(): kotlin.Unit
   "NjIN59uX",
 
-  # var isEnabled: kotlin.Boolean
-  "yKh+yo1c",
+  # val isEnabled: kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>
+  "TAJYS/cz",
 ]
 
 [app.cash.redwood.treehouse.OnBackPressedDispatcherService]
@@ -97,4 +106,26 @@ functions = [
 
   # fun start(app.cash.redwood.treehouse.ChangesSinkService, kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>, app.cash.redwood.treehouse.StateSnapshot): kotlin.Unit
   "FiVQXMQW",
+
+  # fun start(app.cash.redwood.treehouse.ZiplineTreehouseUi.Host): kotlin.Unit
+  "h9yZr91W",
+]
+
+[app.cash.redwood.treehouse.ZiplineTreehouseUi.Host]
+
+functions = [
+  # fun addOnBackPressedCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService): app.cash.redwood.treehouse.CancellableService
+  "2nRsPBzK",
+
+  # fun close(): kotlin.Unit
+  "moYx+T3e",
+
+  # fun sendChanges(kotlin.collections.List): kotlin.Unit
+  "W8qOuU0t",
+
+  # val stateSnapshot: app.cash.redwood.treehouse.StateSnapshot
+  "hIDyr4lf",
+
+  # val uiConfigurations: kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>
+  "iAkCX7gg",
 ]

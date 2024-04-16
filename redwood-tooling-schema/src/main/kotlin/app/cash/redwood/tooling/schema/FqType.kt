@@ -73,8 +73,11 @@ public data class FqType(
 
   override fun toString(): String = buildString {
     when (variance) {
-      Invariant -> Unit // Nothing to do.
+      // Nothing to do.
+      Invariant -> Unit
+
       In -> append("in ")
+
       Out -> append("out ")
     }
     if (names[0] != "") {
@@ -134,15 +137,25 @@ internal fun KClass<*>.toFqType(): FqType {
   // (i.e., a parent) and the normal algorithm will fail.
   val names = when (qualifiedName) {
     "kotlin.Boolean.Companion" -> listOf("kotlin", "Boolean", "Companion")
+
     "kotlin.Byte.Companion" -> listOf("kotlin", "Byte", "Companion")
+
     "kotlin.Char.Companion" -> listOf("kotlin", "Char", "Companion")
+
     "kotlin.Double.Companion" -> listOf("kotlin", "Double", "Companion")
+
     "kotlin.Enum.Companion" -> listOf("kotlin", "Enum", "Companion")
+
     "kotlin.Float.Companion" -> listOf("kotlin", "Float", "Companion")
+
     "kotlin.Int.Companion" -> listOf("kotlin", "Int", "Companion")
+
     "kotlin.Long.Companion" -> listOf("kotlin", "Long", "Companion")
+
     "kotlin.Short.Companion" -> listOf("kotlin", "Short", "Companion")
+
     "kotlin.String.Companion" -> listOf("kotlin", "String", "Companion")
+
     else -> {
       val names = ArrayDeque<String>()
       var target: Class<*>? = java

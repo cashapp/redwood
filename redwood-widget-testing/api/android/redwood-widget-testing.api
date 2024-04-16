@@ -1,0 +1,23 @@
+public abstract class app/cash/redwood/widget/testing/AbstractWidgetChildrenTest {
+	public fun <init> ()V
+	public final fun childrenInstanceDoesNotChange ()V
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun insertAppend ()V
+	public final fun insertPrepend ()V
+	public final fun insertRandom ()V
+	public final fun moveMultipleBackward ()V
+	public final fun moveMultipleForward ()V
+	public final fun moveSingleBackward ()V
+	public final fun moveSingleComposeApplierDocumentation ()V
+	public final fun moveSingleForward ()V
+	public final fun moveZero ()V
+	public abstract fun names ()Ljava/util/List;
+	public final fun removeMultipleEnd ()V
+	public final fun removeMultipleStart ()V
+	public final fun removeSingleEnd ()V
+	public final fun removeSingleStart ()V
+	public final fun removeZero ()V
+	public final fun replace ()V
+	public abstract fun widget (Ljava/lang/String;)Ljava/lang/Object;
+}
+

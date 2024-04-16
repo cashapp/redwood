@@ -22,19 +22,18 @@ import platform.darwin.NSInteger
 
 @ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
-  private val parent: UIView,
-  private val insert: (UIView, Int) -> Unit = when (parent) {
-    is UIStackView -> { view, index -> parent.insertArrangedSubview(view, index.convert()) }
-    else -> { view, index -> parent.insertSubview(view, index.convert<NSInteger>()) }
+  private val container: UIView,
+  private val insert: (UIView, Int) -> Unit = when (container) {
+    is UIStackView -> { view, index -> container.insertArrangedSubview(view, index.convert()) }
+    else -> { view, index -> container.insertSubview(view, index.convert<NSInteger>()) }
   },
-  private val remove: (index: Int, count: Int) -> Array<UIView> = { index, count ->
-    Array(count) {
-      parent.typedSubviews[index].also(UIView::removeFromSuperview)
-    }
+  private val remove: (index: Int, count: Int) -> Array<UIView> = when (container) {
+    is UIStackView -> { index, count -> container.typedArrangedSubviews.remove(index, count) }
+    else -> { index, count -> container.typedSubviews.remove(index, count) }
   },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
-  public val widgets: List<Widget<UIView>> get() = _widgets
+  override val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.add(index, widget)
@@ -65,11 +64,17 @@ public class UIViewChildren(
     invalidate()
   }
 
-  override fun onModifierUpdated() {
+  override fun onModifierUpdated(index: Int, widget: Widget<UIView>) {
     invalidate()
   }
 
   private fun invalidate() {
-    (parent.superview ?: parent).setNeedsLayout()
+    (container.superview ?: container).setNeedsLayout()
+  }
+}
+
+private fun List<UIView>.remove(index: Int, count: Int): Array<UIView> {
+  return Array(count) { offset ->
+    this[index + offset].also(UIView::removeFromSuperview)
   }
 }

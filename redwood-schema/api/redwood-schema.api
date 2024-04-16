@@ -1,0 +1,35 @@
+public abstract interface annotation class app/cash/redwood/schema/Children : java/lang/annotation/Annotation {
+	public abstract fun tag ()I
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Default : java/lang/annotation/Annotation {
+	public abstract fun expression ()Ljava/lang/String;
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Modifier : java/lang/annotation/Annotation {
+	public abstract fun scopes ()[Ljava/lang/Class;
+	public abstract fun tag ()I
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Property : java/lang/annotation/Annotation {
+	public abstract fun tag ()I
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Schema : java/lang/annotation/Annotation {
+	public abstract fun dependencies ()[Lapp/cash/redwood/schema/Schema$Dependency;
+	public abstract fun members ()[Ljava/lang/Class;
+	public abstract fun reservedModifiers ()[I
+	public abstract fun reservedWidgets ()[I
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Schema$Dependency : java/lang/annotation/Annotation {
+	public abstract fun schema ()Ljava/lang/Class;
+	public abstract fun tag ()I
+}
+
+public abstract interface annotation class app/cash/redwood/schema/Widget : java/lang/annotation/Annotation {
+	public abstract fun reservedChildren ()[I
+	public abstract fun reservedProperties ()[I
+	public abstract fun tag ()I
+}
+

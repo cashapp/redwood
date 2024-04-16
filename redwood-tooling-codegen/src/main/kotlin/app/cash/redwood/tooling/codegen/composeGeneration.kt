@@ -23,6 +23,7 @@ import app.cash.redwood.tooling.schema.Widget
 import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -32,7 +33,6 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
@@ -46,7 +46,7 @@ fun Row(
   modifier: Modifier = Modifier,
   children: @Composable @SunspotComposable RowScope.() -> Unit,
 ): Unit {
-  RedwoodComposeNode<SunspotWidgetFactoryProvider<*>, Row<*>>(
+  RedwoodComposeNode<SunspotWidgetFactoryProvider<Any>, Row<Any>, Any>(
     factory = { it.RedwoodLayout.Row() },
     update = {
       set(modifier, WidgetNode.SetModifiers)
@@ -54,7 +54,7 @@ fun Row(
       set(overflow) { recordChanged(); widget.overflow(it) }
     },
     content = {
-      into(Row<*>::children) {
+      Children(Row<Any>::children) {
         RowScopeImpl.children()
       }
     },
@@ -65,22 +65,17 @@ internal fun generateComposable(
   schema: Schema,
   widget: Widget,
 ): FileSpec {
-  val widgetType = schema.widgetType(widget).parameterizedBy(STAR)
+  val widgetType = schema.widgetType(widget).parameterizedBy(ANY)
   val flatName = widget.type.flatName
   return FileSpec.builder(schema.composePackage(), flatName)
+    .addAnnotation(suppressDeprecations)
     .addFunction(
       FunSpec.builder(flatName)
         .addAnnotation(ComposeRuntime.Composable)
-        .addAnnotation(Redwood.OptInToRedwoodCodegenApi)
+        .optIn(Redwood.RedwoodCodegenApi)
+        .maybeAddKDoc(widget.documentation)
+        .maybeAddDeprecation(widget.deprecation)
         .apply {
-          widget.documentation?.let { documentation ->
-            addKdoc(documentation)
-          }
-
-          widget.deprecation?.let { deprecation ->
-            addAnnotation(deprecation.toAnnotationSpec())
-          }
-
           // Set the layout modifier as the last non-child lambda in the function signature.
           // This ensures you can still use trailing lambda syntax.
           val modifierIndex = widget.traits.indexOfLast { it !is Children } + 1
@@ -102,35 +97,26 @@ internal fun generateComposable(
               when (trait) {
                 is Property -> {
                   ParameterSpec.builder(trait.name, trait.type.asTypeName())
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
+
                 is Event -> {
                   ParameterSpec.builder(trait.name, trait.lambdaType)
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
+
                 is Children -> {
                   val scope = trait.scope?.let { ClassName(schema.composePackage(), it.flatName) }
                   ParameterSpec.builder(trait.name, composableLambda(scope))
-                    .apply {
-                      trait.defaultExpression?.let { defaultValue(it) }
-                      trait.documentation?.let { documentation ->
-                        addKdoc(documentation)
-                      }
-                    }
+                    .maybeAddKDoc(trait.documentation)
+                    .maybeDefaultValue(trait.defaultExpression)
                     .build()
                 }
+
                 is ProtocolTrait -> throw AssertionError()
               },
             )
@@ -138,7 +124,6 @@ internal fun generateComposable(
           }
 
           val updateLambda = CodeBlock.builder()
-            .add("set(modifier, %T.SetModifiers)\n", RedwoodCompose.WidgetNode)
 
           val childrenLambda = CodeBlock.builder()
           for (trait in widget.traits) {
@@ -148,9 +133,10 @@ internal fun generateComposable(
               -> {
                 updateLambda.add("set(%1N) { recordChanged(); widget.%1N(it) }\n", trait.name)
               }
+
               is Children -> {
                 childrenLambda.apply {
-                  add("into(%T::%N) {\n", widgetType, trait.name)
+                  add("Children(%T::%N) {\n", widgetType, trait.name)
                   indent()
                   trait.scope?.let { scope ->
                     add("%T.", ClassName(schema.composePackage(), scope.flatName + "Impl"))
@@ -160,9 +146,13 @@ internal fun generateComposable(
                   add("}\n")
                 }
               }
+
               is ProtocolTrait -> throw AssertionError()
             }
           }
+
+          // Set all properties then the modifiers.
+          updateLambda.add("set(modifier, %T.SetModifiers)\n", RedwoodCompose.WidgetNode)
 
           val arguments = listOf(
             CodeBlock.of("factory = { it.%N.%N() }", schema.type.flatName, flatName),
@@ -183,10 +173,11 @@ internal fun generateComposable(
           )
 
           addStatement(
-            "%M<%T, %T>(%L)",
+            "%M<%T, %T, %T>(%L)",
             RedwoodCompose.RedwoodComposeNode,
-            schema.getWidgetFactoryProviderType().parameterizedBy(STAR),
+            schema.getWidgetFactoryOwnerType().parameterizedBy(ANY),
             widgetType,
+            ANY,
             arguments.joinToCode(",\n", "\n", ",\n"),
           )
         }
@@ -205,29 +196,48 @@ interface RowScope {
 
 internal object RowScopeImpl : RowScope
 */
-internal fun generateScope(schema: Schema, scope: FqType): FileSpec {
+internal fun generateModifierScope(schema: Schema, scope: FqType): FileSpec {
   val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
+  val modifiers = schema.modifiers.filter { scope in it.scopes }
   return FileSpec.builder(scopeType)
+    .addAnnotation(suppressDeprecations)
     .apply {
-      val scopeBuilder = TypeSpec.interfaceBuilder(scopeType)
-        .addAnnotation(Redwood.LayoutScopeMarker)
-
-      for (modifier in schema.modifiers) {
-        if (scope !in modifier.scopes) {
-          continue
-        }
-
-        scopeBuilder.addFunction(generateModifierFunction(schema, modifier))
-      }
-
-      addType(scopeBuilder.build())
+      addType(
+        TypeSpec.interfaceBuilder(scopeType)
+          .addAnnotation(Redwood.LayoutScopeMarker)
+          .apply {
+            for (modifier in modifiers) {
+              addFunction(generateModifierFunction(schema, modifier))
+            }
+          }
+          .build(),
+      )
       addType(
         TypeSpec.objectBuilder(scopeName + "Impl")
           .addModifiers(INTERNAL)
           .addSuperinterface(scopeType)
           .build(),
       )
+    }
+    .build()
+}
+
+/*
+@Stable
+fun Modifier.something(...): Modifier {
+  return then(SomethingImpl(...))
+}
+*/
+internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
+  if (schema.unscopedModifiers.isEmpty()) return null
+
+  return FileSpec.builder(schema.composePackage(), "unscoped")
+    .addAnnotation(suppressDeprecations)
+    .apply {
+      for (modifier in schema.unscopedModifiers) {
+        addFunction(generateModifierFunction(schema, modifier))
+      }
     }
     .build()
 }
@@ -243,6 +253,7 @@ internal fun generateModifierImpls(schema: Schema): FileSpec? {
   if (schema.modifiers.isEmpty()) return null
 
   return FileSpec.builder(schema.composePackage(), "modifier")
+    .addAnnotation(suppressDeprecations)
     .apply {
       for (modifier in schema.modifiers) {
         addType(generateModifierImpl(schema, modifier))
@@ -260,23 +271,16 @@ private fun generateModifierFunction(
     .addAnnotation(ComposeRuntime.Stable)
     .receiver(Redwood.Modifier)
     .returns(Redwood.Modifier)
+    .maybeAddKDoc(modifier.documentation)
     .apply {
-      modifier.documentation?.let { documentation ->
-        addKdoc(documentation)
-      }
-
       val arguments = mutableListOf<CodeBlock>()
       for (property in modifier.properties) {
         arguments += CodeBlock.of("%N", property.name)
 
         addParameter(
           ParameterSpec.builder(property.name, property.type.asTypeName())
-            .apply {
-              property.defaultExpression?.let { defaultValue(it) }
-              property.documentation?.let { documentation ->
-                addKdoc(documentation)
-              }
-            }
+            .maybeAddKDoc(property.documentation)
+            .maybeDefaultValue(property.defaultExpression)
             .build(),
         )
       }
@@ -323,4 +327,8 @@ private fun generateModifierImpl(
     .addFunction(modifierHashCode(modifier))
     .addFunction(modifierToString(modifier))
     .build()
+}
+
+private fun Schema.modifierImpl(modifier: Modifier): ClassName {
+  return ClassName(composePackage(), modifier.type.flatName + "Impl")
 }

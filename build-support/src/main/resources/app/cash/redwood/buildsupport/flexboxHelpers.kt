@@ -18,6 +18,7 @@ package com.example
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.modifier.Flex as FlexModifier
 import app.cash.redwood.layout.modifier.Grow as GrowModifier
 import app.cash.redwood.layout.modifier.Height as HeightModifier
 import app.cash.redwood.layout.modifier.HorizontalAlignment as HorizontalAlignmentModifier
@@ -26,11 +27,37 @@ import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.Size as SizeModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.modifier.Width as WidthModifier
+import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.AlignSelf
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
+
+internal interface YogaFlexContainer<W : Any> : FlexContainer<W> {
+  val rootNode: Node
+  val density: Density
+
+  override fun margin(margin: Margin) {
+    with(rootNode) {
+      with(density) {
+        marginStart = margin.start.toPx().toFloat()
+        marginEnd = margin.end.toPx().toFloat()
+        marginTop = margin.top.toPx().toFloat()
+        marginBottom = margin.bottom.toPx().toFloat()
+      }
+    }
+  }
+
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    rootNode.alignItems = crossAxisAlignment.toAlignItems()
+  }
+
+  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
+  }
+}
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
   MainAxisAlignment.Start -> JustifyContent.FlexStart
@@ -59,36 +86,43 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
 }
 
 internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
-  parentModifier.forEach { childModifier ->
+  parentModifier.forEachScoped { childModifier ->
     when (childModifier) {
       is GrowModifier -> {
         flexGrow = childModifier.value.toFloat()
       }
+
       is ShrinkModifier -> {
         flexShrink = childModifier.value.toFloat()
       }
+
       is MarginModifier -> with(density) {
         marginStart = childModifier.margin.start.toPx().toFloat()
         marginEnd = childModifier.margin.end.toPx().toFloat()
         marginTop = childModifier.margin.top.toPx().toFloat()
         marginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
+
       is HorizontalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
       }
+
       is VerticalAlignmentModifier -> {
         alignSelf = childModifier.alignment.toAlignSelf()
       }
+
       is WidthModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
         requestedMinWidth = width
         requestedMaxWidth = width
       }
+
       is HeightModifier -> with(density) {
         val height = childModifier.height.toPx().toFloat()
         requestedMinHeight = height
         requestedMaxHeight = height
       }
+
       is SizeModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
         requestedMinWidth = width
@@ -96,6 +130,13 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
         val height = childModifier.height.toPx().toFloat()
         requestedMinHeight = height
         requestedMaxHeight = height
+      }
+
+      is FlexModifier -> {
+        val flex = childModifier.value.coerceAtLeast(0.0).toFloat()
+        flexGrow = flex
+        flexShrink = 1.0f
+        flexBasis = if (flex > 0) 0.0f else -1.0f
       }
     }
   }

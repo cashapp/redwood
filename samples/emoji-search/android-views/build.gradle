@@ -6,15 +6,26 @@ redwoodBuild {
 }
 
 android {
-  namespace "com.example.redwood.emojisearch.android.views"
+  namespace 'com.example.redwood.emojisearch.android.views'
+
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  buildFeatures {
+    // Needed to pass application ID to UIAutomator tests.
+    buildConfig = true
+  }
 }
 
 dependencies {
   implementation libs.coil.core
+  implementation libs.coil.network.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
+  implementation projects.samples.emojiSearch.schema.modifiers
   implementation projects.samples.emojiSearch.schema.widget.protocol
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
@@ -23,4 +34,7 @@ dependencies {
   implementation projects.redwoodTreehouse
   implementation projects.redwoodTreehouseHost
   implementation libs.okio.assetfilesystem
+
+  androidTestImplementation libs.androidx.test.runner
+  androidTestImplementation projects.samples.emojiSearch.androidTests
 }

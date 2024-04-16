@@ -1,0 +1,70 @@
+import app.cash.redwood.buildsupport.ComposeHelpers
+import app.cash.redwood.buildsupport.KmpTargets
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.gmazzo.buildconfig'
+
+redwoodBuild {
+  composeCompiler()
+  publishing()
+}
+
+kotlin {
+  KmpTargets.addAllTargets(project)
+
+  sourceSets {
+    commonMain {
+      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.guest'))
+      dependencies {
+        api projects.redwoodProtocol
+        api projects.redwoodCompose
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
+        implementation libs.kotlinx.coroutines.test
+        implementation projects.redwoodLazylayoutCompose
+        implementation projects.redwoodTesting
+        implementation projects.testApp.schema.compose
+        implementation projects.testApp.schema.composeProtocol
+      }
+    }
+    nonJsMain {
+      dependsOn(commonMain)
+    }
+    androidMain {
+      dependsOn(nonJsMain)
+    }
+    jvmMain {
+      dependsOn(nonJsMain)
+    }
+    nativeMain {
+      dependsOn(nonJsMain)
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.protocol.compose'
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+}
+
+buildConfig {
+  useKotlinOutput {
+    topLevelConstants = true
+  }
+
+  className("Version")
+  packageName('app.cash.redwood.protocol.guest')
+  buildConfigField(
+    "app.cash.redwood.protocol.RedwoodVersion",
+    "guestRedwoodVersion",
+    "RedwoodVersion(\"${project.version}\")",
+  )
+}

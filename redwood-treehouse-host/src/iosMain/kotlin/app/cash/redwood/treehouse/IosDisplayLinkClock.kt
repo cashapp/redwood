@@ -21,24 +21,19 @@ import kotlinx.coroutines.launch
 import platform.posix.CLOCK_MONOTONIC_RAW
 import platform.posix.clock_gettime_nsec_np
 
-internal class IosDisplayLinkClock : FrameClock {
-  private lateinit var scope: CoroutineScope
-  private lateinit var dispatchers: TreehouseDispatchers
-  private lateinit var displayLinkTarget: DisplayLinkTarget
-
+internal class IosDisplayLinkClock private constructor(
+  private val scope: CoroutineScope,
+  private val dispatchers: TreehouseDispatchers,
+) : FrameClock {
   /** Non-null if we're expecting a call to [AppLifecycle.sendFrame]. */
   private var appLifecycle: AppLifecycle? = null
 
-  override fun start(scope: CoroutineScope, dispatchers: TreehouseDispatchers) {
-    this.scope = scope
-    this.dispatchers = dispatchers
-    this.displayLinkTarget = DisplayLinkTarget {
-      unsubscribe()
-      scope.launch(dispatchers.zipline) {
-        val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
-        appLifecycle?.sendFrame(nanos)
-        appLifecycle = null
-      }
+  private val displayLinkTarget = DisplayLinkTarget {
+    unsubscribe()
+    scope.launch(dispatchers.zipline) {
+      val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
+      appLifecycle?.sendFrame(nanos)
+      appLifecycle = null
     }
   }
 
@@ -47,5 +42,12 @@ internal class IosDisplayLinkClock : FrameClock {
     scope.launch(dispatchers.ui) {
       displayLinkTarget.subscribe()
     }
+  }
+
+  companion object : FrameClock.Factory {
+    override fun create(
+      scope: CoroutineScope,
+      dispatchers: TreehouseDispatchers,
+    ) = IosDisplayLinkClock(scope, dispatchers)
   }
 }

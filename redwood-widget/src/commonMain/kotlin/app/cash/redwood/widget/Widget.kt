@@ -38,10 +38,6 @@ public interface Widget<W : Any> {
    */
   public var modifier: Modifier
 
-  /** Marker interface for types whose properties expose factories of [Widget]s. */
-  @Suppress("unused") // This type parameter used to match against other types like Children.
-  public interface Provider<W : Any>
-
   /**
    * An interface for manipulating a widget's list of children.
    *
@@ -49,6 +45,12 @@ public interface Widget<W : Any> {
    * list. No additional validation needs to be performed (for example, checking index bounds).
    */
   public interface Children<W : Any> {
+    /**
+     * A view of current child widgets.
+     * This list will change its contents as the mutator functions below are invoked.
+     */
+    public val widgets: List<Widget<W>>
+
     /** Insert child [widget] at [index]. */
     public fun insert(index: Int, widget: Widget<W>)
 
@@ -66,6 +68,6 @@ public interface Widget<W : Any> {
     public fun remove(index: Int, count: Int)
 
     /** Indicates that [Modifier]s for the child widgets have changed. */
-    public fun onModifierUpdated()
+    public fun onModifierUpdated(index: Int, widget: Widget<W>)
   }
 }

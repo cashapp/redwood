@@ -27,6 +27,7 @@ import app.cash.redwood.schema.Schema
     // Next tag: 5
 
     // Modifiers
+    Flex::class,
     Grow::class,
     Height::class,
     HorizontalAlignment::class,
@@ -35,7 +36,7 @@ import app.cash.redwood.schema.Schema
     Size::class,
     VerticalAlignment::class,
     Width::class,
-    // Next tag: 9
+    // Next tag: 10
   ],
 )
 public interface RedwoodLayout

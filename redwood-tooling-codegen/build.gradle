@@ -14,4 +14,5 @@ dependencies {
   testImplementation projects.testApp.schema.compose
   testImplementation libs.junit
   testImplementation libs.assertk
+  testImplementation libs.testParameterInjector
 }

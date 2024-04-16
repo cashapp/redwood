@@ -17,7 +17,6 @@ package app.cash.redwood.lazylayout.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
@@ -27,6 +26,9 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -49,11 +51,23 @@ class ViewLazyListTest(
     supportsRtl = true,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ViewTestFlexContainer(paparazzi.context, direction)
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): TestFlexContainer<View> {
+    return ViewTestFlexContainer(paparazzi.context, direction, backgroundColor)
+  }
 
-  override fun widget() = object : Text<View> {
+  override fun row(): Row<View> {
+    return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Row()
+  }
+
+  override fun column(): Column<View> {
+    return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
+  }
+
+  override fun text() = object : Text<View> {
     override val value = TextView(paparazzi.context).apply {
-      background = ColorDrawable(Color.GREEN)
       textSize = 18f
       setTextColor(Color.BLACK)
     }
@@ -63,9 +77,13 @@ class ViewLazyListTest(
     override fun text(text: String) {
       value.text = text
     }
+
+    override fun bgColor(color: Int) {
+      value.setBackgroundColor(color)
+    }
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<View>, name: String?) {
+  override fun verifySnapshot(container: Widget<View>, name: String?) {
     paparazzi.snapshot(container.value, name)
   }
 
@@ -74,10 +92,10 @@ class ViewLazyListTest(
   ) : TestFlexContainer<View>, LazyList<View> by delegate, ChangeListener by delegate {
     private var childCount = 0
 
-    constructor(context: Context, direction: FlexDirection) : this(
+    constructor(context: Context, direction: FlexDirection, backgroundColor: Int) : this(
       ViewLazyList(context).apply {
         isVertical(direction == FlexDirection.Column)
-        value.setBackgroundColor(Color.argb(51, 0, 0, 255))
+        value.setBackgroundColor(backgroundColor)
       },
     )
 
@@ -85,7 +103,17 @@ class ViewLazyListTest(
     }
 
     override fun add(widget: Widget<View>) {
-      delegate.items.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<View>) {
+      delegate.items.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.items.remove(index = index, count = 1)
+      childCount--
     }
   }
 }

@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.github.gmazzo.buildconfig'
+apply plugin: 'com.android.lint'
 
 // This module is included in two projects:
 // - In the root project where it's released as one of our artifacts
@@ -40,6 +41,8 @@ dependencies {
   testImplementation libs.testParameterInjector
   testImplementation libs.assertk
   testImplementation gradleTestKit()
+
+  lintChecks libs.androidx.gradlePluginLints
 }
 
 gradlePlugin {
@@ -80,6 +83,18 @@ gradlePlugin {
       description = "Redwood schema layout modifier code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodModifiersGeneratorPlugin"
     }
+    redwoodProtocolGuestGenerator {
+      id = "app.cash.redwood.generator.protocol.guest"
+      displayName = "Redwood generator (guest protocol)"
+      description = "Redwood schema guest protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodProtocolGuestGeneratorPlugin"
+    }
+    redwoodProtocolHostGenerator {
+      id = "app.cash.redwood.generator.protocol.host"
+      displayName = "Redwood generator (host protocol)"
+      description = "Redwood schema host protocol code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodProtocolHostGeneratorPlugin"
+    }
     redwoodTestingGenerator {
       id = "app.cash.redwood.generator.testing"
       displayName = "Redwood generator (testing)"
@@ -105,8 +120,8 @@ test {
   dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol:publishAllPublicationsToLocalMavenRepository')
-  dependsOn(':redwood-protocol-compose:publishAllPublicationsToLocalMavenRepository')
-  dependsOn(':redwood-protocol-widget:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-protocol-guest:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-protocol-host:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-runtime:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-schema:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-tooling-codegen:publishAllPublicationsToLocalMavenRepository')

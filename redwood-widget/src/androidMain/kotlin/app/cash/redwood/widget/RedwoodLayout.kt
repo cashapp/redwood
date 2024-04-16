@@ -52,9 +52,13 @@ public open class RedwoodLayout(
     object : RedwoodOnBackPressedDispatcher {
       override fun addCallback(onBackPressedCallback: RedwoodOnBackPressedCallback): Cancellable {
         val androidOnBackPressedCallback = onBackPressedCallback.toAndroid()
+        onBackPressedCallback.enabledChangedCallback = {
+          androidOnBackPressedCallback.isEnabled = onBackPressedCallback.isEnabled
+        }
         androidOnBackPressedDispatcher.addCallback(androidOnBackPressedCallback)
         return object : Cancellable {
           override fun cancel() {
+            onBackPressedCallback.enabledChangedCallback = null
             androidOnBackPressedCallback.remove()
           }
         }

@@ -18,9 +18,9 @@ package com.example.redwood.emojisearch.treehouse
 import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import com.example.redwood.emojisearch.compose.EmojiSearchProtocolBridge
 import com.example.redwood.emojisearch.presenter.EmojiSearchTreehouseUi
 import com.example.redwood.emojisearch.presenter.Navigator
+import com.example.redwood.emojisearch.protocol.guest.EmojiSearchProtocolBridge
 import kotlinx.serialization.json.Json
 
 class RealEmojiSearchPresenter(

@@ -16,13 +16,13 @@
 package app.cash.redwood.lazylayout.compose
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.lazylayout.widget.LazyListValue
+import app.cash.redwood.lazylayout.testing.LazyListValue
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.widget.TestSchemaTester
-import com.example.redwood.testing.widget.TextValue
+import com.example.redwood.testing.testing.TestSchemaTester
+import com.example.redwood.testing.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -41,7 +41,7 @@ class LazyListTest {
         assertThat(lazyList.itemsAfter).isEqualTo(0)
         assertThat(lazyList.items).isEmpty()
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
       }
     }
   }
@@ -76,7 +76,7 @@ class LazyListTest {
         assertThat(lazyList.itemsBefore).isEqualTo(0)
         assertThat(lazyList.itemsAfter).isEqualTo(expectedItemsAfter)
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
           .isEqualTo(List(expectedItemCount) { TextValue(Modifier, it.toString()) })
       }
@@ -104,10 +104,61 @@ class LazyListTest {
         assertThat(lazyList.itemsBefore).isEqualTo(35)
         assertThat(lazyList.itemsAfter).isEqualTo(25)
         assertThat(lazyList.placeholder)
-          .isEqualTo(List(30) { TextValue(Modifier, "Placeholder") })
+          .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
           .isEqualTo(List(40) { TextValue(Modifier, (it + 35).toString()) })
       }
+    }
+  }
+
+  @Test
+  fun scrollDoesNotTriggerRecompose() = runTest {
+    TestSchemaTester {
+      var index5ComposeCount = 0
+      setContent {
+        val lazyListState = rememberLazyListState().apply {
+          preloadBeforeItemCount = 0
+          preloadAfterItemCount = 0
+        }
+        LazyColumn(
+          state = lazyListState,
+          placeholder = { Text("Placeholder") },
+        ) {
+          items(100) {
+            if (it == 5) index5ComposeCount++
+            Text(it.toString())
+          }
+        }
+      }
+
+      // Initially, the item at index 5 is never composed.
+      val lazyList = awaitSnapshot().filterIsInstance<LazyListValue>().single()
+      assertThat(index5ComposeCount).isEqualTo(0)
+
+      // Growing the scroll window to include the preceding item doesn't change that.
+      lazyList.onViewportChanged(0, 4)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(0)
+
+      // But scrolling to include it causes the first composition.
+      lazyList.onViewportChanged(2, 6)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // Further scrolling doesn't cause it to be recomposed.
+      lazyList.onViewportChanged(4, 8)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // Even when it's scrolled off-screen.
+      lazyList.onViewportChanged(6, 10)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // But it's recomposed again when scrolled back on screen.
+      lazyList.onViewportChanged(4, 8)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(2)
     }
   }
 }

@@ -29,6 +29,7 @@ android {
   }
 
   buildFeatures {
+    // Needed to pass application ID to UIAutomator tests.
     buildConfig = true
   }
 }

@@ -19,6 +19,7 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * A UI built as an interactive widget tree, that may or may not be actively running, or bound to an
@@ -43,7 +44,7 @@ public interface Content {
    */
   public fun preload(
     onBackPressedDispatcher: OnBackPressedDispatcher,
-    uiConfiguration: UiConfiguration,
+    uiConfiguration: StateFlow<UiConfiguration>,
   )
 
   /**

@@ -1,0 +1,46 @@
+public abstract interface annotation class app/cash/redwood/lazylayout/compose/ExperimentalRedwoodLazyLayoutApi : java/lang/annotation/Annotation {
+}
+
+public final class app/cash/redwood/lazylayout/compose/LazyDslKt {
+	public static final fun LazyColumn-1Zbu240 (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/Modifier;Lapp/cash/redwood/lazylayout/compose/LazyListState;IILapp/cash/redwood/ui/Margin;ILkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LazyColumn-brZIKco (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/Modifier;Lapp/cash/redwood/lazylayout/compose/LazyListState;IILapp/cash/redwood/ui/Margin;IILkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;III)V
+	public static final fun LazyRow-1Zbu240 (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/Modifier;Lapp/cash/redwood/lazylayout/compose/LazyListState;IILapp/cash/redwood/ui/Margin;ILkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LazyRow-brZIKco (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/Modifier;Lapp/cash/redwood/lazylayout/compose/LazyListState;IILapp/cash/redwood/ui/Margin;IILkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;III)V
+	public static final fun items (Lapp/cash/redwood/lazylayout/compose/LazyListScope;Ljava/util/List;Lkotlin/jvm/functions/Function3;)V
+	public static final fun items (Lapp/cash/redwood/lazylayout/compose/LazyListScope;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun itemsIndexed (Lapp/cash/redwood/lazylayout/compose/LazyListScope;Ljava/util/List;Lkotlin/jvm/functions/Function4;)V
+	public static final fun itemsIndexed (Lapp/cash/redwood/lazylayout/compose/LazyListScope;[Ljava/lang/Object;Lkotlin/jvm/functions/Function4;)V
+}
+
+public final class app/cash/redwood/lazylayout/compose/LazyListKt {
+	public static final fun LazyList-X7zwUEk (ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Lapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+}
+
+public abstract interface class app/cash/redwood/lazylayout/compose/LazyListScope {
+	public abstract fun item (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun items (ILkotlin/jvm/functions/Function3;)V
+}
+
+public class app/cash/redwood/lazylayout/compose/LazyListState {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getFirstIndex ()I
+	public final fun getLastIndex ()I
+	public final fun getPreloadAfterItemCount ()I
+	public final fun getPreloadBeforeItemCount ()I
+	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public final fun onUserScroll (II)V
+	public final fun programmaticScroll (IZZ)V
+	public static synthetic fun programmaticScroll$default (Lapp/cash/redwood/lazylayout/compose/LazyListState;IZZILjava/lang/Object;)V
+	public final fun setPreloadAfterItemCount (I)V
+	public final fun setPreloadBeforeItemCount (I)V
+}
+
+public final class app/cash/redwood/lazylayout/compose/LazyListStateKt {
+	public static final fun rememberLazyListState (Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/lazylayout/compose/LazyListState;
+}
+
+public final class app/cash/redwood/lazylayout/compose/RefreshableLazyListKt {
+	public static final fun RefreshableLazyList-usczW4I (ZLkotlin/jvm/functions/Function2;IIZLkotlin/jvm/functions/Function0;IILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;ILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+}
+

@@ -15,6 +15,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        implementation projects.testApp.schema.modifiers
         implementation projects.testApp.schema.widget
         implementation projects.testApp.presenter
         implementation projects.redwoodLayoutDom

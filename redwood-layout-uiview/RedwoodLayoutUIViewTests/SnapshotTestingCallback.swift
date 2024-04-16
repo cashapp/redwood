@@ -12,6 +12,8 @@ final class SnapshotTestingCallback : UIViewSnapshotCallback {
     }
 
     func verifySnapshot(view: UIView, name: String?) {
-        assertSnapshot(of: view, as: .image, named: name, file: fileName, testName: testName)
+        // Set `record` to true to generate new snapshots. Be sure to revert that before committing!
+        // Note that tests always fail when `record` is true.
+        assertSnapshot(of: view, as: .image, named: name, record: false, file: fileName, testName: testName)
     }
 }

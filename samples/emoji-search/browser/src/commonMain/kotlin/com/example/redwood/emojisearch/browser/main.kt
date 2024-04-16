@@ -23,7 +23,7 @@ import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient
 import com.example.redwood.emojisearch.presenter.Navigator
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactories
+import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import kotlin.js.json
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -47,7 +47,7 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     view = content.asRedwoodView(),
-    provider = EmojiSearchWidgetFactories(
+    widgetSystem = EmojiSearchWidgetSystem(
       EmojiSearch = HTMLElementEmojiSearchWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),

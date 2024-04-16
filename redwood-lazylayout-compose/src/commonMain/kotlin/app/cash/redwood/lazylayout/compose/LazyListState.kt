@@ -17,12 +17,18 @@ package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
+private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
+
+/**
+ * Creates a [LazyListState] that is remembered across compositions.
+ */
 @Composable
 public fun rememberLazyListState(): LazyListState {
   return rememberSaveable(saver = saver) {
@@ -40,6 +46,11 @@ private val saver: Saver<LazyListState, *> = Saver(
   },
 )
 
+/**
+ * A state object that can be hoisted to control and observe scrolling.
+ *
+ * In most cases, this will be created via [rememberLazyListState].
+ */
 public open class LazyListState {
   /**
    * Update this to trigger a programmatic scroll. This may be updated multiple times, including
@@ -54,10 +65,16 @@ public open class LazyListState {
   private var userScrolled = false
 
   /** Bounds of what the user is looking at. Everything else is placeholders! */
-  public var firstIndex: Int by mutableStateOf(0)
+  public var firstIndex: Int by mutableIntStateOf(0)
     private set
-  public var lastIndex: Int by mutableStateOf(0)
+  public var lastIndex: Int by mutableIntStateOf(0)
     private set
+
+  /** How many items to load in anticipation of scrolling up. */
+  public var preloadBeforeItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+
+  /** How many items to load in anticipation of scrolling down. */
+  public var preloadAfterItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(

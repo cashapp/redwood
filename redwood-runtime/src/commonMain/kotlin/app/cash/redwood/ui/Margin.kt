@@ -33,9 +33,11 @@ public class Margin(
     start != end || top != bottom -> {
       "Margin(start=$start, end=$end, top=$top, bottom=$bottom)"
     }
+
     start != top -> {
       "Margin(horizontal=$start, vertical=$top)"
     }
+
     else -> "Margin(all=$start)"
   }
 

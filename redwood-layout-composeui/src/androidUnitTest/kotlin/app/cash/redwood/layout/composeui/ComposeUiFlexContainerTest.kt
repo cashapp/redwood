@@ -16,21 +16,13 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
@@ -52,27 +44,20 @@ class ComposeUiFlexContainerTest(
     supportsRtl = true,
   )
 
-  override fun flexContainer(direction: FlexDirection) = ComposeTestFlexContainer(direction)
-
-  override fun widget() = object : Text<@Composable () -> Unit> {
-    private var text by mutableStateOf("")
-
-    override val value = @Composable {
-      BasicText(
-        text = this.text,
-        style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color.Green),
-      )
-    }
-
-    override var modifier: RedwoodModifier = RedwoodModifier
-
-    override fun text(text: String) {
-      this.text = text
-    }
+  override fun flexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ): ComposeTestFlexContainer {
+    return ComposeTestFlexContainer(direction, backgroundColor)
   }
 
-  override fun verifySnapshot(container: TestFlexContainer<@Composable () -> Unit>, name: String?) {
+  override fun row() = flexContainer(FlexDirection.Row)
+
+  override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun text() = ComposeUiText()
+
+  override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
     paparazzi.snapshot(name) {
       container.value()
     }
@@ -83,14 +68,24 @@ class ComposeUiFlexContainerTest(
   ) : TestFlexContainer<@Composable () -> Unit>, FlexContainer<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
-    constructor(direction: FlexDirection) : this(
+    constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {
-        testOnlyModifier = Modifier.background(Color(0, 0, 255, 51))
+        testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
     )
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
-      delegate.children.insert(childCount++, widget)
+      addAt(childCount, widget)
+    }
+
+    override fun addAt(index: Int, widget: Widget<() -> Unit>) {
+      delegate.children.insert(index, widget)
+      childCount++
+    }
+
+    override fun removeAt(index: Int) {
+      delegate.children.remove(index = index, count = 1)
+      childCount--
     }
 
     override fun onEndChanges() {

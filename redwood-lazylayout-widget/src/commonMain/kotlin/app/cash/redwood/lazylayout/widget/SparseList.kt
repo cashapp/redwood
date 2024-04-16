@@ -74,6 +74,7 @@ internal class SparseList<T> : AbstractList<T?>() {
         }
         null
       }
+
       else -> {
         externalIndexes.removeAt(searchIndex)
         for (i in searchIndex until externalIndexes.size) {
@@ -93,7 +94,7 @@ internal class SparseList<T> : AbstractList<T?>() {
     }
   }
 
-  fun add(index: Int, value: T) {
+  fun add(index: Int, value: T?) {
     val insertIndex = insertIndex(index)
 
     val shiftFrom = when {
@@ -102,11 +103,38 @@ internal class SparseList<T> : AbstractList<T?>() {
         externalIndexes.add(insertIndex, index)
         insertIndex + 1
       }
+
       else -> insertIndex
     }
 
     for (i in shiftFrom until externalIndexes.size) {
       externalIndexes[i]++
+    }
+  }
+
+  /**
+   * Take [count] elements from [source] at [sourceIndex], add them to this at [index].
+   *
+   * This function is equivalent to repeated calls to [add], but more efficient.
+   */
+  fun addRange(index: Int, source: SparseList<T>, sourceIndex: Int, count: Int) {
+    val internalIndex = insertIndex(index)
+    val sourceFromIndex = source.insertIndex(sourceIndex)
+    val sourceToIndex = source.insertIndex(sourceIndex + count)
+
+    // Insert the new non-null elements.
+    elements.addAll(internalIndex, source.elements.subList(sourceFromIndex, sourceToIndex))
+
+    // Update the external indexes. We have to shift every index after internalIndex, so just
+    // rebuild externalIndexes from internalIndex.
+    val externalIndexesToAdjust = externalIndexes.subList(internalIndex, externalIndexes.size)
+    val externalIndexesToAdjustCopy = externalIndexesToAdjust.toTypedArray()
+    externalIndexesToAdjust.clear()
+    for (i in sourceFromIndex until sourceToIndex) {
+      externalIndexes.add(index + source.externalIndexes[i] - sourceIndex)
+    }
+    for (externalIndex in externalIndexesToAdjustCopy) {
+      externalIndexes.add(externalIndex + count)
     }
   }
 
@@ -155,12 +183,14 @@ internal class SparseList<T> : AbstractList<T?>() {
             nextExternalIndex++
             return
           }
+
           // Return a non-null element and bump the internal index.
           nextInternalIndex < elements.size -> {
             setNext(elements[nextInternalIndex])
             nextInternalIndex++
             nextExternalIndex++
           }
+
           else -> done()
         }
       }

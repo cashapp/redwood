@@ -24,6 +24,7 @@ import java.net.URLClassLoader
 import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY
+import org.jetbrains.kotlin.cli.common.GroupedKtSources
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.ERROR
@@ -34,7 +35,6 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.VfsBasedProjectEnvironment
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.GroupedKtSources
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerInput
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFir
@@ -56,7 +56,7 @@ import org.jetbrains.kotlin.fir.declarations.primaryConstructorIfAny
 import org.jetbrains.kotlin.fir.declarations.utils.classId
 import org.jetbrains.kotlin.fir.declarations.utils.isData
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
-import org.jetbrains.kotlin.fir.expressions.FirArrayOfCall
+import org.jetbrains.kotlin.fir.expressions.FirArrayLiteral
 import org.jetbrains.kotlin.fir.expressions.FirConstExpression
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirGetClassCall
@@ -64,7 +64,7 @@ import org.jetbrains.kotlin.fir.expressions.FirPropertyAccessExpression
 import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
-import org.jetbrains.kotlin.fir.expressions.builder.toAnnotationArgumentMapping
+import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
@@ -369,8 +369,8 @@ private fun FirContext.parseWidget(
   annotation: WidgetAnnotation,
 ): ParsedProtocolWidget {
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Widget $memberType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Widget $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
   val traits = if (firClass.isData) {
@@ -494,8 +494,8 @@ private fun FirContext.parseModifier(
   annotation: ModifierAnnotation,
 ): ParsedProtocolModifier {
   val tag = annotation.tag
-  require(tag in 1 until maxMemberTag) {
-    "@Modifier $memberType tag must be in range [1, $maxMemberTag): $tag"
+  require(tag in 1 until MAX_MEMBER_TAG) {
+    "@Modifier $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
   require(annotation.scopes.isNotEmpty()) {
     "@Modifier $memberType must have at least one scope."
@@ -515,7 +515,8 @@ private fun FirContext.parseModifier(
         name = name,
         documentation = documentation,
         type = parameterType,
-        isSerializable = false, // TODO Parse @Serializable on parameter type.
+        // TODO Parse @Serializable on parameter type.
+        isSerializable = false,
         defaultExpression = defaultAnnotation?.expression,
         deprecation = deprecation,
       )
@@ -556,7 +557,7 @@ private fun FirContext.findSchemaAnnotation(
     ?: return null
 
   val membersArray = annotation.argumentMapping
-    .mapping[Name.identifier("members")] as? FirArrayOfCall
+    .mapping[Name.identifier("members")] as? FirArrayLiteral
     ?: throw AssertionError(annotation.source?.text)
   val members = membersArray.argumentList
     .arguments
@@ -571,12 +572,17 @@ private fun FirContext.findSchemaAnnotation(
     }
 
   val dependenciesArray = annotation.argumentMapping
-    .mapping[Name.identifier("dependencies")] as? FirArrayOfCall
+    .mapping[Name.identifier("dependencies")] as? FirArrayLiteral
   val dependencies = dependenciesArray?.arguments.orEmpty()
     .map {
       val functionCall = it as? FirFunctionCall
         ?: throw AssertionError(annotation.source?.text)
-      val mapping = functionCall.argumentList.toAnnotationArgumentMapping().mapping
+      val mapping = (functionCall.argumentList as? FirResolvedArgumentList)
+        ?.let { list ->
+          list.mapping.entries.associate { (argument, parameter) ->
+            parameter.name to argument
+          }
+        } ?: emptyMap()
 
       @Suppress("UNCHECKED_CAST")
       val tagExpression = mapping[Name.identifier("tag")] as? FirConstExpression<Int>
@@ -744,7 +750,9 @@ private fun DeprecationAnnotation.toDeprecation(source: () -> String): ParsedDep
   return ParsedDeprecation(
     level = when (level) {
       "WARNING" -> Level.WARNING
+
       "ERROR" -> Level.ERROR
+
       else -> {
         throw IllegalArgumentException(
           "Schema deprecation does not support level $level: ${source()}",

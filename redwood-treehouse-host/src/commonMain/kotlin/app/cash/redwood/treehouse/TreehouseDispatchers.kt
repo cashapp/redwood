@@ -21,14 +21,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 /**
  * One of the trickiest things Treehouse needs to do is balance its two dispatchers:
  *
- *  * [ui] is the [CoroutineDispatcher] that runs on the platform's UI thread.
- *  * [zipline] is where downloaded code executes.
+ *  * [ui] executes dispatched tasks on the platform's UI thread.
+ *  * [zipline] executes dispatched tasks on the thread where downloaded code executes.
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
 @ObjCName("TreehouseDispatchers", exact = true)
 public interface TreehouseDispatchers {
   public val ui: CoroutineDispatcher
+
   public val zipline: CoroutineDispatcher
 
   /**

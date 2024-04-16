@@ -24,6 +24,7 @@ kotlin {
 
     androidUnitTest {
       dependencies {
+        implementation projects.redwoodLayoutComposeui
         implementation projects.redwoodLayoutSharedTest
         implementation libs.testParameterInjector
       }
