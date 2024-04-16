@@ -16,6 +16,7 @@
 package app.cash.redwood.protocol.guest
 
 import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
@@ -304,7 +306,7 @@ class ProtocolTest {
   }
 
   @Test fun entireSubtreeRemovedForLazyListPlaceholders() = runTest {
-    assertThat(removeSubtree(latestVersion, lazyList = true))
+    assertThat(removeSubtree(latestVersion, LazyListParent))
       .containsExactly(
         ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 1),
       )
@@ -316,7 +318,23 @@ class ProtocolTest {
    * introduced a crash. Special-case this by not synthesizing subtree removal for these children.
    */
   @Test fun entireSubtreeNotRemovedForLazyListPlaceholders() = runTest {
-    assertThat(removeSubtree(RedwoodVersion("0.9.0"), lazyList = true))
+    assertThat(removeSubtree(RedwoodVersion("0.9.0"), LazyListParent))
+      .containsExactly(
+        ChildrenChange.Remove(Id(2), ChildrenTag(2), 0, 1, listOf(Id(23))),
+        ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, 1, listOf(Id(2))),
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 1, listOf(Id(1))),
+      )
+  }
+
+  @Test fun entireSubtreeRemovedForRefreshableLazyListPlaceholders() = runTest {
+    assertThat(removeSubtree(latestVersion, RefreshableLazyListParent))
+      .containsExactly(
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 1),
+      )
+  }
+
+  @Test fun entireSubtreeNotRemovedForRefreshableLazyListPlaceholders() = runTest {
+    assertThat(removeSubtree(RedwoodVersion("0.9.0"), RefreshableLazyListParent))
       .containsExactly(
         ChildrenChange.Remove(Id(2), ChildrenTag(2), 0, 1, listOf(Id(23))),
         ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, 1, listOf(Id(2))),
@@ -326,7 +344,7 @@ class ProtocolTest {
 
   private suspend fun TestScope.removeSubtree(
     hostVersion: RedwoodVersion,
-    lazyList: Boolean = false,
+    parent: SubtreeParent = ColumnParent,
   ): List<Change> {
     val (composition, bridge) = testProtocolComposition(hostVersion)
 
@@ -335,20 +353,8 @@ class ProtocolTest {
     composition.setContent {
       if (!remove) {
         Row {
-          if (lazyList) {
-            LazyColumn(
-              placeholder = {
-                Text("placeholder")
-              },
-            ) {
-              item {
-                Button("Click?", onClick = { clicks++ })
-              }
-            }
-          } else {
-            Column {
-              Button("Click?", onClick = { clicks++ })
-            }
+          parent.Wrap {
+            Button("Click?", onClick = { clicks++ })
           }
         }
       }
@@ -389,5 +395,53 @@ class ProtocolTest {
       composition.cancel()
     }
     return composition to bridge
+  }
+
+  interface SubtreeParent {
+    @Composable
+    fun Wrap(content: @Composable () -> Unit)
+  }
+
+  object ColumnParent : SubtreeParent {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+      Column {
+        content()
+      }
+    }
+  }
+
+  object LazyListParent : SubtreeParent {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+      LazyColumn(
+        placeholder = {
+          Text("placeholder")
+        },
+      ) {
+        item {
+          content()
+        }
+      }
+    }
+  }
+
+  object RefreshableLazyListParent : SubtreeParent {
+    @OptIn(ExperimentalRedwoodLazyLayoutApi::class)
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+      LazyColumn(
+        refreshing = false,
+        onRefresh = {
+        },
+        placeholder = {
+          Text("placeholder")
+        },
+      ) {
+        item {
+          content()
+        }
+      }
+    }
   }
 }
