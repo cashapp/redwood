@@ -186,8 +186,7 @@ class ViewTreesTest {
       }
 
       val snapshot = awaitSnapshot()
-      val debugString = snapshot.toDebugString()
-      assertThat(debugString).isEqualTo("""
+      assertThat(snapshot.toDebugString()).isEqualTo("""
         |TestRowValue {
         |  TestRowValue {
         |    TextValue(
