@@ -30,7 +30,7 @@ kotlin {
         implementation libs.assertk
         implementation projects.testApp.schema.testing
         implementation projects.testApp.schema.compose
-        implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.protocolGuest
         implementation projects.testApp.schema.widgetProtocol
       }
     }
