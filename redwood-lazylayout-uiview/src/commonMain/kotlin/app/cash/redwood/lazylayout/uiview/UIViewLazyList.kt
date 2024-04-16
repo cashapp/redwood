@@ -375,8 +375,8 @@ internal class UIViewRefreshableLazyList : UIViewLazyList(), RefreshableLazyList
 }
 
 private fun UIColor(color: UInt): UIColor = UIColor(
-  alpha = ((color and 0xFF000000u) shr 24).toDouble(),
-  red = ((color and 0x00FF0000u) shr 16).toDouble(),
-  green = ((color and 0x0000FF00u) shr 8).toDouble(),
-  blue = (color and 0x000000FFu).toDouble(),
+  alpha = ((color and 0xFF000000u) shr 24).toDouble() / 255.0,
+  red = ((color and 0x00FF0000u) shr 16).toDouble() / 255.0,
+  green = ((color and 0x0000FF00u) shr 8).toDouble() / 255.0,
+  blue = (color and 0x000000FFu).toDouble() / 255.0,
 )
