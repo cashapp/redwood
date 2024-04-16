@@ -162,4 +162,44 @@ class ViewTreesTest {
       assertThat(second).containsExactly(TextValue(text = "Dark: true"))
     }
   }
+
+  @Test fun debugString() = runTest {
+    TestSchemaTester {
+      setContent {
+        TestRow {
+          TestRow {
+            Text("One Fish")
+            Text("Two Fish")
+          }
+          Text("Red Fish")
+        }
+        TestRow {
+          Text("Blue Fish")
+        }
+      }
+
+      val snapshot = awaitSnapshot()
+      val debugString = snapshot.toDebugString()
+      assertThat(debugString).isEqualTo("""
+        |TestRowValue {
+        |  TestRowValue {
+        |    TextValue(
+        |      text = One Fish
+        |    )
+        |    TextValue(
+        |      text = Two Fish
+        |    )
+        |  }
+        |  TextValue(
+        |    text = Red Fish
+        |  )
+        |}
+        |TestRowValue {
+        |  TextValue(
+        |    text = Blue Fish
+        |  )
+        |}
+        """.trimMargin())
+    }
+  }
 }
