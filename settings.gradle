@@ -86,11 +86,11 @@ include ':redwood-yoga'
 
 include ':test-app:schema'
 include ':test-app:schema:compose'
-include ':test-app:schema:protocol-guest'
 include ':test-app:schema:modifiers'
+include ':test-app:schema:protocol-guest'
+include ':test-app:schema:protocol-host'
 include ':test-app:schema:testing'
 include ':test-app:schema:widget'
-include ':test-app:schema:protocol-host'
 
 if (!hasProperty('redwoodNoApps')) {
   include ':test-app:android-views'
