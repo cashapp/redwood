@@ -29,7 +29,7 @@ kotlin {
         implementation projects.redwoodLazylayoutCompose
         implementation projects.redwoodTesting
         implementation projects.testApp.schema.compose
-        implementation projects.testApp.schema.composeProtocol
+        implementation projects.testApp.schema.protocolGuest
       }
     }
     nonJsMain {

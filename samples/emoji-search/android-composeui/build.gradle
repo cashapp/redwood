@@ -26,7 +26,7 @@ dependencies {
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
-  implementation projects.samples.emojiSearch.schema.widget.protocol
+  implementation projects.samples.emojiSearch.schema.protocolHost
   implementation projects.samples.emojiSearch.sharedComposeui
   implementation libs.androidx.activity.compose
   implementation libs.androidx.appCompat
