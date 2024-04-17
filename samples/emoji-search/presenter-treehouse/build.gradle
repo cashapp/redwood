@@ -31,7 +31,7 @@ kotlin {
       dependencies {
         api projects.redwoodTreehouseGuest
         api projects.samples.emojiSearch.presenter
-        implementation projects.samples.emojiSearch.schema.compose.protocol
+        implementation projects.samples.emojiSearch.schema.protocolGuest
       }
     }
   }

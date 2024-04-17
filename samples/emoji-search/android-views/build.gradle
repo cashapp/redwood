@@ -26,7 +26,7 @@ dependencies {
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
   implementation projects.samples.emojiSearch.schema.modifiers
-  implementation projects.samples.emojiSearch.schema.widget.protocol
+  implementation projects.samples.emojiSearch.schema.protocolHost
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation projects.redwoodLayoutView

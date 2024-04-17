@@ -1,7 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.protocol.guest'
 
-archivesBaseName = 'schema-compose-protocol'
+archivesBaseName = 'schema-protocol-guest'
 
 kotlin {
   js {
