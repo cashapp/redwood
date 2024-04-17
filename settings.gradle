@@ -90,7 +90,7 @@ include ':test-app:schema:protocol-guest'
 include ':test-app:schema:modifiers'
 include ':test-app:schema:testing'
 include ':test-app:schema:widget'
-include ':test-app:schema:widget-protocol'
+include ':test-app:schema:protocol-host'
 
 if (!hasProperty('redwoodNoApps')) {
   include ':test-app:android-views'

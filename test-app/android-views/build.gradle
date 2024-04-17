@@ -12,7 +12,7 @@ android {
 dependencies {
   implementation projects.testApp.launcher
   implementation projects.testApp.presenterTreehouse
-  implementation projects.testApp.schema.widgetProtocol
+  implementation projects.testApp.schema.protocolHost
   implementation projects.redwoodLayoutView
   implementation projects.redwoodLazylayoutView
   implementation libs.androidx.appCompat
