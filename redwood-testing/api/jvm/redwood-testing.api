@@ -30,10 +30,12 @@ public final class app/cash/redwood/testing/ToChangeListKt {
 public abstract interface class app/cash/redwood/testing/WidgetValue {
 	public fun getChildrenLists ()Ljava/util/List;
 	public abstract fun getModifier ()Lapp/cash/redwood/Modifier;
+	public abstract fun toDebugString ()Ljava/lang/String;
 	public abstract fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
 
 public final class app/cash/redwood/testing/WidgetValueKt {
 	public static final fun flatten (Ljava/util/List;)Lkotlin/sequences/Sequence;
+	public static final fun toDebugString (Ljava/util/List;)Ljava/lang/String;
 }
 
