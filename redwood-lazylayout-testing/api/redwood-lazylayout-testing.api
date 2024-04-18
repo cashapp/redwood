@@ -16,6 +16,7 @@ public final class app/cash/redwood/lazylayout/testing/LazyListValue : app/cash/
 	public final fun getWidth-jfchsNQ ()I
 	public fun hashCode ()I
 	public final fun isVertical ()Z
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
@@ -52,6 +53,7 @@ public final class app/cash/redwood/lazylayout/testing/RefreshableLazyListValue 
 	public final fun getWidth-jfchsNQ ()I
 	public fun hashCode ()I
 	public final fun isVertical ()Z
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
