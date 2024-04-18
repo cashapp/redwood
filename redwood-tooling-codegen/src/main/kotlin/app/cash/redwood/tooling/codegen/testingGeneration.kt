@@ -350,7 +350,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   val widgetListToDebugStringMethod = MemberName(
     packageName = "app.cash.redwood.testing",
     simpleName = "toDebugString",
-    isExtension = true
+    isExtension = true,
   )
 
   fun addEqualsHashCodeToString(trait: Widget.Trait) {
@@ -472,8 +472,8 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
                   debugStringProperties.joinToString(
                     prefix = "(",
                     postfix = "\n",
-                    transform = { it.prependIndent("\n  ")}
-                  )
+                    transform = { it.prependIndent("\n  ") },
+                  ),
                 )
                 if (childrenDebugStringProperties.size > 1) {
                   for ((index, childDebugStringProperty) in childrenDebugStringProperties.withIndex()) {
@@ -482,7 +482,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
                     addStatement("appendLine()")
                     addStatement(
                       "append(childrenLists[$index].%M().prependIndent(\"    \"))",
-                      widgetListToDebugStringMethod
+                      widgetListToDebugStringMethod,
                     )
                     addStatement("appendLine(\"\\n  }\")")
                     endControlFlow()
@@ -499,7 +499,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
                 addStatement("appendLine()")
                 addStatement(
                   "append(childrenLists[0].%M().prependIndent(\"  \"))",
-                  widgetListToDebugStringMethod
+                  widgetListToDebugStringMethod,
                 )
                 addStatement("append(\"\\n}\")")
                 endControlFlow()
