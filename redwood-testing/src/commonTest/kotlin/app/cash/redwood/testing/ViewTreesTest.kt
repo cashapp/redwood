@@ -42,6 +42,7 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
+import com.example.redwood.testing.compose.Split
 import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
@@ -180,31 +181,45 @@ class ViewTreesTest {
           }
           Text("Red Fish")
         }
-        TestRow {
-          Text("Blue Fish")
-        }
+        TestRow { }
+        Split(
+          left = {
+            Text("Blue")
+            Text("Fish")
+          },
+          right = { }
+        )
+        TestRow { }
       }
 
       val snapshot = awaitSnapshot()
       assertThat(snapshot.toDebugString()).isEqualTo("""
-        |TestRowValue {
-        |  TestRowValue {
-        |    TextValue(
+        |TestRow {
+        |  TestRow {
+        |    Text(
         |      text = One Fish
         |    )
-        |    TextValue(
+        |    Text(
         |      text = Two Fish
         |    )
         |  }
-        |  TextValue(
+        |  Text(
         |    text = Red Fish
         |  )
         |}
-        |TestRowValue {
-        |  TextValue(
-        |    text = Blue Fish
-        |  )
-        |}
+        |TestRow { }
+        |Split(
+        |  left = {
+        |    Text(
+        |      text = Blue
+        |    )
+        |    Text(
+        |      text = Fish
+        |    )
+        |  }
+        |  right = { }
+        |)
+        |TestRow { }
         """.trimMargin())
     }
   }

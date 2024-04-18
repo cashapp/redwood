@@ -11,6 +11,7 @@ public final class app/cash/redwood/layout/testing/BoxValue : app/cash/redwood/t
 	public final fun getVerticalAlignment-eoX4IBc ()I
 	public final fun getWidth-jfchsNQ ()I
 	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
@@ -29,6 +30,7 @@ public final class app/cash/redwood/layout/testing/ColumnValue : app/cash/redwoo
 	public final fun getVerticalAlignment-Ng1ngeI ()I
 	public final fun getWidth-jfchsNQ ()I
 	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
@@ -60,6 +62,7 @@ public final class app/cash/redwood/layout/testing/RowValue : app/cash/redwood/t
 	public final fun getVerticalAlignment-eoX4IBc ()I
 	public final fun getWidth-jfchsNQ ()I
 	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
@@ -73,6 +76,7 @@ public final class app/cash/redwood/layout/testing/SpacerValue : app/cash/redwoo
 	public fun getModifier ()Lapp/cash/redwood/Modifier;
 	public final fun getWidth-hdgK9uQ ()D
 	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }

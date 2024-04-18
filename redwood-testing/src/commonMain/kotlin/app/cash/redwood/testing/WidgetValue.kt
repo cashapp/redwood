@@ -94,8 +94,10 @@ public fun List<WidgetValue>.flatten(): Sequence<WidgetValue> {
 public fun List<WidgetValue>.toDebugString(): String {
   val widgets = this
   return buildString {
-    widgets.forEach { appendLine(it.toDebugString()) }
-    deleteAt(lastIndex)
+    if (widgets.isNotEmpty()) {
+      widgets.forEach { appendLine(it.toDebugString()) }
+      deleteAt(lastIndex)
+    }
   }
 }
 
