@@ -187,13 +187,14 @@ class ViewTreesTest {
             Text("Blue")
             Text("Fish")
           },
-          right = { }
+          right = { },
         )
         TestRow { }
       }
 
       val snapshot = awaitSnapshot()
-      assertThat(snapshot.toDebugString()).isEqualTo("""
+      assertThat(snapshot.toDebugString()).isEqualTo(
+        """
         |TestRow {
         |  TestRow {
         |    Text(
@@ -220,7 +221,8 @@ class ViewTreesTest {
         |  right = { }
         |)
         |TestRow { }
-        """.trimMargin())
+        """.trimMargin(),
+      )
     }
   }
 }
