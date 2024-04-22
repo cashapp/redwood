@@ -33,6 +33,8 @@ public interface WidgetValue {
     get() = listOf()
 
   public fun <W : Any> toWidget(widgetSystem: WidgetSystem<W>): Widget<W>
+
+  public fun toDebugString(): String
 }
 
 /**
@@ -70,6 +72,31 @@ public fun List<WidgetValue>.flatten(): Sequence<WidgetValue> {
   return sequence {
     for (widget in this@flatten) {
       flattenRecursive(widget)
+    }
+  }
+}
+
+/**
+ * Returns a formatted string of the widget tree whose roots are this list. For example:
+ * """
+ * Column {
+ *   Toolbar {
+ *     Icon(...)
+ *     Title(...)
+ *   }
+ * }
+ * Row {
+ *   Text(...)
+ *   Button(...)
+ * }
+ * """
+ */
+public fun List<WidgetValue>.toDebugString(): String {
+  val widgets = this
+  return buildString {
+    if (widgets.isNotEmpty()) {
+      widgets.forEach { appendLine(it.toDebugString()) }
+      deleteAt(lastIndex)
     }
   }
 }

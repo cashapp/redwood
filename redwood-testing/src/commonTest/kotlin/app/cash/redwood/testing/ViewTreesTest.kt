@@ -42,6 +42,7 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
+import com.example.redwood.testing.compose.Split
 import com.example.redwood.testing.compose.TestRow
 import com.example.redwood.testing.compose.Text
 import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
@@ -167,6 +168,61 @@ class ViewTreesTest {
 
       val second = awaitSnapshot()
       assertThat(second).containsExactly(TextValue(text = "Dark: true"))
+    }
+  }
+
+  @Test fun debugString() = runTest {
+    TestSchemaTester {
+      setContent {
+        TestRow {
+          TestRow {
+            Text("One Fish")
+            Text("Two Fish")
+          }
+          Text("Red Fish")
+        }
+        TestRow { }
+        Split(
+          left = {
+            Text("Blue")
+            Text("Fish")
+          },
+          right = { },
+        )
+        TestRow { }
+      }
+
+      val snapshot = awaitSnapshot()
+      assertThat(snapshot.toDebugString()).isEqualTo(
+        """
+        |TestRow {
+        |  TestRow {
+        |    Text(
+        |      text = One Fish
+        |    )
+        |    Text(
+        |      text = Two Fish
+        |    )
+        |  }
+        |  Text(
+        |    text = Red Fish
+        |  )
+        |}
+        |TestRow { }
+        |Split(
+        |  left = {
+        |    Text(
+        |      text = Blue
+        |    )
+        |    Text(
+        |      text = Fish
+        |    )
+        |  }
+        |  right = { }
+        |)
+        |TestRow { }
+        """.trimMargin(),
+      )
     }
   }
 }

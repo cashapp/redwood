@@ -70,5 +70,9 @@ class WidgetValueTest {
     override fun <W : Any> toWidget(widgetSystem: WidgetSystem<W>): Widget<W> {
       throw AssertionError()
     }
+
+    override fun toDebugString(): String {
+      throw AssertionError()
+    }
   }
 }

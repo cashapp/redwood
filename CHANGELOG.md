@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.10.0...HEAD
 
 New:
-- Nothing yet!
+- Added `toDebugString` method for `WidgetValue` and `List<WidgetValue>` which returns a formatted String of a widget's children and properties, useful for test debugging.
 
 Changed:
 - Removed generated `typealias`es for package names which changed in 0.10.0.

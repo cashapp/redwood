@@ -278,24 +278,44 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
 
 /*
 public class ButtonValue(
-  public override val modifier: Modifier = Modifier,
-  public val text: String? = null,
-  public val enabled: Boolean = false,
+  override val modifier: Modifier = Modifier,
+  public val text: String?,
+  public val onClick: (() -> Unit)?,
 ) : WidgetValue {
-  public override val childrenLists: List<List<WidgetValue>>
+  override val childrenLists: List<List<WidgetValue>>
     get() = listOf()
 
-  public override fun equals(other: Any?): Boolean = other is SunspotButtonValue &&
+  override fun equals(other: Any?): Boolean = other is SunspotButtonValue &&
     other.text == text &&
     other.enabled == enabled
 
-  public override fun hashCode(): Int = listOf(
+  override fun hashCode(): Int = listOf(
     text,
     enabled,
   ).hashCode()
 
-  public override fun toString(): String =
+  override fun toString(): String =
     """ButtonValue(text=$text, enabled=$enabled)"""
+
+  override fun toDebugString(): String = buildString {
+    append("Button")
+    append("""
+        |(
+        |  text = $text
+        |""".trimMargin())
+    append(")")
+  }
+
+  override fun <W : Any> toWidget(provider: Widget.Provider<W>): Widget<W> {
+    val factory = provider as TestSchemaWidgetFactoryProvider<W>
+    val instance = factory.TestSchema.Button()
+
+    instance.modifier = modifier
+    instance.text(text)
+
+
+    return instance
+  }
 }
 */
 internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
@@ -324,11 +344,24 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
   )
   val hashCodeProperties = mutableListOf(CodeBlock.of("modifier"))
   val toStringProperties = mutableListOf("modifier=\$modifier")
+  val debugStringProperties = mutableListOf<String>()
+  val childrenDebugStringProperties = mutableListOf<String>()
+  val widgetDebugName = widgetValueType.simpleName.removeSuffix("Value")
+  val widgetListToDebugStringMethod = MemberName(
+    packageName = "app.cash.redwood.testing",
+    simpleName = "toDebugString",
+    isExtension = true,
+  )
 
   fun addEqualsHashCodeToString(trait: Widget.Trait) {
     equalsComparisons += CodeBlock.of("other.%1N == %1N", trait.name)
     hashCodeProperties += CodeBlock.of("%N", trait.name)
     toStringProperties += "${trait.name}=\$${trait.name}"
+    if (trait !is Children) {
+      debugStringProperties += "${trait.name} = \$${trait.name}"
+    } else {
+      childrenDebugStringProperties += "  ${trait.name} = {"
+    }
   }
 
   val toWidgetChildrenBuilder = CodeBlock.builder()
@@ -424,6 +457,58 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
                 postfix = ")",
               ),
             )
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("toDebugString")
+            .addModifiers(OVERRIDE)
+            .returns(String::class)
+            .apply {
+              beginControlFlow("return buildString")
+              addStatement("append(%S)", widgetDebugName)
+              if (debugStringProperties.isNotEmpty() || childrenDebugStringProperties.size > 1) {
+                addStatement(
+                  "append(%P)",
+                  debugStringProperties.joinToString(
+                    prefix = "(",
+                    postfix = "\n",
+                    transform = { it.prependIndent("\n  ") },
+                  ),
+                )
+                if (childrenDebugStringProperties.size > 1) {
+                  for ((index, childDebugStringProperty) in childrenDebugStringProperties.withIndex()) {
+                    addStatement("append(%S)", childDebugStringProperty)
+                    beginControlFlow("if (childrenLists[$index].isNotEmpty())")
+                    addStatement("appendLine()")
+                    addStatement(
+                      "append(childrenLists[$index].%M().prependIndent(\"    \"))",
+                      widgetListToDebugStringMethod,
+                    )
+                    addStatement("appendLine(\"\\n  }\")")
+                    endControlFlow()
+                    beginControlFlow("else")
+                    addStatement("appendLine(\" }\")")
+                    endControlFlow()
+                  }
+                }
+                addStatement("append(\")\")")
+              }
+              if (childrenDebugStringProperties.size == 1) {
+                addStatement("append(\" {\")")
+                beginControlFlow("if (childrenLists[0].isNotEmpty())")
+                addStatement("appendLine()")
+                addStatement(
+                  "append(childrenLists[0].%M().prependIndent(\"  \"))",
+                  widgetListToDebugStringMethod,
+                )
+                addStatement("append(\"\\n}\")")
+                endControlFlow()
+                beginControlFlow("else")
+                addStatement("append(\" }\")")
+                endControlFlow()
+              }
+              endControlFlow()
+            }
             .build(),
         )
         .addFunction(
