@@ -68,5 +68,6 @@ class ViewBoxTest(
     }
     container.addView(value)
     paparazzi.snapshot(container)
+    container.removeView(value)
   }
 }
