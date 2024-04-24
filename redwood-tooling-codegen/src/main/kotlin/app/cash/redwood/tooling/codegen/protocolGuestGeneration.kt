@@ -74,9 +74,9 @@ internal fun generateProtocolWidgetSystemFactory(
   val schema = schemaSet.schema
   val type = ClassName(schema.guestProtocolPackage(), "${schema.type.flatName}ProtocolWidgetSystemFactory")
   val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(protocolViewType)
-  return FileSpec.builder(type)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(type) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.objectBuilder(type)
         .addSuperinterface(ProtocolGuest.ProtocolWidgetSystemFactory)
         .addFunction(
@@ -98,7 +98,7 @@ internal fun generateProtocolWidgetSystemFactory(
         )
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -128,9 +128,9 @@ internal fun generateProtocolWidgetFactory(
   host: ProtocolSchema = schema,
 ): FileSpec {
   val type = schema.protocolWidgetFactoryType(host)
-  return FileSpec.builder(type)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(type) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(protocolViewType))
@@ -178,7 +178,7 @@ internal fun generateProtocolWidgetFactory(
         }
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -233,9 +233,9 @@ internal fun generateProtocolWidget(
 ): FileSpec {
   val type = schema.protocolWidgetType(widget, host)
   val widgetName = schema.widgetType(widget)
-  return FileSpec.builder(type)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(type) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addSuperinterface(ProtocolGuest.ProtocolWidget)
@@ -453,7 +453,7 @@ internal fun generateProtocolWidget(
         )
         .build(),
     )
-    .build()
+  }
 }
 
 private val placeholderParentTypeNames = listOf(
@@ -506,188 +506,187 @@ internal fun generateProtocolModifierSerializers(
   if (serializableModifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.guestProtocolPackage(host), "modifierSerializers")
-    .addAnnotation(suppressDeprecations)
-    .apply {
-      for (modifier in serializableModifiers) {
-        val serializerType = schema.modifierSerializer(modifier, host)
-        val modifierType = schema.modifierType(modifier)
+  return buildFileSpec(schema.guestProtocolPackage(host), "modifierSerializers") {
+    addAnnotation(suppressDeprecations)
 
-        var nextSerializerId = 0
-        val serializerIds = mutableMapOf<TypeName, Int>()
-        val serializables = mutableSetOf<TypeName>()
+    for (modifier in serializableModifiers) {
+      val serializerType = schema.modifierSerializer(modifier, host)
+      val modifierType = schema.modifierType(modifier)
 
-        val descriptorBody = CodeBlock.builder()
-        val serializerBody = CodeBlock.builder()
-        for ((index, property) in modifier.properties.withIndex()) {
-          val propertyType = property.type.asTypeName()
-          descriptorBody.addStatement("%M<%T>(%S)", KotlinxSerialization.element, propertyType, property.name)
+      var nextSerializerId = 0
+      val serializerIds = mutableMapOf<TypeName, Int>()
+      val serializables = mutableSetOf<TypeName>()
 
-          if (property.defaultExpression != null) {
-            serializerBody.beginControlFlow(
-              "if (composite.shouldEncodeElementDefault(descriptor, %L) || value.%N != %L)",
+      val descriptorBody = CodeBlock.builder()
+      val serializerBody = CodeBlock.builder()
+      for ((index, property) in modifier.properties.withIndex()) {
+        val propertyType = property.type.asTypeName()
+        descriptorBody.addStatement("%M<%T>(%S)", KotlinxSerialization.element, propertyType, property.name)
+
+        if (property.defaultExpression != null) {
+          serializerBody.beginControlFlow(
+            "if (composite.shouldEncodeElementDefault(descriptor, %L) || value.%N != %L)",
+            index,
+            property.name,
+            property.defaultExpression,
+          )
+        }
+        when (propertyType) {
+          BOOLEAN -> serializerBody.addStatement(
+            "composite.encodeBooleanElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          BYTE -> serializerBody.addStatement(
+            "composite.encodeByteElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          CHAR -> serializerBody.addStatement(
+            "composite.encodeCharElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          SHORT -> serializerBody.addStatement(
+            "composite.encodeShortElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          INT -> serializerBody.addStatement(
+            "composite.encodeIntElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          LONG -> serializerBody.addStatement(
+            "composite.encodeLongElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          FLOAT -> serializerBody.addStatement(
+            "composite.encodeFloatElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          DOUBLE -> serializerBody.addStatement(
+            "composite.encodeDoubleElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          STRING -> serializerBody.addStatement(
+            "composite.encodeStringElement(descriptor, %L, value.%N)",
+            index,
+            property.name,
+          )
+
+          else -> {
+            val serializerId = serializerIds.computeIfAbsent(propertyType) {
+              nextSerializerId++
+            }
+            if (property.isSerializable) {
+              serializables += propertyType
+            }
+            serializerBody.addStatement(
+              "composite.encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
               index,
+              serializerId,
               property.name,
-              property.defaultExpression,
             )
           }
-          when (propertyType) {
-            BOOLEAN -> serializerBody.addStatement(
-              "composite.encodeBooleanElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
+        }
+        if (property.defaultExpression != null) {
+          serializerBody.endControlFlow()
+        }
+      }
 
-            BYTE -> serializerBody.addStatement(
-              "composite.encodeByteElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
+      addType(
+        TypeSpec.objectBuilder(serializerType)
+          .addModifiers(INTERNAL)
+          .addSuperinterface(KotlinxSerialization.KSerializer.parameterizedBy(modifierType))
+          .addProperty(
+            PropertySpec.builder("descriptor", KotlinxSerialization.SerialDescriptor)
+              .addModifiers(OVERRIDE)
+              .initializer(
+                CodeBlock.builder()
+                  .beginControlFlow(
+                    "%M(%S)",
+                    KotlinxSerialization.buildClassSerialDescriptor,
+                    modifierType.toString(),
+                  )
+                  .add(descriptorBody.build())
+                  .endControlFlow()
+                  .build(),
+              )
+              .build(),
+          )
+          .apply {
+            for ((typeName, id) in serializerIds) {
+              val typeSerializer = KotlinxSerialization.KSerializer.parameterizedBy(typeName)
+              addProperty(
+                PropertySpec.builder("serializer_$id", typeSerializer)
+                  .optIn(KotlinxSerialization.ExperimentalSerializationApi)
+                  .addModifiers(PRIVATE)
+                  .apply {
+                    val parameters = mutableListOf(CodeBlock.of("%T::class", typeName))
+                    if (typeName in serializables) {
+                      parameters += CodeBlock.of("%T.serializer()", typeName)
+                      parameters += CodeBlock.of("emptyArray()")
+                    }
 
-            CHAR -> serializerBody.addStatement(
-              "composite.encodeCharElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            SHORT -> serializerBody.addStatement(
-              "composite.encodeShortElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            INT -> serializerBody.addStatement(
-              "composite.encodeIntElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            LONG -> serializerBody.addStatement(
-              "composite.encodeLongElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            FLOAT -> serializerBody.addStatement(
-              "composite.encodeFloatElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            DOUBLE -> serializerBody.addStatement(
-              "composite.encodeDoubleElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            STRING -> serializerBody.addStatement(
-              "composite.encodeStringElement(descriptor, %L, value.%N)",
-              index,
-              property.name,
-            )
-
-            else -> {
-              val serializerId = serializerIds.computeIfAbsent(propertyType) {
-                nextSerializerId++
-              }
-              if (property.isSerializable) {
-                serializables += propertyType
-              }
-              serializerBody.addStatement(
-                "composite.encodeSerializableElement(descriptor, %L, serializer_%L, value.%N)",
-                index,
-                serializerId,
-                property.name,
+                    initializer("%T(%L)", KotlinxSerialization.ContextualSerializer, parameters.joinToCode())
+                  }
+                  .build(),
               )
             }
           }
-          if (property.defaultExpression != null) {
-            serializerBody.endControlFlow()
-          }
-        }
-
-        addType(
-          TypeSpec.objectBuilder(serializerType)
-            .addModifiers(INTERNAL)
-            .addSuperinterface(KotlinxSerialization.KSerializer.parameterizedBy(modifierType))
-            .addProperty(
-              PropertySpec.builder("descriptor", KotlinxSerialization.SerialDescriptor)
-                .addModifiers(OVERRIDE)
-                .initializer(
-                  CodeBlock.builder()
-                    .beginControlFlow(
-                      "%M(%S)",
-                      KotlinxSerialization.buildClassSerialDescriptor,
-                      modifierType.toString(),
-                    )
-                    .add(descriptorBody.build())
-                    .endControlFlow()
-                    .build(),
-                )
-                .build(),
-            )
-            .apply {
-              for ((typeName, id) in serializerIds) {
-                val typeSerializer = KotlinxSerialization.KSerializer.parameterizedBy(typeName)
-                addProperty(
-                  PropertySpec.builder("serializer_$id", typeSerializer)
-                    .optIn(KotlinxSerialization.ExperimentalSerializationApi)
-                    .addModifiers(PRIVATE)
-                    .apply {
-                      val parameters = mutableListOf(CodeBlock.of("%T::class", typeName))
-                      if (typeName in serializables) {
-                        parameters += CodeBlock.of("%T.serializer()", typeName)
-                        parameters += CodeBlock.of("emptyArray()")
-                      }
-
-                      initializer("%T(%L)", KotlinxSerialization.ContextualSerializer, parameters.joinToCode())
-                    }
-                    .build(),
-                )
-              }
-            }
-            .addFunction(
-              FunSpec.builder("serialize")
-                .addModifiers(OVERRIDE)
-                .addParameter("encoder", KotlinxSerialization.Encoder)
-                .addParameter("value", modifierType)
-                .apply {
-                  if (modifier.properties.any { it.defaultExpression != null }) {
-                    optIn(KotlinxSerialization.ExperimentalSerializationApi)
-                  }
+          .addFunction(
+            FunSpec.builder("serialize")
+              .addModifiers(OVERRIDE)
+              .addParameter("encoder", KotlinxSerialization.Encoder)
+              .addParameter("value", modifierType)
+              .apply {
+                if (modifier.properties.any { it.defaultExpression != null }) {
+                  optIn(KotlinxSerialization.ExperimentalSerializationApi)
                 }
-                .addStatement("val composite = encoder.beginStructure(descriptor)")
-                .addCode(serializerBody.build())
-                .addStatement("composite.endStructure(descriptor)")
-                .build(),
-            )
-            .addFunction(
-              FunSpec.builder("deserialize")
-                .addModifiers(OVERRIDE)
-                .addParameter("decoder", KotlinxSerialization.Decoder)
-                .returns(NOTHING)
-                .addStatement("throw %T()", Stdlib.AssertionError)
-                .build(),
-            )
-            .addFunction(
-              FunSpec.builder("encode")
-                .addParameter("json", KotlinxSerialization.Json)
-                .addParameter("value", modifierType)
-                .returns(Protocol.ModifierElement)
-                .addStatement("val element = json.encodeToJsonElement(this, value)")
-                .addStatement(
-                  "return %T(%T(%L), element)",
-                  Protocol.ModifierElement,
-                  Protocol.ModifierTag,
-                  modifier.tag,
-                )
-                .build(),
-            )
-            .build(),
-        )
-      }
+              }
+              .addStatement("val composite = encoder.beginStructure(descriptor)")
+              .addCode(serializerBody.build())
+              .addStatement("composite.endStructure(descriptor)")
+              .build(),
+          )
+          .addFunction(
+            FunSpec.builder("deserialize")
+              .addModifiers(OVERRIDE)
+              .addParameter("decoder", KotlinxSerialization.Decoder)
+              .returns(NOTHING)
+              .addStatement("throw %T()", Stdlib.AssertionError)
+              .build(),
+          )
+          .addFunction(
+            FunSpec.builder("encode")
+              .addParameter("json", KotlinxSerialization.Json)
+              .addParameter("value", modifierType)
+              .returns(Protocol.ModifierElement)
+              .addStatement("val element = json.encodeToJsonElement(this, value)")
+              .addStatement(
+                "return %T(%T(%L), element)",
+                Protocol.ModifierElement,
+                Protocol.ModifierTag,
+                modifier.tag,
+              )
+              .build(),
+          )
+          .build(),
+      )
     }
-    .build()
+  }
 }
 
 internal fun generateComposeProtocolModifierSerialization(
@@ -695,9 +694,9 @@ internal fun generateComposeProtocolModifierSerialization(
 ): FileSpec {
   val schema = schemaSet.schema
   val name = schema.modifierToProtocol.simpleName
-  return FileSpec.builder(schema.guestProtocolPackage(), "modifierSerialization")
-    .addAnnotation(suppressDeprecations)
-    .addFunction(
+  return buildFileSpec(schema.guestProtocolPackage(), "modifierSerialization") {
+    addAnnotation(suppressDeprecations)
+    addFunction(
       FunSpec.builder(name)
         .addModifiers(INTERNAL)
         .receiver(Redwood.Modifier)
@@ -712,7 +711,7 @@ internal fun generateComposeProtocolModifierSerialization(
         .endControlFlow()
         .build(),
     )
-    .addFunction(
+    addFunction(
       FunSpec.builder(schema.modifierToProtocol)
         .addModifiers(PRIVATE)
         .receiver(Redwood.ModifierElement)
@@ -749,7 +748,7 @@ internal fun generateComposeProtocolModifierSerialization(
         .endControlFlow()
         .build(),
     )
-    .build()
+  }
 }
 
 private fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {

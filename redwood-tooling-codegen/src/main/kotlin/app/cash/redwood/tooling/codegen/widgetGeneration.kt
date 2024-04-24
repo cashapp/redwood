@@ -67,9 +67,9 @@ interface ExampleWidgetFactoryOwner<W : Any> {
 internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
   val schema = schemaSet.schema
   val widgetSystemType = schema.getWidgetSystemType()
-  return FileSpec.builder(widgetSystemType)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(widgetSystemType) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(widgetSystemType)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
@@ -117,7 +117,7 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
         )
         .build(),
     )
-    .addType(
+    addType(
       TypeSpec.interfaceBuilder(schema.getWidgetFactoryOwnerType())
         .addKdoc("@suppress For generated code usage only.")
         .addTypeVariable(typeVariableW)
@@ -159,7 +159,7 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
         )
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -173,9 +173,9 @@ interface ExampleWidgetFactory<W : Any> : Widget.Factory<W> {
 */
 internal fun generateWidgetFactory(schema: Schema): FileSpec {
   val widgetFactoryType = schema.getWidgetFactoryType()
-  return FileSpec.builder(widgetFactoryType)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(widgetFactoryType) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
         .optIn(Stdlib.ExperimentalObjCName)
@@ -215,7 +215,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
         }
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -232,9 +232,9 @@ interface Button<W: Any> : Widget<W> {
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   val flatName = widget.type.flatName
-  return FileSpec.builder(schema.widgetPackage(), flatName)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(schema.widgetPackage(), flatName) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.interfaceBuilder(flatName)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
@@ -307,5 +307,5 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
         }
         .build(),
     )
-    .build()
+  }
 }

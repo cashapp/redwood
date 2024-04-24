@@ -67,9 +67,9 @@ internal fun generateComposable(
 ): FileSpec {
   val widgetType = schema.widgetType(widget).parameterizedBy(ANY)
   val flatName = widget.type.flatName
-  return FileSpec.builder(schema.composePackage(), flatName)
-    .addAnnotation(suppressDeprecations)
-    .addFunction(
+  return buildFileSpec(schema.composePackage(), flatName) {
+    addAnnotation(suppressDeprecations)
+    addFunction(
       FunSpec.builder(flatName)
         .addAnnotation(ComposeRuntime.Composable)
         .optIn(Redwood.RedwoodCodegenApi)
@@ -183,7 +183,7 @@ internal fun generateComposable(
         }
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -200,27 +200,25 @@ internal fun generateModifierScope(schema: Schema, scope: FqType): FileSpec {
   val scopeName = scope.flatName
   val scopeType = ClassName(schema.composePackage(), scopeName)
   val modifiers = schema.modifiers.filter { scope in it.scopes }
-  return FileSpec.builder(scopeType)
-    .addAnnotation(suppressDeprecations)
-    .apply {
-      addType(
-        TypeSpec.interfaceBuilder(scopeType)
-          .addAnnotation(Redwood.LayoutScopeMarker)
-          .apply {
-            for (modifier in modifiers) {
-              addFunction(generateModifierFunction(schema, modifier))
-            }
+  return buildFileSpec(scopeType) {
+    addAnnotation(suppressDeprecations)
+    addType(
+      TypeSpec.interfaceBuilder(scopeType)
+        .addAnnotation(Redwood.LayoutScopeMarker)
+        .apply {
+          for (modifier in modifiers) {
+            addFunction(generateModifierFunction(schema, modifier))
           }
-          .build(),
-      )
-      addType(
-        TypeSpec.objectBuilder(scopeName + "Impl")
-          .addModifiers(INTERNAL)
-          .addSuperinterface(scopeType)
-          .build(),
-      )
-    }
-    .build()
+        }
+        .build(),
+    )
+    addType(
+      TypeSpec.objectBuilder(scopeName + "Impl")
+        .addModifiers(INTERNAL)
+        .addSuperinterface(scopeType)
+        .build(),
+    )
+  }
 }
 
 /*
@@ -232,14 +230,13 @@ fun Modifier.something(...): Modifier {
 internal fun generateUnscopedModifiers(schema: Schema): FileSpec? {
   if (schema.unscopedModifiers.isEmpty()) return null
 
-  return FileSpec.builder(schema.composePackage(), "unscoped")
-    .addAnnotation(suppressDeprecations)
-    .apply {
-      for (modifier in schema.unscopedModifiers) {
-        addFunction(generateModifierFunction(schema, modifier))
-      }
+  return buildFileSpec(schema.composePackage(), "unscoped") {
+    addAnnotation(suppressDeprecations)
+
+    for (modifier in schema.unscopedModifiers) {
+      addFunction(generateModifierFunction(schema, modifier))
     }
-    .build()
+  }
 }
 
 /*
@@ -252,14 +249,13 @@ internal class SomethingImpl(...): Something {
 internal fun generateModifierImpls(schema: Schema): FileSpec? {
   if (schema.modifiers.isEmpty()) return null
 
-  return FileSpec.builder(schema.composePackage(), "modifier")
-    .addAnnotation(suppressDeprecations)
-    .apply {
-      for (modifier in schema.modifiers) {
-        addType(generateModifierImpl(schema, modifier))
-      }
+  return buildFileSpec(schema.composePackage(), "modifier") {
+    addAnnotation(suppressDeprecations)
+
+    for (modifier in schema.modifiers) {
+      addType(generateModifierImpl(schema, modifier))
     }
-    .build()
+  }
 }
 
 private fun generateModifierFunction(

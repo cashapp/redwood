@@ -74,9 +74,9 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
       .parameterizedBy(LIST.parameterizedBy(RedwoodTesting.WidgetValue)),
     returnType = typeVarR,
   ).copy(suspending = true)
-  return FileSpec.builder(testerFunction)
-    .addAnnotation(suppressDeprecations)
-    .addFunction(
+  return buildFileSpec(testerFunction) {
+    addAnnotation(suppressDeprecations)
+    addFunction(
       FunSpec.builder(testerFunction)
         .optIn(Redwood.RedwoodCodegenApi)
         .addModifiers(SUSPEND)
@@ -118,7 +118,7 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
         .endControlFlow()
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -130,9 +130,9 @@ public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetVa
 */
 internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
   val mutableWidgetFactoryType = schema.getTestingWidgetFactoryType()
-  return FileSpec.builder(mutableWidgetFactoryType)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(mutableWidgetFactoryType) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.WidgetValue))
         .addAnnotation(Redwood.RedwoodCodegenApi)
@@ -158,7 +158,7 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
         }
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -184,9 +184,9 @@ internal class MutableButton : Button<WidgetValue> {
 internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
   val mutableWidgetType = schema.mutableWidgetType(widget)
   val widgetValueType = schema.widgetValueType(widget)
-  return FileSpec.builder(mutableWidgetType)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(mutableWidgetType) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
         .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
@@ -273,7 +273,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
         }
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -413,9 +413,9 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
     )
   }
 
-  return FileSpec.builder(widgetValueType)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(widgetValueType) {
+    addAnnotation(suppressDeprecations)
+    addType(
       classBuilder
         .primaryConstructor(constructorBuilder.build())
         .addProperty(
@@ -532,7 +532,7 @@ internal fun generateWidgetValue(schema: Schema, widget: Widget): FileSpec {
         )
         .build(),
     )
-    .build()
+  }
 }
 
 private fun Schema.getTestingWidgetFactoryType(): ClassName {
