@@ -35,9 +35,9 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
-import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
-import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetSystem
+import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
+import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive

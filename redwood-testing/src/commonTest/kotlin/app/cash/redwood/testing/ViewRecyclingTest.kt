@@ -25,12 +25,12 @@ import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
-import com.example.redwood.testing.compose.Button
-import com.example.redwood.testing.compose.Split
-import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.compose.reuse
-import com.example.redwood.testing.testing.SplitValue
-import com.example.redwood.testing.testing.TextValue
+import com.example.redwood.testapp.compose.Button
+import com.example.redwood.testapp.compose.Split
+import com.example.redwood.testapp.compose.Text
+import com.example.redwood.testapp.compose.reuse
+import com.example.redwood.testapp.testing.SplitValue
+import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

@@ -31,11 +31,11 @@ import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
-import com.example.redwood.testing.protocol.host.TestSchemaProtocolFactory
-import com.example.redwood.testing.testing.TestSchemaTester
-import com.example.redwood.testing.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testing.widget.TestSchemaWidgetSystem
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.testing.TestSchemaTester
+import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
+import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 
@@ -193,9 +193,9 @@ private suspend fun SequenceScope<Widget<WidgetValue>>.flattenRecursive(
   val childrenLists = when (widget) {
     is app.cash.redwood.layout.testing.MutableBox -> listOf(widget.children)
     is app.cash.redwood.layout.testing.MutableColumn -> listOf(widget.children)
-    is com.example.redwood.testing.testing.MutableButton -> listOf()
-    is com.example.redwood.testing.testing.MutableSplit -> listOf(widget.left, widget.right)
-    is com.example.redwood.testing.testing.MutableText -> listOf()
+    is com.example.redwood.testapp.testing.MutableButton -> listOf()
+    is com.example.redwood.testapp.testing.MutableSplit -> listOf(widget.left, widget.right)
+    is com.example.redwood.testapp.testing.MutableText -> listOf()
     else -> error("unexpected widget: $widget")
   }
 

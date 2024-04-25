@@ -20,9 +20,9 @@ import app.cash.redwood.lazylayout.testing.LazyListValue
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.testing.TestSchemaTester
-import com.example.redwood.testing.testing.TextValue
+import com.example.redwood.testapp.compose.Text
+import com.example.redwood.testapp.testing.TestSchemaTester
+import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

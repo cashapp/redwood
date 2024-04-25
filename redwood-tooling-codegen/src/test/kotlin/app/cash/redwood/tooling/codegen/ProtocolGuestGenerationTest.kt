@@ -22,7 +22,7 @@ import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
-import com.example.redwood.testing.TestSchema
+import com.example.redwood.testapp.TestSchema
 import org.junit.Test
 
 class ProtocolGuestGenerationTest {

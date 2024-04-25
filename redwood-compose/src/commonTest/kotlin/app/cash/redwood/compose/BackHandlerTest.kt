@@ -34,9 +34,9 @@ import assertk.assertions.extracting
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.single
-import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.testing.TestSchemaTester
-import com.example.redwood.testing.testing.TextValue
+import com.example.redwood.testapp.compose.Text
+import com.example.redwood.testapp.testing.TestSchemaTester
+import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
