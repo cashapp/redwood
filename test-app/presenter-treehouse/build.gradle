@@ -39,5 +39,5 @@ kotlin {
 }
 
 zipline {
-  mainFunction = 'com.example.redwood.testing.treehouse.preparePresenters'
+  mainFunction = 'com.example.redwood.testapp.treehouse.preparePresenters'
 }

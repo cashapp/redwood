@@ -42,7 +42,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.message
-import com.example.redwood.testing.TestSchema
+import com.example.redwood.testapp.TestSchema
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import java.io.File
@@ -971,7 +971,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(SchemaDependencyHasDependency::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "Schema dependency com.example.redwood.testing.TestSchema also has its own dependencies. " +
+        "Schema dependency com.example.redwood.testapp.TestSchema also has its own dependencies. " +
           "For now, only a single level of dependencies is supported.",
       )
   }

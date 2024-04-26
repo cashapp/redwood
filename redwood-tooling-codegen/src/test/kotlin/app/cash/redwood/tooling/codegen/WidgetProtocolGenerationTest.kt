@@ -23,7 +23,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsMatch
-import com.example.redwood.testing.TestSchema
+import com.example.redwood.testapp.TestSchema
 import kotlin.text.RegexOption.MULTILINE
 import org.junit.Test
 

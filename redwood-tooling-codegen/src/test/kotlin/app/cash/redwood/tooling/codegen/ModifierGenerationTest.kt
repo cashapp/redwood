@@ -21,7 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import com.example.redwood.testing.compose.TestScope
+import com.example.redwood.testapp.compose.TestScope
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Test

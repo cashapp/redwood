@@ -49,11 +49,11 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
-import com.example.redwood.testing.compose.Button
-import com.example.redwood.testing.compose.Button2
-import com.example.redwood.testing.compose.TestRow
-import com.example.redwood.testing.compose.Text
-import com.example.redwood.testing.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.compose.Button
+import com.example.redwood.testapp.compose.Button2
+import com.example.redwood.testapp.compose.TestRow
+import com.example.redwood.testapp.compose.Text
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -6,7 +6,7 @@ redwoodBuild {
 }
 
 android {
-  namespace "com.example.redwood.testing.android.views"
+  namespace "com.example.redwood.testapp.android.views"
 }
 
 dependencies {

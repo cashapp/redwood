@@ -345,7 +345,7 @@
 					"-framework",
 					TestAppKt,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.redwood.testing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.redwood.testapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -378,7 +378,7 @@
 					"-framework",
 					TestAppKt,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.redwood.testing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.redwood.testapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
