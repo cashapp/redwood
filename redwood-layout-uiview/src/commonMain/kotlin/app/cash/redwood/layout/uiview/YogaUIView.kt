@@ -121,8 +121,13 @@ internal class YogaUIView(
   }
 
   override fun setScrollEnabled(scrollEnabled: Boolean) {
+    val previousScrollEnabled = this.scrollEnabled
+
     super.setScrollEnabled(scrollEnabled)
-    setNeedsLayout()
+
+    if (scrollEnabled != previousScrollEnabled) {
+      setNeedsLayout()
+    }
   }
 }
 
