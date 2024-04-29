@@ -38,7 +38,7 @@ abstract class AbstractBoxTest<T : Any> {
     height(height)
   }
 
-  abstract fun verifySnapshot(value: T, name:String? = null)
+  abstract fun verifySnapshot(value: T, name: String? = null)
 
   @Test
   fun testEmpty_Defaults() {
@@ -358,10 +358,10 @@ abstract class AbstractBoxTest<T : Any> {
       children.insert(1, coloredText(text = mediumText(), color = Blue))
       children.insert(2, coloredText(text = shortText(), color = Green))
     }
-    verifySnapshot(widget.value,"Margin")
+    verifySnapshot(widget.value, "Margin")
     redColor.modifier = Modifier
     widget.children.onModifierUpdated(0, redColor)
-    verifySnapshot(widget.value,"Empty")
+    verifySnapshot(widget.value, "Empty")
   }
 
   private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
