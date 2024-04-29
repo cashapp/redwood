@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.Box
@@ -302,21 +303,21 @@ abstract class AbstractBoxTest<T : Any> {
       children.insert(
         0,
         text().apply {
-          text("LongLongLongLongLongLongLong\n".repeat(12).trim())
+          text(longText())
           bgColor(Red)
         },
       )
       children.insert(
         1,
         text().apply {
-          text("MediumMedium\n".repeat(7).trim())
+          text(mediumText())
           bgColor(Green)
         },
       )
       children.insert(
         2,
         text().apply {
-          text("Short\n".repeat(2).trim())
+          text(shortText())
           bgColor(Blue)
         },
       )
@@ -345,5 +346,27 @@ abstract class AbstractBoxTest<T : Any> {
       )
     }
     verifySnapshot(widget.value)
+  }
+
+  @Test
+  fun testChildrenModifierChanges() {
+    val redColor = coloredText(MarginImpl(30.dp), longText(), Red)
+    val widget = box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      children.insert(0, redColor)
+      children.insert(1, coloredText(text = mediumText(), color = Blue))
+      children.insert(2, coloredText(text = shortText(), color = Green))
+    }
+    verifySnapshot(widget.value)
+    redColor.modifier = Modifier
+    widget.children.onModifierUpdated(0, redColor)
+    verifySnapshot(widget.value)
+  }
+
+  private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
+    text(text)
+    bgColor(color)
+    this.modifier = modifier
   }
 }
