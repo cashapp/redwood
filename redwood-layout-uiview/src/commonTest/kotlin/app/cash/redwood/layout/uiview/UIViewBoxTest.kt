@@ -41,7 +41,7 @@ class UIViewBoxTest(
     return UIViewText()
   }
 
-  override fun verifySnapshot(value: UIView) {
+  override fun verifySnapshot(value: UIView, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
 
     // Snapshot the container on a white background.
@@ -52,7 +52,7 @@ class UIViewBoxTest(
       layoutIfNeeded()
     }
 
-    callback.verifySnapshot(frame, null)
+    callback.verifySnapshot(frame, name)
     value.removeFromSuperview()
   }
 }

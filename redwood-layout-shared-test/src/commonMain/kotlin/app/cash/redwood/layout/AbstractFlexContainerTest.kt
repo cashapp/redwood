@@ -575,10 +575,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(text(mediumText(), backgroundColor = Green))
     container.add(text(shortText(), backgroundColor = Blue))
     container.onEndChanges()
-    verifySnapshot(container)
+    verifySnapshot(container,"Margin")
     first.modifier = Modifier
     container.onEndChanges()
-    verifySnapshot(container)
+    verifySnapshot(container,"Empty")
   }
 }
 
