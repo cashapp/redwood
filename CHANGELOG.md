@@ -15,6 +15,7 @@ Fixed:
 - Work around a problem with our memory-leak fix where our old LazyList code would crash when its placeholders were unexpectedly removed.
 - Avoid calling into the internal Zipline instance from the UI thread on startup. This would manifest as weird native crashes due to multiple threads mutating shared memory.
 - In `UIViewLazyList`, fix `UInt` to `UIColor` conversion math used for  `pullRefreshContentColor`.
+- In `YogaUIView`'s `setScrollEnabled` method, only call `setNeedsLayout` if the `scrollEnabled` value is actually changing.
 
 Upgraded:
 - Zipline 1.9.0.
