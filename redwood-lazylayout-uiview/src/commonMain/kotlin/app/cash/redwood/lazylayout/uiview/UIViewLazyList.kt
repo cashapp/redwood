@@ -44,6 +44,7 @@ import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.Foundation.NSIndexPath
 import platform.Foundation.classForCoder
+import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
@@ -206,6 +207,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
     tableView.apply {
       dataSource = this@UIViewLazyList.dataSource
       delegate = tableViewDelegate
+//      estimatedRowHeight = 100.0
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
       backgroundColor = UIColor.clearColor
@@ -273,9 +275,26 @@ internal class LazyListContainerCell(
     set(value) {
       field = value
 
+      println("STANG: LazyListContainerCell contenta")
+      content?.value?.frame?.useContents {
+        println("STANG: LazyListContainerCell setContent frame: ${this})")
+      }
+
       removeAllSubviews()
       if (value != null) {
+        println("STANG: LazyListContainerCell contentb")
         contentView.addSubview(value.value)
+        value.value.translatesAutoresizingMaskIntoConstraints = false
+        contentView.backgroundColor = UIColor.greenColor
+        value.value.backgroundColor = UIColor.redColor
+        NSLayoutConstraint.activateConstraints(
+          listOf(
+            value.value.leadingAnchor.constraintEqualToAnchor(contentView.leadingAnchor),
+            value.value.trailingAnchor.constraintEqualToAnchor(contentView.trailingAnchor),
+            value.value.topAnchor.constraintEqualToAnchor(contentView.topAnchor),
+            value.value.bottomAnchor.constraintEqualToAnchor(contentView.bottomAnchor),
+          )
+        )
       }
       setNeedsLayout()
     }
@@ -283,11 +302,17 @@ internal class LazyListContainerCell(
   override fun initWithStyle(
     style: UITableViewCellStyle,
     reuseIdentifier: String?,
-  ): UITableViewCell = LazyListContainerCell(style, reuseIdentifier)
+  ): UITableViewCell {
+    println("STANG: LazyListContainerCell initWithStyle reuseId $reuseIdentifier)")
+    return LazyListContainerCell(style, reuseIdentifier)
+  }
 
   override fun initWithFrame(
     frame: CValue<CGRect>,
   ): UITableViewCell {
+    frame.useContents {
+      println("STANG: LazyListContainerCell initWithFrame $this)")
+    }
     return LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, null)
       .apply { setFrame(frame) }
   }
@@ -310,6 +335,7 @@ internal class LazyListContainerCell(
   }
 
   override fun prepareForReuse() {
+    println("STANG: LazyListContainerCell prepareForReuse")
     super.prepareForReuse()
     binding?.unbind()
     binding = null
@@ -317,17 +343,24 @@ internal class LazyListContainerCell(
 
   override fun layoutSubviews() {
     super.layoutSubviews()
-
+    println("STANG: LazyListContainerCell layoutSubviews $bounds)")
     val content = this.content ?: return
     content.value.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
+  // check the size of content and if it's changed, update the cell height?
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    size.useContents {
+      println("STANG: LazyListContainerCell sizeThatFits $this)")
+    }
+
+    // Applet Card View
     return content?.value?.sizeThatFits(size) ?: return super.sizeThatFits(size)
   }
 
   private fun removeAllSubviews() {
+    println("STANG: LazyListContainerCell removeAllSubviews")
     contentView.subviews.forEach {
       (it as UIView).removeFromSuperview()
     }

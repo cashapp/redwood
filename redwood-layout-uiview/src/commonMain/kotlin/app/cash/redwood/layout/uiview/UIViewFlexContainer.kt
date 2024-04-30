@@ -44,18 +44,33 @@ internal class UIViewFlexContainer(
     insert = { view, index ->
       yogaView.rootNode.children.add(index, view.asNode())
       value.insertSubview(view, index.convert<NSInteger>())
+      //
+      println("STANG: UIViewFlexContainer.insert")
+      value.superview?.superview?.superview?.setNeedsLayout()
+      value.superview?.superview?.superview?.layoutIfNeeded()
     },
     remove = { index, count ->
+      println("STANG: UIViewFlexContainer.remove")
+
       yogaView.rootNode.children.remove(index, count)
-      Array(count) {
+
+      val test = Array(count) {
         value.typedSubviews[index].also(UIView::removeFromSuperview)
       }
+
+      // We get a signal that something is changing here.
+      value.setNeedsLayout()
+      value.superview?.superview?.superview?.setNeedsLayout()
+      value.superview?.superview?.superview?.layoutIfNeeded()
+      //
+      return@UIViewChildren test
     },
   )
   override var modifier: Modifier = Modifier
 
   init {
     yogaView.rootNode.flexDirection = direction
+    println("STANG: UIViewFlexContainer.init")
   }
 
   override fun width(width: Constraint) {
@@ -71,6 +86,8 @@ internal class UIViewFlexContainer(
   }
 
   override fun onEndChanges() {
+    println("STANG: UIViewFlexContainer.onEndChanges")
+    value.superview?.setNeedsLayout()
     value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
     value.setNeedsLayout() // Update layout of subviews.
   }
