@@ -90,6 +90,13 @@ internal class YogaUIView(
     val height = node.height.toDouble()
     node.view.setFrame(CGRectMake(x, y, width, height))
 
+    if (node.view is YogaUIView) {
+      // Optimization: for a YogaUIView nested within another YogaUIView,
+      // there's no need to call layoutNodes for its children here,
+      // as it will happen within its own layoutSubviews() pass.
+      return
+    }
+
     for (childNode in node.children) {
       layoutNodes(childNode)
     }
