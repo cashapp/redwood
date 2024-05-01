@@ -16,6 +16,7 @@ Fixed:
 - Avoid calling into the internal Zipline instance from the UI thread on startup. This would manifest as weird native crashes due to multiple threads mutating shared memory.
 - In `UIViewLazyList`, fix `UInt` to `UIColor` conversion math used for  `pullRefreshContentColor`.
 - In `YogaUIView`'s `setScrollEnabled` method, only call `setNeedsLayout` if the `scrollEnabled` value is actually changing.
+- In `YogaUIView`'s `layoutNodes` method, return early for nested `YogaUIView`s to prevent redundant frame calculations.
 
 Upgraded:
 - Zipline 1.9.0.
