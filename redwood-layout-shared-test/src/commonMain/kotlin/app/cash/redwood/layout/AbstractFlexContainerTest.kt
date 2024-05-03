@@ -563,7 +563,6 @@ abstract class AbstractFlexContainerTest<T : Any> {
   private fun testContainerWithChildrenModifierChanges(
     flexDirection: FlexDirection,
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -577,6 +576,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.onEndChanges()
     verifySnapshot(container, "Margin")
     first.modifier = Modifier
+    container.children.onModifierUpdated(0, first)
     container.onEndChanges()
     verifySnapshot(container, "Empty")
   }
@@ -584,6 +584,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
 interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
   override val value: T
+  val children: Widget.Children<T>
   fun width(width: Constraint)
   fun height(height: Constraint)
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)

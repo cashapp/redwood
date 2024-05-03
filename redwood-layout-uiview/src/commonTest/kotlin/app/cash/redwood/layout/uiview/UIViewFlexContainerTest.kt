@@ -48,6 +48,7 @@ class UIViewFlexContainerTest(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>, FlexContainer<UIView> by delegate, ChangeListener by delegate {
     private var childCount = 0
+    override val children: Widget.Children<UIView> = delegate.children
 
     init {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 1.0, alpha = 0.2)

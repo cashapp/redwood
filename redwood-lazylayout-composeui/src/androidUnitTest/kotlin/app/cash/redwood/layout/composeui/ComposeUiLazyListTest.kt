@@ -38,6 +38,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -112,6 +113,8 @@ class ComposeUiLazyListTest(
         testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
     )
+
+    override val children: ComposeWidgetChildren = delegate.items
 
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     }
