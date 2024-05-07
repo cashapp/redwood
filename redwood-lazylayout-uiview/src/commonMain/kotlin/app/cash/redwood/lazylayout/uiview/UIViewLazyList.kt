@@ -33,20 +33,29 @@ import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
+import kotlinx.cinterop.zeroValue
 import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
+import platform.CoreGraphics.CGSizeZero
 import platform.Foundation.NSIndexPath
+import platform.Foundation.NSUUID.Companion.UUID
 import platform.Foundation.classForCoder
+import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
 import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
+import platform.UIKit.UILabel
 import platform.UIKit.UIRefreshControl
 import platform.UIKit.UIScrollView
 import platform.UIKit.UITableView
@@ -54,12 +63,14 @@ import platform.UIKit.UITableViewAutomaticDimension
 import platform.UIKit.UITableViewCell
 import platform.UIKit.UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone
 import platform.UIKit.UITableViewCellStyle
+import platform.UIKit.UITableViewDataSourcePrefetchingProtocol
 import platform.UIKit.UITableViewDataSourceProtocol
 import platform.UIKit.UITableViewDelegateProtocol
 import platform.UIKit.UITableViewRowAnimationNone
 import platform.UIKit.UITableViewScrollPosition
 import platform.UIKit.UITableViewStyle
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.indexPathForItem
 import platform.UIKit.item
 import platform.darwin.NSInteger
@@ -119,6 +130,7 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
     }
 
     override fun setContent(view: LazyListContainerCell, content: Widget<UIView>?) {
+      println("REDWOOD_DEBUG: UIViewLazyList.setContent on item: ${view.identifier}")
       view.content = content
     }
   }
@@ -172,12 +184,17 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
       ) as LazyListContainerCell
       require(result.binding == null)
       result.binding = binding
+      println("REDWOOD_DEBUG: LazyList.createView on ${result.identifier}")
       return result
     }
   }
 
   private val tableViewDelegate: UITableViewDelegateProtocol =
     object : NSObject(), UITableViewDelegateProtocol {
+
+      var cachedFirstIndex: Int = 0
+      var cachedLastIndex: Int = 0
+
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
         if (ignoreScrollUpdates) return // Only notify of user scrolls.
 
@@ -186,6 +203,14 @@ internal open class UIViewLazyList() : LazyList<UIView>, ChangeListener {
 
         val firstIndex = visibleIndexPaths.minOf { (it as NSIndexPath).item.toInt() }
         val lastIndex = visibleIndexPaths.maxOf { (it as NSIndexPath).item.toInt() }
+
+        if (firstIndex == cachedFirstIndex && lastIndex == cachedLastIndex) {
+          println("REDWOOD_DEBUG: ❌❌ Redundant scrollProcessor.onUserScroll call firstIndex: $firstIndex lastIndex: $lastIndex")
+        } else {
+          cachedFirstIndex = firstIndex
+          cachedLastIndex = lastIndex
+        }
+
         scrollProcessor.onUserScroll(firstIndex, lastIndex)
       }
 
@@ -269,6 +294,8 @@ internal class LazyListContainerCell(
   reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
   internal var binding: Binding<LazyListContainerCell, UIView>? = null
+
+  val identifier = UUID().UUIDString.removeRange(0 until 7)
   internal var content: Widget<UIView>? = null
     set(value) {
       field = value
@@ -276,18 +303,22 @@ internal class LazyListContainerCell(
       removeAllSubviews()
       if (value != null) {
         contentView.addSubview(value.value)
+        value.value.setNeedsLayout()
       }
-      setNeedsLayout()
     }
 
   override fun initWithStyle(
     style: UITableViewCellStyle,
     reuseIdentifier: String?,
-  ): UITableViewCell = LazyListContainerCell(style, reuseIdentifier)
+  ): UITableViewCell {
+    println("REDWOOD_DEBUG: 🐣INIT LazyListContainerCell.initWithStyle reuseIdentifier: ${reuseIdentifier ?: "?? null"} $identifier")
+    return LazyListContainerCell(style, reuseIdentifier)
+  }
 
   override fun initWithFrame(
     frame: CValue<CGRect>,
   ): UITableViewCell {
+    println("REDWOOD_DEBUG: 🐣INIT LazyListContainerCell.initWithFrame $identifier")
     return LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, null)
       .apply { setFrame(frame) }
   }
@@ -310,24 +341,35 @@ internal class LazyListContainerCell(
   }
 
   override fun prepareForReuse() {
+    println("REDWOOD_DEBUG: LazyListContainerCell.prepareForReuse $identifier")
     super.prepareForReuse()
     binding?.unbind()
     binding = null
   }
 
+  private var layoutSubviewsCount = 0
   override fun layoutSubviews() {
     super.layoutSubviews()
 
+    layoutSubviewsCount += 1
+    println("REDWOOD_DEBUG: ${if (layoutSubviewsCount <= 1) "🎨" else "🎨⭕"} LazyListContainerCell.layoutSubviews️ $identifier")
+
     val content = this.content ?: return
     content.value.setFrame(bounds)
-    contentView.setFrame(bounds)
   }
 
+  private var sizeThatFitsCount = 0
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    sizeThatFitsCount += 1
+    println("REDWOOD_DEBUG: ${if (sizeThatFitsCount <= 1) "📐" else "📐⭕️"} LazyListContainerCell.sizeThatFits $identifier")
     return content?.value?.sizeThatFits(size) ?: return super.sizeThatFits(size)
   }
 
+
+  private var removeAllSubviewsCount = 0
   private fun removeAllSubviews() {
+    removeAllSubviewsCount += 1
+    println("REDWOOD_DEBUG: ${if (removeAllSubviewsCount <= 1) "␡" else "␡⭕️"} LazyListContainerCell.removeAllSubviews $identifier")
     contentView.subviews.forEach {
       (it as UIView).removeFromSuperview()
     }

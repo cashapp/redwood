@@ -17,6 +17,7 @@ import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.Foundation.NSUUID
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
 import platform.UIKit.UIView
@@ -25,6 +26,9 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 internal class YogaUIView(
   private val applyModifier: (Node, Int) -> Unit,
 ) : UIScrollView(cValue { CGRectZero }) {
+
+  private val identifier = NSUUID.UUID().UUIDString.removeRange(0 until 7)
+
   val rootNode = Node()
 
   var width = Constraint.Wrap
@@ -42,13 +46,20 @@ internal class YogaUIView(
     return calculateLayoutWithSize(CGSizeMake(Size.UNDEFINED.toDouble(), Size.UNDEFINED.toDouble()))
   }
 
+  private var sizeThatFitsCount = 0
+
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    println("REDWOOD_DEBUG: ${if (sizeThatFitsCount <= 1) "📐" else "📐⭕"} YogaUIView.layoutSubviews️ $identifier")
     val constrainedSize = size.useContents { sizeForConstraints(this) }
     return calculateLayoutWithSize(constrainedSize)
   }
 
+  private var layoutSubviewsCount = 0
   override fun layoutSubviews() {
     super.layoutSubviews()
+
+    layoutSubviewsCount += 1
+    println("REDWOOD_DEBUG: ${if (layoutSubviewsCount <= 1) "🎨" else "🎨⭕"} YogaUIView.layoutSubviews️ $identifier")
 
     // Based on the constraints of Fill or Wrap, we
     // calculate a size that the container should fit in.
@@ -83,7 +94,11 @@ internal class YogaUIView(
     }
   }
 
+  private var layoutNodesCount = 0
+
   private fun layoutNodes(node: Node) {
+    layoutNodesCount += 1
+    println("REDWOOD_DEBUG: ${if (layoutNodesCount <= 1) "🌲" else "🌲⭕"} YogaUIView.layoutSubviews️ $identifier")
     val x = node.left.toDouble()
     val y = node.top.toDouble()
     val width = node.width.toDouble()
@@ -102,7 +117,10 @@ internal class YogaUIView(
     }
   }
 
+  private var calculateLayoutWithSizeCount = 0
   private fun calculateLayoutWithSize(size: CValue<CGSize>): CValue<CGSize> {
+    println("REDWOOD_DEBUG: ${if (calculateLayoutWithSizeCount <= 1) "🧮" else "🧮⭕"} YogaUIView.calculateLayoutWithSize $identifier")
+
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
     }

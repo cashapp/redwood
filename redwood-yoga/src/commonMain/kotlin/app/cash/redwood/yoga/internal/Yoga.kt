@@ -392,6 +392,7 @@ internal object Yoga {
     ownerHeight: Float,
     ownerDirection: YGDirection,
   ) {
+    // println("REDWOOD_DEBUG: ❌ Yoga.YGNodeCalculateLayout ${node.hashCode()}")
     YGNodeCalculateLayoutWithContext(
       node = node,
       ownerWidth = ownerWidth,

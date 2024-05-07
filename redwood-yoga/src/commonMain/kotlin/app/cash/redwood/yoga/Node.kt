@@ -17,6 +17,7 @@ package app.cash.redwood.yoga
 
 import app.cash.redwood.yoga.internal.YGNode
 import app.cash.redwood.yoga.internal.Yoga
+import app.cash.redwood.yoga.internal.enums.YGDirection
 import app.cash.redwood.yoga.internal.enums.YGEdge
 
 @RedwoodYogaApi
@@ -101,7 +102,18 @@ public class Node internal constructor(
   public val height: Float
     get() = Yoga.YGNodeLayoutGetHeight(native)
 
+  private var lastParentWidth: Float = 0.0f
+  private var lastParentHeight: Float = 0.0f
+  private var lastDirection: YGDirection? = null
+
   public fun measure(parentWidth: Float, parentHeight: Float) {
+
+    if (parentWidth == lastParentWidth && parentHeight == lastParentHeight && native.style.direction() == lastDirection) {
+      lastParentWidth = parentWidth
+      lastParentHeight = parentHeight
+      lastDirection = native.style.direction()
+      println("REDWOOD_DEBUG: ❌ Redundant Node.measure call")
+    }
     // TODO: Figure out how to measure incrementally safely.
     native.markDirtyAndPropogateDownwards()
 

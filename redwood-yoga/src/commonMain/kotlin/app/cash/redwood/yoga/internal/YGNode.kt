@@ -8,6 +8,7 @@
 
 package app.cash.redwood.yoga.internal
 
+import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.internal.enums.YGEdge
 import app.cash.redwood.yoga.internal.enums.YGUnit
 import app.cash.redwood.yoga.internal.enums.YGAlign
@@ -594,7 +595,10 @@ internal class YGNode {
     }
   }
 
+  var markDirtyAndPropogateDownwardsCount = 0
   fun markDirtyAndPropogateDownwards() {
+    markDirtyAndPropogateDownwardsCount != 1
+    println("REDWOOD_DEBUG: ${if (markDirtyAndPropogateDownwardsCount <= 1) "🖍️" else "🖍️⭕"} YGNode.markDirtyAndPropogateDownwards ${hashCode()}")
     GlobalMembers.setBooleanData(
       flags,
       isDirty_,
