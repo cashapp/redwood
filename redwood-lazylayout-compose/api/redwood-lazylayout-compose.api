@@ -24,16 +24,19 @@ public abstract interface class app/cash/redwood/lazylayout/compose/LazyListScop
 public class app/cash/redwood/lazylayout/compose/LazyListState {
 	public static final field $stable I
 	public fun <init> ()V
-	public final fun getFirstIndex ()I
-	public final fun getLastIndex ()I
-	public final fun getPreloadAfterItemCount ()I
-	public final fun getPreloadBeforeItemCount ()I
+	public final fun getDefaultPreloadItemCount ()I
+	public final fun getPrimaryPreloadItemCount ()I
 	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public final fun getScrollInProgressPreloadItemCount ()I
+	public final fun getSecondaryPreloadItemCount ()I
+	public final fun loadRange (I)Lkotlin/ranges/IntRange;
 	public final fun onUserScroll (II)V
 	public final fun programmaticScroll (IZZ)V
 	public static synthetic fun programmaticScroll$default (Lapp/cash/redwood/lazylayout/compose/LazyListState;IZZILjava/lang/Object;)V
-	public final fun setPreloadAfterItemCount (I)V
-	public final fun setPreloadBeforeItemCount (I)V
+	public final fun setDefaultPreloadItemCount (I)V
+	public final fun setPrimaryPreloadItemCount (I)V
+	public final fun setScrollInProgressPreloadItemCount (I)V
+	public final fun setSecondaryPreloadItemCount (I)V
 }
 
 public final class app/cash/redwood/lazylayout/compose/LazyListStateKt {

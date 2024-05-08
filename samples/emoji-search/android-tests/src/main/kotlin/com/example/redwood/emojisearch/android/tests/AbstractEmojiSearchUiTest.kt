@@ -45,7 +45,7 @@ abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
   @Test fun searchTrees() {
     awaitText("0. +1")
     search.text = "tree"
-    awaitText("301. christmas_tree")
+    awaitText("1238. palm_tree")
     search.clear()
     awaitText("0. +1")
   }
