@@ -25,6 +25,8 @@ public class app/cash/redwood/lazylayout/compose/LazyListState {
 	public static final field $stable I
 	public fun <init> ()V
 	public final fun getDefaultPreloadItemCount ()I
+	public final fun getFirstIndex ()I
+	public final fun getLastIndex ()I
 	public final fun getPrimaryPreloadItemCount ()I
 	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
 	public final fun getScrollInProgressPreloadItemCount ()I
