@@ -46,7 +46,7 @@ class ComposeUiBoxTest(
 
   override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
 
-  override fun verifySnapshot(value: @Composable () -> Unit) {
-    paparazzi.snapshot(composable = value)
+  override fun verifySnapshot(value: @Composable () -> Unit, name: String?) {
+    paparazzi.snapshot(composable = value, name = name)
   }
 }

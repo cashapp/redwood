@@ -99,6 +99,8 @@ class ViewLazyListTest(
       },
     )
 
+    override val children: Widget.Children<View> = delegate.items
+
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     }
 

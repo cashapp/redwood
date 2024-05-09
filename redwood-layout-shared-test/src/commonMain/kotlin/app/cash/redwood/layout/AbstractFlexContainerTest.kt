@@ -549,10 +549,42 @@ abstract class AbstractFlexContainerTest<T : Any> {
     innerContainer2.modifier = Modifier.then(FlexImpl(1.0))
     verifySnapshot(outerContainer)
   }
+
+  @Test
+  fun testColumnWithChildModifierChanges() {
+    testContainerWithChildrenModifierChanges(FlexDirection.Column)
+  }
+
+  @Test
+  fun testRowWithChildModifierChanges() {
+    testContainerWithChildrenModifierChanges(FlexDirection.Row)
+  }
+
+  private fun testContainerWithChildrenModifierChanges(
+    flexDirection: FlexDirection,
+  ) {
+    val container = flexContainer(flexDirection)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+
+    val first = text(longText(), backgroundColor = Red)
+    first.modifier = MarginImpl(30.dp)
+
+    container.add(first)
+    container.add(text(mediumText(), backgroundColor = Green))
+    container.add(text(shortText(), backgroundColor = Blue))
+    container.onEndChanges()
+    verifySnapshot(container, "Margin")
+    first.modifier = Modifier
+    container.children.onModifierUpdated(0, first)
+    container.onEndChanges()
+    verifySnapshot(container, "Empty")
+  }
 }
 
 interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
   override val value: T
+  val children: Widget.Children<T>
   fun width(width: Constraint)
   fun height(height: Constraint)
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)

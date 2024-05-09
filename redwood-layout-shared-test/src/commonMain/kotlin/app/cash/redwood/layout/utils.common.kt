@@ -96,3 +96,9 @@ internal data class ShrinkImpl(
 internal data class FlexImpl(
   override val value: Double,
 ) : Flex
+
+internal fun shortText() = "Short\n".repeat(2).trim()
+
+internal fun mediumText() = "MediumMedium\n".repeat(7).trim()
+
+internal fun longText() = "LongLongLongLongLongLongLong\n".repeat(12).trim()

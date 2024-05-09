@@ -25,6 +25,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -67,7 +68,7 @@ class ComposeUiFlexContainerTest(
     private val delegate: ComposeUiFlexContainer,
   ) : TestFlexContainer<@Composable () -> Unit>, FlexContainer<@Composable () -> Unit> by delegate {
     private var childCount = 0
-
+    override val children: ComposeWidgetChildren = delegate.children
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {
         testOnlyModifier = Modifier.background(Color(backgroundColor))
