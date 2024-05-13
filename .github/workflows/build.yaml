@@ -24,6 +24,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v3
 
+      - run: ./scripts/enforce_git_lfs.sh
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
 
   emulator-tests:
