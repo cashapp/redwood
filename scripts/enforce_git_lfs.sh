@@ -3,7 +3,7 @@
 output=$(git checkout .)
 
 if echo "$output" | grep -q "files that should have been pointers, but weren't"; then
-    echo "Error: Encountered files that should be checked in using Git LFS, but weren't."
+    echo "Error: Encountered files that should have been checked in using Git LFS, but weren't."
     exit 1
 else
     exit 0
