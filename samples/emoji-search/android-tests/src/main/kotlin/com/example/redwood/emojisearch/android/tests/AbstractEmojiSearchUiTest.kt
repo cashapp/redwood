@@ -30,7 +30,7 @@ import org.junit.Before
 import org.junit.Test
 
 abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
-  private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())!!
+  private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
   private val search get() = device.findObject(By.clazz("android.widget.EditText"))!!
 
   @Before fun before() {
@@ -45,7 +45,7 @@ abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
   @Test fun searchTrees() {
     awaitText("0. +1")
     search.text = "tree"
-    awaitText("301. christmas_tree")
+    awaitText("305. christmas_tree")
     search.clear()
     awaitText("0. +1")
   }
