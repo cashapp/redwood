@@ -25,11 +25,6 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
 private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
-private const val SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT = 5
-private const val PRIMARY_PRELOAD_ITEM_COUNT = 20
-private const val SECONDARY_PRELOAD_ITEM_COUNT = 10
-
-private const val DEFAULT_SCROLL_INDEX = -1
 
 /**
  * Creates a [LazyListState] that is remembered across compositions.
@@ -75,15 +70,11 @@ public open class LazyListState {
   public var lastIndex: Int by mutableIntStateOf(0)
     private set
 
-  internal var preloadItems: Boolean = true
+  /** How many items to load in anticipation of scrolling up. */
+  public var preloadBeforeItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
-  public var defaultPreloadItemCount: Int = DEFAULT_PRELOAD_ITEM_COUNT
-  public var scrollInProgressPreloadItemCount: Int = SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT
-  public var primaryPreloadItemCount: Int = PRIMARY_PRELOAD_ITEM_COUNT
-  public var secondaryPreloadItemCount: Int = SECONDARY_PRELOAD_ITEM_COUNT
-
-  private var firstIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
-  private var firstIndexFromPrevious2: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  /** How many items to load in anticipation of scrolling down. */
+  public var preloadAfterItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
@@ -114,58 +105,5 @@ public open class LazyListState {
 
     this.firstIndex = firstIndex
     this.lastIndex = lastIndex
-  }
-
-  public fun loadRange(itemCount: Int): IntRange {
-    val preloadBeforeItemCount: Int
-    val preloadAfterItemCount: Int
-
-    when {
-      // Ignore preloads.
-      !preloadItems -> {
-        preloadBeforeItemCount = 0
-        preloadAfterItemCount = 0
-      }
-
-      // Scrolling down.
-      firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstIndex -> {
-        preloadBeforeItemCount = 0
-        preloadAfterItemCount = scrollInProgressPreloadItemCount
-      }
-
-      // Scrolling up.
-      firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstIndex -> {
-        preloadBeforeItemCount = scrollInProgressPreloadItemCount
-        preloadAfterItemCount = 0
-      }
-
-      // Stopped scrolling down.
-      firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious2 < firstIndex -> {
-        preloadBeforeItemCount = secondaryPreloadItemCount
-        preloadAfterItemCount = primaryPreloadItemCount
-      }
-
-      // Stopped scrolling up.
-      firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious2 > firstIndex -> {
-        preloadBeforeItemCount = primaryPreloadItemCount
-        preloadAfterItemCount = secondaryPreloadItemCount
-      }
-
-      // New.
-      else -> {
-        preloadBeforeItemCount = defaultPreloadItemCount
-        preloadAfterItemCount = defaultPreloadItemCount
-      }
-    }
-
-    // TODO(dylan+jwilson): If we're contiguous with our previous loaded range,
-    //  don't rush to remove things from the previous range.
-    val begin = (firstIndex - preloadBeforeItemCount).coerceAtLeast(0)
-    val end = (lastIndex + preloadAfterItemCount).coerceAtMost(itemCount).coerceAtLeast(0)
-
-    this.firstIndexFromPrevious2 = firstIndexFromPrevious1
-    this.firstIndexFromPrevious1 = firstIndex
-
-    return begin until end
   }
 }

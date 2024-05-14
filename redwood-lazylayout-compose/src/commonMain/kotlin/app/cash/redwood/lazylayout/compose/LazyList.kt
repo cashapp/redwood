@@ -39,15 +39,16 @@ internal fun LazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val loadRange = state.loadRange(itemCount)
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
   val placeholderPoolSize = 20
   LazyList(
     isVertical = isVertical,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
     },
-    itemsBefore = loadRange.first,
-    itemsAfter = itemCount - loadRange.count() - loadRange.first,
+    itemsBefore = itemsBefore,
+    itemsAfter = itemsAfter,
     width = width,
     height = height,
     margin = margin,
@@ -56,7 +57,7 @@ internal fun LazyList(
     scrollItemIndex = state.programmaticScrollIndex,
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     items = {
-      for (index in loadRange) {
+      for (index in itemsBefore until itemCount - itemsAfter) {
         key(index) {
           itemProvider.Item(index)
         }
@@ -82,12 +83,13 @@ internal fun RefreshableLazyList(
 ) {
   val itemProvider = rememberLazyListItemProvider(content)
   val itemCount = itemProvider.itemCount
-  val loadRange = state.loadRange(itemCount)
+  val itemsBefore = (state.firstIndex - state.preloadBeforeItemCount).coerceAtLeast(0)
+  val itemsAfter = (itemCount - (state.lastIndex + state.preloadAfterItemCount).coerceAtMost(itemCount)).coerceAtLeast(0)
   val placeholderPoolSize = 20
   RefreshableLazyList(
     isVertical,
-    itemsBefore = loadRange.first,
-    itemsAfter = itemCount - loadRange.count() - loadRange.first,
+    itemsBefore = itemsBefore,
+    itemsAfter = itemsAfter,
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
     },
@@ -102,7 +104,7 @@ internal fun RefreshableLazyList(
     placeholder = { repeat(placeholderPoolSize) { placeholder() } },
     pullRefreshContentColor = pullRefreshContentColor,
     items = {
-      for (index in loadRange) {
+      for (index in itemsBefore until itemCount - itemsAfter) {
         key(index) {
           itemProvider.Item(index)
         }

@@ -101,12 +101,12 @@ class LazyListTest {
 
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        assertThat(lazyList.itemsBefore).isEqualTo(50)
-        assertThat(lazyList.itemsAfter).isEqualTo(35)
+        assertThat(lazyList.itemsBefore).isEqualTo(35)
+        assertThat(lazyList.itemsAfter).isEqualTo(25)
         assertThat(lazyList.placeholder)
           .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
-          .isEqualTo(List(15) { TextValue(Modifier, (it + 50).toString()) })
+          .isEqualTo(List(40) { TextValue(Modifier, (it + 35).toString()) })
       }
     }
   }
@@ -117,7 +117,8 @@ class LazyListTest {
       var index5ComposeCount = 0
       setContent {
         val lazyListState = rememberLazyListState().apply {
-          preloadItems = false
+          preloadBeforeItemCount = 0
+          preloadAfterItemCount = 0
         }
         LazyColumn(
           state = lazyListState,
