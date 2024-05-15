@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.11.0...HEAD
 
 New:
-- Nothing yet!
+- Added a basic DOM-based LazyList implementation.
 
 Changed:
 - Removed deprecated `typealias`es for generated `-WidgetFactories` type which was renamed to `-WidgetSystem` in 0.10.0.

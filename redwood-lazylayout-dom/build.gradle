@@ -1,6 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 redwoodBuild {
+  publishing()
 }
 
 kotlin {
