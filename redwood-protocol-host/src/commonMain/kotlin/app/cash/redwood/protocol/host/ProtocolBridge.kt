@@ -63,7 +63,11 @@ public class ProtocolBridge<W : Any>(
   /** Nodes available for reuse. */
   private val pool = ArrayDeque<ProtocolNode<W>>()
 
+  private var closed = false
+
   override fun sendChanges(changes: List<Change>) {
+    check(!closed)
+
     @Suppress("NAME_SHADOWING")
     val changes = applyReuse(changes)
 
@@ -152,6 +156,16 @@ public class ProtocolBridge<W : Any>(
 
   private fun node(id: Id): ProtocolNode<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID ${id.value}" }
+  }
+
+  /**
+   * Proactively clear held widgets. (This avoids problems when mixing garbage-collected Kotlin
+   * objects with reference-counted Swift objects.)
+   */
+  public fun close() {
+    closed = true
+    nodes.clear()
+    pool.clear()
   }
 
   private fun poolIfReusable(removedNode: ProtocolNode<W>) {

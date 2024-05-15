@@ -27,7 +27,10 @@ import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -302,7 +305,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val isInitialLaunch: Boolean,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
-) : EventSink, ChangesSinkService, TreehouseView.SaveCallback, ZiplineTreehouseUi.Host {
+) : ChangesSinkService, TreehouseView.SaveCallback, ZiplineTreehouseUi.Host {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(
@@ -323,6 +326,9 @@ private class ViewContentCodeBinding<A : AppService>(
 
   /** Only accessed on [TreehouseDispatchers.zipline]. Null after [cancel]. */
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
+
+  /** Note that this is necessary to break the retain cycle between host and guest. */
+  private val eventBridge = EventBridge(dispatchers.zipline, bindingScope)
 
   /** Only accessed on [TreehouseDispatchers.ui]. Empty after [initView]. */
   private val changesAwaitingInitView = ArrayDeque<List<Change>>()
@@ -357,15 +363,6 @@ private class ViewContentCodeBinding<A : AppService>(
     while (true) {
       val changes = changesAwaitingInitView.removeFirstOrNull() ?: break
       receiveChangesOnUiDispatcher(changes)
-    }
-  }
-
-  /** Send an event from the UI to Zipline. */
-  override fun sendEvent(event: Event) {
-    // Send UI events on the zipline dispatcher.
-    bindingScope.launch(dispatchers.zipline) {
-      val treehouseUi = treehouseUiOrNull ?: return@launch
-      treehouseUi.sendEvent(event)
     }
   }
 
@@ -412,7 +409,7 @@ private class ViewContentCodeBinding<A : AppService>(
           json = codeSession.json,
           protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
         ) as ProtocolFactory<Any>,
-        eventSink = this,
+        eventSink = eventBridge,
       )
       bridgeOrNull = bridge
     }
@@ -430,6 +427,7 @@ private class ViewContentCodeBinding<A : AppService>(
       val scopedAppService = serviceScope.apply(codeSession.appService)
       val treehouseUi = contentSource.get(scopedAppService)
       treehouseUiOrNull = treehouseUi
+      eventBridge.delegate = treehouseUi
       stateSnapshot = viewOrNull?.stateSnapshotId?.let {
         stateStore.get(it.value.orEmpty())
       }
@@ -488,16 +486,47 @@ private class ViewContentCodeBinding<A : AppService>(
     }
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   fun cancel() {
     dispatchers.checkUi()
     canceled = true
     viewOrNull?.saveCallback = null
     viewOrNull = null
+    bridgeOrNull?.close()
     bridgeOrNull = null
-    bindingScope.launch(dispatchers.zipline) {
+    eventBridge.bindingScope = null
+    eventBridge.ziplineDispatcher = null
+    bindingScope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
       treehouseUiOrNull = null
+      eventBridge.delegate = null
       serviceScope.close()
       bindingScope.cancel()
+    }
+  }
+}
+
+/**
+ * Bridge events from the UI dispatcher to the Zipline dispatcher.
+ *
+ * Event sinks are in a natural retain cycle between the host and guest. We prevent unwanted
+ * retain cycles by breaking the link to the delegate when the binding is canceled. This avoids
+ * problems when mixing garbage-collected Kotlin objects with reference-counted Swift objects.
+ */
+private class EventBridge(
+  // Both properties are only accessed on the UI dispatcher and null after cancel().
+  var ziplineDispatcher: CoroutineDispatcher?,
+  var bindingScope: CoroutineScope?,
+) : EventSink {
+  // Only accessed on the Zipline dispatcher and null after cancel().
+  var delegate: EventSink? = null
+
+  /** Send an event from the UI to Zipline. */
+  override fun sendEvent(event: Event) {
+    // Send UI events on the zipline dispatcher.
+    val dispatcher = this.ziplineDispatcher ?: return
+    val bindingScope = this.bindingScope ?: return
+    bindingScope.launch(dispatcher) {
+      delegate?.sendEvent(event)
     }
   }
 }
