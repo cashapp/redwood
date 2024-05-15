@@ -28,12 +28,6 @@ import app.cash.redwood.widget.RedwoodLayout
 import app.cash.treehouse.host.R
 import java.util.UUID
 
-@Deprecated(
-  "Renamed to `TreehouseLayout` for consistency with other `TreehouseView` implementations.",
-  ReplaceWith("TreehouseLayout", "app.cash.redwood.treehouse.TreehouseLayout"),
-)
-public typealias TreehouseWidgetView = TreehouseLayout
-
 @SuppressLint("ViewConstructor")
 public class TreehouseLayout(
   context: Context,

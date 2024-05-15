@@ -30,7 +30,6 @@ import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /*
@@ -114,17 +113,6 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
                 )
               }
             }
-            .build(),
-        )
-        .build(),
-    )
-    .addTypeAlias(
-      TypeAliasSpec.builder("${schema.type.flatName}WidgetFactories", widgetSystemType.parameterizedBy(typeVariableW))
-        .addTypeVariable(typeVariableW.copy(bounds = emptyList()))
-        .addAnnotation(
-          AnnotationSpec.builder(Deprecated::class)
-            .addMember("%S", "Renamed to ${widgetSystemType.simpleName}")
-            .addMember("%T(%S, %S)", ReplaceWith::class, widgetSystemType.simpleName, widgetSystemType.toString())
             .build(),
         )
         .build(),

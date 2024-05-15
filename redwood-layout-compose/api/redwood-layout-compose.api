@@ -26,10 +26,6 @@ public abstract interface class app/cash/redwood/layout/compose/ColumnScope {
 	public fun width-slHoOYc (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
 }
 
-public final class app/cash/redwood/layout/compose/LayoutScopesKt {
-	public static final fun flex (Lapp/cash/redwood/Modifier;D)Lapp/cash/redwood/Modifier;
-}
-
 public final class app/cash/redwood/layout/compose/RowKt {
 	public static final fun Row-dhzo6EI (IILapp/cash/redwood/ui/Margin;IIILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
