@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.11.0...HEAD
 
 New:
-- Nothing yet!
+- Added a basic DOM-based LazyList implementation.
 
 Changed:
 - Nothing yet!

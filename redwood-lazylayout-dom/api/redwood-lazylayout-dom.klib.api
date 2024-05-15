@@ -1,0 +1,13 @@
+// Klib ABI Dump
+// Targets: [js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-lazylayout-dom>
+final class app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory : app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory|null[0]
+    constructor <init>(org.w3c.dom/Document) // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
+    final fun LazyList(): app.cash.redwood.lazylayout.widget/LazyList<org.w3c.dom/HTMLElement> // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory.LazyList|LazyList(){}[0]
+    final fun RefreshableLazyList(): app.cash.redwood.lazylayout.widget/RefreshableLazyList<org.w3c.dom/HTMLElement> // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory.RefreshableLazyList|RefreshableLazyList(){}[0]
+}
