@@ -20,8 +20,6 @@ abstract interface app.cash.redwood.testing/WidgetValue { // app.cash.redwood.te
     open val childrenLists // app.cash.redwood.testing/WidgetValue.childrenLists|{}childrenLists[0]
         open fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.testing/WidgetValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
 }
-final const val app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop|#static{}app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop[0]
-final const val app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop|#static{}app_cash_redwood_testing_TestSavedState$stableprop[0]
 final fun (app.cash.redwood.testing/WidgetValue).app.cash.redwood.testing/toChangeList(app.cash.redwood.protocol.guest/ProtocolBridge.Factory, kotlinx.serialization.json/Json =...): app.cash.redwood.protocol/SnapshotChangeList // app.cash.redwood.testing/toChangeList|toChangeList@app.cash.redwood.testing.WidgetValue(app.cash.redwood.protocol.guest.ProtocolBridge.Factory;kotlinx.serialization.json.Json){}[0]
 final fun (kotlin.collections/List<app.cash.redwood.testing/WidgetValue>).app.cash.redwood.testing/flatten(): kotlin.sequences/Sequence<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.testing/flatten|flatten@kotlin.collections.List<app.cash.redwood.testing.WidgetValue>(){}[0]
 final fun (kotlin.collections/List<app.cash.redwood.testing/WidgetValue>).app.cash.redwood.testing/toChangeList(app.cash.redwood.protocol.guest/ProtocolBridge.Factory, kotlinx.serialization.json/Json =...): app.cash.redwood.protocol/SnapshotChangeList // app.cash.redwood.testing/toChangeList|toChangeList@kotlin.collections.List<app.cash.redwood.testing.WidgetValue>(app.cash.redwood.protocol.guest.ProtocolBridge.Factory;kotlinx.serialization.json.Json){}[0]
@@ -30,6 +28,8 @@ final fun <#A: kotlin/Any, #B: kotlin/Any?> app.cash.redwood.testing/TestRedwood
 final object app.cash.redwood.testing/NoOpOnBackPressedDispatcher : app.cash.redwood.ui/OnBackPressedDispatcher { // app.cash.redwood.testing/NoOpOnBackPressedDispatcher|null[0]
     final fun addCallback(app.cash.redwood.ui/OnBackPressedCallback): app.cash.redwood.ui/Cancellable // app.cash.redwood.testing/NoOpOnBackPressedDispatcher.addCallback|addCallback(app.cash.redwood.ui.OnBackPressedCallback){}[0]
 }
+final val app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop|#static{}app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop[0]
+final val app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop|#static{}app_cash_redwood_testing_TestSavedState$stableprop[0]
 sealed class app.cash.redwood.testing/TestSavedState { // app.cash.redwood.testing/TestSavedState|null[0]
     constructor <init>() // app.cash.redwood.testing/TestSavedState.<init>|<init>(){}[0]
 }
