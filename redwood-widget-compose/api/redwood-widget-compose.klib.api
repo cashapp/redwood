@@ -16,4 +16,4 @@ final class app.cash.redwood.widget.compose/ComposeWidgetChildren : app.cash.red
     final val widgets // app.cash.redwood.widget.compose/ComposeWidgetChildren.widgets|{}widgets[0]
         final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>> // app.cash.redwood.widget.compose/ComposeWidgetChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
 }
-final const val app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop // app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop|#static{}app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop[0]
+final val app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop // app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop|#static{}app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop[0]
