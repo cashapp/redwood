@@ -7,7 +7,10 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- Removed deprecated `typealias`es for generated `-WidgetFactories` type which was renamed to `-WidgetSystem` in 0.10.0.
+- Removed deprecated `Modifier.flex` extension function which is now supported natively by `Row` and `Column` since 0.8.0.
+- Removed deprecated `TreehouseWidgetView` and `TreehouseUIKitView` type aliases for `TreehouseLayout` and `TreehouseUIView` which were renamed in 0.7.0.
+- Removed deprecated `TreehouseAppFactory` functions with the old `FileSystem` and `Path` order which were changed in 0.11.0.
 
 Fixed:
 - Nothing yet!
