@@ -1,10 +1,23 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.11.0...HEAD
 
 New:
-- Added `toDebugString` method for `WidgetValue` and `List<WidgetValue>` which returns a formatted String of a widget's children and properties, useful for test debugging.
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.11.0] - 2024-05-15
+[0.11.0]: https://github.com/cashapp/redwood/releases/tag/0.11.0
+
+New:
+- Added `toDebugString` method for `WidgetValue` and `List<WidgetValue>` which returns a formatted string of a widget's children and properties, useful for test debugging.
 
 Changed:
 - Removed generated `typealias`es for package names which changed in 0.10.0.
@@ -19,7 +32,9 @@ Fixed:
 - In `YogaUIView`'s `layoutNodes` method, return early for nested `YogaUIView`s to prevent redundant frame calculations.
 
 Upgraded:
-- Zipline 1.9.0.
+- Zipline 1.10.1.
+
+This version works with Kotlin 1.9.24 by default.
 
 
 ## [0.10.0] - 2024-04-05
@@ -60,6 +75,8 @@ Fixed:
 - Fix memory leak in 'protocol-guest' and 'protocol-host' where child nodes beneath a removed node were incorrectly retained in an internal map indefinitely. The guest protocol code has been updated to work around this memory leak when deployed to old hosts by sending individual remove operations for each node in the subtree.
 - Ensure that Zipline services are not closed prematurely when disposing a Treehouse UI.
 - In `UIViewLazyList`, don't remove subviews from hierarchy during `prepareForReuse` call
+
+This version works with Kotlin 1.9.23 by default.
 
 
 ## [0.9.0] - 2024-02-28
