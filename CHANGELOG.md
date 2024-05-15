@@ -13,7 +13,7 @@ Changed:
 - Removed deprecated `TreehouseAppFactory` functions with the old `FileSystem` and `Path` order which were changed in 0.11.0.
 
 Fixed:
-- Nothing yet!
+- Fix memory leaks caused by reference cycles on iOS. We got into trouble mixing garbage-collected Kotlin objects with reference-counted Swift objects.
 
 
 ## [0.11.0] - 2024-05-15

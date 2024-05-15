@@ -263,7 +263,7 @@ internal class ProtocolButton<W : Any>(
       2 -> _widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
         val onClick: (() -> Unit)? = if (change.value.jsonPrimitive.boolean) {
-          { eventSink.sendEvent(Event(change.id, EventTag(3))) }
+          OnClick(json, change.id, eventSink)
         } else {
           null
         }
@@ -338,6 +338,12 @@ internal fun generateProtocolNode(
           var nextSerializerId = 0
           val serializerIds = mutableMapOf<TypeName, Int>()
 
+          for (trait in properties) {
+            if (trait is ProtocolEvent) {
+              addType(generateEventHandler(trait))
+            }
+          }
+
           addFunction(
             FunSpec.builder("apply")
               .addModifiers(OVERRIDE)
@@ -371,30 +377,25 @@ internal fun generateProtocolNode(
                         KotlinxSerialization.jsonBoolean,
                       )
                       val arguments = mutableListOf<CodeBlock>()
-                      for ((index, parameterFqType) in trait.parameterTypes.withIndex()) {
+                      for (parameterFqType in trait.parameterTypes) {
                         val parameterType = parameterFqType.asTypeName()
                         val serializerId = serializerIds.computeIfAbsent(parameterType) {
                           nextSerializerId++
                         }
-                        arguments += CodeBlock.of(
-                          "json.encodeToJsonElement(serializer_%L, arg%L)",
-                          serializerId,
-                          index,
-                        )
+                        arguments += CodeBlock.of("serializer_%L", serializerId)
                       }
                       if (trait.parameterTypes.isEmpty()) {
-                        beginControlFlow("{")
+                        addStatement(
+                          "%L(json, change.id, eventSink)",
+                          trait.eventHandlerName,
+                        )
                       } else {
-                        beginControlFlow("{ %L ->", trait.parameterTypes.indices.map { CodeBlock.of("arg$it") }.joinToCode())
+                        addStatement(
+                          "%L(json, change.id, eventSink, %L)",
+                          trait.eventHandlerName,
+                          arguments.joinToCode(),
+                        )
                       }
-                      addStatement(
-                        "eventSink.sendEvent(%T(change.id, %T(%L), listOf(%L)))",
-                        Protocol.Event,
-                        Protocol.EventTag,
-                        trait.tag,
-                        arguments.joinToCode(),
-                      )
-                      endControlFlow()
 
                       nextControlFlow("else")
                       if (trait.isNullable) {
@@ -489,6 +490,115 @@ internal fun generateProtocolNode(
         .build(),
     )
     .build()
+}
+
+/** Returns a class name like "OnClick". */
+private val ProtocolEvent.eventHandlerName: String
+  get() = name.replaceFirstChar { it.uppercase() }
+
+/**
+ * Generates a named event handler class. We do this instead of using a lambda to be explicit in
+ * which variables are captured by the event handler. (This avoids problems when mixing
+ * garbage-collected Kotlin objects with reference-counted Swift objects.)
+ */
+/*
+private class OnClick(
+  private val json: Json,
+  private val id: Id,
+  private val eventSink: EventSink,
+  private val serializer_0: KSerializer<Int>,
+  private val serializer_1: KSerializer<String>,
+) : (Int, String) -> Unit {
+  override fun invoke(arg0: Int, arg1: String) {
+    eventSink.sendEvent(
+      Event(
+        id,
+        EventTag(3),
+        listOf(
+          json.encodeToJsonElement(serializer_0, arg0),
+          json.encodeToJsonElement(serializer_1, arg1),
+        )
+      )
+    )
+  }
+}
+*/
+private fun generateEventHandler(
+  trait: ProtocolEvent,
+): TypeSpec {
+  val constructor = FunSpec.constructorBuilder()
+  val invoke = FunSpec.builder("invoke")
+    .addModifiers(OVERRIDE)
+
+  val classBuilder = TypeSpec.classBuilder(trait.eventHandlerName)
+    .addModifiers(PRIVATE)
+    .addSuperinterface(trait.lambdaType.copy(nullable = false))
+
+  addConstructorParameterAndProperty(classBuilder, constructor, "json", KotlinxSerialization.Json)
+  addConstructorParameterAndProperty(classBuilder, constructor, "id", Protocol.Id)
+  addConstructorParameterAndProperty(classBuilder, constructor, "eventSink", Protocol.EventSink)
+
+  val arguments = mutableListOf<CodeBlock>()
+  for ((index, parameterFqType) in trait.parameterTypes.withIndex()) {
+    val parameterType = parameterFqType.asTypeName()
+    val serializerType = KotlinxSerialization.KSerializer.parameterizedBy(parameterType)
+    val serializerId = "serializer_$index"
+    val parameterName = "arg$index"
+
+    addConstructorParameterAndProperty(classBuilder, constructor, serializerId, serializerType)
+    invoke.addParameter(ParameterSpec(parameterName, parameterType))
+
+    arguments += CodeBlock.of(
+      "json.encodeToJsonElement(%L, %L)",
+      serializerId,
+      parameterName,
+    )
+  }
+
+  if (arguments.isEmpty()) {
+    invoke.addCode(
+      "eventSink.sendEvent(%T(id, %T(%L)))",
+      Protocol.Event,
+      Protocol.EventTag,
+      trait.tag,
+    )
+  } else {
+    invoke.addCode(
+      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nlistOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
+      Protocol.Event,
+      Protocol.EventTag,
+      trait.tag,
+      arguments.joinToCode(separator = ",\n"),
+    )
+  }
+
+  classBuilder.primaryConstructor(constructor.build())
+  classBuilder.addFunction(invoke.build())
+  return classBuilder.build()
+}
+
+/** Adds a constructor parameter and property with the same name. */
+private fun addConstructorParameterAndProperty(
+  classBuilder: TypeSpec.Builder,
+  constructorBuilder: FunSpec.Builder,
+  name: String,
+  type: TypeName,
+) {
+  constructorBuilder.addParameter(
+    ParameterSpec(
+      name = name,
+      type = type,
+    ),
+  )
+
+  classBuilder.addProperty(
+    PropertySpec.builder(
+      name = name,
+      type = type,
+      modifiers = listOf(PRIVATE),
+    ).initializer(name)
+      .build(),
+  )
 }
 
 internal fun generateProtocolModifierImpls(
