@@ -386,12 +386,12 @@ internal fun generateProtocolNode(
                       }
                       if (trait.parameterTypes.isEmpty()) {
                         addStatement(
-                          "%L(json, change.id, eventSink)",
+                          "%L(json, change.id, eventSink)::invoke",
                           trait.eventHandlerName,
                         )
                       } else {
                         addStatement(
-                          "%L(json, change.id, eventSink, %L)",
+                          "%L(json, change.id, eventSink, %L)::invoke",
                           trait.eventHandlerName,
                           arguments.joinToCode(),
                         )
@@ -528,11 +528,9 @@ private fun generateEventHandler(
 ): TypeSpec {
   val constructor = FunSpec.constructorBuilder()
   val invoke = FunSpec.builder("invoke")
-    .addModifiers(OVERRIDE)
 
   val classBuilder = TypeSpec.classBuilder(trait.eventHandlerName)
     .addModifiers(PRIVATE)
-    .addSuperinterface(trait.lambdaType.copy(nullable = false))
 
   addConstructorParameterAndProperty(classBuilder, constructor, "json", KotlinxSerialization.Json)
   addConstructorParameterAndProperty(classBuilder, constructor, "id", Protocol.Id)
