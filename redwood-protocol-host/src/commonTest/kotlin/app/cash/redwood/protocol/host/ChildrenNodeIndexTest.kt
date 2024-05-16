@@ -138,6 +138,9 @@ private class WidgetNode(override val widget: StringWidget) : ProtocolNode<Strin
 
   override fun visitIds(block: (Id) -> Unit) {
   }
+
+  override fun detach() {
+  }
 }
 
 private class StringWidget(override val value: String) : Widget<String> {

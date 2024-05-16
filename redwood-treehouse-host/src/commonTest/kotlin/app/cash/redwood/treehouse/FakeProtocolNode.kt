@@ -51,4 +51,7 @@ internal class FakeProtocolNode(
   override fun visitIds(block: (Id) -> Unit) {
     block(id)
   }
+
+  override fun detach() {
+  }
 }
