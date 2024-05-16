@@ -258,7 +258,7 @@ internal class ProtocolButton<W : Any>(
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   public override fun apply(change: PropertyChange, eventSink: EventSink): Unit {
-    val widget = this.widget
+    val widget = _widget ?: error("detached")
     when (change.tag.value) {
       1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
       2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
