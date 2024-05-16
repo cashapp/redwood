@@ -164,10 +164,15 @@ public class ProtocolBridge<W : Any>(
    */
   public fun close() {
     closed = true
+
     for (node in nodes.values) {
       node.detach()
     }
     nodes.clear()
+
+    for (node in pool) {
+      node.detach()
+    }
     pool.clear()
   }
 

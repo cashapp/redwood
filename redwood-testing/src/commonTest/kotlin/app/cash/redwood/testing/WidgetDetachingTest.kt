@@ -231,6 +231,69 @@ class WidgetDetachingTest {
     }
   }
 
+  @Test
+  fun pooledWidgetIsDetachedWhenWidgetBridgeIsClosed() = runTest {
+    viewRecyclingTest {
+      var step by mutableIntStateOf(1)
+
+      setContent {
+        TestRow {
+          if (step == 1) {
+            Text(
+              modifier = Modifier.reuse(),
+              text = "hello",
+            )
+          }
+        }
+      }
+
+      awaitSnapshot()
+      val protocolText = widgetBridge.extractProtocolText()
+      assertThat(protocolText.widget).isNotNull()
+
+      step++
+      awaitSnapshot()
+      assertThat(protocolText.widget).isNotNull()
+
+      widgetBridge.close()
+      val thrown = assertFailsWith<IllegalStateException> {
+        protocolText.widget
+      }
+      assertThat(thrown).hasMessage("detached")
+    }
+  }
+
+  @Test
+  fun childOfPooledWidgetIsDetachedWhenBridgeIsClosed() = runTest {
+    viewRecyclingTest {
+      var step by mutableIntStateOf(1)
+
+      setContent {
+        if (step == 1) {
+          TestRow(
+            modifier = Modifier.reuse(),
+          ) {
+            Text("hello")
+          }
+        }
+      }
+
+      awaitSnapshot()
+      val protocolText = widgetBridge.extractProtocolText()
+      assertThat(protocolText.widget).isNotNull()
+
+      step++
+      awaitSnapshot()
+      assertThat(protocolText.widget).isNotNull()
+
+      widgetBridge.close()
+      val thrown = assertFailsWith<IllegalStateException> {
+        protocolText.widget
+      }
+      assertThat(thrown).hasMessage("detached")
+    }
+  }
+
   private fun ProtocolBridge<WidgetValue>.extractProtocolText(): ProtocolText<WidgetValue> {
     val root = node(Id.Root)
     val protocolTestRow = root.children(ChildrenTag.Root)!!.nodes.single() as ProtocolTestRow
