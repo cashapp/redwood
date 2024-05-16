@@ -48,7 +48,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
    * The first placeholder ever returned. We use it to choose measured dimensions for created
    * placeholders if the pool ever runs out.
    */
-  private var firstPlaceholder: Widget<W>? = null
+  private var firstPlaceholder: W? = null
 
   /** Loaded items that may or may not have a view bound. */
   private var loadedItems = mutableListOf<Binding<V, W>>()
@@ -68,7 +68,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     override fun insert(index: Int, widget: Widget<W>) {
       _widgets += widget
-      if (firstPlaceholder == null) firstPlaceholder = widget
+      if (firstPlaceholder == null) firstPlaceholder = widget.value
       placeholdersQueue += widget
     }
 
@@ -81,6 +81,10 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     override fun onModifierUpdated(index: Int, widget: Widget<W>) {
+    }
+
+    override fun detach() {
+      _widgets.clear()
     }
   }
 
@@ -121,6 +125,10 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
 
     override fun onModifierUpdated(index: Int, widget: Widget<W>) {
+    }
+
+    override fun detach() {
+      _widgets.clear()
     }
   }
 
@@ -381,7 +389,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     val result = placeholdersQueue.removeFirstOrNull()
     if (result != null) return result
 
-    val created = createPlaceholder(firstPlaceholder!!.value)
+    val created = createPlaceholder(firstPlaceholder!!)
       ?: throw IllegalStateException("no more placeholders!")
 
     return SizeOnlyPlaceholder(created)

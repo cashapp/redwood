@@ -57,4 +57,7 @@ public class ComposeWidgetChildren @JvmOverloads constructor(
     modifierTick++
     onModifierUpdated.invoke()
   }
+
+  override fun detach() {
+  }
 }

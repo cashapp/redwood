@@ -99,8 +99,8 @@ public class ProtocolBridge<W : Any>(
             is Remove -> {
               for (childIndex in change.index until change.index + change.count) {
                 val child = children.nodes[childIndex]
-                poolIfReusable(child)
                 child.visitIds(nodes::remove)
+                poolOrDetach(child)
               }
               children.remove(change.index, change.count)
             }
@@ -154,7 +154,7 @@ public class ProtocolBridge<W : Any>(
     }
   }
 
-  private fun node(id: Id): ProtocolNode<W> {
+  internal fun node(id: Id): ProtocolNode<W> {
     return checkNotNull(nodes[id]) { "Unknown widget ID ${id.value}" }
   }
 
@@ -164,17 +164,28 @@ public class ProtocolBridge<W : Any>(
    */
   public fun close() {
     closed = true
+
+    for (node in nodes.values) {
+      node.detach()
+    }
     nodes.clear()
+
+    for (node in pool) {
+      node.detach()
+    }
     pool.clear()
   }
 
-  private fun poolIfReusable(removedNode: ProtocolNode<W>) {
+  private fun poolOrDetach(removedNode: ProtocolNode<W>) {
     if (removedNode.reuse) {
       removedNode.shapeHash = shapeHash(this.factory, removedNode)
       pool.addFirst(removedNode)
       if (pool.size > POOL_SIZE) {
-        pool.removeLast() // Prune the least-recently added element.
+        val evicted = pool.removeLast() // Evict the least-recently added element.
+        evicted.detach()
       }
+    } else {
+      removedNode.detach()
     }
   }
 
@@ -387,6 +398,10 @@ private class RootProtocolNode<W : Any>(
     set(_) {
       throw AssertionError()
     }
+
+  override fun detach() {
+    children.detach()
+  }
 }
 
 private const val REUSE_MODIFIER_TAG = -4_543_827

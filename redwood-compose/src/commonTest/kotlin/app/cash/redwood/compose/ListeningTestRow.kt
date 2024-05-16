@@ -47,6 +47,9 @@ class ListeningTestRow : TestRow<WidgetValue>, ChangeListener {
 
     override fun onModifierUpdated(index: Int, widget: Widget<WidgetValue>) {
     }
+
+    override fun detach() {
+    }
   }
 
   override fun onEndChanges() {

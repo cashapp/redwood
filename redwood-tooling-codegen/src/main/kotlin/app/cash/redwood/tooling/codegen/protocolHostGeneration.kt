@@ -251,23 +251,24 @@ internal class ProtocolButton<W : Any>(
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : ProtocolNode<W>(id, WidgetTag(4)) {
-  private var _widget: Button<W> = widget
-  override val widget: Widget<W> get() = _widget
+  private var _widget: Button<W>? = widget
+  override val widget: Widget<W> get() = _widget ?: error("detached")
 
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
   public override fun apply(change: PropertyChange, eventSink: EventSink): Unit {
+    val widget = _widget ?: error("detached")
     when (change.tag.value) {
-      1 -> _widget.text(json.decodeFromJsonElement(serializer_0, change.value))
-      2 -> _widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
+      1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
+      2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
         val onClick: (() -> Unit)? = if (change.value.jsonPrimitive.boolean) {
           OnClick(json, change.id, eventSink)
         } else {
           null
         }
-        _widget.onClick(onClick)
+        widget.onClick(onClick)
       }
       else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.tag)
     }
@@ -280,6 +281,10 @@ internal class ProtocolButton<W : Any>(
 
   public override fun visitIds(block: (Id) -> Unit) {
     block(id)
+  }
+
+  public override fun detach() {
+    _widget = null
   }
 }
 */
@@ -311,7 +316,8 @@ internal fun generateProtocolNode(
         .addSuperclassConstructorParameter("id")
         .addSuperclassConstructorParameter("%T(%L)", WidgetTag, widget.tag)
         .addProperty(
-          PropertySpec.builder("_widget", widgetType, PRIVATE)
+          PropertySpec.builder("_widget", widgetType.copy(nullable = true), PRIVATE)
+            .mutable(true)
             .initializer("widget")
             .build(),
         )
@@ -319,7 +325,7 @@ internal fun generateProtocolNode(
           PropertySpec.builder("widget", RedwoodWidget.Widget.parameterizedBy(typeVariableW), OVERRIDE)
             .getter(
               FunSpec.getterBuilder()
-                .addStatement("return _widget")
+                .addStatement("return _widget ?: error(%S)", "detached")
                 .build(),
             )
             .build(),
@@ -349,8 +355,11 @@ internal fun generateProtocolNode(
               .addModifiers(OVERRIDE)
               .addParameter("change", Protocol.PropertyChange)
               .addParameter("eventSink", Protocol.EventSink)
-              .beginControlFlow("when (change.tag.value)")
               .apply {
+                if (properties.isNotEmpty()) {
+                  addStatement("val widget = _widget ?: error(%S)", "detached")
+                }
+                beginControlFlow("when (change.tag.value)")
                 for (trait in properties) {
                   when (trait) {
                     is ProtocolProperty -> {
@@ -360,7 +369,7 @@ internal fun generateProtocolNode(
                       }
 
                       addStatement(
-                        "%L -> _widget.%N(json.decodeFromJsonElement(serializer_%L, change.value))",
+                        "%L -> widget.%N(json.decodeFromJsonElement(serializer_%L, change.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -404,7 +413,7 @@ internal fun generateProtocolNode(
                         addStatement("throw %T()", Stdlib.AssertionError)
                       }
                       endControlFlow()
-                      addStatement("_widget.%1N(%1N)", trait.name)
+                      addStatement("widget.%1N(%1N)", trait.name)
                       endControlFlow()
                     }
 
@@ -485,6 +494,19 @@ internal fun generateProtocolNode(
                 }
               }
             }
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("detach")
+            .addModifiers(OVERRIDE)
+            .apply {
+              for (trait in widget.traits) {
+                if (trait is ProtocolChildren) {
+                  addStatement("%N.detach()", trait.name)
+                }
+              }
+            }
+            .addStatement("_widget = null")
             .build(),
         )
         .build(),

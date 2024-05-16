@@ -83,9 +83,9 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.single().addWidget("hello")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
-    assertThat(view1.children.single().value.label).isEqualTo("hello")
+    assertThat(view1.views.single().label).isEqualTo("hello")
 
-    view1.children.single().value.onClick!!.invoke()
+    view1.views.single().onClick!!.invoke()
     eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
 
     content.unbind()
@@ -131,7 +131,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.single().addWidget("hello")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
-    assertThat(view1.children.single().value.label).isEqualTo("hello")
+    assertThat(view1.views.single().label).isEqualTo("hello")
 
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
@@ -150,7 +150,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.single().addWidget("hello")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
-    assertThat(view1.children.single().value.label).isEqualTo("hello")
+    assertThat(view1.views.single().label).isEqualTo("hello")
 
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
@@ -181,10 +181,10 @@ class TreehouseAppContentTest {
 
     // This still shows UI from codeSessionA. There's no onCodeLoaded() and no reset() until the new
     // code's first widget is added!
-    assertThat(view1.children.single().value.label).isEqualTo("helloA")
+    assertThat(view1.views.single().label).isEqualTo("helloA")
     codeSessionB.appService.uis.single().addWidget("helloB")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = false)")
-    assertThat(view1.children.single().value.label).isEqualTo("helloB")
+    assertThat(view1.views.single().label).isEqualTo("helloB")
 
     content.unbind()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
@@ -238,7 +238,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.single().addWidget("helloA")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
-    assertThat(view1.children.single().value.label).isEqualTo("helloA")
+    assertThat(view1.views.single().label).isEqualTo("helloA")
 
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
@@ -248,7 +248,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.last().addWidget("helloB")
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
-    assertThat(view1.children.single().value.label).isEqualTo("helloB")
+    assertThat(view1.views.single().label).isEqualTo("helloB")
 
     content.unbind()
     eventLog.takeEvent("codeSessionA.app.uis[1].close()")
@@ -438,7 +438,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeListener.onCodeLoaded(view1, initial = true)")
 
     codeSessionA.appService.uis.single().throwOnNextEvent("boom!")
-    view1.children.single().value.onClick!!.invoke()
+    view1.views.single().onClick!!.invoke()
     eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
     eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")

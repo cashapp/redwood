@@ -68,7 +68,7 @@ class ViewRecyclingTester(
 
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
-  private val widgetBridge = ProtocolBridge(
+  val widgetBridge = ProtocolBridge(
     guestVersion = guestRedwoodVersion,
     container = widgetContainer,
     factory = widgetProtocolFactory,

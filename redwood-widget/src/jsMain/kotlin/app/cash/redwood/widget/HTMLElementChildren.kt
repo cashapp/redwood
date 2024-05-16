@@ -68,4 +68,7 @@ public class HTMLElementChildren(
     container.removeChild(element)
     container.insertBefore(element, container.children[0])
   }
+
+  override fun detach() {
+  }
 }

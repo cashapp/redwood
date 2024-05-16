@@ -188,4 +188,8 @@ private class HTMLFlexElementChildren(
       }
     }
   }
+
+  override fun detach() {
+    delegate.detach()
+  }
 }
