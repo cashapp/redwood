@@ -88,4 +88,7 @@ public class ProtocolWidgetChildren(
     }
     block(parent, tag, this)
   }
+
+  override fun detach() {
+  }
 }

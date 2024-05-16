@@ -44,4 +44,8 @@ public class MutableListChildren<W : Any>(
   override fun onModifierUpdated(index: Int, widget: Widget<W>) {
     modifierUpdated()
   }
+
+  override fun detach() {
+    container.clear()
+  }
 }

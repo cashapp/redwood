@@ -61,4 +61,7 @@ public class ViewGroupChildren(
   override fun onModifierUpdated(index: Int, widget: Widget<View>) {
     container.requestLayout()
   }
+
+  override fun detach() {
+  }
 }

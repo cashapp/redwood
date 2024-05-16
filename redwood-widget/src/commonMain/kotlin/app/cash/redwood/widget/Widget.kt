@@ -69,5 +69,18 @@ public interface Widget<W : Any> {
 
     /** Indicates that [Modifier]s for the child widgets have changed. */
     public fun onModifierUpdated(index: Int, widget: Widget<W>)
+
+    /**
+     * Clear [widgets] **without** triggering an update the displayed UI.
+     *
+     * After this is called there will be no further calls to insert, remove, or move widgets, and
+     * no further updates to widgets' modifiers.
+     *
+     * Implementations must clear all held references to [Widget] instances. This is necessary
+     * because widget implementations may be reference-counted (as in Swift) and may also contain
+     * references to Kotlin objects to create a retain cycle. We require implementations of this
+     * class to be where this cycle is broken because it's a non-invasive place to do so.
+     */
+    public fun detach()
   }
 }

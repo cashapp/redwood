@@ -71,6 +71,12 @@ public class UIViewChildren(
   private fun invalidate() {
     (container.superview ?: container).setNeedsLayout()
   }
+
+  override fun detach() {
+    // Note that this doesn't update [container], since we don't want to trigger an update to the UI
+    // if a detached widget is still on screen.
+    _widgets.clear()
+  }
 }
 
 private fun List<UIView>.remove(index: Int, count: Int): Array<UIView> {
