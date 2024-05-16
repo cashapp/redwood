@@ -76,10 +76,12 @@ public interface Widget<W : Any> {
      * After this is called there will be no further calls to insert, remove, or move widgets, and
      * no further updates to widgets' modifiers.
      *
-     * Implementations must clear all held references to [Widget] instances. This is necessary
+     * Implementations must clear all direct references to [Widget] instances. This is necessary
      * because widget implementations may be reference-counted (as in Swift) and may also contain
      * references to Kotlin objects to create a retain cycle. We require implementations of this
      * class to be where this cycle is broken because it's a non-invasive place to do so.
+     *
+     * This function is not recursive.
      */
     public fun detach()
   }

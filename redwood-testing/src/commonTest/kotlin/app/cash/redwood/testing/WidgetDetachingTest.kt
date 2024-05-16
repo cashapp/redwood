@@ -68,6 +68,32 @@ class WidgetDetachingTest {
   }
 
   @Test
+  fun widgetIsDetachedWhenItsParentIsRemovedFromComposition() = runTest {
+    viewRecyclingTest {
+      var step by mutableIntStateOf(1)
+
+      setContent {
+        if (step == 1) {
+          TestRow {
+            Text("hello")
+          }
+        }
+      }
+
+      awaitSnapshot()
+      val protocolText = widgetBridge.extractProtocolText()
+      assertThat(protocolText.widget).isNotNull()
+
+      step++
+      awaitSnapshot()
+      val thrown = assertFailsWith<IllegalStateException> {
+        protocolText.widget
+      }
+      assertThat(thrown).hasMessage("detached")
+    }
+  }
+
+  @Test
   fun widgetIsDetachedWhenWidgetBridgeIsClosed() = runTest {
     viewRecyclingTest {
       setContent {
@@ -152,6 +178,50 @@ class WidgetDetachingTest {
       awaitSnapshot()
       assertThat(protocolText.widget).isNotNull()
 
+      step++
+      awaitSnapshot()
+      val thrown = assertFailsWith<IllegalStateException> {
+        protocolText.widget
+      }
+      assertThat(thrown).hasMessage("detached")
+    }
+  }
+
+  @Test
+  fun widgetIsDetachedWhenParentWidgetIsEvictedFromPool() = runTest {
+    val poolSize = app.cash.redwood.protocol.host.POOL_SIZE
+
+    viewRecyclingTest {
+      var step by mutableIntStateOf(1)
+
+      setContent {
+        if (step == 1) {
+          TestRow(
+            modifier = Modifier.reuse(),
+          ) {
+            Text("hello")
+          }
+        } else if (step == 2) {
+          // These elements won't be pooled until step 3...
+          for (i in 0 until poolSize) {
+            Box(
+              modifier = Modifier.reuse(),
+            ) {
+            }
+          }
+        }
+      }
+
+      awaitSnapshot()
+      val protocolText = widgetBridge.extractProtocolText()
+      assertThat(protocolText.widget).isNotNull()
+
+      // protocolText is not detached when its parent is pooled.
+      step++
+      awaitSnapshot()
+      assertThat(protocolText.widget).isNotNull()
+
+      // protocolText is detached when its parent is evicted from the pool.
       step++
       awaitSnapshot()
       val thrown = assertFailsWith<IllegalStateException> {

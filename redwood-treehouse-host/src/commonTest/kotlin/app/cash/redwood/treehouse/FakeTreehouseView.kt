@@ -19,14 +19,27 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
+import app.cash.redwood.widget.Widget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * An in-memory fake.
+ *
+ * This pretends to be like a real UI by keeping an independent copy of the views. That way
+ * [Widget.Children.detach] can clear the widget (adapters) without forcing an update to the UI.
+ */
 internal class FakeTreehouseView(
   private val name: String,
   override val onBackPressedDispatcher: FakeOnBackPressedDispatcher,
   override val uiConfiguration: StateFlow<UiConfiguration> = MutableStateFlow(UiConfiguration()),
 ) : TreehouseView<FakeWidget> {
+  private val mutableListChildren = MutableListChildren<FakeWidget>()
+  private val mutableViews = mutableListOf<FakeWidget>()
+
+  val views: List<FakeWidget>
+    get() = mutableViews
+
   override val widgetSystem = FakeTreehouseWidgetSystem()
 
   override var readyForContentChangeListener: ReadyForContentChangeListener<FakeWidget>? = null
@@ -41,12 +54,27 @@ internal class FakeTreehouseView(
 
   override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
-  override val children = MutableListChildren<FakeWidget>()
+  override val children = object : Widget.Children<FakeWidget> by mutableListChildren {
+    override fun insert(index: Int, widget: Widget<FakeWidget>) {
+      mutableViews.add(index, widget.value)
+      mutableListChildren.insert(index, widget)
+    }
+
+    override fun remove(index: Int, count: Int) {
+      mutableViews.subList(index, index + count).clear()
+      mutableListChildren.remove(index, count)
+    }
+
+    override fun detach() {
+      mutableListChildren.detach() // Clear widgets but not views.
+    }
+  }
 
   override val savedStateRegistry: SavedStateRegistry? = null
 
   override fun reset() {
-    children.clear()
+    mutableViews.clear()
+    mutableListChildren.clear()
   }
 
   override fun toString() = name

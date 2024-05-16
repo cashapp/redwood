@@ -67,7 +67,7 @@ public abstract class ProtocolNode<W : Any>(
   /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
   public abstract fun visitIds(block: (Id) -> Unit)
 
-  /** Clear all widget references and detach all children. */
+  /** Detach all child widgets recursively, then clear direct references to them. */
   public abstract fun detach()
 }
 
@@ -135,6 +135,9 @@ public class ProtocolChildren<W : Any>(
   }
 
   public fun detach() {
+    for (node in nodes) {
+      node.detach()
+    }
     nodes.clear()
     children.detach()
   }

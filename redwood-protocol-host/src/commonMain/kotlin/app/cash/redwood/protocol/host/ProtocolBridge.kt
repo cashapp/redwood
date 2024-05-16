@@ -99,8 +99,8 @@ public class ProtocolBridge<W : Any>(
             is Remove -> {
               for (childIndex in change.index until change.index + change.count) {
                 val child = children.nodes[childIndex]
-                poolOrDetach(child)
                 child.visitIds(nodes::remove)
+                poolOrDetach(child)
               }
               children.remove(change.index, change.count)
             }
