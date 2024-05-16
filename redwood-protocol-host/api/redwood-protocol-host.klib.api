@@ -9,6 +9,7 @@
 abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { // app.cash.redwood.protocol.host/ProtocolNode|null[0]
     abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol/EventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.EventSink){}[0]
     abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
+    abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
     abstract fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
     abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
         abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
@@ -45,6 +46,7 @@ final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolBridge : app
 }
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolChildren { // app.cash.redwood.protocol.host/ProtocolChildren|null[0]
     constructor <init>(app.cash.redwood.widget/Widget.Children<#A>) // app.cash.redwood.protocol.host/ProtocolChildren.<init>|<init>(app.cash.redwood.widget.Widget.Children<1:0>){}[0]
+    final fun detach() // app.cash.redwood.protocol.host/ProtocolChildren.detach|detach(){}[0]
     final fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
     final val children // app.cash.redwood.protocol.host/ProtocolChildren.children|{}children[0]
         final fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.protocol.host/ProtocolChildren.children.<get-children>|<get-children>(){}[0]
