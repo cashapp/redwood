@@ -190,12 +190,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
         // Keep native symbols for diagnosing sample application crashes.
         doNotStrip("**/*.so")
       }
-      android.buildTypes.apply {
-        // Libraries don't build debug so fall back to release.
-        getByName("debug") {
-          it.matchingFallbacks += "release"
-        }
-      }
       val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
       androidComponents.beforeVariants {
         // Disable the release build type for sample applications because we never need it.
