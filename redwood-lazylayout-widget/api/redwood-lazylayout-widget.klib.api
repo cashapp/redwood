@@ -9,7 +9,7 @@
 abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor|null[0]
     abstract fun deleteRows(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.deleteRows|deleteRows(kotlin.Int;kotlin.Int){}[0]
     abstract fun insertRows(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.insertRows|insertRows(kotlin.Int;kotlin.Int){}[0]
-    abstract fun setContent(#A, app.cash.redwood.widget/Widget<#B>?) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.setContent|setContent(1:0;app.cash.redwood.widget.Widget<1:1>?){}[0]
+    abstract fun setContent(#A, #B?, app.cash.redwood/Modifier) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.setContent|setContent(1:0;1:1?;app.cash.redwood.Modifier){}[0]
     constructor <init>() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.<init>|<init>(){}[0]
     final class <#A1: kotlin/Any, #B1: kotlin/Any> Binding { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding|null[0]
         final fun unbind() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.unbind|unbind(){}[0]
@@ -32,6 +32,7 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
     final val size // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.size|{}size[0]
         final fun <get-size>(): kotlin/Int // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.size.<get-size>|<get-size>(){}[0]
     open fun createPlaceholder(#B): #B? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.createPlaceholder|createPlaceholder(1:1){}[0]
+    open fun isSizeOnlyPlaceholder(#B): kotlin/Boolean // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.isSizeOnlyPlaceholder|isSizeOnlyPlaceholder(1:1){}[0]
 }
 abstract class app.cash.redwood.lazylayout.widget/LazyListScrollProcessor { // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor|null[0]
     abstract fun contentSize(): kotlin/Int // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor.contentSize|contentSize(){}[0]
