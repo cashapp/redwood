@@ -15,7 +15,9 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringWidget
+import app.cash.redwood.Modifier
+import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringContent
+import app.cash.redwood.widget.Widget
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
@@ -24,7 +26,7 @@ class LazyListUpdateProcessorTest {
   private val processor = FakeUpdateProcessor()
     .apply {
       for (i in 0 until 10) {
-        placeholder.insert(i, StringWidget("."))
+        placeholder.insert(i, ".")
       }
     }
 
@@ -58,11 +60,11 @@ class LazyListUpdateProcessorTest {
   fun moveScrollWindowDownAndUp() {
     processor.itemsBefore(3)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("D"))
-    processor.items.insert(1, StringWidget("E"))
-    processor.items.insert(2, StringWidget("F"))
-    processor.items.insert(3, StringWidget("G"))
-    processor.items.insert(4, StringWidget("H"))
+    processor.items.insert(0, "D")
+    processor.items.insert(1, "E")
+    processor.items.insert(2, "F")
+    processor.items.insert(3, "G")
+    processor.items.insert(4, "H")
     processor.onEndChanges()
 
     processor.scrollTo(0, 5)
@@ -101,11 +103,11 @@ class LazyListUpdateProcessorTest {
   fun moveLoadedWindowDownAndUpWithScrollPositionAtFront() {
     processor.itemsBefore(0)
     processor.itemsAfter(7)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
-    processor.items.insert(3, StringWidget("D"))
-    processor.items.insert(4, StringWidget("E"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
+    processor.items.insert(3, "D")
+    processor.items.insert(4, "E")
     processor.onEndChanges()
 
     processor.scrollTo(0, 4)
@@ -113,8 +115,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(2)
     processor.itemsAfter(5)
-    processor.items.insert(5, StringWidget("F"))
-    processor.items.insert(6, StringWidget("G"))
+    processor.items.insert(5, "F")
+    processor.items.insert(6, "G")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -122,8 +124,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(4)
     processor.itemsAfter(3)
-    processor.items.insert(5, StringWidget("H"))
-    processor.items.insert(6, StringWidget("I"))
+    processor.items.insert(5, "H")
+    processor.items.insert(6, "I")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -131,8 +133,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(6)
     processor.itemsAfter(1)
-    processor.items.insert(5, StringWidget("J"))
-    processor.items.insert(6, StringWidget("K"))
+    processor.items.insert(5, "J")
+    processor.items.insert(6, "K")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -140,8 +142,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(4)
     processor.itemsAfter(3)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -149,8 +151,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(2)
     processor.itemsAfter(5)
-    processor.items.insert(0, StringWidget("C"))
-    processor.items.insert(1, StringWidget("D"))
+    processor.items.insert(0, "C")
+    processor.items.insert(1, "D")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -158,8 +160,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(0)
     processor.itemsAfter(7)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -174,11 +176,11 @@ class LazyListUpdateProcessorTest {
   fun moveLoadedWindowDownAndUpWithScrollPositionAtEnd() {
     processor.itemsBefore(0)
     processor.itemsAfter(7)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
-    processor.items.insert(3, StringWidget("D"))
-    processor.items.insert(4, StringWidget("E"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
+    processor.items.insert(3, "D")
+    processor.items.insert(4, "E")
     processor.onEndChanges()
 
     processor.scrollTo(8, 4)
@@ -186,8 +188,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(2)
     processor.itemsAfter(5)
-    processor.items.insert(5, StringWidget("F"))
-    processor.items.insert(6, StringWidget("G"))
+    processor.items.insert(5, "F")
+    processor.items.insert(6, "G")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -195,8 +197,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(4)
     processor.itemsAfter(3)
-    processor.items.insert(5, StringWidget("H"))
-    processor.items.insert(6, StringWidget("I"))
+    processor.items.insert(5, "H")
+    processor.items.insert(6, "I")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -204,8 +206,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(6)
     processor.itemsAfter(1)
-    processor.items.insert(5, StringWidget("J"))
-    processor.items.insert(6, StringWidget("K"))
+    processor.items.insert(5, "J")
+    processor.items.insert(6, "K")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.onEndChanges()
@@ -213,15 +215,15 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(7)
     processor.itemsAfter(0)
-    processor.items.insert(5, StringWidget("L"))
+    processor.items.insert(5, "L")
     processor.items.remove(0, 1)
     processor.onEndChanges()
     assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2 Lv2")
 
     processor.itemsBefore(5)
     processor.itemsAfter(2)
-    processor.items.insert(0, StringWidget("G"))
-    processor.items.insert(1, StringWidget("H"))
+    processor.items.insert(0, "G")
+    processor.items.insert(1, "H")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -229,8 +231,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(3)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -238,8 +240,8 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(1)
     processor.itemsAfter(6)
-    processor.items.insert(0, StringWidget("C"))
-    processor.items.insert(1, StringWidget("D"))
+    processor.items.insert(0, "C")
+    processor.items.insert(1, "D")
     processor.items.remove(5, 1)
     processor.items.remove(5, 1)
     processor.onEndChanges()
@@ -250,16 +252,16 @@ class LazyListUpdateProcessorTest {
   fun moveLoadedWindowDownAndUp2() {
     // Load the first 10.
     processor.itemsAfter(10)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
-    processor.items.insert(3, StringWidget("D"))
-    processor.items.insert(4, StringWidget("E"))
-    processor.items.insert(5, StringWidget("F"))
-    processor.items.insert(6, StringWidget("G"))
-    processor.items.insert(7, StringWidget("H"))
-    processor.items.insert(8, StringWidget("I"))
-    processor.items.insert(9, StringWidget("J"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
+    processor.items.insert(3, "D")
+    processor.items.insert(4, "E")
+    processor.items.insert(5, "F")
+    processor.items.insert(6, "G")
+    processor.items.insert(7, "H")
+    processor.items.insert(8, "I")
+    processor.items.insert(9, "J")
     processor.onEndChanges()
     processor.scrollTo(8, 5)
     assertThat(processor.toString()).isEqualTo("[8...] I J . . . [...7]")
@@ -267,11 +269,11 @@ class LazyListUpdateProcessorTest {
     // Load the middle 10.
     processor.itemsBefore(5)
     processor.itemsAfter(5)
-    processor.items.insert(10, StringWidget("K"))
-    processor.items.insert(11, StringWidget("L"))
-    processor.items.insert(12, StringWidget("M"))
-    processor.items.insert(13, StringWidget("N"))
-    processor.items.insert(14, StringWidget("O"))
+    processor.items.insert(10, "K")
+    processor.items.insert(11, "L")
+    processor.items.insert(12, "M")
+    processor.items.insert(13, "N")
+    processor.items.insert(14, "O")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
@@ -283,11 +285,11 @@ class LazyListUpdateProcessorTest {
     // Load the bottom 10.
     processor.itemsBefore(10)
     processor.itemsAfter(0)
-    processor.items.insert(10, StringWidget("P"))
-    processor.items.insert(11, StringWidget("Q"))
-    processor.items.insert(12, StringWidget("R"))
-    processor.items.insert(13, StringWidget("S"))
-    processor.items.insert(14, StringWidget("T"))
+    processor.items.insert(10, "P")
+    processor.items.insert(11, "Q")
+    processor.items.insert(12, "R")
+    processor.items.insert(13, "S")
+    processor.items.insert(14, "T")
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
     processor.items.remove(0, 1)
@@ -299,11 +301,11 @@ class LazyListUpdateProcessorTest {
     // Load the middle 10.
     processor.itemsBefore(5)
     processor.itemsAfter(5)
-    processor.items.insert(0, StringWidget("F"))
-    processor.items.insert(1, StringWidget("G"))
-    processor.items.insert(2, StringWidget("H"))
-    processor.items.insert(3, StringWidget("I"))
-    processor.items.insert(4, StringWidget("J"))
+    processor.items.insert(0, "F")
+    processor.items.insert(1, "G")
+    processor.items.insert(2, "H")
+    processor.items.insert(3, "I")
+    processor.items.insert(4, "J")
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
@@ -315,11 +317,11 @@ class LazyListUpdateProcessorTest {
     // Load the first 10.
     processor.itemsBefore(0)
     processor.itemsAfter(10)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
-    processor.items.insert(3, StringWidget("D"))
-    processor.items.insert(4, StringWidget("E"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
+    processor.items.insert(3, "D")
+    processor.items.insert(4, "E")
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
     processor.items.remove(10, 1)
@@ -333,9 +335,9 @@ class LazyListUpdateProcessorTest {
   fun itemsBeforeGrowsAndShrinks() {
     processor.itemsBefore(5)
     processor.itemsAfter(5)
-    processor.items.insert(0, StringWidget("F"))
-    processor.items.insert(1, StringWidget("G"))
-    processor.items.insert(2, StringWidget("H"))
+    processor.items.insert(0, "F")
+    processor.items.insert(1, "G")
+    processor.items.insert(2, "H")
     processor.onEndChanges()
 
     processor.scrollTo(4, 5)
@@ -354,9 +356,9 @@ class LazyListUpdateProcessorTest {
   fun itemsAfterGrowsAndShrinks() {
     processor.itemsBefore(5)
     processor.itemsAfter(5)
-    processor.items.insert(0, StringWidget("F"))
-    processor.items.insert(1, StringWidget("G"))
-    processor.items.insert(2, StringWidget("H"))
+    processor.items.insert(0, "F")
+    processor.items.insert(1, "G")
+    processor.items.insert(2, "H")
     processor.onEndChanges()
 
     processor.scrollTo(4, 5)
@@ -375,9 +377,9 @@ class LazyListUpdateProcessorTest {
   fun noncontiguousScrollUp() {
     processor.itemsBefore(4)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
-    processor.items.insert(2, StringWidget("G"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
+    processor.items.insert(2, "G")
     processor.onEndChanges()
 
     processor.scrollTo(4, 3)
@@ -388,9 +390,9 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(0)
     processor.itemsAfter(8)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
     processor.items.remove(3, 3)
     processor.onEndChanges()
 
@@ -401,9 +403,9 @@ class LazyListUpdateProcessorTest {
   fun noncontiguousScrollDown() {
     processor.itemsBefore(4)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
-    processor.items.insert(2, StringWidget("G"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
+    processor.items.insert(2, "G")
     processor.onEndChanges()
 
     processor.scrollTo(4, 3)
@@ -414,9 +416,9 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(8)
     processor.itemsAfter(0)
-    processor.items.insert(0, StringWidget("I"))
-    processor.items.insert(1, StringWidget("J"))
-    processor.items.insert(2, StringWidget("K"))
+    processor.items.insert(0, "I")
+    processor.items.insert(1, "J")
+    processor.items.insert(2, "K")
     processor.items.remove(3, 3)
     processor.onEndChanges()
 
@@ -427,9 +429,9 @@ class LazyListUpdateProcessorTest {
   fun adjacentScrollUp() {
     processor.itemsBefore(3)
     processor.itemsAfter(3)
-    processor.items.insert(0, StringWidget("D"))
-    processor.items.insert(1, StringWidget("E"))
-    processor.items.insert(2, StringWidget("F"))
+    processor.items.insert(0, "D")
+    processor.items.insert(1, "E")
+    processor.items.insert(2, "F")
     processor.onEndChanges()
 
     processor.scrollTo(3, 3)
@@ -440,9 +442,9 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(0)
     processor.itemsAfter(6)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
     processor.items.remove(3, 3)
     processor.onEndChanges()
 
@@ -453,9 +455,9 @@ class LazyListUpdateProcessorTest {
   fun adjacentScrollDown() {
     processor.itemsBefore(3)
     processor.itemsAfter(3)
-    processor.items.insert(0, StringWidget("D"))
-    processor.items.insert(1, StringWidget("E"))
-    processor.items.insert(2, StringWidget("F"))
+    processor.items.insert(0, "D")
+    processor.items.insert(1, "E")
+    processor.items.insert(2, "F")
     processor.onEndChanges()
 
     processor.scrollTo(3, 3)
@@ -466,9 +468,9 @@ class LazyListUpdateProcessorTest {
 
     processor.itemsBefore(6)
     processor.itemsAfter(0)
-    processor.items.insert(0, StringWidget("G"))
-    processor.items.insert(1, StringWidget("H"))
-    processor.items.insert(2, StringWidget("I"))
+    processor.items.insert(0, "G")
+    processor.items.insert(1, "H")
+    processor.items.insert(2, "I")
     processor.items.remove(3, 3)
     processor.onEndChanges()
 
@@ -480,9 +482,9 @@ class LazyListUpdateProcessorTest {
   fun noncontiguousScrollUpRemoveChangeFirst() {
     processor.itemsBefore(4)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
-    processor.items.insert(2, StringWidget("G"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
+    processor.items.insert(2, "G")
     processor.onEndChanges()
 
     processor.scrollTo(4, 3)
@@ -494,9 +496,9 @@ class LazyListUpdateProcessorTest {
     processor.itemsBefore(0)
     processor.itemsAfter(8)
     processor.items.remove(0, 3)
-    processor.items.insert(0, StringWidget("A"))
-    processor.items.insert(1, StringWidget("B"))
-    processor.items.insert(2, StringWidget("C"))
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.items.insert(2, "C")
     processor.onEndChanges()
 
     assertThat(processor.toString()).isEqualTo("Av2 Bv2 Cv2 [...8]")
@@ -506,9 +508,9 @@ class LazyListUpdateProcessorTest {
   fun noncontiguousScrollDownRemoveChangeFirst() {
     processor.itemsBefore(4)
     processor.itemsAfter(4)
-    processor.items.insert(0, StringWidget("E"))
-    processor.items.insert(1, StringWidget("F"))
-    processor.items.insert(2, StringWidget("G"))
+    processor.items.insert(0, "E")
+    processor.items.insert(1, "F")
+    processor.items.insert(2, "G")
     processor.onEndChanges()
 
     processor.scrollTo(4, 3)
@@ -520,9 +522,9 @@ class LazyListUpdateProcessorTest {
     processor.itemsBefore(8)
     processor.itemsAfter(0)
     processor.items.remove(0, 3)
-    processor.items.insert(0, StringWidget("I"))
-    processor.items.insert(1, StringWidget("J"))
-    processor.items.insert(2, StringWidget("K"))
+    processor.items.insert(0, "I")
+    processor.items.insert(1, "J")
+    processor.items.insert(2, "K")
     processor.onEndChanges()
 
     assertThat(processor.toString()).isEqualTo("[8...] Iv2 Jv2 Kv2")
@@ -532,10 +534,10 @@ class LazyListUpdateProcessorTest {
   fun removeMiddleLoadedItemThatIsBound() {
     processor.itemsBefore(8)
     processor.itemsAfter(8)
-    processor.items.insert(0, StringWidget("I"))
-    processor.items.insert(1, StringWidget("J"))
-    processor.items.insert(2, StringWidget("K"))
-    processor.items.insert(3, StringWidget("L"))
+    processor.items.insert(0, "I")
+    processor.items.insert(1, "J")
+    processor.items.insert(2, "K")
+    processor.items.insert(3, "L")
     processor.onEndChanges()
 
     processor.scrollTo(6, 8)
@@ -550,10 +552,10 @@ class LazyListUpdateProcessorTest {
   fun removeMiddleLoadedItemThatIsNotBound() {
     processor.itemsBefore(8)
     processor.itemsAfter(8)
-    processor.items.insert(0, StringWidget("I"))
-    processor.items.insert(1, StringWidget("J"))
-    processor.items.insert(2, StringWidget("K"))
-    processor.items.insert(3, StringWidget("L"))
+    processor.items.insert(0, "I")
+    processor.items.insert(1, "J")
+    processor.items.insert(2, "K")
+    processor.items.insert(3, "L")
     processor.onEndChanges()
 
     processor.scrollTo(2, 4)
@@ -562,5 +564,14 @@ class LazyListUpdateProcessorTest {
     processor.items.remove(2, 1) // 'K'.
     processor.onEndChanges()
     assertThat(processor.toString()).isEqualTo("[2...] . . . . [...13]")
+  }
+
+  private fun Widget.Children<StringContent>.insert(index: Int, value: String) {
+    val content = StringContent(value)
+    val widget = object : Widget<StringContent> {
+      override val value = content
+      override var modifier: Modifier = Modifier
+    }
+    insert(index, widget)
   }
 }
