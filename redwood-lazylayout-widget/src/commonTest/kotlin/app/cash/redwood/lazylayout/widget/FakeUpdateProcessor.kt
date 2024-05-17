@@ -16,7 +16,8 @@
 package app.cash.redwood.lazylayout.widget
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringCell
+import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringContent
 
 /**
  * This fake simulates a real scroll window, which is completely independent of the window of loaded
@@ -53,7 +54,7 @@ import app.cash.redwood.widget.Widget
  * 8 inclusive, with only 5 and 6 loaded. The elements at 4 and 5 have been updated-in-place, which
  * is why they're at version 2.
  */
-class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCell, String>() {
+class FakeUpdateProcessor : LazyListUpdateProcessor<StringCell, StringContent>() {
   private var dataSize = 0
   private var scrollWindowOffset = 0
   private val scrollWindowCells = mutableListOf<StringCell>()
@@ -111,11 +112,9 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
     }
   }
 
-  override fun setContent(view: StringCell, content: Widget<String>?) {
-    content as StringWidget?
-
+  override fun setContent(view: StringCell, content: StringContent?, modifier: Modifier) {
     // It is an error for `content` to already have a parent cell.
-    val previous = view.content as StringWidget?
+    val previous = view.content
     require(content?.parentCell == null)
     if (previous != null) {
       previous.parentCell = null
@@ -179,16 +178,15 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<FakeUpdateProcessor.StringCe
   }
 
   class StringCell(
-    val binding: Binding<StringCell, String>,
+    val binding: Binding<StringCell, StringContent>,
   ) {
     var version = 0
-    var content: Widget<String>? = null
+    var content: StringContent? = null
   }
 
-  class StringWidget(
-    override var value: String,
-  ) : Widget<String> {
+  class StringContent(
+    var value: String,
+  ) {
     internal var parentCell: StringCell? = null
-    override var modifier: Modifier = Modifier
   }
 }

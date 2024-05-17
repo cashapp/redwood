@@ -17,6 +17,7 @@
 
 package app.cash.redwood.lazylayout.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.Gravity
 import android.view.View
@@ -72,13 +73,11 @@ internal open class ViewLazyList private constructor(
   override val value: View get() = recyclerView
 
   private val processor = object : LazyListUpdateProcessor<ViewHolder, View>() {
-    override fun createPlaceholder(original: View): View {
-      return object : View(value.context) {
-        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-          setMeasuredDimension(original.width, original.height)
-        }
-      }
-    }
+    override fun createPlaceholder(original: View) =
+      SizeOnlyPlaceholder(original, value.context)
+
+    override fun isSizeOnlyPlaceholder(placeholder: View) =
+      placeholder is SizeOnlyPlaceholder
 
     override fun insertRows(index: Int, count: Int) {
       adapter.notifyItemRangeInserted(index, count)
@@ -88,7 +87,7 @@ internal open class ViewLazyList private constructor(
       adapter.notifyItemRangeRemoved(index, count)
     }
 
-    override fun setContent(view: ViewHolder, content: Widget<View>?) {
+    override fun setContent(view: ViewHolder, content: View?, modifier: Modifier) {
       view.content = content
     }
   }
@@ -182,7 +181,7 @@ internal open class ViewLazyList private constructor(
     // Layout params are invalid when crossAxisAlignment changes.
     for (binding in processor.bindings) {
       val view = binding.view ?: continue
-      view.content?.value?.layoutParams = createLayoutParams()
+      view.content?.layoutParams = createLayoutParams()
     }
   }
 
@@ -275,18 +274,17 @@ internal open class ViewLazyList private constructor(
   ) : RecyclerView.ViewHolder(container) {
     var binding: Binding<ViewHolder, View>? = null
 
-    var content: Widget<View>? = null
+    var content: View? = null
       set(value) {
         field = value
         container.removeAllViews()
 
-        val view = value?.value
-        if (view != null) {
-          require(view.parent == null) {
-            "Received $view with unexpected parent ${view.parent}; modifier=${content?.modifier}"
+        if (value != null) {
+          require(value.parent == null) {
+            "Received $value with unexpected parent ${value.parent}"
           }
-          view.layoutParams = createLayoutParams()
-          container.addView(view)
+          value.layoutParams = createLayoutParams()
+          container.addView(value)
         }
       }
   }
@@ -319,5 +317,15 @@ internal class ViewRefreshableLazyList(
 
   override fun pullRefreshContentColor(@ColorInt pullRefreshContentColor: UInt) {
     swipeRefreshLayout.setColorSchemeColors(pullRefreshContentColor.toInt())
+  }
+}
+
+@SuppressLint("ViewConstructor")
+private class SizeOnlyPlaceholder(
+  private val original: View,
+  context: Context,
+) : View(context) {
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    setMeasuredDimension(original.width, original.height)
   }
 }

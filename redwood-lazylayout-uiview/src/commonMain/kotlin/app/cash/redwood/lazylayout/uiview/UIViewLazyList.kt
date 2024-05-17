@@ -88,11 +88,9 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
     get() = tableView
 
   private val updateProcessor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
-    override fun createPlaceholder(original: UIView): UIView? {
-      return object : UIView(CGRectZero.readValue()) {
-        override fun sizeThatFits(size: CValue<CGSize>) = original.sizeThatFits(size)
-      }
-    }
+    override fun createPlaceholder(original: UIView) = SizeOnlyPlaceholder(original)
+
+    override fun isSizeOnlyPlaceholder(placeholder: UIView) = placeholder is SizeOnlyPlaceholder
 
     override fun insertRows(index: Int, count: Int) {
       // TODO(jwilson): pass a range somehow when 'count' is large?
@@ -118,7 +116,7 @@ internal open class UIViewLazyList : LazyList<UIView>, ChangeListener {
       tableView.endUpdates()
     }
 
-    override fun setContent(view: LazyListContainerCell, content: Widget<UIView>?) {
+    override fun setContent(view: LazyListContainerCell, content: UIView?, modifier: Modifier) {
       view.content = content
     }
   }
@@ -269,13 +267,13 @@ internal class LazyListContainerCell(
   reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
   internal var binding: Binding<LazyListContainerCell, UIView>? = null
-  internal var content: Widget<UIView>? = null
+  internal var content: UIView? = null
     set(value) {
       field = value
 
       removeAllSubviews()
       if (value != null) {
-        contentView.addSubview(value.value)
+        contentView.addSubview(value)
       }
       setNeedsLayout()
     }
@@ -319,12 +317,12 @@ internal class LazyListContainerCell(
     super.layoutSubviews()
 
     val content = this.content ?: return
-    content.value.setFrame(bounds)
+    content.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return content?.value?.sizeThatFits(size) ?: return super.sizeThatFits(size)
+    return content?.sizeThatFits(size) ?: return super.sizeThatFits(size)
   }
 
   private fun removeAllSubviews() {
@@ -380,3 +378,9 @@ private fun UIColor(color: UInt): UIColor = UIColor(
   green = ((color and 0x0000FF00u) shr 8).toDouble() / 255.0,
   blue = (color and 0x000000FFu).toDouble() / 255.0,
 )
+
+private class SizeOnlyPlaceholder(
+  private val original: UIView,
+) : UIView(CGRectZero.readValue()) {
+  override fun sizeThatFits(size: CValue<CGSize>) = original.sizeThatFits(size)
+}
