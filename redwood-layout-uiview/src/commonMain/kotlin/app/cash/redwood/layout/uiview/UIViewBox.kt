@@ -88,7 +88,7 @@ internal class UIViewBox : Box<UIView> {
 
     val children = UIViewChildren(
       container = this,
-      insert = { view, index ->
+      insert = { view, _, index ->
         insertSubview(view, index.convert<NSInteger>())
         view.setNeedsLayout()
       },

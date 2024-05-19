@@ -364,6 +364,26 @@ abstract class AbstractBoxTest<T : Any> {
     verifySnapshot(widget.value, "Empty")
   }
 
+  /** The view shouldn't crash if its displayed after being detached. */
+  @Test
+  fun testLayoutAfterDetach() {
+    val widget = box().apply {
+      width(Constraint.Wrap)
+      height(Constraint.Wrap)
+      horizontalAlignment(CrossAxisAlignment.Start)
+      verticalAlignment(CrossAxisAlignment.Start)
+      children.insert(
+        0,
+        text().apply {
+          text(mediumText())
+          bgColor(Green)
+        },
+      )
+      children.detach()
+    }
+    verifySnapshot(widget.value)
+  }
+
   private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
     text(text)
     bgColor(color)
