@@ -585,14 +585,22 @@ abstract class AbstractFlexContainerTest<T : Any> {
   /** The view shouldn't crash if its displayed after being detached. */
   @Test
   fun testLayoutAfterDetach() {
-    val container = flexContainer(FlexDirection.Row).apply {
+    val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
-      add(text(mediumText()))
-      onEndChanges()
-      children.detach()
     }
-    verifySnapshot(container)
+
+    // Render before calling detach().
+    container.children.insert(0, text(mediumText(), MarginImpl(10.dp), Green))
+    container.children.insert(1, text(shortText(), MarginImpl(0.dp), Blue))
+    container.onEndChanges()
+    verifySnapshot(container, "Before")
+
+    // Detach after changes are applied but before they're rendered.
+    container.children.insert(0, text(longText(), MarginImpl(20.dp), Red))
+    container.onEndChanges()
+    container.children.detach()
+    verifySnapshot(container, "After")
   }
 }
 
