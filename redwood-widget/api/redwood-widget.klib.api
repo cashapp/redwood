@@ -81,7 +81,7 @@ final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.c
 }
 // Targets: [ios]
 final class app.cash.redwood.widget/UIViewChildren : app.cash.redwood.widget/Widget.Children<platform.UIKit/UIView> { // app.cash.redwood.widget/UIViewChildren|null[0]
-    constructor <init>(platform.UIKit/UIView, kotlin/Function2<platform.UIKit/UIView, kotlin/Int, kotlin/Unit> =..., kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Array<platform.UIKit/UIView>> =...) // app.cash.redwood.widget/UIViewChildren.<init>|<init>(platform.UIKit.UIView;kotlin.Function2<platform.UIKit.UIView,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Array<platform.UIKit.UIView>>){}[0]
+    constructor <init>(platform.UIKit/UIView, kotlin/Function3<platform.UIKit/UIView, app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> =..., kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Array<platform.UIKit/UIView>> =..., kotlin/Function2<app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> =...) // app.cash.redwood.widget/UIViewChildren.<init>|<init>(platform.UIKit.UIView;kotlin.Function3<platform.UIKit.UIView,app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Array<platform.UIKit.UIView>>;kotlin.Function2<app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>){}[0]
     final fun detach() // app.cash.redwood.widget/UIViewChildren.detach|detach(){}[0]
     final fun insert(kotlin/Int, app.cash.redwood.widget/Widget<platform.UIKit/UIView>) // app.cash.redwood.widget/UIViewChildren.insert|insert(kotlin.Int;app.cash.redwood.widget.Widget<platform.UIKit.UIView>){}[0]
     final fun move(kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.widget/UIViewChildren.move|move(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
