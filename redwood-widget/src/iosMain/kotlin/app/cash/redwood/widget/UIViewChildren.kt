@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.Modifier
 import kotlinx.cinterop.convert
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
@@ -23,21 +24,22 @@ import platform.darwin.NSInteger
 @ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
   private val container: UIView,
-  private val insert: (UIView, Int) -> Unit = when (container) {
-    is UIStackView -> { view, index -> container.insertArrangedSubview(view, index.convert()) }
-    else -> { view, index -> container.insertSubview(view, index.convert<NSInteger>()) }
+  private val insert: (UIView, Modifier, Int) -> Unit = when (container) {
+    is UIStackView -> { view, _, index -> container.insertArrangedSubview(view, index.convert()) }
+    else -> { view, _, index -> container.insertSubview(view, index.convert<NSInteger>()) }
   },
   private val remove: (index: Int, count: Int) -> Array<UIView> = when (container) {
     is UIStackView -> { index, count -> container.typedArrangedSubviews.remove(index, count) }
     else -> { index, count -> container.typedSubviews.remove(index, count) }
   },
+  private val updateModifier: (Modifier, Int) -> Unit = { _, _ -> },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
   override val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.add(index, widget)
-    insert(widget.value, index)
+    insert(widget.value, widget.modifier, index)
     invalidate()
   }
 
@@ -52,7 +54,8 @@ public class UIViewChildren(
       toIndex
     }
     subviews.forEachIndexed { offset, view ->
-      insert(view, newIndex + offset)
+      val subviewIndex = newIndex + offset
+      insert(view, widgets[subviewIndex].modifier, subviewIndex)
     }
     invalidate()
   }
@@ -65,6 +68,7 @@ public class UIViewChildren(
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<UIView>) {
+    updateModifier(widget.modifier, index)
     invalidate()
   }
 

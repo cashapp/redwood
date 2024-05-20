@@ -31,25 +31,31 @@ import platform.darwin.NSInteger
 internal class UIViewFlexContainer(
   direction: FlexDirection,
 ) : YogaFlexContainer<UIView>, ChangeListener {
+  private val modifiers = mutableListOf<Modifier>()
   private val yogaView: YogaUIView = YogaUIView(
     applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, Density.Default)
+      node.applyModifier(modifiers[index], Density.Default)
     },
   )
   override val rootNode: Node get() = yogaView.rootNode
   override val density: Density get() = Density.Default
   override val value: UIView get() = yogaView
-  override val children = UIViewChildren(
+  override val children: UIViewChildren = UIViewChildren(
     container = value,
-    insert = { view, index ->
+    insert = { view, modifier, index ->
+      modifiers.add(index, modifier)
       yogaView.rootNode.children.add(index, view.asNode())
       value.insertSubview(view, index.convert<NSInteger>())
     },
     remove = { index, count ->
+      modifiers.remove(index, count)
       yogaView.rootNode.children.remove(index, count)
       Array(count) {
         value.typedSubviews[index].also(UIView::removeFromSuperview)
       }
+    },
+    updateModifier = { modifier, index ->
+      modifiers[index] = modifier
     },
   )
   override var modifier: Modifier = Modifier

@@ -547,6 +547,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     outerContainer.add(innerContainer1)
     outerContainer.add(innerContainer2)
     innerContainer2.modifier = Modifier.then(FlexImpl(1.0))
+    outerContainer.children.onModifierUpdated(1, innerContainer2)
     verifySnapshot(outerContainer)
   }
 
@@ -579,6 +580,19 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.children.onModifierUpdated(0, first)
     container.onEndChanges()
     verifySnapshot(container, "Empty")
+  }
+
+  /** The view shouldn't crash if its displayed after being detached. */
+  @Test
+  fun testLayoutAfterDetach() {
+    val container = flexContainer(FlexDirection.Row).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      add(text(mediumText()))
+      onEndChanges()
+      children.detach()
+    }
+    verifySnapshot(container)
   }
 }
 
