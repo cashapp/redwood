@@ -372,16 +372,17 @@ abstract class AbstractBoxTest<T : Any> {
       height(Constraint.Wrap)
       horizontalAlignment(CrossAxisAlignment.Start)
       verticalAlignment(CrossAxisAlignment.Start)
-      children.insert(
-        0,
-        text().apply {
-          text(mediumText())
-          bgColor(Green)
-        },
-      )
-      children.detach()
     }
-    verifySnapshot(widget.value)
+
+    // Render before calling detach().
+    widget.children.insert(0, coloredText(MarginImpl(10.dp), mediumText(), Green))
+    widget.children.insert(1, coloredText(MarginImpl(0.dp), shortText(), Blue))
+    verifySnapshot(widget.value, "Before")
+
+    // Detach after changes are applied but before they're rendered.
+    widget.children.insert(0, coloredText(MarginImpl(20.dp), longText(), Red))
+    widget.children.detach()
+    verifySnapshot(widget.value, "After")
   }
 
   private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
