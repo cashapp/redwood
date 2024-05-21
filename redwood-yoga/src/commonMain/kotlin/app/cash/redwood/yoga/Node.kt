@@ -27,6 +27,11 @@ public class Node internal constructor(
 
   // Inputs
   public val children: MutableList<Node> = Children()
+  public var context: Any?
+    get() = native.context
+    set(value) {
+      native.context = value
+    }
   public val owner: Node?
     get() = native.owner?.let(::Node)
   public var direction: Direction
