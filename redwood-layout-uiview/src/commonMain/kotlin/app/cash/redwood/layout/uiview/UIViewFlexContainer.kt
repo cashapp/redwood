@@ -31,10 +31,9 @@ import platform.darwin.NSInteger
 internal class UIViewFlexContainer(
   direction: FlexDirection,
 ) : YogaFlexContainer<UIView>, ChangeListener {
-  private val modifiers = mutableListOf<Modifier>()
   private val yogaView: YogaUIView = YogaUIView(
     applyModifier = { node, index ->
-      node.applyModifier(modifiers[index], Density.Default)
+      node.applyModifier(node.context as Modifier, Density.Default)
     },
   )
   override val rootNode: Node get() = yogaView.rootNode
@@ -43,19 +42,17 @@ internal class UIViewFlexContainer(
   override val children: UIViewChildren = UIViewChildren(
     container = value,
     insert = { view, modifier, index ->
-      modifiers.add(index, modifier)
-      yogaView.rootNode.children.add(index, view.asNode())
+      yogaView.rootNode.children.add(index, view.asNode(context = modifier))
       value.insertSubview(view, index.convert<NSInteger>())
     },
     remove = { index, count ->
-      modifiers.remove(index, count)
       yogaView.rootNode.children.remove(index, count)
       Array(count) {
         value.typedSubviews[index].also(UIView::removeFromSuperview)
       }
     },
     updateModifier = { modifier, index ->
-      modifiers[index] = modifier
+      yogaView.rootNode.children[index].context = modifier
     },
   )
   override var modifier: Modifier = Modifier
@@ -82,8 +79,9 @@ internal class UIViewFlexContainer(
   }
 }
 
-private fun UIView.asNode(): Node {
+private fun UIView.asNode(context: Any?): Node {
   val childNode = Node()
   childNode.measureCallback = UIViewMeasureCallback(this)
+  childNode.context = context
   return childNode
 }
