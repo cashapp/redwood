@@ -17,7 +17,6 @@ package app.cash.redwood.treehouse
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.util.Log
 import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
@@ -25,14 +24,6 @@ import okio.Path.Companion.toOkioPath
 internal class AndroidTreehousePlatform(
   private val context: Context,
 ) : TreehousePlatform {
-  override fun logInfo(message: String, throwable: Throwable?) {
-    Log.i("Zipline", message, throwable)
-  }
-
-  override fun logWarning(message: String, throwable: Throwable?) {
-    Log.w("Zipline", message, throwable)
-  }
-
   /**
    * Note that we don't put the ZiplineCache in Android's cacheDir.
    *
