@@ -23,7 +23,7 @@ import kotlinx.serialization.json.Json
 
 class RealTestAppPresenter(
   private val hostApi: HostApi,
-  private val json: Json,
+  json: Json,
 ) : TestAppPresenter {
   override val appLifecycle = StandardAppLifecycle(
     protocolBridgeFactory = TestSchemaProtocolBridge,
@@ -31,8 +31,12 @@ class RealTestAppPresenter(
     widgetVersion = 0U,
   )
 
-  override fun launch(): ZiplineTreehouseUi {
+  override fun launchForApp(): ZiplineTreehouseUi {
     val treehouseUi = TestAppTreehouseUi(hostApi::httpCall)
     return treehouseUi.asZiplineTreehouseUi(appLifecycle)
+  }
+
+  override fun launchForTester(): ZiplineTreehouseUi {
+    return TesterTreehouseUi().asZiplineTreehouseUi(appLifecycle)
   }
 }

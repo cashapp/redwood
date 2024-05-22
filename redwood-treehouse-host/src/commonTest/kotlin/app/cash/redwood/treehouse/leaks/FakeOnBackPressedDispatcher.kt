@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.testapp.treehouse
+package app.cash.redwood.treehouse.leaks
 
-import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.ZiplineTreehouseUi
-import app.cash.zipline.ZiplineService
-import kotlin.native.ObjCName
+import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.OnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher
 
-@ObjCName("TestAppPresenter", exact = true)
-interface TestAppPresenter : AppService, ZiplineService {
-  fun launchForApp(): ZiplineTreehouseUi
-  fun launchForTester(): ZiplineTreehouseUi
+class FakeOnBackPressedDispatcher : OnBackPressedDispatcher {
+  override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
+    return object : Cancellable {
+      override fun cancel() {
+      }
+    }
+  }
 }

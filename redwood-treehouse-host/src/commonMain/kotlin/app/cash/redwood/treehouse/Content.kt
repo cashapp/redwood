@@ -55,12 +55,14 @@ public interface Content {
   public fun bind(view: TreehouseView<*>)
 
   /**
-   * Suspends until content is available; either it is already in the view or it is preloaded and a call to [bind]
-   * will immediately show this content.
+   * Suspends until content is available; either it is already in the view or it is preloaded and a
+   * call to [bind] will immediately show this content.
    *
+   * @param untilChangeCount the number of changes received to wait for. This is approximately the
+   *     number of recompositions that had non-empty updates.
    * @throws [CancellationException] if it's unbound before it returns.
    */
-  public suspend fun awaitContent()
+  public suspend fun awaitContent(untilChangeCount: Int = 1)
 
   /**
    * Calling [unbind] without a bound view is safe.

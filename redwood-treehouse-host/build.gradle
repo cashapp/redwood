@@ -35,10 +35,16 @@ kotlin {
 
     commonTest {
       dependencies {
-        implementation libs.kotlin.test
         implementation libs.assertk
+        implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
+        implementation libs.okio
         implementation libs.turbine
+        implementation projects.redwoodLayoutTesting
+        implementation projects.redwoodLazylayoutTesting
+        implementation projects.testApp.presenterTreehouse
+        implementation projects.testApp.schema.protocolHost
+        implementation projects.testApp.schema.testing
       }
     }
     androidUnitTest {
@@ -79,4 +85,9 @@ android {
     // Needed for unit tests which use ViewCompat whose static fields reference `R.id`s.
     androidResources = true
   }
+}
+
+// TreehouseTester expects to load our test application.
+tasks.withType(Test.class).configureEach {
+  it.dependsOn(":test-app:presenter-treehouse:compileDevelopmentExecutableKotlinJsZipline")
 }
