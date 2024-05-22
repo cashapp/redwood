@@ -54,8 +54,8 @@ class TestAppViewController : UIViewController {
 
 class TestAppContent : TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
-        let treehouesUi = (app as! TestAppPresenter)
-        return treehouesUi.launch()
+        let treehouseUi = (app as! TestAppPresenter)
+        return treehouseUi.launchForApp()
     }
 }
 
