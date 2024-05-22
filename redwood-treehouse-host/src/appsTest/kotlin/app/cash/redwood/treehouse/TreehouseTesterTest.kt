@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.leaks
+package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.EventLog
-import app.cash.redwood.treehouse.FakeTreehouseView
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.testing.ButtonValue
@@ -39,7 +37,7 @@ class TreehouseTesterTest {
 
     val view = FakeTreehouseView(
       name = "view",
-      onBackPressedDispatcher = FakeOnBackPressedDispatcher(),
+      onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog),
     )
 
     content.bind(view)

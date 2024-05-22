@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.leaks
+package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.treehouse.EventListener
-import app.cash.redwood.treehouse.EventLog
-import app.cash.redwood.treehouse.TreehouseApp
 
 class FakeEventListener(
   private val eventLog: EventLog,

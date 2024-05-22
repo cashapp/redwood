@@ -42,9 +42,14 @@ kotlin {
         implementation libs.turbine
         implementation projects.redwoodLayoutTesting
         implementation projects.redwoodLazylayoutTesting
-        implementation projects.testApp.presenterTreehouse
         implementation projects.testApp.schema.protocolHost
         implementation projects.testApp.schema.testing
+      }
+      if (!rootProject.hasProperty('redwoodNoApps')) {
+        kotlin.srcDir('src/appsTest/kotlin')
+        dependencies {
+          implementation projects.testApp.presenterTreehouse
+        }
       }
     }
     androidUnitTest {
@@ -88,6 +93,8 @@ android {
 }
 
 // TreehouseTester expects to load our test application.
-tasks.withType(Test.class).configureEach {
-  it.dependsOn(":test-app:presenter-treehouse:compileDevelopmentExecutableKotlinJsZipline")
+if (!rootProject.hasProperty('redwoodNoApps')) {
+  tasks.withType(Test.class).configureEach {
+    it.dependsOn(":test-app:presenter-treehouse:compileDevelopmentExecutableKotlinJsZipline")
+  }
 }

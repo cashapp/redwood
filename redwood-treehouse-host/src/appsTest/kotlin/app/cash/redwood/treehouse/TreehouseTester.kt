@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse.leaks
+package app.cash.redwood.treehouse
 
-import app.cash.redwood.treehouse.AppLifecycle
-import app.cash.redwood.treehouse.EventLog
-import app.cash.redwood.treehouse.FrameClock
-import app.cash.redwood.treehouse.MemoryStateStore
-import app.cash.redwood.treehouse.TreehouseApp
-import app.cash.redwood.treehouse.TreehouseDispatchers
-import app.cash.redwood.treehouse.TreehousePlatform
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
