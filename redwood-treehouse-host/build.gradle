@@ -67,6 +67,10 @@ dependencies {
   androidTestImplementation libs.androidx.test.runner
   androidTestImplementation libs.kotlinx.coroutines.test
   androidTestImplementation libs.assertk
+  androidTestImplementation projects.redwoodLayoutTesting
+  androidTestImplementation projects.redwoodLazylayoutTesting
+  androidTestImplementation projects.testApp.schema.protocolHost
+  androidTestImplementation projects.testApp.schema.testing
 
   // The kotlin.test library provides JVM variants for multiple testing frameworks. The Kotlin
   // plugin does not apply the capability to configurations created by the Android plugin.

@@ -14,8 +14,11 @@ functions = [
   # fun close(): kotlin.Unit
   "moYx+T3e",
 
-  # fun launch(): app.cash.redwood.treehouse.ZiplineTreehouseUi
-  "sqKEI1vX",
+  # fun launchForApp(): app.cash.redwood.treehouse.ZiplineTreehouseUi
+  "LjWAzgq8",
+
+  # fun launchForTester(): app.cash.redwood.treehouse.ZiplineTreehouseUi
+  "D7JPuZEX",
 
   # val appLifecycle: app.cash.redwood.treehouse.AppLifecycle
   "odhmO/d6",

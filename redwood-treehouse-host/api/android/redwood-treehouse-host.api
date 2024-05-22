@@ -11,7 +11,8 @@ public class app/cash/redwood/treehouse/CodeListener {
 }
 
 public abstract interface class app/cash/redwood/treehouse/Content {
-	public abstract fun awaitContent (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun awaitContent (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitContent$default (Lapp/cash/redwood/treehouse/Content;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun bind (Lapp/cash/redwood/treehouse/TreehouseView;)V
 	public abstract fun preload (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lkotlinx/coroutines/flow/StateFlow;)V
 	public abstract fun unbind ()V
