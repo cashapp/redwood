@@ -19,25 +19,8 @@ import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import platform.Foundation.NSHomeDirectory
-import platform.Foundation.NSLog
 
 internal class IosTreehousePlatform : TreehousePlatform {
-  override fun logInfo(message: String, throwable: Throwable?) {
-    if (throwable != null) {
-      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
-    } else {
-      NSLog("Treehouse: $message")
-    }
-  }
-
-  override fun logWarning(message: String, throwable: Throwable?) {
-    if (throwable != null) {
-      NSLog("Treehouse: $message ${throwable.stackTraceToString()}")
-    } else {
-      NSLog("Treehouse: $message")
-    }
-  }
-
   override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
     fileSystem = FileSystem.SYSTEM,
     directory = NSHomeDirectory().toPath() / name,

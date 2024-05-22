@@ -18,9 +18,5 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.loader.ZiplineCache
 
 internal interface TreehousePlatform {
-  fun logInfo(message: String, throwable: Throwable?)
-
-  fun logWarning(message: String, throwable: Throwable?)
-
   fun newCache(name: String, maxSizeInBytes: Long): ZiplineCache
 }
