@@ -78,18 +78,20 @@ class EmojiSearchCodeListener : CodeListener {
         self.treehouseView = treehouseView
     }
 
-    override func onUncaughtException(app: TreehouseApp<AnyObject>, view: TreehouseView, exception: KotlinThrowable) {
-        treehouseView.reset()
+    override func onCodeDetached(app: TreehouseApp<AnyObject>, view: TreehouseView, exception: KotlinThrowable?) {
+        if (exception != nil) {
+            treehouseView.reset()
 
-        let exceptionView = ExceptionView(exception)
-        exceptionView.translatesAutoresizingMaskIntoConstraints = false
-        treehouseView.view.addSubview(exceptionView)
-        NSLayoutConstraint.activate([
-            exceptionView.topAnchor.constraint(equalTo: treehouseView.view.topAnchor),
-            exceptionView.leftAnchor.constraint(equalTo: treehouseView.view.leftAnchor),
-            exceptionView.rightAnchor.constraint(equalTo: treehouseView.view.rightAnchor),
-            exceptionView.bottomAnchor.constraint(equalTo: treehouseView.view.bottomAnchor),
-        ])
+            let exceptionView = ExceptionView(exception!)
+            exceptionView.translatesAutoresizingMaskIntoConstraints = false
+            treehouseView.view.addSubview(exceptionView)
+            NSLayoutConstraint.activate([
+                exceptionView.topAnchor.constraint(equalTo: treehouseView.view.topAnchor),
+                exceptionView.leftAnchor.constraint(equalTo: treehouseView.view.leftAnchor),
+                exceptionView.rightAnchor.constraint(equalTo: treehouseView.view.rightAnchor),
+                exceptionView.bottomAnchor.constraint(equalTo: treehouseView.view.bottomAnchor),
+            ])
+        }
     }
 }
 

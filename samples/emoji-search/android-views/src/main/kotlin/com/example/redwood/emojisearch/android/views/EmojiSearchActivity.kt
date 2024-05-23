@@ -87,16 +87,18 @@ class EmojiSearchActivity : ComponentActivity() {
   }
 
   private val codeListener: CodeListener = object : CodeListener() {
-    override fun onUncaughtException(
+    override fun onCodeDetached(
       app: TreehouseApp<*>,
       view: TreehouseView<*>,
-      exception: Throwable,
+      exception: Throwable?,
     ) {
-      treehouseLayout.reset()
-      treehouseLayout.addView(
-        ExceptionView(treehouseLayout, exception),
-        LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT),
-      )
+      if (exception != null) {
+        treehouseLayout.reset()
+        treehouseLayout.addView(
+          ExceptionView(treehouseLayout, exception),
+          LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT),
+        )
+      }
     }
   }
 
