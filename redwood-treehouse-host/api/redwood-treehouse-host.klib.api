@@ -99,9 +99,9 @@ final fun <#A: app.cash.redwood.treehouse/AppService, #B: kotlin/Any> (app.cash.
 final fun <#A: kotlin/Any> (app.cash.redwood.treehouse/Content).app.cash.redwood.treehouse/bindWhenReady(app.cash.redwood.treehouse/TreehouseView<#A>): okio/Closeable // app.cash.redwood.treehouse/bindWhenReady|bindWhenReady@app.cash.redwood.treehouse.Content(app.cash.redwood.treehouse.TreehouseView<0:0>){0§<kotlin.Any>}[0]
 open class app.cash.redwood.treehouse/CodeListener { // app.cash.redwood.treehouse/CodeListener|null[0]
     constructor <init>() // app.cash.redwood.treehouse/CodeListener.<init>|<init>(){}[0]
+    open fun onCodeDetached(app.cash.redwood.treehouse/TreehouseApp<*>, app.cash.redwood.treehouse/TreehouseView<*>, kotlin/Throwable?) // app.cash.redwood.treehouse/CodeListener.onCodeDetached|onCodeDetached(app.cash.redwood.treehouse.TreehouseApp<*>;app.cash.redwood.treehouse.TreehouseView<*>;kotlin.Throwable?){}[0]
     open fun onCodeLoaded(app.cash.redwood.treehouse/TreehouseApp<*>, app.cash.redwood.treehouse/TreehouseView<*>, kotlin/Boolean) // app.cash.redwood.treehouse/CodeListener.onCodeLoaded|onCodeLoaded(app.cash.redwood.treehouse.TreehouseApp<*>;app.cash.redwood.treehouse.TreehouseView<*>;kotlin.Boolean){}[0]
     open fun onInitialCodeLoading(app.cash.redwood.treehouse/TreehouseApp<*>, app.cash.redwood.treehouse/TreehouseView<*>) // app.cash.redwood.treehouse/CodeListener.onInitialCodeLoading|onInitialCodeLoading(app.cash.redwood.treehouse.TreehouseApp<*>;app.cash.redwood.treehouse.TreehouseView<*>){}[0]
-    open fun onUncaughtException(app.cash.redwood.treehouse/TreehouseApp<*>, app.cash.redwood.treehouse/TreehouseView<*>, kotlin/Throwable) // app.cash.redwood.treehouse/CodeListener.onUncaughtException|onUncaughtException(app.cash.redwood.treehouse.TreehouseApp<*>;app.cash.redwood.treehouse.TreehouseView<*>;kotlin.Throwable){}[0]
 }
 open class app.cash.redwood.treehouse/EventListener { // app.cash.redwood.treehouse/EventListener|null[0]
     abstract fun interface Factory { // app.cash.redwood.treehouse/EventListener.Factory|null[0]
