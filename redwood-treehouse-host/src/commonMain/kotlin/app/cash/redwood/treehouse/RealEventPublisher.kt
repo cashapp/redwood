@@ -173,7 +173,8 @@ internal class RealEventPublisher(
     }
 
     override fun serviceLeaked(zipline: Zipline, name: String) {
-      listener!!.serviceLeaked(name)
+      // Drop serviceLeaked() calls made after close(). This can happen in practice.
+      listener?.serviceLeaked(name)
     }
 
     override fun ziplineClosed(zipline: Zipline) {

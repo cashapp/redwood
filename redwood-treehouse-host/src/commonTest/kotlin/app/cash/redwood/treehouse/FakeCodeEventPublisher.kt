@@ -26,9 +26,9 @@ class FakeCodeEventPublisher(
     eventLog += "codeListener.onCodeLoaded($view, initial = $initial)"
   }
 
-  override fun onUncaughtException(view: TreehouseView<*>, exception: Throwable) {
+  override fun onCodeDetached(view: TreehouseView<*>, exception: Throwable?) {
     // Canonicalize "java.lang.Exception(boom!)" to "kotlin.Exception(boom!)".
-    val exceptionString = exception.toString().replace("java.lang.", "kotlin.")
-    eventLog += "codeListener.onUncaughtException($view, $exceptionString)"
+    val exceptionString = exception?.toString()?.replace("java.lang.", "kotlin.")
+    eventLog += "codeListener.onCodeDetached($view, $exceptionString)"
   }
 }

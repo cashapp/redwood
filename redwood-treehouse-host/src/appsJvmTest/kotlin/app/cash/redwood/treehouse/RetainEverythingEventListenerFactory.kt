@@ -18,7 +18,10 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 
-/** An event listener that keeps a reference to everything it sees, for defensive leak testing. */
+/**
+ * An event listener (and factory) that keeps a reference to everything it sees, for defensive leak
+ * testing.
+ */
 class RetainEverythingEventListenerFactory(
   private val eventLog: EventLog,
 ) : EventListener(), EventListener.Factory {

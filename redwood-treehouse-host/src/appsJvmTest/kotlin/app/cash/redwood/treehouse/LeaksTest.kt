@@ -22,7 +22,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.example.redwood.testapp.testing.TextInputValue
 import kotlin.test.Test
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 
 class LeaksTest {
@@ -120,5 +122,49 @@ class LeaksTest {
     // But after close, it's unreachable.
     treehouseApp.close()
     eventListenerLeakWatcher.assertNotLeaked()
+  }
+
+  @Test
+  fun contentSourceNotLeaked() = runTest {
+    val tester = TreehouseTester(this)
+    val treehouseApp = tester.loadApp()
+    val view = tester.view()
+
+    // Use an inline run() to try to prevent contentSource from being retained on the stack.
+    val (content, contentSourceLeakWatcher) = run {
+      val contentSource = RetainEverythingTreehouseContentSource()
+
+      val content = treehouseApp.createContent(
+        source = contentSource,
+        codeListener = FakeCodeListener(tester.eventLog),
+      )
+
+      return@run content to LeakWatcher { contentSource }
+    }
+
+    // After we bind the content, it'll be in a retain cycle.
+    content.bind(view)
+    tester.eventLog.takeEvent("onCodeLoaded(test_app, view, initial = true)", skipOthers = true)
+    contentSourceLeakWatcher.assertObjectInReferenceCycle()
+
+    // Unbind it, and it's no longer retained.
+    content.unbind()
+    tester.eventLog.takeEvent("onCodeDetached(test_app, view, null)", skipOthers = true)
+    treehouseApp.dispatchers.awaitLaunchedTasks()
+    contentSourceLeakWatcher.assertNotLeaked()
+
+    treehouseApp.stop()
+  }
+
+  /**
+   * This is unfortunate. Some cleanup functions launch jobs on another dispatcher and we don't have
+   * a natural way to wait for those jobs to complete. So we launch empty jobs on each dispatcher,
+   * and trust that they won't start until existing queued jobs finish.
+   */
+  private suspend fun TreehouseDispatchers.awaitLaunchedTasks() {
+    coroutineScope {
+      launch(zipline) {}.join()
+      launch(ui) {}.join()
+    }
   }
 }
