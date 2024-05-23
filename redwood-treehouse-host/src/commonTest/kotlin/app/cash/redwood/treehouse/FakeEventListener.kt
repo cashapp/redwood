@@ -17,6 +17,8 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.zipline.Zipline
+import app.cash.zipline.ZiplineManifest
 
 class FakeEventListener(
   private val eventLog: EventLog,
@@ -27,6 +29,23 @@ class FakeEventListener(
   ) : EventListener.Factory {
     override fun create(app: TreehouseApp<*>, manifestUrl: String?) =
       FakeEventListener(eventLog, app)
+  }
+
+  override fun codeLoadStart(): Any? {
+    eventLog += "${app.spec.name}.codeLoadStart()"
+    return null
+  }
+
+  override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
+    eventLog += "${app.spec.name}.codeLoadSuccess()"
+  }
+
+  override fun codeLoadFailed(exception: Exception, startValue: Any?) {
+    eventLog += "${app.spec.name}.codeLoadFailed()"
+  }
+
+  override fun codeUnloaded() {
+    eventLog += "${app.spec.name}.codeUnloaded()"
   }
 
   override fun unknownEvent(widgetTag: WidgetTag, tag: EventTag) {

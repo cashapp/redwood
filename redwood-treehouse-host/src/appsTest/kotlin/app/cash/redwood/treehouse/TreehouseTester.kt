@@ -43,7 +43,7 @@ import okio.SYSTEM
 internal class TreehouseTester(
   private val testScope: TestScope,
 ) {
-  private val eventLog = EventLog()
+  val eventLog = EventLog()
 
   @OptIn(ExperimentalStdlibApi::class)
   private val testDispatcher = testScope.coroutineContext[CoroutineDispatcher.Key] as TestDispatcher
@@ -96,11 +96,7 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  private val hostApi = object : HostApi {
-    override suspend fun httpCall(url: String, headers: Map<String, String>): String {
-      error("unexpected call")
-    }
-  }
+  var hostApi: HostApi = FakeHostApi()
 
   private val treehouseAppFactory = TreehouseApp.Factory(
     platform = platform,
@@ -118,14 +114,14 @@ internal class TreehouseTester(
 
   private val appSpec = object : TreehouseApp.Spec<TestAppPresenter>() {
     override val name: String
-      get() = "test-app"
+      get() = "test_app"
     override val manifestUrl: Flow<String>
       get() = this@TreehouseTester.manifestUrl
     override val loadCodeFromNetworkOnly: Boolean
       get() = true
 
     override fun bindServices(zipline: Zipline) {
-      zipline.bind<HostApi>("HostApi", hostApi)
+      zipline.bind("HostApi", hostApi)
     }
 
     override fun create(zipline: Zipline): TestAppPresenter {

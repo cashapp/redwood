@@ -15,10 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.Zipline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
@@ -56,6 +59,12 @@ internal abstract class CodeHost<A : AppService>(
 
   private var state: State<A> = State.Idle()
 
+  /** Updated with [State]. */
+  private val mutableZipline = MutableStateFlow<Zipline?>(null)
+
+  val zipline: StateFlow<Zipline?>
+    get() = mutableZipline
+
   private val codeSessionListener = object : CodeSession.Listener<A> {
     override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
     }
@@ -69,6 +78,7 @@ internal abstract class CodeHost<A : AppService>(
       val previous = state
       if (previous is State.Running) {
         state = State.Crashed(previous.codeUpdatesScope)
+        mutableZipline.value = null
       }
     }
   }
@@ -104,6 +114,7 @@ internal abstract class CodeHost<A : AppService>(
     previous.codeSession?.stop()
 
     state = State.Idle()
+    mutableZipline.value = null
   }
 
   fun restart() {
@@ -118,6 +129,7 @@ internal abstract class CodeHost<A : AppService>(
 
     val codeUpdatesScope = newCodeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
+    mutableZipline.value = null
     codeUpdatesScope.collectCodeUpdates()
   }
 
@@ -152,7 +164,7 @@ internal abstract class CodeHost<A : AppService>(
       previous.codeSession?.stop()
 
       // If the codeUpdatesScope is null, we're stopped. Discard the newly-loaded code.
-      val codeUpdatesScope = state.codeUpdatesScope
+      val codeUpdatesScope = previous.codeUpdatesScope
       if (codeUpdatesScope == null) {
         next.stop()
         return@launch
@@ -160,6 +172,7 @@ internal abstract class CodeHost<A : AppService>(
 
       // Boot up the new code.
       state = State.Running(codeUpdatesScope, next)
+      mutableZipline.value = (next as? ZiplineCodeSession)?.zipline
       next.addListener(codeSessionListener)
       next.start()
 
