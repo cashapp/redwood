@@ -83,7 +83,7 @@ final class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehou
     final val spec // app.cash.redwood.treehouse/TreehouseApp.spec|{}spec[0]
         final fun <get-spec>(): app.cash.redwood.treehouse/TreehouseApp.Spec<#A> // app.cash.redwood.treehouse/TreehouseApp.spec.<get-spec>|<get-spec>(){}[0]
     final val zipline // app.cash.redwood.treehouse/TreehouseApp.zipline|{}zipline[0]
-        final fun <get-zipline>(): app.cash.zipline/Zipline? // app.cash.redwood.treehouse/TreehouseApp.zipline.<get-zipline>|<get-zipline>(){}[0]
+        final fun <get-zipline>(): kotlinx.coroutines.flow/StateFlow<app.cash.zipline/Zipline?> // app.cash.redwood.treehouse/TreehouseApp.zipline.<get-zipline>|<get-zipline>(){}[0]
 }
 final class <#A: kotlin/Any> app.cash.redwood.treehouse/ChangeListRenderer { // app.cash.redwood.treehouse/ChangeListRenderer|null[0]
     constructor <init>(kotlinx.serialization.json/Json) // app.cash.redwood.treehouse/ChangeListRenderer.<init>|<init>(kotlinx.serialization.json.Json){}[0]

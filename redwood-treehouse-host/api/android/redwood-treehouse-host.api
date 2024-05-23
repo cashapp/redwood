@@ -85,7 +85,7 @@ public final class app/cash/redwood/treehouse/TreehouseApp {
 	public static synthetic fun createContent$default (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content;
 	public final fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
 	public final fun getSpec ()Lapp/cash/redwood/treehouse/TreehouseApp$Spec;
-	public final fun getZipline ()Lapp/cash/zipline/Zipline;
+	public final fun getZipline ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun restart ()V
 	public final fun start ()V
 	public final fun stop ()V
