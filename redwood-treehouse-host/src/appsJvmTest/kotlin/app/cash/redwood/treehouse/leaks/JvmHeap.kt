@@ -49,16 +49,16 @@ internal object JvmHeap : Heap {
       javaClass.isArray -> {
         when (instance) {
           is Array<*> -> references(instance.toList())
-          else -> listOf()
+          else -> listOf() // Primitive array.
         }
       }
-      instance is Collection<*> && javaPackageName.isPlatformPackage -> {
+      instance is Collection<*> && javaPackageName.isDescendant("java", "kotlin") -> {
         instance.mapIndexed { index, value -> Edge("[$index]", value) }
       }
-      instance is Map<*, *> && javaPackageName.isPlatformPackage -> {
+      instance is Map<*, *> && javaPackageName.isDescendant("java", "kotlin") -> {
         references(instance.entries)
       }
-      instance is Map.Entry<*, *> && javaPackageName.startsWith("java.") -> listOf(
+      instance is Map.Entry<*, *> && javaPackageName.isDescendant("java", "kotlin") -> listOf(
         Edge("key", instance.key),
         Edge("value", instance.value),
       )
@@ -67,25 +67,26 @@ internal object JvmHeap : Heap {
       )
 
       // Don't traverse further on types that are unlikely to contain application-scoped data.
+      // We want to avoid loading the entire application heap into memory!
+      instance is Class<*> -> listOf()
       instance is CoroutineDispatcher -> listOf()
       instance is Enum<*> -> listOf()
       instance is EventLog -> listOf()
       instance is Int -> listOf()
       instance is Job -> listOf()
       instance is Json -> listOf()
-      instance is SerializersModule -> listOf()
       instance is KSerializer<*> -> listOf()
-      instance is Class<*> -> listOf()
+      instance is SerializersModule -> listOf()
       instance is String -> listOf()
 
-      // Don't traverse further on types that are unlikely to contain application-scoped data.
-      javaPackageName == "kotlin" ||
-        javaPackageName == "kotlin.coroutines" ||
-        javaPackageName == "okio" ||
-        javaPackageName.startsWith("app.cash.") ||
-        javaPackageName.startsWith("com.example.") ||
-        javaPackageName.startsWith("kotlin.jvm.") ||
-        javaPackageName.startsWith("kotlinx.coroutines.") -> {
+      // Explore everything else by reflecting on its fields.
+      javaPackageName.isDescendant(
+        "app.cash",
+        "com.example",
+        "kotlin",
+        "kotlinx.coroutines",
+        "okio",
+      ) -> {
         fields(javaClass).map { field -> Edge(field.name, field.get(instance)) }
       }
 
@@ -93,8 +94,14 @@ internal object JvmHeap : Heap {
     }
   }
 
-  private val String.isPlatformPackage
-    get() = startsWith("java.") || startsWith("kotlin.")
+  /**
+   * Returns true if this package is a descendant of any prefix. For example, the descendants of
+   * 'kotlin' are 'kotlin.collections' and 'kotlin' itself, but not 'kotlinx.coroutines'.
+   */
+  private fun String.isDescendant(vararg prefixes: String) =
+    prefixes.any { prefix ->
+      startsWith(prefix) && (length == prefix.length || this[prefix.length] == '.')
+    }
 
   private fun fields(type: Class<*>): List<Field> {
     return classToFields.getOrPut(type) {
