@@ -58,6 +58,12 @@ class TesterTreehouseUi : TreehouseUi {
       }
     },
 
+    Empty {
+      @Composable
+      override fun Show(changeContent: (Content) -> Unit) {
+      }
+    },
+
     ;
 
     @Composable

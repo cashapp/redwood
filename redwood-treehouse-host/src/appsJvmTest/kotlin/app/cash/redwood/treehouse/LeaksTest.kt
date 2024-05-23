@@ -15,16 +15,17 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.treehouse.leaks.LeakWatcher
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.testing.TextInputValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-class TreehouseTesterTest {
+class LeaksTest {
   @Test
-  fun happyPath() = runTest {
+  fun widgetNotLeaked() = runTest {
     val tester = TreehouseTester(this)
     val treehouseApp = tester.loadApp()
     val content = tester.content(treehouseApp)
@@ -35,12 +36,22 @@ class TreehouseTesterTest {
     content.awaitContent(1)
     val textInputValue = view.views.single() as TextInputValue
     assertThat(textInputValue.text).isEqualTo("what would you like to see?")
-    textInputValue.onChange!!.invoke("TreehouseTesterTestHappyPathStep2")
+
+    val widgetLeakWatcher = LeakWatcher {
+      view.children.widgets.single()
+    }
+
+    // While the widget is in the UI, it's expected to be in a reference cycle.
+    widgetLeakWatcher.assertObjectInReferenceCycle()
+
+    textInputValue.onChange!!.invoke("Empty")
 
     tester.sendFrame()
     content.awaitContent(2)
-    val buttonValue = view.views.single() as ButtonValue
-    assertThat(buttonValue.text).isEqualTo("This is TreehouseTesterTestHappyPathStep2")
+    assertThat(view.views).isEmpty()
+
+    // Once the widget is removed, the cycle must be broken and the widget must be unreachable.
+    widgetLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
   }

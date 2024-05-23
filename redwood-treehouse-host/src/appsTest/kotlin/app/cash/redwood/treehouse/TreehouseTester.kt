@@ -40,10 +40,11 @@ import okio.SYSTEM
  *
  * It doesn't use real HTTP; the [ZiplineHttpClient] loads files directly from the test-app/ module.
  */
-class TreehouseTester(
+internal class TreehouseTester(
   private val testScope: TestScope,
-  private val eventLog: EventLog,
 ) {
+  private val eventLog = EventLog()
+
   @OptIn(ExperimentalStdlibApi::class)
   private val testDispatcher = testScope.coroutineContext[CoroutineDispatcher.Key] as TestDispatcher
 
@@ -137,6 +138,20 @@ class TreehouseTester(
       appScope = testScope,
       spec = appSpec,
       eventListenerFactory = FakeEventListener.Factory(eventLog),
+    )
+  }
+
+  fun content(treehouseApp: TreehouseApp<TestAppPresenter>): Content {
+    return treehouseApp.createContent(
+      source = { app -> app.launchForTester() },
+      codeListener = FakeCodeListener(eventLog),
+    )
+  }
+
+  fun view(): FakeTreehouseView {
+    return FakeTreehouseView(
+      name = "view",
+      onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog),
     )
   }
 
