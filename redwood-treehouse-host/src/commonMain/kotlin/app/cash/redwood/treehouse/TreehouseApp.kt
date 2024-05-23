@@ -43,8 +43,14 @@ public class TreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   private val appScope: CoroutineScope,
   public val spec: Spec<A>,
-  private val eventListenerFactory: EventListener.Factory,
+  eventListenerFactory: EventListener.Factory,
 ) {
+  /** This property is confined to [TreehouseDispatchers.ui]. */
+  private var closed = false
+
+  /** Non-null until this app is closed. This property is confined to [TreehouseDispatchers.ui]. */
+  private var eventListenerFactory: EventListener.Factory? = eventListenerFactory
+
   public val dispatchers: TreehouseDispatchers = factory.dispatchers
 
   private val codeHost = object : CodeHost<A>(
@@ -53,8 +59,10 @@ public class TreehouseApp<A : AppService> private constructor(
     frameClockFactory = factory.frameClockFactory,
     stateStore = factory.stateStore,
   ) {
-    override fun codeUpdatesFlow(): Flow<CodeSession<A>> {
-      return ziplineFlow().mapNotNull { loadResult ->
+    override fun codeUpdatesFlow(
+      eventListenerFactory: EventListener.Factory,
+    ): Flow<CodeSession<A>> {
+      return ziplineFlow(eventListenerFactory).mapNotNull { loadResult ->
         when (loadResult) {
           is LoadResult.Failure -> {
             null // EventListener already notified.
@@ -106,7 +114,8 @@ public class TreehouseApp<A : AppService> private constructor(
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun start() {
-    codeHost.start()
+    val eventListenerFactory = eventListenerFactory ?: error("closed")
+    codeHost.start(eventListenerFactory)
   }
 
   /**
@@ -124,14 +133,17 @@ public class TreehouseApp<A : AppService> private constructor(
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun restart() {
-    codeHost.restart()
+    val eventListenerFactory = eventListenerFactory ?: error("closed")
+    codeHost.restart(eventListenerFactory)
   }
 
   /**
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  private fun ziplineFlow(): Flow<LoadResult> {
+  private fun ziplineFlow(
+    eventListenerFactory: EventListener.Factory,
+  ): Flow<LoadResult> {
     var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
@@ -185,6 +197,15 @@ public class TreehouseApp<A : AppService> private constructor(
       zipline = zipline,
       appScope = appScope,
     )
+  }
+
+  /** Permanently stop the app and release any resources necessary to start it again. */
+  public fun close() {
+    dispatchers.checkUi()
+
+    closed = true
+    eventListenerFactory = null
+    stop()
   }
 
   /**

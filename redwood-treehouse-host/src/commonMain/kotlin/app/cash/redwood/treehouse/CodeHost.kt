@@ -87,9 +87,11 @@ internal abstract class CodeHost<A : AppService>(
     get() = state.codeSession
 
   /** Returns a flow that emits a new [CodeSession] each time we should load fresh code. */
-  abstract fun codeUpdatesFlow(): Flow<CodeSession<A>>
+  abstract fun codeUpdatesFlow(
+    eventListenerFactory: EventListener.Factory,
+  ): Flow<CodeSession<A>>
 
-  fun start() {
+  fun start(eventListenerFactory: EventListener.Factory) {
     dispatchers.checkUi()
 
     val previous = state
@@ -101,7 +103,7 @@ internal abstract class CodeHost<A : AppService>(
 
     val codeUpdatesScope = newCodeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
-    codeUpdatesScope.collectCodeUpdates()
+    codeUpdatesScope.collectCodeUpdates(eventListenerFactory)
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
@@ -117,7 +119,7 @@ internal abstract class CodeHost<A : AppService>(
     mutableZipline.value = null
   }
 
-  fun restart() {
+  fun restart(eventListenerFactory: EventListener.Factory) {
     dispatchers.checkUi()
 
     val previous = state
@@ -130,7 +132,7 @@ internal abstract class CodeHost<A : AppService>(
     val codeUpdatesScope = newCodeUpdatesScope()
     state = State.Starting(codeUpdatesScope)
     mutableZipline.value = null
-    codeUpdatesScope.collectCodeUpdates()
+    codeUpdatesScope.collectCodeUpdates(eventListenerFactory)
   }
 
   fun addListener(listener: Listener<A>) {
@@ -146,9 +148,9 @@ internal abstract class CodeHost<A : AppService>(
   private fun newCodeUpdatesScope() =
     CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
-  private fun CoroutineScope.collectCodeUpdates() {
+  private fun CoroutineScope.collectCodeUpdates(eventListenerFactory: EventListener.Factory) {
     launch(dispatchers.zipline) {
-      codeUpdatesFlow().collect {
+      codeUpdatesFlow(eventListenerFactory).collect {
         codeSessionLoaded(it)
       }
     }

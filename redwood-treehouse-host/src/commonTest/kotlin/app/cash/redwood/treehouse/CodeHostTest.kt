@@ -57,7 +57,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -79,7 +79,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.restart()
+    codeHost.restart(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -101,7 +101,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -111,7 +111,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
@@ -132,7 +132,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -142,7 +142,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
-    codeHost.restart()
+    codeHost.restart(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
@@ -164,7 +164,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -193,7 +193,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -217,11 +217,11 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     eventLog.assertNoEvents()
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.assertNoEvents()
 
     codeHost.startCodeSession("codeSessionA")
@@ -243,13 +243,13 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.assertNoEvents()
 
     codeHost.stop()
@@ -268,7 +268,7 @@ class CodeHostTest {
     content.bind(view1)
     eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
 
-    codeHost.start()
+    codeHost.start(EventListener.NONE)
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")

@@ -83,6 +83,7 @@ internal abstract class CodeSession<A : AppService>(
     scope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
       ziplineStop()
       scope.cancel()
+      eventPublisher.close() // Must be last to prevent lost events.
     }
   }
 
