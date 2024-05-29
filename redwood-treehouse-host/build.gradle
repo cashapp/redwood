@@ -58,6 +58,11 @@ kotlin {
         implementation libs.robolectric
       }
     }
+    jvmTest {
+      if (!rootProject.hasProperty('redwoodNoApps')) {
+        kotlin.srcDir('src/appsJvmTest/kotlin')
+      }
+    }
   }
 }
 
