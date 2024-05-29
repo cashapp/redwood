@@ -5,6 +5,7 @@
 
 New:
 - Added a basic DOM-based LazyList implementation.
+-`TreehouseApp.close()` stops the app and prevents it from being started again later.
 
 Changed:
 - Removed deprecated `typealias`es for generated `-WidgetFactories` type which was renamed to `-WidgetSystem` in 0.10.0.
@@ -15,6 +16,13 @@ Changed:
 Fixed:
 - Fix memory leaks caused by reference cycles on iOS. We got into trouble mixing garbage-collected Kotlin objects with reference-counted Swift objects.
 
+Breaking:
+-`TreehouseApp.zipline` is now a `StateFlow<Zipline?>` instead of a `Zipline?`.
+-`CodeListener.onCodeDetached()` replaces `onUncaughtException()`. The new function is called
+ whenever code stops driving a view for any reason. The new function accepts a `Throwable?` that is
+ non-null if it's detached due to exception.
+-`Content.awaitContent()` now accepts an optional `Int` parameter for the number of updates to
+ observe before the function returns.
 
 ## [0.11.0] - 2024-05-15
 [0.11.0]: https://github.com/cashapp/redwood/releases/tag/0.11.0
