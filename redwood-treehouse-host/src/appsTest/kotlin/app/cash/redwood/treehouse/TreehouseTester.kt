@@ -45,6 +45,10 @@ internal class TreehouseTester(
 ) {
   val eventLog = EventLog()
 
+  var hostApi: HostApi = FakeHostApi()
+
+  var eventListenerFactory: EventListener.Factory = FakeEventListener.Factory(eventLog)
+
   @OptIn(ExperimentalStdlibApi::class)
   private val testDispatcher = testScope.coroutineContext[CoroutineDispatcher.Key] as TestDispatcher
 
@@ -96,8 +100,6 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  var hostApi: HostApi = FakeHostApi()
-
   private val treehouseAppFactory = TreehouseApp.Factory(
     platform = platform,
     dispatchers = dispatchers,
@@ -133,7 +135,7 @@ internal class TreehouseTester(
     return treehouseAppFactory.create(
       appScope = testScope,
       spec = appSpec,
-      eventListenerFactory = FakeEventListener.Factory(eventLog),
+      eventListenerFactory = eventListenerFactory,
     )
   }
 

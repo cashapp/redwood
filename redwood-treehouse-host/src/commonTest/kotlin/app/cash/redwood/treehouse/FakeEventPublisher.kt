@@ -34,4 +34,7 @@ class FakeEventPublisher : EventPublisher {
 
   override fun onUncaughtException(exception: Throwable) {
   }
+
+  override fun close() {
+  }
 }

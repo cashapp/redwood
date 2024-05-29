@@ -74,6 +74,7 @@ final class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehou
         final val dispatchers // app.cash.redwood.treehouse/TreehouseApp.Factory.dispatchers|<get-dispatchers>(){}[0]
             final fun <get-dispatchers>(): app.cash.redwood.treehouse/TreehouseDispatchers // app.cash.redwood.treehouse/TreehouseApp.Factory.dispatchers.<get-dispatchers>|<get-dispatchers>(){}[0]
     }
+    final fun close() // app.cash.redwood.treehouse/TreehouseApp.close|close(){}[0]
     final fun createContent(app.cash.redwood.treehouse/TreehouseContentSource<#A>, app.cash.redwood.treehouse/CodeListener =...): app.cash.redwood.treehouse/Content // app.cash.redwood.treehouse/TreehouseApp.createContent|createContent(app.cash.redwood.treehouse.TreehouseContentSource<1:0>;app.cash.redwood.treehouse.CodeListener){}[0]
     final fun restart() // app.cash.redwood.treehouse/TreehouseApp.restart|restart(){}[0]
     final fun start() // app.cash.redwood.treehouse/TreehouseApp.start|start(){}[0]
