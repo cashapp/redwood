@@ -21,6 +21,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.testing.TextInputValue
 import kotlin.test.Test
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 
 class LeaksTest {
@@ -54,5 +55,31 @@ class LeaksTest {
     widgetLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
+  }
+
+  @Test
+  fun serviceNotLeaked() = runTest {
+    val tester = TreehouseTester(this)
+    val treehouseApp = tester.loadApp()
+    treehouseApp.start()
+    tester.eventLog.takeEvent("test_app.codeLoadSuccess()", skipOthers = true)
+
+    // Wait for Zipline to be ready.
+    // TODO(jwilson): consider deferring events or exposing the TreehouseApp state. As-is the
+    //     codeLoadSuccess() event occurs on the Zipline dispatcher but we don't have an instance
+    //     here until we bounce that information to the main dispatcher.
+    treehouseApp.zipline.first { it != null }
+
+    val serviceLeakWatcher = LeakWatcher {
+      tester.hostApi // The first instance of HostApi is held by the current run of the test app.
+    }
+
+    // Stop referencing this HostApi from our test harness.
+    tester.hostApi = FakeHostApi()
+
+    // Stop the app. Even though we still reference the app, it stops referencing hostApi.
+    treehouseApp.stop()
+    tester.eventLog.takeEvent("test_app.codeUnloaded()", skipOthers = true)
+    serviceLeakWatcher.assertNotLeaked()
   }
 }

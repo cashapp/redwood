@@ -27,6 +27,7 @@ import app.cash.zipline.loader.ZiplineLoader
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
@@ -74,8 +75,8 @@ public class TreehouseApp<A : AppService> private constructor(
    * It is unwise to use this instance for anything beyond measurement and monitoring, because the
    * instance may be replaced if new code is loaded.
    */
-  public val zipline: Zipline?
-    get() = (codeHost.codeSession as? ZiplineCodeSession)?.zipline
+  public val zipline: StateFlow<Zipline?>
+    get() = codeHost.zipline
 
   /**
    * Create content for [source].

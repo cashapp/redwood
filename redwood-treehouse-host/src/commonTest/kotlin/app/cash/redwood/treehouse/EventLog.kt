@@ -32,8 +32,14 @@ class EventLog {
     return events.receive()
   }
 
-  suspend fun takeEvent(event: String) {
-    assertThat(takeEvent()).isEqualTo(event)
+  suspend fun takeEvent(event: String, skipOthers: Boolean = false) {
+    while (true) {
+      val actual = takeEvent()
+      if (skipOthers && actual != event) continue
+
+      assertThat(actual).isEqualTo(event)
+      return
+    }
   }
 
   /**
