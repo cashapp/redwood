@@ -51,8 +51,9 @@ class FakeZiplineTreehouseUi(
     val widgetId = Id(nextWidgetId++)
     host.sendChanges(
       listOf(
-        Create(widgetId, WidgetTag(1)),
-        PropertyChange(widgetId, PropertyTag(1), JsonPrimitive(label)),
+        Create(widgetId, WidgetTag(4)), // Button.
+        PropertyChange(widgetId, PropertyTag(1), JsonPrimitive(label)), // text.
+        PropertyChange(widgetId, PropertyTag(2), JsonPrimitive(true)), // onClick.
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, widgetId, 0),
       ),
     )

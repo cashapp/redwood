@@ -15,11 +15,19 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
+import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
+import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
 import app.cash.redwood.widget.Widget
+import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
+import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -31,18 +39,28 @@ import kotlinx.coroutines.flow.StateFlow
  */
 internal class FakeTreehouseView(
   private val name: String,
-  override val onBackPressedDispatcher: FakeOnBackPressedDispatcher,
+  override val onBackPressedDispatcher: OnBackPressedDispatcher,
   override val uiConfiguration: StateFlow<UiConfiguration> = MutableStateFlow(UiConfiguration()),
-) : TreehouseView<FakeWidget> {
-  private val mutableListChildren = MutableListChildren<FakeWidget>()
-  private val mutableViews = mutableListOf<FakeWidget>()
+) : TreehouseView<WidgetValue> {
+  private val mutableListChildren = MutableListChildren<WidgetValue>()
+  private val mutableViews = mutableListOf<WidgetValue>()
 
-  val views: List<FakeWidget>
+  val views: List<WidgetValue>
     get() = mutableViews
 
-  override val widgetSystem = FakeTreehouseWidgetSystem()
+  @OptIn(RedwoodCodegenApi::class)
+  override val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
+    TestSchemaProtocolFactory(
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+      ),
+      mismatchHandler = protocolMismatchHandler,
+    )
+  }
 
-  override var readyForContentChangeListener: ReadyForContentChangeListener<FakeWidget>? = null
+  override var readyForContentChangeListener: ReadyForContentChangeListener<WidgetValue>? = null
 
   override var readyForContent = false
     set(value) {
@@ -54,8 +72,8 @@ internal class FakeTreehouseView(
 
   override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
-  override val children = object : Widget.Children<FakeWidget> by mutableListChildren {
-    override fun insert(index: Int, widget: Widget<FakeWidget>) {
+  override val children = object : Widget.Children<WidgetValue> by mutableListChildren {
+    override fun insert(index: Int, widget: Widget<WidgetValue>) {
       mutableViews.add(index, widget.value)
       mutableListChildren.insert(index, widget)
     }
@@ -65,8 +83,7 @@ internal class FakeTreehouseView(
       mutableListChildren.remove(index, count)
     }
 
-    override fun detach() {
-      mutableListChildren.detach() // Clear widgets but not views.
+    override fun onModifierUpdated(index: Int, widget: Widget<WidgetValue>) {
     }
   }
 

@@ -69,8 +69,12 @@ private sealed interface CodeState<A : AppService> {
 
   class Running<A : AppService>(
     val viewContentCodeBinding: ViewContentCodeBinding<A>,
-    val hasChanges: Boolean = false,
-  ) : CodeState<A>
+    val changesAwaitingInitViewSize: Int = 0,
+    val deliveredChangeCount: Int = 0,
+  ) : CodeState<A> {
+    val changeCount: Int
+      get() = changesAwaitingInitViewSize + deliveredChangeCount
+  }
 }
 
 internal class TreehouseAppContent<A : AppService>(
@@ -143,13 +147,13 @@ internal class TreehouseAppContent<A : AppService>(
     stateFlow.value = State(nextViewState, nextCodeState)
   }
 
-  override suspend fun awaitContent() {
+  override suspend fun awaitContent(untilChangeCount: Int) {
     stateFlow.first {
       if (it.viewState is ViewState.None) {
         throw CancellationException("unbound while awaiting content")
       }
 
-      it.codeState is CodeState.Running && it.codeState.hasChanges
+      it.codeState is CodeState.Running && it.codeState.changeCount >= untilChangeCount
     }
   }
 
@@ -334,7 +338,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val changesAwaitingInitView = ArrayDeque<List<Change>>()
 
   /** Changes applied to the UI. Only accessed on [TreehouseDispatchers.ui]. */
-  var changesCount = 0
+  private var deliveredChangeCount = 0
 
   /** Only accessed on [TreehouseDispatchers.ui]. */
   private var canceled = false
@@ -381,21 +385,8 @@ private class ViewContentCodeBinding<A : AppService>(
 
     val view = viewOrNull
     if (view == null) {
-      if (changesAwaitingInitView.isEmpty()) {
-        // Unblock coroutines suspended on TreehouseAppContent.awaitContent().
-        val currentState = stateFlow.value
-        if (
-          currentState.codeState is CodeState.Running &&
-          currentState.codeState.viewContentCodeBinding == this
-        ) {
-          stateFlow.value = State(
-            currentState.viewState,
-            CodeState.Running(this, hasChanges = true),
-          )
-        }
-      }
-
       changesAwaitingInitView += changes
+      updateChangeCount()
       return
     }
 
@@ -414,12 +405,31 @@ private class ViewContentCodeBinding<A : AppService>(
       bridgeOrNull = bridge
     }
 
-    if (changesCount++ == 0) {
+    if (deliveredChangeCount++ == 0) {
       view.reset()
       codeEventPublisher.onCodeLoaded(view, isInitialLaunch)
     }
+    updateChangeCount()
 
     bridge.sendChanges(changes)
+  }
+
+  /** Unblock coroutines suspended on TreehouseAppContent.awaitContent(). */
+  private fun updateChangeCount() {
+    val state = stateFlow.value
+    val codeState = state.codeState as? CodeState.Running ?: return
+
+    // Don't mutate state if this binding is out of date.
+    if (codeState.viewContentCodeBinding != this) return
+
+    stateFlow.value = State(
+      state.viewState,
+      CodeState.Running(
+        viewContentCodeBinding = this,
+        changesAwaitingInitViewSize = changesAwaitingInitView.size,
+        deliveredChangeCount = deliveredChangeCount,
+      ),
+    )
   }
 
   fun start() {

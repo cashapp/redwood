@@ -61,7 +61,7 @@ class TestAppActivity : ComponentActivity() {
 
     val context = this
     val treehouseApp = createTreehouseApp()
-    val treehouseContentSource = TreehouseContentSource(TestAppPresenter::launch)
+    val treehouseContentSource = TreehouseContentSource(TestAppPresenter::launchForApp)
 
     val widgetSystem = object : TreehouseView.WidgetSystem<View> {
       override fun widgetFactory(

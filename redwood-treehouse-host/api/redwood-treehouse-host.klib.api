@@ -37,7 +37,7 @@ abstract interface app.cash.redwood.treehouse/Content { // app.cash.redwood.tree
     abstract fun bind(app.cash.redwood.treehouse/TreehouseView<*>) // app.cash.redwood.treehouse/Content.bind|bind(app.cash.redwood.treehouse.TreehouseView<*>){}[0]
     abstract fun preload(app.cash.redwood.ui/OnBackPressedDispatcher, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>) // app.cash.redwood.treehouse/Content.preload|preload(app.cash.redwood.ui.OnBackPressedDispatcher;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>){}[0]
     abstract fun unbind() // app.cash.redwood.treehouse/Content.unbind|unbind(){}[0]
-    abstract suspend fun awaitContent() // app.cash.redwood.treehouse/Content.awaitContent|awaitContent(){}[0]
+    abstract suspend fun awaitContent(kotlin/Int =...) // app.cash.redwood.treehouse/Content.awaitContent|awaitContent(kotlin.Int){}[0]
 }
 abstract interface app.cash.redwood.treehouse/StateStore { // app.cash.redwood.treehouse/StateStore|null[0]
     abstract suspend fun get(kotlin/String): app.cash.redwood.treehouse/StateSnapshot? // app.cash.redwood.treehouse/StateStore.get|get(kotlin.String){}[0]
