@@ -19,7 +19,7 @@ import app.cash.redwood.gradle.RedwoodComposeExtension.DangerZone
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 internal class RedwoodComposeExtensionImpl(
   private val project: Project,
@@ -43,7 +43,7 @@ internal class RedwoodComposeExtensionImpl(
 
     project.tasks.withType(KotlinCompile::class.java).configureEach {
       val dir = project.redwoodReportDir("compose-metrics/${it.name}").get().asFile.absolutePath
-      it.compilerOptions.freeCompilerArgs.addAll(
+      it.kotlinOptions.freeCompilerArgs += listOf(
         "-P",
         "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$dir",
       )
@@ -56,7 +56,7 @@ internal class RedwoodComposeExtensionImpl(
 
     project.tasks.withType(KotlinCompile::class.java).configureEach {
       val dir = project.redwoodReportDir("compose-reports/${it.name}").get().asFile.absolutePath
-      it.compilerOptions.freeCompilerArgs.addAll(
+      it.kotlinOptions.freeCompilerArgs += listOf(
         "-P",
         "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$dir",
       )
