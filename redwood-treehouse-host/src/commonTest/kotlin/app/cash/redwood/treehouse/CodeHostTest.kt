@@ -65,6 +65,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -87,6 +88,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -108,6 +110,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -118,6 +121,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates2.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -138,7 +142,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -150,6 +154,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates2.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -170,7 +175,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -179,6 +184,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -199,7 +205,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onUncaughtException(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -229,6 +235,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -254,6 +261,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -276,6 +284,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
+    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 

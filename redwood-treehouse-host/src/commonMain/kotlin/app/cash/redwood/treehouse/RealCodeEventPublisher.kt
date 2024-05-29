@@ -27,7 +27,7 @@ internal class RealCodeEventPublisher(
     return codeListener.onCodeLoaded(app, view, initial)
   }
 
-  override fun onUncaughtException(view: TreehouseView<*>, exception: Throwable) {
-    return codeListener.onUncaughtException(app, view, exception)
+  override fun onCodeDetached(view: TreehouseView<*>, exception: Throwable?) {
+    return codeListener.onCodeDetached(app, view, exception)
   }
 }

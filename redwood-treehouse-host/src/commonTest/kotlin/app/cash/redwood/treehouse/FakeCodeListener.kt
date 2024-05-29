@@ -23,10 +23,10 @@ class FakeCodeListener(
   }
 
   override fun onCodeLoaded(app: TreehouseApp<*>, view: TreehouseView<*>, initial: Boolean) {
-    eventLog += "onCodeLoaded(${app.spec.name}, $view, $initial)"
+    eventLog += "onCodeLoaded(${app.spec.name}, $view, initial = $initial)"
   }
 
-  override fun onUncaughtException(app: TreehouseApp<*>, view: TreehouseView<*>, exception: Throwable) {
-    eventLog += "onUncaughtException(${app.spec.name}, $view, $exception)"
+  override fun onCodeDetached(app: TreehouseApp<*>, view: TreehouseView<*>, exception: Throwable?) {
+    eventLog += "onCodeDetached(${app.spec.name}, $view, $exception)"
   }
 }

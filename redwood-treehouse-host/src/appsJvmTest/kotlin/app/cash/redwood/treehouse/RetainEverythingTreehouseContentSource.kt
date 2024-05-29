@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,14 @@
  */
 package app.cash.redwood.treehouse
 
-internal interface CodeEventPublisher {
-  fun onInitialCodeLoading(
-    view: TreehouseView<*>,
-  )
+import com.example.redwood.testapp.treehouse.TestAppPresenter
 
-  fun onCodeLoaded(
-    view: TreehouseView<*>,
-    initial: Boolean,
-  )
+/** A content source that keeps a reference to everything it sees, for defensive leak testing. */
+class RetainEverythingTreehouseContentSource : TreehouseContentSource<TestAppPresenter> {
+  private var app: TestAppPresenter? = null
 
-  fun onCodeDetached(
-    view: TreehouseView<*>,
-    exception: Throwable?,
-  )
+  override fun get(app: TestAppPresenter): ZiplineTreehouseUi {
+    this.app = app
+    return app.launchForTester()
+  }
 }

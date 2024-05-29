@@ -43,22 +43,25 @@ public open class CodeListener {
   }
 
   /**
-   * Invoked when the application powering [view] fails with an uncaught exception. This function
-   * should display an error UI.
+   * Invoked when the application powering [view] stops sending updates. This is triggered by:
    *
-   * Typical implementations call [TreehouseView.reset] and display an error placeholder.
-   * Development builds may show more diagnostic information than production builds.
+   *  * the UI no longer needing code to drive it, perhaps because it's detached from the screen
+   *  * the code being hot-reloaded
+   *  * the code failing with an exception
+   *
+   * If it is failing due to a failure, [exception] will be non-null and this function should
+   * display an error UI. Typical implementations call [TreehouseView.reset] and display an error
+   * placeholder. Development builds may show more diagnostic information than production builds.
    *
    * When a Treehouse app fails, its current Zipline instance is canceled so no further code will
    * execute. A new Zipline will start when new code available.
    *
-   * This condition is not permanent! If new code is loaded after an error, [onCodeLoaded] will be
-   * called.
+   * This condition is not permanent! If so, [onCodeLoaded] will be called.
    */
-  public open fun onUncaughtException(
+  public open fun onCodeDetached(
     app: TreehouseApp<*>,
     view: TreehouseView<*>,
-    exception: Throwable,
+    exception: Throwable?,
   ) {
   }
 }

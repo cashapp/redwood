@@ -5,9 +5,9 @@ public final class app/cash/redwood/treehouse/ChangeListRenderer {
 
 public class app/cash/redwood/treehouse/CodeListener {
 	public fun <init> ()V
+	public fun onCodeDetached (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;Ljava/lang/Throwable;)V
 	public fun onCodeLoaded (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;Z)V
 	public fun onInitialCodeLoading (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;)V
-	public fun onUncaughtException (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;Ljava/lang/Throwable;)V
 }
 
 public abstract interface class app/cash/redwood/treehouse/Content {
