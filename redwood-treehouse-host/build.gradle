@@ -45,12 +45,6 @@ kotlin {
         implementation projects.testApp.schema.protocolHost
         implementation projects.testApp.schema.testing
       }
-      if (!rootProject.hasProperty('redwoodNoApps')) {
-        kotlin.srcDir('src/appsTest/kotlin')
-        dependencies {
-          implementation projects.testApp.presenterTreehouse
-        }
-      }
     }
     androidUnitTest {
       dependsOn(commonTest)
@@ -61,6 +55,9 @@ kotlin {
     jvmTest {
       if (!rootProject.hasProperty('redwoodNoApps')) {
         kotlin.srcDir('src/appsJvmTest/kotlin')
+        dependencies {
+          implementation projects.testApp.presenterTreehouse
+        }
       }
     }
   }

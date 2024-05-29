@@ -31,7 +31,6 @@ import okio.ByteString
 import okio.FileSystem
 import okio.IOException
 import okio.Path.Companion.toPath
-import okio.SYSTEM
 
 /**
  * Create a production-like instance of the test-app.
