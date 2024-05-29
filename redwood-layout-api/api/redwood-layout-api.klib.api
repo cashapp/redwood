@@ -6,10 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-layout-api>
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Constraint_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Overflow_$serializer$stableprop[0]
+final const val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Constraint_$serializer$stableprop[0]
+final const val app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop[0]
+final const val app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop[0]
+final const val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Overflow_$serializer$stableprop[0]
 final value class app.cash.redwood.layout.api/Constraint { // app.cash.redwood.layout.api/Constraint|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.layout.api/Constraint.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.layout.api/Constraint.hashCode|hashCode(){}[0]
