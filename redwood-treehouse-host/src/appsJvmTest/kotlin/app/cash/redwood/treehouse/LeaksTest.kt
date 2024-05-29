@@ -95,7 +95,7 @@ class LeaksTest {
     val view = tester.view()
 
     content.bind(view)
-    content.awaitContent(untilChangeCount = 1)
+    content.awaitContent()
 
     val eventListenerLeakWatcher = LeakWatcher {
       (tester.eventListenerFactory as RetainEverythingEventListenerFactory)
@@ -152,6 +152,36 @@ class LeaksTest {
     tester.eventLog.takeEvent("onCodeDetached(test_app, view, null)", skipOthers = true)
     treehouseApp.dispatchers.awaitLaunchedTasks()
     contentSourceLeakWatcher.assertNotLeaked()
+
+    treehouseApp.stop()
+  }
+
+  @Test
+  fun codeListenerNotLeaked() = runTest {
+    val tester = TreehouseTester(this)
+    val treehouseApp = tester.loadApp()
+    val view = tester.view()
+
+    var codeListener: CodeListener? = RetainEverythingCodeListener(tester.eventLog)
+    val content = treehouseApp.createContent(
+      source = { app -> app.launchForTester() },
+      codeListener = codeListener!!,
+    )
+    val codeListenerLeakWatcher = LeakWatcher { codeListener }
+
+    // Stop referencing the CodeListener from our test harness.
+    codeListener = null
+
+    // One a view is bound, the code listener is in a reference cycle.
+    content.bind(view)
+    tester.eventLog.takeEvent("onCodeLoaded", skipOthers = true)
+    codeListenerLeakWatcher.assertObjectInReferenceCycle()
+
+    // When the view is unbound, the code listener is no longer reachable.
+    content.unbind()
+    tester.eventLog.takeEvent("onCodeDetached", skipOthers = true)
+    treehouseApp.dispatchers.awaitLaunchedTasks()
+    codeListenerLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
   }
