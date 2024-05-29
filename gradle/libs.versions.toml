@@ -87,6 +87,6 @@ turbine = "app.cash.turbine:turbine:1.1.0"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.2.1"
 ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.4.3"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.22.0"
-poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.15.2"
+poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.16.0"
 
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }
