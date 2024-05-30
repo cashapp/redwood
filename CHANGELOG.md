@@ -36,6 +36,7 @@ New:
 -`TreehouseApp.close()` stops the app and prevents it from being started again later.
 - Added `UiConfiguration.layoutDirection` to support reading the host's layout direction.
 - New `redwood-bom` artifact can be used to ensure all Redwood artifacts use the same version. See [Gradle's documentation](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import) on how to use the BOM in your build.
+- Add `onScroll` property to `Row` and `Column`. This property is invoked when `overflow = Overflow.Scroll` and the container is scrolled.
 
 Changed:
 - The `app.cash.redwood` Gradle plugin has been removed. This plugin did two things: apply the Compose compiler and add a dependency on the `redwood-compose` artifact. The Compose compiler can now be added by applying the `org.jetbrains.kotlin.plugin.compose` Gradle plugin. Dependencies on Redwood artifacts can be added manually.
