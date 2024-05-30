@@ -133,7 +133,7 @@ internal class ViewFlexContainer(
     fun attachOrDetachScrollListeners() {
       val child = getChildAt(0)
       if (child is NestedScrollView) {
-        val listener = (onScrollListener as? OnScrollChangeListenerCompat)
+        val listener = (onScrollListener as OnScrollChangeListenerCompat?)
           ?: OnScrollChangeListenerCompat { _, _, scrollY, _, _ -> onScroll?.invoke(scrollY.toDouble()) }
             .also { onScrollListener = it }
         child.setOnScrollChangeListener(listener)
