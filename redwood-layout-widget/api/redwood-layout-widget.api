@@ -12,6 +12,7 @@ public abstract interface class app/cash/redwood/layout/widget/Column : app/cash
 	public abstract fun height-DyLkt4w (I)V
 	public abstract fun horizontalAlignment-njEs0f8 (I)V
 	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun onScroll (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun overflow-OcAJ2MY (I)V
 	public abstract fun verticalAlignment-6exqka8 (I)V
 	public abstract fun width-DyLkt4w (I)V
@@ -53,6 +54,7 @@ public abstract interface class app/cash/redwood/layout/widget/Row : app/cash/re
 	public abstract fun height-DyLkt4w (I)V
 	public abstract fun horizontalAlignment-6exqka8 (I)V
 	public abstract fun margin (Lapp/cash/redwood/ui/Margin;)V
+	public abstract fun onScroll (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun overflow-OcAJ2MY (I)V
 	public abstract fun verticalAlignment-njEs0f8 (I)V
 	public abstract fun width-DyLkt4w (I)V
