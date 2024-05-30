@@ -138,7 +138,7 @@ internal class ViewFlexContainer(
             .also { onScrollListener = it }
         child.setOnScrollChangeListener(listener)
       } else if (SDK_INT >= 23 && child is HorizontalScrollView) {
-        val listener = (onScrollListener as? OnScrollChangeListener)
+        val listener = (onScrollListener as OnScrollChangeListener?)
           ?: OnScrollChangeListener { _, scrollX, _, _, _ -> onScroll?.invoke(scrollX.toDouble()) }
             .also { onScrollListener = it }
         child.setOnScrollChangeListener(listener)
