@@ -22,8 +22,12 @@ import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.cinterop.cValue
+import kotlinx.coroutines.delay
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
+import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 
 class UIViewFlexContainerTest(
@@ -50,10 +54,20 @@ class UIViewFlexContainerTest(
     FlexContainer<UIView> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+
     override val children: Widget.Children<UIView> = delegate.children
 
     init {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 1.0, alpha = 0.2)
+    }
+
+    override fun onScroll(onScroll: (Double) -> Unit) {
+      delegate.onScroll(onScroll)
+    }
+
+    override suspend fun scroll(offset: Double) {
+      (delegate.value as UIScrollView).setContentOffset(cValue { y = offset }, false)
+      delay(20.milliseconds)
     }
 
     override fun add(widget: Widget<UIView>) {

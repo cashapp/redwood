@@ -26,6 +26,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
@@ -93,6 +94,7 @@ class ViewLazyListTest(
     LazyList<View> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+    private var onScroll: ((Double) -> Unit)? = null
 
     constructor(context: Context, direction: FlexDirection, backgroundColor: Int) : this(
       ViewLazyList(context).apply {
@@ -103,7 +105,18 @@ class ViewLazyListTest(
 
     override val children: Widget.Children<View> = delegate.items
 
+    override fun onScroll(onScroll: (Double) -> Unit) {
+      this.onScroll = onScroll
+    }
+
+    override suspend fun scroll(offset: Double) {
+      onScroll?.invoke(offset)
+    }
+
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    }
+
+    override fun overflow(overflow: Overflow) {
     }
 
     override fun add(widget: Widget<View>) {

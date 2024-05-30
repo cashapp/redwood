@@ -19,6 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Margin
@@ -27,6 +28,10 @@ import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
 
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(
@@ -602,6 +607,23 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.children.detach()
     verifySnapshot(container, "After")
   }
+
+  @Test
+  fun testOnScrollListener() = runTest {
+    var scrolled = false
+    val container = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      overflow(Overflow.Scroll)
+      onScroll {
+        scrolled = true
+      }
+    }
+
+    container.scroll(1000.0)
+
+    assertTrue(scrolled)
+  }
 }
 
 interface TestFlexContainer<T : Any> :
@@ -614,6 +636,9 @@ interface TestFlexContainer<T : Any> :
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment)
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
+  fun overflow(overflow: Overflow)
+  suspend fun scroll(offset: Double)
+  fun onScroll(onScroll: (Double) -> Unit)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)
   fun removeAt(index: Int)

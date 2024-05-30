@@ -73,6 +73,7 @@ internal class ComposeUiFlexContainer(
   override var density = Density(1.0)
 
   internal var testOnlyModifier: Modifier? = null
+  internal var scrollState: ScrollState? = null
 
   override fun width(width: Constraint) {
     this.width = width
@@ -145,7 +146,7 @@ internal class ComposeUiFlexContainer(
       modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
     if (overflow == Overflow.Scroll) {
-      val scrollState = rememberScrollState()
+      val scrollState = rememberScrollState().also { scrollState = it }
       if (flexDirection.isHorizontal) {
         modifier = modifier.horizontalScroll(scrollState)
       } else {
