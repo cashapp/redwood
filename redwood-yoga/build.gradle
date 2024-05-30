@@ -9,7 +9,7 @@ redwoodBuild {
 }
 
 kotlin {
-  KmpTargets.addAllTargets(project)
+  KmpTargets.addAllTargets(project, true /* skipJs */)
 
   sourceSets {
     commonTest {
