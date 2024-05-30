@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.view
 
 import android.content.Context
+import android.os.Build.VERSION.SDK_INT
 import android.util.LayoutDirection
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
@@ -65,6 +67,8 @@ internal class ViewFlexContainer(
     },
   )
 
+  private var onScroll: ((Double) -> Unit)? = null
+
   override var modifier: Modifier = Modifier
 
   init {
@@ -96,6 +100,11 @@ internal class ViewFlexContainer(
     }
   }
 
+  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    this.onScroll = onScroll
+    hostView.attachOrDetachScrollListeners()
+  }
+
   override fun onEndChanges() {
     hostView.invalidate()
     hostView.requestLayout()
@@ -113,9 +122,27 @@ internal class ViewFlexContainer(
         }
       }
 
+    // Either OnScrollChangeListenerCompat or OnScrollChangeListener. Created lazily.
+    private var onScrollListener: Any? = null
+
     init {
       layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
       updateViewHierarchy()
+    }
+
+    fun attachOrDetachScrollListeners() {
+      val child = getChildAt(0)
+      if (child is NestedScrollView) {
+        val listener = (onScrollListener as? OnScrollChangeListenerCompat)
+          ?: OnScrollChangeListenerCompat { _, _, scrollY, _, _ -> onScroll?.invoke(scrollY.toDouble()) }
+            .also { onScrollListener = it }
+        child.setOnScrollChangeListener(listener)
+      } else if (SDK_INT >= 23 && child is HorizontalScrollView) {
+        val listener = (onScrollListener as? OnScrollChangeListener)
+          ?: OnScrollChangeListener { _, scrollX, _, _, _ -> onScroll?.invoke(scrollX.toDouble()) }
+            .also { onScrollListener = it }
+        child.setOnScrollChangeListener(listener)
+      }
     }
 
     private fun updateViewHierarchy() {
@@ -124,6 +151,7 @@ internal class ViewFlexContainer(
 
       if (scrollEnabled) {
         addView(newScrollView().apply { addView(yogaLayout) })
+        attachOrDetachScrollListeners()
       } else {
         addView(yogaLayout)
       }

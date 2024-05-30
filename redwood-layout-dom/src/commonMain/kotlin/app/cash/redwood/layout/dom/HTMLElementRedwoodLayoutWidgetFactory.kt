@@ -40,6 +40,8 @@ import app.cash.redwood.widget.Widget
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventListener
 
 public class HTMLElementRedwoodLayoutWidgetFactory(
   private val document: Document,
@@ -80,6 +82,8 @@ private class HTMLFlexContainer(
 
   override val children: Widget.Children<HTMLElement> = HTMLFlexElementChildren(value)
 
+  private var scrollEventListener: EventListener? = null
+
   override fun width(width: Constraint) {
     value.style.width = width.toCss()
   }
@@ -99,6 +103,27 @@ private class HTMLFlexContainer(
 
   override fun overflow(overflow: Overflow) {
     value.overflowSetter(overflow.toCss())
+  }
+
+  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    if (onScroll != null) {
+      val eventListener = scrollEventListener ?: object : EventListener {
+        override fun handleEvent(event: Event) {
+          val offset = when (value.style.flexDirection) {
+            "row" -> value.scrollTop
+            "column" -> value.scrollLeft
+            else -> throw AssertionError()
+          }
+          onScroll(offset)
+        }
+      }.also { scrollEventListener = it }
+      value.addEventListener("scroll", eventListener)
+    } else {
+      scrollEventListener?.let { eventListener ->
+        value.removeEventListener("scroll", eventListener)
+        scrollEventListener = null
+      }
+    }
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {

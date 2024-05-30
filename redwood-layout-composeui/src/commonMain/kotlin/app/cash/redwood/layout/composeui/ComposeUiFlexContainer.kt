@@ -38,6 +38,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.Modifier as RedwoodModifier
+import androidx.compose.foundation.ScrollState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
@@ -65,6 +69,7 @@ internal class ComposeUiFlexContainer(
   private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
+  private var onScroll: ((Double) -> Unit)? by mutableStateOf(null)
   override var density = Density(1.0)
 
   internal var testOnlyModifier: Modifier? = null
@@ -83,6 +88,10 @@ internal class ComposeUiFlexContainer(
 
   override fun overflow(overflow: Overflow) {
     this.overflow = overflow
+  }
+
+  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    this.onScroll = onScroll
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
@@ -136,14 +145,27 @@ internal class ComposeUiFlexContainer(
       modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
     if (overflow == Overflow.Scroll) {
+      val scrollState = rememberScrollState()
       if (flexDirection.isHorizontal) {
-        modifier = modifier.horizontalScroll(rememberScrollState())
+        modifier = modifier.horizontalScroll(scrollState)
       } else {
-        modifier = modifier.verticalScroll(rememberScrollState())
+        modifier = modifier.verticalScroll(scrollState)
       }
+      observeScrollState(scrollState)
     }
     testOnlyModifier?.let { modifier = modifier.then(it) }
     return modifier
+  }
+
+  @Composable
+  private fun observeScrollState(scrollState: ScrollState) {
+    val onScroll = onScroll
+    if (onScroll != null) {
+      val offset by remember { derivedStateOf { scrollState.value.toDouble() } }
+      LaunchedEffect(offset) {
+        onScroll(offset)
+      }
+    }
   }
 
   private fun measure(
