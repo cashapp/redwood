@@ -32,7 +32,7 @@ internal class UIViewFlexContainer(
   direction: FlexDirection,
 ) : YogaFlexContainer<UIView>, ChangeListener {
   private val yogaView: YogaUIView = YogaUIView(
-    applyModifier = { node, index ->
+    applyModifier = { node, _ ->
       node.applyModifier(node.context as Modifier, Density.Default)
     },
   )
@@ -70,7 +70,6 @@ internal class UIViewFlexContainer(
   }
 
   override fun overflow(overflow: Overflow) {
-    yogaView.scrollEnabled = overflow == Overflow.Scroll
   }
 
   override fun onEndChanges() {
@@ -80,8 +79,8 @@ internal class UIViewFlexContainer(
 }
 
 private fun UIView.asNode(context: Any?): Node {
-  val childNode = Node()
-  childNode.measureCallback = UIViewMeasureCallback(this)
-  childNode.context = context
-  return childNode
+  val node = Node()
+  node.measureCallback = UIViewMeasureCallback(this)
+  node.context = context
+  return node
 }

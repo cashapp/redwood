@@ -15,8 +15,21 @@
  */
 package app.cash.redwood.layout.uiview
 
+import app.cash.redwood.yoga.Node
+import app.cash.redwood.yoga.Size
+import kotlinx.cinterop.cValue
+import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectZero
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
 @Suppress("UNCHECKED_CAST")
 internal val UIView.typedSubviews: List<UIView>
   get() = subviews as List<UIView>
+
+internal val Node.view: UIView
+  get() = (measureCallback as UIViewMeasureCallback).view
+
+internal val undefinedSize = CGSizeMake(Size.UNDEFINED.toDouble(), Size.UNDEFINED.toDouble())
+
+internal val zeroSize = cValue<CGRect> { CGRectZero }

@@ -13,6 +13,7 @@ import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -24,22 +25,13 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaUIView(
   private val applyModifier: (Node, Int) -> Unit,
-) : UIScrollView(cValue { CGRectZero }) {
+) : UIView(zeroSize) {
   val rootNode = Node()
-
   var width = Constraint.Wrap
   var height = Constraint.Wrap
 
-  init {
-    // TODO: Support scroll indicators.
-    scrollEnabled = false
-    showsVerticalScrollIndicator = false
-    showsHorizontalScrollIndicator = false
-    contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
-  }
-
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(CGSizeMake(Size.UNDEFINED.toDouble(), Size.UNDEFINED.toDouble()))
+    return calculateLayoutWithSize(undefinedSize)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
@@ -56,26 +48,7 @@ internal class YogaUIView(
       sizeForConstraints(size)
     }
 
-    if (scrollEnabled) {
-      // When scrolling is enabled, we want to calculate and apply the contentSize
-      // separately and have it grow a much as needed in the flexDirection.
-      // This duplicates the calculation we're doing above, and should be
-      // combined into one call.
-      val scrollSize = bounds.useContents {
-        if (rootNode.flexDirection == FlexDirection.Column) {
-          CGSizeMake(width, Size.UNDEFINED.toDouble())
-        } else {
-          CGSizeMake(Size.UNDEFINED.toDouble(), height)
-        }
-      }
-      val contentSize = calculateLayoutWithSize(scrollSize)
-      setContentSize(contentSize)
-      calculateLayoutWithSize(bounds)
-    } else {
-      // If we're not scrolling, the contentSize should equal the size of the view.
-      val containerSize = calculateLayoutWithSize(bounds)
-      setContentSize(containerSize)
-    }
+    calculateLayoutWithSize(bounds)
 
     // Layout the nodes based on the calculatedLayouts above.
     for (childNode in rootNode.children) {
@@ -107,7 +80,9 @@ internal class YogaUIView(
       applyModifier(node, index)
     }
 
-    size.useContents { rootNode.measure(width.toFloat(), height.toFloat()) }
+    size.useContents {
+      rootNode.measure(width.toFloat(), height.toFloat())
+    }
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }
@@ -126,17 +101,4 @@ internal class YogaUIView(
       return dimension
     }
   }
-
-  override fun setScrollEnabled(scrollEnabled: Boolean) {
-    val previousScrollEnabled = this.scrollEnabled
-
-    super.setScrollEnabled(scrollEnabled)
-
-    if (scrollEnabled != previousScrollEnabled) {
-      setNeedsLayout()
-    }
-  }
 }
-
-private val Node.view: UIView
-  get() = (measureCallback as UIViewMeasureCallback).view
