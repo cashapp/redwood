@@ -15,6 +15,16 @@
  */
 package app.cash.redwood.buildsupport
 
+import app.cash.redwood.buildsupport.TargetGroup.Common
+import app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
+import app.cash.redwood.buildsupport.TargetGroup.Tooling
+import app.cash.redwood.buildsupport.TargetGroup.ToolkitAllWithoutAndroid
+import app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
+import app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
+import app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
+import app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
+import app.cash.redwood.buildsupport.TargetGroup.TreehouseGuest
+import app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -276,6 +286,73 @@ class RedwoodBuildPlugin : Plugin<Project> {
 }
 
 private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodBuildExtension {
+  override fun targets(group: TargetGroup) {
+    when (group) {
+      Common -> {
+        project.applyKotlinMultiplatform {
+          iosTargets()
+          js().browser()
+          jvm()
+        }
+      }
+      CommonWithAndroid -> {
+        project.plugins.apply("com.android.library")
+        project.applyKotlinMultiplatform {
+          androidTarget().publishLibraryVariants("release")
+          iosTargets()
+          js().browser()
+          jvm()
+        }
+      }
+      Tooling -> {
+        project.plugins.apply("org.jetbrains.kotlin.jvm")
+      }
+      ToolkitAllWithoutAndroid -> {
+        project.applyKotlinMultiplatform {
+          iosTargets()
+          js().browser()
+          jvm()
+        }
+      }
+      ToolkitAndroid -> {
+        project.plugins.apply("com.android.library")
+        project.plugins.apply("org.jetbrains.kotlin.android")
+      }
+      ToolkitIos -> {
+        project.applyKotlinMultiplatform {
+          iosTargets()
+        }
+      }
+      ToolkitHtml -> {
+        project.applyKotlinMultiplatform {
+          js().browser()
+        }
+      }
+      ToolkitComposeUi -> {
+        project.plugins.apply("com.android.library")
+        project.applyKotlinMultiplatform {
+          androidTarget().publishLibraryVariants("release")
+          iosTargets()
+          jvm()
+        }
+      }
+      TreehouseGuest -> {
+        project.applyKotlinMultiplatform {
+          js().nodejs()
+          jvm() // For easier testing.
+        }
+      }
+      TreehouseHost -> {
+        project.plugins.apply("com.android.library")
+        project.applyKotlinMultiplatform {
+          androidTarget().publishLibraryVariants("release")
+          iosTargets()
+          jvm()
+        }
+      }
+    }
+  }
+
   override fun composeCompiler() {
     project.plugins.apply(ComposePlugin::class.java)
   }
@@ -505,4 +582,17 @@ private fun Project.withKotlinPlugins(block: KotlinProjectExtension.() -> Unit) 
   pluginManager.withPlugin("org.jetbrains.kotlin.android", handler)
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm", handler)
   pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform", handler)
+}
+
+private fun Project.applyKotlinMultiplatform(block: KotlinMultiplatformExtension.() -> Unit) {
+  pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+  val kotlin = extensions.getByType(KotlinMultiplatformExtension::class.java)
+  kotlin.block()
+  kotlin.applyDefaultHierarchyTemplate()
+}
+
+private fun KotlinMultiplatformExtension.iosTargets() {
+  iosArm64()
+  iosSimulatorArm64()
+  iosX64()
 }

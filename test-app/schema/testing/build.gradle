@@ -1,11 +1,14 @@
-import app.cash.redwood.buildsupport.KmpTargets
+import app.cash.redwood.buildsupport.TargetGroup
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
+import static app.cash.redwood.buildsupport.TargetGroup.Common
+
+redwoodBuild {
+  targets(Common)
+}
+
 apply plugin: 'app.cash.redwood.generator.testing'
 
 kotlin {
-  KmpTargets.addAllTargets(project)
-
   sourceSets {
     commonMain {
       dependencies {

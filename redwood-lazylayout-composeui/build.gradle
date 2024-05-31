@@ -1,17 +1,14 @@
-import app.cash.redwood.buildsupport.KmpTargets
-
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.paparazzi'
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
 
 redwoodBuild {
+  targets(ToolkitComposeUi)
   composeCompiler()
   publishing()
 }
 
-kotlin {
-  KmpTargets.addAllTargets(project, true /* skipJs */)
+apply plugin: 'app.cash.paparazzi'
 
+kotlin {
   sourceSets {
     commonMain {
       dependencies {

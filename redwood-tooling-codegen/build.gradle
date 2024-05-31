@@ -1,6 +1,7 @@
-apply plugin: 'org.jetbrains.kotlin.jvm'
+import static app.cash.redwood.buildsupport.TargetGroup.Tooling
 
 redwoodBuild {
+  targets(Tooling)
   publishing()
   cliApplication('redwood-codegen', 'app.cash.redwood.tooling.codegen.Main')
 }

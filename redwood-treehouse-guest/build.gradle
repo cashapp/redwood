@@ -1,17 +1,14 @@
-import app.cash.redwood.buildsupport.KmpTargets
-
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'com.android.library'
-apply plugin: 'app.cash.zipline'
+import static app.cash.redwood.buildsupport.TargetGroup.TreehouseGuest
 
 redwoodBuild {
+  targets(TreehouseGuest)
   publishing()
 }
 
-kotlin {
-  KmpTargets.addAllTargets(project)
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.zipline'
 
+kotlin {
   sourceSets {
     commonMain {
       dependencies {
@@ -25,21 +22,5 @@ kotlin {
         api projects.redwoodTreehouseGuestCompose
       }
     }
-    nonJsMain {
-      dependsOn(commonMain)
-    }
-    androidMain {
-      dependsOn(nonJsMain)
-    }
-    jvmMain {
-      dependsOn(nonJsMain)
-    }
-    nativeMain {
-      dependsOn(nonJsMain)
-    }
   }
-}
-
-android {
-  namespace 'app.cash.treehouse.guest'
 }

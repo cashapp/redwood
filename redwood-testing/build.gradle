@@ -1,17 +1,12 @@
-import app.cash.redwood.buildsupport.KmpTargets
-
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'com.android.library'
+import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
+  targets(Common)
   composeCompiler()
   publishing()
 }
 
 kotlin {
-  KmpTargets.addAllTargets(project)
-
   sourceSets {
     commonMain {
       dependencies {
@@ -31,13 +26,5 @@ kotlin {
         implementation projects.testApp.schema.protocolHost
       }
     }
-  }
-}
-
-android {
-  namespace 'app.cash.redwood.testing'
-
-  testOptions {
-    unitTests.returnDefaultValues = true
   }
 }

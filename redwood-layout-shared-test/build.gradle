@@ -1,10 +1,10 @@
-import app.cash.redwood.buildsupport.KmpTargets
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAllWithoutAndroid
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
+redwoodBuild {
+  targets(ToolkitAllWithoutAndroid)
+}
 
 kotlin {
-  KmpTargets.addAllTargets(project, true /* skipJs */)
-
   sourceSets {
     commonMain {
       dependencies {
