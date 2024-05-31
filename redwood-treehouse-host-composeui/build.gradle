@@ -1,20 +1,12 @@
-import app.cash.redwood.buildsupport.KmpTargets
-
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
+import static app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
 
 redwoodBuild {
+  targets(TreehouseHost)
   composeCompiler()
   publishing()
 }
 
 kotlin {
-  androidTarget {
-    publishLibraryVariants('release')
-  }
-
-  KmpTargets.addAllTargets(project, true /* skipJs */)
-
   sourceSets {
     commonMain {
       dependencies {

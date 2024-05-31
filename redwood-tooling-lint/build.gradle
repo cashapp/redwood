@@ -1,13 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+import static app.cash.redwood.buildsupport.TargetGroup.Tooling
 
 redwoodBuild {
+  targets(Tooling)
   publishing()
   cliApplication('redwood-lint', 'app.cash.redwood.tooling.lint.Main')
 }
+
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 dependencies {
   implementation libs.clikt

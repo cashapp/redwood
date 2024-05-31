@@ -1,17 +1,16 @@
 import app.cash.redwood.buildsupport.ComposeHelpers
-import app.cash.redwood.buildsupport.KmpTargets
 
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'com.github.gmazzo.buildconfig'
+import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
+  targets(Common)
   composeCompiler()
   publishing()
 }
 
-kotlin {
-  KmpTargets.addAllTargets(project)
+apply plugin: 'com.github.gmazzo.buildconfig'
 
+kotlin {
   sourceSets {
     commonMain {
       kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.guest'))

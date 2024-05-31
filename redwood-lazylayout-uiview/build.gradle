@@ -1,16 +1,11 @@
-import app.cash.redwood.buildsupport.ComposeHelpers
-
-apply plugin: 'org.jetbrains.kotlin.multiplatform'
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
 
 redwoodBuild {
+  targets(ToolkitIos)
   publishing()
 }
 
 kotlin {
-  iosArm64()
-  iosX64()
-  iosSimulatorArm64()
-
   sourceSets {
     commonMain {
       dependencies {

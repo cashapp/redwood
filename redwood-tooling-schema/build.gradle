@@ -1,13 +1,14 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Tooling
 import static org.gradle.api.plugins.JavaPlugin.TEST_TASK_NAME
 import static org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.TEST_COMPILATION_NAME
 
-apply plugin: 'org.jetbrains.kotlin.jvm'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-
 redwoodBuild {
+  targets(Tooling)
   publishing()
   cliApplication('redwood-schema', 'app.cash.redwood.tooling.schema.Main')
 }
+
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 dependencies {
   api projects.redwoodSchema

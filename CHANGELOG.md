@@ -23,6 +23,8 @@ Breaking:
  non-null if it's detached due to exception.
 -`Content.awaitContent()` now accepts an optional `Int` parameter for the number of updates to
  observe before the function returns.
+- MacOS targets have been (temporarily) removed from all modules.
+
 
 ## [0.11.0] - 2024-05-15
 [0.11.0]: https://github.com/cashapp/redwood/releases/tag/0.11.0

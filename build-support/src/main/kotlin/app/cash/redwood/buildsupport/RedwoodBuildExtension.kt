@@ -16,6 +16,8 @@
 package app.cash.redwood.buildsupport
 
 interface RedwoodBuildExtension {
+  fun targets(group: TargetGroup)
+
   /** Add the Compose compiler plugin. */
   fun composeCompiler()
 
@@ -38,4 +40,28 @@ interface RedwoodBuildExtension {
 
   /** Consume a Zipline application in an Android application and embed it within assets. */
   fun embedZiplineApplication(dependencyNotation: Any)
+}
+
+enum class TargetGroup {
+  /** Common targets supported by core modules which are not specific to any platform. */
+  Common,
+
+  /** Same as [Common], but with an additional Android target rather than relying on JVM. */
+  CommonWithAndroid,
+
+  /** Tooling only runs on the JVM. */
+  Tooling,
+
+  /** All toolkit targets for common modules. Includes JVM but not Android. */
+  ToolkitAllWithoutAndroid,
+  ToolkitAndroid,
+  ToolkitIos,
+  ToolkitHtml,
+  ToolkitComposeUi,
+
+  /** Guest code which runs inside Treehouse. This also includes the JVM for easier testing. */
+  TreehouseGuest,
+
+  /** Host code which supports loading Treehouse guest code. */
+  TreehouseHost,
 }

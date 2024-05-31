@@ -1,14 +1,15 @@
 import app.cash.redwood.buildsupport.ComposeHelpers
 import app.cash.redwood.buildsupport.FlexboxHelpers
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-apply plugin: 'app.cash.paparazzi'
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
 
 redwoodBuild {
+  targets(ToolkitAndroid)
   publishing()
 }
+
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.paparazzi'
 
 dependencies {
   api projects.redwoodLayoutWidget
