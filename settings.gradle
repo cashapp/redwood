@@ -85,6 +85,8 @@ include ':redwood-widget-compose'
 include ':redwood-widget-testing'
 include ':redwood-yoga'
 
+include ':test-app:presenter'
+include ':test-app:presenter-treehouse'
 include ':test-app:schema'
 include ':test-app:schema:compose'
 include ':test-app:schema:modifiers'
@@ -98,8 +100,6 @@ if (!hasProperty('redwoodNoApps')) {
   include ':test-app:browser'
   include ':test-app:ios-shared'
   include ':test-app:launcher'
-  include ':test-app:presenter'
-  include ':test-app:presenter-treehouse'
 
   include ':samples:counter:android-composeui'
   include ':samples:counter:android-views'

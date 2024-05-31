@@ -50,11 +50,8 @@ kotlin {
       }
     }
     jvmTest {
-      if (!rootProject.hasProperty('redwoodNoApps')) {
-        kotlin.srcDir('src/appsJvmTest/kotlin')
-        dependencies {
-          implementation projects.testApp.presenterTreehouse
-        }
+      dependencies {
+        implementation projects.testApp.presenterTreehouse
       }
     }
   }
@@ -96,8 +93,6 @@ android {
 }
 
 // TreehouseTester expects to load our test application.
-if (!rootProject.hasProperty('redwoodNoApps')) {
-  tasks.withType(Test.class).configureEach {
-    it.dependsOn(":test-app:presenter-treehouse:compileDevelopmentExecutableKotlinJsZipline")
-  }
+tasks.withType(Test).configureEach {
+  it.dependsOn(":test-app:presenter-treehouse:compileDevelopmentExecutableKotlinJsZipline")
 }
