@@ -15,6 +15,8 @@ operations on the DOM with consistent rendering across platforms. The system pro
 bindings for for Android Views (`redwood-layout-view`), iOS UiKit (`redwood-layout-uiview`), and
 Compose UI (`redwood-layout-composeui`).
 
+**[Check out here for documentation for each of `Column` and `Row`'s modifiers.](https://github.com/cashapp/redwood/blob/trunk/redwood-layout-schema/src/main/kotlin/app/cash/redwood/layout/modifiers.kt)**
+
 ## Widgets
 
 ### Row
