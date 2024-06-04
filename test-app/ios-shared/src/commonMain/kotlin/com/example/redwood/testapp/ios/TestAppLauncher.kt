@@ -26,9 +26,13 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.testapp.launcher.TestAppSpec
 import com.example.redwood.testapp.treehouse.HostApi
 import com.example.redwood.testapp.treehouse.TestAppPresenter
+import kotlin.native.runtime.GC
+import kotlin.native.runtime.NativeRuntimeApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import platform.Foundation.NSLog
 import platform.Foundation.NSURLSession
 
@@ -39,6 +43,7 @@ class TestAppLauncher(
   private val coroutineScope: CoroutineScope = MainScope()
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
 
+  @OptIn(NativeRuntimeApi::class)
   @Suppress("unused") // Invoked in Swift.
   fun createTreehouseApp(): TreehouseApp<TestAppPresenter> {
     val ziplineHttpClient = nsurlSession.asZiplineHttpClient()
@@ -69,6 +74,14 @@ class TestAppLauncher(
       ),
       eventListenerFactory = { app, manifestUrl -> eventListener },
     )
+
+    // Run the GC in a hot loop
+    coroutineScope.launch {
+      while (true) {
+        GC.collect()
+        delay(100)
+      }
+    }
 
     treehouseApp.start()
 

@@ -53,14 +53,14 @@ fun BoxSandbox(modifier: Modifier = Modifier) {
     modifier = modifier,
   ) {
     val crossAxisAlignments = listOf(
-      Start,
-      Center,
-      Stretch,
+//      Start,
+//      Center,
+//      Stretch,
       End,
     )
 
     val constraints = listOf(
-      Fill,
+//      Fill,
       Wrap,
     )
 

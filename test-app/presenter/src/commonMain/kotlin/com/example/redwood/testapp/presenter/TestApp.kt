@@ -16,9 +16,13 @@
 package com.example.redwood.testapp.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
@@ -31,10 +35,12 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Text
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
-  put("Repo Search") { RepoSearch(httpClient) }
-  put("UI Configuration") { UiConfigurationValues() }
+//  put("Repo Search") { RepoSearch(httpClient) }
+//  put("UI Configuration") { UiConfigurationValues() }
   put("Box Sandbox") { BoxSandbox() }
   put("Unscoped Modifiers") { UnscopedModifiers() }
 }
@@ -50,6 +56,24 @@ fun TestApp(
   modifier: Modifier = Modifier,
 ) {
   var screenKey by rememberSaveable { mutableStateOf<String?>(null) }
+  var iterations by remember { mutableIntStateOf(0) }
+
+  LaunchedEffect(Unit) {
+    while (true) {
+      for (nextScreen in screens.keys) {
+        screenKey = nextScreen
+        println("XX iterations=$iterations, screenKey=$screenKey")
+        delay(100)
+        iterations++
+      }
+
+      screenKey = null
+      println("XX iterations=$iterations, screenKey=$screenKey")
+      delay(100)
+      iterations++
+    }
+  }
+
   if (screenKey == null) {
     ScreenList(onScreenChange = { screenKey = it })
   } else {
@@ -57,7 +81,7 @@ fun TestApp(
     BackHandler(onBack = onBack)
 
     Column(width = Fill, height = Fill, modifier = modifier) {
-      Button("Back", onClick = onBack)
+      Button("Back ${iterations}", onClick = onBack)
 
       val content = screens[screenKey]
       if (content == null) {
