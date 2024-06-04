@@ -23,7 +23,6 @@ allprojects {
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
-apply plugin: 'com.github.gmazzo.buildconfig'
 apply plugin: 'com.android.lint'
 
 dependencies {
@@ -33,7 +32,6 @@ dependencies {
   implementation libs.dokkaPlugin
   implementation libs.spotlessPlugin
   implementation libs.androidGradlePlugin
-  implementation libs.jetbrains.compose.gradlePlugin
   implementation libs.kotlinx.binaryCompatibilityValidator
   implementation libs.zipline
 
@@ -52,18 +50,6 @@ gradlePlugin {
       implementationClass = "app.cash.redwood.buildsupport.RedwoodBuildPlugin"
     }
   }
-}
-
-buildConfig {
-  useKotlinOutput {
-    internalVisibility = true
-    topLevelConstants = true
-  }
-
-  packageName('app.cash.redwood.buildsupport')
-  buildConfigField("String", "composeCompilerGroupId", "\"${libs.jetbrains.compose.compiler.get().module.group}\"")
-  buildConfigField("String", "composeCompilerArtifactId", "\"${libs.jetbrains.compose.compiler.get().module.name}\"")
-  buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
 }
 
 tasks.withType(JavaCompile).configureEach {

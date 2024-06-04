@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 redwoodBuild {
   embedZiplineApplication(projects.samples.emojiSearch.presenterTreehouse)
@@ -13,7 +14,6 @@ android {
   }
 
   buildFeatures {
-    compose = true
     // Needed to pass application ID to UIAutomator tests.
     buildConfig = true
   }

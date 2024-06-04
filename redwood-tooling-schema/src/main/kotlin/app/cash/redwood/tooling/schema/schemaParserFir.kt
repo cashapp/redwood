@@ -35,7 +35,6 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.VfsBasedProjectEnvironment
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerInput
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFir
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
@@ -57,9 +56,9 @@ import org.jetbrains.kotlin.fir.declarations.utils.classId
 import org.jetbrains.kotlin.fir.declarations.utils.isData
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
 import org.jetbrains.kotlin.fir.expressions.FirArrayLiteral
-import org.jetbrains.kotlin.fir.expressions.FirConstExpression
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirGetClassCall
+import org.jetbrains.kotlin.fir.expressions.FirLiteralExpression
 import org.jetbrains.kotlin.fir.expressions.FirPropertyAccessExpression
 import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
@@ -167,14 +166,10 @@ public fun parseProtocolSchema(
 
   val output = compileModuleToAnalyzedFir(
     input = input,
-    environment = ModuleCompilerEnvironment(
-      projectEnvironment = projectEnvironment,
-      diagnosticsReporter = reporter,
-    ),
+    projectEnvironment = projectEnvironment,
     previousStepsSymbolProviders = emptyList(),
     incrementalExcludesScope = null,
     diagnosticsReporter = reporter,
-    performanceManager = null,
   )
   val platformOutput = output.outputs.first()
   val firFiles = platformOutput.fir
@@ -585,7 +580,7 @@ private fun FirContext.findSchemaAnnotation(
         } ?: emptyMap()
 
       @Suppress("UNCHECKED_CAST")
-      val tagExpression = mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+      val tagExpression = mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
         ?: throw AssertionError(annotation.source?.text)
       val tag = tagExpression.value
 
@@ -621,7 +616,7 @@ private fun FirContext.findWidgetAnnotation(
 
   @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
     ?: throw AssertionError(annotation.source?.text)
 
   return WidgetAnnotation(tagExpression.value)
@@ -639,7 +634,7 @@ private fun FirContext.findPropertyAnnotation(
 
   @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
     ?: throw AssertionError(annotation.source?.text)
 
   return PropertyAnnotation(tagExpression.value)
@@ -657,7 +652,7 @@ private fun FirContext.findChildrenAnnotation(
 
   @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
     ?: throw AssertionError(annotation.source?.text)
 
   return ChildrenAnnotation(tagExpression.value)
@@ -675,7 +670,7 @@ private fun FirContext.findDefaultAnnotation(
     ?: return null
 
   val expression = annotation.argumentMapping
-    .mapping[Name.identifier("expression")] as? FirConstExpression<String>
+    .mapping[Name.identifier("expression")] as? FirLiteralExpression<String>
     ?: throw AssertionError(annotation.source?.text)
 
   return DefaultAnnotation(expression.value)
@@ -693,7 +688,7 @@ private fun FirContext.findModifierAnnotation(
     ?: return null
 
   @Suppress("UNCHECKED_CAST")
-  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirConstExpression<Int>
+  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
     ?: throw AssertionError(annotation.source?.text)
 
   val scopesExpression = annotation.argumentMapping.mapping[Name.identifier("scopes")] as? FirVarargArgumentsExpression
@@ -724,7 +719,7 @@ private fun FirContext.findDeprecationAnnotation(
 
   @Suppress("UNCHECKED_CAST")
   val messageExpression = annotation.argumentMapping
-    .mapping[Name.identifier("message")] as? FirConstExpression<String>
+    .mapping[Name.identifier("message")] as? FirLiteralExpression<String>
     ?: throw AssertionError(annotation.source?.text)
 
   val levelExpression = annotation.argumentMapping

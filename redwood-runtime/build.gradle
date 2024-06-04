@@ -2,10 +2,10 @@ import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 
 redwoodBuild {
   targets(CommonWithAndroid)
-  composeCompiler()
   publishing()
 }
 
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'dev.drewhamilton.poko'
 

@@ -18,9 +18,6 @@ package app.cash.redwood.buildsupport
 interface RedwoodBuildExtension {
   fun targets(group: TargetGroup)
 
-  /** Add the Compose compiler plugin. */
-  fun composeCompiler()
-
   /**
    * Enable artifact publishing and Dokka documentation generation.
    *

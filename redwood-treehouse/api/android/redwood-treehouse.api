@@ -163,13 +163,13 @@ public final class app/cash/redwood/treehouse/StateSnapshot {
 	public final fun getContent ()Ljava/util/Map;
 }
 
-public final class app/cash/redwood/treehouse/StateSnapshot$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/treehouse/StateSnapshot$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/treehouse/StateSnapshot$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/treehouse/StateSnapshot;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/treehouse/StateSnapshot;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/treehouse/StateSnapshot;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/treehouse/StateSnapshot;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -193,14 +193,14 @@ public final class app/cash/redwood/treehouse/StateSnapshot$Id {
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public final class app/cash/redwood/treehouse/StateSnapshot$Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/treehouse/StateSnapshot$Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/treehouse/StateSnapshot$Id$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-CVq4lK4 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-CVq4lK4 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-x1_DTDE (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public final fun serialize-x1_DTDE (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 

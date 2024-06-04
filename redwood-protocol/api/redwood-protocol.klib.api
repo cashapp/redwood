@@ -33,7 +33,7 @@ final class app.cash.redwood.protocol/Create : app.cash.redwood.protocol/Change 
         final fun <get-tag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol/Create.tag.<get-tag>|<get-tag>(){}[0]
 }
 final class app.cash.redwood.protocol/Event { // app.cash.redwood.protocol/Event|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlinx.serialization.json/JsonElement> =...) // app.cash.redwood.protocol/Event.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlinx.serialization.json.JsonElement>){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlinx.serialization.json/JsonElement> = ...) // app.cash.redwood.protocol/Event.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlinx.serialization.json.JsonElement>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/Event.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/Event.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.protocol/Event.toString|toString(){}[0]
@@ -56,7 +56,7 @@ final class app.cash.redwood.protocol/Event { // app.cash.redwood.protocol/Event
         final fun <get-tag>(): app.cash.redwood.protocol/EventTag // app.cash.redwood.protocol/Event.tag.<get-tag>|<get-tag>(){}[0]
 }
 final class app.cash.redwood.protocol/ModifierChange : app.cash.redwood.protocol/ValueChange { // app.cash.redwood.protocol/ModifierChange|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, kotlin.collections/List<app.cash.redwood.protocol/ModifierElement> =...) // app.cash.redwood.protocol/ModifierChange.<init>|<init>(app.cash.redwood.protocol.Id;kotlin.collections.List<app.cash.redwood.protocol.ModifierElement>){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id, kotlin.collections/List<app.cash.redwood.protocol/ModifierElement> = ...) // app.cash.redwood.protocol/ModifierChange.<init>|<init>(app.cash.redwood.protocol.Id;kotlin.collections.List<app.cash.redwood.protocol.ModifierElement>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/ModifierChange.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/ModifierChange.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.protocol/ModifierChange.toString|toString(){}[0]
@@ -77,7 +77,7 @@ final class app.cash.redwood.protocol/ModifierChange : app.cash.redwood.protocol
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/ModifierChange.id.<get-id>|<get-id>(){}[0]
 }
 final class app.cash.redwood.protocol/ModifierElement { // app.cash.redwood.protocol/ModifierElement|null[0]
-    constructor <init>(app.cash.redwood.protocol/ModifierTag, kotlinx.serialization.json/JsonElement =...) // app.cash.redwood.protocol/ModifierElement.<init>|<init>(app.cash.redwood.protocol.ModifierTag;kotlinx.serialization.json.JsonElement){}[0]
+    constructor <init>(app.cash.redwood.protocol/ModifierTag, kotlinx.serialization.json/JsonElement = ...) // app.cash.redwood.protocol/ModifierElement.<init>|<init>(app.cash.redwood.protocol.ModifierTag;kotlinx.serialization.json.JsonElement){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/ModifierElement.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/ModifierElement.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.protocol/ModifierElement.toString|toString(){}[0]
@@ -87,7 +87,7 @@ final class app.cash.redwood.protocol/ModifierElement { // app.cash.redwood.prot
         final fun <get-value>(): kotlinx.serialization.json/JsonElement // app.cash.redwood.protocol/ModifierElement.value.<get-value>|<get-value>(){}[0]
 }
 final class app.cash.redwood.protocol/PropertyChange : app.cash.redwood.protocol/ValueChange { // app.cash.redwood.protocol/PropertyChange|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement =...) // app.cash.redwood.protocol/PropertyChange.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement = ...) // app.cash.redwood.protocol/PropertyChange.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/PropertyChange.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/PropertyChange.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.protocol/PropertyChange.toString|toString(){}[0]
@@ -322,7 +322,7 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
             final fun <get-toIndex>(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Move.toIndex.<get-toIndex>|<get-toIndex>(){}[0]
     }
     final class Remove : app.cash.redwood.protocol/ChildrenChange { // app.cash.redwood.protocol/ChildrenChange.Remove|null[0]
-        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> =...) // app.cash.redwood.protocol/ChildrenChange.Remove.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
+        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> = ...) // app.cash.redwood.protocol/ChildrenChange.Remove.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/ChildrenChange.Remove.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Remove.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // app.cash.redwood.protocol/ChildrenChange.Remove.toString|toString(){}[0]

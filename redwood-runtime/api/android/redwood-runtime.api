@@ -58,15 +58,15 @@ public final class app/cash/redwood/ui/Density {
 	public final synthetic fun unbox-impl ()D
 }
 
-public final class app/cash/redwood/ui/Density$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/ui/Density$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Density$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-wj95dkU (Lkotlinx/serialization/encoding/Decoder;)D
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-wj95dkU (Lkotlinx/serialization/encoding/Decoder;)D
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize--vrfCzw (Lkotlinx/serialization/encoding/Encoder;D)V
+	public final fun serialize--vrfCzw (Lkotlinx/serialization/encoding/Encoder;D)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
@@ -93,15 +93,15 @@ public final class app/cash/redwood/ui/Dp {
 	public final synthetic fun unbox-impl ()D
 }
 
-public final class app/cash/redwood/ui/Dp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/ui/Dp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Dp$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-Ht7-4L4 (Lkotlinx/serialization/encoding/Decoder;)D
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-Ht7-4L4 (Lkotlinx/serialization/encoding/Decoder;)D
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-slHoOYc (Lkotlinx/serialization/encoding/Encoder;D)V
+	public final fun serialize-slHoOYc (Lkotlinx/serialization/encoding/Encoder;D)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
@@ -131,14 +131,14 @@ public final class app/cash/redwood/ui/Margin {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class app/cash/redwood/ui/Margin$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/ui/Margin$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Margin$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Margin;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Margin;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Margin;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Margin;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -184,14 +184,14 @@ public final class app/cash/redwood/ui/Size {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class app/cash/redwood/ui/Size$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/ui/Size$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Size$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Size;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/Size;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Size;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/Size;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -216,14 +216,14 @@ public final class app/cash/redwood/ui/UiConfiguration {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class app/cash/redwood/ui/UiConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/ui/UiConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/UiConfiguration$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/UiConfiguration;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/UiConfiguration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/UiConfiguration;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/ui/UiConfiguration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }

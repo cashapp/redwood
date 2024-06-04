@@ -629,7 +629,7 @@ class ViewRecyclingTest {
   }
 
   @Test
-  @Suppress("INVISIBLE_MEMBER") // To test implementation details!
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   fun reuseFullPoolSize() = runTest {
     val textCount = app.cash.redwood.protocol.host.POOL_SIZE
 
@@ -659,7 +659,7 @@ class ViewRecyclingTest {
   }
 
   @Test
-  @Suppress("INVISIBLE_MEMBER") // To test implementation details!
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   fun noReuseBeyondPoolSize() = runTest {
     val poolSize = app.cash.redwood.protocol.host.POOL_SIZE
     val textCount = poolSize + 1

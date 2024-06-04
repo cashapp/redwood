@@ -1,11 +1,13 @@
 buildscript {
   dependencies {
+    classpath libs.kotlin.composePlugin
     classpath libs.kotlin.serializationPlugin
     classpath libs.atomicFuPlugin
     classpath libs.buildConfigPlugin
     classpath libs.zipline.gradlePlugin
     classpath libs.paparazzi.gradlePlugin
     classpath libs.poko.gradlePlugin
+    classpath libs.jetbrains.compose.gradlePlugin
     classpath 'app.cash.redwood.build:gradle-plugin'
     classpath 'app.cash.redwood:redwood-gradle-plugin'
   }

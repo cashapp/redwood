@@ -2,10 +2,10 @@ import static app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
 
 redwoodBuild {
   targets(ToolkitComposeUi)
-  composeCompiler()
   publishing()
 }
 
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'app.cash.paparazzi'
 
 kotlin {

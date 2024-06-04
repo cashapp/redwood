@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 kotlin {
   iosArm64()
