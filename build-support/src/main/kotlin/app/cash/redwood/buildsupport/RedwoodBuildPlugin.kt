@@ -38,6 +38,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.java.TargetJvmEnvironment
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
@@ -207,6 +208,24 @@ class RedwoodBuildPlugin : Plugin<Project> {
         // Disable the release build type for sample applications because we never need it.
         if (it.buildType == "release") {
           it.enable = false
+        }
+      }
+    }
+
+    // Work around Guava problem. See https://github.com/cashapp/paparazzi/issues/906.
+    plugins.withId("app.cash.paparazzi") {
+      dependencies.constraints {
+        it.add("testImplementation", "com.google.guava:guava") {
+          it.attributes {
+            it.attribute(
+              TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+              objects.named(TargetJvmEnvironment::class.java, TargetJvmEnvironment.STANDARD_JVM),
+            )
+          }
+          it.because(
+            "LayoutLib and sdk-common depend on Guava's -jre published variant." +
+              "See https://github.com/cashapp/paparazzi/issues/906.",
+          )
         }
       }
     }
