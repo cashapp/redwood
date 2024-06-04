@@ -1,6 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
-// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -61,9 +61,9 @@ final val app.cash.redwood.compose/current // app.cash.redwood.compose/current|@
 final val app.cash.redwood.compose/current // app.cash.redwood.compose/current|@app.cash.redwood.ui.UiConfiguration.Companion{}current[0]
     final fun (app.cash.redwood.ui/UiConfiguration.Companion).<get-current>(androidx.compose.runtime/Composer?, kotlin/Int): app.cash.redwood.ui/UiConfiguration // app.cash.redwood.compose/current.<get-current>|<get-current>@app.cash.redwood.ui.UiConfiguration.Companion(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
 sealed interface <#A: kotlin/Any> app.cash.redwood.compose/Node // app.cash.redwood.compose/Node|null[0]
-// Targets: [apple]
+// Targets: [ios]
 final const val app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop|#static{}app_cash_redwood_compose_DisplayLinkClock$stableprop[0]
-// Targets: [apple]
+// Targets: [ios]
 final object app.cash.redwood.compose/DisplayLinkClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.redwood.compose/DisplayLinkClock|null[0]
     final suspend fun <#A1: kotlin/Any?> withFrameNanos(kotlin/Function1<kotlin/Long, #A1>): #A1 // app.cash.redwood.compose/DisplayLinkClock.withFrameNanos|withFrameNanos(kotlin.Function1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
 }

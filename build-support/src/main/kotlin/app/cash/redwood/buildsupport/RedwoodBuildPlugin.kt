@@ -67,6 +67,8 @@ private const val REDWOOD_GROUP_ID = "app.cash.redwood"
 // HEY! If you change the major version update release.yaml doc folder.
 private const val REDWOOD_VERSION = "0.12.0-SNAPSHOT"
 
+private val isCiEnvironment = System.getenv("CI") == "true"
+
 @Suppress("unused") // Invoked reflectively by Gradle.
 class RedwoodBuildPlugin : Plugin<Project> {
   private lateinit var libs: LibrariesForLibs
@@ -136,7 +138,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
   private fun Project.configureCommonTesting() {
     tasks.withType(AbstractTestTask::class.java).configureEach { task ->
       task.testLogging {
-        if (System.getenv("CI") == "true") {
+        if (isCiEnvironment) {
           it.events = setOf(FAILED, SKIPPED, PASSED)
         }
         it.exceptionFormat = FULL
@@ -457,9 +459,14 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     // Published modules should track their public API.
     project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
     val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
+
+    @OptIn(ExperimentalBCVApi::class)
     apiValidation.apply {
-      @OptIn(ExperimentalBCVApi::class)
       klib.enabled = true
+
+      // We run API checks on a Mac where all possible Kotlin targets are available.
+      // Setting this to true will allow us to catch when targets are removed.
+      klib.strictValidation = isCiEnvironment
 
       nonPublicMarkers += listOf(
         // The yoga module is an implementation detail of our layouts.
