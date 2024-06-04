@@ -109,7 +109,7 @@ class ViewLazyListTest(
       this.onScroll = onScroll
     }
 
-    override suspend fun scroll(offset: Double) {
+    override fun scroll(offset: Double) {
       onScroll?.invoke(offset)
     }
 

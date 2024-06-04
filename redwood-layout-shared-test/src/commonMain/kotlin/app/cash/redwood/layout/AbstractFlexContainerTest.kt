@@ -29,7 +29,6 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlinx.coroutines.test.runTest
 
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract fun flexContainer(
@@ -607,7 +606,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test
-  fun testOnScrollListener() = runTest {
+  fun testOnScrollListener() {
     var scrolled = false
     val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
@@ -618,9 +617,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
     }
 
-    verifySnapshot(container)
-
     container.scroll(1000.0)
+
+    verifySnapshot(container)
 
     assertTrue(scrolled)
   }
@@ -638,7 +637,7 @@ interface TestFlexContainer<T : Any> :
   fun margin(margin: Margin)
   fun overflow(overflow: Overflow)
   fun onScroll(onScroll: ((Double) -> Unit)?)
-  suspend fun scroll(offset: Double)
+  fun scroll(offset: Double)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)
   fun removeAt(index: Int)

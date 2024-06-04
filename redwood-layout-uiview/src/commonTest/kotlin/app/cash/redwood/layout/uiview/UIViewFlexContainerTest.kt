@@ -22,9 +22,7 @@ import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.cinterop.cValue
-import kotlinx.coroutines.delay
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIScrollView
@@ -65,9 +63,8 @@ class UIViewFlexContainerTest(
       delegate.onScroll(onScroll)
     }
 
-    override suspend fun scroll(offset: Double) {
+    override fun scroll(offset: Double) {
       (delegate.value as UIScrollView).setContentOffset(cValue { y = offset }, false)
-      delay(20.milliseconds)
     }
 
     override fun add(widget: Widget<UIView>) {

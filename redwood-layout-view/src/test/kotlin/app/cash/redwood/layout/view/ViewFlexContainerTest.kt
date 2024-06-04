@@ -28,8 +28,6 @@ import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.delay
 import org.junit.Rule
 import org.junit.runner.RunWith
 
@@ -71,15 +69,16 @@ class ViewFlexContainerTest(
     FlexContainer<View> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+    private var onScroll: ((Double) -> Unit)? = null
+
     override val children: ViewGroupChildren = delegate.children
 
     override fun onScroll(onScroll: ((Double) -> Unit)?) {
-      delegate.onScroll(onScroll)
+      this.onScroll = onScroll
     }
 
-    override suspend fun scroll(offset: Double) {
-      delegate.value.scrollTo(0, offset.toInt())
-      delay(20.milliseconds)
+    override fun scroll(offset: Double) {
+      onScroll?.invoke(offset)
     }
 
     override fun add(widget: Widget<View>) {
