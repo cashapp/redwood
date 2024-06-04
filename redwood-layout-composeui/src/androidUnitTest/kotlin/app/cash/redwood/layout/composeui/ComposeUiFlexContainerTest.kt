@@ -79,7 +79,7 @@ class ComposeUiFlexContainerTest(
       addAt(childCount, widget)
     }
 
-    override fun addAt(index: Int, widget: Widget<() -> Unit>) {
+    override fun addAt(index: Int, widget: Widget<@Composable () -> Unit>) {
       delegate.children.insert(index, widget)
       childCount++
     }
