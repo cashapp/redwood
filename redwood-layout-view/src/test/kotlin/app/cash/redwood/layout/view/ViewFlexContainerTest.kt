@@ -73,7 +73,7 @@ class ViewFlexContainerTest(
     private var childCount = 0
     override val children: ViewGroupChildren = delegate.children
 
-    override fun onScroll(onScroll: (Double) -> Unit) {
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
       delegate.onScroll(onScroll)
     }
 

@@ -126,7 +126,7 @@ class ComposeUiLazyListTest(
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     }
 
-    override fun onScroll(onScroll: (Double) -> Unit) {
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
       this.onScroll = onScroll
     }
 

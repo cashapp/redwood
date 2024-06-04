@@ -106,8 +106,13 @@ private class HTMLFlexContainer(
   }
 
   override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    scrollEventListener?.let { eventListener ->
+      value.removeEventListener("scroll", eventListener)
+      scrollEventListener = null
+    }
+
     if (onScroll != null) {
-      val eventListener = scrollEventListener ?: object : EventListener {
+      val eventListener = object : EventListener {
         override fun handleEvent(event: Event) {
           val offset = when (value.style.flexDirection) {
             "row" -> value.scrollTop
@@ -118,11 +123,6 @@ private class HTMLFlexContainer(
         }
       }.also { scrollEventListener = it }
       value.addEventListener("scroll", eventListener)
-    } else {
-      scrollEventListener?.let { eventListener ->
-        value.removeEventListener("scroll", eventListener)
-        scrollEventListener = null
-      }
     }
   }
 

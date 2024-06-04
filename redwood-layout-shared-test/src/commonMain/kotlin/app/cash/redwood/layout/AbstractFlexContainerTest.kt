@@ -29,8 +29,6 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 
 abstract class AbstractFlexContainerTest<T : Any> {
@@ -620,6 +618,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
     }
 
+    verifySnapshot(container)
+
     container.scroll(1000.0)
 
     assertTrue(scrolled)
@@ -637,8 +637,8 @@ interface TestFlexContainer<T : Any> :
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun overflow(overflow: Overflow)
+  fun onScroll(onScroll: ((Double) -> Unit)?)
   suspend fun scroll(offset: Double)
-  fun onScroll(onScroll: (Double) -> Unit)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)
   fun removeAt(index: Int)

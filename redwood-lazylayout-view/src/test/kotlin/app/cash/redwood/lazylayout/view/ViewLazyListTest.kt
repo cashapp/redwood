@@ -105,7 +105,7 @@ class ViewLazyListTest(
 
     override val children: Widget.Children<View> = delegate.items
 
-    override fun onScroll(onScroll: (Double) -> Unit) {
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
       this.onScroll = onScroll
     }
 

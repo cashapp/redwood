@@ -80,7 +80,7 @@ class ComposeUiFlexContainerTest(
       },
     )
 
-    override fun onScroll(onScroll: (Double) -> Unit) {
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
       delegate.onScroll(onScroll)
     }
 
