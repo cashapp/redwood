@@ -214,7 +214,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v3
 
-      - run: ./gradlew publish
+      - run: ./gradlew publishToMavenCentral
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
