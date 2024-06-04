@@ -1,6 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
-// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -186,6 +186,6 @@ open annotation class app.cash.redwood/LayoutScopeMarker : kotlin/Annotation { /
 open annotation class app.cash.redwood/RedwoodCodegenApi : kotlin/Annotation { // app.cash.redwood/RedwoodCodegenApi|null[0]
     constructor <init>() // app.cash.redwood/RedwoodCodegenApi.<init>|<init>(){}[0]
 }
-// Targets: [apple]
+// Targets: [ios]
 final val app.cash.redwood.ui/Default // app.cash.redwood.ui/Default|@app.cash.redwood.ui.Density.Companion{}Default[0]
     final fun (app.cash.redwood.ui/Density.Companion).<get-Default>(): app.cash.redwood.ui/Density // app.cash.redwood.ui/Default.<get-Default>|<get-Default>@app.cash.redwood.ui.Density.Companion(){}[0]

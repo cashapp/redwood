@@ -1,6 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -95,8 +94,25 @@ final class app.cash.redwood.treehouse/MemoryStateStore : app.cash.redwood.treeh
     final suspend fun get(kotlin/String): app.cash.redwood.treehouse/StateSnapshot? // app.cash.redwood.treehouse/MemoryStateStore.get|get(kotlin.String){}[0]
     final suspend fun put(kotlin/String, app.cash.redwood.treehouse/StateSnapshot) // app.cash.redwood.treehouse/MemoryStateStore.put|put(kotlin.String;app.cash.redwood.treehouse.StateSnapshot){}[0]
 }
+final class app.cash.redwood.treehouse/TreehouseUIView : app.cash.redwood.treehouse/TreehouseView<platform.UIKit/UIView>, app.cash.redwood.widget/RedwoodUIView { // app.cash.redwood.treehouse/TreehouseUIView|null[0]
+    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>){}[0]
+    final val readyForContent // app.cash.redwood.treehouse/TreehouseUIView.readyForContent|{}readyForContent[0]
+        final fun <get-readyForContent>(): kotlin/Boolean // app.cash.redwood.treehouse/TreehouseUIView.readyForContent.<get-readyForContent>|<get-readyForContent>(){}[0]
+    final val widgetSystem // app.cash.redwood.treehouse/TreehouseUIView.widgetSystem|{}widgetSystem[0]
+        final fun <get-widgetSystem>(): app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView> // app.cash.redwood.treehouse/TreehouseUIView.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
+    final var readyForContentChangeListener // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener|{}readyForContentChangeListener[0]
+        final fun <get-readyForContentChangeListener>(): app.cash.redwood.treehouse/TreehouseView.ReadyForContentChangeListener<platform.UIKit/UIView>? // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener.<get-readyForContentChangeListener>|<get-readyForContentChangeListener>(){}[0]
+        final fun <set-readyForContentChangeListener>(app.cash.redwood.treehouse/TreehouseView.ReadyForContentChangeListener<platform.UIKit/UIView>?) // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener.<set-readyForContentChangeListener>|<set-readyForContentChangeListener>(app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener<platform.UIKit.UIView>?){}[0]
+    final var saveCallback // app.cash.redwood.treehouse/TreehouseUIView.saveCallback|{}saveCallback[0]
+        final fun <get-saveCallback>(): app.cash.redwood.treehouse/TreehouseView.SaveCallback? // app.cash.redwood.treehouse/TreehouseUIView.saveCallback.<get-saveCallback>|<get-saveCallback>(){}[0]
+        final fun <set-saveCallback>(app.cash.redwood.treehouse/TreehouseView.SaveCallback?) // app.cash.redwood.treehouse/TreehouseUIView.saveCallback.<set-saveCallback>|<set-saveCallback>(app.cash.redwood.treehouse.TreehouseView.SaveCallback?){}[0]
+    final var stateSnapshotId // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId|{}stateSnapshotId[0]
+        final fun <get-stateSnapshotId>(): app.cash.redwood.treehouse/StateSnapshot.Id // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId.<get-stateSnapshotId>|<get-stateSnapshotId>(){}[0]
+        final fun <set-stateSnapshotId>(app.cash.redwood.treehouse/StateSnapshot.Id) // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId.<set-stateSnapshotId>|<set-stateSnapshotId>(app.cash.redwood.treehouse.StateSnapshot.Id){}[0]
+}
 final fun <#A: app.cash.redwood.treehouse/AppService, #B: kotlin/Any> (app.cash.redwood.treehouse/TreehouseContentSource<#A>).app.cash.redwood.treehouse/bindWhenReady(app.cash.redwood.treehouse/TreehouseView<#B>, app.cash.redwood.treehouse/TreehouseApp<#A>, app.cash.redwood.treehouse/CodeListener =...): okio/Closeable // app.cash.redwood.treehouse/bindWhenReady|bindWhenReady@app.cash.redwood.treehouse.TreehouseContentSource<0:0>(app.cash.redwood.treehouse.TreehouseView<0:1>;app.cash.redwood.treehouse.TreehouseApp<0:0>;app.cash.redwood.treehouse.CodeListener){0§<app.cash.redwood.treehouse.AppService>;1§<kotlin.Any>}[0]
 final fun <#A: kotlin/Any> (app.cash.redwood.treehouse/Content).app.cash.redwood.treehouse/bindWhenReady(app.cash.redwood.treehouse/TreehouseView<#A>): okio/Closeable // app.cash.redwood.treehouse/bindWhenReady|bindWhenReady@app.cash.redwood.treehouse.Content(app.cash.redwood.treehouse.TreehouseView<0:0>){0§<kotlin.Any>}[0]
+final fun app.cash.redwood.treehouse/TreehouseAppFactory(app.cash.zipline.loader/ZiplineHttpClient, app.cash.zipline.loader/ManifestVerifier, okio/FileSystem? =..., okio/Path? =..., kotlin/String =..., kotlin/Long =..., kotlin/Int =..., app.cash.redwood.treehouse/StateStore =...): app.cash.redwood.treehouse/TreehouseApp.Factory // app.cash.redwood.treehouse/TreehouseAppFactory|TreehouseAppFactory(app.cash.zipline.loader.ZiplineHttpClient;app.cash.zipline.loader.ManifestVerifier;okio.FileSystem?;okio.Path?;kotlin.String;kotlin.Long;kotlin.Int;app.cash.redwood.treehouse.StateStore){}[0]
 open class app.cash.redwood.treehouse/CodeListener { // app.cash.redwood.treehouse/CodeListener|null[0]
     constructor <init>() // app.cash.redwood.treehouse/CodeListener.<init>|<init>(){}[0]
     open fun onCodeDetached(app.cash.redwood.treehouse/TreehouseApp<*>, app.cash.redwood.treehouse/TreehouseView<*>, kotlin/Throwable?) // app.cash.redwood.treehouse/CodeListener.onCodeDetached|onCodeDetached(app.cash.redwood.treehouse.TreehouseApp<*>;app.cash.redwood.treehouse.TreehouseView<*>;kotlin.Throwable?){}[0]
@@ -144,22 +160,3 @@ open class app.cash.redwood.treehouse/EventListener { // app.cash.redwood.treeho
     open fun unknownWidget(app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.treehouse/EventListener.unknownWidget|unknownWidget(app.cash.redwood.protocol.WidgetTag){}[0]
     open fun ziplineCreated(app.cash.zipline/Zipline) // app.cash.redwood.treehouse/EventListener.ziplineCreated|ziplineCreated(app.cash.zipline.Zipline){}[0]
 }
-// Targets: [ios]
-final class app.cash.redwood.treehouse/TreehouseUIView : app.cash.redwood.treehouse/TreehouseView<platform.UIKit/UIView>, app.cash.redwood.widget/RedwoodUIView { // app.cash.redwood.treehouse/TreehouseUIView|null[0]
-    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>){}[0]
-    final val readyForContent // app.cash.redwood.treehouse/TreehouseUIView.readyForContent|{}readyForContent[0]
-        final fun <get-readyForContent>(): kotlin/Boolean // app.cash.redwood.treehouse/TreehouseUIView.readyForContent.<get-readyForContent>|<get-readyForContent>(){}[0]
-    final val widgetSystem // app.cash.redwood.treehouse/TreehouseUIView.widgetSystem|{}widgetSystem[0]
-        final fun <get-widgetSystem>(): app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView> // app.cash.redwood.treehouse/TreehouseUIView.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
-    final var readyForContentChangeListener // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener|{}readyForContentChangeListener[0]
-        final fun <get-readyForContentChangeListener>(): app.cash.redwood.treehouse/TreehouseView.ReadyForContentChangeListener<platform.UIKit/UIView>? // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener.<get-readyForContentChangeListener>|<get-readyForContentChangeListener>(){}[0]
-        final fun <set-readyForContentChangeListener>(app.cash.redwood.treehouse/TreehouseView.ReadyForContentChangeListener<platform.UIKit/UIView>?) // app.cash.redwood.treehouse/TreehouseUIView.readyForContentChangeListener.<set-readyForContentChangeListener>|<set-readyForContentChangeListener>(app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener<platform.UIKit.UIView>?){}[0]
-    final var saveCallback // app.cash.redwood.treehouse/TreehouseUIView.saveCallback|{}saveCallback[0]
-        final fun <get-saveCallback>(): app.cash.redwood.treehouse/TreehouseView.SaveCallback? // app.cash.redwood.treehouse/TreehouseUIView.saveCallback.<get-saveCallback>|<get-saveCallback>(){}[0]
-        final fun <set-saveCallback>(app.cash.redwood.treehouse/TreehouseView.SaveCallback?) // app.cash.redwood.treehouse/TreehouseUIView.saveCallback.<set-saveCallback>|<set-saveCallback>(app.cash.redwood.treehouse.TreehouseView.SaveCallback?){}[0]
-    final var stateSnapshotId // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId|{}stateSnapshotId[0]
-        final fun <get-stateSnapshotId>(): app.cash.redwood.treehouse/StateSnapshot.Id // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId.<get-stateSnapshotId>|<get-stateSnapshotId>(){}[0]
-        final fun <set-stateSnapshotId>(app.cash.redwood.treehouse/StateSnapshot.Id) // app.cash.redwood.treehouse/TreehouseUIView.stateSnapshotId.<set-stateSnapshotId>|<set-stateSnapshotId>(app.cash.redwood.treehouse.StateSnapshot.Id){}[0]
-}
-// Targets: [ios]
-final fun app.cash.redwood.treehouse/TreehouseAppFactory(app.cash.zipline.loader/ZiplineHttpClient, app.cash.zipline.loader/ManifestVerifier, okio/FileSystem? =..., okio/Path? =..., kotlin/String =..., kotlin/Long =..., kotlin/Int =..., app.cash.redwood.treehouse/StateStore =...): app.cash.redwood.treehouse/TreehouseApp.Factory // app.cash.redwood.treehouse/TreehouseAppFactory|TreehouseAppFactory(app.cash.zipline.loader.ZiplineHttpClient;app.cash.zipline.loader.ManifestVerifier;okio.FileSystem?;okio.Path?;kotlin.String;kotlin.Long;kotlin.Int;app.cash.redwood.treehouse.StateStore){}[0]
