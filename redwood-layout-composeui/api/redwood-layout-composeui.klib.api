@@ -16,7 +16,7 @@ final class app.cash.redwood.layout.composeui/BoxMeasurePolicy : androidx.compos
 }
 final class app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory : app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.<init>|<init>(){}[0]
-    final fun Box(): app.cash.redwood.layout.widget/Box<kotlin/Function0<kotlin/Unit>> // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.Box|Box(){}[0]
+    final fun Box(): app.cash.redwood.layout.widget/Box<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.Box|Box(){}[0]
     final fun Column(): app.cash.redwood.layout.widget/Column<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.Column|Column(){}[0]
     final fun Row(): app.cash.redwood.layout.widget/Row<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.Row|Row(){}[0]
     final fun Spacer(): app.cash.redwood.layout.widget/Spacer<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.layout.composeui/ComposeUiRedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]

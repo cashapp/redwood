@@ -123,7 +123,7 @@ class ComposeUiLazyListTest(
       addAt(childCount, widget)
     }
 
-    override fun addAt(index: Int, widget: Widget<() -> Unit>) {
+    override fun addAt(index: Int, widget: Widget<@Composable () -> Unit>) {
       delegate.items.insert(index, widget)
       childCount++
     }

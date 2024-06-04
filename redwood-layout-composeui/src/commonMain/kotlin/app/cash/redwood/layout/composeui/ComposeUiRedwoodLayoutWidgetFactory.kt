@@ -24,7 +24,7 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.yoga.FlexDirection
 
 public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
-  override fun Box(): Box<() -> Unit> = ComposeUiBox()
+  override fun Box(): Box<@Composable () -> Unit> = ComposeUiBox()
   override fun Column(): Column<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Column)
   override fun Row(): Row<@Composable () -> Unit> = ComposeUiFlexContainer(FlexDirection.Row)
   override fun Spacer(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
