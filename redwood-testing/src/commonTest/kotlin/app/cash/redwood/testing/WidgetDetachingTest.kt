@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
-
 package app.cash.redwood.testing
 
 import androidx.compose.runtime.getValue
@@ -26,6 +24,7 @@ import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolNode
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isNotNull
@@ -33,8 +32,6 @@ import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.compose.reuse
-import com.example.redwood.testapp.protocol.host.testschema.ProtocolTestRow
-import com.example.redwood.testapp.protocol.host.testschema.ProtocolText
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
@@ -145,6 +142,7 @@ class WidgetDetachingTest {
   }
 
   @Test
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   fun widgetIsDetachedWhenWidgetIsEvictedFromPool() = runTest {
     val poolSize = app.cash.redwood.protocol.host.POOL_SIZE
 
@@ -188,6 +186,7 @@ class WidgetDetachingTest {
   }
 
   @Test
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   fun widgetIsDetachedWhenParentWidgetIsEvictedFromPool() = runTest {
     val poolSize = app.cash.redwood.protocol.host.POOL_SIZE
 
@@ -294,9 +293,10 @@ class WidgetDetachingTest {
     }
   }
 
-  private fun ProtocolBridge<WidgetValue>.extractProtocolText(): ProtocolText<WidgetValue> {
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
+  private fun ProtocolBridge<WidgetValue>.extractProtocolText(): ProtocolNode<WidgetValue> {
     val root = node(Id.Root)
-    val protocolTestRow = root.children(ChildrenTag.Root)!!.nodes.single() as ProtocolTestRow
-    return protocolTestRow.children(ChildrenTag(1))!!.nodes.single() as ProtocolText
+    val testRow = root.children(ChildrenTag.Root)!!.nodes.single()
+    return testRow.children(ChildrenTag(1))!!.nodes.single()
   }
 }

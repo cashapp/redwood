@@ -20,6 +20,7 @@ import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.BoxValue
 import app.cash.redwood.layout.testing.ColumnValue
+import app.cash.redwood.layout.widget.Box
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
@@ -38,7 +39,6 @@ class ViewRecyclingTest {
   private val reuse = Modifier.reuse()
 
   /** Confirm views are recycled in the simplest case. */
-  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
   @Test
   fun happyPath() = runTest {
     viewRecyclingTest {
@@ -54,8 +54,8 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "one")),
         ),
       )
-      val snapshot1Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
-      val snapshot1BoxText = snapshot1Box.children.single()
+      val snapshot1Box = widgets.single() as Box<WidgetValue>
+      val snapshot1BoxText = snapshot1Box.children.widgets.single()
 
       // Update the content. The old widgets are pooled and new widgets are created.
       setContent {
@@ -69,8 +69,8 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "two")),
         ),
       )
-      val snapshot2Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
-      val snapshot2BoxText = snapshot2Box.children.single()
+      val snapshot2Box = widgets.single() as Box<WidgetValue>
+      val snapshot2BoxText = snapshot2Box.children.widgets.single()
       assertThat(snapshot2Box).isNotSameInstanceAs(snapshot1Box)
       assertThat(snapshot2BoxText).isNotSameInstanceAs(snapshot1Box)
 
@@ -86,8 +86,8 @@ class ViewRecyclingTest {
           children = listOf(TextValue(text = "three")),
         ),
       )
-      val snapshot3Box = widgets.single() as app.cash.redwood.layout.testing.MutableBox
-      val snapshot3BoxText = snapshot3Box.children.single()
+      val snapshot3Box = widgets.single() as Box<WidgetValue>
+      val snapshot3BoxText = snapshot3Box.children.widgets.single()
       assertThat(snapshot3Box).isSameInstanceAs(snapshot1Box)
       assertThat(snapshot3BoxText).isSameInstanceAs(snapshot1BoxText)
     }
