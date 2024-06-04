@@ -152,14 +152,14 @@ internal class ComposeUiFlexContainer(
       } else {
         modifier = modifier.verticalScroll(scrollState)
       }
-      observeScrollState(scrollState)
+      ObserveScrollState(scrollState)
     }
     testOnlyModifier?.let { modifier = modifier.then(it) }
     return modifier
   }
 
   @Composable
-  private fun observeScrollState(scrollState: ScrollState) {
+  private fun ObserveScrollState(scrollState: ScrollState) {
     val onScroll = onScroll
     if (onScroll != null) {
       val offset by remember { derivedStateOf { scrollState.value.toDouble() } }
