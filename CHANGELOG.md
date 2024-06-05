@@ -6,6 +6,7 @@
 New:
 - Added a basic DOM-based LazyList implementation.
 -`TreehouseApp.close()` stops the app and prevents it from being started again later.
+-`Widget.detach()` is called when a widget will receive no further updates from the presenter.
 
 Changed:
 - Removed deprecated `typealias`es for generated `-WidgetFactories` type which was renamed to `-WidgetSystem` in 0.10.0.

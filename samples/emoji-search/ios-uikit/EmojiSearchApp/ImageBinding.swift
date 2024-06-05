@@ -60,10 +60,14 @@ class ImageBinding: Image {
         gestureRecognizer.addTarget(self, action: #selector(didTapImage))
         root.addGestureRecognizer(gestureRecognizer)
     }
-    
+
     @objc
     private func didTapImage() {
         onClick?()
+    }
+
+    func detach() {
+        onClick = nil
     }
 }
 

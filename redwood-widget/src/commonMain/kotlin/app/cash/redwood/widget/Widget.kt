@@ -39,6 +39,16 @@ public interface Widget<W : Any> {
   public var modifier: Modifier
 
   /**
+   * Clear event listeners **without** triggering an update to the displayed UI.
+   *
+   * After this is called there will be no further updates to properties or children.
+   *
+   * This function is not recursive.
+   */
+  public fun detach() {
+  }
+
+  /**
    * An interface for manipulating a widget's list of children.
    *
    * Arguments to these methods can be assumed to be validated against the current state of the
