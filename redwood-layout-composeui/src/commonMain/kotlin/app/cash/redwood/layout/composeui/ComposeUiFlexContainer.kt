@@ -99,7 +99,7 @@ internal class ComposeUiFlexContainer(
     recomposeTick++
   }
 
-  override val value = @Composable {
+  override val value: @Composable () -> Unit = @Composable {
     Layout(
       content = {
         // Observe this so we can manually trigger recomposition.

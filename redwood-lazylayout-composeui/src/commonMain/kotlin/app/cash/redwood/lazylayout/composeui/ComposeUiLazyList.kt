@@ -123,7 +123,7 @@ internal class ComposeUiLazyList :
     this.pullRefreshContentColor = Color(pullRefreshContentColor.toLong())
   }
 
-  override val value = @Composable {
+  override val value: @Composable () -> Unit = @Composable {
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
         // TODO If CrossAxisAlignment is Stretch, pass Modifier.fillParentMaxWidth() to child widget.

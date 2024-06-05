@@ -106,6 +106,10 @@ class ComposeUiLazyListTest(
     private val delegate: ComposeUiLazyList,
   ) : TestFlexContainer<@Composable () -> Unit>,
     LazyList<@Composable () -> Unit> by delegate {
+
+    // Work around https://youtrack.jetbrains.com/issue/KT-68850
+    override val value: @Composable () -> Unit get() = delegate.value
+
     private var childCount = 0
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
