@@ -325,7 +325,7 @@ internal open class UIViewLazyList :
     tableViewDelegate.tableView = null
     tableViewDelegate.scrollProcessor = null
     tableView.scrollProcessor = null
-    // tableView.dataSource = null // Don't clear the data source, it's weakly held anyway.
+    // Note that we don't clear tableView.dataSource. It's weakly held anyway.
     tableView.delegate = null
   }
 }

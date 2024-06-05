@@ -86,6 +86,7 @@ public final class app/cash/redwood/widget/ViewGroupChildren : app/cash/redwood/
 }
 
 public abstract interface class app/cash/redwood/widget/Widget {
+	public fun detach ()V
 	public abstract fun getModifier ()Lapp/cash/redwood/Modifier;
 	public abstract fun getValue ()Ljava/lang/Object;
 	public abstract fun setModifier (Lapp/cash/redwood/Modifier;)V

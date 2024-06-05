@@ -76,4 +76,8 @@ class TextInputBinding: TextInput {
 
     var modifier: Modifier = ExposedKt.modifier()
     var value: Any { root }
+
+    func detach() {
+        onChange = nil
+    }
 }

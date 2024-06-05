@@ -39,7 +39,7 @@ public interface Widget<W : Any> {
   public var modifier: Modifier
 
   /**
-   * Clear event listeners **without** triggering an update the displayed UI.
+   * Clear event listeners **without** triggering an update to the displayed UI.
    *
    * After this is called there will be no further updates to properties or children.
    *
