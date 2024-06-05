@@ -20,11 +20,14 @@ internal external class JsArray<E> {
   @JsName("length")
   val size: Int
 
-  @JsName("push")
-  fun add(element: E)
+  fun push(element: E)
 }
 
 internal actual typealias PlatformList<E> = JsArray<E>
+
+internal actual inline fun <E> PlatformList<E>.add(element: E) {
+  push(element)
+}
 
 internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
   return JsArrayList(this)

@@ -23,6 +23,11 @@ package app.cash.redwood.protocol.guest
 )
 internal actual typealias PlatformList<E> = ArrayList<E>
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // Not true in common.
+internal actual inline fun <E> PlatformList<E>.add(element: E) {
+  add(element)
+}
+
 @Suppress(
   // Explicitly trying to be zero-overhead.
   "NOTHING_TO_INLINE",
