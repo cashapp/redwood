@@ -34,4 +34,7 @@ class TextBinding: Text {
         // this function will update the bounds and trigger relayout in the parent.
         root.sizeToFit()
     }
+
+    func detach() {
+    }
 }

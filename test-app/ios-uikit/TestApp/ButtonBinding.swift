@@ -49,4 +49,8 @@ class ButtonBinding: Button {
     @objc func clicked() {
         self.onClick?()
     }
+
+    func detach() {
+        onClick = nil
+    }
 }
