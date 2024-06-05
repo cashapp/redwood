@@ -18,7 +18,9 @@ package app.cash.redwood.layout.widget
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 
-public interface FlexContainer<W : Any> : Row<W>, Column<W> {
+public interface FlexContainer<W : Any> :
+  Row<W>,
+  Column<W> {
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
     mainAxisAlignment(horizontalAlignment)
   }

@@ -32,8 +32,7 @@ import okhttp3.Response
 import okio.IOException
 
 /** Exception for an unexpected, non-2xx HTTP response. */
-class HttpException(response: Response) :
-  RuntimeException("HTTP ${response.code} ${response.message}")
+class HttpException(response: Response) : RuntimeException("HTTP ${response.code} ${response.message}")
 
 class RealHostApi(
   private val context: Context,

@@ -129,8 +129,7 @@ private class HTMLSpacer(
 private class HTMLFlexElementChildren(
   private val container: HTMLElement,
   private val delegate: HTMLElementChildren = HTMLElementChildren(container),
-) :
-  Widget.Children<HTMLElement> by delegate {
+) : Widget.Children<HTMLElement> by delegate {
   override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
     widget.applyModifiers(clearStyles = true)
     delegate.onModifierUpdated(index, widget)

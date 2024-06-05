@@ -24,7 +24,8 @@ import app.cash.zipline.ZiplineManifest
  */
 class RetainEverythingEventListenerFactory(
   private val eventLog: EventLog,
-) : EventListener(), EventListener.Factory {
+) : EventListener(),
+  EventListener.Factory {
   var app: TreehouseApp<*>? = null
   var manifestUrl: String? = null
   var zipline: Zipline? = null

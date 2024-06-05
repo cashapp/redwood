@@ -64,7 +64,8 @@ fun assumeTrue(b: Boolean) {
 
 internal data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
-) : HorizontalAlignment, VerticalAlignment
+) : HorizontalAlignment,
+  VerticalAlignment
 
 internal data class WidthImpl(
   override val width: Dp,

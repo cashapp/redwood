@@ -53,7 +53,9 @@ private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
   private val bridge: ProtocolBridge,
-) : ZiplineTreehouseUi, ZiplineScoped, EventSink by bridge {
+) : ZiplineTreehouseUi,
+  ZiplineScoped,
+  EventSink by bridge {
 
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,

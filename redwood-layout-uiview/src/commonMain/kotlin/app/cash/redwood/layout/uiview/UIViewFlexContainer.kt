@@ -30,7 +30,8 @@ import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
-) : YogaFlexContainer<UIView>, ChangeListener {
+) : YogaFlexContainer<UIView>,
+  ChangeListener {
   private val yogaView: YogaUIView = YogaUIView(
     applyModifier = { node, index ->
       node.applyModifier(node.context as Modifier, Density.Default)

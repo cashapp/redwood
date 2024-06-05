@@ -33,7 +33,8 @@ public class TreehouseLayout(
   context: Context,
   override val widgetSystem: WidgetSystem<View>,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-) : RedwoodLayout(context, androidOnBackPressedDispatcher), TreehouseView<View> {
+) : RedwoodLayout(context, androidOnBackPressedDispatcher),
+  TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {
       check(value == null || field == null) { "View already bound to a listener" }

@@ -89,7 +89,9 @@ class ViewLazyListTest(
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,
-  ) : TestFlexContainer<View>, LazyList<View> by delegate, ChangeListener by delegate {
+  ) : TestFlexContainer<View>,
+    LazyList<View> by delegate,
+    ChangeListener by delegate {
     private var childCount = 0
 
     constructor(context: Context, direction: FlexDirection, backgroundColor: Int) : this(

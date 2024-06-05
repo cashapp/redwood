@@ -21,6 +21,8 @@ import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
 @ObjCName("EmojiSearchPresenter", exact = true)
-interface EmojiSearchPresenter : AppService, ZiplineService {
+interface EmojiSearchPresenter :
+  AppService,
+  ZiplineService {
   fun launch(): ZiplineTreehouseUi
 }

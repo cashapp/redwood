@@ -29,10 +29,11 @@ import java.net.URLClassLoader
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
-internal class JsonCommand : CliktCommand(
-  name = "json",
-  help = "Parse schema members into a JSON representation",
-) {
+internal class JsonCommand :
+  CliktCommand(
+    name = "json",
+    help = "Parse schema members into a JSON representation",
+  ) {
   private val out by option().path().required()
     .help("Directory into which JSON is written")
 

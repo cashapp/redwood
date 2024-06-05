@@ -32,7 +32,8 @@ internal actual inline fun <E> PlatformList<E>.asList(): List<E> {
 
 internal class JsArrayList<E>(
   private val storage: JsArray<E>,
-) : AbstractList<E>(), RandomAccess {
+) : AbstractList<E>(),
+  RandomAccess {
   override val size: Int get() = storage.size
 
   override fun get(index: Int): E {

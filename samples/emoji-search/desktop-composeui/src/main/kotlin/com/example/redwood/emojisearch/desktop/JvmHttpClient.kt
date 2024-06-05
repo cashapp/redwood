@@ -54,7 +54,8 @@ private suspend fun Call.await(): Response {
 private class ContinuationCallback(
   private val call: Call,
   private val continuation: CancellableContinuation<Response>,
-) : Callback, CompletionHandler {
+) : Callback,
+  CompletionHandler {
 
   override fun onResponse(call: Call, response: Response) {
     continuation.resume(response)

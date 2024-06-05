@@ -55,7 +55,8 @@ internal class NodeApplier<W : Any>(
   override val widgetSystem: WidgetSystem<W>,
   root: Widget.Children<W>,
   private val onEndChanges: () -> Unit,
-) : AbstractApplier<Node<W>>(ChildrenNode(root)), RedwoodApplier<W> {
+) : AbstractApplier<Node<W>>(ChildrenNode(root)),
+  RedwoodApplier<W> {
   private var closed = false
   private val changedWidgets = LinkedHashSet<ChangeListener>()
 
